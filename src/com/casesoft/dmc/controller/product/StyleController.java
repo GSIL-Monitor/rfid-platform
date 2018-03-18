@@ -1,0 +1,222 @@
+package com.casesoft.dmc.controller.product;
+
+import java.io.InputStream;
+import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
+import com.casesoft.dmc.model.cfg.PropertyType;
+import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.service.push.pushBaseInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.service.product.StyleService;
+
+@Controller
+@RequestMapping("/prod/style")
+public class StyleController extends BaseController implements IBaseInfoController<Style>{
+
+	@Autowired
+	private StyleService styleService;
+	@Autowired
+	public pushBaseInfo wxShopBaseService;
+
+	@RequestMapping("/page")
+	@ResponseBody
+	@Override
+	public Page<Style> findPage(Page<Style> page) throws Exception {
+
+		this.logAllRequestParams();
+		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+				.getRequest());
+		page.setPageProperty();
+		page = this.styleService.findPage(page, filters);
+		return page;
+	}
+
+
+	@RequestMapping("/list")
+	@ResponseBody
+	@Override
+	public List<Style> list() throws Exception {
+		this.logAllRequestParams();
+		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+				.getRequest());
+ 		return this.styleService.find(filters);
+	}
+
+	@RequestMapping("/save")
+	@ResponseBody
+	@Override
+	public MessageBox save(Style style) throws Exception {
+		Style sty =this.styleService.fundByStyleId(style.getStyleId());
+		if(CommonUtil.isBlank(sty)){
+			sty=new Style();
+			sty.setId(style.getStyleId());
+			sty.setStyleId(style.getStyleId());
+		}
+		StyleUtil.copyStyleInfo(sty,style);
+		try {
+			this.styleService.save(sty);
+			CacheManager.refreshStyleCache();
+			return this.returnSuccessInfo("保存成功", style);
+		}catch(Exception e ){
+			return this.returnFailInfo("保存失败");
+		}
+	}
+
+	/**
+	 * @Param styleStr 款信息json字符串
+	 * @Param productStr 商品jsonArray字符串
+	 * */
+	@RequestMapping("/saveStyleAndProduct")
+	@ResponseBody
+	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId) throws Exception {
+		try {
+			Style style = JSON.parseObject(styleStr,Style.class);
+			Style sty = CacheManager.getStyleById(style.getStyleId());
+			if(CommonUtil.isBlank(sty)){
+				sty=new Style();
+				sty.setId(style.getStyleId());
+				sty.setStyleId(style.getStyleId());
+				sty.setIsUse("Y");
+			}
+            sty.setOprId(userId);
+
+			List<Product> productList = JSON.parseArray(productStr,Product.class);
+			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
+
+			this.styleService.saveStyleAndProducts(sty,saveList);
+			CacheManager.refreshStyleCache();
+			if(saveList.size() > 0){
+				CacheManager.refreshProductCache();
+			}
+			//推送微信商城
+			//读取congif.properties文件
+			boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
+					.getValue("is_wxshop"));
+			if(is_wxshop) {
+				boolean ispush = this.wxShopBaseService.WxShopStyle(sty, saveList);
+				if (ispush) {
+					return this.returnSuccessInfo("保存成功", style);
+				} else {
+					return this.returnSuccessInfo("保存成功,推送失败", style);
+				}
+			}else{
+				return this.returnSuccessInfo("保存成功", style);
+			}
+
+
+		}catch(Exception e ){
+			return this.returnFailInfo("保存失败");
+		}
+	}
+	@Override
+	public MessageBox edit(String taskId) throws Exception {
+
+		return null;
+	}
+	@RequestMapping("/add")
+	@ResponseBody
+	public ModelAndView addStyle(){
+		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
+		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+		mv.addObject("pageType","add");
+		mv.addObject("classTypes",propertyTypeList);
+		mv.addObject("styleId", "");
+		mv.addObject("roleId",getCurrentUser().getRoleId());
+		mv.addObject("userId",getCurrentUser().getId());
+		return mv;
+	}
+	@RequestMapping("/edit")
+	@ResponseBody
+	public ModelAndView editStyle(String styleId){
+		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
+		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+		Style s = CacheManager.getStyleById(styleId);
+		mv.addObject("pageType","edit");
+		mv.addObject("style",s);
+		mv.addObject("styleId", styleId);
+		mv.addObject("classTypes",propertyTypeList);
+		mv.addObject("roleId",getCurrentUser().getRoleId());
+		mv.addObject("userId",getCurrentUser().getId());
+		return mv;
+	}
+	@RequestMapping("/findStyleById")
+	@ResponseBody
+	public MessageBox findStyleById(String styleId) throws Exception{
+		Style s = CacheManager.getStyleById(styleId);
+		return this.returnSuccessInfo("ok", s);
+	}
+
+	@Override
+	public MessageBox delete(String taskId) throws Exception {
+
+		return null;
+	}
+
+	@Override
+	public void exportExcel() throws Exception {
+
+
+	}
+	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+    @ResponseBody
+	@Override
+	public MessageBox importExcel(MultipartFile file) throws Exception {
+		InputStream in = file.getInputStream();
+		try {
+		    List<Style> styleList = StyleUtil.uploadNewExcel(in,file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+		    this.styleService.saveList(styleList);
+		    CacheManager.refreshStyleCache();
+		    return this.returnSuccessInfo("保存成功");
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return this.returnFailInfo("保存失败", e.getMessage());
+		}
+
+	}
+	@RequestMapping("/index")
+	public ModelAndView indexMV(){
+		ModelAndView mv = new ModelAndView("/views/prod/style");
+		mv.addObject("roleId",getCurrentUser().getRoleId());
+		mv.addObject("userId",getCurrentUser().getId());
+		return mv;
+	}
+	@Override
+	public String index() {
+		return "/views/prod/style";
+	}
+
+
+	@RequestMapping(value = "/changeStyleStatus")
+	@ResponseBody
+	public MessageBox changeStyleStatus(String styleId,String status){
+		this.logAllRequestParams();
+		try{
+			Style style = CacheManager.getStyleById(styleId);
+			style.setIsUse(status);
+			this.styleService.save(style);
+			return returnSuccessInfo("更改成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			return returnFailInfo("更改失败");
+		}
+	}
+
+	
+}

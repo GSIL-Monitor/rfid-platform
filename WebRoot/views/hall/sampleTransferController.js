@@ -1,0 +1,249 @@
+$(function () {
+    inisearchHallRoom();
+    iniTransferGrid();
+    $(".k-dropdown").css("width", "6em");
+    $(".k-grid-toolbar").css("display","none");//隐藏toolbar
+    $(".k-datepicker input").prop("readonly", true);
+});
+
+function refresh() {
+    resetData();
+}
+
+function exportExcel(){
+    $(".k-grid-excel").click();
+}
+
+function resetData() {
+    var gridData = $("#transferGrid").data("kendoGrid");
+    gridData.dataSource.filter({
+        field:"type",
+        operator:"eq",
+        value:6
+    });
+}
+
+function inisearchHallRoom() {
+    $.ajax({
+        url: basePath + "/hall/room/list.do",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            var json = data;
+            if (json) {
+                for (var i = 0; i < json.length; i++) {
+                    $("#filter_eq_ownerId").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
+                    $("#filter_eq_ownerId").trigger("chosen:updated");
+                }
+            }
+        }
+    });
+}
+
+function search() {
+    var gridData = $("#transferGrid").data("kendoGrid");
+    var filters = serializeToFilter($("#searchForm"));
+    filters.push({
+        field:"type",
+        operator:"eq",
+        value:6
+    });
+    console.log(filters);
+    gridData.dataSource.filter({
+        logic: "and",
+        filters: filters
+    });
+}
+
+function showAdvSearchPanel() {
+    $("#searchPanel").slideToggle("fast");
+}
+
+function iniTransferGrid() {
+    $("#transferGrid").kendoGrid({
+        toolbar: ["excel"],
+        excel: {
+            allPages:true,
+            fileName: "样衣调拨统计.xlsx",
+            // proxyURL: basePath + "/hall/sampleTransfer/export.do",
+            // filterable: true
+        },
+        // excelExport: function(e) {
+        //     var sheet = e.workbook.sheets[0];
+        //     var statusTemplate = kendo.template(this.columns[2].template);
+        //
+        //     var rowIndex =1;
+        //     var groupNum = this.dataSource._group.length;
+        //     for (var i = 1; i < sheet.rows.length; i++) {
+        //         var row = sheet.rows[i];
+        //         if(row.cells[1+groupNum]){
+        //             var gridRow = $("#sampleInventoryGrid").data("kendoGrid").dataItem("tr:eq("+rowIndex+")");
+        //             var dataItem = {
+        //                 billDate:row.cells[1+groupNum].value,
+        //                 status: row.cells[2+groupNum].value,
+        //             };
+        //             row.cells[2+groupNum].value = statusTemplate(dataItem);
+        //             rowIndex++;
+        //         }
+        //     }
+        // },
+        dataSource: {
+            schema : {
+                total : "total",
+                model : {
+                    fields: {
+                        taskId: {type: "string"},   // 任务号
+                        backStatus:{type:"number"}, // 入库状态
+                        scanDate: {type: "date"},   //任务时间
+                        deviceId: {type: "string"}, //扫描设备
+                        ownerId:{type:"string"},    // 发货方编号
+                        unitName:{type:"string"},   // 发货方名称
+                        customerId:{type:"string"}, // 收货方编号
+                        customerName:{type:"string"},// 收货方名称
+                        backTaskId:{typr:"string"}, // 入库任务号
+                        code: {type: "string"},     // 吊牌码
+                        tagPrice:{type:"number"},   //吊牌价
+                        styleId: {type: "string"},  // 款号
+                        styleName: {type: "string"},// 款名
+                                                     // 批次
+                        colorId: {type: "string"},  // 颜色
+                        sizeId: {type: "string"},   // 尺码
+                        remark: {type: "string"},
+                        type:{type:"number"},
+                        floor:{type:"string"},
+                        floorName:{type:"string"}
+                    }
+                },
+                "data" : "data",
+                "groups" : "data"
+            },
+
+            transport: {
+                read: {
+                    allPages:true,
+                    url: basePath + "/hall/sampleTransfer/list.do",
+                    type:"POST",
+                    dataType: "json",
+                    contentType:'application/json'
+                },
+                parameterMap : function(options) {
+                    return JSON.stringify(options);
+                }
+            },
+            filter:{
+                logic: "and",
+                filters: [{
+                    field: "type",
+                    operator: "eq",
+                    value: 6
+                }]
+            },
+            sort:[{field: "taskId", dir: "desc"}],
+            pageSize: 500.0,
+            serverSorting : true,
+            serverPaging : true,
+            serverGrouping : true ,
+            serverFiltering : true,
+            aggregate: [
+                { field: "taskId", aggregate: "count" },
+            ]
+        },
+        sortable: {
+            mode: "multiple",
+            allowUnsort: true
+        },
+        pageable: {
+            input : true,
+            buttonCount: 5,
+            pageSize: 500.0,
+            pageSizes : [100, 500, 1000, 2000, 5000]
+        },
+
+        groupable: true,
+        group: onGrouping,
+        columnMenu: true,
+        filterable: {
+            extra:false
+        },
+        //   selectable: "multiple row",
+        reorderable: true,
+        resizable: false,
+        scrollable: true,
+        columns: [
+            {field:"backStatus",title:"入库状态",width:150,template:function (data) {
+                    var status=data.backStatus;
+                    var txt="";
+                    if(status==1){
+                        txt+="入库";
+                    }else if(status ==0){
+                        txt+="在途";
+                    }
+                    return txt;
+                },groupHeaderTemplate:function (data) {
+                var status=data.value;
+                var txt="";
+                if(status==1){
+                    txt+="入库";
+                }else if(status ==0){
+                    txt+="在途";
+                }
+                return txt;
+                }
+            },
+            {field: "taskId", title: "任务号", aggregates:["count"],width: 150},
+            { field: "scanDate", title: "任务日期", width: 200,
+                aggregates: ["count"],
+                filterable: {
+                    extra: true,
+                    ui: function (element) {
+                        element.kendoDatePicker({
+                            format: "yyyy-MM-dd",
+                            culture: "zh-CN"
+                        });
+                    }
+                },
+                format: "{0:yyyy-MM-dd HH:mm:ss}",
+                groupHeaderTemplate: function (data) {
+                    var totItem = data.aggregates.taskId.count;
+                    var val = kendo.toString(data.value,"yyyy-MM-dd HH:mm:ss");
+                    return "任务日期:" + val + ", 总数量:" + totItem;
+                }
+            },
+            {field:"deviceId",title:"扫描设备",width:150},
+            {field:"ownerId",title:"发货方编号",width:150},
+            {field:"unitName",title:"发货方名称",width:200,sortable:false,groupable:false,filterable:false},
+            {field:"customerId",title:"收货方编号",width:150},
+            {field:"customerName",title:"收货方名称",width:150,sortable:false,groupable:false,filterable:false},
+            {field:"backTaskId",title:"入库任务号",width:150},
+            {field:"code",title:"吊牌码",width:150},
+            {field:"tagPrice",title:"吊牌价",width:100,template:function (data) {
+                var txt="";
+                if(data.tagPrice!=0)
+                    txt+="¥";
+                txt+=data.tagPrice;
+                return txt;
+            }},
+            {field:"styleId",title:"款号",width:150},
+            {field:"styleName",title:"款名",width:150,sortable:false,groupable:false,filterable:false},
+            {field:"",title:"批次",width:100,template:function (data) {
+                var code =data.code;
+                var styleId =data.styleId;
+                var group =code.substring(styleId.length,code.length);
+
+                return group;
+            }},
+            {field:"colorId",title:"颜色",width:150},
+            {field:"sizeId",title:"尺码",width:150},
+            {field:"remark",title:"备注",width:200,sortable:false,groupable:false,filterable:false},
+            {field:"floor",title:"当前库位",width:150},
+            {field:"floorName",title:"库位名称",width:150,sortable:false,groupable:false,filterable:false}
+        ]
+    });
+}
+
+function onGrouping(arg) {
+    /*
+     kendoConsole.log("Group on " + kendo.stringify(arg.groups));
+     */
+}

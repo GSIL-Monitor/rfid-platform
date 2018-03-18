@@ -1,0 +1,11 @@
+body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6 { font-family: Microsoft YaHei;}
+.datepicker {z-index:2500 !important;}
+.fontPosition{
+    text-align:right;
+}
+.btnPosition{
+    text-align:center;
+}
+.skin-1 .navbar {
+    background: #222a2d;
+}

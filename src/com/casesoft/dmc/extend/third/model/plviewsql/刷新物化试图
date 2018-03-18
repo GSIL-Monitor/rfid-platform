@@ -1,0 +1,8 @@
+--刷新
+begin
+DBMS_MVIEW.REFRESH(list=>'THIRD_STOCKSALE_VIEW1', method=>'COMPLETE',atomic_refresh=>true);
+end;
+
+--删除
+
+drop MATERIALIZED view name

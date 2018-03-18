@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd"
+> 
+
+    <!--  
+    <bean id="quartzJob" class="com.casesoft.dmc.controller.stock.QuartzJob"></bean>
+    <bean id="jobtask"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>work</value>
+        </property>
+    </bean>
+    <bean id="doTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="jobtask"/>
+        </property>
+        <property name="cronExpression">
+          <value>0 0/60 * * * ?</value>
+        </property>
+    </bean>
+    <bean id="startQuertz" lazy-init="false" autowire="no"
+        class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="doTime"/>
+            </list>
+        </property>
+    </bean>
+   -->
+   <!-- 试衣数据扫描异常删除任务 -->
+   <bean id="RecordExceptionDeleteTask" class="com.casesoft.dmc.controller.shop.RecordExceptionDeleteTask"></bean>
+    <bean id="jobtask"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="RecordExceptionDeleteTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+    </bean>
+    <bean id="doTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobtask"/>
+        </property>
+        <property name="cronExpression">
+                <!-- "0 0 12 * * ?" 每天中午12点触发  * * *-->  
+          <value>0 * 23 * * ?</value>
+        </property>
+    </bean>
+    <bean id="startQuertz" lazy-init="false" autowire="no"
+        class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="doTime"/>
+                <!-- john添加 -->
+                <ref bean="doTime1"/>
+            </list>
+        </property>
+    </bean>
+    
+
+	<bean id="quartzJob" class="com.casesoft.dmc.controller.stock.QuartzJob"></bean>
+	<bean id="jobtask1"
+	    class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	    <property name="targetObject">
+	        <ref bean="quartzJob"/>
+	    </property>
+	    <property name="targetMethod">
+	        <value>work</value>
+    	</property>
+	</bean>
+	<bean id="doTime1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	    <property name="jobDetail">
+	        <ref bean="jobtask1"/>
+	    </property>
+        <property name="cronExpression">
+	      <value>0 0 23 * * ?</value>
+	    </property>
+	</bean>
+	<!-- 
+	<bean id="startQuertz" lazy-init="false" autowire="no"
+	    class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <ref bean="doTime"/>
+	        </list>
+	    </property>
+	</bean>
+-->
+</beans>

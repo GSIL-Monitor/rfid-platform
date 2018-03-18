@@ -1,0 +1,71 @@
+select  sale.day as stockDay,
+ (case when fitting.OWNERID is null then sale.ownerId else fitting.OWNERID end) as stockCode,
+(case when sale.styleId is null then fitting.styleId else sale.styleId end) as styleId,
+(case when sale.colorId is null then fitting.colorId else sale.colorId end) as colorId,
+fitting.fittingqty fittingqty,
+sale.saleqty,sale.actprice,sale.backQty,sale.backprice,sale.avgpercent,
+sale.stockQty,sale.INDATE,sale.lastestFittingDate,sale.lastestSaleDate,
+sale.stockPrice,sale.styleName,sale.colorName,
+ sale.class1, sale.class2, sale.class3, sale.class4, sale.class10,
+case when sale.INDATE is not null then TRUNC(TO_DATE(sale.day, 'YYYY-MM-DD')-TO_DATE(to_char(sale.INDATE,'yyyy-mm-dd'), 'YYYY-MM-DD')) else 0 end as indays,
+
+TRUNC(TO_DATE(sale.day, 'YYYY-MM-DD')-  TO_DATE(( case when sale.lastestFittingDate is not null then case when  sale.lastestSaleDate is null then  sale.lastestFittingDate
+else  greatest( sale.lastestFittingDate, sale.lastestSaleDate) end
+  else case when  sale.lastestSaleDate is not null then  sale. lastestSaleDate else to_char(INDATE, 'YYYY-MM-DD')  end end), 'YYYY-MM-DD')) as  ddd
+
+
+fromUser
+--计算试衣
+(select to_char(scantime,'yyyy-mm-dd') fittingDate,ownerId,STYLEID,COLORID ,count(*) fittingqty
+fromUser SHOP_FITTINGRECORD
+group by to_char(scantime,'yyyy-mm-dd'),ownerId,STYLEID,COLORID) fitting
+
+right join
+ (select stock.day day,
+ (case when sale.OWNERID is null then stock.STOCKCODE else sale.OWNERID end) as ownerId,
+(case when sale.styleId is null then stock.styleId else sale.styleId end) as styleId,
+(case when sale.colorId is null then stock.colorId else sale.colorId end) as colorId,
+sale.saleqty,sale.actprice,sale.backQty,sale.backprice,sale.avgpercent,
+stock.QTY stockQty,stock.INDATE,stock.lastestFittingDate,stock.lastestSaleDate,
+stock.stockPrice,stock.styleName,stock.colorName,
+ stock.class1, stock.class2, stock.class3, stock.class4, stock.class10
+fromUser
+--库存
+--THIRD_daySTOCK stock
+ (select stock.*,lasteststock.lastestFittingDate,lasteststock.lastestSaleDate fromUser  (select stock.*,(PRODUCT_STYLE.PRICE*stock.qty)
+as stockPrice,PRODUCT_STYLE.styleName as styleName,product_color.COLORNAME as colorName,PRODUCT_STYLE.PRICE,
+ PRODUCT_STYLE.class1, PRODUCT_STYLE.class2, PRODUCT_STYLE.class3, PRODUCT_STYLE.class4, PRODUCT_STYLE.class10
+ fromUser
+ (select THIRD_daySTOCK.day,STOCKCODE,styleId,colorId,min(indate) indate,sum(qty) qty
+ fromUser THIRD_daySTOCK group by THIRD_daySTOCK.day, STOCKCODE,styleId,colorId) stock,
+ PRODUCT_STYLE ,product_color
+ where stock.styleId= PRODUCT_STYLE.id and stock.colorId=product_color.id)  stock,
+ (select bill.* ,lastestFittingDate fromUser (select stock.day,stock.stockcode,stock.styleId,stock.colorId, max( scantime) as lastestFittingDate fromUser (select stockinfo.*, to_char(scantime,'yyyy-mm-dd')  as scantime
+fromUser  (select day,stockcode,styleId,colorId fromUser THIRD_DAYSTOCK group by day,stockcode,styleId,colorId) stockinfo
+ left join SHOP_FITTINGRECORD on
+ SHOP_FITTINGRECORD.ownerid=stockinfo.stockcode and SHOP_FITTINGRECORD.styleid=stockinfo.styleid and stockinfo.colorid=SHOP_FITTINGRECORD.colorid and stockinfo.day >=to_char(scantime,'yyyy-mm-dd')
+)stock  group by stock.day,stock.stockcode,stock.styleId,stock.colorId) stock,
+ (select stock.day,stock.stockcode,stock.styleId,stock.colorId, max( billdate) as lastestSaleDate
+ fromUser (select stockinfo.*, to_char(bill.billdate,'yyyy-mm-dd')  as  billdate
+fromUser  (select day,stockcode,styleId,colorId fromUser THIRD_DAYSTOCK group by day,stockcode,styleId,colorId) stockinfo
+ left join (select bill.ownerId,dtl.colorID,dtl.styleId,bill.billdate fromUser SHOP_SALEBILL bill,SHOP_SALEBILLdtl dtl
+where bill.billno=dtl.billno) bill on
+ bill.ownerid=stockinfo.stockcode and bill.styleid=stockinfo.styleid and stockinfo.colorid=bill.colorid and stockinfo.day >=to_char(bill.billdate,'yyyy-mm-dd')
+ )stock  group by stock.day,stock.stockcode,stock.styleId,stock.colorId) bill
+ where bill.stockcode=stock.stockcode and bill.day=stock.day and bill.colorId=stock.colorId and bill.styleId=stock.styleId) lasteststock
+
+ where lasteststock.stockcode=stock.stockcode and lasteststock.day=stock.day and lasteststock.colorId=stock.colorId and lasteststock.styleId=stock.styleId )
+ stock
+ 
+left  JOIN 
+--销售统计
+( select to_char(bill.billdate,'yyyy-mm-dd') saleDate, bill.OWNERID,bill.STYLEID,bill.COLORID,
+sum(case when bill.QTY > 0 then bill.QTY else 0 end) saleqty,
+sum(case when bill.ActPrice > 0 then bill.ActPrice else 0 end) actprice,
+sum(case when bill.QTY < 0 then bill.QTY else 0 end) as backQty,
+sum(case when bill.ActPrice < 0 then bill.ActPrice else 0 end) backprice,
+trunc(avg(bill.percent),2) avgpercent
+fromUser (select bill.billdate,bill.ownerId,dtl.styleid,dtl.colorId,dtl.qty,dtl.actprice,dtl.percent fromUser SHOP_SALEBILL bill,SHOP_SALEBILLdtl dtl where bill.billno=dtl.billno) bill
+group by to_char(bill.billdate,'yyyy-mm-dd'), bill.OWNERID, bill.STYLEID,bill.COLORID) sale 
+on (sale.OWNERID=stock.STOCKCODE and sale.saledate=stock.day and sale.styleId=stock.styleId and stock.colorId=sale.colorId)) sale
+on (sale.OWNERID=fitting.OWNERID  and fitting.styleId=sale.styleId and sale.colorId=fitting.colorId and fitting.fittingDate=sale.day)

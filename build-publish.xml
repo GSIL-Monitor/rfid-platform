@@ -1,0 +1,128 @@
+<project basedir="." default="publish" name="csrfid">
+	<target name="init" description="设置初始化打 war 包需要的路径变量">
+		<property name="name" value="csrfid"/>
+		<property name="src" value="${basedir}/src"/>
+		<property name="lib" value="${basedir}/WebRoot/WEB-INF/lib"/>
+		<property name="webapp" value="${basedir}/WebRoot"/>
+		<property name="packages" value="com.casesoft.dmc.*"/>
+		
+		<property name="build.src" value="${basedir}/build/csrfid/src"/>
+		<property name="build.dest" value="${basedir}/build/csrfid/WEB-INF/classes"/>
+		<property name="buildwar.dest" value="${basedir}/build/csrfid"/>
+	<!--<property name="build.javadocs" value="${basedir}/build/doc"/>-->
+		<property name="jar.dest" value="${basedir}/build/jar"/>
+		<property name="war.dest" value="${basedir}/build/war"/>
+		<property name="build.test" value="${basedir}/build/test"/>
+		
+		<property name="tomcat.home" value="D:\Tomcat 7.0"/>
+		<!--
+	    <property name="j2eelib.dir" value="E:\MyEclipse\Common\plugins\com.genuitec.eclipse.j2eedt.core_10.0.0.me201110301321\data\libraryset\EE_5"/>
+		-->
+		<path id="classpath">
+			<!--
+			<fileset dir="${j2eelib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+			-->
+			<fileset dir="${lib}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+	</target>
+	
+	<target name="prepare" depends="init,clean" description="创建打包需要的路径，拷贝源文件到打包路径下">
+		<mkdir dir="${build.src}"/>
+		<mkdir dir="${build.dest}"/>
+		<mkdir dir="${buildwar.dest}"/>
+		<mkdir dir="${jar.dest}"/>
+		<mkdir dir="${war.dest}"/>
+		<copy todir="${build.src}">
+			<fileset dir="${src}"/>
+		</copy>
+		<copy todir="${buildwar.dest}">
+			<fileset dir="${webapp}"/>
+		</copy>
+	</target>
+	
+	<target name="build" depends="prepare" description="编译 java 文件，拷贝 properties 属性配置文件到编译后的路径下">
+		<javac srcdir="${build.src}" destdir="${build.dest}" encoding="UTF-8">
+			<classpath refid="classpath"/>
+		</javac>
+		<copy todir="${build.dest}">
+			<fileset dir="${build.src}">
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+	</target>
+	
+<!--	<target name="antwar" depends="javadoc" description="打 war 包，不将 java 文件打入包内">-->
+	<target name="antwar" depends="build"  description="打 war 包，不将 java 文件打入包内">
+		<delete dir="${build.src}"/>
+		
+		<war warfile="${war.dest}/csr.war" webxml="${buildwar.dest}/WEB-INF/web.xml">
+			<lib dir="${buildwar.dest}/WEB-INF/lib"/>
+			<classes dir="${build.dest}"/>
+			<fileset dir="${buildwar.dest}"/>
+		</war>
+		
+	</target>
+	
+	
+	<target name="publish" depends="antwar,test" description="发布 war 包至 tomcat 目录下">
+		
+		<copy todir="${tomcat.home}/webapps">
+			<fileset dir="${war.dest}">
+				<include name="**/*.war"/>
+			</fileset>
+		</copy>
+		
+	</target>
+	
+	<!--
+	<target name="javadoc" depends="build" description="生成 java 的 API 帮助文档">
+		<mkdir dir="${build.javadocs}"/>
+		<javadoc packagenames="${packages}" sourcepath="${build.src}" destdir="${build.javadocs}" author="true" version="true" use="true" splitindex="true" windowtitle="${name} API" doctitle="${name}">
+			<classpath refid="classpath"/>
+		</javadoc>
+	</target>
+	-->
+	<!--
+	<target name="clean" description="清除打包用临时文件">
+		<delete dir="${build.src}"/>
+		<delete>
+			<fileset dir="${build.dest}" includes="**/*.class"/>
+		</delete>
+		<delete dir="${buildwar.dest}"/>
+	</target>
+	-->
+	<target name="clean" description="清除打包用临时文件">
+	    <delete dir="build" quiet="true" />
+	</target>
+	
+	<!-- Build test -->
+    <target name="test">
+    	
+        <mkdir dir="${build.test}/test-classes"/>
+        <javac srcdir="test" destdir="${build.test}/test-classes"  encoding="UTF-8">
+        	<classpath refid="classpath"/>
+            <classpath>
+                <pathelement location="${build.dest}"/>
+            </classpath>
+        </javac>
+     
+        <mkdir dir="${build.test}/test-results"/>
+        
+        <junit haltonfailure="no" printsummary="on" fork="true" maxMemory="512m">
+        	<classpath refid="classpath"/>
+            <classpath >
+                <pathelement location="${build.dest}"/>
+            	<pathelement location="${build.test}/test-classes"/>
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+            <formatter type="xml" />
+            <batchtest todir="${build.test}/test-results" >
+                <fileset dir="${build.test}/test-classes" includes="**/*Test.class"/>
+            </batchtest>
+        </junit>
+    </target>
+</project>

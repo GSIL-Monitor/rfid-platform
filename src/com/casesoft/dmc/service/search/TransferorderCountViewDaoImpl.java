@@ -1,0 +1,255 @@
+package com.casesoft.dmc.service.search;
+
+import com.casesoft.dmc.core.controller.DataSourceRequest;
+import com.casesoft.dmc.core.controller.DataSourceResult;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.dao.search.TransferorderCountDao;
+
+import com.casesoft.dmc.model.logistics.TransferOrderBill;
+import com.casesoft.dmc.model.search.TransferorderCountView;
+import oracle.jdbc.driver.OracleTypes;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by Administrator on 2018/3/1.
+ */
+@Transactional
+@Component
+public class TransferorderCountViewDaoImpl implements TransferorderCountDao{
+    @Autowired
+    private SessionFactory sessionFactory;
+    @Override
+    public DataSourceResult getList(DataSourceRequest request) {
+        try {
+            return request.toDataSourceResult(sessionFactory.getCurrentSession(), TransferorderCountView.class);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public DataSourceResult getTranList(DataSourceRequest request) {
+        try {
+            return request.toDataSourceResult(sessionFactory.getCurrentSession(), TransferOrderBill.class);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public DataSourceResult getTransByStyleId(DataSourceRequest request) throws Exception{
+        ResultSet rs=null;
+        CallableStatement cs=null;
+        Connection con=null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            con = SessionFactoryUtils.getDataSource(session.getSessionFactory()).getConnection();
+            cs = con.prepareCall("{call findtransByStyleId(?,?,?,?,?,?,?)}");
+            //设置参数
+            DataSourceRequest.FilterDescriptor filter = request.getFilter();
+            List<DataSourceRequest.FilterDescriptor> filters = filter.getFilters();
+            //填充空数据
+            cs.setString(1, "");
+            cs.setString(2, "");
+            cs.setString(3, "");
+            for(int i=0;i<filters.size();i++){
+                DataSourceRequest.FilterDescriptor filterDescriptor = filters.get(i);
+                if(filterDescriptor.getField().equals("billDate")&&filterDescriptor.getOperator().equals("gte")){
+                    String timeStr=(String)filterDescriptor.getValue();
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = formatter.parse(timeStr);
+                    String time = CommonUtil.getDateString(date,"yyyy-MM-dd");
+                    cs.setString(1, time);
+                }else if(filterDescriptor.getField().equals("billDate")&&filterDescriptor.getOperator().equals("lte")){
+                    String timeStr=(String)filterDescriptor.getValue();
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = formatter.parse(timeStr);
+                    String time =CommonUtil.getDateString(date,"yyyy-MM-dd");
+                    cs.setString(2, time);
+                }else if(filterDescriptor.getField().equals("styleId")){
+                    String deport=(String)filterDescriptor.getValue();
+                    cs.setString(3, deport);
+                }
+            }
+
+            Integer beginIndex=(request.getPage()-1)*(request.getPageSize())+1;
+            Integer endIndex=(request.getPage())*(request.getPageSize());
+            cs.setDouble(4,beginIndex.doubleValue());
+            cs.setDouble(5,endIndex.doubleValue());
+            cs.registerOutParameter(6, Types.INTEGER);
+            cs.registerOutParameter(7, OracleTypes.CURSOR);
+            //cs.registerOutParameter("resultSet", -10);
+            cs.execute();
+            rs=(ResultSet)cs.getObject(7);
+            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            while (rs!=null&& rs.next()){
+               /* SaleBybusinessname saleBybusinessname=new SaleBybusinessname();
+                //String a=rs.getObject(1).toString();
+                if(CommonUtil.isNotBlank(rs.getObject(1))){
+                    saleBybusinessname.setBusnissname(rs.getObject(1).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(2))){
+                    saleBybusinessname.setOrigname(rs.getObject(2).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(3))){
+                    saleBybusinessname.setPrecast(rs.getObject(3).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(4))){
+                    saleBybusinessname.setGross(rs.getObject(4).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(5))){
+                    saleBybusinessname.setGrossprofits(rs.getObject(5).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(6))){
+                    saleBybusinessname.setTotactprice(rs.getObject(6).toString());
+                }*/
+                Map<String,Object> map=new HashMap<String,Object>();
+                if(CommonUtil.isNotBlank(rs.getObject(1))){
+                    map.put("styleid",rs.getObject(1).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(2))){
+                    map.put("stylename",rs.getObject(2).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(3))){
+                    map.put("totqty",rs.getObject(3).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(4))){
+                    map.put("class3",rs.getObject(4).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(5))){
+                    map.put("class4",rs.getObject(5).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(6))){
+                    map.put("class8",rs.getObject(6).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(7))){
+                    map.put("class2",rs.getObject(7).toString());
+                }
+                list.add(map);
+            }
+            DataSourceResult result = new DataSourceResult();
+          /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);
+            sort(criteria, sortDescriptors());*/
+            result.setData(list);
+            result.setTotal(Long.parseLong(cs.getObject(6)+""));
+
+           /* request.toDataSourceResult(sessionFactory.getCurrentSession(), SaleBybusinessname.class);*/
+
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            if(cs != null) {
+                cs.close();
+            }
+
+            if(con != null) {
+                con.close();
+            }
+
+        }
+
+    }
+
+    @Override
+    public DataSourceResult getTransByOrig(DataSourceRequest request) throws Exception {
+        ResultSet rs=null;
+        CallableStatement cs=null;
+        Connection con=null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            con = SessionFactoryUtils.getDataSource(session.getSessionFactory()).getConnection();
+            cs = con.prepareCall("{call findtransByOrig(?,?,?,?,?,?)}");
+            //设置参数
+            DataSourceRequest.FilterDescriptor filter = request.getFilter();
+            List<DataSourceRequest.FilterDescriptor> filters = filter.getFilters();
+            //填充空数据
+            cs.setString(1, "");
+            cs.setString(2, "");
+            cs.setString(3, "");
+            for(int i=0;i<filters.size();i++){
+                DataSourceRequest.FilterDescriptor filterDescriptor = filters.get(i);
+                if(filterDescriptor.getField().equals("billDate")&&filterDescriptor.getOperator().equals("gte")){
+                    String timeStr=(String)filterDescriptor.getValue();
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = formatter.parse(timeStr);
+                    String time = CommonUtil.getDateString(date,"yyyy-MM-dd");
+                    cs.setString(1, time);
+                }else if(filterDescriptor.getField().equals("billDate")&&filterDescriptor.getOperator().equals("lte")){
+                    String timeStr=(String)filterDescriptor.getValue();
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = formatter.parse(timeStr);
+                    String time =CommonUtil.getDateString(date,"yyyy-MM-dd");
+                    cs.setString(2, time);
+                }
+            }
+
+            Integer beginIndex=(request.getPage()-1)*(request.getPageSize())+1;
+            Integer endIndex=(request.getPage())*(request.getPageSize());
+            cs.setDouble(3,beginIndex.doubleValue());
+            cs.setDouble(4,endIndex.doubleValue());
+            cs.registerOutParameter(5, Types.INTEGER);
+            cs.registerOutParameter(6, OracleTypes.CURSOR);
+            //cs.registerOutParameter("resultSet", -10);
+            cs.execute();
+            rs=(ResultSet)cs.getObject(6);
+            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            while (rs!=null&& rs.next()){
+
+                Map<String,Object> map=new HashMap<String,Object>();
+                if(CommonUtil.isNotBlank(rs.getObject(1))){
+                    map.put("origname",rs.getObject(1).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(2))){
+                    map.put("totqty",rs.getObject(2).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(3))){
+                    map.put("trantype",rs.getObject(3).toString());
+                }
+
+                list.add(map);
+            }
+            DataSourceResult result = new DataSourceResult();
+          /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);
+            sort(criteria, sortDescriptors());*/
+            result.setData(list);
+            result.setTotal(Long.parseLong(cs.getObject(5)+""));
+
+           /* request.toDataSourceResult(sessionFactory.getCurrentSession(), SaleBybusinessname.class);*/
+
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            if(cs != null) {
+                cs.close();
+            }
+
+            if(con != null) {
+                con.close();
+            }
+
+        }
+    }
+}

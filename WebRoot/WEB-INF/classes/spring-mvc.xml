@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+         http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
+	<!-- 加载controller的时候,不加载service,因为此时事物并未生效,若此时加载了service,那么事务无法对service进行拦截 -->
+
+    <context:component-scan base-package="com.casesoft.dmc.controller" />
+    <context:component-scan base-package="com.casesoft.dmc.extend" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>    
+    </context:component-scan>
+
+
+	<bean class="com.casesoft.dmc.extend.api.config.APIConfig" />
+
+     <!-- 注册验证器 -->
+	<mvc:annotation-driven validator="validator" />
+	    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+			<property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+			<!-- 这里配置将使用上面国际化配置的messageSource -->
+	      <property name="validationMessageSource" ref="messageSource" />
+	    </bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!--<value>classpath*:/va</value>-->
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="true" />
+	</bean>
+
+
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- AOP -->
+	<aop:config proxy-target-class="true" />
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<!-- Support json ResponseBody -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<!-- fastjosn spring support -->
+			<bean id="jsonConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes">
+				         <list>
+					              <value>application/json;charset=UTF-8</value>
+				              <value>text/html;charset=UTF-8</value><!-- 避免IE出现下载JSON文件的情况 -->
+					           </list>
+					       </property>
+
+				<property name="features">
+					<list>
+						<value>WriteNullNumberAsZero</value>
+						<value>WriteNullListAsEmpty</value>
+						<value>QuoteFieldNames</value>
+						<value>WriteNullStringAsEmpty</value>
+						<value>DisableCircularReferenceDetect</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<bean id="DisableCircularReferenceDetect" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="com.alibaba.fastjson.serializer.SerializerFeature.DisableCircularReferenceDetect"></property>
+	</bean>
+
+
+	<!-- FileUpload Support -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+
+	<!-- Support static resource <mvc:resources mapping="/jslib/**" location="/js/" 
+		/> <mvc:resources mapping="/css/**" location="/css/" /> <mvc:resources mapping="/images/**" 
+		location="/images/" /> -->
+	<mvc:default-servlet-handler />
+
+	<!-- Spring Interceptors <mvc:interceptors> <mvc:interceptor> <mvc:mapping 
+		path="/admin/*"/> <bean class="com.web.interceptor.MyInterceptor"/> </mvc:interceptor> 
+		</mvc:interceptors> -->
+
+
+	<!-- i18n国际化开始 -->
+	<!-- 默认语言设置中文. 更改语言加参数 ?lang=zh -->
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang"></property>
+		</bean>
+	</mvc:interceptors>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/><!--拦截所有controller-->
+            <mvc:exclude-mapping  path="/jslib2/**" />
+            <mvc:exclude-mapping  path="/css/**" />
+            <mvc:exclude-mapping  path="/images/**" />
+            <mvc:exclude-mapping  path="/kendoUI/**" />
+            <mvc:exclude-mapping  path="/Olive/**" />
+            <mvc:exclude-mapping  path="*.ico" />
+            <mvc:exclude-mapping  path="*.jpg" />
+            <mvc:exclude-mapping  path="*.png" />
+            <bean id="log4jInterceptor"
+                  class="com.casesoft.dmc.core.controller.LoggerInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+<!-- 	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="zh" />
+	</bean> -->
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+<!-- 				<property name="defaultLocale" value="en_US" />
+ -->	</bean>
+</beans>

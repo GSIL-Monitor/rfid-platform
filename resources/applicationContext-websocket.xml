@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xmlns:websend="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+
+
+    <bean
+        class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+        <property name="maxTextMessageBufferSize" value="8192" />
+        <property name="maxBinaryMessageBufferSize" value="8192" />
+        <property name="maxSessionIdleTimeout" value="600000" />
+        <property name="asyncSendTimeout" value="5000" />
+    </bean>
+
+    <bean id="webSocketHandler" class="com.casesoft.dmc.extend.msg.websocket.WsMsgWebSocketHandler" scope="singleton">
+        <property name="wsMessageService" ref="wsMessageService"></property>
+        <property name="sessionManager" ref="sessionManager"></property>
+    </bean>
+    <bean id="sessionManager" class="com.casesoft.dmc.extend.msg.websocket.SessionManager" scope="singleton">
+        <property name="wsMessageService" ref="wsMessageService"></property>
+
+    </bean>
+    <bean id="socketHandshake" class="com.casesoft.dmc.extend.msg.websocket.WsMsgHandshakeInterceptor" scope="singleton"></bean>
+    <websocket:handlers>
+        <websocket:mapping path="/socketWS.do" handler="webSocketHandler"/>
+        <websocket:handshake-interceptors>
+            <ref bean="socketHandshake"></ref>
+        </websocket:handshake-interceptors>
+    </websocket:handlers>
+    <!--	<websocket:handlers>
+            <websocket:mapping path="/sockjs/requireGoods.do" handler="requireGoodsHandler"/>
+            <websocket:handshake-interceptors>
+                    <ref bean="requireGoodsHandshake"></ref>
+            </websocket:handshake-interceptors>
+            <websocket:sockjs />
+    </websocket:handlers>-->
+</beans>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:cache="http://www.springframework.org/schema/cache"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+	
+	<!--
+ 	<import resource="classpath*:/applicationContext-erp-demo.xml"/>
+     -->
+	<import resource="classpath*:/applicationContext-db-gelaimei.xml"/>
+
+	<!-- 缓存管理器，指定ehcache的配置文件路径 -->
+	<bean id="cacheManager"
+		  class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+
+
+	<aop:config proxy-target-class="true" />
+	<import resource="classpath*:/applicationContext-security.xml" />
+	<!-- 缓存管理器，指定ehcache的配置文件路径 -->
+	<!-- 定义受环境影响易变的变量 -->
+	<bean class="com.casesoft.dmc.core.dao.CustomPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<!-- 标准配置 -->
+				<value>classpath*:/db-config.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="springContextUtil" class="com.casesoft.dmc.cache.SpringContextUtil" />
+	<bean id="springContextRefreshedListener" class="com.casesoft.dmc.core.listener.ContextRefreshedListener" />
+
+	<!-- 使用annotation 自动注册bean,并保证@Required,@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.casesoft.dmc" />
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		  destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="${dbcp.maxActive}" />
+		<property name="initialPoolSize" value="1" />
+		<property name="maxIdleTime" value="25000" />
+		<property name="acquireIncrement" value="1" />
+
+		<property name="acquireRetryAttempts" value="30" />
+		<property name="acquireRetryDelay" value="1000" />
+		<property name="testConnectionOnCheckin" value="true" />
+		<property name="automaticTestTable" value="c3poTestTable" />
+		<property name="idleConnectionTestPeriod" value="18000" />
+		<property name="checkoutTimeout" value="3000" />
+
+	</bean>
+
+	<!-- Hibernate配置 -->
+	<bean id="sessionFactory"
+		  class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+
+		<property name="dataSource" ref="dataSource" />
+		<!-- <property name="dataSource" ref="multipleDataSource"/> -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+
+				<!-- <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop> 
+					<prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache/ehcache-hibernate-local.xml</prop> -->
+				<!-- <prop key="hibernate.default_schema">${hibernate.default_schema}</prop> 
+					<prop key="hibernate.default_catalog">${hibernate.default_catalog}</prop> -->
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<!-- Disable the BeanValidation -->
+				<prop key="javax.persistence.validation.mode">none</prop>
+
+			</props>
+		</property>
+
+		<!-- 注解方式配置 -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.casesoft.dmc.model</value>
+				<value>com.casesoft.dmc.extend</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<!-- 事务管理器配置,单数据源事务 -->
+	<bean id="transactionManager"
+		  class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+						  proxy-target-class="true" />
+
+
+	<!-- 文本邮件服务类 -->
+	<bean id="simpleMailService" class="com.casesoft.dmc.core.service.email.SimpleMailService">
+		<property name="mailSender" ref="mailSender" />
+		<property name="textTemplate">
+			<value><![CDATA[
+                                                           用戶%s在%tF有标签打印.
+             CaseSoft RFID大数据平台.
+            ]]></value>
+		</property>
+	</bean>
+
+
+	<!-- 邮件发送器 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.exmail.qq.com" />
+		<property name="username" value="support@casesoft.com.cn" />
+		<property name="password" value="CaseSoft123456" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<!-- 使用gmail smtp server的必须参数 -->
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.timeout">25000</prop>
+			</props>
+		</property>
+	</bean>
+
+    <!-- 注入StdSchedulerFactory 注入这个类可以使用quartz.properties配置文件 -->
+    <bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory" />
+
+    <!-- 注册SchedulerFactoryBean -->
+    <bean id="schedulerFactoryBean"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!--  <property name="triggers">
+              <list>
+                  <ref bean="managerTriggerBean" />
+              </list>
+          </property>-->
+    </bean>
+
+</beans>

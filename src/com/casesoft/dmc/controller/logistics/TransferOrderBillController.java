@@ -1,0 +1,305 @@
+package com.casesoft.dmc.controller.logistics;
+
+import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.ILogisticsBillController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.mirror.NewProduct;
+import com.casesoft.dmc.model.product.Color;
+import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Size;
+import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.tag.Epc;
+import com.casesoft.dmc.model.tag.EpcBindBarcode;
+import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.service.logistics.TransferOrderBillService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import sun.misc.Cache;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by yushen on 2017/7/4.
+ */
+
+@Controller
+@RequestMapping("/logistics/transferOrder")
+public class TransferOrderBillController extends BaseController implements ILogisticsBillController<TransferOrderBill> {
+
+    @Autowired
+    private TransferOrderBillService transferOrderBillService;
+
+
+    @Override
+    public String index() {
+        return "/views/logistics/transferOrderBill";
+    }
+
+    @RequestMapping(value = "/index")
+    public ModelAndView indexMV() throws Exception {
+        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+        mv.addObject("ownerId", getCurrentUser().getOwnerId());
+        Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId", getCurrentUser().getId());
+        return mv;
+    }
+
+    @RequestMapping(value = "/page")
+    @ResponseBody
+    @Override
+    public Page<TransferOrderBill> findPage(Page<TransferOrderBill> page) throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        page.setPageProperty();
+        User currentUser = getCurrentUser();
+        if(!currentUser.getOwnerId().equals("1")){
+            PropertyFilter filter = new PropertyFilter("EQS_destUnitId_OR_origUnitId", currentUser.getOwnerId());
+            filters.add(filter);
+        }
+        page = this.transferOrderBillService.findPage(page, filters);
+        return page;
+    }
+
+    @Override
+    public List<TransferOrderBill> list() throws Exception {
+        return null;
+    }
+
+    @RequestMapping(value = "/findBillDtl")
+    @ResponseBody
+    public List<TransferOrderBillDtl> findBillDtl(String billNo) throws Exception {
+        this.logAllRequestParams();
+        List<TransferOrderBillDtl> transferOrderBillDtls = this.transferOrderBillService.findBillDtlByBillNo(billNo);
+        Map<String,String> codeMap = new HashMap<>();
+        List<BillRecord> billRecordList = this.transferOrderBillService.getBillRecod(billNo);
+        for(BillRecord r : billRecordList){
+            if(codeMap.containsKey(r.getSku())){
+                String code = codeMap.get(r.getSku());
+                code += ","+r.getCode();
+                codeMap.put(r.getSku(),code);
+            }else{
+                codeMap.put(r.getSku(),r.getCode());
+            }
+        }
+        for (TransferOrderBillDtl dtl : transferOrderBillDtls) {
+            dtl.setStyleName(CacheManager.getStyleNameById(dtl.getStyleId()));
+            dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
+            dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
+            if(codeMap.containsKey(dtl.getSku())){
+                dtl.setUniqueCodes(codeMap.get(dtl.getSku()));
+            }
+        }
+        return transferOrderBillDtls;
+    }
+
+
+    @RequestMapping(value = "/save")
+    @ResponseBody
+    @Override
+    public MessageBox save(String transferOrderBillStr, String strDtlList, String userId) throws Exception {
+        this.logAllRequestParams();
+        try {
+            TransferOrderBill transferOrderBill = JSON.parseObject(transferOrderBillStr, TransferOrderBill.class);
+            System.out.print(transferOrderBill);
+            if (CommonUtil.isBlank(transferOrderBill.getBillNo())) {
+                String prefix = BillConstant.BillPrefix.Transfer
+                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+                //String billNo = this.transferOrderBillService.findMaxBillNo(prefix);
+                transferOrderBill.setId(prefix);
+                transferOrderBill.setBillNo(prefix);
+            }
+            List<TransferOrderBillDtl> transferOrderBillDtlList = JSON.parseArray(strDtlList, TransferOrderBillDtl.class);
+            transferOrderBill.setId(transferOrderBill.getBillNo());
+            User curUser = CacheManager.getUserById(userId);
+            BillConvertUtil.covertToTransferOrderBill(transferOrderBill, transferOrderBillDtlList, curUser);
+            this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList);
+            return new MessageBox(true, "保存成功", transferOrderBill.getBillNo());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    @Override
+    public ModelAndView add() throws Exception {
+        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillDetail");
+        mv.addObject("pageType", "add");
+        mv.addObject("mainUrl", "/logistics/transferOrder/index.do");
+        mv.addObject("ownerId",getCurrentUser().getOwnerId());
+        Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId",getCurrentUser().getId());
+        return mv;
+    }
+
+    @RequestMapping(value = "/copyAdd")
+    @ResponseBody
+    public ModelAndView copyAdd(String billNo) throws Exception {
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillDetail");
+        mv.addObject("pageType", "add");
+        mv.addObject("transferOrderBill", transferOrderBill);
+        mv.addObject("mainUrl", "/logistics/transferOrder/index.do");
+        mv.addObject("copy", "copyadd");
+        mv.addObject("ownerId",getCurrentUser().getOwnerId());
+        mv.addObject("userId",getCurrentUser().getId());
+        return mv;
+    }
+
+    @RequestMapping(value = "/edit")
+    @ResponseBody
+    @Override
+    public ModelAndView edit(String billNo) throws Exception {
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        Boolean isAllowEdit = false;
+        if(CommonUtil.isBlank(transferOrderBill.getBillType())){
+            isAllowEdit = true;
+            transferOrderBill.setBillType(Constant.ScmConstant.BillType.Edit);
+            HttpServletRequest request = this.getRequest();
+            HttpSession session = request.getSession();
+            session.setAttribute("billNotransfer",billNo);
+        }else{
+            if(transferOrderBill.getBillType().equals(Constant.ScmConstant.BillType.Save)){
+                isAllowEdit = true;
+                transferOrderBill.setBillType(Constant.ScmConstant.BillType.Edit);
+                HttpServletRequest request = this.getRequest();
+                HttpSession session = request.getSession();
+                session.setAttribute("billNotransfer",billNo);
+            }else{
+                isAllowEdit = false;
+            }
+        }
+        if(isAllowEdit){
+            ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillDetail");
+            mv.addObject("pageType", "edit");
+            mv.addObject("transferOrderBill", transferOrderBill);
+            mv.addObject("mainUrl", "/logistics/transferOrder/back.do?billNo="+billNo);
+            mv.addObject("ownerId",getCurrentUser().getOwnerId());
+            Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+            mv.addObject("ownersId", unit.getOwnerids());
+            mv.addObject("userId",getCurrentUser().getId());
+            return mv;
+        }else{
+            ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+            mv.addObject("billNo",billNo);
+            mv.addObject("ownerId", getCurrentUser().getOwnerId());
+            mv.addObject("userId", getCurrentUser().getId());
+            return  mv;
+        }
+
+    }
+    @RequestMapping(value = "/back")
+    @ResponseBody
+    public ModelAndView back(String billNo){
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        transferOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
+        HttpServletRequest request = this.getRequest();
+        HttpSession session = request.getSession();
+        session.removeAttribute("billNotransfer");
+        this.transferOrderBillService.update(transferOrderBill);
+        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+        mv.addObject("ownerId", getCurrentUser().getOwnerId());
+        mv.addObject("userId", getCurrentUser().getId());
+        return mv;
+    }
+    @RequestMapping(value = "/quit")
+    @ResponseBody
+    public void quit(String billNo){
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        transferOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
+        HttpServletRequest request = this.getRequest();
+        HttpSession session = request.getSession();
+        session.removeAttribute("billNotransfer");
+        this.transferOrderBillService.update(transferOrderBill);
+    }
+    @RequestMapping(value = "/check")
+    @ResponseBody
+    @Override
+    public MessageBox check(String billNo) throws Exception {
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        transferOrderBill.setStatus(BillConstant.BillStatus.Check);
+        this.transferOrderBillService.update(transferOrderBill);
+        return new MessageBox(true, "审核成功");
+    }
+
+    @Override
+    public MessageBox end(String billNo) throws Exception {
+        return null;
+    }
+
+    @RequestMapping(value = "/cancel")
+    @ResponseBody
+    @Override
+    public MessageBox cancel(String billNo) throws Exception {
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        transferOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+        this.transferOrderBillService.update(transferOrderBill);
+        return new MessageBox(true, "撤销成功");
+    }
+
+    @Override
+    public MessageBox convert(String strDtlList, String recordList) throws Exception {
+        return null;
+    }
+
+    /**
+     * Wang Yushen
+     * 将前端穿回的 billNo 和 EpcList 转换为出库信息，并存入数据库
+     * @param billNo
+     * @param strEpcList 前端穿回的JSON字符串
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/convertOut")
+    @ResponseBody
+    public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
+//        List<TransferOrderBillDtl> transferOrderBillDtlList = this.transferOrderBillService.findBillDtlByBillNo(billNo);
+        List<TransferOrderBillDtl> transferOrderBillDtlList = JSON.parseArray(strDtlList, TransferOrderBillDtl.class);
+        List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
+        User currentUser = CacheManager.getUserById(userId);
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
+        this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        return new MessageBox(true,"出库成功");
+    }
+
+    /**
+     * Wang Yushen
+     * 将前端穿回的 billNo 和 EpcList 转换为入库信息，并存入数据库
+     * @param billNo
+     * @param strEpcList 前端穿回的JSON字符串
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/convertIn")
+    @ResponseBody
+    public MessageBox convertIn(String billNo, String strEpcList, String userId) throws Exception {
+        List<TransferOrderBillDtl> transferOrderBillDtlList = this.transferOrderBillService.findBillDtlByBillNo(billNo);
+        List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
+        User currentUser = CacheManager.getUserById(userId);
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        Business business = BillConvertUtil.covertToTransferOrderBusinessIn(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
+        this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        return new MessageBox(true,"入库成功");
+    }
+}
