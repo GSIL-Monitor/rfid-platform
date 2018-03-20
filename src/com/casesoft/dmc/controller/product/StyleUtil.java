@@ -280,7 +280,8 @@ public class StyleUtil {
         sty.setSizeSortId(style.getSizeSortId());
         sty.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         sty.setStyleEname(style.getStyleEname());
-        sty.setClass1(style.getBrandCode());
+        sty.setBrandCode(style.getClass1());
+        sty.setClass1(style.getClass1());
         sty.setClass2(style.getClass2());
         sty.setClass3(style.getClass3());
         sty.setClass4(style.getClass4());
@@ -328,7 +329,8 @@ public class StyleUtil {
         sty.setSizeSortId(style.getSizeSortId());
         sty.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         sty.setStyleEname(style.getStyleEname());
-        sty.setClass1(style.getBrandCode());
+        style.setBrandCode(style.getClass1());
+        sty.setClass1(style.getClass1());
         sty.setClass2(style.getClass2());
         sty.setClass3(style.getClass3());
         sty.setClass4(style.getClass4());

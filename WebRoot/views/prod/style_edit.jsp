@@ -12,6 +12,7 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var userId = "${userId}";
+        var styleId = "${styleId}";
     </script>
     <style>
         a#focusColor:hover{
@@ -176,8 +177,11 @@
                                                         </span>
                                                     </div>
                                                 </div>
+
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_class2">${classTypes[1].value}</label>
+
+
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class ="input-group col-xs-2">
 
@@ -191,6 +195,8 @@
                                                         </span>
                                                     </div>
                                                 </div>
+
+
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
@@ -398,7 +404,7 @@
                             <div class="col-sm-offset-5 col-sm-10">
                                 <button class="btn btn-xs btn-success" type="button"
                                         id="saveStyleBtn"
-                                        onclick="saveStyleAndProduct()">
+                                        onclick="saveStyleAndProduct('${pageType}')">
                                     <i class="ace-icon fa fa-save"></i>
                                     <span class="bigger-110">保存</span>
                                 </button>
@@ -933,7 +939,7 @@
 
 
 
-    function saveStyleAndProduct() {
+    function saveStyleAndProduct(str) {
         if(Math.round($("#form_preCast").val())*checkNum > Math.round($("#form_price").val())){
             $.gritter.add({
                 text: "采购价和吊牌价不符合定价规则，请核对对应价格",
@@ -960,7 +966,8 @@
                 data:{
                     styleStr:JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
                     productStr:JSON.stringify(dtlArray),
-                    userId: userId
+                    userId: userId,
+                    pageType: str
                 },
                 type: "POST",
                 success: function (msg) {

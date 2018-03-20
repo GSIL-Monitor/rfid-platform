@@ -80,23 +80,37 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	}
 
 	/**
-	 * @Param styleStr 款信息json字符串
-	 * @Param productStr 商品jsonArray字符串
+	 * @param styleStr 款信息json字符串
+	 * @param productStr 商品jsonArray字符串
+	 * @param  userId 当前登录用户
+	 * @param pageType 判断是add（）还是edit（）的请求
+	 * @author  刘天赐 2018.3.20
 	 * */
 	@RequestMapping("/saveStyleAndProduct")
 	@ResponseBody
-	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId) throws Exception {
+	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId,String pageType) throws Exception {
 		try {
 			Style style = JSON.parseObject(styleStr,Style.class);
 			Style sty = CacheManager.getStyleById(style.getStyleId());
-			if(CommonUtil.isBlank(sty)){
-				sty=new Style();
-				sty.setId(style.getStyleId());
-				sty.setStyleId(style.getStyleId());
-				sty.setIsUse("Y");
+			//判断是 add（）的请求还是 edit（）的请求
+			if ("add".equals(pageType)){
+				//判断sytleId在数据库中是否存在
+				if(CommonUtil.isBlank(sty)){
+					//赋值
+					sty=new Style();
+					sty.setId(style.getStyleId());
+					sty.setStyleId(style.getStyleId());
+					sty.setIsUse("Y");
+				}else {
+					return this.returnFailInfo("保存失败");
+				}
+			}else {
+					sty = new Style();
+					sty.setId(style.getStyleId());
+					sty.setStyleId(style.getStyleId());
+					sty.setIsUse("Y");
 			}
             sty.setOprId(userId);
-
 			List<Product> productList = JSON.parseArray(productStr,Product.class);
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 
@@ -109,18 +123,16 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			//读取congif.properties文件
 			boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
 					.getValue("is_wxshop"));
-			if(is_wxshop) {
-				boolean ispush = this.wxShopBaseService.WxShopStyle(sty, saveList);
-				if (ispush) {
-					return this.returnSuccessInfo("保存成功", style);
-				} else {
-					return this.returnSuccessInfo("保存成功,推送失败", style);
-				}
-			}else{
-				return this.returnSuccessInfo("保存成功", style);
-			}
-
-
+                if (is_wxshop) {
+                    boolean ispush = this.wxShopBaseService.WxShopStyle(sty, saveList);
+                    if (ispush) {
+                        return this.returnSuccessInfo("保存成功", style);
+                    } else {
+                        return this.returnSuccessInfo("保存成功,推送失败", style);
+                    }
+                } else {
+                    return this.returnSuccessInfo("保存成功", style);
+                }
 		}catch(Exception e ){
 			return this.returnFailInfo("保存失败");
 		}
@@ -218,5 +230,5 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		}
 	}
 
-	
+
 }
