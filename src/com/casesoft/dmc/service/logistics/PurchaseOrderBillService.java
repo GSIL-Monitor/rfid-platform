@@ -6,14 +6,14 @@ import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
 import com.casesoft.dmc.dao.logistics.PurchaseBillOrderDao;
+import com.casesoft.dmc.dao.logistics.ReplenishBillDtlDao;
 import com.casesoft.dmc.dao.sys.UnitDao;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.MonthAccountStatement;
-import com.casesoft.dmc.model.logistics.PurchaseOrderBill;
-import com.casesoft.dmc.model.logistics.PurchaseOrderBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +45,10 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     private UnitDao unitDao;
     @Autowired
     private MonthAccountStatementDao monthAccountStatementDao;
+    @Autowired
+    private ReplenishBillDtlDao replenishBillDtlDao;
+    @Autowired
+    private ChangeReplenishBillDtlDao changeReplenishBillDtlDao;
     @Override
     public Page<PurchaseOrderBill> findPage(Page<PurchaseOrderBill> page, List<PropertyFilter> filters) {
         return this.purchaseBillOrderDao.findPage(page,filters);
@@ -156,6 +161,55 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
         if(CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())){
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+        }
+    }
+    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String ReplenishBillNo) {
+        PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
+        if(CommonUtil.isBlank(purchaseOrderBill1)){
+            Double actPrice = purchaseOrderBill.getActPrice();
+            Double payPrice = purchaseOrderBill.getPayPrice();
+            if(CommonUtil.isBlank(actPrice)){
+                actPrice=0.0;
+            }
+            if(CommonUtil.isBlank(payPrice)){
+                payPrice=0.0;
+            }
+            Unit unit = this.unitDao.get(purchaseOrderBill.getOrigUnitId());
+            Double owingValue = unit.getOwingValue();
+            unit.setOwingValue(owingValue+(actPrice-payPrice));
+            this.unitDao.update(unit);
+        }
+        this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
+        this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
+        if(CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())){
+            this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+        }
+        ArrayList<ChangeReplenishBillDtl> list=new ArrayList<ChangeReplenishBillDtl>();
+        if(purchaseOrderBillDtlList.size()!=0){
+            for(int i=0;i<purchaseOrderBillDtlList.size();i++){
+                PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseOrderBillDtlList.get(i);
+                String hql="from ReplenishBillDtl t where t.sku=? and t.billId=?";
+                ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), ReplenishBillNo});
+                if(unique.getQty()>unique.getActConvertQty()){
+                    unique.setStatus(1);
+                    unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
+                }else{
+                    unique.setStatus(0);
+                }
+                this.replenishBillDtlDao.saveOrUpdate(unique);
+                ChangeReplenishBillDtl changeReplenishBillDtl=new ChangeReplenishBillDtl();
+                changeReplenishBillDtl.setId(new GuidCreator().toString());
+                changeReplenishBillDtl.setReplenishNo(ReplenishBillNo);
+                changeReplenishBillDtl.setSku(purchaseOrderBillDtl.getSku());
+                changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
+                changeReplenishBillDtl.setBillDate(new Date());
+                changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
+                list.add(changeReplenishBillDtl);
+
+            }
+        }
+        if(list.size()!=0){
+            this.changeReplenishBillDtlDao.doBatchInsert(list);
         }
     }
 

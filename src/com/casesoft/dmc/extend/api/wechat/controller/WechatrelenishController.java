@@ -115,11 +115,12 @@ public class WechatrelenishController extends ApiBaseController {
     }
     @RequestMapping(value = "/savepurchaseBill.do")
     @ResponseBody
-   public MessageBox savepurchaseBill(String purchaseBillStr, String strDtlList,String userId){
+   public MessageBox savepurchaseBill(String purchaseBillStr, String strDtlList,String userId,String ReplenishBillNo){
        this.logAllRequestParams();
        PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr,PurchaseOrderBill.class);
        List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList,PurchaseOrderBillDtl.class);
-       try{
+       /* List<ReplenishBillDtl> replenishBillDtls = JSON.parseArray(ReplenishBillDtl, ReplenishBillDtl.class);*/
+        try{
            String prefix = BillConstant.BillPrefix.purchase
                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
            //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
@@ -127,7 +128,7 @@ public class WechatrelenishController extends ApiBaseController {
            purchaseOrderBill.setBillNo(prefix);
            User curUser = CacheManager.getUserById(userId);
            BillConvertUtil.covertToPurchaseBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
-           this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
+           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,ReplenishBillNo);
            System.out.println(purchaseOrderBill.getBillNo());
            return new MessageBox(true,"保存成功", purchaseOrderBill.getBillNo());
 
