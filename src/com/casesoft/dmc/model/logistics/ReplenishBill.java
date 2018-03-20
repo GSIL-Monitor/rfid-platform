@@ -17,6 +17,27 @@ public class ReplenishBill extends BaseBill{
     @Column()
     private Long totConvertQty=0L;//
 
+    @Column()
+    private String buyahandId;//买手的id
+
+    public String getBuyahandId() {
+        return buyahandId;
+    }
+
+    public void setBuyahandId(String buyahandId) {
+        this.buyahandId = buyahandId;
+    }
+    @Transient
+    private String buyahandName;
+
+    public String getBuyahandName() {
+        return buyahandName;
+    }
+
+    public void setBuyahandName(String buyahandName) {
+        this.buyahandName = buyahandName;
+    }
+
     @Transient
     private List<ReplenishBillDtl> dtlList;
 

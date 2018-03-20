@@ -1,9 +1,6 @@
 package com.casesoft.dmc.model.logistics;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Alvin on 2018/1/27.
@@ -15,6 +12,62 @@ public class ReplenishBillDtl extends BaseBillDtl{
     @Id
     @Column()
     private String id;
+    @Column()
+    private String replenishStatus;//单据状态
+    @Column()
+    private String  class1;//厂家
+
+    public String getClass1() {
+        return class1;
+    }
+
+    public void setClass1(String class1) {
+        this.class1 = class1;
+    }
+
+    @Column()
+    private String buyahandId;//买手的id
+    @Column()
+    private String styleName;//款名
+
+    @Override
+    public String getStyleName() {
+        return styleName;
+    }
+
+    @Override
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
+    }
+
+    public String getBuyahandId() {
+        return buyahandId;
+    }
+
+    public void setBuyahandId(String buyahandId) {
+        this.buyahandId = buyahandId;
+    }
+
+
+
+    public String getReplenishStatus() {
+        return replenishStatus;
+    }
+
+    public void setReplenishStatus(String replenishStatus) {
+        this.replenishStatus = replenishStatus;
+    }
+
+    @Column()
+    public String buyahandName;
+
+    public String getBuyahandName() {
+        return buyahandName;
+    }
+
+    public void setBuyahandName(String buyahandName) {
+        this.buyahandName = buyahandName;
+    }
 
     @Column()
     private Integer actConvertQty=0;//已转换数量
@@ -22,11 +75,33 @@ public class ReplenishBillDtl extends BaseBillDtl{
     @Column()
     private Integer convertQty=0;//本次转换数量
 
+    public Integer getConvertquitQty() {
+        return convertquitQty;
+    }
+
+    public void setConvertquitQty(Integer convertquitQty) {
+        this.convertquitQty = convertquitQty;
+    }
+
+    @Column()
+
+    private Integer convertquitQty=0;//本次退换数量
+
     @Column()
     private Long stockQty;//库存数量
 
     @Column()
     private Long franchiseeStockQty;//加盟店库存数量
+    @Transient
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getId() {
         return id;

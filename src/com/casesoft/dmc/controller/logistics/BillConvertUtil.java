@@ -69,7 +69,68 @@ public class BillConvertUtil {
             purchaseOrderBill.setStatus(BillConstant.BillStatus.Enter);
         }
         Unit ventory = CacheManager.getUnitByCode(purchaseOrderBill.getOrigUnitId());
-        purchaseOrderBill.setOrigUnitName(ventory.getName());
+        if(CommonUtil.isNotBlank(ventory)){
+            purchaseOrderBill.setOrigUnitName(ventory.getName());
+        }
+
+        Unit dest = CacheManager.getUnitByCode(purchaseOrderBill.getDestId());
+        purchaseOrderBill.setDestName(dest.getName());
+        Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
+        purchaseOrderBill.setDestUnitId(destUnit.getId());
+        purchaseOrderBill.setDestUnitName(destUnit.getName());
+        purchaseOrderBill.setTotQty(totQty);
+        purchaseOrderBill.setTotPrice(totPrice);
+        purchaseOrderBill.setActQty(actQty);
+        purchaseOrderBill.setActPrice(actPrice);
+        purchaseOrderBill.setTotInQty(rcvQty);
+        purchaseOrderBill.setTotInVal(rcvVal);
+
+
+    }
+    /**
+     * 转换补货为采购订单单据（保存调用）
+     * */
+    public static void covertToPurchaseWeChatBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, User curUser) {
+        if (CommonUtil.isNotBlank(curUser)) {
+            purchaseOrderBill.setOprId(curUser.getCode());
+        }
+        Long totQty = 0L;
+        Long actQty = 0L;
+        Long rcvQty = 0L;
+        Double totPrice = 0D;
+        Double actPrice = 0D;
+        Double rcvVal = 0D;
+        for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
+            dtl.setId(new GuidCreator().toString());
+            dtl.setBillId(purchaseOrderBill.getId());
+            dtl.setBillNo(purchaseOrderBill.getBillNo());
+            dtl.setActPrintQty(0);
+            dtl.setActQty(dtl.getQty());
+            dtl.setInQty(0);
+            dtl.setPrintQty(dtl.getQty().intValue());
+            Style style = CacheManager.getStyleById(dtl.getStyleId());
+            dtl.setPrice(style.getPreCast());
+            dtl.setActPrice(style.getPreCast()*dtl.getDiscount());
+            dtl.setTotActPrice(style.getPreCast()*dtl.getQty()*dtl.getDiscount());
+            dtl.setTotPrice(style.getPreCast()*dtl.getQty());
+            totQty += dtl.getQty();
+            actQty += dtl.getQty();
+            totPrice += dtl.getPrice() * dtl.getQty();
+            actPrice += dtl.getActPrice() * dtl.getQty();
+            rcvQty += dtl.getInQty();
+            rcvVal += dtl.getInQty() * dtl.getActPrice();
+        }
+        if(CommonUtil.isBlank(purchaseOrderBill.getOwnerId())){
+            purchaseOrderBill.setOwnerId("1");
+        }
+        if(CommonUtil.isBlank(purchaseOrderBill.getStatus())){
+            purchaseOrderBill.setStatus(BillConstant.BillStatus.Enter);
+        }
+        Unit ventory = CacheManager.getUnitByCode(purchaseOrderBill.getOrigUnitId());
+        if(CommonUtil.isNotBlank(ventory)){
+            purchaseOrderBill.setOrigUnitName(ventory.getName());
+        }
+
         Unit dest = CacheManager.getUnitByCode(purchaseOrderBill.getDestId());
         purchaseOrderBill.setDestName(dest.getName());
         Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
@@ -3086,6 +3147,9 @@ public class BillConvertUtil {
            replenishBillDtl.setId( new GuidCreator().toString());
            replenishBillDtl.setBillId(replenishBill.getId());
            replenishBillDtl.setBillNo(replenishBill.getId());
+            Style styleById = CacheManager.getStyleById(replenishBillDtl.getStyleId());
+            replenishBillDtl.setClass1(styleById.getClass1());
+            replenishBillDtl.setStyleName(styleById.getStyleName());
             sumqty+=replenishBillDtl.getQty();
        }
         replenishBill.setTotQty(Long.parseLong(sumqty+""));

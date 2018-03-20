@@ -7,6 +7,8 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.MergeReplenishBillDao;
+import com.casesoft.dmc.dao.logistics.MergeReplenishBillDtlDao;
+import com.casesoft.dmc.dao.logistics.RecordsizeDao;
 import com.casesoft.dmc.dao.logistics.ReplenishBillDao;
 import com.casesoft.dmc.dao.sys.UserDao;
 import com.casesoft.dmc.model.logistics.*;
@@ -30,6 +32,11 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
     private UserDao userDao;
     @Autowired
     private MergeReplenishBillDao MergeReplenishBillDao;
+    @Autowired
+    private MergeReplenishBillDtlDao  MergeReplenishBillDtlDao;
+    @Autowired
+    private RecordsizeDao recordsizeDao;
+
     @Override
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page, List<PropertyFilter> filters) {
         return this.replenishBillDao.findPage(page,filters);
@@ -279,6 +286,54 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
             return  false;
         }
 
+    }
+
+    public boolean newMergeBill( List<ReplenishBill> replenishBills,List<ReplenishBillDtl> replenishBillDtls, String billNos){
+        try {
+            /**
+             * 1.得到replenishBillDtls
+             * 2.循环查询MergeReplenishBillDtl，看是否有对应的style和颜色
+             * 3.如果有则修改数据，没有则添加数据
+             * 4.查询是否有对应的Recordsize，如果有则修改数据，没有则修改数据
+             */
+
+            for(int i=0;i<replenishBillDtls.size();i++){
+                ReplenishBillDtl replenishBillDtl = replenishBillDtls.get(i);
+                String key=replenishBillDtl.getStyleId()+","+replenishBillDtl.getColorId();
+                //循环查询MergeReplenishBillDtl
+                String hql="from MergeReplenishBillDtl t where t.id=?";
+                MergeReplenishBillDtl MergeReplenishBillDtl = this.MergeReplenishBillDtlDao.findUnique(hql, new Object[]{key});
+                if(CommonUtil.isNotBlank(MergeReplenishBillDtl)){
+                    String allqyt = MergeReplenishBillDtl.getAllqyt();
+                    int allqyts = Integer.parseInt(allqyt);
+                    MergeReplenishBillDtl.setAllqyt(allqyts+replenishBillDtl.getQty()+"");
+                    this.MergeReplenishBillDtlDao.update(MergeReplenishBillDtl);
+                }else{
+                    MergeReplenishBillDtl mergeReplenishBillDtl=new MergeReplenishBillDtl();
+                    mergeReplenishBillDtl.setId(replenishBillDtl.getStyleId()+"_"+replenishBillDtl.getColorId());
+                    mergeReplenishBillDtl.setColorid(replenishBillDtl.getColorId());
+                    mergeReplenishBillDtl.setStyleid(replenishBillDtl.getStyleId());
+                    mergeReplenishBillDtl.setAllqyt(replenishBillDtl.getQty()+"");
+                    this.MergeReplenishBillDtlDao.save(MergeReplenishBillDtl);
+                }
+                //查询Recordsize
+                String hqlRecordsize="from Recordsize t where t.recordid=? and t.sizeid=?";
+                Recordsize recordsizes = this.replenishBillDao.findUnique(hqlRecordsize, new Object[]{key, replenishBillDtl.getSizeId()});
+                if(CommonUtil.isNotBlank(recordsizes)){
+                    String qty = recordsizes.getQty();
+
+
+                }else{
+
+                }
+
+
+            }
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return  false;
+        }
     }
 
    public ReplenishBill selectedReplenishBill(String billNo,List<ReplenishBill> replenishBills){
