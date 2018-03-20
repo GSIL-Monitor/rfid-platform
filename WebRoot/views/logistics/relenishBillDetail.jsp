@@ -74,6 +74,13 @@
                                                 style="width: 100%;" data-live-search="true">
                                         </select>
                                     </div>
+                                    <label class="col-xs-1 control-label" for="search_buyahandId">买手</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control selectpicker show-tick" id="search_buyahandId"
+                                                name="buyahandId"
+                                                style="width: 100%;" data-live-search="true">
+                                        </select>
+                                    </div>
 
                                 </div>
                                 <div class="form-group">

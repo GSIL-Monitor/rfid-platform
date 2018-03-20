@@ -1,6 +1,9 @@
+var addDetailgridiRow;//存储iRow
+var addDetailgridiCol;//存储iCol
 $(function () {
     initGrid();
     initSelectBusinessIdForm();
+    initSelectbuyahandIdForm();
     initButtonGroup();
 });
 function initSelectBusinessIdForm() {
@@ -17,13 +20,38 @@ function initSelectBusinessIdForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_busnissId").empty();
-            $("#search_busnissId").append("<option value='' >--请选择销售员--</option>");
+            $("#search_busnissId").append("<option value='' >--请选择买手--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
                 // $("#search_busnissId").trigger('chosen:updated');
             }
             $("#search_busnissId").val(saleOrder_busnissId);
+        }
+    });
+}
+
+function initSelectbuyahandIdForm() {
+    var url;
+    if (curOwnerId == "1") {
+        url = basePath + "/sys/user/list.do?filter_EQI_type=4";
+    } else {
+        url = basePath + "/sys/user/list.do?filter_EQI_type=4&filter_EQS_ownerId=" + curOwnerId;
+    }
+    $.ajax({
+        url: url,
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_buyahandId").empty();
+            $("#search_buyahandId").append("<option value='' >--请选择销售员--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_buyahandId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
+                // $("#search_busnissId").trigger('chosen:updated');
+            }
+            $("#search_buyahandId").val(saleOrder_busnissId);
         }
     });
 }
@@ -60,8 +88,19 @@ function initGrid() {
             {name: 'styleId', label: '款号', width: 40  },
 
             {name: 'colorId', label: '色码', width: 40},
-
-            {name: 'sizeId', label: '尺码', width: 30},
+            {name: 'sizeId', label: '尺码', width: 40},
+            {name: 'buyahandName', label: '买手', width: 30},
+            {name: 'buyahandId', label: '买手', width: 30, hidden: true},
+            {name: 'actConvertQty', label: '已转换数量', width: 30},
+            {name: 'convertQty', label: '本次转换数量',editable: true,editrules: {
+                number: true,
+                minValue: 1
+            },width: 30},
+            {name: 'convertquitQty', label: '本次退换数量',editable: true, editrules: {
+                number: true,
+                minValue: 1
+            },width: 30},
+            {name: 'remark', label: '备注',editable: true, width: 30},
 
             {
                 name: 'qty', label: '数量', editable: true, width: 40,
@@ -103,20 +142,23 @@ function initGrid() {
             addDetailgridiCol = iCol;
         },
         afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
-            if (cellname === "discount") {
-                var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
-                var var_totActPrice = Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
-                $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
-                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
-            } else if (cellname === "actPrice") {
-                var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
-                var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
-                $('#addDetailgrid').setCell(rowid, "discount", var_discount);
-                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
-            } else if (cellname === "qty") {
-                $('#addDetailgrid').setCell(rowid, "totPrice", Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100);
-                $('#addDetailgrid').setCell(rowid, "totActPrice", Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100);
+            debugger
+            var rowData = $('#addDetailgrid').getRowData(rowid);
+            if (cellname === "convertQty") {
+               if((parseInt(rowData.qty) - parseInt(rowData.actConvertQty)) >= parseInt(rowData.convertQty) || rowData.convertQty == ""){
+                   $('#addDetailgrid').editCell(iRow, iCol, true);
+               }else{
+                   $('#addDetailgrid').setCell(rowid, cellname, 0);
+                   $('#addDetailgrid').editCell(iRow, iCol, true);
+                   $.gritter.add({
+                       text: "本次转换数量过多！",
+                       class_name: 'gritter-success  gritter-light'
+                   });
+               }
+
             }
+
+
             setFooterData();
         },
         gridComplete: function () {
@@ -154,6 +196,14 @@ function setFooterData() {
 }
 
 function addDetail() {
+    if ($("#search_busnissId").val() == "") {
+        bootbox.alert("请添销售员！");
+        return;
+    }
+    if ($("#search_buyahandId").val() == "") {
+        bootbox.alert("请添买手！");
+        return;
+    }
     $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
         $("#StyleSearchForm").resetForm();
        /* $("#stylegrid").clearGridData();*/
@@ -172,6 +222,13 @@ function addProductInfo() {
         if (productInfo.qty > 0) {
             productInfo.sku = productInfo.code;
             productInfo.inStockType = styleRow.class6;
+            productInfo.buyahandId=$("#search_buyahandId").val();
+            productInfo.actConvertQty=0;
+            productInfo.convertQty=0;
+            productInfo.convertquitQty=0;
+            productInfo.remark="";
+             productInfo.buyahandName=$("#search_buyahandId").next().find("button").attr("title");
+             console.log($("#search_buyahandId").next().find("button").attr("title"))
             addProductInfo.push(productInfo);
         }
     });
@@ -221,6 +278,11 @@ function save() {
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加补货商品！");
         return;
+    }
+    if (addDetailgridiRow != null && addDetailgridiCol != null) {
+        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+        addDetailgridiRow = null;
+        addDetailgridiCol = null;
     }
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
