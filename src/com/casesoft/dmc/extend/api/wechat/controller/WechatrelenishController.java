@@ -115,7 +115,7 @@ public class WechatrelenishController extends ApiBaseController {
     }
     @RequestMapping(value = "/savepurchaseBill.do")
     @ResponseBody
-   public MessageBox savepurchaseBill(String purchaseBillStr, String strDtlList,String userId,String ReplenishBillNo){
+   public MessageBox savepurchaseBill(String purchaseBillStr, String strDtlList,String userId,String replenishBillNo){
        this.logAllRequestParams();
        PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr,PurchaseOrderBill.class);
        List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList,PurchaseOrderBillDtl.class);
@@ -128,7 +128,7 @@ public class WechatrelenishController extends ApiBaseController {
            purchaseOrderBill.setBillNo(prefix);
            User curUser = CacheManager.getUserById(userId);
            BillConvertUtil.covertToPurchaseBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
-           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,ReplenishBillNo);
+           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,replenishBillNo);
            System.out.println(purchaseOrderBill.getBillNo());
            return new MessageBox(true,"保存成功", purchaseOrderBill.getBillNo());
 

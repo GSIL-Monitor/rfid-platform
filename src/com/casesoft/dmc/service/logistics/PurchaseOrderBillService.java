@@ -163,7 +163,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
         }
     }
-    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String ReplenishBillNo) {
+    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo) {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if(CommonUtil.isBlank(purchaseOrderBill1)){
             Double actPrice = purchaseOrderBill.getActPrice();
@@ -189,7 +189,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             for(int i=0;i<purchaseOrderBillDtlList.size();i++){
                 PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseOrderBillDtlList.get(i);
                 String hql="from ReplenishBillDtl t where t.sku=? and t.billId=?";
-                ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), ReplenishBillNo});
+                ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
                 if(unique.getQty()>unique.getActConvertQty()){
                     unique.setStatus(1);
                     unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
@@ -199,7 +199,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 this.replenishBillDtlDao.saveOrUpdate(unique);
                 ChangeReplenishBillDtl changeReplenishBillDtl=new ChangeReplenishBillDtl();
                 changeReplenishBillDtl.setId(new GuidCreator().toString());
-                changeReplenishBillDtl.setReplenishNo(ReplenishBillNo);
+                changeReplenishBillDtl.setReplenishNo(replenishBillNo);
                 changeReplenishBillDtl.setSku(purchaseOrderBillDtl.getSku());
                 changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
                 changeReplenishBillDtl.setBillDate(new Date());
