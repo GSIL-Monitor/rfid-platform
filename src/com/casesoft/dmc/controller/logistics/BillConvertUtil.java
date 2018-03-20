@@ -109,10 +109,9 @@ public class BillConvertUtil {
             dtl.setInQty(0);
             dtl.setPrintQty(dtl.getQty().intValue());
             Style style = CacheManager.getStyleById(dtl.getStyleId());
-            dtl.setPrice(style.getPreCast());
-            dtl.setActPrice(style.getPreCast()*dtl.getDiscount());
-            dtl.setTotActPrice(style.getPreCast()*dtl.getQty()*dtl.getDiscount());
-            dtl.setTotPrice(style.getPreCast()*dtl.getQty());
+            dtl.setPrice(style.getPreCast());dtl.setActPrice(style.getPreCast()*100);
+            dtl.setTotActPrice(style.getPreCast()*Double.parseDouble(dtl.getQty()+"")*100);
+            dtl.setTotPrice(style.getPreCast()*Double.parseDouble(dtl.getQty()+""));
             totQty += dtl.getQty();
             actQty += dtl.getQty();
             totPrice += dtl.getPrice() * dtl.getQty();

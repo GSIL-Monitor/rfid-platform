@@ -101,8 +101,7 @@ public class WechatrelenishController extends ApiBaseController {
     }
     @RequestMapping(value = "/findrelenishuserStock.do")
     @ResponseBody
-    public MessageBox findrelenishuserStock(String pageSize,String pageNo){
-        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+    public MessageBox findrelenishuserStock(String pageSize,String pageNo){List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         PropertyFilter filter = new PropertyFilter("EQS_roleId", "BUYER");
         filters.add(filter);
         Page<User> page = new Page<User>(Integer.parseInt(pageSize));
@@ -127,7 +126,7 @@ public class WechatrelenishController extends ApiBaseController {
            purchaseOrderBill.setId(prefix);
            purchaseOrderBill.setBillNo(prefix);
            User curUser = CacheManager.getUserById(userId);
-           BillConvertUtil.covertToPurchaseBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
+           BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
            this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,replenishBillNo);
            System.out.println(purchaseOrderBill.getBillNo());
            return new MessageBox(true,"保存成功", purchaseOrderBill.getBillNo());
