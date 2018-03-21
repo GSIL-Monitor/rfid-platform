@@ -97,10 +97,11 @@ function initGrid() {
                 number: true,
                 minValue: 1
             },width: 30},
-            {name: 'convertquitQty', label: '本次退换数量',editable: true, editrules: {
+            {name: 'convertquitQty', label: '本次撤销数量',editable: true, editrules: {
                 number: true,
                 minValue: 1
             },width: 30},
+            {name: 'actConvertquitQty', label: '已撤销的数量', width: 40},
             {name: 'remark', label: '备注',editable: true, width: 30},
 
             {
@@ -158,6 +159,31 @@ function initGrid() {
                }
 
             }
+            if(cellname === "convertquitQty"){
+                if(parseInt(rowData.qty)>parseInt(rowData.actConvertQty)){
+                    $('#addDetailgrid').editCell(iRow, iCol, true);
+                    var qty=$('#addDetailgrid').getCell(rowid, "qty");
+                    var sum=parseInt(qty)-parseInt(value);
+                    if(rowData.actConvertquitQty!=""&&rowData.actConvertquitQty!=undefined){
+                        var sumall=parseInt(value)+parseInt(rowData.actConvertquitQty);
+                    }else{
+                        var sumall=parseInt(value)+0;
+                    }
+
+                    $('#addDetailgrid').setCell(rowid, "qty", sum);
+                    $('#addDetailgrid').setCell(rowid, "actConvertquitQty", sumall);
+                }else{
+                    $('#addDetailgrid').setCell(rowid, cellname, 0);
+                    $('#addDetailgrid').editCell(iRow, iCol, true);
+                    $.gritter.add({
+                        text: "本次撤销数量过多！",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }
+
+
+            }
+
 
 
             setFooterData();
@@ -227,6 +253,7 @@ function addProductInfo() {
             productInfo.actConvertQty=0;
             productInfo.convertQty=0;
             productInfo.convertquitQty=0;
+            productInfo.actConvertquitQty=0;
             productInfo.remark="";
              productInfo.buyahandName=$("#search_buyahandId").next().find("button").attr("title");
              console.log($("#search_buyahandId").next().find("button").attr("title"))
