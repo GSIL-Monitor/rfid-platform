@@ -16,6 +16,7 @@
         var userId = "${userId}";
         var defaultWarehId = "${defaultWarehId}";
         var saleOrder_busnissId = "${replenishBill.busnissId}";
+        var saleOrder_buyahandId = "${replenishBill.buyahandId}";
         var slaeOrder_status = "${replenishBill.status}";
         var roleid = "${roleid}";
 

@@ -33,11 +33,11 @@ function initSelectBusinessIdForm() {
 
 function initSelectbuyahandIdForm() {
     var url;
-    if (curOwnerId == "1") {
-        url = basePath + "/sys/user/list.do?filter_EQI_type=4";
-    } else {
-        url = basePath + "/sys/user/list.do?filter_EQI_type=4&filter_EQS_ownerId=" + curOwnerId;
-    }
+
+        url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
+
+
+
     $.ajax({
         url: url,
         cache: false,
@@ -51,7 +51,8 @@ function initSelectbuyahandIdForm() {
                 $("#search_buyahandId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
                 // $("#search_busnissId").trigger('chosen:updated');
             }
-            $("#search_buyahandId").val(saleOrder_busnissId);
+
+            $("#search_buyahandId").val(saleOrder_buyahandId);
         }
     });
 }
