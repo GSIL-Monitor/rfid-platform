@@ -20,6 +20,7 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private InventoryService inventoryService;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private  CustomerService customerService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -240,16 +243,21 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         String defaultWarehId = unit.getDefaultWarehId();
         String defaultSaleStaffId = unit.getDefaultSaleStaffId();
         String defalutCustomerId = unit.getDefalutCustomerId();
-        Customer customer = CacheManager.getCustomerById(defalutCustomerId);
+        if(CommonUtil.isNotBlank(defalutCustomerId)){
+            Customer customer = this.customerService.load(defalutCustomerId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("defaultWarehId", defaultWarehId);
-        mv.addObject("defalutCustomerId", defalutCustomerId);
-        mv.addObject("defalutCustomerName", customer.getName());
-        mv.addObject("defalutCustomerdiscount", customer.getDiscount());
-        mv.addObject("defalutCustomercustomerType", unit.getType());
-        mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+
+
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
