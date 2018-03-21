@@ -3149,6 +3149,11 @@ public class BillConvertUtil {
             Style styleById = CacheManager.getStyleById(replenishBillDtl.getStyleId());
             replenishBillDtl.setClass1(styleById.getClass1());
             replenishBillDtl.setStyleName(styleById.getStyleName());
+            if(replenishBillDtl.getQty()>replenishBillDtl.getActConvertQty()){
+                replenishBillDtl.setStatus(1);
+            }else{
+                replenishBillDtl.setStatus(0);
+            }
             sumqty+=replenishBillDtl.getQty();
        }
         replenishBill.setTotQty(Long.parseLong(sumqty+""));

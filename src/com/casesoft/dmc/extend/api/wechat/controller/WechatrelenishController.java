@@ -78,6 +78,7 @@ public class WechatrelenishController extends ApiBaseController {
     @RequestMapping(value = "/findrelenishStock.do")
     @ResponseBody
     public MessageBox findrelenishStock(String pageSize,String pageNo){
+        this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         Page<ReplenishBillDtl> page = new Page<ReplenishBillDtl>(Integer.parseInt(pageSize));
         page.setPage(Integer.parseInt(pageSize));

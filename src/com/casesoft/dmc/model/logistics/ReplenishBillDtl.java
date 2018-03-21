@@ -85,7 +85,17 @@ public class ReplenishBillDtl extends BaseBillDtl{
 
     @Column()
 
-    private Integer convertquitQty=0;//本次退换数量
+    private Integer convertquitQty=0;//本次撤销数量
+    @Column()
+    private Integer actConvertquitQty=0;//已撤销的数量
+
+    public Integer getActConvertquitQty() {
+        return actConvertquitQty;
+    }
+
+    public void setActConvertquitQty(Integer actConvertquitQty) {
+        this.actConvertquitQty = actConvertquitQty;
+    }
 
     @Column()
     private Long stockQty;//库存数量
