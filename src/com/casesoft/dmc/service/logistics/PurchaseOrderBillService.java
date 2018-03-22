@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -184,7 +185,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
         }
     }
-    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo) {
+    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo) throws ParseException {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if(CommonUtil.isBlank(purchaseOrderBill1)){
             Double actPrice = purchaseOrderBill.getActPrice();
@@ -225,6 +226,9 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
                 changeReplenishBillDtl.setBillDate(new Date());
                 changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
+                //添加预计时间
+                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd HH:mm:ss");
+                changeReplenishBillDtl.setExpectTime(date);
                 list.add(changeReplenishBillDtl);
 
             }

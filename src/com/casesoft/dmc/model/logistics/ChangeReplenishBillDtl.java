@@ -25,6 +25,16 @@ public class ChangeReplenishBillDtl {
     private String sku;
     @Column()
     private String qty;
+    @Column()
+    private Date expectTime;//预计时间
+
+    public Date getExpectTime() {
+        return expectTime;
+    }
+
+    public void setExpectTime(Date expectTime) {
+        this.expectTime = expectTime;
+    }
 
     public String getId() {
         return id;
