@@ -247,7 +247,7 @@ function addProductInfo() {
     }
     var addProductInfo = [];
     if (editcolosizeRow != null) {
-        $('#color_size_grid').saveRow(editcolosizeRow);
+        $('#color_size_grid').saveRow(editcolosizeRow,false,'clientArray');
     }
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
 
