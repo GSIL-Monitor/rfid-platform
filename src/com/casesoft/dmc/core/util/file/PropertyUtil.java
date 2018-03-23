@@ -31,9 +31,6 @@ public class PropertyUtil {
     URL resource = PropertyUtil.class.getResource(filePath);
     String filePath = resource.getPath();
     filePath = URLDecoder.decode(filePath, "utf-8");// 处理文件夹空格bug
-    if (filePath.startsWith("/")) {
-      filePath = filePath.substring(1);
-    }
     return filePath;
   }
 
