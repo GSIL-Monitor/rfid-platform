@@ -87,10 +87,10 @@ public class Constant {
   }
 
   public final static class Folder {
-    public final static String Epc_Init_File_Folder = "c:\\casesoft_temp\\initFile\\";
-    public final static String Epc_Init_Zip_File_Folder = "c:\\casesoft_temp\\initFileZip\\";
-    public final static String Report_File_Folder = "c:\\casesoft_temp\\report\\";
-    public final static String Product_File_Folder= "c:\\casesoft_temp\\productZip\\";
+    public final static String Epc_Init_File_Folder = "\\home\\\\casesoft_temp\\initFile\\";
+    public final static String Epc_Init_Zip_File_Folder = "\\home\\\\casesoft_temp\\initFileZip\\";
+    public final static String Report_File_Folder = "\\home\\\\casesoft_temp\\report\\";
+    public final static String Product_File_Folder= "\\home\\\\casesoft_temp\\productZip\\";
   }
   public final static class TagSerial {
       public final static int EPC_Prefix_Length = 6;
