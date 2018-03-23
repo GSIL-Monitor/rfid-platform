@@ -68,7 +68,23 @@ public class WXProductApiController extends ApiBaseController {
         logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         page.setPageProperty();
+
         page = this.styleService.findPage(page, filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for(Style d : page.getRows()){
+            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
+            if(file.exists()){
+                File[] files = file.listFiles();
+                if(files.length > 0){
+                    File[] photos = files[0].listFiles();
+                    if(photos.length > 0){
+                        d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
+                    }
+                }
+            }else{
+                d.setUrl("/imgs/noImg.png");
+            }
+        }
         return page;
     }
 
