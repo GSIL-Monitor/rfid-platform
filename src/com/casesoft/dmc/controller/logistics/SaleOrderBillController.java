@@ -243,7 +243,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         String defaultWarehId = unit.getDefaultWarehId();
         String defaultSaleStaffId = unit.getDefaultSaleStaffId();
         String defalutCustomerId = unit.getDefalutCustomerId();
-        if(CommonUtil.isNotBlank(defalutCustomerId)){
+        if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
             Customer customer = this.customerService.load(defalutCustomerId);
             mv.addObject("defalutCustomerId", defalutCustomerId);
             mv.addObject("defalutCustomerName", customer.getName());
