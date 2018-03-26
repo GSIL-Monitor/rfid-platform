@@ -26,7 +26,16 @@ public class PurchaseOrderBill extends BaseBill {
     private Double totOutVal=0D;//
     @Column()
     private Double totInVal=0D;//
+    @Column()
+    private String buyahandId;//买手的id
+    @Column()
+    public String getBuyahandId() {
+        return buyahandId;
+    }
 
+    public void setBuyahandId(String buyahandId) {
+        this.buyahandId = buyahandId;
+    }
 
     public String getId() {
         return id;
