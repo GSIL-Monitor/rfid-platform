@@ -4,6 +4,7 @@ $(function () {
     initForm();
     initButtonGroup();
     initEditFormValid();
+    initSelectbuyahandIdForm();
     if(billNo!=""){
         sessionStorage.setItem("billNopurchase",billNo);
     }
@@ -1197,4 +1198,29 @@ function showCodesDetail(sku) {
     $("#show-uniqueCode-list").modal('show');
     initUniqueCodeList(uniqueCodes);
     codeListReload(uniqueCodes);
+}
+function initSelectbuyahandIdForm() {
+    var url;
+
+    url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
+
+
+
+    $.ajax({
+        url: url,
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_buyahandId").empty();
+            $("#search_buyahandId").append("<option value='' >--请选择销售员--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_buyahandId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
+                // $("#search_busnissId").trigger('chosen:updated');
+            }
+
+            $("#search_buyahandId").val(saleOrder_buyahandId);
+        }
+    });
 }

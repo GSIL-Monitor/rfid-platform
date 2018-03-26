@@ -38,11 +38,22 @@ public class ReplenishBillController extends BaseController implements ILogistic
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/relenishBill");
+     /*   ModelAndView mv = new ModelAndView("/views/logistics/relenishBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId", getCurrentUser().getId());*/
+        ModelAndView mv = new ModelAndView("/views/logistics/relenishBillDetail");
+
+        Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("roleid", getCurrentUser().getRoleId());
+        mv.addObject("defaultWarehId", defaultWarehId);
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType", "add");
+        mv.addObject("mainUrl", "/logistics/relenishBill/history.do");
         return mv;
     }
 
@@ -107,7 +118,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
     @ResponseBody
     @Override
     public ModelAndView add() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/relenishBillDetail");
+       ModelAndView mv = new ModelAndView("/views/logistics/relenishBillDetail");
 
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
@@ -118,6 +129,21 @@ public class ReplenishBillController extends BaseController implements ILogistic
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
         mv.addObject("mainUrl", "/logistics/relenishBill/index.do");
+      /*  ModelAndView mv = new ModelAndView("/views/logistics/relenishBill");
+        mv.addObject("ownerId", getCurrentUser().getOwnerId());
+        Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId", getCurrentUser().getId());*/
+        return mv;
+    }
+    @RequestMapping(value = "/history")
+    @ResponseBody
+    public ModelAndView history()throws Exception {
+        ModelAndView mv = new ModelAndView("/views/logistics/relenishBill");
+        mv.addObject("ownerId", getCurrentUser().getOwnerId());
+        Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId", getCurrentUser().getId());
         return mv;
     }
     @RequestMapping(value = "/edit")
