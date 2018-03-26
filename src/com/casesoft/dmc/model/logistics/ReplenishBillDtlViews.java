@@ -22,6 +22,17 @@ public class ReplenishBillDtlViews {
     @Column()
     private String  ownerid;
     @Column()
+    private String ownername;
+
+    public String getOwnername() {
+        return ownername;
+    }
+
+    public void setOwnername(String ownername) {
+        this.ownername = ownername;
+    }
+
+    @Column()
     private String  styleid;
     @Column()
     private String stylename;
@@ -34,11 +45,21 @@ public class ReplenishBillDtlViews {
     @Column()
     private Integer  convertqty;
     @Column()
+    private String class1name;//厂家名称
+    @Column()
     private String class1;//厂家
     @Column()
     private Integer qty;
     @Transient
     private String url;
+
+    public String getClass1name() {
+        return class1name;
+    }
+
+    public void setClass1name(String class1name) {
+        this.class1name = class1name;
+    }
 
     public Integer getQty() {
         return qty;

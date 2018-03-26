@@ -8,10 +8,13 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.cfg.PropertyKeyService;
+import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillDtlService;
 import com.casesoft.dmc.service.logistics.ReplenishBillDtlViewsService;
@@ -43,7 +46,9 @@ public class WechatrelenishController extends ApiBaseController {
     @Autowired
     private PurchaseOrderBillService purchaseOrderBillService;
     @Autowired
-    private UnitService unitService;
+    private UnitService uniService;
+    @Autowired
+    private PropertyKeyService propertyKeyService;
 
 
     @Override
@@ -181,9 +186,33 @@ public class WechatrelenishController extends ApiBaseController {
         Page<Unit> page = new Page<Unit>(Integer.parseInt(pageSize));
         page.setPage(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
-        page = this.unitService.findPage(page,filters);
+        page = this.uniService.findPage(page,filters);
         return this.returnSuccessInfo("获取成功",page.getRows());
    }
+
+    @RequestMapping(value = "/findClass1.do")
+    @ApiOperation(value = "获取厂家信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="pageSize",value="分页大小(必填)",dataType="string", paramType = "query"),
+            @ApiImplicitParam(name="pageNo",value="当前页码(必填)",dataType="String", paramType = "query")
+
+
+    })
+    @ResponseBody
+   public MessageBox findClass1(String pageSize,String pageNo){
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        PropertyFilter filter = new PropertyFilter("EQS_type", "C1");
+        filters.add(filter);
+        Page<PropertyKey> page = new Page<PropertyKey>(Integer.parseInt(pageSize));
+        page.setPage(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        page = this.propertyKeyService.findPage(page,filters);
+        return this.returnSuccessInfo("获取成功",page.getRows());
+
+
+   }
+
 
 
 
