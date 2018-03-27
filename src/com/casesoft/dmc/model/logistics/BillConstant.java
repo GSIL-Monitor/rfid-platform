@@ -15,6 +15,8 @@ public class BillConstant {
         public final static Integer Consign = 5;//寄售中
         public final static Integer shophold = 6;//商城订单暂存
         public final static Integer shopEnter = 7;//商城订单录入
+        public final static Integer noCheck=8;//反审核
+
     }
     public final static class BillInOutStatus{
         public final static Integer InStore = 1;//已入库
