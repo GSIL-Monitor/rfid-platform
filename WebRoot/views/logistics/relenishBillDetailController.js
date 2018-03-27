@@ -20,7 +20,7 @@ function initSelectBusinessIdForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_busnissId").empty();
-            $("#search_busnissId").append("<option value='' >--请选择买手--</option>");
+            $("#search_busnissId").append("<option value='' >--请选择销售员--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
@@ -45,7 +45,7 @@ function initSelectbuyahandIdForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_buyahandId").empty();
-            $("#search_buyahandId").append("<option value='' >--请选择销售员--</option>");
+            $("#search_buyahandId").append("<option value='' >--请选择买手--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_buyahandId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
@@ -341,5 +341,15 @@ function save() {
                 bootbox.alert(msg.msg);
             }
         }
+    });
+}
+function changebuy() {
+
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var buyahandId=$("#search_buyahandId").val();
+        var buyahandName=$("#search_buyahandId").next().find("button").attr("title");
+        $('#addDetailgrid').setCell(value, "buyahandId", buyahandId);
+        $('#addDetailgrid').setCell(value, "buyahandName", buyahandName);
+
     });
 }

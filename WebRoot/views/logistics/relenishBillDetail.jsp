@@ -79,7 +79,7 @@
                                     <div class="col-xs-2">
                                         <select class="form-control selectpicker show-tick" id="search_buyahandId"
                                                 name="buyahandId"
-                                                style="width: 100%;" data-live-search="true">
+                                                style="width: 100%;" data-live-search="true" onchange="changebuy()">
                                         </select>
                                     </div>
 

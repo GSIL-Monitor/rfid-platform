@@ -48,12 +48,12 @@
                                             <span class="bigger-110">新增</span>
                                         </button>
                                     </div>
-                                    <div class="btn-group btn-group-sm pull-left">
+                                   <%-- <div class="btn-group btn-group-sm pull-left">
                                         <button id="mergeBill" type="button" class="btn btn-primary" onclick="merge()">
                                             <i class="ace-icon fa fa-plus"></i>
                                             <span class="bigger-110">单据合并</span>
                                         </button>
-                                    </div>
+                                    </div>--%>
                                    <%-- <div class="btn-group btn-group-sm pull-left">
                                         <button type="button" class="btn btn-primary" onclick="addUniqCode()">
                                             <i class="ace-icon fa fa-plus"></i>
