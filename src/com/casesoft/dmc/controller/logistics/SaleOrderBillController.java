@@ -46,9 +46,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private InventoryService inventoryService;
     @Autowired
     private UnitService unitService;
-
     @Autowired
-    private CustomerService customerService;
+    private  CustomerService customerService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -244,20 +243,21 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         String defaultWarehId = unit.getDefaultWarehId();
         String defaultSaleStaffId = unit.getDefaultSaleStaffId();
         String defalutCustomerId = unit.getDefalutCustomerId();
-        Customer customer = null;
-        if(CommonUtil.isNotBlank(defalutCustomerId)){
-            customer = this.customerService.load(defalutCustomerId);
+        if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+            Customer customer = this.customerService.load(defalutCustomerId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
         }
+
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("defaultWarehId", defaultWarehId);
-        mv.addObject("defalutCustomerId", defalutCustomerId);
-        if(CommonUtil.isNotBlank(customer)){
-            mv.addObject("defalutCustomerName", customer.getName());
-            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
-            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
-        }
+
+
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
