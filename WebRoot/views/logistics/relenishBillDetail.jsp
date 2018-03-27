@@ -19,6 +19,7 @@
         var saleOrder_buyahandId = "${replenishBill.buyahandId}";
         var slaeOrder_status = "${replenishBill.status}";
         var roleid = "${roleid}";
+        var replenishType="${replenishBill.replenishType}";
 
     </script>
 </head>
@@ -85,6 +86,18 @@
 
                                 </div>
                                 <div class="form-group">
+
+                                    <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
+                                           for="edit_replenishType">类型</label>
+                                    <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2 control-group">
+                                        <div class="radio" id="edit_replenishType">
+                                            <label><input name="replenishType" type="radio" value="1"/>购货</label>
+                                            <label><input name="replenishType" type="radio" value="0"/>退货</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+
                                     <label class="col-xs-1 control-label"
                                            for="form_remark">备注</label>
 

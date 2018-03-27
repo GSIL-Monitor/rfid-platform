@@ -5,6 +5,16 @@ $(function () {
     initSelectBusinessIdForm();
     initSelectbuyahandIdForm();
     initButtonGroup();
+    console.log(replenishType);
+    if(replenishType!=""&&replenishType!=undefined){
+        if(replenishType==="1"){
+            $("#edit_replenishType input:radio[value='1']").attr("checked", "checked");
+        }else{
+            $("#edit_replenishType input:radio[value='0']").attr("checked", "checked");
+        }
+    }
+
+
 });
 function initSelectBusinessIdForm() {
     var url;
