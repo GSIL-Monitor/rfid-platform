@@ -62,6 +62,18 @@ function initButtonGroup() {
         "<button id='SODtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>保存</span>" +
+        "</button>"+
+        "<button id='SODtl_saveAndAdd' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saveAndAdd()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>保存并新增</span>" +
+        "</button>"+
+        "<button id='SODtl_check' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showcheck()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>审核</span>" +
+        "</button>"+
+        "<button id='SODtl_noCheck' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showNocheck()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>反审核</span>" +
         "</button>"
     );
 
@@ -92,6 +104,10 @@ function initGrid() {
             {name: 'sizeId', label: '尺码', width: 40},
             {name: 'buyahandName', label: '买手', width: 30},
             {name: 'buyahandId', label: '买手', width: 30, hidden: true},
+            {name: 'price', label: '采购价格', width: 30},
+            {name: 'totPrice', label: '采购金额', width: 30},
+            {name: 'actPrice', label: '实际价格', width: 30},
+            {name: 'totActPrice', label: '实际价格', width: 30},
             {name: 'actConvertQty', label: '已转换数量', width: 30},
             {name: 'convertQty', label: '本次转换数量',editable: true,editrules: {
                 number: true,
@@ -239,12 +255,12 @@ function addDetail() {
 }
 
 function addProductInfo() {
-    debugger;
+
     var addProductInfo = [];
     $('#color_size_grid').saveRow(editcolosizeRow);
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
-        debugger;
+
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
             productInfo.sku = productInfo.code;
@@ -255,8 +271,12 @@ function addProductInfo() {
             productInfo.convertquitQty=0;
             productInfo.actConvertquitQty=0;
             productInfo.remark="";
-             productInfo.buyahandName=$("#search_buyahandId").next().find("button").attr("title");
-             console.log($("#search_buyahandId").next().find("button").attr("title"))
+            productInfo.price = styleRow.preCast;
+            productInfo.actPrice = productInfo.price;
+            productInfo.totPrice = productInfo.qty * productInfo.price;
+            productInfo.totActPrice = productInfo.qty * productInfo.actPrice;
+            productInfo.buyahandName=$("#search_buyahandId").next().find("button").attr("title");
+
             addProductInfo.push(productInfo);
         }
     });
@@ -352,4 +372,83 @@ function changebuy() {
         $('#addDetailgrid').setCell(value, "buyahandName", buyahandName);
 
     });
+}
+
+function saveAndAdd() {
+     save();
+    //location.href = basePath + "/logistics/relenishBill/index.do";
+    location.href =  basePath + "/views/logistics/relenishBillDetail.jsp";
+}
+function check() {
+    showWaitingPage();
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/relenishBill/checkReplenishBill.do",
+        data: {
+            replenishBillNo: $("#search_billNo").val(),
+            remark: $("#form_remarks").val()
+
+        },
+        type: "POST",
+        success: function (msg) {
+            hideWaitingPage();
+
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+
+
+}
+
+function noCheck() {
+    showWaitingPage();
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/relenishBill/noCheckReplenishBill.do",
+        data: {
+            replenishBillNo: $("#search_billNo").val(),
+            remark: $("#form_remarks").val()
+
+        },
+        type: "POST",
+        success: function (msg) {
+            hideWaitingPage();
+
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                closeEditDialog();
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function showcheck(){
+    $("#editForm").resetForm();
+    $("#checkSave").show();
+    $("#noCheckSave").hide();
+    $("#edit-dialog").modal('show');
+}
+function showNocheck() {
+    $("#editForm").resetForm();
+    $("#checkSave").hide();
+    $("#noCheckSave").show();
+    $("#edit-dialog").modal('show');
+}
+function closeEditDialog() {
+    $("#edit-dialog").modal('hide');
 }

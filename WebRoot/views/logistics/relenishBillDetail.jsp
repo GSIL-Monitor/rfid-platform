@@ -49,7 +49,7 @@
                         <div class="widget-toolbar no-border">
 
                             <a class="btn btn-xs bigger btn-yellow dropdown-toggle" href="<%=basePath%>/${mainUrl}">
-                                <i class="ace-icon fa fa-arrow-left"></i> 返回
+                                <i class="ace-icon fa fa-arrow-left"></i> 历史单据
                             </a>
                         </div>
                     </div>
@@ -151,6 +151,7 @@
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../sys/print_A4.jsp"></jsp:include>
 <jsp:include page="../sys/print_A4_1.jsp"></jsp:include>
+<jsp:include page="relenishBillDetail_edit.jsp"></jsp:include>
 <jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="exchageGood_dialog.jsp"></jsp:include>
