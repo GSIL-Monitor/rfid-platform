@@ -128,7 +128,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         mv.addObject("defaultWarehId", defaultWarehId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
-        mv.addObject("mainUrl", "/logistics/relenishBill/index.do");
+        mv.addObject("mainUrl", "/logistics/relenishBill/history.do");
       /*  ModelAndView mv = new ModelAndView("/views/logistics/relenishBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
@@ -160,7 +160,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("Codes", getCurrentUser().getCode());
-        mv.addObject("mainUrl", "/logistics/relenishBill/index.do");
+        mv.addObject("mainUrl", "/logistics/relenishBill/history.do");
         return mv;
 
     }

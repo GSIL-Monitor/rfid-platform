@@ -44,7 +44,7 @@ public class ProductService extends AbstractBaseService<Product, String> {
 
 
     public List<Product> findByStyleId(String styleId) {
-        String hql = "from Product p where p.styleId=?";
+        String hql = "from Product p where p.styleId=? order by p.sizeId desc";
         return this.productDao.find(hql, new Object[]{styleId});
     }
 

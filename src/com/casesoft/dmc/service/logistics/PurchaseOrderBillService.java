@@ -196,10 +196,10 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             if(CommonUtil.isBlank(payPrice)){
                 payPrice=0.0;
             }
-            Unit unit = this.unitDao.get(purchaseOrderBill.getOrigUnitId());
+            /*Unit unit = this.unitDao.get(purchaseOrderBill.getOrigUnitId());
             Double owingValue = unit.getOwingValue();
             unit.setOwingValue(owingValue+(actPrice-payPrice));
-            this.unitDao.update(unit);
+            this.unitDao.update(unit);*/
         }
         this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
         this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
@@ -227,7 +227,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 changeReplenishBillDtl.setBillDate(new Date());
                 changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
                 //添加预计时间
-                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd HH:mm:ss");
+                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd");
                 changeReplenishBillDtl.setExpectTime(date);
                 list.add(changeReplenishBillDtl);
 
