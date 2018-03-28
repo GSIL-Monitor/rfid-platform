@@ -1,11 +1,24 @@
 package com.casesoft.dmc.core;
 
+import com.casesoft.dmc.core.util.file.PropertyUtil;
+
 public class Constant {
-
-    public final static class Setting {
-
+    public static Boolean isWindows;
+    static {
+        try {
+            isWindows = Boolean.parseBoolean(PropertyUtil.getValue("is_windows"));
+        } catch (Exception e) {
+            isWindows = false;
+        }
     }
-
+    public static String rootPath;
+    static {
+        if(isWindows){
+            rootPath ="C:";
+        }else{
+            rootPath="\\hone";
+        }
+    }
     public final static class LogType {
         public final static String LONG_TIME = "LTM";
         public final static String SYSTEM = "SYS";
@@ -86,11 +99,11 @@ public class Constant {
     public static final String Device_KC_Prefix = "KC";
   }
 
-  public final static class Folder {
-    public final static String Epc_Init_File_Folder = "c:\\casesoft_temp\\initFile\\";
-    public final static String Epc_Init_Zip_File_Folder = "c:\\casesoft_temp\\initFileZip\\";
-    public final static String Report_File_Folder = "c:\\casesoft_temp\\report\\";
-    public final static String Product_File_Folder= "c:\\casesoft_temp\\productZip\\";
+  public  static final class Folder {
+    public static final  String Epc_Init_File_Folder=rootPath+"\\casesoft_temp\\initFile\\";
+    public final static String Epc_Init_Zip_File_Folder=rootPath+"\\casesoft_temp\\initFileZip\\";
+    public final static String Report_File_Folder=rootPath+"\\casesoft_temp\\report\\";
+    public final static String Product_File_Folder=rootPath+"\\casesoft_temp\\productZip\\";
   }
   public final static class TagSerial {
       public final static int EPC_Prefix_Length = 6;
