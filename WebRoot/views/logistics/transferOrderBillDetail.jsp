@@ -208,6 +208,7 @@
 <script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
 <script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
 <script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
+<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderBillDetailController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script type="text/javascript">
