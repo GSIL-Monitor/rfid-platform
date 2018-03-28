@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,7 +89,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     public void update(PurchaseOrderBill entity) {
         this.purchaseBillOrderDao.saveOrUpdate(entity);
     }
-    public void cancel(PurchaseOrderBill entity) {
+    public void   cancel(PurchaseOrderBill entity) {
         String destId = entity.getDestUnitId();
         Unit unit = this.unitDao.get(destId);
         Double actPrice = entity.getActPrice();
@@ -103,6 +104,27 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         unit.setOwingValue(owingValue-(actPrice-payPrice));
         this.unitDao.update(unit);
         this.purchaseBillOrderDao.saveOrUpdate(entity);
+        //判断是否有补货单的数据
+        String hql="from ChangeReplenishBillDtl t where t.purchaseNo=?";
+        List<ChangeReplenishBillDtl> changeReplenishBillDtls = this.purchaseBillOrderDao.find(hql, new Object[]{entity.getBillNo()});
+        if(CommonUtil.isNotBlank(changeReplenishBillDtls)){
+            if(changeReplenishBillDtls.size()!=0){
+                for(int i=0;i<changeReplenishBillDtls.size();i++){
+                    String hqlpurchaseDelt=" from ReplenishBillDtl t where t.billId=? and t.sku=?";
+                    ReplenishBillDtl replenishBillDtl = this.replenishBillDtlDao.findUnique(hqlpurchaseDelt, new Object[]{changeReplenishBillDtls.get(i).getReplenishNo(), changeReplenishBillDtls.get(i).getSku()});
+                    Integer actConvertQty = replenishBillDtl.getActConvertQty();
+                    replenishBillDtl.setActConvertQty(actConvertQty-Integer.parseInt(changeReplenishBillDtls.get(i).getQty()));
+                    if(replenishBillDtl.getQty()>replenishBillDtl.getActConvertQty()){
+                        replenishBillDtl.setStatus(1);
+                    }else{
+                        replenishBillDtl.setStatus(0);
+                    }
+                    this.replenishBillDtlDao.update(replenishBillDtl);
+                }
+            }
+        }
+
+
     }
 
     public void cancelApply(PurchaseOrderBill entity,MonthAccountStatement monthAccountStatement) {
@@ -163,7 +185,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
         }
     }
-    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo) {
+    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo) throws ParseException {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if(CommonUtil.isBlank(purchaseOrderBill1)){
             Double actPrice = purchaseOrderBill.getActPrice();
@@ -204,6 +226,9 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
                 changeReplenishBillDtl.setBillDate(new Date());
                 changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
+                //添加预计时间
+                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd HH:mm:ss");
+                changeReplenishBillDtl.setExpectTime(date);
                 list.add(changeReplenishBillDtl);
 
             }

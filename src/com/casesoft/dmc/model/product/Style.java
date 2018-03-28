@@ -23,6 +23,17 @@ public class Style extends BaseStyle implements java.io.Serializable {
     @Column()
     private String pushsuccess;
 
+    @Transient
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getIspush() {
         return ispush;
     }

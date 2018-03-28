@@ -13,6 +13,7 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.product.*;
+import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
@@ -68,8 +69,55 @@ public class WXProductApiController extends ApiBaseController {
         logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         page.setPageProperty();
+
         page = this.styleService.findPage(page, filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for(Style d : page.getRows()){
+            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
+            if(file.exists()){
+                File[] files = file.listFiles();
+                if(files.length > 0){
+                    File[] photos = files[0].listFiles();
+                    if(photos.length > 0){
+                        d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
+                    }
+                }
+            }else{
+                d.setUrl("/imgs/noImg.png");
+            }
+        }
         return page;
+    }
+
+    @RequestMapping(value = "/findStyleList.do")
+    @ResponseBody
+    public MessageBox findStyleList(String pageSize,String pageNo,String sortName,String order){
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Page<Style> page = new Page<Style>(Integer.parseInt(pageSize));
+        page.setPage(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        if(CommonUtil.isNotBlank(sortName)){
+            page.setOrderBy(sortName);
+        }
+        if(CommonUtil.isNotBlank(order)){
+            page.setOrder(order);
+        }
+        page = this.styleService.findPage(page,filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for(Style d : page.getRows()){
+            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
+            if(file.exists()){
+                File[] files = file.listFiles();
+                if(files.length > 0){
+                    File[] photos = files[0].listFiles();
+                    if(photos.length > 0){
+                        d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
+                    }
+                }
+            }
+        }
+        return this.returnSuccessInfo("获取成功",page.getRows());
     }
 
     @RequestMapping("/saveStyleWS.do")

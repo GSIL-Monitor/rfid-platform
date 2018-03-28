@@ -114,15 +114,19 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
 
         String defaultSaleStaffId = unit.getDefaultSaleStaffId();
         String defalutCustomerId = unit.getDefalutCustomerId();
-        Customer customer = CacheManager.getCustomerById(defalutCustomerId);
+        if(CommonUtil.isNotBlank(defalutCustomerId)){
+            Customer customer = CacheManager.getCustomerById(defalutCustomerId);
+            mav.addObject("defalutCustomerId", defalutCustomerId);
+            mav.addObject("defalutCustomerName", customer.getName());
+            mav.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mav.addObject("defalutCustomercustomerType", unit.getType());
+            mav.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+
         mav.addObject("ownerId", getCurrentUser().getOwnerId());
         mav.addObject("userId",getCurrentUser().getId());
         mav.addObject("defaultWarehId", defaultWarehId);
-        mav.addObject("defalutCustomerId", defalutCustomerId);
-        mav.addObject("defalutCustomerName", customer.getName());
-        mav.addObject("defalutCustomerdiscount", customer.getDiscount());
-        mav.addObject("defalutCustomercustomerType", unit.getType());
-        mav.addObject("defalutCustomerowingValue", customer.getOwingValue());
+
         mav.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mav.addObject("roleid", getCurrentUser().getRoleId());
         mav.addObject("pageType", "add");

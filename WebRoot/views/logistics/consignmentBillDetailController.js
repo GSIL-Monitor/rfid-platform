@@ -23,7 +23,10 @@ $(function () {
         $("#search_origUnitId").val(defalutCustomerId);
         $("#search_origUnitName").val(defalutCustomerName);
         $("#search_discount").val(defalutCustomerdiscount);
-        addUniqCode();
+        if(defaultSaleStaffId!=""&&defaultSaleStaffId!=undefined){
+            addUniqCode();
+        }
+
     }
 });
 // var editDtailRowId = null;
@@ -110,7 +113,10 @@ function initCustomerTypeForm() {
                 $("#search_customerType").trigger('chosen:updated');
             }
             if (pageType === "add") {
-                $("#search_customerType").val("CT-LS");
+                if(defaultSaleStaffId!=""&&defaultSaleStaffId!=undefined){
+                    $("#search_customerType").val("CT-LS");
+                }
+
             }
         }
     });
@@ -592,7 +598,7 @@ function addProductInfo() {
     }
     var addProductInfo = [];
     if (editcolosizeRow != null) {
-        $('#color_size_grid').saveRow(editcolosizeRow);
+        $('#color_size_grid').saveRow(editcolosizeRow,false,'clientArray');
     }
     var ct = $("#search_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));

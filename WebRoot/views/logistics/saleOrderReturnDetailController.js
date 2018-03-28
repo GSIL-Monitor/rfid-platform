@@ -23,7 +23,10 @@ $(function () {
 
 
         $("#search_discount").val(defalutCustomerdiscount);
-        addUniqCode();
+        if(defalutCustomerId!=""&&defalutCustomerId!=undefined){
+            addUniqCode();
+        }
+
 
     }
 });
@@ -75,7 +78,10 @@ function initCustomerTypeForm() {
                 $("#search_customerType").trigger('chosen:updated');
             }
             if (pageType === "add") {
-                $("#search_customerType").val("CT-LS");
+                if(defalutCustomerId!=""&&defalutCustomerId!=undefined){
+                    $("#search_customerType").val("CT-LS");
+                }
+
             }
         }
     });
@@ -479,7 +485,7 @@ function addProductInfo() {
     }
     var addProductInfo = [];
     if (editcolosizeRow != null) {
-        $('#color_size_grid').saveRow(editcolosizeRow);
+        $('#color_size_grid').saveRow(editcolosizeRow,false,'clientArray');
     }
     var ct = $("#search_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));

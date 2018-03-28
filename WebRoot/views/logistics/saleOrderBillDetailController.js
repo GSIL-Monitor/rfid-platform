@@ -8,6 +8,8 @@ var skuQty = {};//保存每个SKU对应的出入库数量。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var billNo;
 $(function () {
+    debugger
+    console.log("123");
     if (pageType === "edit") {
         initeditGrid();
     } else {
@@ -39,7 +41,10 @@ $(function () {
     }
     if (pageType === "edit") {
     }else{
-        addUniqCode();
+        if(defalutCustomerId!=""&&defalutCustomerId!=undefined){
+            addUniqCode();
+        }
+
     }
 
 });
@@ -111,7 +116,10 @@ function initCustomerTypeForm() {
             if (pageType === "edit") {
 
             }else{
-                $("#search_customerType").val("CT-LS");
+                if(defalutCustomerId!=""&&defalutCustomerId!=undefined){
+                    $("#search_customerType").val("CT-LS");
+                }
+
             }
 
         }
@@ -811,7 +819,8 @@ function addProductInfo() {
 
     var addProductInfo = [];
     if (editcolosizeRow != null) {
-        $('#color_size_grid').saveRow(editcolosizeRow);
+
+        $('#color_size_grid').saveRow(editcolosizeRow,false,'clientArray');//仅保存数据到grid中，而不会发送ajax请求服务器
     }
     var ct = $("#search_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
