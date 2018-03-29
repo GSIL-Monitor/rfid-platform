@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Alvin on 2018/1/27.
@@ -102,6 +103,17 @@ public class ReplenishBillDtl extends BaseBillDtl{
 
     @Column()
     private Long franchiseeStockQty;//加盟店库存数量
+    @Transient
+    private String  lastTime;
+
+    public String getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(String lastTime) {
+        this.lastTime = lastTime;
+    }
+
     @Transient
     private String url;
 

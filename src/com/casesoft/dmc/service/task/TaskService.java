@@ -198,10 +198,14 @@ public class TaskService extends AbstractBaseService<Business, String> {
         //读取congif.properties文件
         boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
                 .getValue("is_wxshop"));
-        if(is_wxshop){
-            SendInventoryService sendInventoryService = (SendInventoryService) SpringContextUtil.getBean("sendInventoryService");
-            sendInventoryService.WxChatStockUpdate(dtlList);
+        if(CommonUtil.isNotBlank(is_wxshop)){
+            if(is_wxshop){
+                SendInventoryService sendInventoryService = (SendInventoryService) SpringContextUtil.getBean("sendInventoryService");
+                logger.error("TaskService中SendInventoryService的对象"+sendInventoryService);
+                sendInventoryService.WxChatStockUpdate(dtlList);
+            }
         }
+
 
     }
 

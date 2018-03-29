@@ -213,10 +213,10 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 String hql="from ReplenishBillDtl t where t.sku=? and t.billId=?";
                 ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
                 if(unique.getQty()>unique.getActConvertQty()){
-                    unique.setStatus(1);
+                    unique.setStatus(1);//未完成
                     unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
                 }else{
-                    unique.setStatus(0);
+                    unique.setStatus(0);//已完成
                 }
                 this.replenishBillDtlDao.saveOrUpdate(unique);
                 ChangeReplenishBillDtl changeReplenishBillDtl=new ChangeReplenishBillDtl();

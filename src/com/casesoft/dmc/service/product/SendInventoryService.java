@@ -142,68 +142,87 @@ public class SendInventoryService extends AbstractBaseService<SendInventory, Str
         //String a="[{\"rfidStyleId\":\"SA12306\",\"skuFormList\": [{\"spec\": \"黄色,S\",\"price\":\"0\",\"amount\": \"-1\"},{\"spec\":\"黄色,L\",\"price\": \"0\",\"amount\": \"-1\"}]},{\"rfidStyleId\": \"SA12307\",\"skuFormList\": [{\"spec\":\"黄色,S\",\"price\": \"0\",\"amount\":\"5\"},{\"spec\": \"黄色,L\",\"price\": \"0\",\"amount\":\"5\"}]},{\"rfidStyleId\": \"SA12308\",\"skuFormList\": [{\"spec\": \"黄色,S\",\"price\": \"0\",\"amount\": \"-1\"},{\"spec\": \"黄色,L\",\"price\": \"0\",\"amount\": \"-1\"}]}]";
         HttpClient httpclient = new HttpClient();
        String wxshop_Path = PropertyUtil.getValue("wxshop_Path");
-       PostMethod method = new PostMethod(wxshop_Path+"/v2/product/inventoryChangeForRfid");
-        method.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        method.setRequestHeader("Accept", "application/json; charset=UTF-8");
-        // 设置为默认的重试策略
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+       try {
+           List<SendInventory> savelist = new ArrayList<SendInventory>();
+           if(CommonUtil.isNotBlank(wxshop_Path)){
+               PostMethod method = new PostMethod(wxshop_Path+"/v2/product/inventoryChangeForRfid");
+               method.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+               method.setRequestHeader("Accept", "application/json; charset=UTF-8");
+               // 设置为默认的重试策略
+               method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
 
-        method.setRequestBody(jsonStringByList);
-        try {
-            httpclient.executeMethod(method);
-            HttpResponse response = new HttpResponse();
-            response.setStringResult(method.getResponseBodyAsString());
-            response.setResponseHeaders(method.getResponseHeaders());
-            String stringResult = response.getStringResult();
-            System.out.println(stringResult);
-            List<SendInventory> savelist = new ArrayList<SendInventory>();
-            if(CommonUtil.isNotBlank(stringResult)) {
-                Map mapresulrt = JSONUtil.getMap4Json(stringResult);
-                Integer errorCode = Integer.parseInt(mapresulrt.get("errorCode") + "");
+               method.setRequestBody(jsonStringByList);
 
-                if (errorCode != 200) {
-                    for (SendInventory sendInventorys : SendInventoryList) {
-                        SendInventory sendInventory = new SendInventory();
-                        sendInventory.setId(new GuidCreator().toString());
-                        sendInventory.setColorId(sendInventorys.getColorId());
-                        sendInventory.setQty(Integer.parseInt(sendInventorys.getQty() + ""));
-                        sendInventory.setSizeId(sendInventorys.getSizeId());
-                        sendInventory.setStyleId(sendInventorys.getStyleId());
-                        sendInventory.setStyleName(CacheManager.getStyleNameById(sendInventorys.getStyleId()));
-                        sendInventory.setPushsuccess("N");
-                        sendInventory.setBillDate(new Date());
-                        sendInventory.setMessage(mapresulrt.get("moreInfo") + "");
-                        savelist.add(sendInventory);
-                    }
+               httpclient.executeMethod(method);
+               HttpResponse response = new HttpResponse();
+               response.setStringResult(method.getResponseBodyAsString());
+               response.setResponseHeaders(method.getResponseHeaders());
+               String stringResult = response.getStringResult();
+               System.out.println(stringResult);
 
-                }else {
-                    String id="";
-                    for(int i=0;i<SendInventoryList.size();i++){
-                        if(i==0){
-                            id+="'"+SendInventoryList.get(i).getId()+"'";
-                        }else{
-                            id+=",'"+SendInventoryList.get(i).getId()+"'";
-                        }
-                    }
-                    String updatehql="update SendInventory t set t.pushsuccess=Y where t.id in("+id+")";
-                    this.sendInventotyDao.batchExecute(updatehql);
-                }
-            }else{
-                for (SendInventory sendInventorys : SendInventoryList) {
-                    SendInventory sendInventory = new SendInventory();
-                    sendInventory.setId(new GuidCreator().toString());
-                    sendInventory.setColorId(sendInventorys.getColorId());
-                    sendInventory.setQty(Integer.parseInt(sendInventorys.getQty() + ""));
-                    sendInventory.setSizeId(sendInventorys.getSizeId());
-                    sendInventory.setStyleId(sendInventorys.getStyleId());
-                    sendInventory.setStyleName(CacheManager.getStyleNameById(sendInventorys.getStyleId()));
-                    sendInventory.setPushsuccess("N");
-                    sendInventory.setBillDate(new Date());
-                    sendInventory.setMessage("访问接口没成功");
-                    savelist.add(sendInventory);
-                }
-            }
-            this.sendInventotyDao.doBatchInsert(savelist);
+               if(CommonUtil.isNotBlank(stringResult)) {
+                   Map mapresulrt = JSONUtil.getMap4Json(stringResult);
+                   Integer errorCode = Integer.parseInt(mapresulrt.get("errorCode") + "");
+
+                   if (errorCode != 200) {
+                       for (SendInventory sendInventorys : SendInventoryList) {
+                           SendInventory sendInventory = new SendInventory();
+                           sendInventory.setId(new GuidCreator().toString());
+                           sendInventory.setColorId(sendInventorys.getColorId());
+                           sendInventory.setQty(Integer.parseInt(sendInventorys.getQty() + ""));
+                           sendInventory.setSizeId(sendInventorys.getSizeId());
+                           sendInventory.setStyleId(sendInventorys.getStyleId());
+                           sendInventory.setStyleName(CacheManager.getStyleNameById(sendInventorys.getStyleId()));
+                           sendInventory.setPushsuccess("N");
+                           sendInventory.setBillDate(new Date());
+                           sendInventory.setMessage(mapresulrt.get("moreInfo") + "");
+                           savelist.add(sendInventory);
+                       }
+
+                   }else {
+                       String id="";
+                       for(int i=0;i<SendInventoryList.size();i++){
+                           if(i==0){
+                               id+="'"+SendInventoryList.get(i).getId()+"'";
+                           }else{
+                               id+=",'"+SendInventoryList.get(i).getId()+"'";
+                           }
+                       }
+                       String updatehql="update SendInventory t set t.pushsuccess=Y where t.id in("+id+")";
+                       this.sendInventotyDao.batchExecute(updatehql);
+                   }
+               }else{
+                   for (SendInventory sendInventorys : SendInventoryList) {
+                       SendInventory sendInventory = new SendInventory();
+                       sendInventory.setId(new GuidCreator().toString());
+                       sendInventory.setColorId(sendInventorys.getColorId());
+                       sendInventory.setQty(Integer.parseInt(sendInventorys.getQty() + ""));
+                       sendInventory.setSizeId(sendInventorys.getSizeId());
+                       sendInventory.setStyleId(sendInventorys.getStyleId());
+                       sendInventory.setStyleName(CacheManager.getStyleNameById(sendInventorys.getStyleId()));
+                       sendInventory.setPushsuccess("N");
+                       sendInventory.setBillDate(new Date());
+                       sendInventory.setMessage("访问接口没成功");
+                       savelist.add(sendInventory);
+                   }
+               }
+
+           }else{
+               for (SendInventory sendInventorys : SendInventoryList) {
+                   SendInventory sendInventory = new SendInventory();
+                   sendInventory.setId(new GuidCreator().toString());
+                   sendInventory.setColorId(sendInventorys.getColorId());
+                   sendInventory.setQty(Integer.parseInt(sendInventorys.getQty() + ""));
+                   sendInventory.setSizeId(sendInventorys.getSizeId());
+                   sendInventory.setStyleId(sendInventorys.getStyleId());
+                   sendInventory.setStyleName(CacheManager.getStyleNameById(sendInventorys.getStyleId()));
+                   sendInventory.setPushsuccess("N");
+                   sendInventory.setBillDate(new Date());
+                   sendInventory.setMessage("访问接口没成功");
+                   savelist.add(sendInventory);
+               }
+           }
+           this.sendInventotyDao.doBatchInsert(savelist);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -212,6 +231,7 @@ public class SendInventoryService extends AbstractBaseService<SendInventory, Str
 
     public void WxChatStockUpdate(  List<BusinessDtl> dtlList) throws Exception {
         //筛选数据，styleid推送成功的
+        logger.error("SendInventoryService中筛选数据，styleid推送成功的"+dtlList);
         List<Style> list=new ArrayList<Style>();
         for(BusinessDtl businessDtl:dtlList) {
             list.add(CacheManager.getStyleById(businessDtl.getStyleId()));
@@ -231,102 +251,125 @@ public class SendInventoryService extends AbstractBaseService<SendInventory, Str
                }
            }
         }
-        //得到要发送的list
-        List<Map<String,Object>> sendlist= new ArrayList<Map<String,Object>>();
-        for(int i=0;i<dtlList.size();i++){
-
-            if(i==0){
-                Map<String,Object> map=new HashMap<String,Object>();
-                map.put("rfidStyleId",dtlList.get(i).getStyleId());
-                Map<String,String> delmap=new HashMap<String,String>();
-                List<Map<String,String>> skuFormListList= new ArrayList<Map<String,String>>();
-                delmap.put("spec",dtlList.get(i).getColorId()+","+dtlList.get(i).getSizeId());
-                delmap.put("price","0");
-                delmap.put("amount","-"+dtlList.get(i).getQty());
-                skuFormListList.add(delmap);
-                map.put("skuFormList",skuFormListList);
-                sendlist.add(map);
-            }else{
-                for(int a=0;a<sendlist.size();a++){
-                    if(sendlist.get(a).get("rfidStyleId").equals(dtlList.get(i).getStyleId())){
-                      List<Map<String,String>> lists= ( List<Map<String,String>>)sendlist.get(a).get("skuFormList");
-                        Map<String,String> delmap=new HashMap<String,String>();
-                        delmap.put("spec",dtlList.get(i).getColorId()+","+dtlList.get(i).getSizeId());
-                        delmap.put("price","0");
-                        delmap.put("amount",+dtlList.get(i).getQty()+"");
-                        lists.add(delmap);
-
-                    }else{
-                        Map<String,Object> map=new HashMap<String,Object>();
-                        map.put("rfidStyleId",dtlList.get(i).getStyleId());
-                        Map<String,String> delmap=new HashMap<String,String>();
-                        List<Map<String,String>> skuFormListList= new ArrayList<Map<String,String>>();
-                        delmap.put("spec",dtlList.get(i).getColorId()+","+dtlList.get(i).getSizeId());
-                        delmap.put("price","0");
-                        delmap.put("amount",dtlList.get(i).getQty()+"");
-                        skuFormListList.add(delmap);
-                        map.put("skuFormList",skuFormListList);
-                        sendlist.add(map);
-                    }
-                }
-            }
-
-        }
-        String jsonStringByList = JSONUtil.getJsonStringByList(sendlist);
-        //String a="[{\"rfidStyleId\":\"SA12306\",\"skuFormList\": [{\"spec\": \"黄色,S\",\"price\":\"0\",\"amount\": \"-1\"},{\"spec\":\"黄色,L\",\"price\": \"0\",\"amount\": \"-1\"}]},{\"rfidStyleId\": \"SA12307\",\"skuFormList\": [{\"spec\":\"黄色,S\",\"price\": \"0\",\"amount\":\"5\"},{\"spec\": \"黄色,L\",\"price\": \"0\",\"amount\":\"5\"}]},{\"rfidStyleId\": \"SA12308\",\"skuFormList\": [{\"spec\": \"黄色,S\",\"price\": \"0\",\"amount\": \"-1\"},{\"spec\": \"黄色,L\",\"price\": \"0\",\"amount\": \"-1\"}]}]";
-        HttpClient httpclient = new HttpClient();
-        String wxshop_Path = PropertyUtil.getValue("wxshop_Path");
-        PostMethod method = new PostMethod(wxshop_Path+"/v2/product/inventoryChangeForRfid");
-        method.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-        method.setRequestHeader("Accept", "application/json; charset=UTF-8");
-        // 设置为默认的重试策略
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
-
-        method.setRequestBody(jsonStringByList);
         try {
-            httpclient.executeMethod(method);
-            HttpResponse response = new HttpResponse();
-            response.setStringResult(method.getResponseBodyAsString());
-            response.setResponseHeaders(method.getResponseHeaders());
-            String stringResult = response.getStringResult();
-            System.out.println(stringResult);
-            List<SendInventory> savelist = new ArrayList<SendInventory>();
-            if(CommonUtil.isNotBlank(stringResult)) {
-                Map mapresulrt = JSONUtil.getMap4Json(stringResult);
-                Integer errorCode = Integer.parseInt(mapresulrt.get("errorCode") + "");
+        //得到要发送的list
+            if(list.size()!=0) {
 
-                if (errorCode != 200) {
-                    for (BusinessDtl businessDtl : dtlList) {
-                        SendInventory sendInventory = new SendInventory();
-                        sendInventory.setId(new GuidCreator().toString());
-                        sendInventory.setColorId(businessDtl.getColorId());
-                        sendInventory.setQty(Integer.parseInt(businessDtl.getQty() + ""));
-                        sendInventory.setSizeId(businessDtl.getSizeId());
-                        sendInventory.setStyleId(businessDtl.getStyleId());
-                        sendInventory.setStyleName(CacheManager.getStyleNameById(businessDtl.getStyleId()));
-                        sendInventory.setPushsuccess("N");
-                        sendInventory.setBillDate(new Date());
-                        sendInventory.setMessage(mapresulrt.get("moreInfo") + "");
-                        savelist.add(sendInventory);
+
+                    List<Map<String, Object>> sendlist = new ArrayList<Map<String, Object>>();
+                    for (int i = 0; i < dtlList.size(); i++) {
+
+                        if (i == 0) {
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("rfidStyleId", dtlList.get(i).getStyleId());
+                            Map<String, String> delmap = new HashMap<String, String>();
+                            List<Map<String, String>> skuFormListList = new ArrayList<Map<String, String>>();
+                            delmap.put("spec", dtlList.get(i).getColorId() + "," + dtlList.get(i).getSizeId());
+                            delmap.put("price", "0");
+                            delmap.put("amount", "-" + dtlList.get(i).getQty());
+                            skuFormListList.add(delmap);
+                            map.put("skuFormList", skuFormListList);
+                            sendlist.add(map);
+                        } else {
+                            for (int a = 0; a < sendlist.size(); a++) {
+                                if (sendlist.get(a).get("rfidStyleId").equals(dtlList.get(i).getStyleId())) {
+                                    List<Map<String, String>> lists = (List<Map<String, String>>) sendlist.get(a).get("skuFormList");
+                                    Map<String, String> delmap = new HashMap<String, String>();
+                                    delmap.put("spec", dtlList.get(i).getColorId() + "," + dtlList.get(i).getSizeId());
+                                    delmap.put("price", "0");
+                                    delmap.put("amount", +dtlList.get(i).getQty() + "");
+                                    lists.add(delmap);
+
+                                } else {
+                                    Map<String, Object> map = new HashMap<String, Object>();
+                                    map.put("rfidStyleId", dtlList.get(i).getStyleId());
+                                    Map<String, String> delmap = new HashMap<String, String>();
+                                    List<Map<String, String>> skuFormListList = new ArrayList<Map<String, String>>();
+                                    delmap.put("spec", dtlList.get(i).getColorId() + "," + dtlList.get(i).getSizeId());
+                                    delmap.put("price", "0");
+                                    delmap.put("amount", dtlList.get(i).getQty() + "");
+                                    skuFormListList.add(delmap);
+                                    map.put("skuFormList", skuFormListList);
+                                    sendlist.add(map);
+                                }
+                            }
+                        }
+
+                    }
+                    String jsonStringByList = JSONUtil.getJsonStringByList(sendlist);
+                    //String a="[{\"rfidStyleId\":\"SA12306\",\"skuFormList\": [{\"spec\": \"黄色,S\",\"price\":\"0\",\"amount\": \"-1\"},{\"spec\":\"黄色,L\",\"price\": \"0\",\"amount\": \"-1\"}]},{\"rfidStyleId\": \"SA12307\",\"skuFormList\": [{\"spec\":\"黄色,S\",\"price\": \"0\",\"amount\":\"5\"},{\"spec\": \"黄色,L\",\"price\": \"0\",\"amount\":\"5\"}]},{\"rfidStyleId\": \"SA12308\",\"skuFormList\": [{\"spec\": \"黄色,S\",\"price\": \"0\",\"amount\": \"-1\"},{\"spec\": \"黄色,L\",\"price\": \"0\",\"amount\": \"-1\"}]}]";
+                    HttpClient httpclient = new HttpClient();
+                    String wxshop_Path = PropertyUtil.getValue("wxshop_Path");
+                    List<SendInventory> savelist = new ArrayList<SendInventory>();
+                    if(CommonUtil.isNotBlank(wxshop_Path)){
+                        PostMethod method = new PostMethod(wxshop_Path + "/v2/product/inventoryChangeForRfid");
+                        method.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+                        method.setRequestHeader("Accept", "application/json; charset=UTF-8");
+                        // 设置为默认的重试策略
+                        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+
+                        method.setRequestBody(jsonStringByList);
+
+                        httpclient.executeMethod(method);
+                        HttpResponse response = new HttpResponse();
+                        response.setStringResult(method.getResponseBodyAsString());
+                        response.setResponseHeaders(method.getResponseHeaders());
+                        String stringResult = response.getStringResult();
+                        logger.error("SendInventoryService中WxChatStockUpdate接口的结果" + stringResult);
+
+                        if (CommonUtil.isNotBlank(stringResult)) {
+                            Map mapresulrt = JSONUtil.getMap4Json(stringResult);
+                            Integer errorCode = Integer.parseInt(mapresulrt.get("errorCode") + "");
+
+                            if (errorCode != 200) {
+                                for (BusinessDtl businessDtl : dtlList) {
+                                    SendInventory sendInventory = new SendInventory();
+                                    sendInventory.setId(new GuidCreator().toString());
+                                    sendInventory.setColorId(businessDtl.getColorId());
+                                    sendInventory.setQty(Integer.parseInt(businessDtl.getQty() + ""));
+                                    sendInventory.setSizeId(businessDtl.getSizeId());
+                                    sendInventory.setStyleId(businessDtl.getStyleId());
+                                    sendInventory.setStyleName(CacheManager.getStyleNameById(businessDtl.getStyleId()));
+                                    sendInventory.setPushsuccess("N");
+                                    sendInventory.setBillDate(new Date());
+                                    sendInventory.setMessage(mapresulrt.get("moreInfo") + "");
+                                    savelist.add(sendInventory);
+                                }
+
+                            }
+                        } else {
+                            for (BusinessDtl businessDtl : dtlList) {
+                                SendInventory sendInventory = new SendInventory();
+                                sendInventory.setId(new GuidCreator().toString());
+                                sendInventory.setColorId(businessDtl.getColorId());
+                                sendInventory.setQty(Integer.parseInt(businessDtl.getQty() + ""));
+                                sendInventory.setSizeId(businessDtl.getSizeId());
+                                sendInventory.setStyleId(businessDtl.getStyleId());
+                                sendInventory.setStyleName(CacheManager.getStyleNameById(businessDtl.getStyleId()));
+                                sendInventory.setPushsuccess("N");
+                                sendInventory.setBillDate(new Date());
+                                sendInventory.setMessage("访问接口没成功");
+                                savelist.add(sendInventory);
+                            }
+                        }
+                    }else{
+                        for (BusinessDtl businessDtl : dtlList) {
+                            SendInventory sendInventory = new SendInventory();
+                            sendInventory.setId(new GuidCreator().toString());
+                            sendInventory.setColorId(businessDtl.getColorId());
+                            sendInventory.setQty(Integer.parseInt(businessDtl.getQty() + ""));
+                            sendInventory.setSizeId(businessDtl.getSizeId());
+                            sendInventory.setStyleId(businessDtl.getStyleId());
+                            sendInventory.setStyleName(CacheManager.getStyleNameById(businessDtl.getStyleId()));
+                            sendInventory.setPushsuccess("N");
+                            sendInventory.setBillDate(new Date());
+                            sendInventory.setMessage("访问接口没成功");
+                            savelist.add(sendInventory);
+                        }
                     }
 
-                }
-            }else{
-                for (BusinessDtl businessDtl : dtlList) {
-                    SendInventory sendInventory = new SendInventory();
-                    sendInventory.setId(new GuidCreator().toString());
-                    sendInventory.setColorId(businessDtl.getColorId());
-                    sendInventory.setQty(Integer.parseInt(businessDtl.getQty() + ""));
-                    sendInventory.setSizeId(businessDtl.getSizeId());
-                    sendInventory.setStyleId(businessDtl.getStyleId());
-                    sendInventory.setStyleName(CacheManager.getStyleNameById(businessDtl.getStyleId()));
-                    sendInventory.setPushsuccess("N");
-                    sendInventory.setBillDate(new Date());
-                    sendInventory.setMessage("访问接口没成功");
-                    savelist.add(sendInventory);
-                }
-            }
-            this.sendInventotyDao.doBatchInsert(savelist);
+                    this.sendInventotyDao.doBatchInsert(savelist);
+              }
         } catch (IOException e) {
             e.printStackTrace();
         }
