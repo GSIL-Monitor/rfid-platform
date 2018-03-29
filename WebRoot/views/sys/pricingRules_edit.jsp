@@ -141,7 +141,6 @@
                     }
                 },
                 rule2: {
-
                     validators: {
                         notEmpty: {
                             message: '吊牌价与门店价的关系不能为空'
@@ -160,6 +159,13 @@
                         regexp: {
                             regexp: /^[0-9]{1}\d*(\.\d{1,2})?$/,
                             message: '请输入只有两位小数的数字'
+                        }
+                    }
+                },
+                series: {
+                    validators: {
+                        notEmpty: {
+                            message: '系列不能为空请选择'
                         }
                     }
                 }
