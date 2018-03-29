@@ -72,6 +72,8 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ReplenishBillDtlViews> page = new Page<ReplenishBillDtlViews>(Integer.parseInt(pageSize));
         page.setPage(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
+        page.setSort("billdate");
+        page.setOrder("desc");
         page = this.replenishBillDtlViewsService.findPage(page,filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(ReplenishBillDtlViews d : page.getRows()){
