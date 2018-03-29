@@ -858,7 +858,7 @@ function doPrintA4(){
                         }else{
                             recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName+ "</td>";
                         }
-                    recordmessage +=    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName + "</td>" +
+                    recordmessage +=
                         "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.qty + "</td>" +
                         "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
                         "</tr>";
