@@ -112,13 +112,20 @@ function initButtonGroup() {
             "<button id='TODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseIn()'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
+            "</button>"+
+            "<button id='TRDtl_doPrintA4' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrintA4()'>" +
+            "    <i class='ace-icon fa fa-print'></i>" +
+            "    <span class='bigger-110'>A4打印</span>" +
             "</button>"
-        );
+    );
         if (transferOrder_status !== "0") {
             $("#search_orig_button").attr({"disabled": "disabled"});
             $("#search_dest_button").attr({"disabled": "disabled"});
             $("#TODtl_addUniqCode").attr({"disabled": "disabled"});
             $("#TODtl_save").attr({"disabled": "disabled"});
+        }
+        if(roleId != "0"){
+            $("#TRDtl_doPrintA4").hide();
         }
     }
     $("#addDetail").show();
@@ -525,7 +532,7 @@ function wareHouseOut() {
                         epc.colorId = rowData.colorId;
                         epc.qty = 1;
                         epc.sku = rowData.sku;
-                        epcArray.push(epc)
+                        epcArray.push(epc);
                         // }
                     })
                 }
@@ -823,4 +830,55 @@ function showCodesDetail(uniqueCodes) {
     $("#show-uniqueCode-list").modal('show');
     initUniqueCodeList(uniqueCodes);
     codeListReload(uniqueCodes);
+}
+function doPrintA4(){
+    var billno = $("#search_billNo").val();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/transferOrder/printA4Info.do",
+        data: {"billNo": billno},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var bill = msg.result.bill;
+                var billDtl = msg.result.dtl;
+                var LODOP = getLodop();
+                eval(print.printCont);
+                LODOP.SET_PRINT_STYLEA("remark", 'Content', bill.remark);
+                LODOP.SET_PRINT_STYLEA("storehouseName", 'Content', bill.origUnitName+"-"+bill.origName);
+                var recordmessage = "";
+                $.each(billDtl,function(index,value){
+                    recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
+                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
+                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleName + "</td>" ;
+                        if(value.supplierName == undefined){
+                            recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + ""+ "</td>";
+                        }else{
+                            recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName+ "</td>";
+                        }
+                    recordmessage +=
+                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.qty + "</td>" +
+                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
+                        "</tr>";
+                });
+
+
+                $("#loadtabA4").html(recordmessage);
+                //alert($("#edit-dialogA4").html());
+                console.log($("#edit-dialogA4").html());
+                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+
+
 }

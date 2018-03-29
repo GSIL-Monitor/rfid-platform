@@ -72,6 +72,7 @@ public class TaskService extends AbstractBaseService<Business, String> {
 
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         long time2 = System.currentTimeMillis();

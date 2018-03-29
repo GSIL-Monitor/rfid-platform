@@ -22,6 +22,7 @@
         var transferOrder_destId = "${transferOrderBill.destId}";
         var curOwnerId = "${ownerId}";
         var userId = "${userId}";
+        var roleId="${roleId}";
         var transferOrder_status = "${transferOrderBill.status}";
     </script>
 </head>
@@ -165,6 +166,33 @@
     </div>
 
 </div>
+<div id="edit-dialogA4" style="text-align: center;font-size:12px;display: none">
+
+    <table style="text-align:center;font-size:10px;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+        <thead >
+        <tr >
+            <th align="left"  nowrap="nowrap" style="border:0px;font-size:17px;width:20%;">款号</th>
+            <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">款名</th>
+            <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">厂家/品牌</th>
+            <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 7%;">数量</th>
+            <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">吊牌价</th>
+
+        </tr>
+        </thead>
+        <tbody id="loadtabA4">
+        <tr style="border-top:1px ;padding-top:5px;">
+            <td align="left" style="border-top:1px ;padding-top:5px;width: 20%;">&nbsp;</td>
+            <td align="left" style="border-top:1px ;padding-top:5px;width: 20%;">&nbsp;</td>
+            <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+            <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+            <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+
+</div>
 <jsp:include page="../layout/footer.jsp"></jsp:include>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
@@ -180,6 +208,7 @@
 <script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
 <script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
 <script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
+<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderBillDetailController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script type="text/javascript">

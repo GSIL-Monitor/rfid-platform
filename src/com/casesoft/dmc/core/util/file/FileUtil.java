@@ -15,16 +15,17 @@ public class FileUtil {
   public final static String File_Dir = "";
 
   public static void init() {
+    System.out.println(Constant.rootPath);
     initFolder(Constant.Folder.Epc_Init_Zip_File_Folder);
     initFolder(Constant.Folder.Epc_Init_File_Folder);
     initFolder(Constant.Folder.Report_File_Folder);
 
     try {
-      initFolder(PropertyUtil.getValue("MilanUpload"));
-      initFolder(PropertyUtil.getValue("MilanUploadHistory"));
+      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUpload"));
+      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUploadHistory"));
       //增加云上传目录
-      initFolder(PropertyUtil.getValue("MilanUpload")+File.separator+"Cloud");
-      initFolder(PropertyUtil.getValue("MilanUploadHistory")+File.separator+"Cloud");
+      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUpload")+File.separator+"Cloud");
+      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUploadHistory")+File.separator+"Cloud");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -67,7 +68,6 @@ public class FileUtil {
       }
     } catch (IOException ex) {
       ex.printStackTrace();
-      ;
       throw ex;
     } finally {
       if (bis != null) {
@@ -75,7 +75,6 @@ public class FileUtil {
           bis.close();
         } catch (IOException ex) {
           ex.printStackTrace();
-          ;
           throw ex;
         }
       }
@@ -501,9 +500,7 @@ public class FileUtil {
       @Override
       public boolean accept(File pathname) {
         String fileName = pathname.getAbsolutePath();
-        if (fileName.toLowerCase().contains(flag.toLowerCase()))
-          return true;
-        return false;
+        return fileName.toLowerCase().contains(flag.toLowerCase());
       }
 
     });

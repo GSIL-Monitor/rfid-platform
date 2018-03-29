@@ -1,9 +1,6 @@
 package com.casesoft.dmc.model.logistics;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by yushen on 2017/7/3.
@@ -29,6 +26,9 @@ public class TransferOrderBillDtl extends BaseBillDtl {
     private int outStatus=0;
     @Column()
     private int inStatus =0;
+
+    @Transient
+    private String supplierName;//供应商名字关联款中class1对应name
 
 
     public String getId() {
@@ -77,5 +77,13 @@ public class TransferOrderBillDtl extends BaseBillDtl {
 
     public void setInStatus(Integer inStatus) {
         this.inStatus = inStatus;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 }

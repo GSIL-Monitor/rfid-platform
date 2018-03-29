@@ -39,10 +39,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@ResponseBody
 	@Override
 	public Page<Style> findPage(Page<Style> page) throws Exception {
-
 		this.logAllRequestParams();
-		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
-				.getRequest());
+		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
 		page.setPageProperty();
 		page = this.styleService.findPage(page, filters);
 		return page;
@@ -56,7 +54,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		this.logAllRequestParams();
 		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
 				.getRequest());
- 		return this.styleService.find(filters);
+		return this.styleService.find(filters);
 	}
 
 	@RequestMapping("/save")
@@ -102,15 +100,15 @@ public class StyleController extends BaseController implements IBaseInfoControll
 					sty.setStyleId(style.getStyleId());
 					sty.setIsUse("Y");
 				}else {
-					return this.returnFailInfo("保存失败");
+					return this.returnFailInfo("保存失败!"+sty.getId()+"款号已存在请重新输入");
 				}
 			}else {
-					sty = new Style();
-					sty.setId(style.getStyleId());
-					sty.setStyleId(style.getStyleId());
-					sty.setIsUse("Y");
+				sty = new Style();
+				sty.setId(style.getStyleId());
+				sty.setStyleId(style.getStyleId());
+				sty.setIsUse("Y");
 			}
-            sty.setOprId(userId);
+			sty.setOprId(userId);
 			List<Product> productList = JSON.parseArray(productStr,Product.class);
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 
@@ -123,16 +121,16 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			//读取congif.properties文件
 			boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
 					.getValue("is_wxshop"));
-                if (is_wxshop) {
-                    boolean ispush = this.wxShopBaseService.WxShopStyle(sty, saveList);
-                    if (ispush) {
-                        return this.returnSuccessInfo("保存成功", style);
-                    } else {
-                        return this.returnSuccessInfo("保存成功,推送失败", style);
-                    }
-                } else {
-                    return this.returnSuccessInfo("保存成功", style);
-                }
+			if (is_wxshop) {
+				boolean ispush = this.wxShopBaseService.WxShopStyle(sty, saveList);
+				if (ispush) {
+					return this.returnSuccessInfo("保存成功", style);
+				} else {
+					return this.returnSuccessInfo("保存成功,推送失败", style);
+				}
+			} else {
+				return this.returnSuccessInfo("保存成功", style);
+			}
 		}catch(Exception e ){
 			return this.returnFailInfo("保存失败");
 		}
@@ -163,7 +161,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
 		mv.addObject("styleId", styleId);
-		mv.addObject("classTypes",propertyTypeList);
+		mv.addObject("v",propertyTypeList);
 		mv.addObject("roleId",getCurrentUser().getRoleId());
 		mv.addObject("userId",getCurrentUser().getId());
 		return mv;
@@ -187,15 +185,15 @@ public class StyleController extends BaseController implements IBaseInfoControll
 
 	}
 	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    @ResponseBody
+	@ResponseBody
 	@Override
 	public MessageBox importExcel(MultipartFile file) throws Exception {
 		InputStream in = file.getInputStream();
 		try {
-		    List<Style> styleList = StyleUtil.uploadNewExcel(in,file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
-		    this.styleService.saveList(styleList);
-		    CacheManager.refreshStyleCache();
-		    return this.returnSuccessInfo("保存成功");
+			List<Style> styleList = StyleUtil.uploadNewExcel(in,file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+			this.styleService.saveList(styleList);
+			CacheManager.refreshStyleCache();
+			return this.returnSuccessInfo("保存成功");
 		}catch(Exception e){
 			logger.error(e.getMessage());
 			return this.returnFailInfo("保存失败", e.getMessage());

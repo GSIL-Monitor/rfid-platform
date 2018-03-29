@@ -9,18 +9,21 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.mirror.NewProduct;
 import com.casesoft.dmc.model.product.Color;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.sys.Print;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
+import com.casesoft.dmc.service.sys.PrintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +33,7 @@ import sun.misc.Cache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yushen on 2017/7/4.
@@ -46,6 +46,8 @@ public class TransferOrderBillController extends BaseController implements ILogi
     @Autowired
     private TransferOrderBillService transferOrderBillService;
 
+    @Autowired
+    private PrintService printService;
 
     @Override
     public String index() {
@@ -100,7 +102,16 @@ public class TransferOrderBillController extends BaseController implements ILogi
             }
         }
         for (TransferOrderBillDtl dtl : transferOrderBillDtls) {
-            dtl.setStyleName(CacheManager.getStyleNameById(dtl.getStyleId()));
+            Style s = CacheManager.getStyleById(dtl.getStyleId());
+            if(CommonUtil.isNotBlank(s)){
+                dtl.setStyleName(s.getStyleName());
+                if(CommonUtil.isNotBlank(s.getClass1())){
+                    PropertyKey key = CacheManager.getPropertyKey("C1"+"-"+s.getClass1());
+                    if(CommonUtil.isNotBlank(key)){
+                        dtl.setSupplierName(key.getName());
+                    }
+                }
+            }
             dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
             if(codeMap.containsKey(dtl.getSku())){
@@ -197,6 +208,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
             mv.addObject("ownerId",getCurrentUser().getOwnerId());
             Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
             mv.addObject("ownersId", unit.getOwnerids());
+            mv.addObject("roleId", getCurrentUser().getRoleId());
             mv.addObject("userId",getCurrentUser().getId());
             return mv;
         }else{
@@ -301,5 +313,47 @@ public class TransferOrderBillController extends BaseController implements ILogi
         Business business = BillConvertUtil.covertToTransferOrderBusinessIn(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
         this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
         return new MessageBox(true,"入库成功");
+    }
+    /**
+     * 调拨单A4打印模块
+     * @param billNo 单据编号
+     * @Author Alvin 2018-3-27
+     * */
+    @RequestMapping(value = "/printA4Info")
+    @ResponseBody
+    public MessageBox printA4Info(String billNo){
+        try {
+            Print print = this.printService.findPrint(Long.parseLong("42"));//打印Id需要优化不能些定值
+            TransferOrderBill bill = this.transferOrderBillService.load(billNo);
+            List<TransferOrderBillDtl> dtlList = this.transferOrderBillService.findBillDtlByBillNo(billNo);
+            Map<String, TransferOrderBillDtl> map = new HashMap<>();
+            Map<String, Object> resultMap = new HashMap<>();
+            for (TransferOrderBillDtl dtl : dtlList) {
+                //按款汇总调拨单明细
+                if (map.containsKey(dtl.getStyleId())) {
+                    TransferOrderBillDtl billDtl = map.get(dtl.getStyleId());
+                    billDtl.setQty(billDtl.getQty() + dtl.getQty());
+                    map.put(billDtl.getStyleId(), billDtl);
+                } else {
+                    Style sty = CacheManager.getStyleById(dtl.getStyleId());
+                    dtl.setStyleName(sty.getStyleName());
+                    dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
+                    dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
+                    PropertyKey key = CacheManager.getPropertyKey("C1" + "-" + sty.getClass1());
+                    if (CommonUtil.isNotBlank(key)) {
+                        dtl.setSupplierName(key.getName());
+                    }
+                    map.put(dtl.getStyleId(), dtl);
+                }
+            }
+            resultMap.put("print", print);
+            resultMap.put("bill", bill);
+            resultMap.put("dtl", new ArrayList(map.values()));
+            return new MessageBox(true, "ok", resultMap);
+        }catch (Exception e){
+            return new MessageBox(false,"获取数据失败"+e.getMessage());
+        }
+
+
     }
 }
