@@ -548,6 +548,22 @@ function initKendoUIGrid() {
                      }*/
                 },
                 {
+                    field: "deportname",
+                    title: "仓店",
+                    width: "180px",
+                    /* template:function(data) {
+                     if(data.origName){
+                     return "["+data.origid+"]"+data.origName;
+                     }else{
+                     if(data.origid){
+                     return "["+data.origid+"]";
+                     }else{
+                     return "";
+                     }
+                     }
+                     }*/
+                },
+                {
                     field: "origunitname",
                     title: "客户编号",
                     width: "180px",
@@ -903,6 +919,22 @@ function initnoKendoUIGrid() {
                 {
                     field: "origname",
                     title: "发货仓店",
+                    width: "180px",
+                    /* template:function(data) {
+                     if(data.origName){
+                     return "["+data.origid+"]"+data.origName;
+                     }else{
+                     if(data.origid){
+                     return "["+data.origid+"]";
+                     }else{
+                     return "";
+                     }
+                     }
+                     }*/
+                },
+                {
+                    field: "deportname",
+                    title: "仓店",
                     width: "180px",
                     /* template:function(data) {
                      if(data.origName){
