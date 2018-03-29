@@ -869,8 +869,8 @@ function doPrintA4(){
                 //alert($("#edit-dialogA4").html());
                 console.log($("#edit-dialogA4").html());
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 
