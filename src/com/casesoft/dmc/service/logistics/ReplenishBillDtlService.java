@@ -75,7 +75,7 @@ public class ReplenishBillDtlService implements IBaseService<ReplenishBillDtl, S
     }
 
     public List<ChangeReplenishBillDtl> findChangeReplenishBillDtl(String replenishNo,String sku){
-        String hql="from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=? order by t.id desc";
+        String hql="from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=? order by t.billDate desc";
         List<ChangeReplenishBillDtl> unique = this.changeReplenishBillDtlDao.find(hql, new Object[]{replenishNo, sku});
         return unique;
 
