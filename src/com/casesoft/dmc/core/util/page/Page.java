@@ -21,7 +21,7 @@ public class Page<T> {
 	protected int pageNo = 1;
 	protected int pageSize = -1;
 	protected String orderBy = null;
-	protected String order = null;
+	protected String order = null;	//升序降序  desc asc
 	protected boolean autoCount = true;
 
 	//-- 返回结果 --//
@@ -33,7 +33,7 @@ public class Page<T> {
 	private String sumFields = null;//qty,value ,隔开
 	private String sumValues = null;
 
-    private String sort;
+    private String sort;	//排序字段
 
 	private String sord;//asc
 	private String sidx;//code
