@@ -173,7 +173,7 @@
         <tr >
             <th align="left"  nowrap="nowrap" style="border:0px;font-size:17px;width:20%;">款号</th>
             <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">款名</th>
-            <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">系列</th>
+            <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">厂家/品牌</th>
             <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 7%;">数量</th>
             <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">吊牌价</th>
 
