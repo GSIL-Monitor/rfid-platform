@@ -118,8 +118,14 @@ public class WechatrelenishController extends ApiBaseController {
             }
             List<ChangeReplenishBillDtl> list = this.replenishBillDtlService.findChangeReplenishBillDtl(d.getBillNo(), d.getSku());
             if(CommonUtil.isNotBlank(list)&&list.size()!=0){
-                String lasttime=CommonUtil.getDateString(list.get(0).getBillDate(),"yyyy-MM-dd HH:mm:ss");
-                d.setLastTime(lasttime);
+                //String lasttime=CommonUtil.getDateString(list.get(0).getBillDate(),"yyyy-MM-dd HH:mm:ss");
+                //d.setLastTime(lasttime);
+                String lasttime=CommonUtil.getDateString(list.get(0).getExpectTime(),"yyyy-MM-dd");
+                if(CommonUtil.isNotBlank(lasttime)){
+                    d.setLastTime(lasttime);
+                }else {
+                    d.setLastTime(null);
+                }
             }else {
                 d.setLastTime(null);
             }
