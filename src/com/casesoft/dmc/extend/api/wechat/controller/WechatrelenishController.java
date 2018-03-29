@@ -18,6 +18,7 @@ import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillDtlService;
 import com.casesoft.dmc.service.logistics.ReplenishBillDtlViewsService;
+import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import io.swagger.annotations.*;
@@ -49,7 +50,8 @@ public class WechatrelenishController extends ApiBaseController {
     private UnitService uniService;
     @Autowired
     private PropertyKeyService propertyKeyService;
-
+    @Autowired
+    private ReplenishBillService replenishBillService;
 
     @Override
     public String index() {
@@ -213,7 +215,41 @@ public class WechatrelenishController extends ApiBaseController {
 
    }
 
+    /**
+     * add by Yushen
+     * 销售员下补货单后，查看补货单的接口。
+     * @return
+     */
+    @RequestMapping(value="/findReplenishOrderList.do")
+    @ResponseBody
+    public MessageBox findReplenishOrderList(String pageSize,String pageNo, String userId){
 
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
+        User CurrentUser = CacheManager.getUserById(userId);
+        String ownerId = CurrentUser.getOwnerId();
+        String id = CurrentUser.getId();
+        PropertyFilter dateSort = new PropertyFilter("EQS_ownerId", ownerId);
+
+        if (!id.equals("admin")) {
+            PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
+            filters.add(filter);
+        }
+        Page<ReplenishBill> page = new Page<ReplenishBill>();
+        page.setPageSize(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setSort("billDate");
+        page.setOrder("desc");
+        page.setPageProperty();
+        page = this.replenishBillService.findPage(page, filters);
+        if(CommonUtil.isNotBlank(page.getRows())){
+            return new MessageBox(true,"success", page);
+        }else {
+            return new MessageBox(false,"fail");
+        }
+    }
 
 
 }
