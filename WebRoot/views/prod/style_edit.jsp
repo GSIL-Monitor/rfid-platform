@@ -432,7 +432,7 @@
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
 <script type="text/javascript">
-    var checkNum = 4.5;
+    var checkNum ;
     $(function () {
 //        initLoadStyle();
         iniGrid();
@@ -828,10 +828,8 @@
                 for (var i = 0; i < json.length; i++) {
                     if(json[i].code === "AS"){
                         $("#form_class9").append("<option value='"+json[i].code+"' style='background-color: #eeeeee' selected>"+json[i].name+"</option>");
-                        checkNum=4.5
                     }else{
                         $("#form_class9").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
-                        checkNum=2.95
                     }
                 }
                 if("${pageType}"=="edit"){
@@ -889,6 +887,7 @@
             }
         })
     }
+    /*name=系列的code*/
     function changPrice(name){
         var price = $("#form_price").val();
         var purPrice;
