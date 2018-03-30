@@ -76,6 +76,8 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ReplenishBillDtlViews> page = new Page<ReplenishBillDtlViews>(Integer.parseInt(pageSize));
         page.setPage(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
+        page.setSort("billdate");
+        page.setOrder("desc");
         page = this.replenishBillDtlViewsService.findPage(page,filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(ReplenishBillDtlViews d : page.getRows()){
@@ -122,8 +124,14 @@ public class WechatrelenishController extends ApiBaseController {
             }
             List<ChangeReplenishBillDtl> list = this.replenishBillDtlService.findChangeReplenishBillDtl(d.getBillNo(), d.getSku());
             if(CommonUtil.isNotBlank(list)&&list.size()!=0){
-                String lasttime=CommonUtil.getDateString(list.get(0).getBillDate(),"yyyy-MM-dd HH:mm:ss");
-                d.setLastTime(lasttime);
+                //String lasttime=CommonUtil.getDateString(list.get(0).getBillDate(),"yyyy-MM-dd HH:mm:ss");
+                //d.setLastTime(lasttime);
+                String lasttime=CommonUtil.getDateString(list.get(0).getExpectTime(),"yyyy-MM-dd");
+                if(CommonUtil.isNotBlank(lasttime)){
+                    d.setLastTime(lasttime);
+                }else {
+                    d.setLastTime(null);
+                }
             }else {
                 d.setLastTime(null);
             }
@@ -176,7 +184,7 @@ public class WechatrelenishController extends ApiBaseController {
            purchaseOrderBill.setBillNo(prefix);
            User curUser = CacheManager.getUserById(userId);
            BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
-           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,replenishBillNo);
+           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,replenishBillNo,curUser);
            System.out.println(purchaseOrderBill.getBillNo());
            return new MessageBox(true,"保存成功", purchaseOrderBill.getBillNo());
 

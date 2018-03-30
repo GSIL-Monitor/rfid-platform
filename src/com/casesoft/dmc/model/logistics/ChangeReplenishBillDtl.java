@@ -26,6 +26,27 @@ public class ChangeReplenishBillDtl {
     @Column()
     private String qty;
     @Column()
+    private String userId;
+    @Column()
+    private String ownerId;
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    @Column()
     private Date expectTime;//预计时间
 
     public Date getExpectTime() {

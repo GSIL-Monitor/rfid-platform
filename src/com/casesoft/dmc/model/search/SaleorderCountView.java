@@ -531,6 +531,16 @@ public class SaleorderCountView {
 
     @Column()
     private String deport;
+    @Column()
+    private String deportname;
+
+    public String getDeportname() {
+        return deportname;
+    }
+
+    public void setDeportname(String deportname) {
+        this.deportname = deportname;
+    }
 
     public String getDeport() {
         return deport;
