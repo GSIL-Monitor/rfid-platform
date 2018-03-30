@@ -186,7 +186,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
         }
     }
-    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo, User curUser) throws ParseException {
+    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo,User curUser) throws ParseException {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if(CommonUtil.isBlank(purchaseOrderBill1)){
             Double actPrice = purchaseOrderBill.getActPrice();
@@ -221,7 +221,6 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                         unique.setStatus(1);//未完成
                         unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
                     }
-
                 }else{
                     unique.setStatus(0);//已完成
                 }
@@ -233,8 +232,8 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
                 changeReplenishBillDtl.setBillDate(new Date());
                 changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
-                changeReplenishBillDtl.setUserId(curUser.getId());
                 changeReplenishBillDtl.setOwnerId(curUser.getOwnerId());
+                changeReplenishBillDtl.setUserId(curUser.getId());
                 //添加预计时间
                 Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd");
                 changeReplenishBillDtl.setExpectTime(date);
