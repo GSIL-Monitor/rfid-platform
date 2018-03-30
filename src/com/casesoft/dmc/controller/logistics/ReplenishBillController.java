@@ -128,7 +128,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         mv.addObject("defaultWarehId", defaultWarehId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
-        mv.addObject("mainUrl", "/logistics/relenishBill/index.do");
+        mv.addObject("mainUrl", "/logistics/relenishBill/history.do");
       /*  ModelAndView mv = new ModelAndView("/views/logistics/relenishBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
@@ -160,7 +160,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("Codes", getCurrentUser().getCode());
-        mv.addObject("mainUrl", "/logistics/relenishBill/index.do");
+        mv.addObject("mainUrl", "/logistics/relenishBill/history.do");
         return mv;
 
     }
@@ -231,4 +231,38 @@ public class ReplenishBillController extends BaseController implements ILogistic
         }
 
     }
+    @RequestMapping(value = "/checkReplenishBill")
+    @ResponseBody
+    public MessageBox checkReplenishBill(String replenishBillNo,String remark){
+        User currentUser = this.getCurrentUser();
+        Map<Boolean, String> stringMap = this.replenishBillService.checkReplenishBill(replenishBillNo, currentUser, remark);
+        Boolean isok=true;
+        for(Boolean key : stringMap.keySet()){
+            isok=key;
+        }
+        if(isok){
+            return new MessageBox(true, stringMap.get(isok));
+        }else{
+            return new MessageBox(true, stringMap.get(isok));
+        }
+
+
+    }
+    @RequestMapping(value = "/noCheckReplenishBill")
+    @ResponseBody
+    public MessageBox noCheckReplenishBill(String replenishBillNo,String remark){
+        User currentUser = this.getCurrentUser();
+        Map<Boolean, String> stringMap = this.replenishBillService.noCheckReplenishBill(replenishBillNo, currentUser, remark);
+        Boolean isok=true;
+        for(Boolean key : stringMap.keySet()){
+            isok=key;
+        }
+        if(isok){
+            return new MessageBox(true, stringMap.get(isok));
+        }else{
+            return new MessageBox(true, stringMap.get(isok));
+        }
+
+    }
+
 }

@@ -19,6 +19,16 @@ public class ReplenishBill extends BaseBill{
 
     @Column()
     private String buyahandId;//买手的id
+    @Column()
+    private String replenishType;//补货类型 1.是购货 2.是退货
+
+    public String getReplenishType() {
+        return replenishType;
+    }
+
+    public void setReplenishType(String replenishType) {
+        this.replenishType = replenishType;
+    }
 
     public String getBuyahandId() {
         return buyahandId;

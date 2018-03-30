@@ -95,39 +95,42 @@ public class SendStreamNOMessageService extends AbstractBaseService<SendStreamNO
 
             try {
                 String wxshop_Path = PropertyUtil.getValue("wxshop_Path");
-                PostMethod method = new PostMethod(wxshop_Path+"/v2/order/shippedForRfid");
-                method.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-                method.setRequestHeader("Accept", "application/json; charset=UTF-8");
-                // 设置为默认的重试策略
-                method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+                if(CommonUtil.isNotBlank(wxshop_Path)){
+                    PostMethod method = new PostMethod(wxshop_Path+"/v2/order/shippedForRfid");
+                    method.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+                    method.setRequestHeader("Accept", "application/json; charset=UTF-8");
+                    // 设置为默认的重试策略
+                    method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
 
-                method.setRequestBody(sendJson);
+                    method.setRequestBody(sendJson);
 
-                httpclient.executeMethod(method);
-                HttpResponse response = new HttpResponse();
-                response.setStringResult(method.getResponseBodyAsString());
-                response.setResponseHeaders(method.getResponseHeaders());
-                String stringResult = response.getStringResult();
-                System.out.println(stringResult);
+                    httpclient.executeMethod(method);
+                    HttpResponse response = new HttpResponse();
+                    response.setStringResult(method.getResponseBodyAsString());
+                    response.setResponseHeaders(method.getResponseHeaders());
+                    String stringResult = response.getStringResult();
+                    System.out.println(stringResult);
 
-                if(CommonUtil.isNotBlank(stringResult)) {
-                    Map mapresulrt = JSONUtil.getMap4Json(stringResult);
-                    Integer errorCode = Integer.parseInt(mapresulrt.get("errorCode") + "");
-                    if(errorCode == 200){
-                        sendStreamNOMessage.setPushsuccess("Y");
-                        this.sendStreamNOMessageDao.update(sendStreamNOMessage);
-                        message="推送成功";
+                    if(CommonUtil.isNotBlank(stringResult)) {
+                        Map mapresulrt = JSONUtil.getMap4Json(stringResult);
+                        Integer errorCode = Integer.parseInt(mapresulrt.get("errorCode") + "");
+                        if(errorCode == 200){
+                            sendStreamNOMessage.setPushsuccess("Y");
+                            this.sendStreamNOMessageDao.update(sendStreamNOMessage);
+                            message="推送成功";
+                        }
+                        if(errorCode==11008){
+
+                            message="推送失败";
+                        }
+                        if(errorCode==500){
+
+                            message="推送失败";
+                        }
+
                     }
-                    if(errorCode==11008){
-
-                        message="推送失败";
-                    }
-                    if(errorCode==500){
-
-                        message="推送失败";
-                    }
-
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

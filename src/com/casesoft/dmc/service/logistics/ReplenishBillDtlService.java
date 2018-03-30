@@ -3,7 +3,9 @@ package com.casesoft.dmc.service.logistics;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.dao.logistics.ReplenishBillDtlDao;
+import com.casesoft.dmc.model.logistics.ChangeReplenishBillDtl;
 import com.casesoft.dmc.model.logistics.ReplenishBill;
 import com.casesoft.dmc.model.logistics.ReplenishBillDtl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import java.util.List;
 public class ReplenishBillDtlService implements IBaseService<ReplenishBillDtl, String> {
     @Autowired
     private ReplenishBillDtlDao replenishBillDtlDao;
+    @Autowired
+    private ChangeReplenishBillDtlDao changeReplenishBillDtlDao;
     @Override
     public Page<ReplenishBillDtl> findPage(Page<ReplenishBillDtl> page, List<PropertyFilter> filters) {
         return this.replenishBillDtlDao.findPage(page,filters);
@@ -69,4 +73,12 @@ public class ReplenishBillDtlService implements IBaseService<ReplenishBillDtl, S
     public void delete(String id) {
 
     }
+
+    public List<ChangeReplenishBillDtl> findChangeReplenishBillDtl(String replenishNo,String sku){
+        String hql="from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=? order by t.billDate desc";
+        List<ChangeReplenishBillDtl> unique = this.changeReplenishBillDtlDao.find(hql, new Object[]{replenishNo, sku});
+        return unique;
+
+    }
+
 }

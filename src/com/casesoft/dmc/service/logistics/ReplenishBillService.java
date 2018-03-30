@@ -6,10 +6,7 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.dao.logistics.MergeReplenishBillDao;
-import com.casesoft.dmc.dao.logistics.MergeReplenishBillDtlDao;
-import com.casesoft.dmc.dao.logistics.RecordsizeDao;
-import com.casesoft.dmc.dao.logistics.ReplenishBillDao;
+import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.dao.sys.UserDao;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.Unit;
@@ -36,6 +33,8 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
     private MergeReplenishBillDtlDao  MergeReplenishBillDtlDao;
     @Autowired
     private RecordsizeDao recordsizeDao;
+    @Autowired
+    private CheckReplenishInfoDao checkReplenishInfoDao;
 
     @Override
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page, List<PropertyFilter> filters) {
@@ -350,4 +349,52 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         }
        return replenishBilllist;
    }
+
+   public Map<Boolean,String> checkReplenishBill(String replenishBillNo, User currentUser,String remark){
+       ReplenishBill replenishBill = this.replenishBillDao.get(replenishBillNo);
+       if(CommonUtil.isNotBlank(replenishBill)){
+           replenishBill.setStatus(BillConstant.BillStatus.Check);
+           this.replenishBillDao.update(replenishBill);
+           CheckReplenishInfo checkReplenishInfo=new CheckReplenishInfo();
+           checkReplenishInfo.setId(new GuidCreator().toString());
+           checkReplenishInfo.setCheckType(BillConstant.BillStatus.Check);
+           checkReplenishInfo.setReplenishBillNo(replenishBillNo);
+           checkReplenishInfo.setHandlersId(currentUser.getId());
+           checkReplenishInfo.setRemark(remark);
+           checkReplenishInfo.setBillDate(new Date());
+           this.checkReplenishInfoDao.save(checkReplenishInfo);
+           Map<Boolean,String> map=new HashMap<Boolean,String>();
+           map.put(true,"审核成功");
+           return  map;
+       }else{
+           Map<Boolean,String> map=new HashMap<Boolean,String>();
+           map.put(false,"审核没成功");
+           return  map;
+       }
+
+   }
+
+    public Map<Boolean,String> noCheckReplenishBill(String replenishBillNo, User currentUser,String remark){
+        ReplenishBill replenishBill = this.replenishBillDao.get(replenishBillNo);
+        if(CommonUtil.isNotBlank(replenishBill)){
+            replenishBill.setStatus(BillConstant.BillStatus.noCheck);
+            this.replenishBillDao.update(replenishBill);
+            CheckReplenishInfo checkReplenishInfo=new CheckReplenishInfo();
+            checkReplenishInfo.setId(new GuidCreator().toString());
+            checkReplenishInfo.setCheckType(BillConstant.BillStatus.noCheck);
+            checkReplenishInfo.setReplenishBillNo(replenishBillNo);
+            checkReplenishInfo.setHandlersId(currentUser.getId());
+            checkReplenishInfo.setRemark(remark);
+            checkReplenishInfo.setBillDate(new Date());
+            this.checkReplenishInfoDao.save(checkReplenishInfo);
+            Map<Boolean,String> map=new HashMap<Boolean,String>();
+            map.put(true,"反审核成功");
+            return  map;
+        }else{
+            Map<Boolean,String> map=new HashMap<Boolean,String>();
+            map.put(false,"审核没成功");
+            return  map;
+        }
+
+    }
 }

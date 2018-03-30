@@ -341,12 +341,17 @@ public class WarehStockController extends BaseController {
     public MessageBox checkCodes(String warehId, String codes, Integer type, String billNo) {
         //判断单据单据是否是商城
         try {
-            if (Boolean.parseBoolean(PropertyUtil.getValue("is_wxshop"))){
-                if(billNo.startsWith(BillConstant.BillPrefix.saleOrder)){
-                    //微商城销售单更新
-                    this.saleOrderBillService.ShopBilldeal(billNo,codes);
+            boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
+                    .getValue("is_wxshop"));
+            if(CommonUtil.isNotBlank(is_wxshop)){
+                if (Boolean.parseBoolean(PropertyUtil.getValue("is_wxshop"))){
+                    if(billNo.startsWith(BillConstant.BillPrefix.saleOrder)){
+                        //微商城销售单更新
+                        this.saleOrderBillService.ShopBilldeal(billNo,codes);
+                    }
                 }
             }
+
             List<String> codeList = new ArrayList<>();
 
             if (type == -1) {

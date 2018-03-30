@@ -17,6 +17,7 @@ import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
@@ -185,7 +186,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
         }
     }
-    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo) throws ParseException {
+    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList,String replenishBillNo,User curUser) throws ParseException {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if(CommonUtil.isBlank(purchaseOrderBill1)){
             Double actPrice = purchaseOrderBill.getActPrice();
@@ -196,10 +197,10 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             if(CommonUtil.isBlank(payPrice)){
                 payPrice=0.0;
             }
-            Unit unit = this.unitDao.get(purchaseOrderBill.getOrigUnitId());
+            /*Unit unit = this.unitDao.get(purchaseOrderBill.getOrigUnitId());
             Double owingValue = unit.getOwingValue();
             unit.setOwingValue(owingValue+(actPrice-payPrice));
-            this.unitDao.update(unit);
+            this.unitDao.update(unit);*/
         }
         this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
         this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
@@ -213,10 +214,15 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 String hql="from ReplenishBillDtl t where t.sku=? and t.billId=?";
                 ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
                 if(unique.getQty()>unique.getActConvertQty()){
-                    unique.setStatus(1);
-                    unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
+                    if(unique.getQty()<=purchaseOrderBillDtl.getQty()){
+                        unique.setStatus(0);//已完成
+                        unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
+                    }else{
+                        unique.setStatus(1);//未完成
+                        unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
+                    }
                 }else{
-                    unique.setStatus(0);
+                    unique.setStatus(0);//已完成
                 }
                 this.replenishBillDtlDao.saveOrUpdate(unique);
                 ChangeReplenishBillDtl changeReplenishBillDtl=new ChangeReplenishBillDtl();
@@ -226,8 +232,10 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
                 changeReplenishBillDtl.setBillDate(new Date());
                 changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
+                changeReplenishBillDtl.setOwnerId(curUser.getOwnerId());
+                changeReplenishBillDtl.setUserId(curUser.getId());
                 //添加预计时间
-                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd HH:mm:ss");
+                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd");
                 changeReplenishBillDtl.setExpectTime(date);
                 list.add(changeReplenishBillDtl);
 
