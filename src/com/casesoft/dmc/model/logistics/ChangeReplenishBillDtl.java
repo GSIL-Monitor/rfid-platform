@@ -1,9 +1,8 @@
 package com.casesoft.dmc.model.logistics;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.alibaba.fastjson.annotation.JSONField;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -19,6 +18,7 @@ public class ChangeReplenishBillDtl {
     private String ReplenishNo;
     @Column()
     private String purchaseNo;
+    @JSONField(format="yyyy-MM-dd")
     @Column()
     private Date billDate;
     @Column()
@@ -29,6 +29,12 @@ public class ChangeReplenishBillDtl {
     private String userId;
     @Column()
     private String ownerId;
+
+    @Transient
+    private String styleId;
+
+    @Transient
+    private String styleName;
 
     public String getOwnerId() {
         return ownerId;
@@ -46,6 +52,7 @@ public class ChangeReplenishBillDtl {
         this.userId = userId;
     }
 
+    @JSONField(format="yyyy-MM-dd")
     @Column()
     private Date expectTime;//预计时间
 
@@ -103,5 +110,21 @@ public class ChangeReplenishBillDtl {
 
     public void setQty(String qty) {
         this.qty = qty;
+    }
+
+    public String getStyleId() {
+        return styleId;
+    }
+
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
+    }
+
+    public String getStyleName() {
+        return styleName;
+    }
+
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
     }
 }
