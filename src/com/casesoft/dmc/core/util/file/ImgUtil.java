@@ -402,4 +402,24 @@ public class ImgUtil {
         //return data;
     }
 
+    /**
+     * add by yushen 设置图片路径
+     * @param getStyleId
+     * @param rootPath
+     * @return
+     */
+    public static String fetchImgUrl(String getStyleId,String rootPath) {
+        File file = new File(rootPath + "/product/photo/" + getStyleId);
+        if (file.exists()) {
+            File[] files = file.listFiles();
+            if (files.length > 0) {
+                File[] photos = files[0].listFiles();
+                if (photos.length > 0) {
+                    return "/product/photo/" + getStyleId + "/" + files[0].getName() + "/" + photos[0].getName();
+                }
+            }
+        }
+        return "/imgs/noImg.png";
+    }
+
 }
