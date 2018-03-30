@@ -25,6 +25,16 @@ public class Style extends BaseStyle implements java.io.Serializable {
 
     @Transient
     private String url;
+    @Transient
+    private String class1Name;
+
+    public String getClass1Name() {
+        return class1Name;
+    }
+
+    public void setClass1Name(String class1Name) {
+        this.class1Name = class1Name;
+    }
 
     public String getUrl() {
         return url;

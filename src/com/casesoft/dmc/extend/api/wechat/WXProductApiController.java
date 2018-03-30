@@ -85,6 +85,15 @@ public class WXProductApiController extends ApiBaseController {
             }else{
                 d.setUrl("/imgs/noImg.png");
             }
+            //PropertyKey propertyKey = this.propertyService.findPropertyKeyBytypeAndCode(d.getClass1());
+            //d.setClass1Name(propertyKey.getName());
+            PropertyKey propertyKey = CacheManager.getPropertyKey("C1-" + d.getClass1());
+            if(CommonUtil.isNotBlank(propertyKey)){
+                d.setClass1Name(propertyKey.getName());
+            }else{
+                d.setClass1Name("");
+            }
+
         }
         return page;
     }
