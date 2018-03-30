@@ -12,6 +12,7 @@ import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -31,8 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.beans.Transient;
 import java.io.File;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/3/19.
@@ -325,11 +325,23 @@ public class WechatrelenishController extends ApiBaseController {
         page.setSort("billDate");
         page.setOrder("desc");
         page.setPageProperty();
-        Page<ChangeReplenishBillDtl> recordList = this.changeReplenishBillDtlDao.findPage(page, filters);
-        return new MessageBox(true,"success", recordList);
+        Page<ChangeReplenishBillDtl> recordPage = this.changeReplenishBillDtlDao.findPage(page, filters);
+        if(CommonUtil.isNotBlank(recordPage.getRows())){
+            Map<String, ChangeReplenishBillDtl> billNo2DtlMap = new HashMap<>();
+            for (ChangeReplenishBillDtl dtl: recordPage.getRows()) {
+                Product product = CacheManager.getProductByCode(dtl.getSku());
+                dtl.setStyleId(product.getStyleId());
+                dtl.setStyleName(product.getStyleName());
+                billNo2DtlMap.put(dtl.getPurchaseNo(), dtl);
+            }
+            List<ChangeReplenishBillDtl> uniqueBillNoList = new ArrayList<>(billNo2DtlMap.values());
+            recordPage.setRows(uniqueBillNoList);
+        }
+        return new MessageBox(true,"success", recordPage);
     }
 
     /**
+     *
      * add by yushen
      * 买手处理完补货后，查看补单转换的采购单
      */
