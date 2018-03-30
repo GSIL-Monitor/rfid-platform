@@ -337,9 +337,10 @@ public class WechatrelenishController extends ApiBaseController {
     @ResponseBody
     public MessageBox findHandleAndPurchaseBill(String purchaseNo){
         this.logAllRequestParams();
-
-
-        return new MessageBox(true,"success");
+        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(purchaseNo);
+        List<PurchaseOrderBillDtl> billDtls = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseNo);
+        purchaseOrderBill.setDtlList(billDtls);
+        return new MessageBox(true,"success", purchaseOrderBill);
     }
 
 }
