@@ -44,7 +44,7 @@ function initSelectBusinessIdForm() {
 function initSelectbuyahandIdForm() {
     var url;
 
-        url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
+    url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
 
 
 
@@ -84,6 +84,10 @@ function initButtonGroup() {
         "<button id='SODtl_noCheck' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showNocheck()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>反审核</span>" +
+        "</button>"+
+        "<button id='SODtl_changePurchase' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='changePurchase()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>生成采购单</span>" +
         "</button>"
     );
 
@@ -144,12 +148,12 @@ function initGrid() {
             },
             {name: 'sku', label: 'SKU', width: 50}
             /*{
-                name: 'actPrice', label: '实际价格', editable: true, width: 40,
-                editrules: {
-                    number: true,
-                    minValue: 0
-                }
-            }*/
+             name: 'actPrice', label: '实际价格', editable: true, width: 40,
+             editrules: {
+             number: true,
+             minValue: 0
+             }
+             }*/
 
         ],
         autowidth: true,
@@ -173,16 +177,16 @@ function initGrid() {
             debugger
             var rowData = $('#addDetailgrid').getRowData(rowid);
             if (cellname === "convertQty") {
-               if((parseInt(rowData.qty) - parseInt(rowData.actConvertQty)) >= parseInt(rowData.convertQty) || rowData.convertQty == ""){
-                   $('#addDetailgrid').editCell(iRow, iCol, true);
-               }else{
-                   $('#addDetailgrid').setCell(rowid, cellname, 0);
-                   $('#addDetailgrid').editCell(iRow, iCol, true);
-                   $.gritter.add({
-                       text: "本次转换数量过多！",
-                       class_name: 'gritter-success  gritter-light'
-                   });
-               }
+                if((parseInt(rowData.qty) - parseInt(rowData.actConvertQty)) >= parseInt(rowData.convertQty) || rowData.convertQty == ""){
+                    $('#addDetailgrid').editCell(iRow, iCol, true);
+                }else{
+                    $('#addDetailgrid').setCell(rowid, cellname, 0);
+                    $('#addDetailgrid').editCell(iRow, iCol, true);
+                    $.gritter.add({
+                        text: "本次转换数量过多！",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }
 
             }
             if(cellname === "convertquitQty"){
@@ -259,7 +263,7 @@ function addDetail() {
     }
     $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
         $("#StyleSearchForm").resetForm();
-       /* $("#stylegrid").clearGridData();*/
+        /* $("#stylegrid").clearGridData();*/
         $("#color_size_grid").clearGridData();
     });
 }
@@ -337,6 +341,12 @@ function save() {
         bootbox.alert("请添加补货商品！");
         return;
     }
+    var issaletype=$("#edit_replenishType input:radio[value='1']").is(':checked');
+    var isreturntype=$("#edit_replenishType input:radio[value='0']").is(':checked');
+    if(!issaletype&&!isreturntype){
+        bootbox.alert("请选择补货类型！");
+        return;
+    }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -385,7 +395,7 @@ function changebuy() {
 }
 
 function saveAndAdd() {
-     save();
+    save();
     //location.href = basePath + "/logistics/relenishBill/index.do";
     location.href =  basePath + "/views/logistics/relenishBillDetail.jsp";
 }
@@ -461,4 +471,31 @@ function showNocheck() {
 }
 function closeEditDialog() {
     $("#edit-dialog").modal('hide');
+}
+
+function changePurchase() {
+    showWaitingPage();
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/relenishBill/changePurchase.do",
+        data: {
+            replenishBillNO:$("#search_billNo").val(),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            hideWaitingPage();
+
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }

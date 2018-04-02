@@ -160,19 +160,13 @@
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
-<jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
-<jsp:include page="../sys/print_two.jsp"></jsp:include>
-<jsp:include page="../sys/print_A4.jsp"></jsp:include>
-<jsp:include page="../sys/print_A4_1.jsp"></jsp:include>
+
+
 <jsp:include page="relenishBillDetail_edit.jsp"></jsp:include>
-<jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
-<jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
-<jsp:include page="exchageGood_dialog.jsp"></jsp:include>
-<jsp:include page="findRetrunNo.jsp"></jsp:include>
-<jsp:include page="findWxShop.jsp"></jsp:include>
-<jsp:include page="sendStreamNO.jsp"></jsp:include>
+<
+
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
-<jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
+
 <link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
 <link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
 <link href="<%=basePath%>/kendoUI/styles/kendo.material.min.css" rel="stylesheet">
@@ -182,7 +176,7 @@
 <script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/relenishBillDetailController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
-<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+
 <script type="text/javascript">
 
 </script>
