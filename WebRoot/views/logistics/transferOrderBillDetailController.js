@@ -850,6 +850,7 @@ function doPrintA4(){
                 LODOP.SET_PRINT_STYLEA("remark", 'Content', bill.remark);
                 LODOP.SET_PRINT_STYLEA("storehouseName", 'Content', bill.origUnitName+"-"+bill.origName);
                 var recordmessage = "";
+                var totQty=0;
                 $.each(billDtl,function(index,value){
                     recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
                         "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
@@ -859,7 +860,7 @@ function doPrintA4(){
                         }else{
                             recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName+ "</td>";
                         }
-                    var qty;
+                    var qty=0;
                     switch ($("#form_printSelect").val()){
                         case "0":
                             qty = value.inQty
@@ -871,12 +872,19 @@ function doPrintA4(){
                             qty = value.qty
                             break;
                     }
+                    totQty += qty;
                     recordmessage +="<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
                       "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
                         "</tr>";
                 });
 
-
+                recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
+                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
+                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
+                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
+                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>"+totQty+"</td>" +
+                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
+                    "</tr>";
                 $("#loadtabA4").html(recordmessage);
                 //alert($("#edit-dialogA4").html());
                 console.log($("#edit-dialogA4").html());
