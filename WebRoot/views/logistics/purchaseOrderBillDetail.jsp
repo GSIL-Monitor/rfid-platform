@@ -11,6 +11,7 @@
         var pageType = "${pageType}";
         var billNo = "${purchaseOrderBill.billNo}";
         var purchaseOrder_destId = "${purchaseOrderBill.destId}";
+        var saleOrder_buyahandId = "${purchaseOrderBill.buyahandId}";
         var curOwnerId = "${ownerId}";
         var userId = "${userId}";
     </script>

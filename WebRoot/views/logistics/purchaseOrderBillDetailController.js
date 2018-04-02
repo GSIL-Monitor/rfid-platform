@@ -437,7 +437,7 @@ function initGrid() {
             },
             {name: 'inQty', label: '已入库数量', width: 40},
             {name: 'sku', label: 'SKU', width: 40},
-            {name: 'price', label: '采购价格', width: 40},
+            {name: 'price', label: '采购价格', width: 40,},
             {name: 'totPrice', label: '采购金额', width: 40},
             {name: 'actPrice', label: '实际价格', width: 40},
             {name: 'totActPrice', label: '实际金额', width: 40},
