@@ -322,8 +322,6 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ChangeReplenishBillDtl> page = new Page<ChangeReplenishBillDtl>();
         page.setPageSize(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
-        page.setSort("billDate");
-        page.setOrder("desc");
         page.setPageProperty();
         Page<ChangeReplenishBillDtl> recordPage = this.changeReplenishBillDtlDao.findPage(page, filters);
         if(CommonUtil.isNotBlank(recordPage.getRows())){
@@ -335,6 +333,13 @@ public class WechatrelenishController extends ApiBaseController {
                 billNo2DtlMap.put(dtl.getPurchaseNo(), dtl);
             }
             List<ChangeReplenishBillDtl> uniqueBillNoList = new ArrayList<>(billNo2DtlMap.values());
+            // FIXME: 2018/4/2 采购模块优化之后，改为销售单List
+            Collections.sort(uniqueBillNoList, new Comparator<ChangeReplenishBillDtl>() {
+                @Override
+                public int compare(ChangeReplenishBillDtl o1, ChangeReplenishBillDtl o2) {
+                    return (int) (o2.getBillDate().getTime() - o1.getBillDate().getTime());
+                }
+            });
             recordPage.setRows(uniqueBillNoList);
         }
         return new MessageBox(true,"success", recordPage);
