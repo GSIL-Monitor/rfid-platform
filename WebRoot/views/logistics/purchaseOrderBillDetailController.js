@@ -437,10 +437,26 @@ function initGrid() {
             },
             {name: 'inQty', label: '已入库数量', width: 40},
             {name: 'sku', label: 'SKU', width: 40},
-            {name: 'price', label: '采购价格', width: 40,},
-            {name: 'totPrice', label: '采购金额', width: 40},
-            {name: 'actPrice', label: '实际价格', width: 40},
-            {name: 'totActPrice', label: '实际金额', width: 40},
+            {name: 'price', label: '采购价格', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var price=parseFloat(cellValue).toFixed(2);
+                    return price;
+                }},
+            {name: 'totPrice', label: '采购金额', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var totPrice=parseFloat(cellValue).toFixed(2);
+                    return totPrice;
+                }},
+            {name: 'actPrice', label: '实际价格', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var actPrice=parseFloat(cellValue).toFixed(2);
+                    return actPrice;
+                }},
+            {name: 'totActPrice', label: '实际金额', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var actPrice=parseFloat(cellValue).toFixed(2);
+                    return actPrice;
+                }},
 
             {name: 'actQty', hidden: true},
             {name: "billId", hidden: true},
