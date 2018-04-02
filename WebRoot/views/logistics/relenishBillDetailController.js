@@ -13,6 +13,19 @@ $(function () {
             $("#edit_replenishType input:radio[value='0']").attr("checked", "checked");
         }
     }
+    debugger;
+    //加载审核图片
+    if(slaeOrder_status==1){
+        $("#approvedCheck").show();
+        $("#checkImage").attr("src",basePath+"/images/check/check.png");
+
+    }
+    if(slaeOrder_status==8){
+        $("#approvedCheck").show();
+        $("#checkImage").attr("src",basePath+"/images/check/nocheck.png");
+    }
+
+
 
 
 });

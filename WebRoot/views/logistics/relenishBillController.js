@@ -48,11 +48,15 @@ function initGrid() {
                 name: "", label: "操作", width: 55, editable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
                     var billNo = rowObject.billNo;
+                    var status =rowObject.status
                     var html="";
                   /*  html = "<a href='" + basePath + "/logistics/saleOrder/copyAdd.do?billNo=" + billNo + "'><i class='ace-icon fa fa-files-o' title='复制新增'></i></a>";*/
                     html += "<a style='margin-left: 20px' href='" + basePath + "/logistics/relenishBill/edit.do?billNo=" + billNo + "'><i class='ace-icon fa fa-edit' title='编辑'></i></a>";
                   /*  html += "<a style='margin-left: 20px' href='#' onclick=check('" + billNo + "')><i class='ace-icon fa fa-check-square-o' title='审核'></i></a>";*/
-                    html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
+                   if(status==0){
+                       html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
+                   }
+
                    /* if(curOwnerId == "1"){
                         html += "<a style='margin-left: 20px' href='#' onclick=quit('" + billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
                     }*/

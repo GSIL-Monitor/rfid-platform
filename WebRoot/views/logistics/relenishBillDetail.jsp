@@ -140,7 +140,7 @@
             </div>
         </div>
         <div class="widget-body">
-            <div class="widget-main padding-12 no-padding-left no-padding-right">
+            <div class="widget-main padding-12 no-padding-left no-padding-right" >
                 <div class="tab-content padding-4">
                     <div id="addDetail" class="tab-pane in active" style="height:80%;">
                         <table id="addDetailgrid"></table>
@@ -153,8 +153,12 @@
                  </div>--%>
 
             </div>
+            <div id ="approvedCheck" class="approved" style="display: none">
+                <img class="approvedImage" id="checkImage">
+            </div>
         </div>
     </div>
+ <%--   <img style="width: 200px;height: 200px" src="/csr/images/check/check.png">--%>
     <jsp:include page="../layout/footer.jsp"></jsp:include>
 </div>
 
