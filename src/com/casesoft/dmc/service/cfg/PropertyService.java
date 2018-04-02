@@ -140,4 +140,10 @@ public class PropertyService implements IBaseService<PropertyType, String>{
 		}
 		return result;
 	}
+
+	public PropertyKey findPropertyKeyBytypeAndCode(String class1){
+		String hql="from PropertyKey t where t.type='C1' and code=?";
+		PropertyKey unique = this.propertyKeyDao.findUnique(hql, new Object[]{class1});
+		return unique;
+	}
 }

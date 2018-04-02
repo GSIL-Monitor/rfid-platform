@@ -126,6 +126,7 @@ function initButtonGroup() {
         }
         if(roleId != "0"){
             $("#TRDtl_doPrintA4").hide();
+            $("#print_div").hide();
         }
     }
     $("#addDetail").show();
@@ -858,9 +859,20 @@ function doPrintA4(){
                         }else{
                             recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName+ "</td>";
                         }
-                    recordmessage +=
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.qty + "</td>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
+                    var qty;
+                    switch ($("#form_printSelect").val()){
+                        case "0":
+                            qty = value.inQty
+                            break;
+                        case "1":
+                            qty = value.outQty
+                            break;
+                        case "2":
+                            qty = value.qty
+                            break;
+                    }
+                    recordmessage +="<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
+                      "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
                         "</tr>";
                 });
 

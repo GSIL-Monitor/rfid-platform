@@ -185,7 +185,8 @@ public abstract class BaseController {
         while(paramNames.hasMoreElements()) {
             String paramName = (String)paramNames.nextElement();
             System.out.println(paramName + ": " + request.getParameter(paramName));
-            this.logger.info(CommonUtil.getDateString(new Date(), "YYYY-MM-dd HH:mm:ss") + " " + paramName + ": " + request.getParameter(paramName));
+            //this.logger.info(CommonUtil.getDateString(new Date(), "YYYY-MM-dd HH:mm:ss") + " " + paramName + ": " + request.getParameter(paramName));
+            this.logger.error(CommonUtil.getDateString(new Date(), "YYYY-MM-dd HH:mm:ss") + " " + paramName + ": " + request.getParameter(paramName));
         }
 
     }

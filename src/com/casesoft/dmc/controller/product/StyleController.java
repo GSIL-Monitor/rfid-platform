@@ -114,9 +114,9 @@ public class StyleController extends BaseController implements IBaseInfoControll
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
 			CacheManager.refreshStyleCache();
-			if(saveList.size() > 0){
+			/*if(saveList.size() > 0){*/
 				CacheManager.refreshProductCache();
-			}
+			/*}*/
 			//推送微信商城
 			//读取congif.properties文件
 			boolean is_wxshop = Boolean.parseBoolean(PropertyUtil

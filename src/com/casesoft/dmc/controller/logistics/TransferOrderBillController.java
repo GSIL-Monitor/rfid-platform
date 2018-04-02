@@ -333,17 +333,26 @@ public class TransferOrderBillController extends BaseController implements ILogi
                 if (map.containsKey(dtl.getStyleId())) {
                     TransferOrderBillDtl billDtl = map.get(dtl.getStyleId());
                     billDtl.setQty(billDtl.getQty() + dtl.getQty());
+                    billDtl.setInQty(billDtl.getInQty() + dtl.getInQty());
+                    billDtl.setOutQty(billDtl.getOutQty() + dtl.getOutQty());
                     map.put(billDtl.getStyleId(), billDtl);
                 } else {
                     Style sty = CacheManager.getStyleById(dtl.getStyleId());
-                    dtl.setStyleName(sty.getStyleName());
-                    dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
-                    dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
+                    TransferOrderBillDtl billDtl = new TransferOrderBillDtl();
+                    billDtl.setStyleId(dtl.getStyleId());
+                    billDtl.setColorId(dtl.getColorId());
+                    billDtl.setSizeId(dtl.getSizeId());
+                    billDtl.setQty(dtl.getQty());
+                    billDtl.setInQty(dtl.getInQty());
+                    billDtl.setOutQty(dtl.getOutQty());
+                    billDtl.setStyleName(sty.getStyleName());
+                    billDtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
+                    billDtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
                     PropertyKey key = CacheManager.getPropertyKey("C1" + "-" + sty.getClass1());
                     if (CommonUtil.isNotBlank(key)) {
-                        dtl.setSupplierName(key.getName());
+                        billDtl.setSupplierName(key.getName());
                     }
-                    map.put(dtl.getStyleId(), dtl);
+                    map.put(dtl.getStyleId(), billDtl);
                 }
             }
             resultMap.put("print", print);
@@ -353,7 +362,5 @@ public class TransferOrderBillController extends BaseController implements ILogi
         }catch (Exception e){
             return new MessageBox(false,"获取数据失败"+e.getMessage());
         }
-
-
     }
 }

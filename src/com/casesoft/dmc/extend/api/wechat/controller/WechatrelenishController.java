@@ -5,11 +5,14 @@ import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -27,9 +30,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.beans.Transient;
 import java.io.File;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/3/19.
@@ -52,7 +55,8 @@ public class WechatrelenishController extends ApiBaseController {
     private PropertyKeyService propertyKeyService;
     @Autowired
     private ReplenishBillService replenishBillService;
-
+    @Autowired
+    private ChangeReplenishBillDtlDao changeReplenishBillDtlDao;
     @Override
     public String index() {
         return null;
@@ -72,6 +76,8 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ReplenishBillDtlViews> page = new Page<ReplenishBillDtlViews>(Integer.parseInt(pageSize));
         page.setPage(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
+        page.setSort("billdate");
+        page.setOrder("desc");
         page = this.replenishBillDtlViewsService.findPage(page,filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(ReplenishBillDtlViews d : page.getRows()){
@@ -178,7 +184,7 @@ public class WechatrelenishController extends ApiBaseController {
            purchaseOrderBill.setBillNo(prefix);
            User curUser = CacheManager.getUserById(userId);
            BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
-           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,replenishBillNo);
+           this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList,replenishBillNo,curUser);
            System.out.println(purchaseOrderBill.getBillNo());
            return new MessageBox(true,"保存成功", purchaseOrderBill.getBillNo());
 
@@ -232,8 +238,7 @@ public class WechatrelenishController extends ApiBaseController {
 
     /**
      * add by Yushen
-     * 销售员下补货单后，查看补货单的接口。
-     * @return
+     * 销售员下补货单后，查看补货单列表的接口。
      */
     @RequestMapping(value="/findReplenishOrderList.do")
     @ResponseBody
@@ -246,8 +251,6 @@ public class WechatrelenishController extends ApiBaseController {
         User CurrentUser = CacheManager.getUserById(userId);
         String ownerId = CurrentUser.getOwnerId();
         String id = CurrentUser.getId();
-        PropertyFilter dateSort = new PropertyFilter("EQS_ownerId", ownerId);
-
         if (!id.equals("admin")) {
             PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
             filters.add(filter);
@@ -260,11 +263,101 @@ public class WechatrelenishController extends ApiBaseController {
         page.setPageProperty();
         page = this.replenishBillService.findPage(page, filters);
         if(CommonUtil.isNotBlank(page.getRows())){
+            for (ReplenishBill replenishBill: page.getRows()) {
+                User user = CacheManager.getUserById(replenishBill.getBuyahandId());
+                if(CommonUtil.isNotBlank(user)){
+                    replenishBill.setBuyahandName(user.getName());
+                }
+            }
             return new MessageBox(true,"success", page);
         }else {
             return new MessageBox(false,"fail");
         }
     }
 
+    /**
+     * add by yushen
+     * 销售员下补货单后，查看补货单明细的接口。
+     */
+    @RequestMapping(value="/findReplenishOrderDtl.do")
+    @ResponseBody
+    public MessageBox findReplenishOrderDtl(String billNo){
+
+        this.logAllRequestParams();
+        ReplenishBill replenishBill = this.replenishBillService.load(billNo);
+        User orderUser = CacheManager.getUserById(replenishBill.getBuyahandId());
+        if(CommonUtil.isNotBlank(orderUser)){
+            replenishBill.setBuyahandName(orderUser.getName());
+        }
+        List<ReplenishBillDtl> replenishBillDtlList=this.replenishBillService.findBillDtl(billNo);
+        for (ReplenishBillDtl replenishBillDtl: replenishBillDtlList) {
+            User orderDtlUser = CacheManager.getUserById(replenishBillDtl.getBuyahandId());
+            if(CommonUtil.isNotBlank(orderDtlUser)){
+                replenishBillDtl.setBuyahandName(orderDtlUser.getName());
+            }
+            String rootPath = this.getSession().getServletContext().getRealPath("/");
+            String imgUrl = ImgUtil.fetchImgUrl(replenishBillDtl.getStyleId(), rootPath);
+            replenishBillDtl.setUrl(imgUrl);
+        }
+        replenishBill.setDtlList(replenishBillDtlList);
+        return new MessageBox(true,"success", replenishBill);
+    }
+
+    /**
+     * add by yushen
+     * 买手处理完补货后，查看补单处理记录。
+     */
+    @RequestMapping(value="/findReplenishHandleRecord.do")
+    @ResponseBody
+    public MessageBox findReplenishHandleRecord(String pageSize,String pageNo, String userId){
+        this.logAllRequestParams();
+
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        //权限设置，增加过滤条件，只显示自己转的采购单
+        if(CommonUtil.isNotBlank(userId)){
+            PropertyFilter filter = new PropertyFilter("EQS_userId", userId);
+            filters.add(filter);
+        }
+
+        Page<ChangeReplenishBillDtl> page = new Page<ChangeReplenishBillDtl>();
+        page.setPageSize(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setPageProperty();
+        Page<ChangeReplenishBillDtl> recordPage = this.changeReplenishBillDtlDao.findPage(page, filters);
+        if(CommonUtil.isNotBlank(recordPage.getRows())){
+            Map<String, ChangeReplenishBillDtl> billNo2DtlMap = new HashMap<>();
+            for (ChangeReplenishBillDtl dtl: recordPage.getRows()) {
+                Product product = CacheManager.getProductByCode(dtl.getSku());
+                dtl.setStyleId(product.getStyleId());
+                dtl.setStyleName(product.getStyleName());
+                billNo2DtlMap.put(dtl.getPurchaseNo(), dtl);
+            }
+            List<ChangeReplenishBillDtl> uniqueBillNoList = new ArrayList<>(billNo2DtlMap.values());
+            // FIXME: 2018/4/2 采购模块优化之后，改为销售单List
+            Collections.sort(uniqueBillNoList, new Comparator<ChangeReplenishBillDtl>() {
+                @Override
+                public int compare(ChangeReplenishBillDtl o1, ChangeReplenishBillDtl o2) {
+                    return (int) (o2.getBillDate().getTime() - o1.getBillDate().getTime());
+                }
+            });
+            recordPage.setRows(uniqueBillNoList);
+        }
+        return new MessageBox(true,"success", recordPage);
+    }
+
+    /**
+     *
+     * add by yushen
+     * 买手处理完补货后，查看补单转换的采购单
+     */
+    @RequestMapping(value="/findHandleAndPurchaseBill.do")
+    @ResponseBody
+    public MessageBox findHandleAndPurchaseBill(String purchaseNo){
+        this.logAllRequestParams();
+        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(purchaseNo);
+        List<PurchaseOrderBillDtl> billDtls = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseNo);
+        purchaseOrderBill.setDtlList(billDtls);
+        return new MessageBox(true,"success", purchaseOrderBill);
+    }
 
 }
