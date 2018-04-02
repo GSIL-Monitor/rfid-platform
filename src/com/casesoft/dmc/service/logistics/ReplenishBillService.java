@@ -1,6 +1,7 @@
 package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -25,6 +26,7 @@ import java.util.*;
 public class ReplenishBillService implements IBaseService<ReplenishBill, String> {
     @Autowired
     private ReplenishBillDao replenishBillDao;
+
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -35,6 +37,8 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
     private RecordsizeDao recordsizeDao;
     @Autowired
     private CheckReplenishInfoDao checkReplenishInfoDao;
+    @Autowired
+    private ReplenishBillDtlDao replenishBillDtlDao;
 
     @Override
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page, List<PropertyFilter> filters) {
@@ -397,4 +401,88 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         }
 
     }
+
+    public boolean changePurchase(String replenishBillNO,String userId){
+        /*
+            1.查询replenishBill和replenishBillDel的数据
+            2.根据申请单类型，生成采购单或采购退货单
+            3.根据商家replenishBillDel的sku做分组
+            4.做保存和修改状态的操作
+         */
+        try {
+            ReplenishBill replenishBill = this.replenishBillDao.get(replenishBillNO);
+            User curUser = CacheManager.getUserById(userId);
+            String delhql="from ReplenishBillDtl t where t.billId=?";
+            List<ReplenishBillDtl> dels = this.replenishBillDao.find(delhql, new Object[]{replenishBillNO});
+            if(replenishBill.getReplenishType().equals("1")){
+                //生成采购单
+                List<PurchaseOrderBill> savelist=new ArrayList<PurchaseOrderBill>();//存储采购单
+                List<PurchaseOrderBillDtl> saveDelList=new ArrayList<PurchaseOrderBillDtl>();//存储采购详情单
+                List<ChangeReplenishBillDtl> saveChangeList=new ArrayList<ChangeReplenishBillDtl>();
+                BillConvertUtil.replenishBillcovertToPurchaseBill(replenishBill,dels,savelist,saveDelList,curUser,saveChangeList);
+                Boolean issuccess=true;
+                //更改申请单的数据
+                for(ReplenishBillDtl del:dels){
+                    if(del.getActConvertQty()+del.getConvertQty()>=del.getQty()){
+                        del.setActConvertQty(del.getActConvertQty()+del.getConvertQty());
+                        this.replenishBillDtlDao.update(del);
+
+                    }else {
+                        del.setActConvertQty(del.getActConvertQty()+del.getConvertQty());
+                        this.replenishBillDtlDao.update(del);
+                        issuccess=false;
+                    }
+
+                }
+                if(issuccess){
+                    replenishBill.setStatus(BillConstant.BillStatus.End);
+                }else {
+                    replenishBill.setStatus(BillConstant.BillStatus.Doing);
+                }
+
+                this.replenishBillDao.update(replenishBill);
+                this.replenishBillDao.doBatchInsert(savelist);
+                this.replenishBillDao.doBatchInsert(saveDelList);
+                this.replenishBillDao.doBatchInsert(saveChangeList);
+            }else{
+                //生成采购单退货单
+                List<PurchaseReturnBill> savelist=new ArrayList<PurchaseReturnBill>();//存储采购单
+                List<PurchaseReturnBillDtl> saveDelList=new ArrayList<PurchaseReturnBillDtl>();//存储采购详情单
+                List<ChangeReplenishBillDtl> saveChangeList=new ArrayList<ChangeReplenishBillDtl>();
+                BillConvertUtil.replenishBillcovertToPurchaseReturnBill(replenishBill,dels,savelist,saveDelList,curUser,saveChangeList);
+                Boolean issuccess=true;
+                //更改申请单的数据
+                for(ReplenishBillDtl del:dels){
+                    if(del.getActConvertQty()+del.getConvertQty()>=del.getQty()){
+                        del.setActConvertQty(del.getActConvertQty()+del.getConvertQty());
+                        del.setConvertQty(0);
+                        this.replenishBillDtlDao.update(del);
+
+                    }else {
+                        del.setActConvertQty(del.getActConvertQty()+del.getConvertQty());
+                        del.setConvertQty(0);
+                        this.replenishBillDtlDao.update(del);
+                        issuccess=false;
+                    }
+
+                }
+                if(issuccess){
+                    replenishBill.setStatus(BillConstant.BillStatus.End);
+                }else {
+                    replenishBill.setStatus(BillConstant.BillStatus.Doing);
+                }
+
+                this.replenishBillDao.update(replenishBill);
+                this.replenishBillDao.doBatchInsert(savelist);
+                this.replenishBillDao.doBatchInsert(saveDelList);
+                this.replenishBillDao.doBatchInsert(saveChangeList);
+            }
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
 }
