@@ -17,7 +17,7 @@ public class PropertyKey implements Serializable {
 	private String type;//PropertyType id
 	private String name;
 	private String ownerId;// 所属方Id
-	private String code;//两位字符串
+	private String code;//属性编码
 	// john code_list
 	// private String cd_brand;
 	// private String cd_codeType;

@@ -97,15 +97,18 @@
                                 }
                             }
                         },
-                        regexp: {
+                        /*regexp: {
                             regexp: /^[a-zA-Z0-9_.\-]+$/,
                             message: '编号由数字字母下划线和.组成'
-                        },
+                        },*/
                         stringLength: {
                             min: 0,
-                            max: 2,
-                            message: '用户名长度必须在0到3之间'
+                            max: 20,
+                            message: '编号长度必须在0到20之间'
                         },
+                        notEmpty: {
+                            message: '编号不能为空'
+                        }
                     }
                 },
                 name: {
