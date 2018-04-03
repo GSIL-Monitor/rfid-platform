@@ -705,11 +705,13 @@ function save() {
         type: "POST",
         success: function (msg) {
             hideWaitingPage();
+            debugger
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
+                $("#search_billNo").val(msg.result);
                 quitback();
 
             } else {
@@ -720,7 +722,7 @@ function save() {
 }
 function quitback() {
     $.ajax({
-        url: basePath +"/logistics/purchase/quit.do?billNo=" +billNo,
+        url: basePath +"/logistics/purchase/quit.do?billNo=" +$("#search_billNo").val(),
         cache: false,
         async: false,
         type: "POST",

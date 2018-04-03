@@ -44,7 +44,7 @@
                                     <label class="col-xs-1 control-label" for="search_billNo">单据编号</label>
                                     <div class="col-xs-2">
                                         <input class="form-control" id="search_billNo" name="billNo"
-                                               type="text" disabled value="${purchaseOrderBill.billNo}"/>
+                                               type="text" readonly value="${purchaseOrderBill.billNo}"/>
                                     </div>
                                     <label class="col-xs-1 control-label" for="search_origUnitId"><span
                                             class="text-danger">* </span>供应商</label>
@@ -123,11 +123,15 @@
 
                                     <div class="col-xs-9 col-sm-9">
                                             <textarea maxlength="400" class="form-control" id="form_remark"
-                                                      name="remark"></textarea>
+                                                      name="remark" >${purchaseOrderBill.remark}</textarea>
                                     </div>
                                 </div>
                                 <div>
                                     <input id="search_status" name="status" value="${purchaseOrderBill.status}" type="hidden">
+                                    </input>
+                                    <input id="search_ownerId" name="ownerId" value="${purchaseOrderBill.ownerId}" type="hidden">
+                                    </input>
+                                    <input id="search_id" name="id" value="${purchaseOrderBill.id}" type="hidden">
                                     </input>
                                 </div>
                             </form>
