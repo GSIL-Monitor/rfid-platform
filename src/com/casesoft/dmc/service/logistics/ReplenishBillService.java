@@ -425,10 +425,12 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                 for(ReplenishBillDtl del:dels){
                     if(del.getActConvertQty()+del.getConvertQty()>=del.getQty()){
                         del.setActConvertQty(del.getActConvertQty()+del.getConvertQty());
+                        del.setConvertQty(0);
                         this.replenishBillDtlDao.update(del);
 
                     }else {
                         del.setActConvertQty(del.getActConvertQty()+del.getConvertQty());
+                        del.setConvertQty(0);
                         this.replenishBillDtlDao.update(del);
                         issuccess=false;
                     }
