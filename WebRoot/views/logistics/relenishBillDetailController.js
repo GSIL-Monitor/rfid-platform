@@ -432,7 +432,10 @@ function check() {
                     text: msg.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
-
+                closeEditDialog();
+                $("#form_remarks").val("");
+                $("#approvedCheck").show();
+                $("#checkImage").attr("src",basePath+"/images/check/check.png");
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -463,7 +466,9 @@ function noCheck() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 closeEditDialog();
-
+                $("#form_remarks").val("");
+                $("#approvedCheck").show();
+                $("#checkImage").attr("src",basePath+"/images/check/nocheck.png");
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -471,13 +476,13 @@ function noCheck() {
     });
 }
 function showcheck(){
-    $("#editForm").resetForm();
+    //$("#editForm").resetForm();
     $("#checkSave").show();
     $("#noCheckSave").hide();
     $("#edit-dialog").modal('show');
 }
 function showNocheck() {
-    $("#editForm").resetForm();
+    //$("#editForm").resetForm();
     $("#checkSave").hide();
     $("#noCheckSave").show();
     $("#edit-dialog").modal('show');
@@ -505,6 +510,30 @@ function changePurchase() {
                     text: msg.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
+
+                if(pageType=="add"){
+                    $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+                        var dtlRow = $("#addDetailgrid").getRowData(dtlndex);
+                        dtlRow.actConvertQty= parseInt(dtlRow.actConvertQty)+parseInt(dtlRow.convertQty);
+                        dtlRow.convertQty=0;
+                        $("#addDetailgrid").setRowData(dtlndex, dtlRow);
+
+
+                    });
+                }else{
+                    $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+                        var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+                        dtlRow.actConvertQty= parseInt(dtlRow.actConvertQty)+parseInt(dtlRow.convertQty);
+                        dtlRow.convertQty=0;
+                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+
+
+                    });
+                }
+
+
 
             } else {
                 bootbox.alert(msg.msg);

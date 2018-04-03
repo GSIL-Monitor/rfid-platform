@@ -94,6 +94,9 @@ function initGrid() {
                         case 7:
                             html = "<i class='fa fa-caret-square-o-down blue' title='商城订单录入'></i>";
                             break;
+                        case 8:
+                            html = "<i class='fa fa-check-square-o blue' title='反审核'></i>";
+                            break;
                         default:
                             break;
                     }
