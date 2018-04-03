@@ -18,11 +18,15 @@ $(function () {
     if(slaeOrder_status==1){
         $("#approvedCheck").show();
         $("#checkImage").attr("src",basePath+"/images/check/check.png");
+        $("#SODtl_noCheck").show();
+        $("#SODtl_changePurchase").show();
 
     }
     if(slaeOrder_status==8){
         $("#approvedCheck").show();
         $("#checkImage").attr("src",basePath+"/images/check/nocheck.png");
+        $("#SODtl_check").show();
+
     }
 
 
@@ -90,15 +94,15 @@ function initButtonGroup() {
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>保存并新增</span>" +
         "</button>"+
-        "<button id='SODtl_check' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showcheck()'>" +
+        "<button id='SODtl_check' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='showcheck()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>审核</span>" +
         "</button>"+
-        "<button id='SODtl_noCheck' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showNocheck()'>" +
+        "<button id='SODtl_noCheck' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='showNocheck()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>反审核</span>" +
         "</button>"+
-        "<button id='SODtl_changePurchase' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='changePurchase()'>" +
+        "<button id='SODtl_changePurchase' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='changePurchase()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>生成采购单</span>" +
         "</button>"
@@ -390,6 +394,7 @@ function save() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#search_billNo").val(msg.result);
+                $("#SODtl_check").show();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -436,6 +441,9 @@ function check() {
                 $("#form_remarks").val("");
                 $("#approvedCheck").show();
                 $("#checkImage").attr("src",basePath+"/images/check/check.png");
+                $("#SODtl_noCheck").show();
+                $("#SODtl_changePurchase").show();
+                $("#SODtl_check").hide();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -469,6 +477,9 @@ function noCheck() {
                 $("#form_remarks").val("");
                 $("#approvedCheck").show();
                 $("#checkImage").attr("src",basePath+"/images/check/nocheck.png");
+                $("#SODtl_noCheck").hide();
+                $("#SODtl_changePurchase").hide();
+                $("#SODtl_check").show();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -492,6 +503,33 @@ function closeEditDialog() {
 }
 
 function changePurchase() {
+    // 验证参数
+    var isok=true;
+    if(pageType=="add"){
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+            var dtlRow = $("#addDetailgrid").getRowData(dtlndex);
+
+            var convertQty=dtlRow.convertQty;
+           if(parseInt(convertQty)<=0){
+               isok=false;
+           }
+        });
+    }else{
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+
+            var convertQty=dtlRow.convertQty;
+            if(parseInt(convertQty)<=0){
+                isok=false;
+            }
+        });
+    }
+    if(!isok){
+        bootbox.alert("请添写采购单数量！");
+        return;
+    }
     showWaitingPage();
     $.ajax({
         dataType: "json",
