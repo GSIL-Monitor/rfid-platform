@@ -259,6 +259,7 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ReplenishBill> page = new Page<ReplenishBill>();
         page.setPageSize(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
+        page.setPage(Integer.parseInt(pageNo));
         String sort = "billDate";
         String order = "desc";
         if(CommonUtil.isNotBlank(sortOrder)){
@@ -330,6 +331,7 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ChangeReplenishBillDtl> page = new Page<ChangeReplenishBillDtl>();
         page.setPageSize(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
+        page.setPage(Integer.parseInt(pageNo));
         page.setPageProperty();
         Page<ChangeReplenishBillDtl> recordPage = this.changeReplenishBillDtlDao.findPage(page, filters);
         if(CommonUtil.isNotBlank(recordPage.getRows())){
