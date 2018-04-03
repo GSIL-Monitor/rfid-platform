@@ -278,10 +278,8 @@ public class WechatrelenishController extends ApiBaseController {
                     replenishBill.setBuyahandName(user.getName());
                 }
             }
-            return new MessageBox(true,"success", page);
-        }else {
-            return new MessageBox(false,"fail");
         }
+        return new MessageBox(true,"success", page);
     }
 
     /**
