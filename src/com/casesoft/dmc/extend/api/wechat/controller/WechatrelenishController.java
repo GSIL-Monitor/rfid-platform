@@ -239,10 +239,11 @@ public class WechatrelenishController extends ApiBaseController {
     /**
      * add by Yushen
      * 销售员下补货单后，查看补货单列表的接口。
+     * @param sortOrder  排序字段 按日期降序 billDate_desc; 按日期升序 billDate_asc;
      */
     @RequestMapping(value="/findReplenishOrderList.do")
     @ResponseBody
-    public MessageBox findReplenishOrderList(String pageSize,String pageNo, String userId){
+    public MessageBox findReplenishOrderList(String pageSize,String pageNo, String userId, String sortOrder){
 
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
@@ -258,8 +259,15 @@ public class WechatrelenishController extends ApiBaseController {
         Page<ReplenishBill> page = new Page<ReplenishBill>();
         page.setPageSize(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
-        page.setSort("billDate");
-        page.setOrder("desc");
+        String sort = "billDate";
+        String order = "desc";
+        if(CommonUtil.isNotBlank(sortOrder)){
+            String[] split = sortOrder.split("_");
+            sort = split[0];
+            order = split[1];
+        }
+        page.setSort(sort);
+        page.setOrder(order);
         page.setPageProperty();
         page = this.replenishBillService.findPage(page, filters);
         if(CommonUtil.isNotBlank(page.getRows())){

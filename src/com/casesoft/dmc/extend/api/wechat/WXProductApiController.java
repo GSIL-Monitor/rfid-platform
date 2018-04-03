@@ -154,6 +154,9 @@ public class WXProductApiController extends ApiBaseController {
     @ResponseBody
     public MessageBox getStyleByIdWS(String styleId) throws Exception{
         Style s = CacheManager.getStyleById(styleId);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        String imgUrl = ImgUtil.fetchImgUrl(styleId, rootPath);
+        s.setUrl(imgUrl);
         return this.returnSuccessInfo("ok", s);
     }
 
