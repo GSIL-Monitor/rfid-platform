@@ -165,8 +165,12 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     }
 
     public void save(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList) {
-        PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
-        if(CommonUtil.isBlank(purchaseOrderBill1)){
+        this.purchaseBillOrderDao.batchExecute("delete from PurchaseOrderBillDtl where billNo=?", purchaseOrderBill.getBillNo());
+        this.purchaseBillOrderDao.batchExecute("delete from BillRecord where billNo=?", purchaseOrderBill.getBillNo());
+        String hql="select billNo from PurchaseOrderBill where billNo=?";
+       // PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
+       String  billNo=this.purchaseBillOrderDao.findUnique(hql,new Object[]{purchaseOrderBill.getBillNo()});
+        if(CommonUtil.isBlank(billNo)){
             Double actPrice = purchaseOrderBill.getActPrice();
             Double payPrice = purchaseOrderBill.getPayPrice();
             if(CommonUtil.isBlank(actPrice)){
