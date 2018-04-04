@@ -348,6 +348,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
                     billDtl.setStyleName(sty.getStyleName());
                     billDtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
                     billDtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
+                    billDtl.setPrice(dtl.getPrice());
                     PropertyKey key = CacheManager.getPropertyKey("C1" + "-" + sty.getClass1());
                     if (CommonUtil.isNotBlank(key)) {
                         billDtl.setSupplierName(key.getName());

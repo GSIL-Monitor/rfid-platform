@@ -115,7 +115,7 @@
                                     <label class="col-xs-1 control-label"
                                            for="form_printSelect">打印选择</label>
                                     <div class="col-xs-2">
-                                        <select class="form-control" id="form_printSelect" name="destId"
+                                        <select class="form-control" id="form_printSelect"
                                                 style="width: 100%;">
                                             <option value="0">入库数量</option>
                                             <option value="1">出库数量</option>
