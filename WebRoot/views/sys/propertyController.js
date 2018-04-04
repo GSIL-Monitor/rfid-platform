@@ -109,6 +109,7 @@ function initGrid() {
                     }
                 }},
     		{name: 'name', label: '代码名称', editable:true,width: 40},
+            {name:'type',hidden:true},
             {
                 name: "", label: "操作", width: 40, editable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
@@ -216,8 +217,9 @@ function addproperty() {
         $("#editFormdetailed").resetForm();
         $("#edit-dialog-detailed").modal('show');
         $("#form_code").removeAttr("readOnly");
+        $("#form_types").val(rowId);
         $("#form_ids").val(rowId);
-        $("#form_type").val(rowId);
+
     }else {
         bootbox.alert("请选择一项进行修改!");
     }
@@ -241,17 +243,21 @@ function savetype() {
     $.post(basePath+'/sys/property/save.do',
         $("#editForm").serialize(),
         function(result){
+            progressDialog.modal('hide');
             if(result.success==true||result.success=='true'){
                 $.gritter.add({
                     text : result.msg,
                     class_name : 'gritter-success  gritter-light'
                 });
-                progressDialog.modal('hide');
                 $("#edit-dialog").modal('hide');
                 $('#grid').trigger("reloadGrid");
+            }else{
+                $.gritter.add({
+                    text : result.msg,
+                    class_name : 'gritter-success  gritter-light'
+                });
             }
         },'json');
-    window.location.reload();
 
 }
 
@@ -270,17 +276,22 @@ function saveproperty() {
     $.post(basePath+'/sys/property/saveproperty.do',
         $("#editFormdetailed").serialize(),
         function(result){
+            progressDialog.modal('hide');
             if(result.success==true||result.success=='true'){
                 $.gritter.add({
                     text : result.msg,
                     class_name : 'gritter-success  gritter-light'
                 });
-                progressDialog.modal('hide');
                 $("#edit-dialog-detailed").modal('hide');
                 $('#grid').trigger("reloadGrid");
+            }else{
+                $.gritter.add({
+                    text : result.msg,
+                    class_name : 'gritter-success  gritter-light'
+                });
             }
         },'json');
-    window.location.reload();
+
 }
 
 function changetypeStatus(rowId,status) {
