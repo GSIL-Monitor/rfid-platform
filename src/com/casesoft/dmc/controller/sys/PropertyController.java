@@ -110,7 +110,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
 					Integer num = this.propertyService.findtkeyNum(entity.getType());
 					entity.setSeqNo((num+1));
 					User currentUser = getCurrentUser();
-					entity.setCode(num+"");
+					entity.setCode(entity.getSeqNo()+"");
 					entity.setType(entity.getId());
 					entity.setId(entity.getId()+"-"+entity.getCode());
 					entity.setOwnerId(currentUser.getCreatorId());
