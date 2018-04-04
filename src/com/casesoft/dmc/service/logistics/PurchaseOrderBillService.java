@@ -8,10 +8,7 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
-import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
-import com.casesoft.dmc.dao.logistics.PurchaseBillOrderDao;
-import com.casesoft.dmc.dao.logistics.ReplenishBillDtlDao;
+import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.dao.sys.UnitDao;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
@@ -49,6 +46,8 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     private MonthAccountStatementDao monthAccountStatementDao;
     @Autowired
     private ReplenishBillDtlDao replenishBillDtlDao;
+    @Autowired
+    private ReplenishBillDao replenishBillDao;
     @Autowired
     private ChangeReplenishBillDtlDao changeReplenishBillDtlDao;
     @Override
@@ -220,10 +219,28 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 if(unique.getQty()>unique.getActConvertQty()){
                     if(unique.getQty()<=purchaseOrderBillDtl.getQty()){
                         unique.setStatus(0);//已完成
-                        unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
+                        Long qty = purchaseOrderBillDtl.getQty();
+                        if(CommonUtil.isBlank(qty)){
+                            qty=0L;
+                        }
+                        Integer actConvertQty = unique.getActConvertQty();
+                        if(CommonUtil.isBlank(actConvertQty)){
+                            actConvertQty=0;
+                        }
+                        Integer sum=actConvertQty+Integer.parseInt(purchaseOrderBillDtl.getQty()+"");
+                        unique.setActConvertQty(sum);
                     }else{
                         unique.setStatus(1);//未完成
-                        unique.setActConvertQty(Integer.parseInt(purchaseOrderBillDtl.getQty()+""));
+                        Long qty = purchaseOrderBillDtl.getQty();
+                        if(CommonUtil.isBlank(qty)){
+                            qty=0L;
+                        }
+                        Integer actConvertQty = unique.getActConvertQty();
+                        if(CommonUtil.isBlank(actConvertQty)){
+                            actConvertQty=0;
+                        }
+                        Integer sum=actConvertQty+Integer.parseInt(purchaseOrderBillDtl.getQty()+"");
+                        unique.setActConvertQty(sum);
                     }
                 }else{
                     unique.setStatus(0);//已完成
@@ -248,6 +265,25 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         if(list.size()!=0){
             this.changeReplenishBillDtlDao.doBatchInsert(list);
         }
+        //反写PurchaseOrderBill的状态
+        String hql="from ReplenishBillDtl t where t.billId=?";
+        List<ReplenishBillDtl> ReplenishBillDtls = this.replenishBillDtlDao.find(hql, new Object[]{replenishBillNo});
+        boolean iscomplete=true;
+        for(ReplenishBillDtl replenishBillDtl:ReplenishBillDtls){
+            Integer actConvertQty = replenishBillDtl.getActConvertQty();
+            Long qty = replenishBillDtl.getQty();
+            if(actConvertQty<Integer.parseInt(qty+"")){
+                iscomplete=false;
+            }
+        }
+        if(iscomplete){
+            String hqlreplenishBillNo=" update ReplenishBill set status=2 where billNo=?";
+            this.replenishBillDao.batchExecute(hqlreplenishBillNo,new Object[]{replenishBillNo});
+        }else{
+            String hqlreplenishBillNo=" update ReplenishBill set status=3 where billNo=?";
+            this.replenishBillDao.batchExecute(hqlreplenishBillNo,new Object[]{replenishBillNo});
+        }
+
     }
 
     public List<PurchaseOrderBillDtl> findBillDtlByBillNo(String billNo) {
