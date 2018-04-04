@@ -438,7 +438,7 @@
         $("#searchGrid").show();
         $("#searchsaleGrid").hide();
         $("#searchsalebusinessnameGrid").hide();
-        $("#searchsalebusinessnameGrid").hide();
+        $("#searchsaleorignameGrid").hide();
         exportExcelid="searchGrid";
         $("#styleid").show();
         $("#styleids").show();
@@ -451,7 +451,7 @@
         $("#searchGrid").hide();
         $("#searchsaleGrid").show();
         $("#searchsalebusinessnameGrid").hide();
-        $("#searchsalebusinessnameGrid").hide();
+        $("#searchsaleorignameGrid").hide();
         exportExcelid="searchsaleGrid";
         $("#styleids").hide();
         $("#styleidname").hide();
