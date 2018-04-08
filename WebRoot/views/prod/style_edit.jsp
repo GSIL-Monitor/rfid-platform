@@ -171,7 +171,7 @@
                                                         <%--  <select id="form_brandCode" class="selectpicker" data-live-search="true">
                                                           </select>--%>
                                                         <span class="input-group-addon" title="添加${classTypes[0].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[0].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[0].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -189,7 +189,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[1].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[1].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[1].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[1].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -210,7 +210,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[2].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[2].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[2].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[2].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -227,7 +227,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[3].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[3].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[3].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[3].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -246,7 +246,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[4].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[4].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[4].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[4].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -261,7 +261,7 @@
                                                         <select class="chosen-select form-control" id="form_class6" name="class6">
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[5].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[5].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[5].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -280,7 +280,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择无${classTypes[7].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[7].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[7].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[7].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -297,7 +297,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[9].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[9].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[9].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[9].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -316,7 +316,7 @@
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[6].value}</option>
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[6].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[6].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[6].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -333,7 +333,7 @@
                                                         <select class="chosen-select form-control" id="form_class9" name="class9">
                                                         </select>
                                                         <span class="input-group-addon" title="添加${classTypes[8].value}">
-                                                            <a  href='#'  class="white" onclick="addbrand('${classTypes[8].id}')">
+                                                            <a  href='#'  class="white" onclick="addStyleProperty('${classTypes[8].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -1242,12 +1242,13 @@
         });
     }
 
-    function addbrand(rowId) {
+    function addStyleProperty(rowId) {
         pagetype="add";
         $("#editFormdetailed").resetForm();
         $("#edit-dialog-detailed").modal('show');
         $("#form_code").removeAttr("readOnly");
         $("#form_ids").val(rowId);
+        $("#form_types").val(rowId);
     }
     function saveproperty() {
 
@@ -1265,17 +1266,22 @@
         $.post(basePath+'/sys/property/saveproperty.do',
             $("#editFormdetailed").serialize(),
             function(result){
+                progressDialog.modal('hide');
                 if(result.success==true||result.success=='true'){
                     $.gritter.add({
                         text : result.msg,
                         class_name : 'gritter-success  gritter-light'
                     });
-                    progressDialog.modal('hide');
                     $("#edit-dialog-detailed").modal('hide');
-                    $('#grid').trigger("reloadGrid");
+                    window.location.reload();
+                }else{
+                    $.gritter.add({
+                        text : result.msg,
+                        class_name : 'gritter-success  gritter-light'
+                    });
                 }
             },'json');
-        window.location.reload();
+
     }
 
 </script>

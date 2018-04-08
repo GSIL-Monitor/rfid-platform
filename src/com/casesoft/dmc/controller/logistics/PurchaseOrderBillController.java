@@ -106,16 +106,19 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         try{
 
             PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr,PurchaseOrderBill.class);
-            String prefix = BillConstant.BillPrefix.purchase
-                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
-            //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
-            purchaseOrderBill.setId(prefix);
-            purchaseOrderBill.setBillNo(prefix);
+            if(CommonUtil.isBlank(purchaseOrderBill.getBillNo())){
+                String prefix = BillConstant.BillPrefix.purchase
+                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+                //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
+                purchaseOrderBill.setId(prefix);
+                purchaseOrderBill.setBillNo(prefix);
+            }
+            //purchaseOrderBill.setId(purchaseOrderBill.getBillNo());
             List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList,PurchaseOrderBillDtl.class);
             User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToPurchaseBill(purchaseOrderBill, purchaseOrderBillDtlList,curUser);
             this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
-            return new MessageBox(true,"保存成功");
+            return new MessageBox(true,"保存成功",purchaseOrderBill.getBillNo());
 
         }catch (Exception e){
             e.printStackTrace();

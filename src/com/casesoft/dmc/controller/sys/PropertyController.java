@@ -96,24 +96,33 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             return returnFailInfo("保存失败");
         }
 	}
-
+	/**
+	 * 保存属性信息
+	 * */
 	@RequestMapping(value="/saveproperty")
 	@ResponseBody
 	public MessageBox saveproperty(PropertyKey entity) throws Exception {
 		try{
-			PropertyKey propertyKeybyid = this.propertyService.findPropertyKeybyid(entity.getId());
+			PropertyKey propertyKeybyid = CacheManager.getPropertyKey(entity.getId());
 			if(CommonUtil.isBlank(propertyKeybyid)){
-				Integer num = this.propertyService.findtkeyNum(entity.getId());
-				entity.setSeqNo((num+1));
-				User currentUser = getCurrentUser();
-			    entity.setType(entity.getId());
-				entity.setId(entity.getId()+"-"+entity.getCode());
-				entity.setOwnerId(currentUser.getCreatorId());
-				entity.setLocked(0);
-				entity.setRegisterDate(new Date());
-				entity.setRegisterId(currentUser.getId());
-			    entity.setYnuse("Y");
-				this.propertyService.saveKey(entity);
+				PropertyKey propertyKey = this.propertyService.findPropertyKeyByNameAndType(entity.getName(),entity.getType());
+				if(CommonUtil.isBlank(propertyKey)){
+					Integer num = this.propertyService.findtkeyNum(entity.getType());
+					entity.setSeqNo((num+1));
+					User currentUser = getCurrentUser();
+					entity.setCode(entity.getSeqNo()+"");
+					entity.setType(entity.getId());
+					entity.setId(entity.getId()+"-"+entity.getCode());
+					entity.setOwnerId(currentUser.getCreatorId());
+					entity.setLocked(0);
+					entity.setRegisterDate(new Date());
+					entity.setRegisterId(currentUser.getId());
+					entity.setYnuse("Y");
+					this.propertyService.saveKey(entity);
+				}else{
+					return returnFailInfo("保存失败,名称已存在不能重复添加");
+				}
+
 			}else{
 				propertyKeybyid.setName(entity.getName());
 				this.propertyService.saveKey(propertyKeybyid);

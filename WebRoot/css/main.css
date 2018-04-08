@@ -9,3 +9,15 @@ body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6 { font-family: Micro
 .skin-1 .navbar {
     background: #222a2d;
 }
+
+.approved{
+    position:absolute;
+    top:30%;
+    right:50px;
+    z-index:2;
+}
+.approvedImage{
+    width: 200px;
+    height: 200px
+}
+

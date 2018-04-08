@@ -264,5 +264,18 @@ public class ReplenishBillController extends BaseController implements ILogistic
         }
 
     }
+    @RequestMapping(value = "/changePurchase")
+    @ResponseBody
+    public MessageBox changePurchase(String replenishBillNO,String userId){
+        boolean purchase = this.replenishBillService.changePurchase(replenishBillNO, userId);
+        if(purchase){
+            return new MessageBox(true, "生成采购单成功");
+        }else{
+            return new MessageBox(true, "生成采购单失败");
+        }
+
+
+    }
+
 
 }

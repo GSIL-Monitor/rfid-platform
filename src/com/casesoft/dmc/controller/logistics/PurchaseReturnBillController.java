@@ -165,7 +165,7 @@ public class PurchaseReturnBillController extends BaseController implements ILog
         HttpSession session = request.getSession();
         session.removeAttribute("billNoPurchaseReturn");
         this.purchaseReturnBillService.save(purchaseReturnBill);
-        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         return mv;

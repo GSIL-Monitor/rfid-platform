@@ -146,4 +146,8 @@ public class PropertyService implements IBaseService<PropertyType, String>{
 		PropertyKey unique = this.propertyKeyDao.findUnique(hql, new Object[]{class1});
 		return unique;
 	}
+
+	public PropertyKey findPropertyKeyByNameAndType(String name, String type) {
+		return this.propertyKeyDao.findUnique("from PropertyKey t where t.name=? and t.type=?",new Object[]{name,type});
+	}
 }

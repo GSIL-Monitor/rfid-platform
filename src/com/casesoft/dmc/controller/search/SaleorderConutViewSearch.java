@@ -101,8 +101,8 @@ public class SaleorderConutViewSearch extends BaseController {
                 }else{
                     saleorderCountView.setScreening("Y");
                 }*/
-                Integer qty = saleorderCountView.getQty();
-                saleorderCountView.setQty(Integer.parseInt("-"+qty));
+               /* Integer qty = saleorderCountView.getQty();
+                saleorderCountView.setQty(Integer.parseInt("-"+qty));*/
             }
             File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleid());
             if(file.exists()){

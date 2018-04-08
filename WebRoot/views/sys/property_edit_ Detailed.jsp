@@ -16,21 +16,15 @@
                         <label class="col-sm-2 control-label no-padding-right" for="form_ids">编号</label>
                         <div class="col-xs-14 col-sm-7">
                              <input type="text" id="form_ids" name='id'>
-                            <input type="text"  id="form_type" name='type' hidden>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_code">编号</label>
-
+                        <label class="col-sm-2 control-label no-padding-right" for="form_types">属性</label>
                         <div class="col-xs-14 col-sm-7">
-                            <input class="form-control" id="form_code" name="code"
-                                   onkeyup="this.value=this.value.toUpperCase()"
-                                   type="text"
-                                   placeholder=""/>
+                            <input type="text"  id="form_types" name='type'>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_name">代码名称</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form_name">名称</label>
 
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_name" name="name"
@@ -81,36 +75,6 @@
                 }, 'json');
             },
             fields: {
-                code: {
-                    validators: {
-                        threshold: 5, //有5字符以上才发送ajax请求，（input中输入一个字符，插件会向服务器发送一次，设置限制，6字符以上才开始）
-                        remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
-                            url: basePath + "/sys/property/checkCodetype.do",//验证地址
-                            message: '编号已存在',//提示消息
-                            delay: 2000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
-                            type: 'POST',//请求方式
-                            data: function (validator) {
-                                console.log( $("#form_type").val());
-                                return {
-                                    type: $("#form_type").val(),
-                                    pageType:pagetype
-                                }
-                            }
-                        },
-                        /*regexp: {
-                            regexp: /^[a-zA-Z0-9_.\-]+$/,
-                            message: '编号由数字字母下划线和.组成'
-                        },*/
-                        stringLength: {
-                            min: 0,
-                            max: 20,
-                            message: '编号长度必须在0到20之间'
-                        },
-                        notEmpty: {
-                            message: '编号不能为空'
-                        }
-                    }
-                },
                 name: {
                     validators: {
                         notEmpty: {
