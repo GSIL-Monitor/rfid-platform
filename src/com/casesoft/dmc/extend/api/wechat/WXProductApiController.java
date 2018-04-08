@@ -428,6 +428,6 @@ public class WXProductApiController extends ApiBaseController {
         List<Size> sizes = this.sizeService.find(sizeFilters, sizeSortMap);
         map.put("colors", colors);
         map.put("sizes", sizes);
-        return map;
+        return map; 
     }
 }
