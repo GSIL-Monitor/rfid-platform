@@ -1,6 +1,7 @@
 package com.casesoft.dmc.service.product;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,10 @@ public class ColorService implements IBaseService<Color, String>{
 	@Override
 	public List<Color> find(List<PropertyFilter> filters) {
 		return this.colorDao.find(filters);
+	}
+
+	public List<Color> find(List<PropertyFilter> filters, Map<String, String> sortMap){
+		return this.colorDao.find(filters, sortMap);
 	}
 
 	@Override

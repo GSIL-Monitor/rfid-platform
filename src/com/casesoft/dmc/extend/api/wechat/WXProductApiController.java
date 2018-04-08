@@ -32,6 +32,7 @@ import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/wx/product")
@@ -68,23 +69,14 @@ public class WXProductApiController extends ApiBaseController {
     public Page<Style> getStyleList(Page<Style> page)throws Exception{
         logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        page.setSort("updateTime");
+        page.setOrder("desc");
         page.setPageProperty();
-
         page = this.styleService.findPage(page, filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(Style d : page.getRows()){
-            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
-            if(file.exists()){
-                File[] files = file.listFiles();
-                if(files.length > 0){
-                    File[] photos = files[0].listFiles();
-                    if(photos.length > 0){
-                        d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
-                    }
-                }
-            }else{
-                d.setUrl("/imgs/noImg.png");
-            }
+            String imgUrl = ImgUtil.fetchImgUrl(d.getStyleId(), rootPath);
+            d.setUrl(imgUrl);
             //PropertyKey propertyKey = this.propertyService.findPropertyKeyBytypeAndCode(d.getClass1());
             //d.setClass1Name(propertyKey.getName());
             PropertyKey propertyKey = CacheManager.getPropertyKey("C1-" + d.getClass1());
@@ -93,7 +85,6 @@ public class WXProductApiController extends ApiBaseController {
             }else{
                 d.setClass1Name("");
             }
-
         }
         return page;
     }
@@ -248,11 +239,12 @@ public class WXProductApiController extends ApiBaseController {
     @RequestMapping(value = "/findColorListWS.do")
     @ResponseBody
     public  Page<Color> findColorListWS(Page<Color> page){
-            this.logAllRequestParams();
-
-            page.setPageProperty();
-            List<PropertyFilter> filters =PropertyFilter.buildFromHttpRequest(this.getRequest());
-            return this.colorService.findPage(page,filters);
+        this.logAllRequestParams();
+        page.setSort("colorName");
+        page.setOrder("asc");
+        page.setPageProperty();
+        List<PropertyFilter> filters =PropertyFilter.buildFromHttpRequest(this.getRequest());
+        return this.colorService.findPage(page,filters);
     }
 
 
@@ -414,5 +406,28 @@ public class WXProductApiController extends ApiBaseController {
         }
         printWriter.write(JSON.toJSONString(res));
         printWriter.flush();
+    }
+
+    /**
+     * add by yushen
+     * 查找所有颜色尺寸，不分页
+     */
+    @RequestMapping(value = "/listColorAndSize")
+    @ResponseBody
+    public Map<String, Object> listColorAndSize() throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<PropertyFilter> colorFilters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Map<String, String> colorSortMap = new HashMap<>();
+        colorSortMap.put("colorName", "asc");
+
+        List<PropertyFilter> sizeFilters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Map<String, String> sizeSortMap = new HashMap<>();
+        sizeSortMap.put("seqNo", "asc");
+
+        List<Color> colors = this.colorService.find(colorFilters, colorSortMap);
+        List<Size> sizes = this.sizeService.find(sizeFilters, sizeSortMap);
+        map.put("colors", colors);
+        map.put("sizes", sizes);
+        return map;
     }
 }
