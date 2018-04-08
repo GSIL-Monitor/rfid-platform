@@ -283,6 +283,19 @@ public class WechatrelenishController extends ApiBaseController {
     }
 
     /**
+     * 撤销未处理的补货单的接口。
+     */
+    @RequestMapping(value="/cancelReplenishOrderList.do")
+    @ResponseBody
+    public MessageBox cancelReplenishOrderList(String billNo) throws Exception {
+        ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
+        replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+        this.replenishBillService.cancelUpdate(replenishBill);
+        return new MessageBox(true, "撤销成功");
+
+    }
+
+    /**
      * add by yushen
      * 销售员下补货单后，查看补货单明细的接口。
      */
