@@ -13,6 +13,23 @@ $(function () {
             $("#edit_replenishType input:radio[value='0']").attr("checked", "checked");
         }
     }
+    debugger;
+    //加载审核图片
+    if(slaeOrder_status==1){
+        $("#approvedCheck").show();
+        $("#checkImage").attr("src",basePath+"/images/check/check.png");
+        $("#SODtl_noCheck").show();
+        $("#SODtl_changePurchase").show();
+
+    }
+    if(slaeOrder_status==8){
+        $("#approvedCheck").show();
+        $("#checkImage").attr("src",basePath+"/images/check/nocheck.png");
+        $("#SODtl_check").show();
+
+    }
+
+
 
 
 });
@@ -44,7 +61,7 @@ function initSelectBusinessIdForm() {
 function initSelectbuyahandIdForm() {
     var url;
 
-        url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
+    url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
 
 
 
@@ -77,13 +94,17 @@ function initButtonGroup() {
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>保存并新增</span>" +
         "</button>"+
-        "<button id='SODtl_check' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showcheck()'>" +
+        "<button id='SODtl_check' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='showcheck()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>审核</span>" +
         "</button>"+
-        "<button id='SODtl_noCheck' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='showNocheck()'>" +
+        "<button id='SODtl_noCheck' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='showNocheck()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>反审核</span>" +
+        "</button>"+
+        "<button id='SODtl_changePurchase' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='changePurchase()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>生成采购单</span>" +
         "</button>"
     );
 
@@ -144,12 +165,12 @@ function initGrid() {
             },
             {name: 'sku', label: 'SKU', width: 50}
             /*{
-                name: 'actPrice', label: '实际价格', editable: true, width: 40,
-                editrules: {
-                    number: true,
-                    minValue: 0
-                }
-            }*/
+             name: 'actPrice', label: '实际价格', editable: true, width: 40,
+             editrules: {
+             number: true,
+             minValue: 0
+             }
+             }*/
 
         ],
         autowidth: true,
@@ -173,16 +194,16 @@ function initGrid() {
             debugger
             var rowData = $('#addDetailgrid').getRowData(rowid);
             if (cellname === "convertQty") {
-               if((parseInt(rowData.qty) - parseInt(rowData.actConvertQty)) >= parseInt(rowData.convertQty) || rowData.convertQty == ""){
-                   $('#addDetailgrid').editCell(iRow, iCol, true);
-               }else{
-                   $('#addDetailgrid').setCell(rowid, cellname, 0);
-                   $('#addDetailgrid').editCell(iRow, iCol, true);
-                   $.gritter.add({
-                       text: "本次转换数量过多！",
-                       class_name: 'gritter-success  gritter-light'
-                   });
-               }
+                if((parseInt(rowData.qty) - parseInt(rowData.actConvertQty)) >= parseInt(rowData.convertQty) || rowData.convertQty == ""){
+                    $('#addDetailgrid').editCell(iRow, iCol, true);
+                }else{
+                    $('#addDetailgrid').setCell(rowid, cellname, 0);
+                    $('#addDetailgrid').editCell(iRow, iCol, true);
+                    $.gritter.add({
+                        text: "本次转换数量过多！",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }
 
             }
             if(cellname === "convertquitQty"){
@@ -259,7 +280,7 @@ function addDetail() {
     }
     $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
         $("#StyleSearchForm").resetForm();
-       /* $("#stylegrid").clearGridData();*/
+        /* $("#stylegrid").clearGridData();*/
         $("#color_size_grid").clearGridData();
     });
 }
@@ -337,6 +358,12 @@ function save() {
         bootbox.alert("请添加补货商品！");
         return;
     }
+    var issaletype=$("#edit_replenishType input:radio[value='1']").is(':checked');
+    var isreturntype=$("#edit_replenishType input:radio[value='0']").is(':checked');
+    if(!issaletype&&!isreturntype){
+        bootbox.alert("请选择补货类型！");
+        return;
+    }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -367,6 +394,7 @@ function save() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#search_billNo").val(msg.result);
+                $("#SODtl_check").show();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -385,7 +413,7 @@ function changebuy() {
 }
 
 function saveAndAdd() {
-     save();
+    save();
     //location.href = basePath + "/logistics/relenishBill/index.do";
     location.href =  basePath + "/views/logistics/relenishBillDetail.jsp";
 }
@@ -409,7 +437,13 @@ function check() {
                     text: msg.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
-
+                closeEditDialog();
+                $("#form_remarks").val("");
+                $("#approvedCheck").show();
+                $("#checkImage").attr("src",basePath+"/images/check/check.png");
+                $("#SODtl_noCheck").show();
+                $("#SODtl_changePurchase").show();
+                $("#SODtl_check").hide();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -440,7 +474,12 @@ function noCheck() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 closeEditDialog();
-
+                $("#form_remarks").val("");
+                $("#approvedCheck").show();
+                $("#checkImage").attr("src",basePath+"/images/check/nocheck.png");
+                $("#SODtl_noCheck").hide();
+                $("#SODtl_changePurchase").hide();
+                $("#SODtl_check").show();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -448,17 +487,95 @@ function noCheck() {
     });
 }
 function showcheck(){
-    $("#editForm").resetForm();
+    //$("#editForm").resetForm();
     $("#checkSave").show();
     $("#noCheckSave").hide();
     $("#edit-dialog").modal('show');
 }
 function showNocheck() {
-    $("#editForm").resetForm();
+    //$("#editForm").resetForm();
     $("#checkSave").hide();
     $("#noCheckSave").show();
     $("#edit-dialog").modal('show');
 }
 function closeEditDialog() {
     $("#edit-dialog").modal('hide');
+}
+
+function changePurchase() {
+    // 验证参数
+    var isok=true;
+    if(pageType=="add"){
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+            var dtlRow = $("#addDetailgrid").getRowData(dtlndex);
+
+            var convertQty=dtlRow.convertQty;
+           if(parseInt(convertQty)<=0){
+               isok=false;
+           }
+        });
+    }else{
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+
+            var convertQty=dtlRow.convertQty;
+            if(parseInt(convertQty)<=0){
+                isok=false;
+            }
+        });
+    }
+    if(!isok){
+        bootbox.alert("请添写采购单数量！");
+        return;
+    }
+    showWaitingPage();
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/relenishBill/changePurchase.do",
+        data: {
+            replenishBillNO:$("#search_billNo").val(),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            hideWaitingPage();
+
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+
+                if(pageType=="add"){
+                    $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+                        var dtlRow = $("#addDetailgrid").getRowData(dtlndex);
+                        dtlRow.actConvertQty= parseInt(dtlRow.actConvertQty)+parseInt(dtlRow.convertQty);
+                        dtlRow.convertQty=0;
+                        $("#addDetailgrid").setRowData(dtlndex, dtlRow);
+
+
+                    });
+                }else{
+                    $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+
+                        var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+                        dtlRow.actConvertQty= parseInt(dtlRow.actConvertQty)+parseInt(dtlRow.convertQty);
+                        dtlRow.convertQty=0;
+                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+
+
+                    });
+                }
+
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }

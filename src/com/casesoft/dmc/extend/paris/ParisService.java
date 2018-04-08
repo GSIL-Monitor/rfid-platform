@@ -427,7 +427,8 @@ public class ParisService implements IBillWSService {
                 switch (bus.getToken().intValue()) {
                     case Constant.Token.Storage_Inbound:
                         PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(bus.getBillNo());
-                        List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bus.getBillNo());
+                        List<PurchaseOrderBillDtl> dtlListPI = this.purchaseOrderBillService.findBillDtlByBillNo(bus.getBillNo());
+                        List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = this.copyNewPIBillDtl(dtlListPI);
                         BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, bus);
                         this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
                         warehouseId=purchaseOrderBill.getDestId();
@@ -526,6 +527,17 @@ public class ParisService implements IBillWSService {
             return new MessageBox(false, "更新订单信息失败:" + e.getMessage());
         }
 
+    }
+
+    private List<PurchaseOrderBillDtl> copyNewPIBillDtl(List<PurchaseOrderBillDtl> dtlList) {
+        List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = new ArrayList<>();
+        for(PurchaseOrderBillDtl dtl : dtlList){
+            PurchaseOrderBillDtl purchaseOrderBillDtl = new PurchaseOrderBillDtl();
+            BeanUtils.copyProperties(dtl,purchaseOrderBillDtl);
+            purchaseOrderBillDtl.setId(new GuidCreator().toString());
+            purchaseOrderBillDtlList.add(purchaseOrderBillDtl);
+        }
+        return purchaseOrderBillDtlList;
     }
 
     private List<TransferOrderBillDtl> copyNewTRBillDtl(List<TransferOrderBillDtl> dtlList){

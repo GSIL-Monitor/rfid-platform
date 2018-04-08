@@ -88,6 +88,273 @@ public class BillConvertUtil {
 
     }
     /**
+     * 转换申请单为采购订单单据（保存调用）
+     * */
+    public static void replenishBillcovertToPurchaseBill( ReplenishBill replenishBill, List<ReplenishBillDtl> dels, List<PurchaseOrderBill> savelist,List<PurchaseOrderBillDtl> saveDelList, User curUser,List<ChangeReplenishBillDtl> saveChangeList){
+        //根据商家replenishBillDel的sku做分组
+        Map<String,List<ReplenishBillDtl>> map=new HashMap<String,List<ReplenishBillDtl>>();//根据商家分组保存
+        for(int i=0;i<dels.size();i++){
+            if(CommonUtil.isNotBlank(dels.get(i).getClass1())){
+                if(i==0){
+                    List<ReplenishBillDtl> list=new ArrayList<ReplenishBillDtl>();
+                    list.add(dels.get(i));
+                    map.put(dels.get(i).getClass1(),list);
+                }else{
+                    if(map.containsKey(dels.get(i).getClass1())){
+                        List<ReplenishBillDtl> replenishBillDtls = map.get(dels.get(i).getClass1());
+                        replenishBillDtls.add(dels.get(i));
+                        map.put(dels.get(i).getClass1(),replenishBillDtls);
+                    }else {
+                        List<ReplenishBillDtl> list=new ArrayList<ReplenishBillDtl>();
+                        list.add(dels.get(i));
+                        map.put(dels.get(i).getClass1(),list);
+                    }
+                }
+            }else{
+                if(map.containsKey("null")){
+                    List<ReplenishBillDtl> replenishBillDtls = map.get("null");
+                    replenishBillDtls.add(dels.get(i));
+                    map.put("null",replenishBillDtls);
+                }else {
+                    List<ReplenishBillDtl> list=new ArrayList<ReplenishBillDtl>();
+                    list.add(dels.get(i));
+                    map.put("null",list);
+                }
+            }
+
+        }
+        //循环保存数据
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String)entry.getKey();
+            List<ReplenishBillDtl> keyDtls =( List<ReplenishBillDtl>) entry.getValue();
+            PurchaseOrderBill purchaseOrderBill=new PurchaseOrderBill();
+            String prefix = BillConstant.BillPrefix.purchase
+                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+            purchaseOrderBill.setId(prefix);
+            purchaseOrderBill.setBillNo(prefix);
+            if (CommonUtil.isNotBlank(curUser)) {
+                purchaseOrderBill.setOprId(curUser.getCode());
+            }
+            Long totQty = 0L;
+            Long actQty = 0L;
+            Long rcvQty = 0L;
+            Double totPrice = 0D;
+            Double actPrice = 0D;
+            Double rcvVal = 0D;
+            for (ReplenishBillDtl dtl : keyDtls) {
+                PurchaseOrderBillDtl purchaseOrderBillDtl=new PurchaseOrderBillDtl();
+                purchaseOrderBillDtl.setId(new GuidCreator().toString());
+                purchaseOrderBillDtl.setBillId(purchaseOrderBill.getId());
+                purchaseOrderBillDtl.setBillNo(purchaseOrderBill.getBillNo());
+                /*purchaseOrderBillDtl.setActPrintQty(0);
+                purchaseOrderBillDtl.setActQty(Long.parseLong(dtl.getConvertQty()+""));
+                purchaseOrderBillDtl.setInQty(0);
+                purchaseOrderBillDtl.setPrintQty(dtl.getConvertQty());*/
+                purchaseOrderBillDtl.setInStockType("BH");
+                purchaseOrderBillDtl.setStyleId(dtl.getStyleId());
+                purchaseOrderBillDtl.setSku(dtl.getSku());
+                purchaseOrderBillDtl.setSizeId(dtl.getSizeId());
+                purchaseOrderBillDtl.setColorId(dtl.getColorId());
+                purchaseOrderBillDtl.setQty(Long.parseLong(dtl.getConvertQty()+""));
+                purchaseOrderBillDtl.setActPrintQty(0);
+                purchaseOrderBillDtl.setPrintQty(dtl.getConvertQty());
+                purchaseOrderBillDtl.setInQty(0);
+                purchaseOrderBillDtl.setPrice(dtl.getPrice());
+                purchaseOrderBillDtl.setTotPrice(dtl.getPrice()* dtl.getConvertQty());
+                purchaseOrderBillDtl.setActPrice(dtl.getActPrice());
+                purchaseOrderBillDtl.setTotActPrice(dtl.getActPrice() * dtl.getConvertQty());
+                purchaseOrderBillDtl.setStatus(0);
+                purchaseOrderBillDtl.setInStatus(0);
+                saveDelList.add(purchaseOrderBillDtl);
+                totQty += dtl.getConvertQty();
+                actQty += dtl.getConvertQty();
+                totPrice += dtl.getPrice() * dtl.getConvertQty();
+                actPrice += dtl.getActPrice() * dtl.getConvertQty();
+                rcvQty += dtl.getConvertQty();
+                rcvVal += dtl.getConvertQty() * dtl.getActPrice();
+                //添加操作详情
+                ChangeReplenishBillDtl changeReplenishBillDtl=new ChangeReplenishBillDtl();
+                changeReplenishBillDtl.setId(new GuidCreator().toString());
+                changeReplenishBillDtl.setReplenishNo(replenishBill.getBillNo());
+                changeReplenishBillDtl.setSku(purchaseOrderBillDtl.getSku());
+                changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
+                changeReplenishBillDtl.setBillDate(new Date());
+                changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty()+"");
+                //添加预计时间
+
+                saveChangeList.add(changeReplenishBillDtl);
+            }
+            if(CommonUtil.isNotBlank(key)&&!key.equals("null")){
+                purchaseOrderBill.setOrigUnitId(key);
+            }
+
+
+            purchaseOrderBill.setBuyahandId(replenishBill.getBuyahandId());
+            purchaseOrderBill.setBillDate(new Date());
+            purchaseOrderBill.setDestId("AUTO_WH001");
+            if(CommonUtil.isBlank(purchaseOrderBill.getOwnerId())){
+                purchaseOrderBill.setOwnerId("1");
+            }
+            if(CommonUtil.isBlank(purchaseOrderBill.getStatus())){
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Enter);
+            }
+            Unit ventory = CacheManager.getUnitByCode(replenishBill.getOrigUnitId());
+            if(CommonUtil.isNotBlank(ventory)){
+                purchaseOrderBill.setOrigUnitName(ventory.getName());
+            }
+
+            Unit dest = CacheManager.getUnitByCode(purchaseOrderBill.getDestId());
+            purchaseOrderBill.setDestName(dest.getName());
+            Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
+            purchaseOrderBill.setDestUnitId(destUnit.getId());
+            purchaseOrderBill.setDestUnitName(destUnit.getName());
+            purchaseOrderBill.setTotQty(totQty);
+            purchaseOrderBill.setTotPrice(totPrice);
+            purchaseOrderBill.setActQty(actQty);
+            purchaseOrderBill.setActPrice(actPrice);
+            purchaseOrderBill.setTotInQty(rcvQty);
+            purchaseOrderBill.setTotInVal(rcvVal);
+            purchaseOrderBill.setSrcBillNo(replenishBill.getBillNo());
+            savelist.add(purchaseOrderBill);
+
+        }
+
+    }
+    /**
+     * 转换申请单为采购退货订单单据（保存调用）
+     * */
+    public static void replenishBillcovertToPurchaseReturnBill( ReplenishBill replenishBill, List<ReplenishBillDtl> dels, List<PurchaseReturnBill> savelist,List<PurchaseReturnBillDtl> saveDelList, User curUser,List<ChangeReplenishBillDtl> saveChangeList){
+        //根据商家replenishBillDel的sku做分组
+        Map<String,List<ReplenishBillDtl>> map=new HashMap<String,List<ReplenishBillDtl>>();//根据商家分组保存
+        for(int i=0;i<dels.size();i++){
+            if(CommonUtil.isNotBlank(dels.get(i).getClass1())){
+                if(i==0){
+                    List<ReplenishBillDtl> list=new ArrayList<ReplenishBillDtl>();
+                    list.add(dels.get(i));
+                    map.put(dels.get(i).getClass1(),list);
+                }else{
+                    if(map.containsKey(dels.get(i).getClass1())){
+                        List<ReplenishBillDtl> replenishBillDtls = map.get(dels.get(i).getClass1());
+                        replenishBillDtls.add(dels.get(i));
+                        map.put(dels.get(i).getClass1(),replenishBillDtls);
+                    }else {
+                        List<ReplenishBillDtl> list=new ArrayList<ReplenishBillDtl>();
+                        list.add(dels.get(i));
+                        map.put(dels.get(i).getClass1(),list);
+                    }
+                }
+            }else{
+                if(map.containsKey("null")){
+                    List<ReplenishBillDtl> replenishBillDtls = map.get("null");
+                    replenishBillDtls.add(dels.get(i));
+                    map.put("null",replenishBillDtls);
+                }else {
+                    List<ReplenishBillDtl> list=new ArrayList<ReplenishBillDtl>();
+                    list.add(dels.get(i));
+                    map.put("null",list);
+                }
+            }
+
+        }
+        //循环保存数据
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String)entry.getKey();
+            List<ReplenishBillDtl> keyDtls =( List<ReplenishBillDtl>) entry.getValue();
+            PurchaseReturnBill purchaseReturnBill=new PurchaseReturnBill();
+            String prefix = BillConstant.BillPrefix.purchaseReturn
+                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+            purchaseReturnBill.setId(prefix);
+            purchaseReturnBill.setBillNo(prefix);
+            if (CommonUtil.isNotBlank(curUser)) {
+                purchaseReturnBill.setOprId(curUser.getCode());
+            }
+            Long totQty = 0L;
+            Long actQty = 0L;
+            Long rcvQty = 0L;
+            Double totPrice = 0D;
+            Double actPrice = 0D;
+            Double rcvVal = 0D;
+            for (ReplenishBillDtl dtl : keyDtls) {
+                PurchaseReturnBillDtl purchaseReturnBillDtl=new PurchaseReturnBillDtl();
+                purchaseReturnBillDtl.setId(new GuidCreator().toString());
+                purchaseReturnBillDtl.setBillId(purchaseReturnBill.getId());
+                purchaseReturnBillDtl.setBillNo(purchaseReturnBill.getBillNo());
+                /*purchaseOrderBillDtl.setActPrintQty(0);
+                purchaseOrderBillDtl.setActQty(Long.parseLong(dtl.getConvertQty()+""));
+                purchaseOrderBillDtl.setInQty(0);
+                purchaseOrderBillDtl.setPrintQty(dtl.getConvertQty());*/
+                /*purchaseReturnBillDtl.getOutStockType("BH");*/
+                purchaseReturnBillDtl.setSku(dtl.getSku());
+                purchaseReturnBillDtl.setStyleId(dtl.getStyleId());
+                purchaseReturnBillDtl.setSizeId(dtl.getSizeId());
+                purchaseReturnBillDtl.setColorId(dtl.getColorId());
+                purchaseReturnBillDtl.setQty(Long.parseLong(dtl.getConvertQty()+""));
+
+                purchaseReturnBillDtl.setInQty(0L);
+                purchaseReturnBillDtl.setPrice(dtl.getPrice());
+                purchaseReturnBillDtl.setTotPrice(dtl.getPrice()* dtl.getConvertQty());
+                purchaseReturnBillDtl.setActPrice(dtl.getActPrice());
+                purchaseReturnBillDtl.setTotActPrice(dtl.getActPrice() * dtl.getConvertQty());
+                purchaseReturnBillDtl.setStatus(0);
+                purchaseReturnBillDtl.setInStatus(0);
+                saveDelList.add(purchaseReturnBillDtl);
+                totQty += dtl.getConvertQty();
+                actQty += dtl.getConvertQty();
+                totPrice += dtl.getPrice() * dtl.getConvertQty();
+                actPrice += dtl.getActPrice() * dtl.getConvertQty();
+                rcvQty += dtl.getConvertQty();
+                rcvVal += dtl.getConvertQty() * dtl.getActPrice();
+                //添加操作详情
+                ChangeReplenishBillDtl changeReplenishBillDtl=new ChangeReplenishBillDtl();
+                changeReplenishBillDtl.setId(new GuidCreator().toString());
+                changeReplenishBillDtl.setReplenishNo(replenishBill.getBillNo());
+                changeReplenishBillDtl.setSku(purchaseReturnBillDtl.getSku());
+                changeReplenishBillDtl.setPurchaseNo(purchaseReturnBill.getBillNo());
+                changeReplenishBillDtl.setBillDate(new Date());
+                changeReplenishBillDtl.setQty(purchaseReturnBillDtl.getQty()+"");
+                //添加预计时间
+
+                saveChangeList.add(changeReplenishBillDtl);
+            }
+            if(CommonUtil.isNotBlank(key)&&!key.equals("null")){
+                purchaseReturnBill.setOrigUnitId(key);
+            }
+          /*  purchaseReturnBill.setBuyahandId(replenishBill.getBuyahandId());*/
+            purchaseReturnBill.setBillDate(new Date());
+            purchaseReturnBill.setDestId("AUTO_WH001");
+            if(CommonUtil.isBlank(purchaseReturnBill.getOwnerId())){
+                purchaseReturnBill.setOwnerId("1");
+            }
+            if(CommonUtil.isBlank(purchaseReturnBill.getStatus())){
+                purchaseReturnBill.setStatus(BillConstant.BillStatus.Enter);
+            }
+            Unit ventory = CacheManager.getUnitByCode(replenishBill.getOrigUnitId());
+            if(CommonUtil.isNotBlank(ventory)){
+                purchaseReturnBill.setOrigUnitName(ventory.getName());
+            }
+
+            Unit dest = CacheManager.getUnitByCode(purchaseReturnBill.getDestId());
+            purchaseReturnBill.setDestName(dest.getName());
+            Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
+            purchaseReturnBill.setDestUnitId(destUnit.getId());
+            purchaseReturnBill.setDestUnitName(destUnit.getName());
+            purchaseReturnBill.setTotQty(totQty);
+            purchaseReturnBill.setTotPrice(totPrice);
+            purchaseReturnBill.setActQty(actQty);
+            purchaseReturnBill.setActPrice(actPrice);
+            purchaseReturnBill.setTotInQty(rcvQty);
+            purchaseReturnBill.setTotInVal(rcvVal);
+            purchaseReturnBill.setSrcBillNo(replenishBill.getBillNo());
+            savelist.add(purchaseReturnBill);
+
+        }
+
+    }
+    /**
      * 转换补货为采购订单单据（保存调用）
      * */
     public static void covertToPurchaseWeChatBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, User curUser) {
@@ -260,6 +527,7 @@ public class BillConvertUtil {
             styleCountMap.put(e.getStyleId(), e.getStyleId());
             if (purchaseBillDtlMap.containsKey(sku)) {
                 PurchaseOrderBillDtl dtl = purchaseBillDtlMap.get(sku);
+                
                 dtl.setInQty(dtl.getInQty() + 1);
                 dtl.setInVal(dtl.getInQty() * dtl.getActPrice());
                 dtl.setInStatus(BillConstant.BillDtlStatus.Ining);
@@ -856,6 +1124,7 @@ public class BillConvertUtil {
         Double totPreVal = 0D;
         for (BusinessDtl dtl : bus.getDtlList()) {
             PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseBillDtlMap.get(dtl.getSku());
+            purchaseOrderBillDtl.setId(new GuidCreator().toString());
            // System.out.println(dtl.getSku()+"-"+dtl.getQty());
             if(CommonUtil.isBlank(dtl.getQty())){
                 System.out.println("dtlQty is null:"+dtl.getSku());

@@ -111,7 +111,11 @@ function initGrid() {
             {name: 'destName', label: '收货仓库', width: 40},
             {name: 'totQty', label: '单据数量', sortable: false, width: 40},
             {name: 'totInQty', label: '已入库数量', width: 30},
-            {name: 'totInVal', label: '总入库金额', width: 30},
+            {name: 'totInVal', label: '总入库金额', width: 30,
+                formatter: function (cellValue, options, rowObject) {
+                    var totInVal=parseFloat(cellValue).toFixed(2);
+                    return totInVal;
+                }},
             {name: 'remark', label: '备注', sortable: false, width: 40},
             {name: 'id', hidden: true}
         ],
