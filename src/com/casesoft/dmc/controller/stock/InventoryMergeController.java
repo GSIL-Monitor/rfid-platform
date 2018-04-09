@@ -2,6 +2,8 @@ package com.casesoft.dmc.controller.stock;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.logistics.BillConvertUtil;
+import com.casesoft.dmc.controller.syn.tool.BillUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -13,12 +15,12 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.erp.Bill;
 import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.search.TransferorderCountView;
-import com.casesoft.dmc.model.stock.InventoryMergeBill;
-import com.casesoft.dmc.model.stock.InventoryMergeBillDtl;
-import com.casesoft.dmc.model.stock.InventoryMergeOrigBill;
-import com.casesoft.dmc.model.stock.InventoryRecord;
+import com.casesoft.dmc.model.logistics.InventoryBill;
+import com.casesoft.dmc.model.stock.*;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.stock.InventoryMergeService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -31,11 +33,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.swing.filechooser.FileSystemView;
 import java.io.*;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  * Created by yushen on 2017/12/4.
@@ -45,6 +49,9 @@ import java.util.List;
 public class InventoryMergeController extends BaseController implements IBaseInfoController<InventoryMergeBill> {
     @Autowired
     private InventoryMergeService inventoryMergeService;
+    @Autowired
+    private EpcStockService epcStockService;
+
 
     @Override
     public String index() {
@@ -67,6 +74,7 @@ public class InventoryMergeController extends BaseController implements IBaseInf
         }
         ModelAndView mv = new ModelAndView("views/stock/inventoryMergeBillDtl");
         mv.addObject("mergeBill", mergeBill);
+        mv.addObject("userId",getCurrentUser().getId());
         return mv;
 
     }
@@ -206,9 +214,48 @@ public class InventoryMergeController extends BaseController implements IBaseInf
         }
 
     }
-
     @Override
     public MessageBox importExcel(MultipartFile file) throws Exception {
         return null;
+    }
+
+    /**
+     *
+     * @param reason 后台提交的原因
+     * @param billNo 原始单号
+     * @param setDtlList 盘点调出的数据
+     * @param userId 操作用户
+     * @return 结果
+     */
+    @RequestMapping("/saveDtlOut")
+    @ResponseBody
+    public MessageBox saveDtlOut(String reason,String billNo,String setDtlList,String userId){
+            this.logAllRequestParams();
+        try {
+            /*获取code的集合*/
+            List<String> codeList = new LinkedList<>();
+            /*将前端的json数据转化为List集合，获取code的集合*/
+            List<InventoryMergeBillDtl> inventoryMergeBillDtlList = JSON.parseArray(setDtlList, InventoryMergeBillDtl.class);
+            for (InventoryMergeBillDtl inventoryMergeBillDtl : inventoryMergeBillDtlList) {
+                codeList.add(inventoryMergeBillDtl.getCode());
+            }
+            /*根据code查询出EpcStock的集合*/
+            List<EpcStock> epcStockList = this.epcStockService.findEpcByCodes(TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code"));
+            /*根据部门编号获取InventoryMergeBill的对象*/
+            InventoryMergeBill inventoryMergeBill = this.inventoryMergeService.get("billNo", billNo);
+
+            List<Business> businessList = new ArrayList<>();
+            /*获取操作的用户*/
+            User currentUser = CacheManager.getUserById(userId);
+            StringBuffer resultStr = new StringBuffer();
+            /*合并单据and生成转换单*/
+            List<InventoryBill> inventoryBillList = BillUtil.convertInventoryBill(inventoryMergeBillDtlList, reason, inventoryMergeBill, epcStockList, currentUser, businessList, resultStr);
+            /*保存修改后的各个单据*/
+            this.inventoryMergeService.mergeBillDtlBill(inventoryMergeBillDtlList, inventoryBillList, businessList,epcStockList);
+            return new MessageBox(true, resultStr.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false, "合并失败");
+        }
     }
 }

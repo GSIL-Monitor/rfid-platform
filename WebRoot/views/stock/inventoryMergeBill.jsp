@@ -16,6 +16,7 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var curOwnerId = "${ownerId}";
+        var userId = "${userId}";
     </script>
 </head>
 <body>

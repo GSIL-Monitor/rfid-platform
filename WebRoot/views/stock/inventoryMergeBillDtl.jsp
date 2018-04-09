@@ -10,11 +10,12 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 %>
 <!DOCTYPE html>
-<html>
-<head>
+    <html>
+    <head>
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var allrowDate = new Array();
     </script>
     <style>
         #searchBtn:hover {
@@ -102,6 +103,9 @@
                         <span style="vertical-align: middle"> 仅显示差异</span>
                     </label>
                 </div>
+                <div class="widget-toolbar no-border">
+                    <button type="button " onclick="decruit()">调出</button>
+                </div>
             </div>
             <div id="searchPannel" class="widget-main padding-12">
                 <div class="form-horizontal" hidden id="searchForm">
@@ -146,6 +150,7 @@
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="inventoryMerge_origList.jsp"></jsp:include>
+<jsp:include page="inventoryMergeBillDtl_edit.jsp"></jsp:include>
 <script type="text/javascript">
     $(function () {
         initGrid();
@@ -153,6 +158,7 @@
 
     var billNo = "${mergeBill.id}";
     var params = {};
+    var userId = "${userId}";
 
     function showSearchForm() {
         $("#searchForm").slideToggle("fast");
@@ -186,14 +192,36 @@
                         var price=rowObject.price.toFixed(2);
                         return price;
                     }
+                },
+                {name: 'state', label: '标记', width: 40,formatter:function(cellValue, options, rowObject){
+                        if (rowObject.inStock==1 && cellValue=="N"){
+                            return "正常";
+                        }
+                        if (rowObject.inStock==0 && cellValue=="N"){
+                            return "未处理";
+                        }
+                        if (rowObject.inStock==0 && cellValue=="Y"){
+                            return "已处理";
+                        }
+                        if (rowObject.inStock==0 && cellValue=="X"){
+                            return "无需处理";
+                        }
+                    }
                 }
             ],
+            onSelectRow:function (id) {
+                var jsonObj = $("#detailgrid").jqGrid("getRowData",id);
+                if (jsonObj.state=="正常"||jsonObj.state=="已处理"||jsonObj.state=="无需处理"){
+                    $("#detailgrid").jqGrid("setSelection",id,false);
+                }
+            },
             autowidth: true,
             rownumbers: true,
             altRows: true,
             rowNum: -1,
+            recordpos : 'left',
             pager: "#detailgrid-pager",
-            multiselect: false,
+            multiselect: true,
             shrinkToFit: true,
             sortname: 'actQty',
             sortorder: "desc",
@@ -205,6 +233,36 @@
         var parent_column = $("#main-container");
         $("#detailgrid").jqGrid('setGridWidth', parent_column.width() - 5);
         $("#detailgrid-pager_center").html("");
+
+    }
+    
+    function decruit() {
+        if ($("#displayType").is(':checked')) {
+            var rowIdd = new Array();
+            /*获取所有行id*/
+            rowIdd = $("#detailgrid").jqGrid('getGridParam','selarrrow');
+            console.log(rowIdd);
+            if(rowIdd.length!=0){
+                for (var j= 0 ;j<rowIdd.length; j++){
+                    /*获取该行id对应的值*/
+                    var rowDate = $('#detailgrid').jqGrid('getRowData',rowIdd[j]);
+                    allrowDate.push(rowDate);
+                }
+                $("#edit_inventoryMergeBillDtl_dialog").modal('show');
+                /*将数据传递给dialog*/
+                $("#edit_inventoryMergeBillDtl_dialog").loadData(allrowDate);
+                var rowIdg = new  Array();
+                rowIdg = $("#grid").jqGrid('getGridParam','selarrrow');
+                for (var i = 0; i<allrowDate.length;i++) {
+                    $("#grid").addRowData(i + 1,allrowDate[i]);
+                }
+                allrowDate = new Array();
+            }else {
+                bootbox.alert("请选择后调出！");
+            }
+        }else {
+            bootbox.alert("请勾选仅显示差异后再选择调出！");
+        }
     }
 
     function setFooterData() {
