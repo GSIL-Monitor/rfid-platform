@@ -333,7 +333,6 @@
     }
 
     function confirm_selected_GuestId_sale() {
-        debugger;
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
         $("#search_destUnitId").val(rowData.id);
@@ -350,6 +349,7 @@
         } else {
             $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
         }
+        setDiscount();
     }
 
     function confirm_selected_GuestId_Consignment() {
