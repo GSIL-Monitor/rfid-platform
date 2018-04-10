@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.casesoft.dmc.core.util.CommonUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -320,6 +321,13 @@ public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimp
     return createCriteria(criterions).list();
   }
 
+  /**
+   * add by yushen
+   * 查找出的结果，进行排序，sortMap为排序字段和方向
+   */
+  public List<T> find(final Map<String, String> sortMap, final Criterion... criterions) {
+    return createCriteria(sortMap, criterions).list();
+  }
   /*
    * (non-Javadoc)
    * 
@@ -340,6 +348,27 @@ public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimp
     Criteria criteria = getSession().createCriteria(entityClass);
     for (Criterion c : criterions) {
       criteria.add(c);
+    }
+    return criteria;
+  }
+
+  /**
+   * add by yushen
+   * 查找出的结果，进行排序，sortMap为排序字段和方向
+   */
+  public Criteria createCriteria(final Map<String, String> sortMap, final Criterion... criterions) {
+    Criteria criteria = getSession().createCriteria(entityClass);
+    for (Criterion c : criterions) {
+      criteria.add(c);
+    }
+    if(CommonUtil.isNotBlank(sortMap)){
+      for(Map.Entry<String, String> entry : sortMap.entrySet()){
+        if(entry.getValue()=="asc"){
+          criteria.addOrder(Order.asc(entry.getKey()));
+        }else if(entry.getValue()=="desc"){
+          criteria.addOrder(Order.desc(entry.getKey()));
+        }
+      }
     }
     return criteria;
   }

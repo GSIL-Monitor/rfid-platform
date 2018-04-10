@@ -425,6 +425,14 @@ public BaseHibernateDao() {
     return find(criterions);
   }
 
+  /**
+   * add by yushen
+   * 查找出的结果，进行排序，sortMap为排序字段和方向
+   */
+  public List<T> find(List<PropertyFilter> filters, Map<String, String> sortMap){
+    Criterion[] criterions = buildCriterionByPropertyFilter(filters);
+    return find(sortMap, criterions);
+  }
   /*
    * (non-Javadoc)
    * 

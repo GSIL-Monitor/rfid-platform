@@ -18,7 +18,8 @@ public class Page<T> {
 	public static final String DESC = "desc";
 
 	//-- 分页参数 --//
-	protected int pageNo = 1;
+	private int page;//rows=50   当前页码 兼容jqgrid新增参数，小程序设置分页时，也要设置此参数。
+	protected int pageNo = 1;  //当前页码
 	protected int pageSize = -1;
 	protected String orderBy = null;
 	protected String order = null;	//升序降序  desc asc
@@ -37,7 +38,6 @@ public class Page<T> {
 
 	private String sord;//asc
 	private String sidx;//code
-	private int page;//rows=50
 
     private long totPage;
 	
