@@ -7,7 +7,11 @@ import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.tag.Epc;
+import com.casesoft.dmc.model.tag.Init;
+import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
+import com.casesoft.dmc.service.tag.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +38,10 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private StyleService styleService;
 	@Autowired
 	public pushBaseInfo wxShopBaseService;
+	@Autowired
+	private ProductService productService;
+	@Autowired
+	public InitService initService;
 
 	@RequestMapping("/page")
 	@ResponseBody
@@ -226,6 +234,38 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			e.printStackTrace();
 			return returnFailInfo("更改失败");
 		}
+	}
+	@RequestMapping(value = "/changePS")
+	@ResponseBody
+	public MessageBox changePS(String code,String status){
+		this.logAllRequestParams();
+		Product pro = CacheManager.getProductByCode(code);
+		List<Epc> epc = this.initService.findEpcBySkuList(code);
+		if (status.equals("N")){
+			try{
+				pro.setIsUse(status);
+				this.productService.saveOrUpdate(pro);
+				return returnSuccessInfo("更改成功");
+			}catch(Exception e){
+				e.printStackTrace();
+				return returnFailInfo("更改失败");
+			}
+		}else {
+			if (CommonUtil.isBlank(epc)){
+				try{
+					pro.setIsUse(status);
+					this.productService.saveOrUpdate(pro);
+					return returnSuccessInfo("更改成功");
+				}catch(Exception e){
+					e.printStackTrace();
+					return returnFailInfo("更改失败");
+				}
+			}else {
+				return returnFailInfo("更改失败");
+			}
+
+		}
+
 	}
 
 
