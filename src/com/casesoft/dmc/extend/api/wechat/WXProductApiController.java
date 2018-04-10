@@ -13,7 +13,8 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.product.*;
-import com.casesoft.dmc.model.search.DetailStockChatView;
+import com.casesoft.dmc.model.product.vo.ColorVo;
+import com.casesoft.dmc.model.product.vo.SizeVo;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
@@ -29,10 +30,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/api/wx/product")
@@ -58,6 +56,9 @@ public class WXProductApiController extends ApiBaseController {
     private PhotoService photoService;
     @Autowired
     private CustomerPhotoService customerPhotoService;
+
+    @Autowired
+    private ProductService productService;
 
     @Override
     public String index() {
@@ -122,19 +123,41 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping("/saveStyleWS.do")
     @ResponseBody
-    public MessageBox saveStyleWS(String styleStr) throws Exception {
+    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId) throws Exception {
         logAllRequestParams();
-        Style styleDTO=JSON.parseObject(styleStr,Style.class);
-        Style sty =this.styleService.fundByStyleId(styleDTO.getStyleId());
-        if(CommonUtil.isBlank(sty)){
-            sty=new Style();
-            sty.setId(styleDTO.getStyleId());
-            sty.setStyleId(styleDTO.getStyleId());
-        }
-        StyleUtil.copyStyleInfo(sty,styleDTO);
         try {
-            this.styleService.save(sty);
+            Style styleDTO=JSON.parseObject(styleStr,Style.class);
+            Style sty = CacheManager.getStyleById(styleDTO.getStyleId());
+            if(CommonUtil.isBlank(sty)){
+                sty=new Style();
+                sty.setId(styleDTO.getStyleId());
+                sty.setStyleId(styleDTO.getStyleId());
+                sty.setIsUse("Y");
+            }
+            List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
+            List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
+            List<Product> productList = new ArrayList<>();
+            for(ColorVo colorVo: colorVoList){
+                for(SizeVo sizeVo: sizeVoList){
+                    Product product = new Product();
+                    product.setCode(styleDTO.getStyleId()+colorVo.getId()+sizeVo.getId());
+                    product.setColorId(colorVo.getId());
+                    product.setSizeId(sizeVo.getId());
+                    productList.add(product);
+                }
+            }
+            sty.setOprId(userId);
+            List<Product> saveList = StyleUtil.covertToProductInfo(sty,styleDTO,productList);
+
+            this.styleService.saveStyleAndProducts(sty,saveList);
+            long time1=System.currentTimeMillis();
             CacheManager.refreshStyleCache();
+            long time2=System.currentTimeMillis();
+            System.out.println("刷新款式缓存时间："+ (time2-time1) +"ms");
+            CacheManager.refreshProductCache();
+            long time3=System.currentTimeMillis();
+            System.out.println("刷新商品缓存时间："+ (time3-time2) +"ms");
+
             return this.returnSuccessInfo("保存成功", styleStr);
         }catch(Exception e ){
             return this.returnFailInfo("保存失败");
@@ -428,6 +451,22 @@ public class WXProductApiController extends ApiBaseController {
         List<Size> sizes = this.sizeService.find(sizeFilters, sizeSortMap);
         map.put("colors", colors);
         map.put("sizes", sizes);
-        return map; 
+        return map;
+    }
+
+    /**
+     * add by yushen
+     * 查找款所对应商品的所有颜色尺寸
+     */
+    @RequestMapping(value = "/listColorAndSizeByStyleId")
+    @ResponseBody
+    public Map<String, Object> listColorAndSizeByStyleId(String styleId) throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<ColorVo> colorVoList = this.productService.getColorsByStyleId(styleId);
+        List<SizeVo> sizeVoList = this.productService.getSizesByStyleId(styleId);
+
+        map.put("colorVoList", colorVoList);
+        map.put("sizeVoList", sizeVoList);
+        return map;
     }
 }

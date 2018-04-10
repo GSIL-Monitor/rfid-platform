@@ -9,6 +9,8 @@ import com.casesoft.dmc.dao.product.ProductDao;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.ProductInfoList;
 import com.casesoft.dmc.model.product.StyleCollocation;
+import com.casesoft.dmc.model.product.vo.ColorVo;
+import com.casesoft.dmc.model.product.vo.SizeVo;
 import com.casesoft.dmc.model.shop.Collocation;
 import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.service.log.SysLogService;
@@ -231,5 +233,17 @@ public class ProductService extends AbstractBaseService<Product, String> {
         if (CommonUtil.isNotBlank(productInfoList.getPropertyKeyList())) {
             this.productDao.doBatchInsert(productInfoList.getPropertyKeyList());
         }
+    }
+
+    public List<ColorVo> getColorsByStyleId(String styleId) {
+        String hql ="select distinct new com.casesoft.dmc.model.product.vo.ColorVo(p.colorId as id,p.colorName) from"
+                +" Product p where p.styleId=?";
+        return this.productDao.find(hql, new Object[] {styleId});
+    }
+
+    public List<SizeVo> getSizesByStyleId(String styleId) {
+        String hql ="select distinct new com.casesoft.dmc.model.product.vo.SizeVo(p.sizeId as id,p.sizeName) from"
+                +" Product p where p.styleId=?";
+        return this.productDao.find(hql, new Object[] {styleId});
     }
 }

@@ -102,11 +102,6 @@ public class StyleController extends BaseController implements IBaseInfoControll
 				}else {
 					return this.returnFailInfo("保存失败!"+sty.getId()+"款号已存在请重新输入");
 				}
-			}else {
-				sty = new Style();
-				sty.setId(style.getStyleId());
-				sty.setStyleId(style.getStyleId());
-				sty.setIsUse("Y");
 			}
 			sty.setOprId(userId);
 			List<Product> productList = JSON.parseArray(productStr,Product.class);
