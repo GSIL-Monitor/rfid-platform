@@ -13,6 +13,7 @@
         var basePath = "<%=basePath%>";
         var userId = "${userId}";
         var styleId = "${styleId}";
+        var pageType = "${pageType}";
     </script>
     <style>
         a#focusColor:hover{
@@ -1011,9 +1012,11 @@
                 {
                     name: "", label: "操作", width: 80, editable: false, align: "center",
                     formatter: function (cellvalue, options, rowObject) {
-
-                        return "<a style='margin-left: 20px' a  href='javascript:void(0);' onclick=deleteColorSize('"+options.rowId+"')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
-
+                        if(pageType=="add"){
+                            return "<a style='margin-left: 20px' a  href='javascript:void(0);' onclick=deleteColorSize('"+options.rowId+"')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                        }else {
+                            return "";
+                        }
                     }
                 },
                 {name: 'colorId', label: '颜色', editable: false},

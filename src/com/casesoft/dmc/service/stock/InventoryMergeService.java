@@ -1,20 +1,31 @@
 package com.casesoft.dmc.service.stock;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.dao.logistics.InventoryBillDao;
+import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.dao.stock.InventoryMergeDao;
+import com.casesoft.dmc.dao.task.BusinessDtlDao;
+import com.casesoft.dmc.dao.task.TaskDao;
 import com.casesoft.dmc.model.erp.Bill;
+import com.casesoft.dmc.model.logistics.InventoryBill;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.stock.InventoryMergeBill;
 import com.casesoft.dmc.model.stock.InventoryMergeBillDtl;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.model.task.BusinessDtl;
+import com.casesoft.dmc.model.task.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +36,13 @@ import java.util.List;
 public class InventoryMergeService implements IBaseService<InventoryMergeBill, String> {
     @Autowired
     private InventoryMergeDao inventoryMergeDao;
+
+    @Autowired
+    private InventoryBillDao inventoryBillDao;
+    @Autowired
+    private EpcStockDao epcStockDao;
+    @Autowired
+    private TaskDao taskDao;
 
     @Override
     public Page<InventoryMergeBill> findPage(Page<InventoryMergeBill> page, List<PropertyFilter> filters) {
@@ -53,6 +71,10 @@ public class InventoryMergeService implements IBaseService<InventoryMergeBill, S
         }
     }
 
+    public void save( List<InventoryMergeBillDtl> mergeBillDtlList){
+        this.inventoryMergeDao.doBatchInsert(mergeBillDtlList);
+    }
+
     @Override
     public InventoryMergeBill load(String id) {
         return null;
@@ -68,6 +90,9 @@ public class InventoryMergeService implements IBaseService<InventoryMergeBill, S
         return null;
     }
 
+    public void update(InventoryMergeBillDtl entity){
+    }
+
     public List<InventoryMergeBillDtl> findMergeBillDtl(String id, boolean isChecked, String sku) {
         if (CommonUtil.isBlank(sku)) {
             sku = "";
@@ -79,6 +104,7 @@ public class InventoryMergeService implements IBaseService<InventoryMergeBill, S
             mergeBillDtlList = this.inventoryMergeDao.find("from InventoryMergeBillDtl where billNo=? and sku like ?", id, "%" + sku + "%");
         }
         for (InventoryMergeBillDtl mergeBillDtl : mergeBillDtlList) {
+
             Style style = CacheManager.getStyleById(mergeBillDtl.getStyleId());
             if (CommonUtil.isNotBlank(style)) {
                 mergeBillDtl.setStyleName(style.getStyleName());
@@ -128,11 +154,30 @@ public class InventoryMergeService implements IBaseService<InventoryMergeBill, S
         return this.inventoryMergeDao.find(hql);
     }
 
+
     public List<String> findOrigBillList(String billNo) {
         return this.inventoryMergeDao.find("select inventoryBillNo from InventoryMergeOrigBill where mergeBillNo=?", billNo);
     }
 
     public List<Bill> findErpBillByBillNoList(String billNoListStr) {
         return this.inventoryMergeDao.find("from Bill bill where" + billNoListStr);
+    }
+
+    public void mergeBillDtlBill(List<InventoryMergeBillDtl> inventoryMergeBillDtlList, List<InventoryBill> inventoryBillList, List<Business> businessList,List<EpcStock> epcStockList) {
+        this.inventoryMergeDao.doBatchInsert(inventoryMergeBillDtlList);
+        this.taskDao.doBatchInsert(inventoryBillList);
+        this.epcStockDao.doBatchInsert(epcStockList);
+        this.taskDao.doBatchInsert(businessList);
+
+        List<BusinessDtl> dtlList = new ArrayList<>();
+        List<Record> recordList = new ArrayList<>();
+        for (Business business :businessList){
+            List<BusinessDtl> businessDtlList = business.getDtlList();
+            dtlList.addAll(businessDtlList);
+            List<Record> rdList = business.getRecordList();
+            recordList.addAll(rdList);
+        }
+        this.taskDao.doBatchInsert(dtlList);
+        this.taskDao.doBatchInsert(recordList);
     }
 }

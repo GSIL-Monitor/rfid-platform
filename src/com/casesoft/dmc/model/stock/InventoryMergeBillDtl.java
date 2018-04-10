@@ -50,9 +50,31 @@ public class InventoryMergeBillDtl {
     @Transient
     @Excel(name = "单价")
     private Double price;           //吊牌价
+    @Column
+    @Excel(name = "状态")      //状态
+    private String state="N";
 
     public InventoryMergeBillDtl() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "InventoryMergeBillDtl{" +
+                "id='" + id + '\'' +
+                ", billNo='" + billNo + '\'' +
+                ", code='" + code + '\'' +
+                ", sku='" + sku + '\'' +
+                ", styleId='" + styleId + '\'' +
+                ", styleName='" + styleName + '\'' +
+                ", colorId='" + colorId + '\'' +
+                ", sizeId='" + sizeId + '\'' +
+                ", countTimes=" + countTimes +
+                ", scannedQty=" + scannedQty +
+                ", inStock=" + inStock +
+                ", price=" + price +
+                ", state='" + state + '\'' +
+                '}';
     }
 
     public InventoryMergeBillDtl(String sku, String styleId, String colorId, String sizeId, String code,
@@ -161,5 +183,13 @@ public class InventoryMergeBillDtl {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getState() {
+
+        return state;
     }
 }
