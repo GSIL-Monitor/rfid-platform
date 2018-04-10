@@ -83,7 +83,7 @@
                                 <div class="btn-group btn-group-sm pull-left">
                                     <button class="btn btn-info" onclick="purchaseBydestunitid();">
                                         <i class="ace-icon"></i>
-                                        <span class="bigger-110">按供应商汇总</span>
+                                        <span class="bigger-110">按厂家汇总</span>
                                     </button>
                                 </div>
                                <%--<div class="btn-group btn-group-sm pull-left">
@@ -109,12 +109,21 @@
                                         </button>
                                     </div>
 
-                                    <div class="btn-group btn-group-sm pull-left">
+                                 <%--   <div class="btn-group btn-group-sm pull-left">
 
                                         <button class="btn btn-info" onclick="exportExcel();">
 
                                             <i class="ace-icon fa fa-file-excel-o"></i>
                                             <span class="bigger-110">导出</span>
+
+                                        </button>
+                                    </div>--%>
+                                    <div class="btn-group btn-group-sm pull-left">
+
+                                        <button class="btn btn-info" onclick="newchooseExportFunction();">
+
+                                            <i class="ace-icon fa fa-file-excel-o"></i>
+                                            <span class="bigger-110">导出新</span>
 
                                         </button>
                                     </div>
@@ -316,6 +325,10 @@
                         <%-- <div id="searchsalebusinessnameGrid" style="height:800px;display: none"></div>
                         <div id="searchsaleorignameGrid" style="height:800px;display: none"></div>
 --%>
+                        <form  id="form1" action="" method=post name=form1 style='display:none'>
+                            <input id="gridId" type=hidden  name='gridId' value=''>
+                            <input id="request" type=hidden  name='request' value=''>
+                        </form>
 
 
                         <!-- PAGE CONTENT ENDS -->

@@ -1147,4 +1147,32 @@ function initKendoUIPurchasedestunitidGrid() {
     }
 
 
+
+}
+function newchooseExportFunction() {
+    if(exportExcelid === "searchGrid"){
+        exportExcelPOI();
+    }else {
+        exportExcel();
+    }
+}
+
+function exportExcelPOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = 1;
+    request.pageSize = -1;
+    request.take = total;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+    var url=basePath+"/search/PurchaseorCountviews/exportnew.do";
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
 }

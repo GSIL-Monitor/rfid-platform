@@ -110,7 +110,7 @@
                                         </button>
                                     </div>
 
-                                    <div class="btn-group btn-group-sm pull-left">
+                                  <%--  <div class="btn-group btn-group-sm pull-left">
 
                                         <button class="btn btn-info" onclick="chooseExportFunction();">
 
@@ -118,7 +118,7 @@
                                             <span class="bigger-110">导出旧</span>
 
                                         </button>
-                                    </div>
+                                    </div>--%>
                                     <div class="btn-group btn-group-sm pull-left">
 
                                         <button class="btn btn-info" onclick="newchooseExportFunction();">
