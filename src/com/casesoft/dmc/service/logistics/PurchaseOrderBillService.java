@@ -339,8 +339,8 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         }
     }
 
-    public Long findpurchaseCount(String hql){
-        Long unique = this.purchaseBillOrderDao.findUnique(hql);
+    public Object findpurchaseCount(String hql){
+        Object unique = this.purchaseBillOrderDao.findUnique(hql);
         return  unique;
     }
     public List<Object> findpurchaseCounts(String hql){
