@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "LOGISTICS_InventoryBill")
-public class InventoryBill extends BaseBill{
+public class  InventoryBill extends BaseBill{
     @Id
     @Column()
     private String id;
@@ -38,6 +38,17 @@ public class InventoryBill extends BaseBill{
     private String code;
     @Column()
     private String state;
+    @Column()
+    private String reason;//修改原因
+
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public String getState() {
         return state;

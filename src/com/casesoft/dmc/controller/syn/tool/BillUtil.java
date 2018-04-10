@@ -1,6 +1,7 @@
 package com.casesoft.dmc.controller.syn.tool;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.syn.BillVo;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -11,10 +12,14 @@ import com.casesoft.dmc.core.util.page.SinglePage;
 import com.casesoft.dmc.model.cfg.Device;
 import com.casesoft.dmc.model.erp.Bill;
 import com.casesoft.dmc.model.erp.BillDtl;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.InventoryBill;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.EpcStock;
+import com.casesoft.dmc.model.stock.InventoryMergeBill;
+import com.casesoft.dmc.model.stock.InventoryMergeBillDtl;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.task.Business;
@@ -780,5 +785,64 @@ public class BillUtil {
         fos.flush();
         fos.close();
         return file;
+    }
+
+
+    /***
+     * 将盘点合并单据转换成库存调整单
+     * @param reason 原因
+     * @param inventoryMergeBill billNo的信息
+     * @param currentUser 调出用户
+     * @param inventoryMergeBillDtlList 前台上传的数组对象
+     * @param resultStr 返回提示信息
+     * */
+    public static List<InventoryBill> convertInventoryBill(List<InventoryMergeBillDtl> inventoryMergeBillDtlList,String reason, InventoryMergeBill inventoryMergeBill, List<EpcStock> epcStockList, User currentUser, List<Business> businessList,StringBuffer resultStr) {
+        List<InventoryBill> inventoryBillList = new ArrayList<>();
+        Map<String,InventoryMergeBillDtl> inventoryMergeBillDtlMap = new HashMap<>();
+        for(InventoryMergeBillDtl dtl : inventoryMergeBillDtlList) {
+            inventoryMergeBillDtlMap.put(dtl.getCode(),dtl);
+            dtl.setBillNo(inventoryMergeBill.getBillNo());
+        }
+         for (EpcStock epcStock : epcStockList){
+            //判断商品当前所在位置及在库情况
+            if(epcStock.getWarehouseId().equals(inventoryMergeBill.getWarehouseId()) && epcStock.getInStock()==0) {
+                InventoryBill inventoryBill = new InventoryBill();
+                String prefix = BillConstant.BillPrefix.Inventory + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+                inventoryBill.setId(prefix);
+                inventoryBill.setBillNo(prefix);
+                inventoryBill.setColorId(epcStock.getColorId());
+                inventoryBill.setColorName(epcStock.getColorId());
+                inventoryBill.setSizeId(epcStock.getSizeId());
+                Size size = CacheManager.getSizeById(epcStock.getSizeId());
+                inventoryBill.setSizeName(size.getSizeName());
+                inventoryBill.setSku(epcStock.getSku());
+                inventoryBill.setStyleId(epcStock.getStyleId());
+                inventoryBill.setStyleName(epcStock.getStyleName());
+                inventoryBill.setBillDate(new Date());
+                inventoryBill.setActQty(1L);
+                inventoryBill.setActPrice(epcStock.getPrice());
+                inventoryBill.setDestId(inventoryMergeBill.getOwnerId());
+                inventoryBill.setDestUnitId(inventoryMergeBill.getOwnerId());
+                inventoryBill.setOwnerId(inventoryMergeBill.getWarehouseId());
+                inventoryBill.setCode(epcStock.getCode());
+                inventoryBill.setState(Constant.Token.Storage_Adjust_Outbound + "");
+                inventoryBill.setReason(reason);
+                inventoryBill.setOprId(currentUser.getId());
+                inventoryBill.setSrcBillNo(inventoryMergeBill.getBillNo());
+                inventoryBillList.add(inventoryBill);
+                Business business = BillConvertUtil.covertToInventoryBusinessOut(epcStock, inventoryBill, currentUser, "on");
+                epcStock.setInStock(0);
+                businessList.add(business);
+                inventoryMergeBillDtlMap.get(epcStock.getCode()).setState("Y");
+                resultStr.append(epcStock.getCode()+"/"+epcStock.getSku()+"转换成功"+" \n ");
+            }else {
+                inventoryMergeBillDtlMap.get(epcStock.getCode()).setState("X");
+                resultStr.append(epcStock.getCode()+"/"+epcStock.getSku()+"转换失败"+" \n ");
+            }
+        }
+        /*清空list将map中的数据添加到list中*/
+        inventoryMergeBillDtlList.clear();
+        inventoryMergeBillDtlList.addAll(inventoryMergeBillDtlMap.values());
+        return inventoryBillList;
     }
 }
