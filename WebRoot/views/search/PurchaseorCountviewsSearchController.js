@@ -196,6 +196,7 @@ function resetData() {
      });*/
 
 }
+
 function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast");
 }
@@ -215,23 +216,23 @@ var exportExcelid = "";
 function exportExcel() {
     $("#"+exportExcelid).children().find(".k-grid-excel").click();
 }
-var dialogOpenPage;
-function openSearchVendorDialog() {
-    debugger;
-    dialogOpenPage = "purchaseOrderSearch";
-    $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
-        initVendorSelect_Grid();
+
+function openSearchClass1Dialog() {
+
+
+    $("#modal_class1_search_table").modal('show').on('shown.bs.modal', function () {
+        initClass1Select_Grid();
     });
-    $("#searchVendorDialog_buttonGroup").html("" +
+   /* $("#searchVendorDialog_buttonGroup").html("" +
         "<button type='button'  class='btn btn-primary' onclick='confirm_selected_VendorId_purchaseOrder_search()'>确认</button>"
-    );
+    );*/
 }
-function confirm_selected_VendorId_purchaseOrder_search() {
-    var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
-    var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-    $("#filter_eq_destunitid").val(rowData.id);
+function selectClass1() {
+    var rowId = $("#class1Select_Grid").jqGrid("getGridParam", "selrow");
+    var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
+    $("#filter_eq_destunitid").val(rowData.code);
     $("#filter_eq_destunitname").val(rowData.name);
-    $("#modal_vendor_search_table").modal('hide');
+    $("#modal_class1_search_table").modal('hide');
 }
 var dialogOpenPage;
 function openSearchGuestDialog() {
@@ -506,7 +507,7 @@ function initKendoUIGrid() {
                 },
                {
                     field: "destunitname",
-                    title: "供应商",
+                    title: "厂家",
                     width: "180px",
 
                 },
@@ -796,12 +797,12 @@ function initKendoUIPurchaseGrid() {
                     }
 
                 },
-                {
+                /*{
                     field: "destunitname",
                     title: "供应商",
                     width: "180px",
 
-                },
+                },*/
                 /* {
                  field: "actprice",
                  title: "实际价格",
@@ -865,7 +866,7 @@ var isoneinitKendoUIPurchasestyeidGrid = true;
 function initKendoUIPurchasestyeidGrid() {
     debugger;
     exportExcelid = "searchpuchaseBystyeidGrid";
-    if (isoneinitKendoUIPurchaseGrid) {
+    if (isoneinitKendoUIPurchasestyeidGrid) {
         var filters = serializeToFilter($("#searchForm"));
         console.log(filters);
         $("#searchpuchaseBystyeidGrid").kendoGrid({
@@ -990,6 +991,12 @@ function initKendoUIPurchasestyeidGrid() {
 
                 },
                 {
+                    field: "destunitname",
+                    title: "厂家",
+                    width: "180px",
+
+                },
+                {
                     field: "totactprice",
                     title: "金额",
                     width: "180px",
@@ -1009,9 +1016,9 @@ function initKendoUIPurchasestyeidGrid() {
 }
 var isoneinitKendoUIPurchasedestunitidGrid = true;
 function initKendoUIPurchasedestunitidGrid() {
-    debugger;
+
     exportExcelid = "searchpuchaseBydestunitidGrid";
-    if (isoneinitKendoUIPurchaseGrid) {
+    if (isoneinitKendoUIPurchasedestunitidGrid) {
         var filters = serializeToFilter($("#searchForm"));
         console.log(filters);
         $("#searchpuchaseBydestunitidGrid").kendoGrid({
@@ -1023,7 +1030,7 @@ function initKendoUIPurchasedestunitidGrid() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
+
 
 
 
@@ -1134,6 +1141,15 @@ function initKendoUIPurchasedestunitidGrid() {
                     field: "totactprice",
                     title: "金额",
                     width: "180px",
+                    template: function (data) {
+
+                        var value = data.totactprice;
+                        console.log("start"+value);
+                        value=parseFloat(value).toFixed(2);
+                        console.log("end"+value);
+
+                        return value;
+                    }
                 },
 
 
