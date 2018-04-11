@@ -681,6 +681,12 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         return this.saleOrderBillDao.findUnique(hql);
     }
 
+    public Object findsaleOrderOrsaleRetrunMessage(String hql){
+        Object unique = this.saleOrderBillDao.findUnique(hql);
+        return unique;
+    }
+
+
 
     @Autowired
     private EpcStockService epcStockService;
