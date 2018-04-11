@@ -114,8 +114,8 @@ public class PurchaseorCountviewsSearch extends BaseController {
             }
             if(billno.contains(BillConstant.BillPrefix.purchaseReturn)){
                 purchaseNodeatilViews.setSaletype("采购退货订单");
-                Integer qty = purchaseNodeatilViews.getTotqty();
-                purchaseNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                //Integer qty = purchaseNodeatilViews.getTotqty();
+                //purchaseNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
             }
 
             datanew.add(purchaseNodeatilViews);
@@ -242,9 +242,22 @@ public class PurchaseorCountviewsSearch extends BaseController {
         logger.error("执行aLong的时间"+(endTime-startTime));
 
         purchaseCount purchasecount = new purchaseCount();
-        purchasecount.setPurchasesum(Integer.parseInt(objects[0]+""));
-        purchasecount.setPurchasonesum(Integer.parseInt(objects[1]+""));
-        purchasecount.setPurchasmony(Double.parseDouble(objects[2]+""));
+        if(CommonUtil.isNotBlank(objects[0])){
+            purchasecount.setPurchasesum(Integer.parseInt(objects[0]+""));
+        }else{
+            purchasecount.setPurchasesum(0);
+        }
+        if(CommonUtil.isNotBlank(objects[1])){
+            purchasecount.setPurchasonesum(Integer.parseInt(objects[1]+""));
+        }else{
+            purchasecount.setPurchasonesum(0);
+        }
+        if(CommonUtil.isNotBlank(objects[2])){
+            purchasecount.setPurchasmony(Double.parseDouble(objects[2]+""));
+        }else{
+            purchasecount.setPurchasmony(0D);
+        }
+
         return new MessageBox(true, "成功",purchasecount);
 
 
