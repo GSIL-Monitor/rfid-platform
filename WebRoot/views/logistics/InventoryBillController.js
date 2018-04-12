@@ -70,7 +70,8 @@ function initGrid() {
                         return '';
                     }
                 }
-            }
+            },
+            {name:'reason',label: '原因', editable: true, width: 40}
             /*{name: 'sizeName', label: '尺码', editable: true, width: 40},*/
         ],
 

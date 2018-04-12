@@ -49,7 +49,7 @@ function iniGrid() {
                     html += "<a style='text-decoration: none;margin-left: 20px' href='#' onclick=cancel('" + rowObject.billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
                   /*  html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + rowObject.billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*/
 
-                    html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-undo' title='修改'></i></a>";
+                    html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
 
                     return html;
                 }
@@ -165,7 +165,7 @@ function _search() {
 }
 function quit(billNo) {
     $.ajax({
-        url:"<%=basePath%>logistics/purchaseReturn/quit.do?billNo=" +billNo,
+        url:basePath+"/logistics/purchaseReturn/quit.do?billNo=" +billNo,
         cache: false,
         async: false,
         type: "POST",

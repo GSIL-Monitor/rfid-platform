@@ -527,6 +527,7 @@ public class BillConvertUtil {
             styleCountMap.put(e.getStyleId(), e.getStyleId());
             if (purchaseBillDtlMap.containsKey(sku)) {
                 PurchaseOrderBillDtl dtl = purchaseBillDtlMap.get(sku);
+                
                 dtl.setInQty(dtl.getInQty() + 1);
                 dtl.setInVal(dtl.getInQty() * dtl.getActPrice());
                 dtl.setInStatus(BillConstant.BillDtlStatus.Ining);
@@ -1123,6 +1124,7 @@ public class BillConvertUtil {
         Double totPreVal = 0D;
         for (BusinessDtl dtl : bus.getDtlList()) {
             PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseBillDtlMap.get(dtl.getSku());
+            purchaseOrderBillDtl.setId(new GuidCreator().toString());
            // System.out.println(dtl.getSku()+"-"+dtl.getQty());
             if(CommonUtil.isBlank(dtl.getQty())){
                 System.out.println("dtlQty is null:"+dtl.getSku());

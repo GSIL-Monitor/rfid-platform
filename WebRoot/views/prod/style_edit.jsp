@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-
 %>
 <!DOCTYPE html>
 <html>
@@ -13,6 +12,7 @@
         var basePath = "<%=basePath%>";
         var userId = "${userId}";
         var styleId = "${styleId}";
+        var pageType = "${pageType}";
     </script>
     <style>
         a#focusColor:hover{
@@ -985,22 +985,7 @@
 
     }
 
-    function deleteColorSize(rowId){
-        var row=$("#CSGrid").jqGrid("getRowData",rowId);
-        cs.showProgressBar("删除中");
-        $.post(basePath+"/prod/product/delete.do?code="+row.code,
-            function (result) {
-                cs.closeProgressBar();
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                if(result.success){
-                    $("#CSGrid").delRowData(rowId);
-                }
-            }
-        );
-    }
+
     var editDtailRowId;
     function iniGrid() {
         $("#CSGrid").jqGrid({
@@ -1009,11 +994,19 @@
             mtype: 'POST',
             colModel: [
                 {
-                    name: "", label: "操作", width: 80, editable: false, align: "center",
-                    formatter: function (cellvalue, options, rowObject) {
-
-                        return "<a style='margin-left: 20px' a  href='javascript:void(0);' onclick=deleteColorSize('"+options.rowId+"')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
-
+                    name: "isUse", label: "操作", width: 80, editable: false, align: "center",
+                    formatter: function (cellValue, options, rowObject) {
+                        var html;
+                        if(pageType=="add"){
+                            return "<a style='margin-left: 20px' a  href='javascript:void(0);' onclick=deleteColorSize('"+options.rowId+"')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                        }else {
+                            if (rowObject.isUse == "Y") {
+                                html = "<a style='margin-left: 0px' href='#' onclick=changePS('" + rowObject.code + "','N')><i class='ace-icon fa fa-check' title='启用'></i></a>";
+                            } else {
+                                html = "<a style='margin-left: 0px' href='#' onclick=changePS('" + rowObject.code + "','Y')><i class='ace-icon fa fa-lock' title='废除'></i></a>";
+                            }
+                            return html;
+                        }
                     }
                 },
                 {name: 'colorId', label: '颜色', editable: false},
@@ -1282,6 +1275,48 @@
                 }
             },'json');
 
+    }
+
+    function changePS(code, status) {
+        $.ajax({
+            url: basePath + '/prod/style/changePS.do',
+            datatype: 'json',
+            data: {
+                code: code,
+                status: status
+            },
+            success: function (result) {
+                if (result.success) {
+                    $.gritter.add({
+                        text: result.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#CSGrid").trigger('reloadGrid')
+                } else {
+                    $.gritter.add({
+                        text: result.msg,
+                        class_name: 'gritter-fail gritter-light'
+                    });
+                }
+            }
+
+        });
+    }
+    function deleteColorSize(rowId){
+        var row=$("#CSGrid").jqGrid("getRowData",rowId);
+        cs.showProgressBar("删除中");
+        $.post(basePath+"/prod/product/delete.do?code="+row.code,
+            function (result) {
+                cs.closeProgressBar();
+                $.gritter.add({
+                    text: result.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                if(result.success){
+                    $("#CSGrid").delRowData(rowId);
+                }
+            }
+        );
     }
 
 </script>

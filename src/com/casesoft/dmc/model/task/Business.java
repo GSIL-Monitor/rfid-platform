@@ -38,10 +38,13 @@ public class Business implements java.io.Serializable {
 	private String srcBillNo;
 	private String operator;
 	private Integer locked;
-	private List<BusinessDtl> dtlList;
+
+	private List<BusinessDtl> dtlList;//
+
 	private List<Box> boxList;
 
-  	private List<Record> recordList;
+  	private List<Record> recordList;//
+
   	private List<InventoryRecord> inventoryRecordList;
 	private Long totTime;//扫描时长
 	private String origId;//出库仓库

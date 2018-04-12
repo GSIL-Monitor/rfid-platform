@@ -2,6 +2,7 @@ package com.casesoft.dmc.service.product;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.casesoft.dmc.extend.echarts.code.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +111,10 @@ public class SizeService implements IBaseService<Size, Serializable> {
     @Override
     public List<Size> find(List<PropertyFilter> filters) {
         return this.sizeDao.find(filters);
+    }
+
+    public List<Size> find(List<PropertyFilter> filters, Map<String, String> sortMap) {
+        return this.sizeDao.find(filters, sortMap);
     }
 
     @Override

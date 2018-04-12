@@ -278,10 +278,21 @@ public class WechatrelenishController extends ApiBaseController {
                     replenishBill.setBuyahandName(user.getName());
                 }
             }
-            return new MessageBox(true,"success", page);
-        }else {
-            return new MessageBox(false,"fail");
         }
+        return new MessageBox(true,"success", page);
+    }
+
+    /**
+     * 撤销未处理的补货单的接口。
+     */
+    @RequestMapping(value="/cancelReplenishOrderList.do")
+    @ResponseBody
+    public MessageBox cancelReplenishOrderList(String billNo) throws Exception {
+        ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
+        replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+        this.replenishBillService.cancelUpdate(replenishBill);
+        return new MessageBox(true, "撤销成功");
+
     }
 
     /**
