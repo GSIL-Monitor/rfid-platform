@@ -134,8 +134,8 @@ public class SaleorderConutViewSearch extends BaseController {
             }
             if(billno.contains(BillConstant.BillPrefix.SaleOrderReturn)){
                 saleNodeatilViews.setSaletype("销售退货订单");
-                Integer qty = saleNodeatilViews.getTotqty();
-                saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                //Integer qty = saleNodeatilViews.getTotqty();
+                //saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
             }
             datanew.add(saleNodeatilViews);
         }

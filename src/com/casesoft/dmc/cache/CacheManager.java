@@ -763,7 +763,13 @@ public class CacheManager {
 		Element result = cache.get("Product");
 		Map<String, Product> productMap = (Map<String, Product>) result
 				.getValue();
-		return productMap.get(code);
+		Product p = productMap.get(code);
+		if(CommonUtil.isBlank(p)){
+			ProductService productService = (ProductService) SpringContextUtil
+					.getBean("productService");
+			p = productService.findProductByCode(code);
+		}
+		return p;
 	}
 
 	public static void refreshProductCache() {

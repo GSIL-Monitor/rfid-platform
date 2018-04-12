@@ -13,7 +13,8 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.product.*;
-import com.casesoft.dmc.model.search.DetailStockChatView;
+import com.casesoft.dmc.model.product.vo.ColorVo;
+import com.casesoft.dmc.model.product.vo.SizeVo;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
@@ -29,9 +30,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/api/wx/product")
@@ -58,6 +57,9 @@ public class WXProductApiController extends ApiBaseController {
     @Autowired
     private CustomerPhotoService customerPhotoService;
 
+    @Autowired
+    private ProductService productService;
+
     @Override
     public String index() {
         return null;
@@ -68,23 +70,14 @@ public class WXProductApiController extends ApiBaseController {
     public Page<Style> getStyleList(Page<Style> page)throws Exception{
         logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        page.setSort("updateTime");
+        page.setOrder("desc");
         page.setPageProperty();
-
         page = this.styleService.findPage(page, filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(Style d : page.getRows()){
-            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
-            if(file.exists()){
-                File[] files = file.listFiles();
-                if(files.length > 0){
-                    File[] photos = files[0].listFiles();
-                    if(photos.length > 0){
-                        d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
-                    }
-                }
-            }else{
-                d.setUrl("/imgs/noImg.png");
-            }
+            String imgUrl = ImgUtil.fetchImgUrl(d.getStyleId(), rootPath);
+            d.setUrl(imgUrl);
             //PropertyKey propertyKey = this.propertyService.findPropertyKeyBytypeAndCode(d.getClass1());
             //d.setClass1Name(propertyKey.getName());
             PropertyKey propertyKey = CacheManager.getPropertyKey("C1-" + d.getClass1());
@@ -93,7 +86,6 @@ public class WXProductApiController extends ApiBaseController {
             }else{
                 d.setClass1Name("");
             }
-
         }
         return page;
     }
@@ -131,19 +123,41 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping("/saveStyleWS.do")
     @ResponseBody
-    public MessageBox saveStyleWS(String styleStr) throws Exception {
+    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId) throws Exception {
         logAllRequestParams();
-        Style styleDTO=JSON.parseObject(styleStr,Style.class);
-        Style sty =this.styleService.fundByStyleId(styleDTO.getStyleId());
-        if(CommonUtil.isBlank(sty)){
-            sty=new Style();
-            sty.setId(styleDTO.getStyleId());
-            sty.setStyleId(styleDTO.getStyleId());
-        }
-        StyleUtil.copyStyleInfo(sty,styleDTO);
         try {
-            this.styleService.save(sty);
+            Style styleDTO=JSON.parseObject(styleStr,Style.class);
+            Style sty = CacheManager.getStyleById(styleDTO.getStyleId());
+            if(CommonUtil.isBlank(sty)){
+                sty=new Style();
+                sty.setId(styleDTO.getStyleId());
+                sty.setStyleId(styleDTO.getStyleId());
+                sty.setIsUse("Y");
+            }
+            List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
+            List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
+            List<Product> productList = new ArrayList<>();
+            for(ColorVo colorVo: colorVoList){
+                for(SizeVo sizeVo: sizeVoList){
+                    Product product = new Product();
+                    product.setCode(styleDTO.getStyleId()+colorVo.getId()+sizeVo.getId());
+                    product.setColorId(colorVo.getId());
+                    product.setSizeId(sizeVo.getId());
+                    productList.add(product);
+                }
+            }
+            sty.setOprId(userId);
+            List<Product> saveList = StyleUtil.covertToProductInfo(sty,styleDTO,productList);
+
+            this.styleService.saveStyleAndProducts(sty,saveList);
+            long time1=System.currentTimeMillis();
             CacheManager.refreshStyleCache();
+            long time2=System.currentTimeMillis();
+            System.out.println("刷新款式缓存时间："+ (time2-time1) +"ms");
+            CacheManager.refreshProductCache();
+            long time3=System.currentTimeMillis();
+            System.out.println("刷新商品缓存时间："+ (time3-time2) +"ms");
+
             return this.returnSuccessInfo("保存成功", styleStr);
         }catch(Exception e ){
             return this.returnFailInfo("保存失败");
@@ -248,11 +262,12 @@ public class WXProductApiController extends ApiBaseController {
     @RequestMapping(value = "/findColorListWS.do")
     @ResponseBody
     public  Page<Color> findColorListWS(Page<Color> page){
-            this.logAllRequestParams();
-
-            page.setPageProperty();
-            List<PropertyFilter> filters =PropertyFilter.buildFromHttpRequest(this.getRequest());
-            return this.colorService.findPage(page,filters);
+        this.logAllRequestParams();
+        page.setSort("colorName");
+        page.setOrder("asc");
+        page.setPageProperty();
+        List<PropertyFilter> filters =PropertyFilter.buildFromHttpRequest(this.getRequest());
+        return this.colorService.findPage(page,filters);
     }
 
 
@@ -414,5 +429,65 @@ public class WXProductApiController extends ApiBaseController {
         }
         printWriter.write(JSON.toJSONString(res));
         printWriter.flush();
+    }
+
+    /**
+     * add by yushen
+     * 查找所有颜色尺寸，不分页
+     */
+    @RequestMapping(value = "/listColorAndSize")
+    @ResponseBody
+    public Map<String, Object> listColorAndSize() throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<PropertyFilter> colorFilters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Map<String, String> colorSortMap = new HashMap<>();
+        colorSortMap.put("colorName", "asc");
+
+        List<PropertyFilter> sizeFilters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Map<String, String> sizeSortMap = new HashMap<>();
+        sizeSortMap.put("seqNo", "asc");
+
+        List<Color> colors = this.colorService.find(colorFilters, colorSortMap);
+        List<Size> sizes = this.sizeService.find(sizeFilters, sizeSortMap);
+        map.put("colors", colors);
+        map.put("sizes", sizes);
+        return map;
+    }
+
+    /**
+     * add by yushen
+     * 查找款所对应商品的所有颜色尺寸
+     */
+    @RequestMapping(value = "/listColorAndSizeByStyleId")
+    @ResponseBody
+    public Map<String, Object> listColorAndSizeByStyleId(String styleId) throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<ColorVo> colorVoList = this.productService.getColorsByStyleId(styleId);
+        List<SizeVo> sizeVoList = this.productService.getSizesByStyleId(styleId);
+
+        map.put("colorVoList", colorVoList);
+        map.put("sizeVoList", sizeVoList);
+        return map;
+    }
+
+    /**
+     * add by yushen
+     * 上传或重传款式图片，上传图片时，如果本来已经存在图片，把原来的图片删掉
+     */
+    @RequestMapping("/uploadStylePicture")
+    public void uploadStylePicture(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        //删除文件
+        String rootPath = request.getSession().getServletContext().getRealPath("");
+        String styleId = getReqParam("styleId");
+        String filePath = rootPath + "/product/photo/" + styleId + "/-/";
+        File dir = new File(filePath);
+        if(dir.exists()){
+            File[] tmpFiles = dir.listFiles();
+            for (File file: tmpFiles) {
+                file.delete();
+            }
+        }
+        //上传文件
+        this.uploadPicture(request, response);
     }
 }
