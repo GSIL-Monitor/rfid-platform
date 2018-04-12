@@ -1955,7 +1955,7 @@ function guestBalanceChange() {
     var actPrice = parseFloat($("#search_actPrice").val());
     var payPrice = parseFloat($("#search_payPrice").val());
     var preBalance = parseFloat($("#pre_Balance").val());
-    var afterBalance = preBalance + payPrice - actPrice;
+    var afterBalance = parseFloat(preBalance + payPrice - actPrice).toFixed(2);
 
     $("#after_Balance").val(afterBalance);
     if (afterBalance < 0) {

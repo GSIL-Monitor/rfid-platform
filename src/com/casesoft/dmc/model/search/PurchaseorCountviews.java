@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.search;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import org.jeecgframework.poi.excel.annotation.Excel;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,27 +16,35 @@ public class PurchaseorCountviews {
     @Column()
     private String id;
     @Column()
+    @Excel(name = "SKU", width = 20D)
     private String sku;
     @Column()
+    @Excel(name="款号")
     private String styleid;
     @Column()
     private String colorid;
     @Column()
+    @Excel(name="尺号")
     private String sizeid;
     @Column()
+    @Excel(name="数量")
     private Integer qty;
     @Column()
     private Double price;
     @Column()
     private Double totprice;
     @Column()
+    @Excel(name="实际价格")
     private Double actprice;
     @Column()
+    @Excel(name="实际金额")
     private Double totactprice;
     @JSONField(format="yyyy-MM-dd")
     @Column(nullable = false,length = 19)
+    @Excel(name="日期")
     private Date billDate;
     @Column()
+    @Excel(name="单号")
     private String billid;
     @Column()
     private String origunitid;
@@ -44,14 +53,17 @@ public class PurchaseorCountviews {
     @Column()
     private String destunitid;
     @Column()
+    @Excel(name="款名")
     private String stylename;
     @Column()
+    @Excel(name="出入仓库")
     private String destname;
     @Column()
     private Integer instatus;
     @Column()
     private Integer outstatus;
     @Transient
+    @Excel(name="图片", width = 25D,type = 2)
     private String url;
     @Column()
     private Integer status;
@@ -121,8 +133,10 @@ public class PurchaseorCountviews {
     }
 
     @Column()
+    @Excel(name="供应商")
     private String destunitname;
     @Transient
+    @Excel(name="单据类型")
     private String saletype;
 
     public String getSaletype() {

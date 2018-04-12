@@ -8,6 +8,15 @@ public class PurchaseBystyleid {
     private String stylename;
     private String qty;
     private String totactprice;
+    private String destunitname;
+
+    public String getDestunitname() {
+        return destunitname;
+    }
+
+    public void setDestunitname(String destunitname) {
+        this.destunitname = destunitname;
+    }
 
     public String getSku() {
         return sku;

@@ -116,10 +116,13 @@ public class PurchaseorCountDaoImpl implements PurchaseorCountDao {
                     purchaseBystyleid.setStylename(rs.getObject(2).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(3))){
-                    purchaseBystyleid.setQty(rs.getObject(3).toString());
+                    purchaseBystyleid.setDestunitname(rs.getObject(3).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(4))){
-                    purchaseBystyleid.setTotactprice(rs.getObject(4).toString());
+                    purchaseBystyleid.setQty(rs.getObject(4).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(5))){
+                    purchaseBystyleid.setTotactprice(rs.getObject(5).toString());
                 }
                 list.add(purchaseBystyleid);
             }

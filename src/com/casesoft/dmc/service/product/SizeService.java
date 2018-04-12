@@ -40,7 +40,7 @@ public class SizeService implements IBaseService<Size, Serializable> {
 
     @Transactional(readOnly = true)
     public List<Size> getSizeBySortId(String sortId) {
-        String hql = "from  Size s where s.sortId=?";
+        String hql = "from  Size s where s.sortId=? order by seqNo";
 
         return this.sizesortDao.find(hql, new Object[]{sortId});
     }

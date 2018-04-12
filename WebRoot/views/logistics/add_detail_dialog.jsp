@@ -126,7 +126,7 @@
             onSelectRow : function(rowid,status) {
                 var row = $("#stylegrid").getRowData(rowid);
                 $("#color_size_grid").jqGrid("setGridParam",{
-                    url: basePath+"/prod/product/list.do?filter_EQS_styleId="+row.styleId,
+                    url: basePath+"/prod/product/listOrderByColorAndSize.do?styleId="+row.styleId,
                 }).trigger('reloadGrid');
             }
 
