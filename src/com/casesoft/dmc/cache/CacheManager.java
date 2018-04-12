@@ -690,13 +690,26 @@ public class CacheManager {
 	public static Style getStyleById(String styleId) {
 		Element result = cache.get("Style");
 		Map<String, Style> styleMap = (Map<String, Style>) result.getValue();
-		return styleMap.get(styleId);
+		Style s = styleMap.get(styleId);
+		if(CommonUtil.isBlank(s)){
+
+			StyleService styleService = (StyleService) SpringContextUtil
+					.getBean("styleService");
+			s= styleService.load(styleId);
+		}
+
+		return s;
 	}
 
 	public static String getStyleNameById(String styleId) {
 		Element result = cache.get("Style");
 		Map<String, Style> styleMap = (Map<String, Style>) result.getValue();
 		Style style = styleMap.get(styleId);
+		if(CommonUtil.isBlank(style)){
+			StyleService styleService = (StyleService) SpringContextUtil
+					.getBean("styleService");
+			style= styleService.load(styleId);
+		}
 		return style == null ? "" : style.getStyleName();
 	}
 	public static void initNewProductCache(){

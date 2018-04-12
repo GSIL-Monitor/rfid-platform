@@ -138,13 +138,13 @@ public class StyleService extends AbstractBaseService<Style, String> {
 	@Override
 	public Style load(String id) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.styleDao.load(id);
 	}
 
 	@Override
 	public Style get(String propertyName, Object value) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.styleDao.findUniqueBy(propertyName,value);
 	}
 
 	@Transactional(readOnly = true)
