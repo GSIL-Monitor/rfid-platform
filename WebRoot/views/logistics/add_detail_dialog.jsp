@@ -126,6 +126,7 @@
             onSelectRow : function(rowid,status) {
                 var row = $("#stylegrid").getRowData(rowid);
                 $("#color_size_grid").jqGrid("setGridParam",{
+                    datatype:"json",
                     url: basePath+"/prod/product/list.do?filter_EQS_styleId="+row.styleId,
                 }).trigger('reloadGrid');
             }
@@ -149,7 +150,7 @@
     function initColorSizeGrid() {
         $("#color_size_grid").jqGrid({
             height:  "500",
-            datatype: "json",
+            datatype:"local",
             colModel: [
                 {name: 'code', label:'code',width: 100,hidden:true},
                 {name: 'styleId', label: '款号', width: 100,sortable: true,hidden:true},
