@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,8 +32,8 @@ import com.casesoft.dmc.service.cfg.PropertyService;
 @RequestMapping("/sys/property")
 public class PropertyController extends BaseController implements IBaseInfoController<PropertyType>{
 
-	
-	
+	@Autowired
+	private PropertyKeyService propertyKeyService;
 	@Autowired
 	private PropertyService propertyService;
 	
@@ -212,6 +213,17 @@ public class PropertyController extends BaseController implements IBaseInfoContr
 
 		return null;
 	}
+	@RequestMapping("/findclassname")
+	@ResponseBody
+	public Page<PropertyKey> findclassname(Page<PropertyKey> page) throws Exception {
+		this.logAllRequestParams();
+		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+				.getRequest());
+		page.setPageProperty();
+		page = this.propertyKeyService.findPage(page,filters);
+		return page;
+	}
+
 
 	
 	

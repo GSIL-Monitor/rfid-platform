@@ -684,15 +684,8 @@ function initKendoUIGrid() {
                 {
                     field: "qty", title: "数量", width: "80px", groupable: false,
                     aggregates: ["sum"],
-                    footerTemplate: "#=sum#",
-                    template:function(data) {
-                        if (data.saletype == "销售退货订单") {
-                            return "-"+data.qty;
-                        } else{
+                    footerTemplate: "#=sum#"
 
-                            return data.qty;
-                        }
-                    }
                 },
                 {field: "price", title: "吊牌价", width: "110px", groupable: false, aggregates: ["average"]},
                 {

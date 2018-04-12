@@ -134,8 +134,8 @@ public class SaleorderConutViewSearch extends BaseController {
             }
             if(billno.contains(BillConstant.BillPrefix.SaleOrderReturn)){
                 saleNodeatilViews.setSaletype("销售退货订单");
-                Integer qty = saleNodeatilViews.getTotqty();
-                saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                //Integer qty = saleNodeatilViews.getTotqty();
+                //saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
             }
             datanew.add(saleNodeatilViews);
         }
@@ -333,40 +333,64 @@ public class SaleorderConutViewSearch extends BaseController {
         }
 
         Integer longsqty= null;
+        long aLongstartTime= System.currentTimeMillis();
         Long aLong = this.saleOrderBillService.findsaleOrderCount(hqlsqty);
+        long aLongendTime= System.currentTimeMillis();
+        logger.error("执行aLong的时间"+(aLongendTime-aLongstartTime));
         if(CommonUtil.isBlank(aLong)){
             longsqty=0;
         }else{
             longsqty= aLong.intValue();
         }
+        long longstotactpricestartTime= System.currentTimeMillis();
         Double longstotactprice= this.saleOrderBillService.findsaleOrderCountnum(hqlstotactprice);
+        long longstotactpriceendTime= System.currentTimeMillis();
+        logger.error("执行longstotactprice的时间"+(longstotactpriceendTime-longstotactpricestartTime));
         if(CommonUtil.isBlank(longstotactprice)){
             longstotactprice=0.D;
         }
         Integer longrqty= null;
+        long countstartTime= System.currentTimeMillis();
         Long count = this.saleOrderBillService.findsaleOrderCount(hqlrqty);
+        long countpriceendTime= System.currentTimeMillis();
+        logger.error("执行count的时间"+(countpriceendTime-countstartTime));
         if(CommonUtil.isBlank(count)){
             longrqty=0;
         }else{
             longrqty=count.intValue();
         }
+        long longrtotactpricestartTime= System.currentTimeMillis();
         Double longrtotactprice= this.saleOrderBillService.findsaleOrderCountnum(hqlrtotactprice);
+        long longrtotactpriceendTime= System.currentTimeMillis();
+        logger.error("执行longrtotactprice的时间"+(longrtotactpriceendTime-longrtotactpricestartTime));
         if(CommonUtil.isBlank(longrtotactprice)){
             longrtotactprice=0.D;
         }
+        long longrtogrossstartTime= System.currentTimeMillis();
         Double longrtogross= this.saleOrderBillService.findsaleOrderCountnum(hqlrtogross);
+        long longrtogrossendTime= System.currentTimeMillis();
+        logger.error("执行longrtogross的时间"+(longrtogrossstartTime-longrtogrossendTime));
         if(CommonUtil.isBlank(longrtogross)){
             longrtogross=0.D;
         }
+        long longrtogrossallstartTime= System.currentTimeMillis();
         Double longrtogrossall= this.saleOrderBillService.findsaleOrderCountnum(hqlrtogrossall);
+        long longrtogrossallendTime= System.currentTimeMillis();
+        logger.error("执行longrtogross的时间"+(longrtogrossallstartTime-longrtogrossallendTime));
         if(CommonUtil.isBlank(longrtogrossall)){
             longrtogrossall=0.D;
         }
+        long longstogrossallstartTime= System.currentTimeMillis();
         Double longstogrossall= this.saleOrderBillService.findsaleOrderCountnum(hqlstogrossall);
+        long longstogrossallendTime= System.currentTimeMillis();
+        logger.error("执行longstogrossall的时间"+(longstogrossallendTime-longstogrossallstartTime));
         if(CommonUtil.isBlank(longstogrossall)){
             longstogrossall=0.D;
         }
+        long longstogrossstartTime= System.currentTimeMillis();
         Double longstogross= this.saleOrderBillService.findsaleOrderCountnum(hqlstogross);
+        long longstogrossendTime= System.currentTimeMillis();
+        logger.error("执行longstogrossall的时间"+(longstogrossendTime-longstogrossstartTime));
         if(CommonUtil.isBlank(longstogross)){
             longstogross=0.D;
         }

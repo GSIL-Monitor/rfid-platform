@@ -83,7 +83,7 @@
                                 <div class="btn-group btn-group-sm pull-left">
                                     <button class="btn btn-info" onclick="purchaseBydestunitid();">
                                         <i class="ace-icon"></i>
-                                        <span class="bigger-110">按供应商汇总</span>
+                                        <span class="bigger-110">按厂家汇总</span>
                                     </button>
                                 </div>
                                <%--<div class="btn-group btn-group-sm pull-left">
@@ -109,12 +109,21 @@
                                         </button>
                                     </div>
 
-                                    <div class="btn-group btn-group-sm pull-left">
+                                 <%--   <div class="btn-group btn-group-sm pull-left">
 
                                         <button class="btn btn-info" onclick="exportExcel();">
 
                                             <i class="ace-icon fa fa-file-excel-o"></i>
                                             <span class="bigger-110">导出</span>
+
+                                        </button>
+                                    </div>--%>
+                                    <div class="btn-group btn-group-sm pull-left">
+
+                                        <button class="btn btn-info" onclick="newchooseExportFunction();">
+
+                                            <i class="ace-icon fa fa-file-excel-o"></i>
+                                            <span class="bigger-110">导出新</span>
 
                                         </button>
                                     </div>
@@ -183,7 +192,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                           <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_destunitid">供应商</label>
+                                           <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_destunitid">厂家</label>
 
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                 <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
@@ -192,13 +201,16 @@
                                                     <input class="form-control" id="filter_eq_destunitid"
                                                            type="text" name="filter_eq_destunitid" readonly/>
                                                     <span class="input-group-btn">
-                                                         <button class="btn btn-sm btn-default" type="button" onclick="openSearchVendorDialog()">
+                                                         <button class="btn btn-sm btn-default" type="button" onclick="openSearchClass1Dialog()">
                                                              <i class="ace-icon fa fa-list"></i>
                                                          </button>
 								                      </span>
                                                     <input class="form-control" id="filter_eq_destunitname"
-                                                           type="text" name="filter_eq_destunitname" readonly  placeholder="供应商"/>
+                                                           type="text" name="filter_eq_destunitname" readonly  placeholder="厂家"/>
                                                 </div>
+                                                <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"
+                                                        style="width: 100%;" >
+                                                </select>--%>
                                             </div>
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destid">仓店</label>
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -316,6 +328,10 @@
                         <%-- <div id="searchsalebusinessnameGrid" style="height:800px;display: none"></div>
                         <div id="searchsaleorignameGrid" style="height:800px;display: none"></div>
 --%>
+                        <form  id="form1" action="" method=post name=form1 style='display:none'>
+                            <input id="gridId" type=hidden  name='gridId' value=''>
+                            <input id="request" type=hidden  name='request' value=''>
+                        </form>
 
 
                         <!-- PAGE CONTENT ENDS -->
@@ -334,7 +350,8 @@
 
 <jsp:include page="search_js.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
-<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+<%--<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>--%>
+<jsp:include page="../base/search_class1_dialog.jsp"></jsp:include>
 <%--<jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>--%>
 <script type="text/javascript" src="<%=basePath%>/views/search/PurchaseorCountviewsSearchController.js"></script>
 <script>

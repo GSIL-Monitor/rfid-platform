@@ -118,5 +118,10 @@ public List<PropertyType> findPrpertyByType(){
 			+ "('C1','C2','C3','C4','C5','C6','C7','C8','C9','C10')";
     return this.propertyKeyDao.find(hql);
 }
+public List<PropertyKey> findclassname(){
+  String hql="from PropertyKey where type='C1'";
+  List<PropertyKey> propertyKeys = this.propertyKeyDao.find(hql);
+  return propertyKeys;
+}
 
 }

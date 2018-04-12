@@ -994,7 +994,7 @@
             mtype: 'POST',
             colModel: [
                 {
-                    name: "isUse", label: "操作", width: 80, editable: false, align: "center",
+                    name: "", label: "操作", width: 80, editable: false, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         var html;
                         if(pageType=="add"){
