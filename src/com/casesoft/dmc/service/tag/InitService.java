@@ -240,6 +240,10 @@ public class InitService extends AbstractBaseService<Init, String> {
         return this.initDao.findUnique("from Epc e where e.tid=?", new Object[]{tid});
     }
 
+    public List<Epc> findEpcBySkuList(String sku){
+        return this.initDao.find("from Epc e where e.sku=?",new Object[]{sku});
+    }
+
     @Override
     public List<Init> getAll() {
         // TODO Auto-generated method stub

@@ -117,7 +117,7 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>A4打印</span>" +
             "</button>"
-    );
+        );
         if (transferOrder_status !== "0") {
             $("#search_orig_button").attr({"disabled": "disabled"});
             $("#search_dest_button").attr({"disabled": "disabled"});
@@ -855,11 +855,11 @@ function doPrintA4(){
                     recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
                         "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
                         "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleName + "</td>" ;
-                        if(value.supplierName == undefined){
-                            recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + ""+ "</td>";
-                        }else{
-                            recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName+ "</td>";
-                        }
+                    if(value.supplierName == undefined){
+                        recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + ""+ "</td>";
+                    }else{
+                        recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName+ "</td>";
+                    }
                     var qty=0;
                     switch ($("#form_printSelect").val()){
                         case "0":
@@ -874,7 +874,7 @@ function doPrintA4(){
                     }
                     totQty += qty;
                     recordmessage +="<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
-                      "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
+                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
                         "</tr>";
                 });
 

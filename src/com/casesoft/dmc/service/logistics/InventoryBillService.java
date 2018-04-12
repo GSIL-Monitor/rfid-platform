@@ -62,7 +62,6 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
     public List<InventoryBill> find(List<PropertyFilter> filters) {
         return null;
     }
-
     @Override
     public List<InventoryBill> getAll() {
         return null;
@@ -117,7 +116,6 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
         Integer code = this.inventoryBillDao.findUnique(hql, prefix + '%');
         return code == null ? (prefix + "001") : prefix + CommonUtil.convertIntToString(code + 1, 3);
     }
-
     public void saveInventory(List<EpcStock> list,User currentUser){
         //区分在库和不在库的
 
@@ -151,8 +149,8 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
             inventoryBill.setActQty(1L);
             Style style = CacheManager.getStyleById(epcStock.getStyleId());
             inventoryBill.setActPrice(style.getPrice());
-            inventoryBill.setDestId(epcStock.getOwnerId());
-            inventoryBill.setDestUnitId(epcStock.getWarehouseId());
+            inventoryBill.setDestId(epcStock.getWarehouseId());
+            inventoryBill.setDestUnitId(epcStock.getOwnerId());
             inventoryBill.setOwnerId(epcStock.getOwnerId());
             inventoryBill.setCode(epcStock.getCode());
             inventoryBill.setState(Constant.Token.Storage_Adjust_Outbound+"");
@@ -185,8 +183,8 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
             Style style = CacheManager.getStyleById(epcStock.getStyleId());
             inventoryBill.setActPrice(style.getPrice());
             inventoryBill.setOrigId(epcStock.getOwnerId());
-            inventoryBill.setOrigUnitId(epcStock.getWarehouseId());
-            inventoryBill.setOwnerId(epcStock.getOwnerId());
+            inventoryBill.setOrigUnitId(epcStock.getOwnerId());
+            inventoryBill.setOwnerId(epcStock.getWarehouseId());
             inventoryBill.setCode(epcStock.getCode());
             inventoryBill.setState(Constant.Token.Storage_Adjust_Inbound+"");
             Inventorylistno.add(inventoryBill);
