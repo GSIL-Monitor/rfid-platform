@@ -190,7 +190,11 @@ public class SaleorderConutViewSearch extends BaseController {
         DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
         try{
             if(gridId.equals("searchGrid")){
+               Long startTime= System.currentTimeMillis();
                 DataSourceResult sourceResultSaleDtl = this.saleorderCountDao.getList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询销售明细所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<SaleorderCountView> SaleDtlViewList = (List<SaleorderCountView>) sourceResultSaleDtl.getData();
                 ExportParams params = new ExportParams("销售明细", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
@@ -213,6 +217,8 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("销售明细-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出销售明细所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchsaleGrid")){
                 DataSourceResult sourceResultBillSum = this.saleorderCountDao.getSaleList(dataSourceRequest);
                 List<SaleNodeatilViews> BillSumViewList = (List<SaleNodeatilViews>) sourceResultBillSum.getData();
@@ -362,7 +368,7 @@ public class SaleorderConutViewSearch extends BaseController {
         long saleRetrunsStartTime= System.currentTimeMillis();
         Object [] saleRetruns=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlsqty);
         long saleRetrunsEndTime= System.currentTimeMillis();
-        logger.error("执行saleOrders的时间"+(saleRetrunsEndTime-saleRetrunsStartTime));
+        logger.error("执行saleRetruns的时间"+(saleRetrunsEndTime-saleRetrunsStartTime));
         if(CommonUtil.isNotBlank(saleRetruns[0])){
             longrqty=Integer.parseInt(saleRetruns[0]+"");
         }else{
