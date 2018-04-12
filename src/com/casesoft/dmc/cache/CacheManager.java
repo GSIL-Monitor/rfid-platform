@@ -1143,7 +1143,11 @@ public class CacheManager {
 	}
 
 	public static int getMaxProductId() {
-		return maxProductId;
+		ProductService productService = (ProductService) SpringContextUtil
+				.getBean("productService");
+		String maxProductId = productService.getMaxProductId();
+		Integer maxId=Integer.parseInt(maxProductId);
+		return maxId;
 	}
 
 }

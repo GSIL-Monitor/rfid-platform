@@ -246,4 +246,10 @@ public class ProductService extends AbstractBaseService<Product, String> {
                 +" Product p where p.styleId=?";
         return this.productDao.find(hql, new Object[] {styleId});
     }
+
+    public String getMaxProductId(){
+        String hql="select max(id) from Product";
+        String maxId = this.productDao.findUnique(hql);
+        return maxId;
+    }
 }
