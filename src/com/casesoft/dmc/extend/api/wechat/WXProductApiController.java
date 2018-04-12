@@ -469,4 +469,25 @@ public class WXProductApiController extends ApiBaseController {
         map.put("sizeVoList", sizeVoList);
         return map;
     }
+
+    /**
+     * add by yushen
+     * 上传或重传款式图片，上传图片时，如果本来已经存在图片，把原来的图片删掉
+     */
+    @RequestMapping("/uploadStylePicture")
+    public void uploadStylePicture(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        //删除文件
+        String rootPath = request.getSession().getServletContext().getRealPath("");
+        String styleId = getReqParam("styleId");
+        String filePath = rootPath + "/product/photo/" + styleId + "/-/";
+        File dir = new File(filePath);
+        if(dir.exists()){
+            File[] tmpFiles = dir.listFiles();
+            for (File file: tmpFiles) {
+                file.delete();
+            }
+        }
+        //上传文件
+        this.uploadPicture(request, response);
+    }
 }
