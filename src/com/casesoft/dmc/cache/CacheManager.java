@@ -695,7 +695,7 @@ public class CacheManager {
 
 			StyleService styleService = (StyleService) SpringContextUtil
 					.getBean("styleService");
-			s= styleService.load(styleId);
+			s= styleService.get("styleId",styleId);
 		}
 
 		return s;
@@ -708,7 +708,7 @@ public class CacheManager {
 		if(CommonUtil.isBlank(style)){
 			StyleService styleService = (StyleService) SpringContextUtil
 					.getBean("styleService");
-			style= styleService.load(styleId);
+			style= styleService.get("styleId",styleId);
 		}
 		return style == null ? "" : style.getStyleName();
 	}
