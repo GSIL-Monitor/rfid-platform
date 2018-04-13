@@ -26,6 +26,7 @@ $(function () {
     }
     initForm();
     keydown();
+    addProduct_keydown();
     input_keydown();
     initButtonGroup();
     initEditFormValid();

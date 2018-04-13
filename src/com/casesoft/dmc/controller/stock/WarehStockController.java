@@ -590,4 +590,24 @@ public class WarehStockController extends BaseController {
         }
     }
 
+    /**
+     * add by yushen 订单中通过加号添加商品时，扫唯一码时先查询出款号返回给前端。前端通过查询出来的款号查对应的商品。
+     */
+    @RequestMapping("/getStyleIdByCode")
+    @ResponseBody
+    public MessageBox getStyleIdByCode(String code) throws Exception{
+        this.logAllRequestParams();
+        if (code.length() != 13) {
+            String epcCode = code.toUpperCase();
+            code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+        }
+        EpcStock epcStock = this.epcStockService.findStockEpcByCode(code);
+        if(CommonUtil.isNotBlank(epcStock)){
+            return new MessageBox(true, "查询成功", epcStock.getStyleId());
+        }else {
+            return new MessageBox(false, "查询不到唯一码：" + code +" 对应的商品");
+        }
+
+    }
+
 }
