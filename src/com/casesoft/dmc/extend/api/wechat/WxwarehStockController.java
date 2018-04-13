@@ -111,6 +111,25 @@ public class WxwarehStockController extends ApiBaseController {
         }
 
     }
+
+    @RequestMapping(value = "/findTotalStock.do")
+    @ResponseBody
+    public MessageBox findTotalStock(String warehId,String styleid){
+        try {
+            String[] aArray = new String[1];
+            Long num = this.detailStockViewChatService.findstockNum(warehId, styleid);
+            if(CommonUtil.isBlank(num)){
+                num=0L;
+            }
+            aArray[0]=num+"";
+            return this.returnSuccessInfo("查询成功",aArray);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+
+    }
+
     @RequestMapping(value = "/findMessage.do")
     @ResponseBody
     public MessageBox findMessage(String pageSize,String pageNo){
