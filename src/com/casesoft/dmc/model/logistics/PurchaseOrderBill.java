@@ -103,4 +103,5 @@ public class PurchaseOrderBill extends BaseBill {
     public void setDtlList(List<PurchaseOrderBillDtl> dtlList) {
         this.dtlList = dtlList;
     }
+
 }
