@@ -20,7 +20,6 @@
                                 </div>
                                 <br />
                                 <form class="form-horizontal" role="form" id="StyleSearchForm" onkeydown="if(event.keyCode==13)return false;">
-                                <%--<form class="form-horizontal" role="search" id="StyleSearchForm">--%>
                                     <div class="form-group">
                                         <label class="col-xs-2 control-label text-right" for="filter_LIKES_styleId">款号</label>
                                         <div class="col-xs-9">
@@ -127,7 +126,7 @@
             onSelectRow : function(rowid,status) {
                 var row = $("#stylegrid").getRowData(rowid);
                 $("#color_size_grid").jqGrid("setGridParam",{
-                    url: basePath+"/prod/product/listOrderByColorAndSize.do?styleId="+row.styleId,
+                    url: basePath+"/prod/product/list.do?filter_EQS_styleId="+row.styleId,
                 }).trigger('reloadGrid');
             }
 
@@ -193,58 +192,4 @@
         $("#color_size_grid").jqGrid( 'setGridWidth', parent_dialog.width()*0.6/2);
 
     }
-
-    /**
-     * add by yushen 订单中通过加号选择商品时，可扫描唯一码查出对应的款式。
-     */
-    var $inputOfStyleId = $("#filter_LIKES_styleId");
-    function addProduct_keydown() {
-        //监听回车
-        $inputOfStyleId.keydown(function (event) {
-            if (event.keyCode == 13) {
-                console.log("添加商品对话框输入内容："+ $inputOfStyleId.val());
-                if(!$inputOfStyleId.val()){
-                    return;
-                }
-                if(uniqueCodeValid($inputOfStyleId.val())){//如果输入为唯一码
-                    $.ajax({
-                        async: false,
-                        url: basePath + "/stock/warehStock/getStyleIdByCode.do?code=" + $inputOfStyleId.val(),
-                        datatype: "json",
-                        type: "GET",
-                        success: function (data) {//查询成功将款号放入输入框，查询失败将输入框清空
-                            if(data.success){
-                                $inputOfStyleId.val(data.result);
-                            }else {
-                                $inputOfStyleId.val("");
-                                $.gritter.add({
-                                    text: data.msg,
-                                    class_name: 'gritter-success  gritter-light'
-                                });
-                            }
-                        }
-                    })
-                }
-                searchStyle();
-                $("#color_size_grid").clearGridData();
-            }
-        })
-    }
-
-    /**
-     * add by yushen 校验是否唯一码
-     */
-    function uniqueCodeValid(code) {
-        //匹配13位纯数字唯一码
-        var reg1 = /^[0-9]{13}$/;
-        //匹配24位十六进制数
-        var reg2 = /^[0-9a-fA-F]{24}$/i;
-
-        if(code.match(reg1) || code.match(reg2)){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
 </script>

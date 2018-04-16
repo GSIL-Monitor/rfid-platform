@@ -110,6 +110,7 @@ http://www.springframework.org/schema/cache http://www.springframework.org/schem
 				<!-- <prop key="hibernate.default_schema">${hibernate.default_schema}</prop> 
 					<prop key="hibernate.default_catalog">${hibernate.default_catalog}</prop> -->
 				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.jdbc.fetch_size">100</prop>
 				<!-- Disable the BeanValidation -->
 				<prop key="javax.persistence.validation.mode">none</prop>
 

@@ -8,13 +8,13 @@ var skuQty = {};//保存每个SKU对应的出入库数量。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var billNo;
 $(function () {
-    debugger
-    console.log("123");
+
+
     if (pageType === "edit") {
         initeditGrid();
     } else {
         initGrid();
-        initSelectDestForm();
+        //initSelectDestForm();
         $("#search_destUnitId").val(defalutCustomerId);
         $("#search_destUnitName").val(defalutCustomerName);
 
@@ -106,7 +106,7 @@ function initCustomerTypeForm() {
         async: false,
         type: "POST",
         success: function (data, textStatus) {
-            debugger;
+
             $("#search_customerType").empty();
             $("#search_customerType").append("<option value='' style='background-color: #eeeeee'>--请选择客户类型--</option>");
             var json = data;
@@ -165,6 +165,7 @@ function initSelectOrigForm() {
 }
 
 function initSelectDestForm() {
+
     if (userId == "admin") {
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9",
@@ -338,6 +339,7 @@ function initButtonGroup() {
 }
 
 function initGrid() {
+    console.log("123");
     $("#addDetailgrid").jqGrid({
         height: 'auto',
         datatype: "json",
@@ -486,7 +488,9 @@ function initGrid() {
             initAllCodesList();
         }
     });
+    console.log("1234");
     $("#addDetailgrid").setGridParam().showCol("operation");
+    console.log("12345");
     $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
         {
             edit: false,
@@ -500,7 +504,9 @@ function initGrid() {
             refresh: false,
             view: false
         });
+    console.log("123456");
     $("#addDetailgrid-pager_center").html("");
+    console.log("1234567");
 }
 //var isretrun=false;
 function initeditGrid() {
@@ -694,7 +700,6 @@ function initeditGrid() {
 
         }
     });
-
     if (slaeOrder_status != "0") {
         $("#addDetailgrid").setGridParam().hideCol("operation");
     } else {
@@ -734,7 +739,7 @@ function setFooterData() {
     });
 }
 function addDetail() {
-    debugger;
+
     var ct = $("#search_customerType").val();
     if (ct && ct != null) {
         $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
@@ -826,7 +831,7 @@ function addProductInfo() {
     var ct = $("#search_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
-        debugger;
+
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
 

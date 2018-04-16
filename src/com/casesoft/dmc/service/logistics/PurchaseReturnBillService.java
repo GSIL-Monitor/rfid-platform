@@ -5,6 +5,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.PurchaseReturnBillDao;
 import com.casesoft.dmc.dao.logistics.PurchaseReturnBillDtlDao;
 import com.casesoft.dmc.dao.sys.UnitDao;
@@ -155,7 +156,7 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 		return epcs;
 	}
 
-	public void saveBusiness(PurchaseReturnBill purchaseOrderBill, List<PurchaseReturnBillDtl> purchaseOrderBillDtlList, Business business) {
+	public MessageBox saveBusiness(PurchaseReturnBill purchaseOrderBill, List<PurchaseReturnBillDtl> purchaseOrderBillDtlList, Business business) throws Exception {
 		List<Style> styleList = new ArrayList<>();
 		for(PurchaseReturnBillDtl dtl : purchaseOrderBillDtlList){
 			if(dtl.getStatus() == BillConstant.BillDtlStatus.OutStore ){
@@ -164,12 +165,19 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 				styleList.add(s);
 			}
 		}
-		this.purchaseReturnBillDao.saveOrUpdate(purchaseOrderBill);
-		this.purchaseReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
-		this.taskService.save(business);
-		if(styleList.size() > 0){
-			this.purchaseReturnBillDao.doBatchInsert(styleList);
+		MessageBox messageBox = this.taskService.checkEpcStock(business);
+		if(messageBox.getSuccess()){
+			this.purchaseReturnBillDao.saveOrUpdate(purchaseOrderBill);
+			this.purchaseReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
+			this.taskService.save(business);
+			if(styleList.size() > 0){
+				this.purchaseReturnBillDao.doBatchInsert(styleList);
+			}
+			return messageBox;
+		}else{
+			return messageBox;
 		}
+
 	}
 
 	public List<PurchaseReturnBillDtl> findBillDtlByBillNo(String billNo) {

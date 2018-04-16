@@ -7,6 +7,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
@@ -383,40 +384,46 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         String hql="from SaleOrderReturnBillDtl pd where pd.billNo=?";
         return this.saleOrderReturnBillDao.find(hql,new Object[]{billNo});
     }
-    public void saveBusiness(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> purchaseOrderBillDtlList, Business business) {
-
-        this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
-        this.saleOrderReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
-        this.taskService.save(business);
-        if(CommonUtil.isNotBlank(saleOrderReturnBill.getBillRecordList())){
-            this.saleOrderReturnBillDao.doBatchInsert(saleOrderReturnBill.getBillRecordList());
-        }
-        //记录第一次入库时间
-        if(business.getType().equals(Constant.TaskType.Inbound)){
-            List<Record> recordList = business.getRecordList();
-            ArrayList<CodeFirstTime> list=new ArrayList<CodeFirstTime>();
-            for(int i=0;i<recordList.size();i++){
-                CodeFirstTime codeFirstTime =this.saleOrderReturnBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?",new Object[]{recordList.get(i).getCode(),saleOrderReturnBill.getDestId()});
-                if(CommonUtil.isBlank(codeFirstTime)){
-                    CodeFirstTime newcodeFirstTime=new CodeFirstTime();
-                    newcodeFirstTime.setId(recordList.get(i).getCode()+"-"+saleOrderReturnBill.getDestId());
-                    newcodeFirstTime.setCode(recordList.get(i).getCode());
-                    newcodeFirstTime.setWarehouseId(saleOrderReturnBill.getDestId());
-                    newcodeFirstTime.setFirstTime(new Date());
-                    Unit unitByCode = CacheManager.getUnitByCode(saleOrderReturnBill.getDestUnitId());
-                    if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
-                        newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
-                    }else{
-                        Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
-                        newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
+    public MessageBox saveBusiness(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> purchaseOrderBillDtlList, Business business) throws Exception {
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        if(messageBox.getSuccess()){
+            this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
+            this.saleOrderReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
+            this.taskService.save(business);
+            if(CommonUtil.isNotBlank(saleOrderReturnBill.getBillRecordList())){
+                this.saleOrderReturnBillDao.doBatchInsert(saleOrderReturnBill.getBillRecordList());
+            }
+            //记录第一次入库时间
+            if(business.getType().equals(Constant.TaskType.Inbound)){
+                List<Record> recordList = business.getRecordList();
+                ArrayList<CodeFirstTime> list=new ArrayList<CodeFirstTime>();
+                for(int i=0;i<recordList.size();i++){
+                    CodeFirstTime codeFirstTime =this.saleOrderReturnBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?",new Object[]{recordList.get(i).getCode(),saleOrderReturnBill.getDestId()});
+                    if(CommonUtil.isBlank(codeFirstTime)){
+                        CodeFirstTime newcodeFirstTime=new CodeFirstTime();
+                        newcodeFirstTime.setId(recordList.get(i).getCode()+"-"+saleOrderReturnBill.getDestId());
+                        newcodeFirstTime.setCode(recordList.get(i).getCode());
+                        newcodeFirstTime.setWarehouseId(saleOrderReturnBill.getDestId());
+                        newcodeFirstTime.setFirstTime(new Date());
+                        Unit unitByCode = CacheManager.getUnitByCode(saleOrderReturnBill.getDestUnitId());
+                        if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
+                            newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
+                        }else{
+                            Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
+                            newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
+                        }
+                        list.add(newcodeFirstTime);
                     }
-                    list.add(newcodeFirstTime);
+                }
+                if(list.size()!=0){
+                    this.saleOrderReturnBillDao.doBatchInsert(list);
                 }
             }
-            if(list.size()!=0){
-                this.saleOrderReturnBillDao.doBatchInsert(list);
-            }
+            return messageBox;
+        }else{
+            return messageBox;
         }
+
 
     }
 

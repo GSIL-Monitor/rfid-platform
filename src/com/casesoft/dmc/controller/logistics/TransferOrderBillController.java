@@ -291,8 +291,13 @@ public class TransferOrderBillController extends BaseController implements ILogi
         User currentUser = CacheManager.getUserById(userId);
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
         Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
-        this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
-        return new MessageBox(true,"出库成功");
+        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        if(messageBox.getSuccess()){
+            return new MessageBox(true,"出库成功");
+        }else{
+            return messageBox;
+        }
+
     }
 
     /**
@@ -311,8 +316,13 @@ public class TransferOrderBillController extends BaseController implements ILogi
         User currentUser = CacheManager.getUserById(userId);
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
         Business business = BillConvertUtil.covertToTransferOrderBusinessIn(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
-        this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
-        return new MessageBox(true,"入库成功");
+        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        if(messageBox.getSuccess()){
+            return new MessageBox(true,"入库成功");
+        }else{
+            return messageBox;
+        }
+
     }
     /**
      * 调拨单A4打印模块

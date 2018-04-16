@@ -353,8 +353,13 @@ public class ConsignmentBillController extends BaseController implements ILogist
             User currentUser = CacheManager.getUserById(userId);
             ConsignmentBill consignmentBill = this.consignmentBillService.get("billNo", billNo);
             Business business = BillConvertUtil.covertToConsignmentBillBusinessIn(consignmentBill, consignmentBillDtlList, epcList, currentUser);
-            this.consignmentBillService.saveBusiness(consignmentBill, consignmentBillDtlList, business);
-            return new MessageBox(true, "入库成功");
+            MessageBox messageBox = this.consignmentBillService.saveBusiness(consignmentBill, consignmentBillDtlList, business);
+            if(messageBox.getSuccess()){
+                return new MessageBox(true, "入库成功");
+            }else{
+                return messageBox;
+            }
+
         }else {
             StringBuilder sb = new StringBuilder();
             for (EpcStock epcStock: EpcStockList) {

@@ -61,7 +61,7 @@
     function initUniqueCodeGrid() {
         $("#uniqueCodeGrid").jqGrid({
             height: 400,
-            datatype: "json",
+            datatype:"local",
             colModel: [
                 {name: 'code', label: '唯一码', width: 60},
                 {name: 'updateTime', label: '修改时间', hidden: true, width: 40},
@@ -86,7 +86,8 @@
             shrinkToFit: true,
             sortname: 'updateTime',
             sortorder: "desc"
-        });
+
+    });
         var parent_column = $("#uniqueCodeGrid").closest('.modal-dialog');
         $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width() - 5);
     }

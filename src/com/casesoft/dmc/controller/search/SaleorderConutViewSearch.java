@@ -190,7 +190,11 @@ public class SaleorderConutViewSearch extends BaseController {
         DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
         try{
             if(gridId.equals("searchGrid")){
+               Long startTime= System.currentTimeMillis();
                 DataSourceResult sourceResultSaleDtl = this.saleorderCountDao.getList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询销售明细所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<SaleorderCountView> SaleDtlViewList = (List<SaleorderCountView>) sourceResultSaleDtl.getData();
                 ExportParams params = new ExportParams("销售明细", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
@@ -213,6 +217,8 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("销售明细-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出销售明细所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchsaleGrid")){
                 DataSourceResult sourceResultBillSum = this.saleorderCountDao.getSaleList(dataSourceRequest);
                 List<SaleNodeatilViews> BillSumViewList = (List<SaleNodeatilViews>) sourceResultBillSum.getData();
@@ -252,14 +258,14 @@ public class SaleorderConutViewSearch extends BaseController {
         System.out.print(dates);
         Map<String,String> map4Json = JSONUtil.getMap4Json(dates);
         //String hql="select new saleorderCount (sum(t.qty), sum(t.totactprice)) from saleorderCountOViews t where 1=1";
-        String hqlsqty="select sum(t.qty) from saleorderCountOViews t where 1=1";
-        String hqlstotactprice="select  sum(t.totactprice) from saleorderCountOViews t where 1=1";
-        String hqlrqty="select sum(t.qty) from saleorderCountRViews t where 1=1";
-        String hqlrtotactprice="select sum(t.totactprice) from saleorderCountRViews t where 1=1";
-        String hqlrtogross="select sum(t.gross) from saleorderCountRViews t where 1=1";
-        String hqlrtogrossall="select sum(t.grossall) from saleorderCountRViews t where 1=1";
-        String hqlstogrossall="select sum(t.grossall) from saleorderCountOViews t where 1=1";
-        String hqlstogross="select sum(t.gross) from saleorderCountOViews t where 1=1";
+        String hqlsqty="select sum(t.qty), sum(t.totactprice),sum(t.gross) from saleorderCountOViews t where 1=1";
+        //String hqlstotactprice="select  sum(t.totactprice) from saleorderCountOViews t where 1=1";
+        String hqlrqty="select sum(t.qty),sum(t.totactprice),sum(t.gross) from saleorderCountRViews t where 1=1";
+        //String hqlrtotactprice="select sum(t.totactprice) from saleorderCountRViews t where 1=1";
+        //String hqlrtogross="select sum(t.gross) from saleorderCountRViews t where 1=1";
+        //String hqlrtogrossall="select sum(t.grossall) from saleorderCountRViews t where 1=1";
+        //String hqlstogrossall="select sum(t.grossall) from saleorderCountOViews t where 1=1";
+        //String hqlstogross="select sum(t.gross) from saleorderCountOViews t where 1=1";
         Iterator<Map.Entry<String, String>> iterator = map4Json.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> next = iterator.next();
@@ -270,13 +276,13 @@ public class SaleorderConutViewSearch extends BaseController {
                     String[] split = key.split("_");
                     String time =value+" 00:00:00";
                    hqlsqty+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                   // hqlstotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                     hqlrqty+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                   // hqlrtotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                   /* hqlsqty+=" and '"+value+" '<= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlstotactprice+=" and '"+value+" '<= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlrqty+=" and '"+value+" '<= to_char("+split[2]+",'yyyy-MM-dd')";
@@ -289,13 +295,13 @@ public class SaleorderConutViewSearch extends BaseController {
                     String[] split = key.split("_");
                     String time =value+" 23:59:59";
                     hqlsqty+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                     hqlrqty+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                  /*   hqlsqty+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlstotactprice+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlrqty+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";
@@ -308,22 +314,22 @@ public class SaleorderConutViewSearch extends BaseController {
                     String[] split = key.split("_");
                     if(split[1].equals("contains")){
                         hqlsqty+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlstotactprice+=" and "+split[2]+" like'%"+value+"%'";
+                       // hqlstotactprice+=" and "+split[2]+" like'%"+value+"%'";
                         hqlrqty+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlrtotactprice+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlrtogross+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlrtogrossall+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlstogrossall+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlstogross+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlrtotactprice+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlrtogross+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlrtogrossall+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlstogrossall+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlstogross+=" and "+split[2]+" like '%"+value+"%'";
                     }else{
                         hqlsqty+=" and "+split[2]+"='"+value+"'";
-                        hqlstotactprice+=" and "+split[2]+"='"+value+"'";
+                        //hqlstotactprice+=" and "+split[2]+"='"+value+"'";
                         hqlrqty+=" and "+split[2]+"='"+value+"'";
-                        hqlrtotactprice+=" and "+split[2]+"='"+value+"'";
-                        hqlrtogross+=" and "+split[2]+"='"+value+"'";
-                        hqlrtogrossall+=" and "+split[2]+"='"+value+"'";
-                        hqlstogrossall+=" and "+split[2]+"='"+value+"'";
-                        hqlstogross+=" and "+split[2]+"='"+value+"'";
+                        //hqlrtotactprice+=" and "+split[2]+"='"+value+"'";
+                        //hqlrtogross+=" and "+split[2]+"='"+value+"'";
+                        //hqlrtogrossall+=" and "+split[2]+"='"+value+"'";
+                        //hqlstogrossall+=" and "+split[2]+"='"+value+"'";
+                        //hqlstogross+=" and "+split[2]+"='"+value+"'";
                     }
 
 
@@ -331,8 +337,55 @@ public class SaleorderConutViewSearch extends BaseController {
 
             }
         }
-
+        long saleOrdersStartTime= System.currentTimeMillis();
+        Object [] saleOrders=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlsqty);
+        long saleOrdersEndTime= System.currentTimeMillis();
+        logger.error("执行saleOrders的时间"+(saleOrdersEndTime-saleOrdersStartTime));
         Integer longsqty= null;
+        Double longstotactprice=null;
+
+        Double longstogross=null;
+        if(CommonUtil.isNotBlank(saleOrders[0])){
+            longsqty=Integer.parseInt(saleOrders[0]+"");
+        }else{
+            longsqty=0;
+        }
+        if(CommonUtil.isNotBlank(saleOrders[1])){
+            longstotactprice=Double.parseDouble(saleOrders[1]+"");
+        }else{
+            longstotactprice=0D;
+        }
+
+        if(CommonUtil.isNotBlank(saleOrders[2])){
+            longstogross=Double.parseDouble(saleOrders[2]+"");
+        }else{
+            longstogross=0D;
+        }
+        Integer longrqty =null;
+        Double longrtotactprice=null;
+
+        Double longrtogross=null;
+        long saleRetrunsStartTime= System.currentTimeMillis();
+        Object [] saleRetruns=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlsqty);
+        long saleRetrunsEndTime= System.currentTimeMillis();
+        logger.error("执行saleRetruns的时间"+(saleRetrunsEndTime-saleRetrunsStartTime));
+        if(CommonUtil.isNotBlank(saleRetruns[0])){
+            longrqty=Integer.parseInt(saleRetruns[0]+"");
+        }else{
+            longrqty=0;
+        }
+        if(CommonUtil.isNotBlank(saleRetruns[1])){
+            longrtotactprice=Double.parseDouble(saleRetruns[1]+"");
+        }else{
+            longrtotactprice=0D;
+        }
+
+        if(CommonUtil.isNotBlank(saleRetruns[2])){
+            longrtogross=Double.parseDouble(saleRetruns[2]+"");
+        }else{
+            longrtogross=0D;
+        }
+       /* Integer longsqty= null;
         long aLongstartTime= System.currentTimeMillis();
         Long aLong = this.saleOrderBillService.findsaleOrderCount(hqlsqty);
         long aLongendTime= System.currentTimeMillis();
@@ -369,14 +422,14 @@ public class SaleorderConutViewSearch extends BaseController {
         long longrtogrossstartTime= System.currentTimeMillis();
         Double longrtogross= this.saleOrderBillService.findsaleOrderCountnum(hqlrtogross);
         long longrtogrossendTime= System.currentTimeMillis();
-        logger.error("执行longrtogross的时间"+(longrtogrossstartTime-longrtogrossendTime));
+        logger.error("执行longrtogross的时间"+(longrtogrossendTime-longrtogrossstartTime));
         if(CommonUtil.isBlank(longrtogross)){
             longrtogross=0.D;
         }
         long longrtogrossallstartTime= System.currentTimeMillis();
         Double longrtogrossall= this.saleOrderBillService.findsaleOrderCountnum(hqlrtogrossall);
         long longrtogrossallendTime= System.currentTimeMillis();
-        logger.error("执行longrtogross的时间"+(longrtogrossallstartTime-longrtogrossallendTime));
+        logger.error("执行longrtogross的时间"+(longrtogrossallendTime-longrtogrossallstartTime));
         if(CommonUtil.isBlank(longrtogrossall)){
             longrtogrossall=0.D;
         }
@@ -390,15 +443,15 @@ public class SaleorderConutViewSearch extends BaseController {
         long longstogrossstartTime= System.currentTimeMillis();
         Double longstogross= this.saleOrderBillService.findsaleOrderCountnum(hqlstogross);
         long longstogrossendTime= System.currentTimeMillis();
-        logger.error("执行longstogrossall的时间"+(longstogrossendTime-longstogrossstartTime));
+        logger.error("执行longstogross的时间"+(longstogrossendTime-longstogrossstartTime));
         if(CommonUtil.isBlank(longstogross)){
             longstogross=0.D;
-        }
+        }*/
 
         //saleorderCount saleorderCount = this.saleOrderBillService.findsaleOrderCount(hql);
 
         saleorderCount saleorderCounts=new saleorderCount();
-        saleorderCounts.setSum(longsqty);
+      saleorderCounts.setSum(longsqty);
         saleorderCounts.setRsum(longrqty);
         Double Allmony=longstotactprice+longrtotactprice;
         BigDecimal b   =   new BigDecimal(Allmony.floatValue());
