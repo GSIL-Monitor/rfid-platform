@@ -8,6 +8,7 @@ import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.ConsignmentBillDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.cfg.PropertyKey;
@@ -150,7 +151,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
         this.consignmentBillDao.batchExecute(hql,outQtys,id);
     }
 
-    public void saveBusiness(ConsignmentBill consignmentBill, List<ConsignmentBillDtl> consignmentBillDtlList, Business business) {
+    public MessageBox saveBusiness(ConsignmentBill consignmentBill, List<ConsignmentBillDtl> consignmentBillDtlList, Business business) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for(ConsignmentBillDtl dtl : consignmentBillDtlList){
             if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore ){
@@ -159,24 +160,31 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
                 styleList.add(s);
             }
         }
-        this.consignmentBillDao.saveOrUpdate(consignmentBill);
-        this.consignmentBillDao.doBatchInsert(consignmentBillDtlList);
-        //记录第一次入库时间
-        if(business.getType().equals(Constant.TaskType.Inbound)) {
-            List<Record> recordList = business.getRecordList();
-            ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
-            for (Record r : recordList) {
-                CodeFirstTime codeFirstTime = this.consignmentBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?", new Object[]{r.getCode(), consignmentBill.getDestId()});
-                BillConvertUtil.setEpcStockPrice(codeFirstTime,r,list,consignmentBill.getDestId());
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        if(messageBox.getSuccess()){
+            this.consignmentBillDao.saveOrUpdate(consignmentBill);
+            this.consignmentBillDao.doBatchInsert(consignmentBillDtlList);
+            //记录第一次入库时间
+            if(business.getType().equals(Constant.TaskType.Inbound)) {
+                List<Record> recordList = business.getRecordList();
+                ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
+                for (Record r : recordList) {
+                    CodeFirstTime codeFirstTime = this.consignmentBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?", new Object[]{r.getCode(), consignmentBill.getDestId()});
+                    BillConvertUtil.setEpcStockPrice(codeFirstTime,r,list,consignmentBill.getDestId());
+                }
+                if (list.size() != 0) {
+                    this.consignmentBillDao.doBatchInsert(list);
+                }
             }
-            if (list.size() != 0) {
-                this.consignmentBillDao.doBatchInsert(list);
+            this.taskService.save(business);
+            if(styleList.size() > 0){
+                this.consignmentBillDao.doBatchInsert(styleList);
             }
+            return messageBox;
+        }else{
+            return messageBox;
         }
-        this.taskService.save(business);
-        if(styleList.size() > 0){
-            this.consignmentBillDao.doBatchInsert(styleList);
-        }
+
 
     }
 

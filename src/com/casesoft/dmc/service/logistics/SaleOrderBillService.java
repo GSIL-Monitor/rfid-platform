@@ -9,6 +9,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
 import com.casesoft.dmc.dao.logistics.SaleOrderBillDao;
 import com.casesoft.dmc.dao.logistics.SaleOrderReturnBillDao;
@@ -543,7 +544,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     @Autowired
     private TaskService taskService;
 
-    public void saveBusiness(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business) {
+    public MessageBox saveBusiness(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
             if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
@@ -552,46 +553,55 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                 styleList.add(s);
             }
         }
-        this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
-        this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
-        if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
-            this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
-        }
-        this.taskService.save(business);
-        if (styleList.size() > 0) {
-            this.saleOrderBillDao.doBatchInsert(styleList);
-        }
-        //记录第一次入库时间
-        if(business.getType().equals(Constant.TaskType.Inbound)) {
-            List<Record> recordList = business.getRecordList();
-            ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
-            for (int i = 0; i < recordList.size(); i++) {
-                CodeFirstTime codeFirstTime = this.saleOrderBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?", new Object[]{recordList.get(i).getCode(), saleOrderBill.getDestId()});
-                if (CommonUtil.isBlank(codeFirstTime)) {
-                    CodeFirstTime newcodeFirstTime = new CodeFirstTime();
-                    newcodeFirstTime.setId(recordList.get(i).getCode() + "-" + saleOrderBill.getDestId());
-                    newcodeFirstTime.setCode(recordList.get(i).getCode());
-                    newcodeFirstTime.setWarehouseId(saleOrderBill.getDestId());
-                    newcodeFirstTime.setFirstTime(new Date());
-                    Unit unitByCode = CacheManager.getUnitByCode(saleOrderBill.getDestUnitId());
-                    if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
-                        newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
-                    }else{
-                        Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
-                        newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
+        //检查epc
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        boolean success = messageBox.getSuccess();
+        if(success){
+            this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
+            this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
+            if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
+                this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
+            }
+            this.taskService.save(business);
+            if (styleList.size() > 0) {
+                this.saleOrderBillDao.doBatchInsert(styleList);
+            }
+            //记录第一次入库时间
+            if(business.getType().equals(Constant.TaskType.Inbound)) {
+                List<Record> recordList = business.getRecordList();
+                ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
+                for (int i = 0; i < recordList.size(); i++) {
+                    CodeFirstTime codeFirstTime = this.saleOrderBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?", new Object[]{recordList.get(i).getCode(), saleOrderBill.getDestId()});
+                    if (CommonUtil.isBlank(codeFirstTime)) {
+                        CodeFirstTime newcodeFirstTime = new CodeFirstTime();
+                        newcodeFirstTime.setId(recordList.get(i).getCode() + "-" + saleOrderBill.getDestId());
+                        newcodeFirstTime.setCode(recordList.get(i).getCode());
+                        newcodeFirstTime.setWarehouseId(saleOrderBill.getDestId());
+                        newcodeFirstTime.setFirstTime(new Date());
+                        Unit unitByCode = CacheManager.getUnitByCode(saleOrderBill.getDestUnitId());
+                        if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
+                            newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
+                        }else{
+                            Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
+                            newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
+                        }
+                        list.add(newcodeFirstTime);
                     }
-                    list.add(newcodeFirstTime);
+                }
+                if (list.size() != 0) {
+                    this.saleOrderBillDao.doBatchInsert(list);
                 }
             }
-            if (list.size() != 0) {
-                this.saleOrderBillDao.doBatchInsert(list);
-            }
+            return messageBox;
+        }else{
+            return messageBox;
         }
+
 
 
     }
 
-    public void saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) {
+    public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
             if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
@@ -600,50 +610,57 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                 styleList.add(s);
             }
         }
-        this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
-        this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
-        if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
-            this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
-        }
-        this.taskService.save(business);
-        if (styleList.size() > 0) {
-            this.saleOrderBillDao.doBatchInsert(styleList);
-        }
-        List<Record> recordList = business.getRecordList();
-        List<String> codeStrList = new ArrayList<String>();
-        for (Record record : recordList) {
-            if (CommonUtil.isNotBlank(record.getExtField()) && record.getExtField().equals(BillConstant.InStockType.Consignment)) {
-                codeStrList.add(record.getCode());
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        if(messageBox.getSuccess()){
+            this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
+            this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
+            if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
+                this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
             }
-        }
+            this.taskService.save(business);
+            if (styleList.size() > 0) {
+                this.saleOrderBillDao.doBatchInsert(styleList);
+            }
+            List<Record> recordList = business.getRecordList();
+            List<String> codeStrList = new ArrayList<String>();
+            for (Record record : recordList) {
+                if (CommonUtil.isNotBlank(record.getExtField()) && record.getExtField().equals(BillConstant.InStockType.Consignment)) {
+                    codeStrList.add(record.getCode());
+                }
+            }
 
-        if (CommonUtil.isNotBlank(codeStrList) && recordList.size() > 0) {
-            //更新寄售单数据
-            String code = TaskUtil.getSqlStrByList(codeStrList, BillRecord.class, "code");
-            String cmBillNo = getConsignmentBillNo(code);
-            if (CommonUtil.isNotBlank(cmBillNo)) {
-                List<BillRecord> billRecordList = getBillRecod(cmBillNo, code);
-                Map<String, Integer> skuCountMap = new HashMap<>();
-                for (BillRecord billRecord : billRecordList) {
-                    String billNo = billRecord.getBillNo();
-                    String sku = billRecord.getSku();
-                    if (billNo.contains(BillConstant.BillPrefix.Consignment)) {
-                        if (skuCountMap.containsKey(billNo + "-" + sku)) {
-                            Integer totQty = skuCountMap.get(billNo + "-" + sku);
-                            totQty += 1;
-                            skuCountMap.put(billNo + "-" + sku, totQty);
-                        } else {
-                            skuCountMap.put(billNo + "-" + sku, 1);
+            if (CommonUtil.isNotBlank(codeStrList) && recordList.size() > 0) {
+                //更新寄售单数据
+                String code = TaskUtil.getSqlStrByList(codeStrList, BillRecord.class, "code");
+                String cmBillNo = getConsignmentBillNo(code);
+                if (CommonUtil.isNotBlank(cmBillNo)) {
+                    List<BillRecord> billRecordList = getBillRecod(cmBillNo, code);
+                    Map<String, Integer> skuCountMap = new HashMap<>();
+                    for (BillRecord billRecord : billRecordList) {
+                        String billNo = billRecord.getBillNo();
+                        String sku = billRecord.getSku();
+                        if (billNo.contains(BillConstant.BillPrefix.Consignment)) {
+                            if (skuCountMap.containsKey(billNo + "-" + sku)) {
+                                Integer totQty = skuCountMap.get(billNo + "-" + sku);
+                                totQty += 1;
+                                skuCountMap.put(billNo + "-" + sku, totQty);
+                            } else {
+                                skuCountMap.put(billNo + "-" + sku, 1);
+                            }
                         }
                     }
-                }
-                for (String key : skuCountMap.keySet()) {
-                    this.saleOrderBillDao.batchExecute("update ConsignmentBillDtl set sale = sale + ? where billNo = ? and sku = ?", skuCountMap.get(key), key.split("-")[0], key.split("-")[1]);
+                    for (String key : skuCountMap.keySet()) {
+                        this.saleOrderBillDao.batchExecute("update ConsignmentBillDtl set sale = sale + ? where billNo = ? and sku = ?", skuCountMap.get(key), key.split("-")[0], key.split("-")[1]);
                     /*this.saleOrderBillDao.batchExecute("update ConsignmentBillDtl set readysale = readysale + ? where billNo = ? and sku = ?", skuCountMap.get(key), key.split("-")[0], key.split("-")[1]);*/
 
+                    }
                 }
             }
+            return  messageBox;
+        }else{
+            return  messageBox;
         }
+
     }
 
 

@@ -7,6 +7,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.TransferOrderBillDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
@@ -159,7 +160,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
     @Autowired
     private TaskService taskService;
-    public void saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business) {
+    public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for(TransferOrderBillDtl dtl : transferOrderBillDtlList){
             if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore){
@@ -168,26 +169,33 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
                 styleList.add(s);
             }
         }
-        this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
-        this.transferOrderBillDao.doBatchInsert(transferOrderBillDtlList);
-        //记录第一次入库时间
-        if(business.getType().equals(Constant.TaskType.Inbound)){
-            List<Record> recordList = business.getRecordList();
-            ArrayList<CodeFirstTime> list=new ArrayList<CodeFirstTime>();
-            for(Record r : recordList){
-                CodeFirstTime codeFirstTime =this.transferOrderBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?",new Object[]{r.getCode(),transferOrderBill.getDestId()});
-                BillConvertUtil.setEpcStockPrice(codeFirstTime,r,list,transferOrderBill.getDestId());
-            }
-            if(list.size()!=0){
-                this.transferOrderBillDao.doBatchInsert(list);
-            }
-        }else{
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        if(messageBox.getSuccess()){
+            this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
+            this.transferOrderBillDao.doBatchInsert(transferOrderBillDtlList);
+            //记录第一次入库时间
+            if(business.getType().equals(Constant.TaskType.Inbound)){
+                List<Record> recordList = business.getRecordList();
+                ArrayList<CodeFirstTime> list=new ArrayList<CodeFirstTime>();
+                for(Record r : recordList){
+                    CodeFirstTime codeFirstTime =this.transferOrderBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?",new Object[]{r.getCode(),transferOrderBill.getDestId()});
+                    BillConvertUtil.setEpcStockPrice(codeFirstTime,r,list,transferOrderBill.getDestId());
+                }
+                if(list.size()!=0){
+                    this.transferOrderBillDao.doBatchInsert(list);
+                }
+            }else{
 
+            }
+            this.taskService.save(business);
+            if(styleList.size() > 0){
+                this.transferOrderBillDao.doBatchInsert(styleList);
+            }
+            return messageBox;
+        }else{
+            return messageBox;
         }
-        this.taskService.save(business);
-        if(styleList.size() > 0){
-            this.transferOrderBillDao.doBatchInsert(styleList);
-        }
+
 
     }
 

@@ -389,8 +389,13 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         User currentUser = CacheManager.getUserById(userId);
         SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.get("billNo", billNo);
         Business business = BillConvertUtil.covertToSaleReturnOrderBusinessOut(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
-        this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
-        return new MessageBox(true, "出库成功");
+        MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
+        if(messageBox.getSuccess()){
+            return new MessageBox(true, "出库成功");
+        }else{
+            return messageBox;
+        }
+
     }
 
     /**
@@ -414,8 +419,13 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             User currentUser = CacheManager.getUserById(userId);
             SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.get("billNo", billNo);
             Business business = BillConvertUtil.covertToSaleReturnOrderBusinessIn(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
-            this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
-            return new MessageBox(true, "入库成功");
+            MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
+            if(messageBox.getSuccess()){
+                return new MessageBox(true, "入库成功");
+            }else{
+                return messageBox ;
+            }
+
         }else {
             StringBuilder sb = new StringBuilder();
             for (EpcStock epcStock: EpcStockList) {

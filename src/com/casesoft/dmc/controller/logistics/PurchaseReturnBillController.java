@@ -304,8 +304,13 @@ public class PurchaseReturnBillController extends BaseController implements ILog
         List<PurchaseReturnBillDtl> purchaseReturnBillDtlList = this.purchaseReturnBillService.findDetailsByBillNo(billNo);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         Business business = BillConvertUtil.covertToPurchaseBillBusiness(purchaseReturnBill, purchaseReturnBillDtlList, epcList, currentUser);
-        this.purchaseReturnBillService.saveBusiness(purchaseReturnBill, purchaseReturnBillDtlList, business);
-        return new MessageBox(true, "采购退货出库成功");
+        MessageBox messageBox = this.purchaseReturnBillService.saveBusiness(purchaseReturnBill, purchaseReturnBillDtlList, business);
+        if(messageBox.getSuccess()){
+            return new MessageBox(true, "采购退货出库成功");
+        }else{
+            return messageBox;
+        }
+
 
     }
 

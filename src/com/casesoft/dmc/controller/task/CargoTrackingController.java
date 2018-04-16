@@ -39,6 +39,7 @@ public class CargoTrackingController extends BaseController implements IBaseInfo
     @RequestMapping(value = "/index")
     @Override
     public String index() {
+
         return "/views/task/cargoTracking";
     }
 

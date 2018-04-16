@@ -367,8 +367,13 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         //saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
         Business business = BillConvertUtil.covertToSaleOrderBusinessOut(saleOrderBill, saleOrderBillDtlList, epcList, currentUser);
 
-        this.saleOrderBillService.saveBusinessout(saleOrderBill, saleOrderBillDtlList, business, epcList);
-        return new MessageBox(true, "出库成功");
+        MessageBox messageBox = this.saleOrderBillService.saveBusinessout(saleOrderBill, saleOrderBillDtlList, business, epcList);
+        if(messageBox.getSuccess()){
+            return new MessageBox(true, "出库成功");
+        }else{
+            return messageBox;
+        }
+
     }
 
     /**
@@ -389,8 +394,13 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
         //saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
         Business business = BillConvertUtil.covertToSaleOrderBusinessIn(saleOrderBill, saleOrderBillDtlList, epcList, currentUser);
-        this.saleOrderBillService.saveBusiness(saleOrderBill, saleOrderBillDtlList, business);
-        return new MessageBox(true, "入库成功");
+        MessageBox messageBox = this.saleOrderBillService.saveBusiness(saleOrderBill, saleOrderBillDtlList, business);
+        if(messageBox.getSuccess()){
+            return new MessageBox(true, "入库成功");
+        }else{
+            return messageBox;
+        }
+
     }
 
     /**
@@ -420,9 +430,15 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
         saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
         Business business = BillConvertUtil.covertToSaleOrderBusinessIn(saleOrderBill, saleOrderBillDtlList, epcList, currentUser);
-        this.saleOrderBillService.saveBusiness(saleOrderBill, saleOrderBillDtlList, business);
-        this.inventoryService.updateEpcStockInsStockss(codes);
-        return new MessageBox(true, "入库成功");
+        MessageBox messageBox = this.saleOrderBillService.saveBusiness(saleOrderBill, saleOrderBillDtlList, business);
+        if(messageBox.getSuccess()){
+            this.inventoryService.updateEpcStockInsStockss(codes);
+            return new MessageBox(true, "入库成功");
+        }else{
+
+            return messageBox;
+        }
+
     }
 
     /**
