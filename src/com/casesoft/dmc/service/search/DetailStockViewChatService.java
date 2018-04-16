@@ -74,6 +74,17 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
     public void delete(String id) {
 
     }
+    public Long findstockNum(String warehId,String styleId){
+        String hql="select sum(qty) from DetailStockChatView where 1=1";
+        if(CommonUtil.isNotBlank(warehId)){
+            hql+=" and warehId like '"+warehId+"'";
+        }
+        if(CommonUtil.isNotBlank(styleId)){
+            hql+=" and (styleid = '"+styleId+"')";
+        }
+        Long unique = this.detailStockViewDao.findUnique(hql);
+        return unique;
+    }
 
     public Long findwarehNum(String warehId,String styleId){
         String hql="select sum(qty) from DetailStockChatView where 1=1";
