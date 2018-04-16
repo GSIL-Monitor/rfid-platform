@@ -129,8 +129,6 @@
                 $("#color_size_grid").jqGrid("setGridParam",{
                     datatype: "json",
                     url: basePath+"/prod/product/listOrderByColorAndSize.do?styleId="+row.styleId,
-                    datatype: "json",
-                    url: basePath+"/prod/product/list.do?filter_EQS_styleId="+row.styleId,
                 }).trigger('reloadGrid');
             }
 
