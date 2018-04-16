@@ -1,10 +1,9 @@
 package com.casesoft.dmc.service.sys.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import groovy.sql.Sql;
+import org.apache.xpath.operations.Number;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +32,10 @@ public class ResourceService implements IResourceService {
 
   public Resource load(String id) {
     return this.resourceDao.load(id);
+  }
+
+  public Resource get(String propertyName,String value){
+    return this.resourceDao.findUniqueBy(propertyName,value);
   }
 
   /*
@@ -130,4 +133,27 @@ public class ResourceService implements IResourceService {
             new Object[] { roleId });
     return authMenuList;
   }
+
+  @Transactional(readOnly = true)
+  public List<Resource> getResourceKeyByOwnerId(String ownerId){
+    String hql = "from Resource r where r.ownerId=?";
+    return this.resourceDao.find(hql,new Object[]{ownerId});
+  }
+
+  public String findMaxByCode(String ownerId){
+    String hql = "select max(code)from Resource where ownerId =?";
+    int maxCode = Integer.parseInt(this.resourceDao.findUnique(hql,ownerId))+1;
+    return "0"+String.valueOf(maxCode);
+  }
+
+  public int findMaxBySeqNo(String ownerId){
+    String hql = "select max(seqNo)from Resource where ownerId =?";
+    int maxSeqNo = this.resourceDao.findUnique(hql,ownerId);
+    return maxSeqNo+1;
+  }
+
+  public void deleteById(String code){
+    this.resourceDao.delete(code);
+  }
+
 }

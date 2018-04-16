@@ -8,6 +8,8 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var pageType = "pageType";
+        var rowId = "rowId";
     </script>
 
 </head>
@@ -36,24 +38,31 @@
                                             <i class="ace-icon fa fa-refresh"></i>
                                             <span class="bigger-110">刷新</span>
                                         </button>
-                                    </div>
-                                    <div class="btn-group btn-group-sm pull-left">
-                                        <button type="button" class="btn btn-primary" onclick="add()">
-                                            <i class="ace-icon fa fa-plus"></i>
-                                            <span class="bigger-110">增加</span>
-                                        </button>
-                                        <button type="button" class="btn btn-primary" onclick="edit()">
-                                            <i class="ace-icon fa fa-edit"></i>
-                                            <span class="bigger-110">编辑</span>
-                                        </button>
-                                    </div>
-                                    <div class="btn-group btn-group-sm pull-right">
-
                                         <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
                                             <i class="ace-icon fa fa-binoculars"></i>
                                             <span class="bigger-110">高级查询</span>
                                         </button>
+                                    </div>
+                                    <div class="btn-group btn-group-sm pull-left">
+                                        <button type="button" class="btn btn-primary" onclick="add()">
+                                            <i class="ace-icon fa fa-plus"></i>
+                                            <span class="bigger-110">增加角色</span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="edit()">
+                                            <i class="ace-icon fa fa-edit"></i>
+                                            <span class="bigger-110">编辑角色</span>
+                                        </button>
+                                    </div>
 
+                                    <div class="btn-group btn-group-sm pull-right">
+                                        <button type="button" class="btn btn-primary" onclick="addPower()">
+                                            <i class="ace-icon fa fa-plus"></i>
+                                            <span class="bigger-110">增加权限</span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="editPower()">
+                                            <i class="ace-icon fa fa-edit"></i>
+                                            <span class="bigger-110">编辑权限</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -149,6 +158,7 @@
         </div>
     </div>
     <jsp:include page="../layout/footer.jsp"></jsp:include>
+    <jsp:include page="rolePower_edit.jsp"></jsp:include>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/sys/roleController.js"></script>
