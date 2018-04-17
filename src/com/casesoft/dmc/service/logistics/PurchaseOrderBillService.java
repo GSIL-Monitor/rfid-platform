@@ -380,4 +380,8 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         Double unique = this.purchaseBillOrderDao.findUnique(hql);
         return unique;
     }
+
+    public Integer findBillStatus(String billNo) {
+        return this.purchaseBillOrderDao.findUnique("select status from PurchaseOrderBill where id = ?",billNo);
+    }
 }

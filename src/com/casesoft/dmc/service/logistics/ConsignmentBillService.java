@@ -415,4 +415,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
    }
 
 
+    public Integer findBillStatus(String billNo) {
+        return this.consignmentBillDao.findUnique("select status from ConsignmentBill where id = ? ",billNo);
+    }
 }
