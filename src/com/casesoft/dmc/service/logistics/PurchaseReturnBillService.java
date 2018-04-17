@@ -187,4 +187,8 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 	public List<BillRecord> getBillRecod(String billNo) {
 		return  this.purchaseReturnBillDao.find("from BillRecord where billNo=?",new Object[]{billNo});
 	}
+
+	public Integer findBillStatus(String billNo) {
+		return this.purchaseReturnBillDao.findUnique("select status from PurchaseReturnBill where id =?",billNo);
+	}
 }

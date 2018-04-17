@@ -104,27 +104,34 @@ public class ConsignmentBillController extends BaseController implements ILogist
     public MessageBox save(String bill, String strDtlList, String userId) throws Exception {
         System.out.println("bill=" + bill);
         System.out.println("strDtlList=" + strDtlList);
-        ConsignmentBill consignmentBill = JSON.parseObject(bill, ConsignmentBill.class);
-        List<ConsignmentBillDtl> consignmentBillDtls = JSON.parseArray(strDtlList, ConsignmentBillDtl.class);
-        User currentUser = CacheManager.getUserById(userId);
-
-        if (CommonUtil.isBlank(consignmentBill.getBillNo())) {
-            String prefix = BillConstant.BillPrefix.Consignment + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
-            //String billNo = this.consignmentBillService.findMaxBillNo(prefix);
-            consignmentBill.setBillNo(prefix);
-            consignmentBill.setId(prefix);
-        } else {
-            consignmentBill.setId(consignmentBill.getBillNo());
-            for (ConsignmentBillDtl sdtl : consignmentBillDtls) {
-                if (CommonUtil.isNotBlank(sdtl.getId())) {
-                    sdtl.setBillNo(consignmentBill.getBillNo());
-                    sdtl.setBillId(consignmentBill.getBillNo());
+        try {
+            ConsignmentBill consignmentBill = JSON.parseObject(bill, ConsignmentBill.class);
+            if(CommonUtil.isNotBlank(consignmentBill.getBillNo())){
+                Integer status = this.consignmentBillService.findBillStatus(consignmentBill.getBillNo());
+                if(status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
+                    return new MessageBox(false, "单据不是录入状态无法保存,请返回");
                 }
             }
-        }
+            List<ConsignmentBillDtl> consignmentBillDtls = JSON.parseArray(strDtlList, ConsignmentBillDtl.class);
+            User currentUser = CacheManager.getUserById(userId);
 
-        BillConvertUtil.convertToConsignmentBillBill(consignmentBill, consignmentBillDtls, currentUser);
-        try {
+            if (CommonUtil.isBlank(consignmentBill.getBillNo())) {
+                String prefix = BillConstant.BillPrefix.Consignment + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+                //String billNo = this.consignmentBillService.findMaxBillNo(prefix);
+                consignmentBill.setBillNo(prefix);
+                consignmentBill.setId(prefix);
+            } else {
+                consignmentBill.setId(consignmentBill.getBillNo());
+                for (ConsignmentBillDtl sdtl : consignmentBillDtls) {
+                    if (CommonUtil.isNotBlank(sdtl.getId())) {
+                        sdtl.setBillNo(consignmentBill.getBillNo());
+                        sdtl.setBillId(consignmentBill.getBillNo());
+                    }
+                }
+            }
+
+            BillConvertUtil.convertToConsignmentBillBill(consignmentBill, consignmentBillDtls, currentUser);
+
             this.consignmentBillService.saveReturnBatch(consignmentBill, consignmentBillDtls);
             return returnSuccessInfo("保存成功", consignmentBill.getBillNo());
         } catch (Exception e) {
@@ -143,7 +150,7 @@ public class ConsignmentBillController extends BaseController implements ILogist
         String defaultSaleStaffId = unit.getDefaultSaleStaffId();
         String defalutCustomerId = unit.getDefalutCustomerId();
 
-        if(CommonUtil.isNotBlank(defalutCustomerId)){
+        if (CommonUtil.isNotBlank(defalutCustomerId)) {
             Customer customer = CacheManager.getCustomerById(defalutCustomerId);
             mav.addObject("defaultWarehId", defaultWarehId);
             mav.addObject("defalutCustomerId", defalutCustomerId);
@@ -168,24 +175,24 @@ public class ConsignmentBillController extends BaseController implements ILogist
     public ModelAndView edit(String billNo) throws Exception {
         ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
         Boolean isAllowEdit = false;
-        if(CommonUtil.isBlank(consignmentBill.getBillType())){
+        if (CommonUtil.isBlank(consignmentBill.getBillType())) {
             isAllowEdit = true;
             consignmentBill.setBillType(Constant.ScmConstant.BillType.Edit);
             HttpServletRequest request = this.getRequest();
             HttpSession session = request.getSession();
-            session.setAttribute("billNoConsignment",billNo);
-        }else{
-            if(consignmentBill.getBillType().equals(Constant.ScmConstant.BillType.Save)){
+            session.setAttribute("billNoConsignment", billNo);
+        } else {
+            if (consignmentBill.getBillType().equals(Constant.ScmConstant.BillType.Save)) {
                 isAllowEdit = true;
                 consignmentBill.setBillType(Constant.ScmConstant.BillType.Edit);
                 HttpServletRequest request = this.getRequest();
                 HttpSession session = request.getSession();
-                session.setAttribute("billNoConsignment",billNo);
-            }else{
+                session.setAttribute("billNoConsignment", billNo);
+            } else {
                 isAllowEdit = false;
             }
         }
-        if(isAllowEdit){
+        if (isAllowEdit) {
             ModelAndView mav = new ModelAndView("/views/logistics/consignmentBillDetail");
             mav.addObject("ownerId", getCurrentUser().getOwnerId());
             mav.addObject("userId", getCurrentUser().getId());
@@ -193,20 +200,21 @@ public class ConsignmentBillController extends BaseController implements ILogist
             Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
             mav.addObject("ownersId", unit.getOwnerids());
             mav.addObject("pageType", "edit");
-            mav.addObject("mainUrl", "/logistics/Consignment/back.do?billNo="+billNo);
+            mav.addObject("mainUrl", "/logistics/Consignment/back.do?billNo=" + billNo);
             return mav;
-        }else{
+        } else {
             ModelAndView mv = new ModelAndView("/views/logistics/consignmentBill");
-            mv.addObject("billNo",billNo);
+            mv.addObject("billNo", billNo);
             mv.addObject("ownerId", getCurrentUser().getOwnerId());
             mv.addObject("userId", getCurrentUser().getId());
-            return  mv;
+            return mv;
         }
 
     }
+
     @RequestMapping(value = "/back")
     @ResponseBody
-    public ModelAndView back(String billNo){
+    public ModelAndView back(String billNo) {
         ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
         consignmentBill.setBillType(Constant.ScmConstant.BillType.Save);
         HttpServletRequest request = this.getRequest();
@@ -218,9 +226,10 @@ public class ConsignmentBillController extends BaseController implements ILogist
         mv.addObject("userId", getCurrentUser().getId());
         return mv;
     }
+
     @RequestMapping(value = "/quit")
     @ResponseBody
-    public void quit(String billNo){
+    public void quit(String billNo) {
         ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
         consignmentBill.setBillType(Constant.ScmConstant.BillType.Save);
         HttpServletRequest request = this.getRequest();
@@ -307,16 +316,16 @@ public class ConsignmentBillController extends BaseController implements ILogist
     public MessageBox cancel(String billNo) throws Exception {
         this.logAllRequestParams();
         ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
-        if (consignmentBill.getStatus() == BillConstant.BillStatus.Enter){
+        if (consignmentBill.getStatus() == BillConstant.BillStatus.Enter) {
             consignmentBill.setStatus(BillConstant.BillStatus.Cancel);
             //撤销对应的退货单
             List<SaleOrderReturnBill> saleOrderReturnBillNo = this.consignmentBillService.findSaleOrderReturnBillNo(billNo);
-            for (SaleOrderReturnBill saleOrderReturnBill:saleOrderReturnBillNo){
+            for (SaleOrderReturnBill saleOrderReturnBill : saleOrderReturnBillNo) {
                 saleOrderReturnBill.setStatus(BillConstant.BillStatus.Cancel);
                 this.saleOrderReturnBillService.cancelUpdate(saleOrderReturnBill);
             }
 
-        } else{
+        } else {
             return returnFailInfo("不是录入状态，无法取消");
         }
         try {
@@ -349,20 +358,20 @@ public class ConsignmentBillController extends BaseController implements ILogist
         //入库校验
         List<EpcStock> EpcStockList = epcStockService.findInStockByEpcList(epcList);
 
-        if(CommonUtil.isBlank(EpcStockList)){
+        if (CommonUtil.isBlank(EpcStockList)) {
             User currentUser = CacheManager.getUserById(userId);
             ConsignmentBill consignmentBill = this.consignmentBillService.get("billNo", billNo);
             Business business = BillConvertUtil.covertToConsignmentBillBusinessIn(consignmentBill, consignmentBillDtlList, epcList, currentUser);
             MessageBox messageBox = this.consignmentBillService.saveBusiness(consignmentBill, consignmentBillDtlList, business);
-            if(messageBox.getSuccess()){
+            if (messageBox.getSuccess()) {
                 return new MessageBox(true, "入库成功");
-            }else{
+            } else {
                 return messageBox;
             }
 
-        }else {
+        } else {
             StringBuilder sb = new StringBuilder();
-            for (EpcStock epcStock: EpcStockList) {
+            for (EpcStock epcStock : EpcStockList) {
                 String wareHouseName = CacheManager.getUnitById(epcStock.getWarehouseId()).getName();
                 sb.append(epcStock.getSku()).append(" ").append(epcStock.getCode()).append(" 已在仓库：[").append(epcStock.getWarehouseId()).append("]").append(wareHouseName).append(" 中<br>");
             }
@@ -452,12 +461,12 @@ public class ConsignmentBillController extends BaseController implements ILogist
 
     @RequestMapping(value = "/findSaleOrderReturnBillNo")
     @ResponseBody
-    public List<SaleOrderReturnBill> findSaleOrderReturnBillNo(String billno){
+    public List<SaleOrderReturnBill> findSaleOrderReturnBillNo(String billno) {
         try {
             List<SaleOrderReturnBill> saleOrderReturnBillNo = this.consignmentBillService.findSaleOrderReturnBillNo(billno);
-            return  saleOrderReturnBillNo;
-        }catch (Exception e){
-            return  null;
+            return saleOrderReturnBillNo;
+        } catch (Exception e) {
+            return null;
         }
 
 

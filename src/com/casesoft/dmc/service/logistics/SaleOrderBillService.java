@@ -617,7 +617,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
                 this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
             }
-            this.taskService.webSave(business);
+            this.taskService.save(business);
             if (styleList.size() > 0) {
                 this.saleOrderBillDao.doBatchInsert(styleList);
             }
@@ -748,5 +748,8 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     }
 
 
+    public Integer findBillStatus(String billNo) {
+       return this.saleOrderBillDao.findUnique("select status from SaleOrderBill where id=?",billNo);
+    }
 }
 

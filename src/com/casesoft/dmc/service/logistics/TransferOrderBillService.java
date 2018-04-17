@@ -216,4 +216,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
     }
 
 
+    public Integer findBillStatus(String billNo) {
+        return this.transferOrderBillDao.findUnique("select status from TransferOrderBill where id = ?",billNo);
+    }
 }

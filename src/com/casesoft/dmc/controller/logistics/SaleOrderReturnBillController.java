@@ -258,6 +258,12 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         System.out.println("strDtlList=" + strDtlList);
         try {
             SaleOrderReturnBill saleOrderReturnBill = JSON.parseObject(bill, SaleOrderReturnBill.class);
+            if(CommonUtil.isNotBlank(saleOrderReturnBill.getBillNo())){
+                Integer status = this.saleOrderReturnBillService.findBillStatus(saleOrderReturnBill.getBillNo());
+                if(status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
+                    return new MessageBox(false, "单据不是录入状态无法保存,请返回");
+                }
+            }
             List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls = JSON.parseArray(strDtlList, SaleOrderReturnBillDtl.class);
 
             if (CommonUtil.isBlank(saleOrderReturnBill.getBillNo())) {
