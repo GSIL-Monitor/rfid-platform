@@ -342,8 +342,8 @@ function initGrid() {
     console.log("123");
     $("#addDetailgrid").jqGrid({
         height: 'auto',
-        datatype: "json",
-        url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + billNo,
+        datatype: "local",
+        //url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + billNo,
         mtype: 'POST',
         colModel: [
             {name: 'id', label: 'id', hidden: true},
@@ -1020,6 +1020,7 @@ function addProductsOnCode() {
         }
         var isAdd = true;
         var alltotActPrice = 0;
+        console.log(productListInfo);
         $.each(productListInfo, function (index, value) {
             isAdd = true;
             $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
