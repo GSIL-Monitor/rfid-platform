@@ -9,6 +9,7 @@ import com.casesoft.dmc.core.vo.SidebarMenu;
 import com.casesoft.dmc.model.sys.RoleRes;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
+import groovy.ui.Console;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,6 +85,8 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 		return resourceList;
 	
 	}
+
+
 	
 	@RequestMapping(value = "/list")
     @ResponseBody
@@ -206,10 +209,73 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 		return null;
 	}
 
-	
-	
-	
-	
+    /**
+     *
+     * @param roleStr 前端传的数据
+     * @param pageType 判断是add（）还是edit（）
+     * @return liu tianci
+     * @throws Exception
+     */
 
-	
+    @RequestMapping(value="/powerSave")
+    @ResponseBody
+    public MessageBox powerSave(String roleStr,String pageType) throws Exception {
+        this.logAllRequestParams();
+        Resource resource = JSON.parseObject(roleStr,Resource.class);
+        Resource rs = this.resourceService.get("code",resource.getCode());
+        String maxCode = this.resourceService.findMaxByCode(resource.getOwnerId());
+        int maxSeqNo = this.resourceService.findMaxBySeqNo(resource.getOwnerId());
+            if (CommonUtil.isBlank(rs)) {
+                rs = new Resource();
+                rs.setCode(maxCode);
+                rs.setEname(resource.getEname());
+                rs.setIconCls(resource.getIconCls());
+                rs.setImage(resource.getImage());
+                rs.setLocked(resource.getLocked());
+                rs.setName(resource.getName());
+                rs.setOwnerId(resource.getOwnerId());
+                rs.setSeqNo(maxSeqNo);
+                rs.setStatus(resource.getStatus());
+                rs.setUrl(resource.getUrl());
+                rs.setClientCode(resource.getClientCode());
+                rs.setClientName(resource.getClientName());
+                rs.setWxUrl(resource.getWxUrl());
+            }else {
+                if (rs.getOwnerId().equals("01")||rs.getOwnerId().equals(resource.getOwnerId())){
+                    rs.setCode(resource.getCode());
+                    rs.setSeqNo(resource.getSeqNo());
+                }else {
+                    rs.setCode(maxCode);
+                    rs.setSeqNo(maxSeqNo);
+                }
+                rs.setEname(resource.getEname());
+                rs.setIconCls(resource.getIconCls());
+                rs.setImage(resource.getImage());
+                rs.setLocked(resource.getLocked());
+                rs.setName(resource.getName());
+                rs.setOwnerId(resource.getOwnerId());
+
+                rs.setStatus(resource.getStatus());
+                rs.setUrl(resource.getUrl());
+                rs.setClientCode(resource.getClientCode());
+                rs.setClientName(resource.getClientName());
+                rs.setWxUrl(resource.getWxUrl());
+            }
+        try {
+            this.resourceService.deleteAndSave(resource.getCode(),rs);
+            return this.returnSuccessInfo("保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            this.logger.error(e.getMessage());
+            return this.returnFailInfo("保存失败");
+        }
+    }
+    @RequestMapping(value = "/searchByOwnerId")
+    @ResponseBody
+    public List<Resource> searchByOwnerId(String ownerId)throws Exception{
+        this.logAllRequestParams();
+        List<Resource> resourceList = this.resourceService.getResourceKeyByOwnerId(ownerId);
+        return resourceList;
+    }
+
 }

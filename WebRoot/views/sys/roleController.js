@@ -1,5 +1,6 @@
 $(function () {
     initGrid();
+    initAdd();
     var type_parent_column = $("#roleGrid").closest('.widget-main');
     var property_parent_column = $("#resourceGrid").closest('.widget-main');
     $("#roleGrid").jqGrid( 'setGridWidth', type_parent_column.width() );
@@ -9,6 +10,14 @@ $(function () {
         var property_parent_column = $("#resourceGrid").closest('.widget-main');
         $("#roleGrid").jqGrid( 'setGridWidth', type_parent_column.width() );
         $("#resourceGrid").jqGrid( 'setGridWidth', property_parent_column.width() );
+    });
+
+    $("#edit_rolePower_dialog").on('show.bs.modal', function () {
+        initEditFormValid();
+    });
+    $("#edit_rolePower_dialog").on('hide.bs.modal', function () {
+        $("#editRolePowerForm").data('bootstrapValidator').destroy();
+        $('#editRolePowerForm').data('bootstrapValidator', null);
     });
 });
 
@@ -60,6 +69,7 @@ function initGrid() {
 
     $("#resourceGrid").jqGrid({
         treeGrid: true,
+        ExpandColClick : true,
         url: basePath + "/sys/role/findResource.do",
         datatype: "json",
         mtype:"POST",
@@ -70,14 +80,18 @@ function initGrid() {
         multiselect:false,
         shrinkToFit: true,
         colModel: [
-
-            {name: 'code', label: '资源编号', width: 80,key:true,
+            {name: 'code', label: '资源编号', width: 60,key:true,
                 formatter: function (cellvalue, options, rowObject) {
-                    return "    "+cellvalue;
+                    return ""+cellvalue;
                 }
             },
-            {name: 'name', label: '资源名称',width: 80},
-            {name: 'ownerId', label: '父菜单ID',width: 80,
+            {name:'ename', label:'菜单英文名称',width:40},
+            {name:'iconCls',label:'图标名称',width:40},
+            {name:'name', label:'菜单名称',width:60},
+            {name:"image", label:'图片名称',width:40},
+            {name: 'locked', label: '状态',hidden:true},
+            {name: 'status', label: '状态',hidden:true},
+            {name: 'ownerId', label: '父菜单ID',width: 40,
                 formatter: function (cellvalue, options, rowObject) {
                     if(rowObject.leaf == false){
                         return "";
@@ -86,12 +100,15 @@ function initGrid() {
                     }
                 }
             },
-            //{name: 'seqNo', label: '序号',width: 80},
-            {name:'locked', label:'选择', width: 60, align:'center', formatter: function (cellvalue, options, rowObject) {
+            {name: 'seqNo', label: '序号',width: 40},
+            {name: 'url', label: '页面路径',width: 40},
+            {name: 'clientCode', label: '小程序编号',width: 40},
+            {name: 'clientName', label: '小程序名',width: 40},
+            {name: 'wxUrl', label: '小程序路径',width: 40},
+            {name:'locked', label:'选择', width: 40, align:'center', formatter: function (cellvalue, options, rowObject) {
                 return '<input  id="ckbox_'+rowObject.code+'" name="'+rowObject.code+'" type="checkbox" />';
             }
             }
-
         ],
         treeReader : {
             level_field: "level",
@@ -109,22 +126,15 @@ function initGrid() {
             "minus": "ace-icon fa fa-chevron-up",
             "leaf" : ""
         },
-        //ExpandColClick: true,
+        ExpandColClick: true,
         jsonReader: {
             repeatitems: false
-            //  root: "response"
-        },
-        onSelectRow: function(id){
-            console.log(row.code);
-            console.log(row.locked);
         },
         loadComplete: function(data) {
             //checkbox不可点击
             $("input[type='checkbox']").click(function () {return false});
         }
     });
-
-
 }
 
 function _search() {
@@ -150,11 +160,28 @@ function edit() {
     if(rowId) {
         var row = $("#roleGrid").jqGrid('getRowData',rowId);
         location.href = basePath+"/sys/role/editPage.do?roleId="+row.id;
-
     } else {
         bootbox.alert("请选择一项进行修改！");
     }
-
 }
+function initAdd() {
+    $.ajax({
+        url:basePath+"/sys/role/searchByOwnerId.do?ownerId=01",
+        cache:false,
+        async:false,
+        inheritClass:true,
+        type:"POST",
+        success:function (data,textStatus) {
+            var json=data;
+            for (var i = 0; i < json.length; i++) {
+                $("#ownerId").append("<option value='"+json[i].code+"'>"+json[i].name+"</option>");
+                $("#ownerId").trigger('chosen:updated');
+            }
+        }
+    })
+}
+
+
+
 
 
