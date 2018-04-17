@@ -169,7 +169,7 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 		if(messageBox.getSuccess()){
 			this.purchaseReturnBillDao.saveOrUpdate(purchaseOrderBill);
 			this.purchaseReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
-			this.taskService.save(business);
+			this.taskService.webSave(business);
 			if(styleList.size() > 0){
 				this.purchaseReturnBillDao.doBatchInsert(styleList);
 			}

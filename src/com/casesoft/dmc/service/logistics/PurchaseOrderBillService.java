@@ -359,7 +359,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 this.purchaseBillOrderDao.doBatchInsert(list);
             }
         }
-        this.taskService.save(business);
+        this.taskService.webSave(business);
         if (styleList.size() > 0) {
             this.purchaseBillOrderDao.doBatchInsert(styleList);
         }
