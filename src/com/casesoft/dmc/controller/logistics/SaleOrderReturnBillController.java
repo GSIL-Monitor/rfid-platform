@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
@@ -245,8 +246,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             if (CommonUtil.isNotBlank(CacheManager.getSizeById(s.getSizeId()))) {
                 s.setSizeName(CacheManager.getSizeNameById(s.getSizeId()));
             }
+            s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
         }
-
         return saleOrderReturnBillDtls;
     }
 
