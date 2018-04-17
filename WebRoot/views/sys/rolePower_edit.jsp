@@ -160,7 +160,7 @@
         cs.showProgressBar();
         $.ajax({
             dataType:"json",
-            url: basePath + "/sys/role/pSave.do",
+            url: basePath + "/sys/role/powerSave.do",
             data:{
                 roleStr:JSON.stringify(array2obj($("#editRolePowerForm").serializeArray())),
                 pageType:pageType

@@ -156,4 +156,9 @@ public class ResourceService implements IResourceService {
     this.resourceDao.delete(code);
   }
 
+  public void deleteAndSave(String code,Resource res){
+    deleteById(code);
+    save(res);
+  }
+
 }

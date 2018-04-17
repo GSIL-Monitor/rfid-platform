@@ -217,9 +217,9 @@ public class RoleController extends BaseController implements IBaseInfoControlle
      * @throws Exception
      */
 
-    @RequestMapping(value="/pSave")
+    @RequestMapping(value="/powerSave")
     @ResponseBody
-    public MessageBox pSave(String roleStr,String pageType) throws Exception {
+    public MessageBox powerSave(String roleStr,String pageType) throws Exception {
         this.logAllRequestParams();
         Resource resource = JSON.parseObject(roleStr,Resource.class);
         Resource rs = this.resourceService.get("code",resource.getCode());
@@ -241,20 +241,20 @@ public class RoleController extends BaseController implements IBaseInfoControlle
                 rs.setClientName(resource.getClientName());
                 rs.setWxUrl(resource.getWxUrl());
             }else {
-                try {
-                    this.resourceService.deleteById(resource.getCode());
-                }catch (Exception e){
-                    e.printStackTrace();
+                if (rs.getOwnerId().equals("01")||rs.getOwnerId().equals(resource.getOwnerId())){
+                    rs.setCode(resource.getCode());
+                    rs.setSeqNo(resource.getSeqNo());
+                }else {
+                    rs.setCode(maxCode);
+                    rs.setSeqNo(maxSeqNo);
                 }
-                rs = new Resource();
-                rs.setCode(maxCode);
                 rs.setEname(resource.getEname());
                 rs.setIconCls(resource.getIconCls());
                 rs.setImage(resource.getImage());
                 rs.setLocked(resource.getLocked());
                 rs.setName(resource.getName());
                 rs.setOwnerId(resource.getOwnerId());
-                rs.setSeqNo(maxSeqNo);
+
                 rs.setStatus(resource.getStatus());
                 rs.setUrl(resource.getUrl());
                 rs.setClientCode(resource.getClientCode());
@@ -262,10 +262,11 @@ public class RoleController extends BaseController implements IBaseInfoControlle
                 rs.setWxUrl(resource.getWxUrl());
             }
         try {
-            this.resourceService.save(rs);
+            this.resourceService.deleteAndSave(resource.getCode(),rs);
             return this.returnSuccessInfo("保存成功");
         }catch (Exception e){
             e.printStackTrace();
+            this.logger.error(e.getMessage());
             return this.returnFailInfo("保存失败");
         }
     }
@@ -276,4 +277,5 @@ public class RoleController extends BaseController implements IBaseInfoControlle
         List<Resource> resourceList = this.resourceService.getResourceKeyByOwnerId(ownerId);
         return resourceList;
     }
+
 }
