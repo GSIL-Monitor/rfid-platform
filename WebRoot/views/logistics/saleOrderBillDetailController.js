@@ -243,6 +243,10 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
+            "<button id='SODtl_saveAndAdd' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saveAndAdd()'>" +
+            "    <i class='ace-icon fa fa-save'></i>" +
+            "    <span class='bigger-110'>保存并新增</span>" +
+            "</button>" +
             "<button id='SODtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
@@ -915,6 +919,40 @@ function save() {
     }
     //客户余额变动
     guestBalanceChange();
+}
+
+function saveAndAdd() {
+    $("#search_customerType").removeAttr('disabled');
+    $("#search_origId").removeAttr('disabled');
+    $("#search_destId").removeAttr('disabled');
+    $("#search_busnissId").removeAttr('disabled');
+
+    if ($("#search_origId").val() == $("#search_destId").val()) {
+        bootbox.alert("不能在相同的单位之间销售");
+        return;
+    }
+
+    $("#editForm").data('bootstrapValidator').destroy();
+    $('#editForm').data('bootstrapValidator', null);
+    initEditFormValid();
+    $('#editForm').data('bootstrapValidator').validate();
+    if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        return;
+    }
+    if ($("#addDetailgrid").getDataIDs().length == 0) {
+        bootbox.alert("请添加销售商品！");
+        return;
+    }
+    if (addDetailgridiRow != null && addDetailgridiCol != null) {
+        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+        addDetailgridiRow = null;
+        addDetailgridiCol = null;
+    }
+    //客户余额变动
+    guestBalanceChange();
+    alert('保存成功')
+    //保存成功后新增
+    location.href = basePath + "/logistics/saleOrder/add.do";
 }
 
 function saveAjax() {
