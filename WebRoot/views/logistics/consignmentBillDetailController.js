@@ -1502,6 +1502,8 @@ function updateconsignmentnum(id, outQtys) {
 }
 
 function saleRetrunNook() {
+    
+    debugger;
     var isok = true;
     var billNo = $("#search_billNo").val();
     var epcArray = [];
@@ -1555,6 +1557,24 @@ function saleRetrunNook() {
             }
 
         });
+        $("#search_customerType").removeAttr('disabled');
+        $("#search_origId").removeAttr('disabled');
+        $("#search_destId").removeAttr('disabled');
+        $("#search_busnissId").removeAttr('disabled');
+        $("#addDetailgrid").saveCell	(editDtailiRow,editDtailiCol);
+        var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        console.log(consignmentBill);
+        var dtlArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            dtlArray.push(rowData);
+        });
+        console.log(dtlArray);
         if (isok) {
             showWaitingPage();
             $("#CMDtl_wareHouseokSale").hide();
@@ -1564,7 +1584,9 @@ function saleRetrunNook() {
                 //async: false,
                 url: basePath + "/logistics/Consignment/saleRetrunNo.do",
                 data: {
+                    //billNo: billNo,
                     bill: consignmentBill,
+                    strDtlList: JSON.stringify(dtlArray),
                     strEpcList: JSON.stringify(epcArray),
                     userId: userId
                 },
