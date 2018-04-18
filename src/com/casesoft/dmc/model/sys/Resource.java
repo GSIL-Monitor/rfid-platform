@@ -16,24 +16,77 @@ public class Resource implements java.io.Serializable {
 
   // Fields
 
-  private String code;
-  private String name;
-  private String ownerId;
-  private Integer seqNo;
-  private String url;
-  private String iconCls;
-  private String image;
-  private String remark;
-  private Integer status;
+  @Override
+  public String toString() {
+    return "Resource{" +
+            "code='" + code + '\'' +
+            ", name='" + name + '\'' +
+            ", ownerId='" + ownerId + '\'' +
+            ", seqNo=" + seqNo +
+            ", url='" + url + '\'' +
+            ", iconCls='" + iconCls + '\'' +
+            ", image='" + image + '\'' +
+            ", remark='" + remark + '\'' +
+            ", status=" + status +
+            ", wxUrl='" + wxUrl + '\'' +
+            ", locked=" + locked +
+            ", clientCode='" + clientCode + '\'' +
+            ", clientName='" + clientName + '\'' +
+            ", children=" + children +
+            ", ename='" + ename + '\'' +
+            ", expand=" + expand +
+            ", isLeaf=" + isLeaf +
+            ", level='" + level + '\'' +
+            ", isChecked=" + isChecked +
+            ", solution='" + solution + '\'' +
+            '}';
+  }
+
+  public Resource(String code, String name, String ownerId, Integer seqNo, String url, String iconCls, String image, String remark, Integer status, String wxUrl, Integer locked, String clientCode, String clientName, List<Resource> children, String ename,  boolean expand, boolean isLeaf, String level, boolean isChecked, String solution) {
+    this.code = code;
+    this.name = name;
+    this.ownerId = ownerId;
+    this.seqNo = seqNo;
+    this.url = url;
+    this.iconCls = iconCls;
+    this.image = image;
+    this.remark = remark;
+    this.status = status;
+    this.wxUrl = wxUrl;
+    this.locked = locked;
+    this.clientCode = clientCode;
+    this.clientName = clientName;
+    this.children = children;
+    this.ename = ename;
+
+    this.expand = expand;
+    this.isLeaf = isLeaf;
+    this.level = level;
+    this.isChecked = isChecked;
+    this.solution = solution;
+  }
+
+  private String code;//编号
+  private String name;//菜单名
+  private String ownerId;//父菜单id
+  private Integer seqNo;//子菜单序列号
+  private String url;//页面路径
+  private String iconCls;//图标名
+  private String image;//图片名
+  private String remark;//
+  private Integer status=1;//状态
   private String wxUrl;//小程序url
-  private String ename;
-
-  private Integer locked;
-
-  private String clientCode;
-  private String clientName;
-  
+  private Integer locked=0;//状态
+  private String clientCode;//小程序编号
+  private String clientName;//小程序名
   private List<Resource> children;
+  private String ename;//英文名
+  public static long getSerialVersionUID() {
+    return serialVersionUID;
+  }
+
+
+
 
     private boolean expand = true;
     private boolean isLeaf = true;

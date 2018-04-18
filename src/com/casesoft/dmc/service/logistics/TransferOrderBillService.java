@@ -159,6 +159,9 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
     @Autowired
     private TaskService taskService;
+    /**
+     * web调拨转换出入库任务
+     * */
     public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for(TransferOrderBillDtl dtl : transferOrderBillDtlList){
@@ -186,7 +189,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
             }else{
 
             }
-            this.taskService.save(business);
+            this.taskService.webSave(business);
             if(styleList.size() > 0){
                 this.transferOrderBillDao.doBatchInsert(styleList);
             }
@@ -252,4 +255,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
     }
 
 
+    public Integer findBillStatus(String billNo) {
+        return this.transferOrderBillDao.findUnique("select status from TransferOrderBill where id = ?",billNo);
+    }
 }

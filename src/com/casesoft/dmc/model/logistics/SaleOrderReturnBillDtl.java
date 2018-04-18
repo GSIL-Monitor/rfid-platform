@@ -1,9 +1,6 @@
 package com.casesoft.dmc.model.logistics;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Session on 2017-06-28.
@@ -29,6 +26,16 @@ public class SaleOrderReturnBillDtl extends BaseBillDtl{
 	private Double inVal =0D;
 	@Column
 	private Double stockVal=0D;//库存成本
+	@Transient
+	private Double tagPrice;
+
+	public Double getTagPrice() {
+		return tagPrice;
+	}
+
+	public void setTagPrice(Double tagPrice) {
+		this.tagPrice = tagPrice;
+	}
 
 	public Double getStockVal() {
 		return stockVal;

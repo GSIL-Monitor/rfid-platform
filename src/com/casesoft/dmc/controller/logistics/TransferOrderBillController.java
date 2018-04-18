@@ -136,6 +136,13 @@ public class TransferOrderBillController extends BaseController implements ILogi
                 //String billNo = this.transferOrderBillService.findMaxBillNo(prefix);
                 transferOrderBill.setId(prefix);
                 transferOrderBill.setBillNo(prefix);
+            }else{
+
+                Integer status = this.transferOrderBillService.findBillStatus(transferOrderBill.getBillNo());
+                if(status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
+                    return new MessageBox(false, "单据不是录入状态无法保存,请返回");
+                }
+
             }
             List<TransferOrderBillDtl> transferOrderBillDtlList = JSON.parseArray(strDtlList, TransferOrderBillDtl.class);
             transferOrderBill.setId(transferOrderBill.getBillNo());

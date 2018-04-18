@@ -176,7 +176,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
                     this.consignmentBillDao.doBatchInsert(list);
                 }
             }
-            this.taskService.save(business);
+            this.taskService.webSave(business);
             if(styleList.size() > 0){
                 this.consignmentBillDao.doBatchInsert(styleList);
             }
@@ -425,4 +425,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
    }
 
 
+    public Integer findBillStatus(String billNo) {
+        return this.consignmentBillDao.findUnique("select status from ConsignmentBill where id = ? ",billNo);
+    }
 }
