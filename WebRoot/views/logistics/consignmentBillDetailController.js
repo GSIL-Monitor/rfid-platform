@@ -1564,7 +1564,13 @@ function saleRetrunNook() {
             $("#search_origId").removeAttr('disabled');
             $("#search_destId").removeAttr('disabled');
             $("#search_busnissId").removeAttr('disabled');
+            $("#addDetailgrid").saveCell	(editDtailiRow,editDtailiCol);
             var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+            if (addDetailgridiRow != null && addDetailgridiCol != null) {
+                $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+                addDetailgridiRow = null;
+                addDetailgridiCol = null;
+            }
             console.log(purchaseReturnBill);
             var dtlArray = [];
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
