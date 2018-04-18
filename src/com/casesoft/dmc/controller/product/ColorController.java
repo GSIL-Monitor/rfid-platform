@@ -77,7 +77,7 @@ public class ColorController extends BaseController implements IBaseInfoControll
         col.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         this.colorService.save(col);
         CacheManager.refreshColorCache();
-        return returnSuccessInfo("ok");
+        return returnSuccessInfo("ok",col);
     }
 
     @RequestMapping(value = "/changeColorStatus")

@@ -129,7 +129,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
 				this.propertyService.saveKey(propertyKeybyid);
 			}
 			CacheManager.refreshPropertyCache();
-			return returnSuccessInfo("保存成功");
+			return returnSuccessInfo("保存成功",entity);
 		}catch(Exception e){
 			return returnFailInfo("保存失败");
 		}

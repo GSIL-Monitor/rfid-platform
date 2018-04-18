@@ -161,11 +161,11 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_brandCode">品牌</label>
+                                                       for="form_class1">品牌</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class ="input-group col-xs-2">
 
-                                                        <select class="chosen-select form-control" id="form_brandCode" name="class1">
+                                                        <select class="chosen-select form-control" id="form_class1" name="class1">
                                                             <option value='' style='background-color: #eeeeee'>请选择品牌</option>")
                                                         </select>
                                                         <%--  <select id="form_brandCode" class="selectpicker" data-live-search="true">
@@ -369,6 +369,14 @@
                                                     <option value="N" style="background-color: #eeeeee">否</option>
                                                     </select>
                                                 </div>
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_isSeries">是否用定价规则</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <select class="form-control" id="form_isSeries" onchange="priceIsUse();" name="isSeries" />
+                                                    <option value="Y" style="background-color: #eeeeee">是</option>
+                                                    <option value="N" style="background-color: #eeeeee">否</option>
+                                                    </select>
+                                                </div>
                                             </div>
 
 
@@ -427,8 +435,8 @@
 <script type="text/javascript" src="<%=basePath%>/Olive/assets/js/bootstrap-colorpicker.min.js"></script>
 
 <jsp:include page="style_colorAndSize_dialog.jsp"></jsp:include>
-<jsp:include page="color_edit.jsp"></jsp:include>
-<jsp:include page="size_edit.jsp"></jsp:include>
+<jsp:include page="style_color_edit.jsp"></jsp:include>
+<jsp:include page="style_size_edit.jsp"></jsp:include>
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
 <script type="text/javascript">
@@ -494,8 +502,8 @@
             success:function (data,textStatus) {
                 var json=data;
 
-                $("#form_brandCode").empty();
-                $("#form_brandCode").multiselect({
+                $("#form_class1").empty();
+                $("#form_class1").multiselect({
                     inheritClass: true,
                     includeSelectAllOption: true,
                     selectAllNumber: true,
@@ -882,36 +890,62 @@
     }
     function inputPriceKeydown(){
         $("#form_price").keydown(function (event) {
-            if (event.keyCode == 13) {
-                changPrice($("#form_class9").val());
+            if (event.keyCode==13){
+            var preCate = $("#form_preCast").val();
+            var price = $("#form_price").val();
+                if(preCate>price){
+                    bootbox.alert("价格不符合规则");
+                }else {
+                    priceIsUse();
+                }
             }
         })
     }
+/*判断是否使用定价规则*/
+    function priceIsUse() {
+        var price = $("#form_price").val();
+        var isSeries = $("#form_isSeries").val();
+        if(isSeries=="Y"){
+            changPrice($("#form_class9").val());
+        }else {
+            $("#form_puPrice").val(price);
+            $("#form_wsPrice").val(price);
+        }
+    }
+
+    $("#form_isSeries").combobox({
+        onChang:function () {
+            priceIsUse();
+        }
+    })
     /*name=系列的code*/
     function changPrice(name){
-        var price = $("#form_price").val();
-        var purPrice;
-        var wsPrice;
-        $.ajax({
-            url:basePath+"/sys/pricingRules/list.do",
-            cache:false,
-            async:false,
-            inheritClass:true,
-            type:"POST",
-            data:{
-                filter_EQS_series:name
-            },
-            success:function (date,textStatus) {
-                var json=date;
-                for (var i=0;i<json.length;i++){
-                    checkNum = json[i].rule1;/*规则1 表示吊牌价与采购价之间关系*/
-                    purPrice = Math.round(price*(json[i].rule3)*10)/10.0;/*规则3 门店价与吊牌价之间关系*/
-                    wsPrice = Math.round(price*(json[i].rule2)*10)/10.0;/*规则2 代理商价与吊牌价直接关系*/
+        var isSeries = $("#form_isSeries").val();
+        if(isSeries=="Y"){
+            var price = $("#form_price").val();
+            var purPrice;
+            var wsPrice;
+            $.ajax({
+                url:basePath+"/sys/pricingRules/list.do",
+                cache:false,
+                async:false,
+                inheritClass:true,
+                type:"POST",
+                data:{
+                    filter_EQS_series:name
+                },
+                success:function (date,textStatus) {
+                    var json=date;
+                    for (var i=0;i<json.length;i++){
+                        checkNum = json[i].rule1;/*规则1 表示吊牌价与采购价之间关系*/
+                        purPrice = Math.round(price*(json[i].rule3)*10)/10.0;/*规则3 门店价与吊牌价之间关系*/
+                        wsPrice = Math.round(price*(json[i].rule2)*10)/10.0;/*规则2 代理商价与吊牌价直接关系*/
+                    }
+                    $("#form_puPrice").val(purPrice);
+                    $("#form_wsPrice").val(wsPrice);
                 }
-                $("#form_puPrice").val(purPrice);
-                $("#form_wsPrice").val(wsPrice)
-            }
-        });
+            });
+        }
     }
     function setUrl(){
         //更改Grid的url
@@ -921,7 +955,7 @@
         }
         $("#CSGrid").jqGrid("setGridParam",{
             url:url,
-            page : 1,
+            page : 1
         });
         $("#CSGrid").trigger("reloadGrid");
     }
@@ -1054,6 +1088,7 @@
             cache: false,
             async: false,
             type: 'POST',
+
             success: function (data, textStatus) {
                 var index =1;
                 for(var key in data){
@@ -1064,6 +1099,9 @@
                     index++;
                     $("#form_sizeId").append("</optgroup>");
                 }
+                $('#form_sizeId').multiselect({
+                    maxHeight: "400"
+                });
                 $('#form_sizeId').multiselect('rebuild');
 
             }
@@ -1121,8 +1159,8 @@
             success:function (data,textStatus) {
                 var json=data;
 
-                $("#form_brandCode").empty();
-                $("#form_brandCode").multiselect({
+                $("#form_class1").empty();
+                $("#form_class1").multiselect({
                     inheritClass: true,
                     includeSelectAllOption: true,
                     selectAllNumber: true,
@@ -1134,22 +1172,22 @@
 
                         var a=option[0].text;
                         if(a.length>5){
-                            $("#form_brandCode").next().children("button").text(a.substr(0, 5)+"...");
+                            $("#form_class1").next().children("button").text(a.substr(0, 5)+"...");
                         }
 
 
 
                     }
                 });
-                $("#form_brandCode").append(" <option value='' style='background-color: #eeeeee'>选择品牌</option>");
+                $("#form_class1").append(" <option value='' style='background-color: #eeeeee'>选择品牌</option>");
                 for (var i = 0; i < json.length; i++) {
-                    $("#form_brandCode").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
+                    $("#form_class1").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
 
                 if("${pageType}"=="edit"){
-                    $("#form_brandCode").find("option[value='${style.brandCode}']").attr("selected",true);
+                    $("#form_class1").find("option[value='${style.brandCode}']").attr("selected",true);
                 }
-                $('#form_brandCode').multiselect('rebuild');
+                $('#form_class1').multiselect('rebuild');
             }
         });
     }
@@ -1266,7 +1304,11 @@
                         class_name : 'gritter-success  gritter-light'
                     });
                     $("#edit-dialog-detailed").modal('hide');
-                    window.location.reload();
+                    //window.location.reload();
+                    var num = result.result.type;
+                    var formClassX="form_class"+""+num.substr(1, 2);
+                    $("#"+formClassX).append("<option value='"+result.result.code+"' selected style='background-color: #eeeeee'>"+result.result.name+"</option>");
+                    $("#"+formClassX).multiselect('rebuild');
                 }else{
                     $.gritter.add({
                         text : result.msg,
