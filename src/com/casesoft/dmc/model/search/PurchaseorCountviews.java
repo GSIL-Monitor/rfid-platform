@@ -22,6 +22,7 @@ public class PurchaseorCountviews {
     @Excel(name="款号")
     private String styleid;
     @Column()
+    @Excel(name="颜色")
     private String colorid;
     @Column()
     @Excel(name="尺号")
@@ -30,6 +31,7 @@ public class PurchaseorCountviews {
     @Excel(name="数量")
     private Integer qty;
     @Column()
+    @Excel(name="吊牌价")
     private Double price;
     @Column()
     private Double totprice;

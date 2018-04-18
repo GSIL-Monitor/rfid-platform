@@ -10,6 +10,5 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TASK_CLOUDBOXDTL")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class CloudBoxDtl extends BoxDtl{
 }

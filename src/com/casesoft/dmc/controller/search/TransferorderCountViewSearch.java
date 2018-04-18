@@ -125,6 +125,29 @@ public class TransferorderCountViewSearch extends BaseController {
 
         return dataResult;
     }
+    @RequestMapping(value = "/readTransBystyleandsize", method = RequestMethod.POST)
+    public @ResponseBody
+    DataSourceResult readTransBystyleandsize(@RequestBody DataSourceRequest request) {
+
+        DataSourceResult dataResult = null;
+        try {
+            long startTime = System.currentTimeMillis();
+            dataResult = transferorderCountDao.getTransBystyleandsize(request);
+            long endTime = System.currentTimeMillis();
+            logger.error("查询款式和颜色分组的时间："+(endTime-startTime));
+            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            list=(ArrayList<Map<String,Object>>)dataResult.getData();
+            long startSizeTime = System.currentTimeMillis();
+            List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list);
+            long endSizeTime = System.currentTimeMillis();
+            logger.error("查询款式和颜色分组尺寸的时间："+(endTime-startTime));
+            dataResult.setData(maps);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return dataResult;
+    }
     @RequestMapping(value = "/findtitledate", method = RequestMethod.POST)
     @ResponseBody
     public MessageBox findtitledate(String dates){
