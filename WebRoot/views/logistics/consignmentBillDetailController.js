@@ -682,7 +682,7 @@ function save() {
         return;
     }
     var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
-
+    console.log(purchaseReturnBill);
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -764,7 +764,7 @@ function saveother(totActPrice) {
         }
     }
     var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
-
+    console.log(purchaseReturnBill);
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1505,7 +1505,8 @@ function updateconsignmentnum(id,outQtys){
 }
 
 function saleRetrunNook() {
-    if(issaleretrun) {
+    /*if(issaleretrun) {*/
+    debugger;
         var isok = true;
         var billNo = $("#search_billNo").val();
         var epcArray = [];
@@ -1559,6 +1560,18 @@ function saleRetrunNook() {
                 }
 
             });
+            $("#search_customerType").removeAttr('disabled');
+            $("#search_origId").removeAttr('disabled');
+            $("#search_destId").removeAttr('disabled');
+            $("#search_busnissId").removeAttr('disabled');
+            var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+            console.log(purchaseReturnBill);
+            var dtlArray = [];
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                var rowData = $("#addDetailgrid").getRowData(value);
+                dtlArray.push(rowData);
+            });
+            console.log(dtlArray);
             if (isok) {
                 showWaitingPage();
                 $("#CMDtl_wareHouseokSale").hide();
@@ -1568,7 +1581,9 @@ function saleRetrunNook() {
                     //async: false,
                     url: basePath + "/logistics/Consignment/saleRetrunNo.do",
                     data: {
-                        billNo: billNo,
+                        //billNo: billNo,
+                        bill: purchaseReturnBill,
+                        strDtlList: JSON.stringify(dtlArray),
                         strEpcList: JSON.stringify(epcArray),
                         userId: userId
                     },
@@ -1599,12 +1614,12 @@ function saleRetrunNook() {
                 });
             }
         }
-    }else{
+   /* }else{
         $.gritter.add({
             text: "请先做保存",
             class_name: 'gritter-success  gritter-light'
         });
-    }
+    }*/
 
 }
 function showCodesDetail(uniqueCodes) {
