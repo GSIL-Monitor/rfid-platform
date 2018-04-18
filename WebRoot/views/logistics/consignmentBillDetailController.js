@@ -1502,105 +1502,98 @@ function updateconsignmentnum(id, outQtys) {
 }
 
 function saleRetrunNook() {
-    if (issaleretrun) {
-        var isok = true;
-        var billNo = $("#search_billNo").val();
-        var epcArray = [];
-        if (billNo == "") {
-            $.gritter.add({
-                text: "请先保存!",
-                class_name: 'gritter-success  gritter-light'
-            });
-
-        } else {
-            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-                var rowData = $("#addDetailgrid").getRowData(value);
-                if (parseInt(rowData.inQty) == 0) {
-                    $.gritter.add({
-                        text: "请先入库",
-                        class_name: 'gritter-success  gritter-light'
-                    });
-                    isok = false;
-
-                } else {
-                    //  {name: 'savehaveuniqueCodes', label: '唯一码', hidden: false},
-                    //{name: 'savenohanveuniqueCodes', label: '唯一码', hidden: false}
-                    //先处理savehaveuniqueCodes唯一码
-                    var codeshave = rowData.savehaveuniqueCodes.split(",");
-                    if (codeshave && codeshave != null && codeshave != "") {
-                        $.each((codeshave), function (index, value) {
-                            var epc = {};
-                            epc.code = value;
-                            epc.styleId = rowData.styleId;
-                            epc.sizeId = rowData.sizeId;
-                            epc.colorId = rowData.colorId;
-                            epc.qty = 1;
-                            epc.sku = rowData.sku;
-                            epcArray.push(epc)
-                        });
-                    }
-                    //处理savenohanveuniqueCodes唯一码
-                    var codesnohanve = rowData.savenohanveuniqueCodes.split(",");
-                    if (codesnohanve && codesnohanve != null && codesnohanve != "") {
-                        $.each((codesnohanve), function (index, value) {
-                            var epc = {};
-                            epc.code = value;
-                            epc.styleId = rowData.styleId;
-                            epc.sizeId = rowData.sizeId;
-                            epc.colorId = rowData.colorId;
-                            epc.qty = 1;
-                            epc.sku = rowData.sku;
-                            epcArray.push(epc)
-                        });
-                    }
-                }
-
-            });
-            if (isok) {
-                showWaitingPage();
-                $("#CMDtl_wareHouseokSale").hide();
-                debugger;
-                $.ajax({
-                    dataType: "json",
-                    //async: false,
-                    url: basePath + "/logistics/Consignment/saleRetrunNo.do",
-                    data: {
-                        billNo: billNo,
-                        strEpcList: JSON.stringify(epcArray),
-                        userId: userId
-                    },
-                    type: "POST",
-                    success: function (msg) {
-                        hideWaitingPage();
-                        $("#CMDtl_wareHouseokSale").show();
-                        if (msg.success) {
-                            /* $.gritter.add({
-                             text: msg.msg,
-                             class_name: 'gritter-success  gritter-light'
-                             });*/
-                            $("#modal-addEpc-table").modal('hide');
-                            $("#addDetailgrid").trigger("reloadGrid");
-                            bootbox.alert({
-                                buttons: {ok: {label: '确定',}},
-                                message: msg.msg,
-                                callback: function () {
-                                    quitback();
-
-                                },
-                            });
-
-                        } else {
-                            bootbox.alert(msg.msg);
-                        }
-                    }
-                });
-            }
-        }
-    } else {
+    var isok = true;
+    var billNo = $("#search_billNo").val();
+    var epcArray = [];
+    if (billNo == "") {
         $.gritter.add({
-            text: "请先做保存",
+            text: "请先保存!",
             class_name: 'gritter-success  gritter-light'
         });
+
+    } else {
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            if (parseInt(rowData.inQty) == 0) {
+                $.gritter.add({
+                    text: "请先入库",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                isok = false;
+
+            } else {
+                //  {name: 'savehaveuniqueCodes', label: '唯一码', hidden: false},
+                //{name: 'savenohanveuniqueCodes', label: '唯一码', hidden: false}
+                //先处理savehaveuniqueCodes唯一码
+                var codeshave = rowData.savehaveuniqueCodes.split(",");
+                if (codeshave && codeshave != null && codeshave != "") {
+                    $.each((codeshave), function (index, value) {
+                        var epc = {};
+                        epc.code = value;
+                        epc.styleId = rowData.styleId;
+                        epc.sizeId = rowData.sizeId;
+                        epc.colorId = rowData.colorId;
+                        epc.qty = 1;
+                        epc.sku = rowData.sku;
+                        epcArray.push(epc)
+                    });
+                }
+                //处理savenohanveuniqueCodes唯一码
+                var codesnohanve = rowData.savenohanveuniqueCodes.split(",");
+                if (codesnohanve && codesnohanve != null && codesnohanve != "") {
+                    $.each((codesnohanve), function (index, value) {
+                        var epc = {};
+                        epc.code = value;
+                        epc.styleId = rowData.styleId;
+                        epc.sizeId = rowData.sizeId;
+                        epc.colorId = rowData.colorId;
+                        epc.qty = 1;
+                        epc.sku = rowData.sku;
+                        epcArray.push(epc)
+                    });
+                }
+            }
+
+        });
+        if (isok) {
+            showWaitingPage();
+            $("#CMDtl_wareHouseokSale").hide();
+            debugger;
+            $.ajax({
+                dataType: "json",
+                //async: false,
+                url: basePath + "/logistics/Consignment/saleRetrunNo.do",
+                data: {
+                    billNo: billNo,
+                    strEpcList: JSON.stringify(epcArray),
+                    userId: userId
+                },
+                type: "POST",
+                success: function (msg) {
+                    hideWaitingPage();
+                    $("#CMDtl_wareHouseokSale").show();
+                    if (msg.success) {
+                        /* $.gritter.add({
+                         text: msg.msg,
+                         class_name: 'gritter-success  gritter-light'
+                         });*/
+                        $("#modal-addEpc-table").modal('hide');
+                        $("#addDetailgrid").trigger("reloadGrid");
+                        bootbox.alert({
+                            buttons: {ok: {label: '确定',}},
+                            message: msg.msg,
+                            callback: function () {
+                                quitback();
+
+                            },
+                        });
+
+                    } else {
+                        bootbox.alert(msg.msg);
+                    }
+                }
+            });
+        }
     }
 
 }
