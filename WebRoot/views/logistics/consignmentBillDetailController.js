@@ -685,7 +685,7 @@ function save() {
         bootbox.alert("相同店不能寄售");
         return;
     }
-    var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+    var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -704,7 +704,7 @@ function save() {
         // async:false,
         url: basePath + "/logistics/Consignment/save.do",
         data: {
-            'bill': purchaseReturnBill,
+            'bill': consignmentBill,
             'strDtlList': JSON.stringify(dtlArray),
             userId: userId
         },
@@ -767,7 +767,7 @@ function saveother(totActPrice) {
             $("#search_payPrice").val(summun.toFixed(2));
         }
     }
-    var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+    var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -786,7 +786,7 @@ function saveother(totActPrice) {
         // async:false,
         url: basePath + "/logistics/Consignment/save.do",
         data: {
-            'bill': purchaseReturnBill,
+            'bill': consignmentBill,
             'strDtlList': JSON.stringify(dtlArray),
             userId: userId
         },
@@ -1564,7 +1564,7 @@ function saleRetrunNook() {
                 //async: false,
                 url: basePath + "/logistics/Consignment/saleRetrunNo.do",
                 data: {
-                    billNo: billNo,
+                    bill: consignmentBill,
                     strEpcList: JSON.stringify(epcArray),
                     userId: userId
                 },
