@@ -165,6 +165,15 @@ public class PurchaseorCountviewsSearch extends BaseController {
                         //没有图片设置默认图片
                         d.setUrl("/product/photo/noImg.png");
                     }
+                    String billno = d.getBillid();
+                    if(billno.contains(BillConstant.BillPrefix.purchase)){
+                        d.setSaletype("采购订单");
+                    }
+                    if(billno.contains(BillConstant.BillPrefix.purchaseReturn)){
+                        d.setSaletype("采购退货订单");
+              /*  Integer qty = purchaseorCountviews.getQty();
+                purchaseorCountviews.setQty(Integer.parseInt("-"+qty));*/
+                    }
                 }
                 ExportParams params = new ExportParams("采购明细", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;

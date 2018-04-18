@@ -286,8 +286,18 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
         }
     }
 
-    public boolean saleRetrunNo(ConsignmentBill consignmentBill,List<ConsignmentBillDtl> billDtlByBillNo,User curUser,List<Epc> epcList){
+    public boolean saleRetrunNo(ConsignmentBill consignmentBill,List<ConsignmentBillDtl> billDtlByBillNo,User curUser,List<Epc> epcList, List<ConsignmentBillDtl> consignmentBillDtls){
         try{
+            //保存单据寄存单数据
+            this.deleteBatchDtl(consignmentBill.getBillNo());
+            this.consignmentBillDao.batchExecute("delete from BillRecord where billNo=?", consignmentBill.getBillNo());
+
+            this.consignmentBillDao.saveOrUpdate(consignmentBill);
+            this.consignmentBillDao.doBatchInsert(consignmentBillDtls);
+            if(CommonUtil.isNotBlank(consignmentBill.getBillRecordList())){
+                this.consignmentBillDao.doBatchInsert(consignmentBill.getBillRecordList());
+            }
+            //寄存货款或退货的操作
             Logger logger = LoggerFactory.getLogger(ConsignmentBill.class);
             List<ConsignmentBillDtl> listm=new ArrayList<ConsignmentBillDtl>();
             List<ConsignmentBillDtl> listq=new ArrayList<ConsignmentBillDtl>();
