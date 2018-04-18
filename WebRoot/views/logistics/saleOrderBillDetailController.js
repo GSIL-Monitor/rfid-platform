@@ -969,7 +969,9 @@ function addProductInfo() {
 
 }
 
+
 function save() {
+
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
     $("#search_destId").removeAttr('disabled');
@@ -977,7 +979,7 @@ function save() {
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("不能在相同的单位之间销售");
-        return;
+        return false;
     }
 
     $("#editForm").data('bootstrapValidator').destroy();
@@ -985,11 +987,11 @@ function save() {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
-        return;
+        return false;
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加销售商品！");
-        return;
+        return false;
     }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -1000,13 +1002,20 @@ function save() {
     guestBalanceChange();
 }
 
-function saveAndAdd() {
-    //保存
-    this.save();
-    alert('保存成功');
-    //保存成功后新增
+function add() {
     location.href = basePath + "/logistics/saleOrder/add.do";
 }
+
+window.flag = false;
+
+function saveAndAdd() {
+    save();
+    if (flag) {
+        alert('开单成功');
+        add();
+    }
+}
+
 
 function saveAjax() {
     var dtlArray = [];
@@ -1047,6 +1056,7 @@ function saveAjax() {
             }
         }
     });
+    window.isTrue = true;
 }
 
 function addUniqCode() {
@@ -2064,7 +2074,7 @@ function guestBalanceChange() {
     $("#after_Balance").val(afterBalance);
     if (afterBalance < 0) {
         $("#SODtl_save").attr({"disabled": "disabled"});
-        bootbox.confirm({
+        /*bootbox.confirm({
             title: "余额确认",
             buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
             message: "客户余额不足，是否继续开单？",
@@ -2072,12 +2082,25 @@ function guestBalanceChange() {
                 $("#SODtl_save").removeAttr("disabled");
                 if (result) {
                     saveAjax();
+                    $.gritter.add({
+                        text: "开单成功",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    if (flag) {
+                        add();
+                    }
                 } else {
                 }
             }
-        });
+        });*/
+        if (confirm("客户余额不足，是否继续开单")) {
+            $("#SODtl_save").removeAttr("disabled");
+            saveAjax();
+            flag = true;
+        }
     } else {
         saveAjax();
+        flag = true;
     }
 }
 
