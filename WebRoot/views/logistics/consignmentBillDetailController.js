@@ -685,7 +685,7 @@ function save() {
         bootbox.alert("相同店不能寄售");
         return;
     }
-    var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+    var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -704,7 +704,7 @@ function save() {
         // async:false,
         url: basePath + "/logistics/Consignment/save.do",
         data: {
-            'bill': purchaseReturnBill,
+            'bill': consignmentBill,
             'strDtlList': JSON.stringify(dtlArray),
             userId: userId
         },
@@ -767,7 +767,7 @@ function saveother(totActPrice) {
             $("#search_payPrice").val(summun.toFixed(2));
         }
     }
-    var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+    var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -786,7 +786,7 @@ function saveother(totActPrice) {
         // async:false,
         url: basePath + "/logistics/Consignment/save.do",
         data: {
-            'bill': purchaseReturnBill,
+            'bill': consignmentBill,
             'strDtlList': JSON.stringify(dtlArray),
             userId: userId
         },
@@ -1502,6 +1502,8 @@ function updateconsignmentnum(id, outQtys) {
 }
 
 function saleRetrunNook() {
+    
+    debugger;
     var isok = true;
     var billNo = $("#search_billNo").val();
     var epcArray = [];
@@ -1555,6 +1557,24 @@ function saleRetrunNook() {
             }
 
         });
+        $("#search_customerType").removeAttr('disabled');
+        $("#search_origId").removeAttr('disabled');
+        $("#search_destId").removeAttr('disabled');
+        $("#search_busnissId").removeAttr('disabled');
+        $("#addDetailgrid").saveCell	(editDtailiRow,editDtailiCol);
+        var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        console.log(consignmentBill);
+        var dtlArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            dtlArray.push(rowData);
+        });
+        console.log(dtlArray);
         if (isok) {
             showWaitingPage();
             $("#CMDtl_wareHouseokSale").hide();
@@ -1564,7 +1584,9 @@ function saleRetrunNook() {
                 //async: false,
                 url: basePath + "/logistics/Consignment/saleRetrunNo.do",
                 data: {
-                    billNo: billNo,
+                    //billNo: billNo,
+                    bill: consignmentBill,
+                    strDtlList: JSON.stringify(dtlArray),
                     strEpcList: JSON.stringify(epcArray),
                     userId: userId
                 },

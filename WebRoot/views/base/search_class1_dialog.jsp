@@ -24,7 +24,7 @@
                     <div class="widget-main" id="search_unit_Panel">
                         <form class="form-horizontal" role="form" id="search_vendor_Form">
                             <div class="form-group">
-                                <label class="col-xs-2 control-label text-right" for="search_vendor">供应商</label>
+                                <label class="col-xs-2 control-label text-right" for="search_vendor">厂家</label>
                                 <div class="col-xs-8">
                                     <input class="col-xs-4 form-control" id="search_vendor"
                                            name="filter_LIKES_name_OR_code"
