@@ -22,7 +22,7 @@
             <table id="inuniqueCodeListGrid"></table>
         </div>
         <div class="modal-footer no-margin-top">
-            <button type='button'  class='btn btn-primary' onclick='confirm_warehousing(epcinArray)'>确认入库</button>
+            <button type='button' id='fb_comfirm_in' class='btn btn-primary' onclick='confirm_warehousing(epcinArray)'>确认入库</button>
         </div>
     </div>
 </div>
@@ -111,7 +111,6 @@
     }
 
     function codeListReloadin(uniqueCodes) {
-        debugger;
         $("#inuniqueCodeListGrid").clearGridData();
         $("#inuniqueCodeListGrid").jqGrid('setGridParam', {
             url: basePath + "/stock/warehStock/findCodeinList.do?uniqueCodes=" + uniqueCodes+"&origId="+$("#search_origId").val()+"&destId="+$("#search_destId").val()
