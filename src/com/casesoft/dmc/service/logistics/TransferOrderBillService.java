@@ -6,6 +6,7 @@ import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.TransferOrderBillDao;
@@ -24,9 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yushen on 2017/7/3.
@@ -210,6 +209,46 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
     public Long findtransferCountnum(String hql) {
         return this.transferOrderBillDao.findUnique(hql);
+    }
+
+    public List<Map<String,Object>> fillTransMap(List<Map<String,Object>> list) throws Exception {
+
+        for(int i=0;i<list.size();i++){
+            Map<String, Object> map = list.get(i);
+           /* map.put("S",0);
+            map.put("M",0);
+            map.put("L",0);
+            map.put("XL",0);
+            map.put("XXL",0);*/
+
+            String styleid="";
+            String colorid="";
+            Iterator it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String)entry.getKey();
+
+                if(key.equals("styleid")){
+                    styleid=(String) entry.getValue();
+                }
+                if(key.equals("colorid")){
+                    colorid=(String) entry.getValue();
+                }
+
+            }
+            String sizeArray = PropertyUtil.getValue("sizeArray");
+            String[] sizeArrays = sizeArray.split(",");
+            for(int b=0;b<sizeArrays.length;b++){
+                map.put(sizeArrays[b],0);
+            }
+            String hql="select t.sizeId,sum(t.qty) as qty from TransferOrderBillDtl t where t.styleId=? and t.colorId=? group by t.sizeId";
+            List<Object> objects = this.transferOrderBillDao.find(hql, new Object[]{styleid, colorid});
+            for(int a=0;a<objects.size();a++){
+                Object[] object=(Object[])objects.get(a);
+                map.put(object[0]+"",object[1]);
+            }
+        }
+        return list;
     }
 
 

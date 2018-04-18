@@ -125,6 +125,23 @@ public class TransferorderCountViewSearch extends BaseController {
 
         return dataResult;
     }
+    @RequestMapping(value = "/readTransBystyleandsize", method = RequestMethod.POST)
+    public @ResponseBody
+    DataSourceResult readTransBystyleandsize(@RequestBody DataSourceRequest request) {
+
+        DataSourceResult dataResult = null;
+        try {
+            dataResult = transferorderCountDao.getTransBystyleandsize(request);
+            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            list=(ArrayList<Map<String,Object>>)dataResult.getData();
+            List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list);
+            dataResult.setData(maps);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return dataResult;
+    }
     @RequestMapping(value = "/findtitledate", method = RequestMethod.POST)
     @ResponseBody
     public MessageBox findtitledate(String dates){
