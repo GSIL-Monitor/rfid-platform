@@ -104,33 +104,28 @@ public class PropertyController extends BaseController implements IBaseInfoContr
 	@ResponseBody
 	public MessageBox saveproperty(PropertyKey entity) throws Exception {
 		try{
-			PropertyKey propertyKeybyid = CacheManager.getPropertyKey(entity.getId());
-			if(CommonUtil.isBlank(propertyKeybyid)){
-				PropertyKey propertyKey = this.propertyService.findPropertyKeyByNameAndType(entity.getName(),entity.getType());
-				if(CommonUtil.isBlank(propertyKey)){
-					Integer num = this.propertyService.findtkeyNum(entity.getType());
-					entity.setSeqNo((num+1));
-					User currentUser = getCurrentUser();
-					entity.setCode(entity.getSeqNo()+"");
-					entity.setType(entity.getId());
-					entity.setId(entity.getId()+"-"+entity.getCode());
-					entity.setOwnerId(currentUser.getCreatorId());
-					entity.setLocked(0);
-					entity.setRegisterDate(new Date());
-					entity.setRegisterId(currentUser.getId());
-					entity.setYnuse("Y");
-					this.propertyService.saveKey(entity);
-				}else{
-					return returnFailInfo("保存失败,名称已存在不能重复添加");
-				}
-
+			PropertyKey propertyKey = this.propertyService.findPropertyKeyByNameAndType(entity.getName(),entity.getType());
+			if(CommonUtil.isBlank(propertyKey)){
+				Integer num = this.propertyService.findtkeyNum(entity.getType());
+				entity.setSeqNo((num+1));
+				User currentUser = getCurrentUser();
+				entity.setCode(entity.getSeqNo()+"");
+				entity.setType(entity.getId());
+				entity.setId(entity.getId()+"-"+entity.getCode());
+				entity.setOwnerId(currentUser.getCreatorId());
+				entity.setLocked(0);
+				entity.setRegisterDate(new Date());
+				entity.setRegisterId(currentUser.getId());
+				entity.setYnuse("Y");
+				this.propertyService.saveKey(entity);
 			}else{
-				propertyKeybyid.setName(entity.getName());
-				this.propertyService.saveKey(propertyKeybyid);
+				return returnFailInfo("保存失败,名称已存在不能重复添加");
 			}
 			CacheManager.refreshPropertyCache();
 			return returnSuccessInfo("保存成功");
 		}catch(Exception e){
+			e.printStackTrace();
+			this.logger.error(e.getMessage());
 			return returnFailInfo("保存失败");
 		}
 	}
