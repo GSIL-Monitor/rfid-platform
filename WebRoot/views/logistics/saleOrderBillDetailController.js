@@ -342,6 +342,7 @@ function initButtonGroup() {
 }
 
 function initGrid() {
+
     $("#addDetailgrid").jqGrid({
         height: 'auto',
         datatype: "local",
