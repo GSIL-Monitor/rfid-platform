@@ -90,11 +90,14 @@
                 if (result.success == true || result.success == 'true') {
                     progressDialog.modal('hide');
                     $("#edit_size_dialog").modal('hide');
-                    var text = $("#form_sortId").find("option:selected").text();
+                    $("#setgrid").trigger("reloadGrid");
+                    $("#form_sizeId").empty();
+                    inimultiSize();
+                    /*var text = $("#form_sortId").find("option:selected").text();
                     var index =text.substr(2,3);
                     $("#form_sizeId").append("<optgroup label='"+text+"' class= 'group"+index+"'>");
                     $("#form_sizeId").append("<option value='" + result.result.sizeId + "' selected>" + result.result.sizeName + "</option>");
-                    $("#form_sizeId").multiselect('rebuild');
+                    $("#form_sizeId").multiselect('rebuild');*/
                 }
             }, 'json');
     }

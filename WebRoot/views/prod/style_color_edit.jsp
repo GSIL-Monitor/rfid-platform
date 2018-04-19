@@ -74,7 +74,10 @@
                     if(result.success == true || result.success == 'true') {
                         progressDialog.modal('hide');
                         $("#edit_color_dialog").modal('hide');
-                        $("#form_colorId_select").append("<option value='" + result.result.colorId + "' selected style='background-color: " + result.result.hex + "'>" + result.result.colorName + "</option>");
+                        if (result.result.hex != undefined) {
+                            backColor = result.result.hex;
+                        }
+                        $("#form_colorId_select").append("<option value='" + result.result.colorId + "' selected style='background-color: " + backColor + "'>" + result.result.colorName + "</option>");
                         $("#form_colorId_select").multiselect('rebuild');
                     }
                 }, 'json');

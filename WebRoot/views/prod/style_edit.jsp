@@ -912,12 +912,6 @@
             $("#form_wsPrice").val(price);
         }
     }
-
-    $("#form_isSeries").combobox({
-        onChang:function () {
-            priceIsUse();
-        }
-    })
     /*name=系列的code*/
     function changPrice(name){
         var isSeries = $("#form_isSeries").val();
@@ -972,12 +966,8 @@
 
 
     function saveStyleAndProduct(str) {
-        if(Math.round($("#form_preCast").val())*checkNum > Math.round($("#form_price").val())){
-            $.gritter.add({
-                text: "采购价和吊牌价不符合定价规则，请核对对应价格",
-                class_name: 'gritter-success  gritter-light'
-            });
-        }else{
+        var isSeries = $("#form_isSeries").val();
+        if (isSeries=="Y"){
             $('#editStyleForm').data('bootstrapValidator').validate();
             if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                 return;
@@ -1014,9 +1004,51 @@
                     }
                 }
             });
+        }else {
+            if(Math.round($("#form_preCast").val())*checkNum > Math.round($("#form_price").val())){
+                $.gritter.add({
+                    text: "采购价和吊牌价不符合定价规则，请核对对应价格",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }else{
+                $('#editStyleForm').data('bootstrapValidator').validate();
+                if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
+                    return;
+                }
+                if (editDtailRowId != null) {
+                    saveItem(editDtailRowId)
+                }
+                $("#form_sizeSortId").removeAttr("disabled");
+                cs.showProgressBar();
+                var dtlArray = [];
+                $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                    var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                    dtlArray.push(dtlRow);
+                });
+                $.ajax({
+                    dataType: "json",
+                    url: basePath + "/prod/style/saveStyleAndProduct.do",
+                    data:{
+                        styleStr:JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                        productStr:JSON.stringify(dtlArray),
+                        userId: userId,
+                        pageType: str
+                    },
+                    type: "POST",
+                    success: function (msg) {
+                        cs.closeProgressBar();
+                        if(msg.success){
+                            $.gritter.add({
+                                text: msg.msg,
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                        }else{
+                            bootbox.alert(msg.msg);
+                        }
+                    }
+                });
+            }
         }
-
-
     }
 
 
@@ -1215,8 +1247,6 @@
                         backColor = json[i].hex;
                     }
                     $("#form_colorId_select").append("<option value='" + json[i].colorId + "' style='background-color: " + backColor + "'>" + json[i].colorName + "</option>");
-
-
                 }
                 $('#form_colorId_select').multiselect('rebuild');
             }

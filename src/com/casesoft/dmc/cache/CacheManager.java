@@ -29,6 +29,7 @@ import com.casesoft.dmc.service.hall.EmployeeService;
 import com.casesoft.dmc.service.hall.HallFloorService;
 import com.casesoft.dmc.service.mirror.CollocatService;
 import com.casesoft.dmc.service.mirror.NewProductService;
+import com.casesoft.dmc.service.product.ColorService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.shop.CustomerService;
@@ -635,7 +636,11 @@ public class CacheManager {
 		Element result = cache.get("Color");
 		Map<String, Color> colorMap = (Map<String, Color>) result.getValue();
 		Color c = colorMap.get(colorId);
-		return c == null ? "" : c.getColorName();
+		if (CommonUtil.isBlank(c)){
+			ColorService colorService = (ColorService) SpringContextUtil.getBean("colorService");
+			c = colorService.get("colorId",colorId);
+		}
+		return c.getColorName();
 	}
 
 	public static Color getColorById(String colorId) {

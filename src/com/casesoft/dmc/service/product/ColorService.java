@@ -36,7 +36,6 @@ public class ColorService implements IBaseService<Color, String>{
         return this.colorDao.findUnique(hql,new Object[]{id});
     }
 
-    @Transactional(readOnly = true)
 	@Override
 	public void save(Color color) {
 		 this.colorDao.saveOrUpdate(color);
@@ -59,7 +58,8 @@ public class ColorService implements IBaseService<Color, String>{
 
 	@Override
 	public Color get(String propertyName, Object value) {
-		return null;
+
+		return this.colorDao.findUniqueBy(propertyName,value);
 	}
 
 	@Override
