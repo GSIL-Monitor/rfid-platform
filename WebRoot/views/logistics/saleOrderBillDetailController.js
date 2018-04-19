@@ -1011,8 +1011,9 @@ window.flag = false;
 function saveAndAdd() {
     save();
     if (flag) {
-        alert('开单成功');
+        alert("开单成功")
         add();
+        // gritter("开单成功");
     }
 }
 
@@ -2086,18 +2087,16 @@ function guestBalanceChange() {
                         text: "开单成功",
                         class_name: 'gritter-success  gritter-light'
                     });
-                    if (flag) {
-                        add();
-                    }
                 } else {
                 }
             }
         });*/
         if (confirm("客户余额不足，是否继续开单")) {
-            $("#SODtl_save").removeAttr("disabled");
             saveAjax();
             flag = true;
         }
+
+        $("#SODtl_save").removeAttr("disabled");
     } else {
         saveAjax();
         flag = true;
