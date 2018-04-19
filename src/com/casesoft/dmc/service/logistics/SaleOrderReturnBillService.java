@@ -389,7 +389,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         if(messageBox.getSuccess()){
             this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
             this.saleOrderReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
-            this.taskService.save(business);
+            this.taskService.webSave(business);
             if(CommonUtil.isNotBlank(saleOrderReturnBill.getBillRecordList())){
                 this.saleOrderReturnBillDao.doBatchInsert(saleOrderReturnBill.getBillRecordList());
             }
@@ -576,5 +576,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
             return "取消失败";
         }
 
+    }
+
+    public Integer findBillStatus(String billNo) {
+        return this.saleOrderReturnBillDao.findUnique("select status from SaleOrderReturnBill where id=?",billNo);
     }
 }

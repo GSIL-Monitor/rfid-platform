@@ -9,6 +9,42 @@ public class SaleBybusinessname {
     private String precast;
     private String gross;
     private String  totactprice;
+    private String salesum;
+    private String salereturnsum;
+    private String salemoney;
+    private String salereturnmoney;
+
+    public String getSalesum() {
+        return salesum;
+    }
+
+    public void setSalesum(String salesum) {
+        this.salesum = salesum;
+    }
+
+    public String getSalereturnsum() {
+        return salereturnsum;
+    }
+
+    public void setSalereturnsum(String salereturnsum) {
+        this.salereturnsum = salereturnsum;
+    }
+
+    public String getSalemoney() {
+        return salemoney;
+    }
+
+    public void setSalemoney(String salemoney) {
+        this.salemoney = salemoney;
+    }
+
+    public String getSalereturnmoney() {
+        return salereturnmoney;
+    }
+
+    public void setSalereturnmoney(String salereturnmoney) {
+        this.salereturnmoney = salereturnmoney;
+    }
 
     public String getTotactprice() {
         return totactprice;

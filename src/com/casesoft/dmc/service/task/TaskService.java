@@ -86,6 +86,43 @@ public class TaskService extends AbstractBaseService<Business, String> {
         // }
     }
 
+   /**
+    * @param bus
+    * web 页面保存任务
+    * */
+    public void webSave(Business bus) {
+        long time1 = System.currentTimeMillis();
+
+        if (bus.getToken().intValue() == 3) {// 检测
+            saveKFBusiness(bus);
+            return;
+        }
+        // 持久化Bill数据
+        try {
+            saveWebBill(bus);
+            saveBus(bus);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
+        long time2 = System.currentTimeMillis();
+        logger.error("存储数据消耗时间：" + (time2 - time1));
+    }
+
+    private void saveWebBill(Business bus) {
+        Bill bill = bus.getBill();
+        if (CommonUtil.isNotBlank(bill)) {
+            if (bus.getToken().intValue() == 3) {
+                initService.updateBill(bus, bill);
+            } else {
+                this.taskDao.saveOrUpdateX(bus.getBill());
+                this.taskDao.doBatchInsert(bus.getBill().getDtlList());
+            }
+
+        }
+    }
     /*
      * 未入库
      */

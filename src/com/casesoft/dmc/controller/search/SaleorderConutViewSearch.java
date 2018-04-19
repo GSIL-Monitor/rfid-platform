@@ -366,7 +366,7 @@ public class SaleorderConutViewSearch extends BaseController {
 
         Double longrtogross=null;
         long saleRetrunsStartTime= System.currentTimeMillis();
-        Object [] saleRetruns=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlsqty);
+        Object [] saleRetruns=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlrqty);
         long saleRetrunsEndTime= System.currentTimeMillis();
         logger.error("执行saleRetruns的时间"+(saleRetrunsEndTime-saleRetrunsStartTime));
         if(CommonUtil.isNotBlank(saleRetruns[0])){
@@ -451,7 +451,7 @@ public class SaleorderConutViewSearch extends BaseController {
         //saleorderCount saleorderCount = this.saleOrderBillService.findsaleOrderCount(hql);
 
         saleorderCount saleorderCounts=new saleorderCount();
-      saleorderCounts.setSum(longsqty);
+        saleorderCounts.setSum(longsqty);
         saleorderCounts.setRsum(longrqty);
         Double Allmony=longstotactprice+longrtotactprice;
         BigDecimal b   =   new BigDecimal(Allmony.floatValue());

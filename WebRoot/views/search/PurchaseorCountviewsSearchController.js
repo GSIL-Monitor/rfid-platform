@@ -230,8 +230,8 @@ function openSearchClass1Dialog() {
 function selectClass1() {
     var rowId = $("#class1Select_Grid").jqGrid("getGridParam", "selrow");
     var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
-    $("#filter_eq_destunitid").val(rowData.code);
-    $("#filter_eq_destunitname").val(rowData.name);
+    $("#filter_eq_class1").val(rowData.code);
+    $("#filter_eq_class1Name").val(rowData.name);
     $("#modal_class1_search_table").modal('hide');
 }
 var dialogOpenPage;
@@ -507,6 +507,12 @@ function initKendoUIGrid() {
                 },
                {
                     field: "destunitname",
+                    title: "供应商",
+                    width: "180px",
+
+                },
+                {
+                    field: "class1Name",
                     title: "厂家",
                     width: "180px",
 

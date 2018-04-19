@@ -202,7 +202,7 @@ function initGrid() {
             {name: 'outQty', label: '已出库数量', width: 40},
             {name: 'inQty', label: '已入库数量', width: 40},
             {name: 'sku', label: 'sku', width: 50},
-            {name: 'price', label: '销售价格', width: 40,
+            {name: 'tagPrice', label: '吊牌价', width: 40,
                 formatter: function (cellValue, options, rowObject) {
                     var price=parseFloat(cellValue).toFixed(2);
                     return price;
@@ -226,7 +226,24 @@ function initGrid() {
         sortorder: "asc",
         footerrow: true,
         cellEdit: true,
-        cellsubmit: 'clientArray'
+        cellsubmit: 'clientArray',
+        gridComplete: function () {
+            setFooterData();
+        }
+    });
+}
+
+function setFooterData() {
+    var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
+    var sum_outQty = $("#addDetailgrid").getCol('outQty', false, 'sum');
+    var sum_inQty = $("#addDetailgrid").getCol('inQty', false, 'sum');
+    var sum_tagPrice = $("#addDetailgrid").getCol('tagPrice', false, 'sum');
+    $("#addDetailgrid").footerData('set', {
+        styleId: "合计",
+        qty: sum_qty,
+        outQty: sum_outQty,
+        inQty: sum_inQty,
+        tagPrice: sum_tagPrice
     });
 }
 

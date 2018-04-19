@@ -230,6 +230,11 @@ public class PurchaseReturnBillController extends BaseController implements ILog
                 String billNo = this.purchaseReturnBillService.findMaxBillNo(prefix);
                 purchaseReturnBill.setBillNo(billNo);
                 purchaseReturnBill.setId(billNo);
+            }else{
+                Integer status = this.purchaseReturnBillService.findBillStatus(purchaseReturnBill.getBillNo());
+                if (status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")) {
+                    return new MessageBox(false, "单据不是录入状态无法保存,请返回");
+                }
             }
             User currentUser = CacheManager.getUserById(userId);
             purchaseReturnBill.setId(purchaseReturnBill.getBillNo());

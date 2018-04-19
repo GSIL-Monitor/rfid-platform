@@ -1567,6 +1567,36 @@ function initKendoUIGridSalebusinessname(){
                     width: "180px",
                 },
                 {
+                    field: "salesum",
+                    title: "销售单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salereturnsum",
+                    title: "销售退货单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salemoney",
+                    title: "销售金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salemoney=parseFloat(data.salemoney).toFixed(2);
+                        return salemoney;
+                    }
+                },
+                {
+                    field: "salereturnmoney",
+                    title: "销售退货金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
+                        return salereturnmoney;
+                    }
+                },
+                {
                     field: "totactprice",
                     title: "销售额",
                     width: "180px",
@@ -1721,6 +1751,36 @@ function initKendoUIGridSalebusinessnameno(){
                     field: "origname",
                     title: "部门",
                     width: "150px"
+                },
+                {
+                    field: "salesum",
+                    title: "销售单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salereturnsum",
+                    title: "销售退货单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salemoney",
+                    title: "销售金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salemoney=parseFloat(data.salemoney).toFixed(2);
+                        return salemoney;
+                    }
+                },
+                {
+                    field: "salereturnmoney",
+                    title: "销售退货金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
+                        return salereturnmoney;
+                    }
                 },
                /* {
                     field: "precast",
@@ -1910,6 +1970,36 @@ function initKendoUIGridSaleorigname(){
                     width: "180px",
                 },
                 {
+                    field: "salesum",
+                    title: "销售单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salereturnsum",
+                    title: "销售退货单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salemoney",
+                    title: "销售金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salemoney=parseFloat(data.salemoney).toFixed(2);
+                        return salemoney;
+                    }
+                },
+                {
+                    field: "salereturnmoney",
+                    title: "销售退货金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
+                        return salereturnmoney;
+                    }
+                },
+                {
                     field: "totactprice",
                     title: "销售额",
                     width: "180px",
@@ -2075,6 +2165,36 @@ function initKendoUIGridSaleorignameno(){
                     title: "毛利率",
                     width: "180px",
                 },*/
+                {
+                    field: "salesum",
+                    title: "销售单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salereturnsum",
+                    title: "销售退货单品数",
+                    width: "150px"
+                },
+                {
+                    field: "salemoney",
+                    title: "销售金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salemoney=parseFloat(data.salemoney).toFixed(2);
+                        return salemoney;
+                    }
+                },
+                {
+                    field: "salereturnmoney",
+                    title: "销售退货金额",
+                    width: "150px",
+                    template: function (data) {
+                        debugger;
+                        var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
+                        return salereturnmoney;
+                    }
+                },
                 {
                     field: "totactprice",
                     title: "销售额",
