@@ -66,8 +66,8 @@
         </div>
         <div class="modal-footer">
 
-
-            <button type="button"  class="btn btn-primary" onclick="addProductInfo()">保存</button>
+            <button type="button"  class="btn btn-primary" onclick="addProductButNotShut()">新增</button>
+            <button type="button"  class="btn btn-primary" onclick="addProductInfo()">新增并关闭</button>
 
         </div>
     </div>
