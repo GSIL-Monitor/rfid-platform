@@ -154,10 +154,22 @@ public class SaleNodeatilViewsService implements IBaseService<SaleNodeatilViews,
                     saleBybusinessname.setGross(rs.getObject(4).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(5))){
-                    saleBybusinessname.setGrossprofits(rs.getObject(5).toString());
+                    saleBybusinessname.setSalesum(rs.getObject(5).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(6))){
-                    saleBybusinessname.setTotactprice(rs.getObject(6).toString());
+                    saleBybusinessname.setSalereturnsum(rs.getObject(6).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(7))){
+                    saleBybusinessname.setSalemoney(rs.getObject(7).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(8))){
+                    saleBybusinessname.setSalereturnmoney(rs.getObject(8).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(9))){
+                    saleBybusinessname.setGrossprofits(rs.getObject(9).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(10))){
+                    saleBybusinessname.setTotactprice(rs.getObject(10).toString());
                 }
                 list.add(saleBybusinessname);
             }
@@ -255,10 +267,23 @@ public class SaleNodeatilViewsService implements IBaseService<SaleNodeatilViews,
                     saleBybusinessname.setGross(rs.getObject(3).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(4))){
-                    saleBybusinessname.setGrossprofits(rs.getObject(4).toString());
+                    saleBybusinessname.setSalesum(rs.getObject(4).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(5))){
-                    saleBybusinessname.setTotactprice(rs.getObject(5).toString());
+                    saleBybusinessname.setSalereturnsum(rs.getObject(5).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(6))){
+                    saleBybusinessname.setSalemoney(rs.getObject(6).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(7))){
+                    saleBybusinessname.setSalereturnmoney(rs.getObject(7).toString());
+                }
+
+                if(CommonUtil.isNotBlank(rs.getObject(8))){
+                    saleBybusinessname.setGrossprofits(rs.getObject(8).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(9))){
+                    saleBybusinessname.setTotactprice(rs.getObject(9).toString());
                 }
                 list.add(saleBybusinessname);
             }

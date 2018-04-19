@@ -52,14 +52,14 @@ public class WxSaleCountViewController extends ApiBaseController {
         System.out.print(dates);
         Map<String,String> map4Json = JSONUtil.getMap4Json(dates);
         //String hql="select new saleorderCount (sum(t.qty), sum(t.totactprice)) from saleorderCountOViews t where 1=1";
-        String hqlsqty="select sum(t.qty) from saleorderCountOViews t where 1=1";
-        String hqlstotactprice="select  sum(t.totactprice) from saleorderCountOViews t where 1=1";
-        String hqlrqty="select sum(t.qty) from saleorderCountRViews t where 1=1";
-        String hqlrtotactprice="select sum(t.totactprice) from saleorderCountRViews t where 1=1";
-        String hqlrtogross="select sum(t.gross) from saleorderCountRViews t where 1=1";
-        String hqlrtogrossall="select sum(t.grossall) from saleorderCountRViews t where 1=1";
-        String hqlstogrossall="select sum(t.grossall) from saleorderCountOViews t where 1=1";
-        String hqlstogross="select sum(t.gross) from saleorderCountOViews t where 1=1";
+        String hqlsqty="select sum(t.qty), sum(t.totactprice),sum(t.gross) from saleorderCountOViews t where 1=1";
+        //String hqlstotactprice="select  sum(t.totactprice) from saleorderCountOViews t where 1=1";
+        String hqlrqty="select sum(t.qty),sum(t.totactprice),sum(t.gross) from saleorderCountRViews t where 1=1";
+        //String hqlrtotactprice="select sum(t.totactprice) from saleorderCountRViews t where 1=1";
+        //String hqlrtogross="select sum(t.gross) from saleorderCountRViews t where 1=1";
+        //String hqlrtogrossall="select sum(t.grossall) from saleorderCountRViews t where 1=1";
+        //String hqlstogrossall="select sum(t.grossall) from saleorderCountOViews t where 1=1";
+        //String hqlstogross="select sum(t.gross) from saleorderCountOViews t where 1=1";
         Iterator<Map.Entry<String, String>> iterator = map4Json.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> next = iterator.next();
@@ -70,13 +70,13 @@ public class WxSaleCountViewController extends ApiBaseController {
                     String[] split = key.split("_");
                     String time =value+" 00:00:00";
                     hqlsqty+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    // hqlstotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                     hqlrqty+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    // hqlrtotactprice+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogrossall+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogross+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                   /* hqlsqty+=" and '"+value+" '<= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlstotactprice+=" and '"+value+" '<= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlrqty+=" and '"+value+" '<= to_char("+split[2]+",'yyyy-MM-dd')";
@@ -89,13 +89,13 @@ public class WxSaleCountViewController extends ApiBaseController {
                     String[] split = key.split("_");
                     String time =value+" 23:59:59";
                     hqlsqty+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                     hqlrqty+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlrtogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
-                    hqlstogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtotactprice+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlrtogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogrossall+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                    //hqlstogross+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                  /*   hqlsqty+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlstotactprice+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";
                     hqlrqty+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";
@@ -106,34 +106,24 @@ public class WxSaleCountViewController extends ApiBaseController {
                     hqlstogross+=" and '"+value+"' >= to_char("+split[2]+",'yyyy-MM-dd')";*/
                 }else {
                     String[] split = key.split("_");
-
                     if(split[1].equals("contains")){
                         hqlsqty+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlstotactprice+=" and "+split[2]+" like'%"+value+"%'";
+                        // hqlstotactprice+=" and "+split[2]+" like'%"+value+"%'";
                         hqlrqty+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlrtotactprice+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlrtogross+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlrtogrossall+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlstogrossall+=" and "+split[2]+" like '%"+value+"%'";
-                        hqlstogross+=" and "+split[2]+" like '%"+value+"%'";
-                    }else if(split[1].equals("LIKES")){
-                        hqlsqty+=" and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlstotactprice+=" and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlrqty+="and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlrtotactprice+="and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlrtogross+=" and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlrtogrossall+=" and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlstogrossall+=" and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
-                        hqlstogross+=" and ("+split[2]+" like '%"+value+"%' or "+split[4]+" like '%"+value+"%')";
+                        //hqlrtotactprice+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlrtogross+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlrtogrossall+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlstogrossall+=" and "+split[2]+" like '%"+value+"%'";
+                        //hqlstogross+=" and "+split[2]+" like '%"+value+"%'";
                     }else{
                         hqlsqty+=" and "+split[2]+"='"+value+"'";
-                        hqlstotactprice+=" and "+split[2]+"='"+value+"'";
+                        //hqlstotactprice+=" and "+split[2]+"='"+value+"'";
                         hqlrqty+=" and "+split[2]+"='"+value+"'";
-                        hqlrtotactprice+=" and "+split[2]+"='"+value+"'";
-                        hqlrtogross+=" and "+split[2]+"='"+value+"'";
-                        hqlrtogrossall+=" and "+split[2]+"='"+value+"'";
-                        hqlstogrossall+=" and "+split[2]+"='"+value+"'";
-                        hqlstogross+=" and "+split[2]+"='"+value+"'";
+                        //hqlrtotactprice+=" and "+split[2]+"='"+value+"'";
+                        //hqlrtogross+=" and "+split[2]+"='"+value+"'";
+                        //hqlrtogrossall+=" and "+split[2]+"='"+value+"'";
+                        //hqlstogrossall+=" and "+split[2]+"='"+value+"'";
+                        //hqlstogross+=" and "+split[2]+"='"+value+"'";
                     }
 
 
@@ -141,45 +131,116 @@ public class WxSaleCountViewController extends ApiBaseController {
 
             }
         }
-
+        long saleOrdersStartTime= System.currentTimeMillis();
+        Object [] saleOrders=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlsqty);
+        long saleOrdersEndTime= System.currentTimeMillis();
+        logger.error("执行saleOrders的时间"+(saleOrdersEndTime-saleOrdersStartTime));
         Integer longsqty= null;
+        Double longstotactprice=null;
+
+        Double longstogross=null;
+        if(CommonUtil.isNotBlank(saleOrders[0])){
+            longsqty=Integer.parseInt(saleOrders[0]+"");
+        }else{
+            longsqty=0;
+        }
+        if(CommonUtil.isNotBlank(saleOrders[1])){
+            longstotactprice=Double.parseDouble(saleOrders[1]+"");
+        }else{
+            longstotactprice=0D;
+        }
+
+        if(CommonUtil.isNotBlank(saleOrders[2])){
+            longstogross=Double.parseDouble(saleOrders[2]+"");
+        }else{
+            longstogross=0D;
+        }
+        Integer longrqty =null;
+        Double longrtotactprice=null;
+
+        Double longrtogross=null;
+        long saleRetrunsStartTime= System.currentTimeMillis();
+        Object [] saleRetruns=(Object []) this.saleOrderBillService.findsaleOrderOrsaleRetrunMessage(hqlrqty);
+        long saleRetrunsEndTime= System.currentTimeMillis();
+        logger.error("执行saleRetruns的时间"+(saleRetrunsEndTime-saleRetrunsStartTime));
+        if(CommonUtil.isNotBlank(saleRetruns[0])){
+            longrqty=Integer.parseInt(saleRetruns[0]+"");
+        }else{
+            longrqty=0;
+        }
+        if(CommonUtil.isNotBlank(saleRetruns[1])){
+            longrtotactprice=Double.parseDouble(saleRetruns[1]+"");
+        }else{
+            longrtotactprice=0D;
+        }
+
+        if(CommonUtil.isNotBlank(saleRetruns[2])){
+            longrtogross=Double.parseDouble(saleRetruns[2]+"");
+        }else{
+            longrtogross=0D;
+        }
+       /* Integer longsqty= null;
+        long aLongstartTime= System.currentTimeMillis();
         Long aLong = this.saleOrderBillService.findsaleOrderCount(hqlsqty);
+        long aLongendTime= System.currentTimeMillis();
+        logger.error("执行aLong的时间"+(aLongendTime-aLongstartTime));
         if(CommonUtil.isBlank(aLong)){
             longsqty=0;
         }else{
             longsqty= aLong.intValue();
         }
+        long longstotactpricestartTime= System.currentTimeMillis();
         Double longstotactprice= this.saleOrderBillService.findsaleOrderCountnum(hqlstotactprice);
+        long longstotactpriceendTime= System.currentTimeMillis();
+        logger.error("执行longstotactprice的时间"+(longstotactpriceendTime-longstotactpricestartTime));
         if(CommonUtil.isBlank(longstotactprice)){
             longstotactprice=0.D;
         }
         Integer longrqty= null;
+        long countstartTime= System.currentTimeMillis();
         Long count = this.saleOrderBillService.findsaleOrderCount(hqlrqty);
+        long countpriceendTime= System.currentTimeMillis();
+        logger.error("执行count的时间"+(countpriceendTime-countstartTime));
         if(CommonUtil.isBlank(count)){
             longrqty=0;
         }else{
             longrqty=count.intValue();
         }
+        long longrtotactpricestartTime= System.currentTimeMillis();
         Double longrtotactprice= this.saleOrderBillService.findsaleOrderCountnum(hqlrtotactprice);
+        long longrtotactpriceendTime= System.currentTimeMillis();
+        logger.error("执行longrtotactprice的时间"+(longrtotactpriceendTime-longrtotactpricestartTime));
         if(CommonUtil.isBlank(longrtotactprice)){
             longrtotactprice=0.D;
         }
+        long longrtogrossstartTime= System.currentTimeMillis();
         Double longrtogross= this.saleOrderBillService.findsaleOrderCountnum(hqlrtogross);
+        long longrtogrossendTime= System.currentTimeMillis();
+        logger.error("执行longrtogross的时间"+(longrtogrossendTime-longrtogrossstartTime));
         if(CommonUtil.isBlank(longrtogross)){
             longrtogross=0.D;
         }
+        long longrtogrossallstartTime= System.currentTimeMillis();
         Double longrtogrossall= this.saleOrderBillService.findsaleOrderCountnum(hqlrtogrossall);
+        long longrtogrossallendTime= System.currentTimeMillis();
+        logger.error("执行longrtogross的时间"+(longrtogrossallendTime-longrtogrossallstartTime));
         if(CommonUtil.isBlank(longrtogrossall)){
             longrtogrossall=0.D;
         }
+        long longstogrossallstartTime= System.currentTimeMillis();
         Double longstogrossall= this.saleOrderBillService.findsaleOrderCountnum(hqlstogrossall);
+        long longstogrossallendTime= System.currentTimeMillis();
+        logger.error("执行longstogrossall的时间"+(longstogrossallendTime-longstogrossallstartTime));
         if(CommonUtil.isBlank(longstogrossall)){
             longstogrossall=0.D;
         }
+        long longstogrossstartTime= System.currentTimeMillis();
         Double longstogross= this.saleOrderBillService.findsaleOrderCountnum(hqlstogross);
+        long longstogrossendTime= System.currentTimeMillis();
+        logger.error("执行longstogross的时间"+(longstogrossendTime-longstogrossstartTime));
         if(CommonUtil.isBlank(longstogross)){
             longstogross=0.D;
-        }
+        }*/
 
         //saleorderCount saleorderCount = this.saleOrderBillService.findsaleOrderCount(hql);
 
@@ -201,6 +262,7 @@ public class WxSaleCountViewController extends ApiBaseController {
         BigDecimal   b2   =   new BigDecimal(Grossprofits);
         saleorderCounts.setGrossprofits(b2.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue()+"%");
         return new MessageBox(true, "成功",saleorderCounts);
+
 
 
     }
