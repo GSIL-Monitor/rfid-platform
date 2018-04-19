@@ -638,7 +638,7 @@ public class CacheManager {
 		Color c = colorMap.get(colorId);
 		if (CommonUtil.isBlank(c)){
 			ColorService colorService = (ColorService) SpringContextUtil.getBean("colorService");
-			c = colorService.get("colorId",colorId);
+			c = colorService.get("id",colorId);
 		}
 		return c.getColorName();
 	}

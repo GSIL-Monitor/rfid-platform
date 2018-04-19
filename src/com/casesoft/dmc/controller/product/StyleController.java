@@ -81,6 +81,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			CacheManager.refreshStyleCache();
 			return this.returnSuccessInfo("保存成功", style);
 		}catch(Exception e ){
+			e.printStackTrace();
 			return this.returnFailInfo("保存失败");
 		}
 	}
@@ -135,6 +136,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 				return this.returnSuccessInfo("保存成功", style);
 			}
 		}catch(Exception e ){
+			e.printStackTrace();
 			return this.returnFailInfo("保存失败");
 		}
 	}

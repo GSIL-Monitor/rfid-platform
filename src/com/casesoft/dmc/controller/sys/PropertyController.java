@@ -131,6 +131,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
 			CacheManager.refreshPropertyCache();
 			return returnSuccessInfo("保存成功",entity);
 		}catch(Exception e){
+			e.printStackTrace();
 			return returnFailInfo("保存失败");
 		}
 	}
