@@ -323,7 +323,7 @@ public class WxSaleCountViewController extends ApiBaseController {
             if(billno.contains(BillConstant.BillPrefix.SaleOrderReturn)){
                 saleNodeatilViews.setSaletype("销售退货");
                 Integer qty = saleNodeatilViews.getTotqty();
-                saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                //saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
                 saleNodeatilViews.setIshow(true);
             }
             if(CommonUtil.isNotBlank(saleNodeatilViews.getCustomertypeid())){
