@@ -9,6 +9,7 @@ import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.ImgUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.TransferorderCountDao;
@@ -26,6 +27,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
+import org.jeecgframework.poi.excel.entity.params.ExcelExportEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -371,6 +373,72 @@ public class TransferorderCountViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("调拨按仓库汇总-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchTransByStyleIdandSizeIdGrid")){
+                DataSourceResult dataResult = this.transferorderCountDao.getTransBystyleandsize(dataSourceRequest);
+                List<ExcelExportEntity> entity = new ArrayList<ExcelExportEntity>();
+                ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+                list=(ArrayList<Map<String,Object>>)dataResult.getData();
+                //拼接表头map
+                Map<String,Object> keynmap=list.get(0);
+                Iterator it = keynmap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    Object key = entry.getKey();
+                    if(key.equals("styleid")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款号", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+                    if(key.equals("colorid")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款号", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+                    if(key.equals("billno")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款号", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+                    if(key.equals("styleName")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款名", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+
+                }
+                String sizeArray = PropertyUtil.getValue("sizeArray");
+                String[] sizeArrays = sizeArray.split(",");
+                for(int b=0;b<sizeArrays.length;b++){
+                    ExcelExportEntity excelentity = new ExcelExportEntity(sizeArrays[b], sizeArrays[b]);
+                    excelentity.setWidth(40D);
+                    entity.add(excelentity);
+                }
+                long startSizeTime = System.currentTimeMillis();
+                List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list);
+                Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("调拨按商品尺码汇总", "sheet1", ExcelType.XSSF), entity,
+                        maps);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\调拨按商品尺码汇总");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "调拨按商品尺码汇总-" + dateString + ".xlsx");
+                file.createNewFile();
+           /* for(DetailStockChatView d : list){
+                if(CommonUtil.isBlank(d.getUrl())){
+                    //没有图片设置默认图片
+                    d.setUrl("/product/photo/noImg.png");
+                }
+            }*/
+
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("调拨按商品尺码汇总-" + dateString + ".xlsx", file, contentType);
             }
             //return null;
             //return new MessageBox(true, "导出成功，请在桌面查看");
