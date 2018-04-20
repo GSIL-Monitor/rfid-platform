@@ -893,7 +893,7 @@
             if (event.keyCode==13){
             var preCate = $("#form_preCast").val();
             var price = $("#form_price").val();
-                if(preCate>price){
+                if(Math.round(preCate)>Math.round(price)){
                     bootbox.alert("价格不符合规则");
                 }else {
                     priceIsUse();
@@ -967,7 +967,7 @@
 
     function saveStyleAndProduct(str) {
         var isSeries = $("#form_isSeries").val();
-        if (isSeries=="Y"){
+        if (isSeries=="N"){
             $('#editStyleForm').data('bootstrapValidator').validate();
             if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                 return;
