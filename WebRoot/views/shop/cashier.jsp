@@ -12,6 +12,7 @@
         var basePath = "<%=basePath%>";
         var shopId = "${shopId}";
         var userId = "${userId}";
+        var flag = "flag";
 
 </script>
 

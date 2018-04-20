@@ -74,15 +74,15 @@ public class SizeController extends BaseController implements
         Map<String, List<Size>> sizeMap = new HashMap<>();
         for (Size s : sizeList) {
             SizeSort sizeSort = CacheManager.getSizeSortById(s.getSortId());
-            if (sizeMap.containsKey(s.getSortId() + "-" + sizeSort.getSortName())) {
-                List<Size> sizes = sizeMap.get(s.getSortId() + "-" + sizeSort.getSortName());
+            if (sizeMap.containsKey("["+s.getSortId()+"]"+ sizeSort.getSortName())) {
+                List<Size> sizes = sizeMap.get("["+s.getSortId()+"]"+ sizeSort.getSortName());
                 sizes.add(s);
-                sizeMap.put(s.getSortId() + "-" + sizeSort.getSortName(), sizes);
+                sizeMap.put("["+s.getSortId()+"]"+ sizeSort.getSortName(), sizes);
 
             } else {
                 List<Size> sizes = new ArrayList<>();
                 sizes.add(s);
-                sizeMap.put(s.getSortId() + "-" + sizeSort.getSortName(), sizes);
+                sizeMap.put("["+s.getSortId()+"]"+ sizeSort.getSortName(), sizes);
             }
         }
         return sizeMap;
@@ -168,7 +168,7 @@ public class SizeController extends BaseController implements
         s.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         this.sizeService.save(s);
         CacheManager.refreshSizeCache();
-        return returnSuccessInfo("ok");
+        return returnSuccessInfo("ok",s);
     }
 
     @RequestMapping("/changeSortStatus")

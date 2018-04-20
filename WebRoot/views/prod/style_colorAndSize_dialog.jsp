@@ -13,8 +13,8 @@
             <div class="modal-body no-padding">
                 <div class="widget-body">
                     <div class="widget-main">
-
                         <form class="form-horizontal" role="form" id="addColorSizeFrom">
+
                             <div class="form-group">
                                 <label class="control-label col-sm-4" for="form_colorId_select">选择颜色</label>
                                 <div class="col-xs-6 col-sm-6">
@@ -34,7 +34,8 @@
                                 <label class="control-label col-sm-4" for="form_sizeId">选择尺码</label>
                                 <div class="col-xs-6 col-sm-6">
                                     <div class ="input-group ">
-                                        <select class="chosen-select col-sm-6 form-control" id="form_sizeId" name="sizeId" multiple="multiple" data-placeholder="尺码列表">
+                                        <select class="chosen-select col-sm-6 form-control" id="form_sizeId"
+                                                name="sizeId" multiple="multiple" data-placeholder="尺码列表">
                                         </select>
                                         <span class="input-group-addon" title="添加尺码">
                                             <a  href='#'  class="white" onclick="addNewSize()">
@@ -73,12 +74,10 @@ function colAndSize(){
 }
 
 function addNewColor(){
-    $("#modal-colorAndSize").modal('hide');
     $("#editColorForm").resetForm();
     $("#edit_color_dialog").modal('show');
 }
 function addNewSize(){
-    $("#modal-colorAndSize").modal('hide');
     $("#editSizeForm").resetForm();
     $("#edit_size_dialog").modal('show');
 }

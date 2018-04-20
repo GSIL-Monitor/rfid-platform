@@ -1047,6 +1047,7 @@ function saveAjax() {
                 $("#search_billNo").val(msg.result);
 
                 $("#addDetailgrid").jqGrid('setGridParam', {
+                    datatype: "json",
                     page: 1,
                     url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + msg.result,
                 });
