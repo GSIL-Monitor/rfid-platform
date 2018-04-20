@@ -222,7 +222,11 @@ public class SaleorderConutViewSearch extends BaseController {
                 Long exportendtTime= System.currentTimeMillis();
                 logger.error("导出销售明细所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchsaleGrid")){
+                Long startTime= System.currentTimeMillis();
                 DataSourceResult sourceResultBillSum = this.saleorderCountDao.getSaleList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询销售单据所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<SaleNodeatilViews> BillSumViewList = (List<SaleNodeatilViews>) sourceResultBillSum.getData();
                 ExportParams params = new ExportParams("按单据汇总", "sheet1", ExcelType.XSSF);
                 //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleNodeatilViews.class, BillSumViewList);
@@ -244,8 +248,14 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("按单据汇总-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出销售单据所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchsalebusinessnameGrid")){
+                Long startTime= System.currentTimeMillis();
                 DataSourceResult sourceResultbusinessnameDtl = this.saleorderCountDao.getSaleBybusinessnameList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询按销售员汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<SaleBybusinessname> SalebusinessnameList = (List<SaleBybusinessname>) sourceResultbusinessnameDtl.getData();
                 ExportParams params = new ExportParams("按销售员汇总", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
@@ -268,9 +278,14 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("按销售员汇总-" +  dateString + ".xlsx", file, contentType);
-
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按销售员汇总所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchsaleorignameGrid")){
+                Long startTime= System.currentTimeMillis();
                 DataSourceResult sourceResultbusinessnameDtl = this.saleorderCountDao.getSaleByorignameList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询按部门汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<SaleByOrignames> SaleOrignamesList = (List<SaleByOrignames>) sourceResultbusinessnameDtl.getData();
                 ExportParams params = new ExportParams("按部门汇总", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
@@ -293,6 +308,8 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("按部门汇总-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按部门汇总所需的时间:"+(exportendtTime-exportstartTime));
             }
             //return null;
             //return new MessageBox(true, "导出成功，请在桌面查看");
