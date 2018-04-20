@@ -13,6 +13,8 @@ import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.PurchaseorCountDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.PurchaseBydestunitid;
+import com.casesoft.dmc.model.logistics.PurchaseBystyleid;
 import com.casesoft.dmc.model.search.*;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -239,6 +241,60 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("采购-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchpuchaseBystyeidGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult dataResult = purchaseorCountDao.getPurchaseBybystyleidList(dataSourceRequest);
+                List<PurchaseBystyleid> PurchaseBystyleiddatas =( List<PurchaseBystyleid>) dataResult.getData();
+                ExportParams params = new ExportParams("采购按商品汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\采购按商品汇总-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "采购按商品汇总-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, PurchaseBystyleid.class, PurchaseBystyleiddatas);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                logger.error("采购按商品汇总："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("采购按商品汇总-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchpuchaseBydestunitidGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult dataResult = purchaseorCountDao.getPurchaseBydestunitidList(dataSourceRequest);
+                List<PurchaseBydestunitid> PurchaseBydestunitdatas =( List<PurchaseBydestunitid>) dataResult.getData();
+                ExportParams params = new ExportParams("采购按厂家汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\采购按厂家汇总-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "采购按商品汇总-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, PurchaseBydestunitid.class, PurchaseBydestunitdatas);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                logger.error("采购按厂家汇总："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("采购按厂家汇总-" + dateString + ".xlsx", file, contentType);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -312,13 +368,13 @@ public class PurchaseorCountviewsSearch extends BaseController {
 
     }
 
-    @RequestMapping(value = "/readpurchaseBybusinessname", method = RequestMethod.POST)
+    @RequestMapping(value = "/readpurchaseBybystyleid", method = RequestMethod.POST)
     public @ResponseBody
     DataSourceResult readSaleBybusinessname(@RequestBody DataSourceRequest request) {
 
         DataSourceResult dataResult = null;
         try {
-            dataResult = purchaseorCountDao.getPurchaseBybusinessnameList(request);
+            dataResult = purchaseorCountDao.getPurchaseBybystyleidList(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
