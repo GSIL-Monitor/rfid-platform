@@ -929,7 +929,7 @@ function initKendoUIPurchasestyeidGrid() {
 
                 transport: {
                     read: {
-                        url: basePath + "/search/PurchaseorCountviews/readpurchaseBybusinessname.do",
+                        url: basePath + "/search/PurchaseorCountviews/readpurchaseBybystyleid.do",
                         type: "POST",
                         dataType: "json",
                         async: false,
@@ -1175,8 +1175,27 @@ function newchooseExportFunction() {
     if(exportExcelid === "searchGrid"||exportExcelid === "searchpuchaseGrid"){
         exportExcelPOI();
     }else {
-        exportExcel();
+        exportExcelProPOI();
     }
+}
+function exportExcelProPOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = 1;
+    request.pageSize = total;
+    request.take = total;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+    var url=basePath+"/search/PurchaseorCountviews/exportnew.do";
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
 }
 
 function exportExcelPOI() {
