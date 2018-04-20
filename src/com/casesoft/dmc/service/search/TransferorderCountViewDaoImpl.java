@@ -6,6 +6,8 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.dao.search.TransferorderCountDao;
 
 import com.casesoft.dmc.model.logistics.TransferOrderBill;
+import com.casesoft.dmc.model.search.TransByOrig;
+import com.casesoft.dmc.model.search.TransByStyleId;
 import com.casesoft.dmc.model.search.TransferorderCountView;
 import oracle.jdbc.driver.OracleTypes;
 import org.hibernate.Session;
@@ -98,7 +100,7 @@ public class TransferorderCountViewDaoImpl implements TransferorderCountDao{
             //cs.registerOutParameter("resultSet", -10);
             cs.execute();
             rs=(ResultSet)cs.getObject(7);
-            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            ArrayList<TransByStyleId> list=new ArrayList<TransByStyleId>();
             while (rs!=null&& rs.next()){
                /* SaleBybusinessname saleBybusinessname=new SaleBybusinessname();
                 //String a=rs.getObject(1).toString();
@@ -120,29 +122,37 @@ public class TransferorderCountViewDaoImpl implements TransferorderCountDao{
                 if(CommonUtil.isNotBlank(rs.getObject(6))){
                     saleBybusinessname.setTotactprice(rs.getObject(6).toString());
                 }*/
-                Map<String,Object> map=new HashMap<String,Object>();
+                //Map<String,Object> map=new HashMap<String,Object>();
+                TransByStyleId transByStyleId=new TransByStyleId();
                 if(CommonUtil.isNotBlank(rs.getObject(1))){
-                    map.put("styleid",rs.getObject(1).toString());
+                    //map.put("styleid",rs.getObject(1).toString());
+                    transByStyleId.setStyleid(rs.getObject(1).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(2))){
-                    map.put("stylename",rs.getObject(2).toString());
+                    //map.put("stylename",rs.getObject(2).toString());
+                    transByStyleId.setStylename(rs.getObject(2).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(3))){
-                    map.put("totqty",rs.getObject(3).toString());
+                    //map.put("totqty",rs.getObject(3).toString());
+                    transByStyleId.setTotqty(rs.getObject(3).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(4))){
-                    map.put("class3",rs.getObject(4).toString());
+                    //map.put("class3",rs.getObject(4).toString());
+                    transByStyleId.setClass3(rs.getObject(4).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(5))){
-                    map.put("class4",rs.getObject(5).toString());
+                    //map.put("class4",rs.getObject(5).toString());
+                    transByStyleId.setClass4(rs.getObject(5).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(6))){
-                    map.put("class8",rs.getObject(6).toString());
+                    //map.put("class8",rs.getObject(6).toString());
+                    transByStyleId.setClass8(rs.getObject(6).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(7))){
-                    map.put("class2",rs.getObject(7).toString());
+                    //map.put("class2",rs.getObject(7).toString());
+                    transByStyleId.setClass2(rs.getObject(7).toString());
                 }
-                list.add(map);
+                list.add(transByStyleId);
             }
             DataSourceResult result = new DataSourceResult();
           /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);
@@ -213,21 +223,24 @@ public class TransferorderCountViewDaoImpl implements TransferorderCountDao{
             //cs.registerOutParameter("resultSet", -10);
             cs.execute();
             rs=(ResultSet)cs.getObject(6);
-            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            ArrayList<TransByOrig> list=new ArrayList<TransByOrig>();
             while (rs!=null&& rs.next()){
-
-                Map<String,Object> map=new HashMap<String,Object>();
+                TransByOrig transByOrig=new TransByOrig();
+                //Map<String,Object> map=new HashMap<String,Object>();
                 if(CommonUtil.isNotBlank(rs.getObject(1))){
-                    map.put("origname",rs.getObject(1).toString());
+                    //map.put("origname",rs.getObject(1).toString());
+                    transByOrig.setOrigname(rs.getObject(1).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(2))){
-                    map.put("totqty",rs.getObject(2).toString());
+                    //map.put("totqty",rs.getObject(2).toString());
+                    transByOrig.setTotqty(rs.getObject(2).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(3))){
-                    map.put("trantype",rs.getObject(3).toString());
+                    //map.put("trantype",rs.getObject(3).toString());
+                    transByOrig.setTrantype(rs.getObject(3).toString());
                 }
 
-                list.add(map);
+                list.add(transByOrig);
             }
             DataSourceResult result = new DataSourceResult();
           /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);

@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import org.jeecgframework.poi.excel.annotation.Excel;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -17,10 +18,12 @@ public abstract class BaseBill {
     @Column(nullable = false, length = 50)
     protected String ownerId;
     @Column(nullable = false, length = 50)
+    @Excel(name="单号")
     protected String billNo;
 
     @Column(nullable = false, length = 19)
     @JSONField(format = "yyyy-MM-dd")
+    @Excel(name="日期")
     protected Date billDate;
     @Column(length = 50)
     protected String srcBillNo;//原始单号（入库单关联的出库单单号）可以为空
@@ -29,10 +32,12 @@ public abstract class BaseBill {
     @Column()
     protected String billType;// "E":表示正在编辑 "S" 表示已经保存
     @Column(length = 200)
+    @Excel(name="收货方")
     protected String destUnitName;//
     @Column(length = 50)
     protected String destId;
     @Column(length = 200)
+    @Excel(name="入库仓库")
     protected String destName;// 收货仓库
 
     @Column(length = 200)
@@ -41,11 +46,13 @@ public abstract class BaseBill {
     protected String origId;//发货仓库
 
     @Column(length = 200)
+    @Excel(name="出库仓库")
     protected String origName;// 发货仓库
     @Column(length = 50)
     protected String origUnitId;// 发货方组织ID
 
     @Column(length = 200)
+    @Excel(name="发货方")
     protected String origUnitName;// 发货方
 
     @Column(length = 200)
@@ -59,6 +66,7 @@ public abstract class BaseBill {
     @Column()
     protected String busnissName;//业务员名
     @Column()
+    @Excel(name="单据数量")
     protected Long totQty;//单据数量
     @Column()
     protected Long skuQty;//单据sku数量
@@ -80,6 +88,7 @@ public abstract class BaseBill {
     protected Double discount; //整单折扣
 
     @Column(length = 500)
+    @Excel(name="备注")
     private String remark;
 
     public String getOwnerId() {
