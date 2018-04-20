@@ -497,7 +497,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C1",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -540,7 +540,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C2",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -583,7 +583,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C3",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -623,7 +623,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C4",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -663,7 +663,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C5",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -703,7 +703,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C6",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -740,7 +740,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C7",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -778,7 +778,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C8",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -816,7 +816,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C9",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -851,7 +851,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C10",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -922,7 +922,7 @@
             $.ajax({
                 url:basePath+"/sys/pricingRules/list.do",
                 cache:false,
-                async:false,
+                async:true,
                 inheritClass:true,
                 type:"POST",
                 data:{
@@ -1118,7 +1118,7 @@
         $.ajax({
             url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId=${style.sizeSortId}",
             cache: false,
-            async: false,
+            async: true,
             type: 'POST',
 
             success: function (data, textStatus) {
@@ -1144,7 +1144,7 @@
         $.ajax({
             url: basePath + "/prod/size/listSizeSort.do?",
             cache: false,
-            async: false,
+            async: true,
             type: "POST",
             success: function (data, textStatus) {
                 var json = data;
@@ -1186,7 +1186,7 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C1",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -1228,7 +1228,7 @@
         $.ajax({
             url: basePath + "/prod/color/list.do?",
             cache: false,
-            async: false,
+            async: true,
             type: "POST",
             success: function (data, textStatus) {
                 var json = data;
