@@ -99,6 +99,12 @@
                                         <span class="bigger-110">按仓库汇总</span>
                                     </button>
                                 </div>
+                                <div class="btn-group btn-group-sm pull-left">
+                                    <button class="btn btn-info" onclick="saleTransByStyleIdandSizeId();">
+                                        <i class="ace-icon"></i>
+                                        <span class="bigger-110">按商品尺寸汇总</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="widget-toolbox padding-8 clearfix">
@@ -337,6 +343,7 @@
                         <div id="searchTranGrid" style="height:800px;display: none"></div>
                         <div id="searchTranStyleGrid" style="height:800px;display: none"></div>
                         <div id="searchTransByOrigGrid" style="height:800px;display: none"></div>
+                        <div id="searchTransByStyleIdandSizeIdGrid" style="height:800px;display: none"></div>
                         <%--<div id="nosearchGrid" style="height:800px;display: none"></div>--%>
                         <%--<div id="searchsaleGrid" style="height:800px;display: none"></div>
                         <div id="searchsalebusinessnameGrid" style="height:800px;display: none"></div>
@@ -422,6 +429,7 @@
         $("#searchTranGrid").hide();
         $("#searchTranStyleGrid").hide();
         $("#searchTransByOrigGrid").hide();
+        $("#searchTransByStyleIdandSizeIdGrid").hide();
         exportExcelid="searchGrid";
         $("#clean").click();
         $("#styleid").show();
@@ -440,6 +448,7 @@
         $("#searchTranGrid").show();
         $("#searchTranStyleGrid").hide();
         $("#searchTransByOrigGrid").hide();
+        $("#searchTransByStyleIdandSizeIdGrid").hide();
         exportExcelid="searchTranGrid";
         $("#clean").click();
         $("#styleid").hide();
@@ -453,6 +462,7 @@
         $("#searchTranGrid").hide();
         $("#searchTranStyleGrid").show();
         $("#searchTransByOrigGrid").hide();
+        $("#searchTransByStyleIdandSizeIdGrid").hide();
         exportExcelid="searchTranStyleGrid";
         $("#clean").click();
         $("#styleid").show();
@@ -467,6 +477,7 @@
         $("#searchTranGrid").hide();
         $("#searchTranStyleGrid").hide();
         $("#searchTransByOrigGrid").show();
+        $("#searchTransByStyleIdandSizeIdGrid").hide();
         exportExcelid="searchTransByOrigGrid";
         $("#clean").click();
         $("#styleid").hide();
@@ -474,6 +485,19 @@
         $("#isshow").hide();
         initTransByOrigKendoUIGrid();
 
+    }
+    function saleTransByStyleIdandSizeId() {
+        $("#searchGrid").hide();
+        $("#searchTranGrid").hide();
+        $("#searchTranStyleGrid").hide();
+        $("#searchTransByOrigGrid").hide();
+        $("#searchTransByStyleIdandSizeIdGrid").show();
+        exportExcelid="searchTransByStyleIdandSizeIdGrid";
+        $("#clean").click();
+        $("#styleid").hide();
+        $("#billno").hide();
+        $("#isshow").hide();
+        initTransByStyleIdandSizeIdKendoUIGrid();
     }
 
 

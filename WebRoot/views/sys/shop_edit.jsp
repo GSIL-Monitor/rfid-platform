@@ -123,7 +123,7 @@
 
                         <div class="col-xs-14 col-sm-7">
                             <select class="form-control selectpicker show-tick" data-live-search="true" id="form_areasId" name="areasId">
-                                <option >--请选择--</option>
+                                <option value="">请选择</option>
                             </select>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
 
                         <div class="col-xs-14 col-sm-7">
                             <select class="form-control selectpicker show-tick" data-live-search="true" id="form_ownerids" name="ownerids">
-                                <option >--请选择--</option>
+                                <option value="">请选择</option>
                             </select>
                         </div>
                     </div>

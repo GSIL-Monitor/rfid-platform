@@ -159,40 +159,7 @@ function initButtonGroup() {
         $("#search_guest_button").removeAttr("disabled");
     }
     if (pageType === "edit") {
-        /*$("#buttonGroup").html("" +
-            "<button id='SODtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='SODtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='edit_wareHouseOut()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>出库</span>" +
-            "</button>" +
-            "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseIn()'>" +
-            "    <i class='ace-icon fa fa-sign-in'></i>" +
-            "    <span class='bigger-110'>入库</span>" +
-            "</button>" +
-            "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='Returngoods()'>" +
-            "    <i class='ace-icon fa fa-reply'></i>" +
-            "    <span class='bigger-110'>退货</span>" +
-            "</button>"+
-            "<button id='SODtl_doPrint' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrint()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>打印</span>" +
-            "</button>"+
-            "<button id='SODtl_doPrintA4' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrintA4()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>A4打印Boss</span>" +
-            "</button>"+
-            "<button id='SODtl_doPrintA41' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrintA41()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>A4打印</span>" +
-            "</button>"
-        );*/
+
         $("#buttonGroup").html("" + "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInfranchisee()'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
@@ -1177,7 +1144,6 @@ function initAllCodesList() {
     }
 }
 function wareHouseInfranchisee() {
-    debugger;
     var uniqueCodes="";
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
@@ -1207,7 +1173,7 @@ function wareHouseIn() {
     var ct = $("#search_customerType").val();
    if (destId && destId != null) {
         $("#dialog_buttonGroup").html("" +
-            "<button type='button'  class='btn btn-primary' onclick='confirmWareHouseIn()'>确认入库</button>"
+            "<button type='button' id='fb_cofirmin_button'  class='btn btn-primary' onclick='confirmWareHouseIn()'>确认入库</button>"
         );
         $("#add-uniqCode-dialog").modal('show').on('hidden.bs.modal', function () {
             $("#uniqueCodeGrid").clearGridData();
@@ -1221,6 +1187,7 @@ function wareHouseIn() {
 }
 
 function confirmWareHouseIn() {
+    showWaitingPage();
     var billNo = $("#search_billNo").val();
     var epcArray = [];
     $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
@@ -1231,7 +1198,7 @@ function confirmWareHouseIn() {
         bootbox.alert("请添加唯一码!");
         return;
     }
-    showWaitingPage();
+
     $.ajax({
         dataType: "json",
         // async: false,
@@ -1261,8 +1228,8 @@ function confirmWareHouseIn() {
 
 function confirm_warehousing(epcinArray) {
     var billNo = $("#search_billNo").val();
-
     showWaitingPage();
+    $("#fb_comfirm_in").attr({"disabled": "disabled"});
     $.ajax({
         dataType: "json",
         // async: false,
@@ -1275,6 +1242,7 @@ function confirm_warehousing(epcinArray) {
         type: "POST",
         success: function (msg) {
             hideWaitingPage();
+            $("#fb_comfirm_in").removeAttr("disabled");
             if (msg.success) {
                 bootbox.alert({
                     buttons: {ok: {label: '确定',}},

@@ -983,6 +983,186 @@ function initTransByOrigKendoUIGrid() {
     }
     inttitledata();
 }
+var isoneTransByStyleIdandSizeIdKendoUIGrid = true;
+function initTransByStyleIdandSizeIdKendoUIGrid() {
+    exportExcelid = "searchTransByStyleIdandSizeIdGrid";
+    if (isoneTransByStyleIdandSizeIdKendoUIGrid) {
+        var filters = serializeToFilter($("#searchForm"));
+        console.log(filters);
+        $("#searchTransByStyleIdandSizeIdGrid").kendoGrid({
+            toolbar: ["excel"],
+            excel: {
+                fileName: "按仓库统计.xlsx",
+                proxyURL: basePath + "/search/saleorderCountView/export.do",
+                allPages:true,
+                filterable: true
+            },
+            excelExport: function (e) {
+
+            },
+            dataSource: {
+                schema: {
+                    total: "total",
+                    model: {
+
+                        fields: {
+                            billDate: {type: "date"},
+                            billno: {type: "string"},
+                            taskId: {type: "string"},
+                            token: {type: "number"},
+                            deviceId: {type: "string"},
+                            origid: {type: "string"},
+                            destid: {type: "string"},
+                            destUnitId: {type: "string"},
+                            busnissname: {type: "string"},
+                            origName: {type: "string"},
+                            destName: {type: "string"},
+                            destUnitName: {type: "string"},
+                            styleId: {type: "string"},
+                            stylename: {type: "string"},
+                            colorId: {type: "string"},
+                            sizeId: {type: "string"},
+                            qty: {type: "number"},
+                            billQty: {type: "number"},
+                            diffQty: {type: "number"},
+                            price: {type: "number"},
+                            saletype: {type: "string"}
+                        }
+                    },
+
+                    data: "data",
+                    groups: "data"
+                },
+                filter: {
+                    logic: "and",
+                    filters: filters
+                },
+
+                transport: {
+                    read: {
+                        url: basePath + "/search/transferorderCountViewSearch/readTransBystyleandsize.do",
+                        type: "POST",
+                        dataType: "json",
+                        async: false,
+                        contentType: 'application/json'
+                    },
+                    parameterMap: function (options) {
+                        return JSON.stringify(options);
+                    }
+                },
+                pageSize: 100.0,
+                serverSorting: true,
+                serverPaging: true,
+                serverGrouping: false,
+                serverFiltering: true,
+                aggregate: [
+
+
+
+
+                ]
+
+
+            },
+            sortable: {
+                mode: "multiple",
+                allowUnsort: true
+            },
+            rowNumber: true,
+            pageable: {
+                input: true,
+                buttonCount: 5,
+                pageSize: 100.0,
+                pageSizes: [100, 500, 1000, 2000, 5000]
+            },
+
+            groupable: true,
+            columnMenu: true,
+            filterable: {
+                extra: false
+            },
+            //selectable: "multiple row",
+            reorderable: true,
+            resizable: true,
+            scrollable: true,
+
+            columns: [
+
+
+                {
+                    field: "styleid",
+                    title: "款式",
+                    width: "180px",
+
+                },
+                {
+                    field: "styleName",
+                    title: "款名",
+                    width: "180px",
+
+                },
+                {
+                    field: "colorid",
+                    title: "颜色",
+                    width: "180px",
+
+                },
+                {
+                    field: "billno",
+                    title: "单号",
+                    width: "180px",
+
+                },
+                {
+                    field: "S",
+                    title: "S",
+                    width: "180px",
+
+                },
+                {
+                    field: "M",
+                    title: "M",
+                    width: "180px",
+
+                },
+                {
+                    field: "L",
+                    title: "L",
+                    width: "180px",
+
+                },
+                {
+                    field: "XL",
+                    title: "XL",
+                    width: "180px",
+
+                },
+                {
+                    field: "XXL",
+                    title: "XXL",
+                    width: "180px",
+
+                }
+
+
+
+
+
+
+
+
+
+            ]
+
+        });
+        isoneTransByOrigKendoUIGrid = false;
+        $(".k-dropdown").css("width", "6em");
+        $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+    } else {
+        search();
+    }
+    inttitledata();
+}
 function search() {
     debugger;
     var gridData = $("#" + exportExcelid).data("kendoGrid");

@@ -66,9 +66,9 @@ function initGrid() {
                     html += "<a style='text-decoration: none;margin-left: 20px;' href='#' onclick=check('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-square-o'title='审核'></i></a>";
                     html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + rowObject.billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
                     html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + rowObject.billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";
-                    if(curOwnerId == "1"){
-                        html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
-                    }
+
+                    html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
+
                     return html;
                 }
             },
@@ -162,12 +162,12 @@ function initGrid() {
             {name: 'totInQty', label: '已入库数量', width: 30},
             {name: 'totInVal', label: '总入库金额', width: 30,
                 formatter: function (cellValue, options, rowObject) {
-                     if(cellValue) {
-                         var totInVal = cellValue.toFixed(2);
-                         return totInVal;
-                     }else{
-                         return cellValue;
-                     }
+                    if(cellValue) {
+                        var totInVal = cellValue.toFixed(2);
+                        return totInVal;
+                    }else{
+                        return cellValue;
+                    }
                 }
             },
             {name: 'payPrice', label: '实付金额', width: 30,
@@ -175,7 +175,7 @@ function initGrid() {
                     if(cellValue) {
                         var payPrice = cellValue.toFixed(2);
                         return payPrice;
-                     }else{
+                    }else{
                         return cellValue;
                     }
                 }
@@ -261,30 +261,30 @@ function quit(billNo) {
 
 /*function cancel(billNo) {
 
-    row = $("#grid").jqGrid("getRowData", billNo);
-    if (row.status != "0") {
-        bootbox.alert("不是录入状态，不可取消!");
-        return
-    }
-    $.ajax({
-        url: basePath + "/logistics/Consignment/cancel.do?billNo=" + billNo,
-        type: "POST",
-        success: function (result) {
-            if (result.success) {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#grid").trigger("reloadGrid");
-            } else {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-            }
-        }
-    });
-}*/
+ row = $("#grid").jqGrid("getRowData", billNo);
+ if (row.status != "0") {
+ bootbox.alert("不是录入状态，不可取消!");
+ return
+ }
+ $.ajax({
+ url: basePath + "/logistics/Consignment/cancel.do?billNo=" + billNo,
+ type: "POST",
+ success: function (result) {
+ if (result.success) {
+ $.gritter.add({
+ text: result.msg,
+ class_name: 'gritter-success  gritter-light'
+ });
+ $("#grid").trigger("reloadGrid");
+ } else {
+ $.gritter.add({
+ text: result.msg,
+ class_name: 'gritter-success  gritter-light'
+ });
+ }
+ }
+ });
+ }*/
 function cancel(billNo) {
 
     row = $("#grid").jqGrid("getRowData", billNo);
@@ -330,31 +330,31 @@ function refresh() {
 }
 
 /*function check(billNo) {
-    row = $("#grid").jqGrid("getRowData", billNo);
-    if (row.status != "0") {
-        bootbox.alert("不是录入状态，不可审核!");
-        return
-    }
-    $.ajax({
-        url: basePath + "/logistics/Consignment/check.do?billNo=" + billNo,
-        type: "POST",
-        success: function (result) {
+ row = $("#grid").jqGrid("getRowData", billNo);
+ if (row.status != "0") {
+ bootbox.alert("不是录入状态，不可审核!");
+ return
+ }
+ $.ajax({
+ url: basePath + "/logistics/Consignment/check.do?billNo=" + billNo,
+ type: "POST",
+ success: function (result) {
 
-            if (result.success) {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#grid").trigger("reloadGrid");
-            } else {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-            }
-        }
-    });
-}*/
+ if (result.success) {
+ $.gritter.add({
+ text: result.msg,
+ class_name: 'gritter-success  gritter-light'
+ });
+ $("#grid").trigger("reloadGrid");
+ } else {
+ $.gritter.add({
+ text: result.msg,
+ class_name: 'gritter-success  gritter-light'
+ });
+ }
+ }
+ });
+ }*/
 function check(billNo) {
     row = $("#grid").jqGrid("getRowData", billNo);
     if (row.status != "0") {

@@ -252,4 +252,94 @@ public class TransferorderCountViewDaoImpl implements TransferorderCountDao{
 
         }
     }
+
+    @Override
+    public DataSourceResult getTransBystyleandsize(DataSourceRequest request) throws Exception {
+        ResultSet rs=null;
+        CallableStatement cs=null;
+        Connection con=null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            con = SessionFactoryUtils.getDataSource(session.getSessionFactory()).getConnection();
+            cs = con.prepareCall("{call findtranbystyleandsize(?,?,?,?,?,?,?)}");
+            //设置参数
+            DataSourceRequest.FilterDescriptor filter = request.getFilter();
+            List<DataSourceRequest.FilterDescriptor> filters = filter.getFilters();
+            //填充空数据
+            cs.setString(1, "");
+            cs.setString(2, "");
+            cs.setString(3, "");
+            for(int i=0;i<filters.size();i++){
+                DataSourceRequest.FilterDescriptor filterDescriptor = filters.get(i);
+                if(filterDescriptor.getField().equals("billDate")&&filterDescriptor.getOperator().equals("gte")){
+                    String timeStr=(String)filterDescriptor.getValue();
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = formatter.parse(timeStr);
+                    String time = CommonUtil.getDateString(date,"yyyy-MM-dd");
+                    cs.setString(1, time);
+                }else if(filterDescriptor.getField().equals("billDate")&&filterDescriptor.getOperator().equals("lte")){
+                    String timeStr=(String)filterDescriptor.getValue();
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = formatter.parse(timeStr);
+                    String time =CommonUtil.getDateString(date,"yyyy-MM-dd");
+                    cs.setString(2, time);
+                }else if(filterDescriptor.getField().equals("styleId")){
+                    String deport=(String)filterDescriptor.getValue();
+                    cs.setString(3, deport);
+                }
+            }
+
+            Integer beginIndex=(request.getPage()-1)*(request.getPageSize())+1;
+            Integer endIndex=(request.getPage())*(request.getPageSize());
+            cs.setDouble(4,beginIndex.doubleValue());
+            cs.setDouble(5,endIndex.doubleValue());
+            cs.registerOutParameter(6, Types.INTEGER);
+            cs.registerOutParameter(7, OracleTypes.CURSOR);
+            //cs.registerOutParameter("resultSet", -10);
+            cs.execute();
+            rs=(ResultSet)cs.getObject(7);
+            ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+            while (rs!=null&& rs.next()){
+
+                Map<String,Object> map=new HashMap<String,Object>();
+                if(CommonUtil.isNotBlank(rs.getObject(1))){
+                    map.put("styleid",rs.getObject(1).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(2))){
+                    map.put("colorid",rs.getObject(2).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(3))){
+                    map.put("billno",rs.getObject(3).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(4))){
+                    map.put("styleName",rs.getObject(4).toString());
+                }
+
+                list.add(map);
+            }
+            DataSourceResult result = new DataSourceResult();
+          /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);
+            sort(criteria, sortDescriptors());*/
+            result.setData(list);
+            result.setTotal(Long.parseLong(cs.getObject(6)+""));
+
+           /* request.toDataSourceResult(sessionFactory.getCurrentSession(), SaleBybusinessname.class);*/
+
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            if(cs != null) {
+                cs.close();
+            }
+
+            if(con != null) {
+                con.close();
+            }
+
+        }
+    }
 }

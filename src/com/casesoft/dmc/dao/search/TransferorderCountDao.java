@@ -11,4 +11,5 @@ public interface TransferorderCountDao {
     DataSourceResult getTranList(DataSourceRequest request);
     DataSourceResult getTransByStyleId(DataSourceRequest request) throws Exception;
     DataSourceResult getTransByOrig(DataSourceRequest request) throws Exception;
+    DataSourceResult getTransBystyleandsize(DataSourceRequest request) throws Exception;
 }

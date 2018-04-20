@@ -15,9 +15,7 @@ function lodingareasId() {
         async : false,
         type : "POST",
         success : function (data,textStatus){
-            debugger;
             var json= data.result;
-            $("#form_areasId").text("");
             for(var i=0;i<json.length;i++){
                 $("#form_areasId").append("<option value='"+json[i].id+"'>"+json[i].name+"</option>");
                 $("#form_areasId").trigger('chosen:updated');
@@ -33,9 +31,7 @@ function lodingownerids() {
         async : false,
         type : "POST",
         success : function (data,textStatus){
-            debugger;
             var json= data.result;
-            $("#form_ownerids").text("");
             for(var i=0;i<json.length;i++){
                 $("#form_ownerids").append("<option value='"+json[i].id+"'>"+json[i].name+"</option>");
                 $("#form_ownerids").trigger('chosen:updated');

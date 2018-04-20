@@ -22,6 +22,7 @@ public class PurchaseorCountviews {
     @Excel(name="款号")
     private String styleid;
     @Column()
+    @Excel(name="颜色")
     private String colorid;
     @Column()
     @Excel(name="尺号")
@@ -30,6 +31,7 @@ public class PurchaseorCountviews {
     @Excel(name="数量")
     private Integer qty;
     @Column()
+    @Excel(name="吊牌价")
     private Double price;
     @Column()
     private Double totprice;
@@ -135,6 +137,29 @@ public class PurchaseorCountviews {
     @Column()
     @Excel(name="供应商")
     private String destunitname;
+    @Column()
+    private String class1;
+
+    public String getClass1() {
+        return class1;
+    }
+
+    public void setClass1(String class1) {
+        this.class1 = class1;
+    }
+
+    @Column()
+    @Excel(name="厂家")
+    private String class1Name;
+
+    public String getClass1Name() {
+        return class1Name;
+    }
+
+    public void setClass1Name(String class1Name) {
+        this.class1Name = class1Name;
+    }
+
     @Transient
     @Excel(name="单据类型")
     private String saletype;

@@ -415,14 +415,23 @@ public class ConsignmentBillController extends BaseController implements ILogist
 
     @RequestMapping(value = "/saleRetrunNo")
     @ResponseBody
-    public MessageBox saleRetrunNo(String billNo, String strEpcList, String userId) {
+    public MessageBox saleRetrunNo( String strEpcList, String userId,String bill, String strDtlList) {
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
-        List<ConsignmentBillDtl> billDtlByBillNo = this.consignmentBillService.findBillDtlByBillNo(billNo);
-        ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
+        //List<ConsignmentBillDtl> billDtlByBillNo = this.consignmentBillService.findBillDtlByBillNo(billNo);
+        //ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
+        ConsignmentBill consignmentBill = JSON.parseObject(bill, ConsignmentBill.class);
+        List<ConsignmentBillDtl> consignmentBillDtls = JSON.parseArray(strDtlList, ConsignmentBillDtl.class);
+        consignmentBill.setId(consignmentBill.getBillNo());
+        for (ConsignmentBillDtl sdtl : consignmentBillDtls) {
+            if (CommonUtil.isNotBlank(sdtl.getId())) {
+                sdtl.setBillNo(consignmentBill.getBillNo());
+                sdtl.setBillId(consignmentBill.getBillNo());
+            }
+        }
         User currentUser = CacheManager.getUserById(userId);
         Double monny = 0D;
         Integer qty = 0;
-        for (ConsignmentBillDtl dtl : billDtlByBillNo) {
+        for (ConsignmentBillDtl dtl : consignmentBillDtls) {
             if (CommonUtil.isBlank(dtl.getReadysale())) {
                 dtl.setReadysale(0);
             }
@@ -437,7 +446,11 @@ public class ConsignmentBillController extends BaseController implements ILogist
             }
 
         }
-        boolean saleRetrun = this.consignmentBillService.saleRetrunNo(consignmentBill, billDtlByBillNo, currentUser, epcList);
+
+        //List<ConsignmentBillDtl> consignmentBillDtls = JSON.parseArray(strDtlList, ConsignmentBillDtl.class);
+
+        BillConvertUtil.convertToConsignmentBillBill(consignmentBill, consignmentBillDtls, currentUser);
+        boolean saleRetrun = this.consignmentBillService.saleRetrunNo(consignmentBill, consignmentBillDtls, currentUser, epcList,consignmentBillDtls);
         if (saleRetrun) {
 
             return new MessageBox(true, "退货" + qty + "件" + "和" + monny + "CNY");
