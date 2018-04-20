@@ -1,5 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
+import org.jeecgframework.poi.excel.annotation.Excel;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,10 +10,15 @@ import java.util.Date;
  */
 public class PurchaseBystyleid implements Serializable {
     private static final long serialVersionUID = 1L;
+    @Excel(name="SKU")
     private String sku;
+    @Excel(name="商品名称")
     private String stylename;
+    @Excel(name="数量")
     private String qty;
+    @Excel(name="金额")
     private String totactprice;
+    @Excel(name="厂家")
     private String destunitname;
     /*新增*/
     private String styleId;

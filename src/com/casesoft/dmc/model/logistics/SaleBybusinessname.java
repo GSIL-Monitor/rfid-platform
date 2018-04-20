@@ -1,17 +1,28 @@
 package com.casesoft.dmc.model.logistics;
 
+import org.jeecgframework.poi.excel.annotation.Excel;
+
 /**
  * Created by Administrator on 2017/9/19 0019.
  */
 public class SaleBybusinessname {
+    @Excel(name = "销售员")
     private String busnissname;
+    @Excel(name = "部门")
     private String origname;
+    @Excel(name = "成本价")
     private String precast;
+    @Excel(name = "毛利")
     private String gross;
+    @Excel(name = "销售额")
     private String  totactprice;
+    @Excel(name = "销售单品数")
     private String salesum;
+    @Excel(name = "销售退货单品数")
     private String salereturnsum;
+    @Excel(name = "销售金额")
     private String salemoney;
+    @Excel(name = "销售退货金额")
     private String salereturnmoney;
 
     public String getSalesum() {
@@ -93,7 +104,7 @@ public class SaleBybusinessname {
     public void setGrossprofits(String grossprofits) {
         this.grossprofits = grossprofits;
     }
-
+    @Excel(name = "销售毛利率(%)")
     private String grossprofits;
 
 }

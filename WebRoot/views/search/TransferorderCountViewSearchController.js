@@ -1,7 +1,7 @@
 $(function () {
 
     initForm();
-   /* var myDate = new Date();
+    var myDate = new Date();
     var year = myDate.getFullYear();
     var month = myDate.getMonth() + 1;
     var day = myDate.getDate();
@@ -22,9 +22,9 @@ $(function () {
             $("#filter_lte_billDate").val(year + "-" + month + "-" + day);
         }
 
-    }*/
+    }
     initKendoUIGrid();
-    inttitledata();
+    /*inttitledata();*/
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
 
@@ -1201,10 +1201,32 @@ function exportExcelPOI() {
     $("#form1").submit();
 
 }
+function exportExcelProPOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = 1;
+    request.pageSize = total;
+    request.take = total;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+
+    var url=basePath+"/search/transferorderCountViewSearch/export.do";
+
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
+
+}
 function newchooseExportFunction() {
-    if(exportExcelid === "searchGrid"){
+    if(exportExcelid === "searchGrid"||exportExcelid === "searchTranGrid"){
         exportExcelPOI();
     }else {
-        exportExcelKendo();
+        exportExcelProPOI();
     }
 }

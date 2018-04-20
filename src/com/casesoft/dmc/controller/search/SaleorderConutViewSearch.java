@@ -13,6 +13,8 @@ import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.SaleByOrignames;
+import com.casesoft.dmc.model.logistics.SaleBybusinessname;
 import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.search.saleorderCount;
@@ -242,10 +244,59 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("按单据汇总-" +  dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchsalebusinessnameGrid")){
+                DataSourceResult sourceResultbusinessnameDtl = this.saleorderCountDao.getSaleBybusinessnameList(dataSourceRequest);
+                List<SaleBybusinessname> SalebusinessnameList = (List<SaleBybusinessname>) sourceResultbusinessnameDtl.getData();
+                ExportParams params = new ExportParams("按销售员汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files=new File(path + "\\按销售员汇总-" +  dateString + ".xlsx");
+
+                if(!files.exists())
+                    files.mkdirs();
+                File file =new File(files,"按销售员汇总-" +  dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleBybusinessname.class, SalebusinessnameList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                FileWriter fileWriter=new FileWriter(file.getName(),true);
+                BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("按销售员汇总-" +  dateString + ".xlsx", file, contentType);
+
+            }else if(gridId.equals("searchsaleorignameGrid")){
+                DataSourceResult sourceResultbusinessnameDtl = this.saleorderCountDao.getSaleByorignameList(dataSourceRequest);
+                List<SaleByOrignames> SaleOrignamesList = (List<SaleByOrignames>) sourceResultbusinessnameDtl.getData();
+                ExportParams params = new ExportParams("按部门汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files=new File(path + "\\按部门汇总-" +  dateString + ".xlsx");
+
+                if(!files.exists())
+                    files.mkdirs();
+                File file =new File(files,"按部门汇总-" +  dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleByOrignames.class, SaleOrignamesList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                FileWriter fileWriter=new FileWriter(file.getName(),true);
+                BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("按部门汇总-" +  dateString + ".xlsx", file, contentType);
             }
             //return null;
             //return new MessageBox(true, "导出成功，请在桌面查看");
-        }catch (IOException e){
+        }catch (Exception e){
             e.printStackTrace();
            // return new MessageBox(false, "导出失败");
         }

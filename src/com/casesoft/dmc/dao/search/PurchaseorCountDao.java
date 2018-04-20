@@ -11,6 +11,6 @@ import java.sql.SQLException;
 public interface PurchaseorCountDao {
     DataSourceResult getList(DataSourceRequest request);
     DataSourceResult getpurchaseList(DataSourceRequest request);
-    DataSourceResult getPurchaseBybusinessnameList(DataSourceRequest request) throws SQLException;
+    DataSourceResult getPurchaseBybystyleidList(DataSourceRequest request) throws SQLException;
     DataSourceResult getPurchaseBydestunitidList(DataSourceRequest request) throws SQLException;
 }

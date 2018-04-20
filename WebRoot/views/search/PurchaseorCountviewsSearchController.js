@@ -929,7 +929,7 @@ function initKendoUIPurchasestyeidGrid() {
 
                 transport: {
                     read: {
-                        url: basePath + "/search/PurchaseorCountviews/readpurchaseBybusinessname.do",
+                        url: basePath + "/search/PurchaseorCountviews/readpurchaseBybystyleid.do",
                         type: "POST",
                         dataType: "json",
                         async: false,
@@ -1172,11 +1172,30 @@ function initKendoUIPurchasedestunitidGrid() {
 
 }
 function newchooseExportFunction() {
-    if(exportExcelid === "searchGrid"){
+    if(exportExcelid === "searchGrid"||exportExcelid === "searchpuchaseGrid"){
         exportExcelPOI();
     }else {
-        exportExcel();
+        exportExcelProPOI();
     }
+}
+function exportExcelProPOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = 1;
+    request.pageSize = total;
+    request.take = total;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+    var url=basePath+"/search/PurchaseorCountviews/exportnew.do";
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
 }
 
 function exportExcelPOI() {
@@ -1197,4 +1216,22 @@ function exportExcelPOI() {
     $("#gridId").val(exportExcelid);
     $("#request").val(JSON.stringify(request));
     $("#form1").submit();
+}
+
+var dialogOpenPage;
+function openSearchVendorDialog() {
+    dialogOpenPage = "purchaseOrder";
+    $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
+        initVendorSelect_Grid();
+    });
+    $("#searchVendorDialog_buttonGroup").html("" +
+        "<button type='button'  class='btn btn-primary' onclick='selected_VendorId_purchaseOrder()'>确认</button>"
+    );
+}
+function selected_VendorId_purchaseOrder() {
+    var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+    var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+    $("#filter_eq_destunitid").val(rowData.id);
+    $("#filter_eq_destunitname").val(rowData.name);
+    $("#modal_vendor_search_table").modal('hide');
 }
