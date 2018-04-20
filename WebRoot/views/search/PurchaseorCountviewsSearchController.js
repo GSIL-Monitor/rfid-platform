@@ -1217,3 +1217,21 @@ function exportExcelPOI() {
     $("#request").val(JSON.stringify(request));
     $("#form1").submit();
 }
+
+var dialogOpenPage;
+function openSearchVendorDialog() {
+    dialogOpenPage = "purchaseOrder";
+    $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
+        initVendorSelect_Grid();
+    });
+    $("#searchVendorDialog_buttonGroup").html("" +
+        "<button type='button'  class='btn btn-primary' onclick='selected_VendorId_purchaseOrder()'>确认</button>"
+    );
+}
+function selected_VendorId_purchaseOrder() {
+    var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+    var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+    $("#filter_eq_destunitid").val(rowData.id);
+    $("#filter_eq_destunitname").val(rowData.name);
+    $("#modal_vendor_search_table").modal('hide');
+}
