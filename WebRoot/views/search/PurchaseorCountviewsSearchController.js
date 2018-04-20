@@ -1172,7 +1172,7 @@ function initKendoUIPurchasedestunitidGrid() {
 
 }
 function newchooseExportFunction() {
-    if(exportExcelid === "searchGrid"){
+    if(exportExcelid === "searchGrid"||exportExcelid === "searchpuchaseGrid"){
         exportExcelPOI();
     }else {
         exportExcel();
