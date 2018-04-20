@@ -192,13 +192,53 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 workbook.write(fos);
                 fos.close();
                 long endTime = System.currentTimeMillis();
-                System.out.println("采购明细明细导出："+(endTime - startTime));
                 logger.error("采购明细明细导出："+(endTime - startTime));
                 FileWriter fileWriter = new FileWriter(file.getName(), true);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
-                this.outFile("采购明细明细-" + dateString + ".xlsx", file, contentType);
+                this.outFile("采购-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchpuchaseGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult dataResult = purchaseorCountDao.getpurchaseList(dataSourceRequest);
+                List<PurchaseNodeatilViews> PurchaseNodeatildatas =( List<PurchaseNodeatilViews>) dataResult.getData();
+                for(int i=0;i<PurchaseNodeatildatas.size();i++){
+                    PurchaseNodeatilViews purchaseNodeatilViews = (PurchaseNodeatilViews) PurchaseNodeatildatas.get(i);
+                    String billno = purchaseNodeatilViews.getBillno();
+                    if(billno.contains(BillConstant.BillPrefix.purchase)){
+                        purchaseNodeatilViews.setSaletype("采购订单");
+                    }
+                    if(billno.contains(BillConstant.BillPrefix.purchaseReturn)){
+                        purchaseNodeatilViews.setSaletype("采购退货订单");
+                        //Integer qty = purchaseNodeatilViews.getTotqty();
+                        //purchaseNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                    }
+
+
+                }
+                ExportParams params = new ExportParams("采购", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\采购-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "采购-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, PurchaseNodeatilViews.class, PurchaseNodeatildatas);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                logger.error("采购导出："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("采购-" + dateString + ".xlsx", file, contentType);
             }
         }catch (Exception e){
             e.printStackTrace();
