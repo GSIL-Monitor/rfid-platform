@@ -8,6 +8,7 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var pageType="pageType";
     </script>
 
 </head>

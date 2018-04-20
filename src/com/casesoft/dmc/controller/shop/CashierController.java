@@ -99,10 +99,10 @@ public class CashierController extends BaseController implements IBaseInfoContro
     @RequestMapping("/save")
     @ResponseBody
     public MessageBox saveCashier(User user) {
-        try {
-            User us = this.userService.getUserByCode(user.getCode());
+        String flag = this.getReqParam("flag");
+        User us = this.userService.getUserByCode(user.getCode());
+        if (flag.equals("add")){
             if (CommonUtil.isBlank(us)) {
-
                 Date createDate = new Date();
                 us = new User();
                 us.setId(user.getCode());
@@ -118,19 +118,22 @@ public class CashierController extends BaseController implements IBaseInfoContro
                 us.setPassword(user.getPassword());
                 us.setRemark(user.getRemark());
                 us.setPhone(user.getPhone());
-            } else {
-                us.setName(user.getName());
-                us.setOwnerId(user.getOwnerId());
-                us.setPassword(user.getPassword());
-                us.setRemark(user.getRemark());
-                us.setPhone(user.getPhone());
-                this.userService.save(us);
+            }else {
+                return this.returnFailInfo("登录名已存在，请重新输入");
             }
-
+        }
+        us.setName(user.getName());
+        us.setOwnerId(user.getOwnerId());
+        us.setPassword(user.getPassword());
+        us.setRemark(user.getRemark());
+        us.setPhone(user.getPhone());
+        this.userService.save(us);
+        try {
             this.userService.save(us);
             CacheManager.refreshUserCache();
             return this.returnSuccessInfo("保存成功");
         } catch (Exception e) {
+            this.logger.error(e.getMessage());
             return this.returnFailInfo("保存失败");
         }
 
