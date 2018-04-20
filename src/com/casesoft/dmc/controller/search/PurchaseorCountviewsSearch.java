@@ -148,6 +148,9 @@ public class PurchaseorCountviewsSearch extends BaseController {
             if(gridId.equals("searchGrid")){
                 long startTime = System.currentTimeMillis();
                 DataSourceResult sourceResultSaleDtl = purchaseorCountDao.getList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询采购明细所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<PurchaseorCountviews> purchaseorCountViewList=(List<PurchaseorCountviews>)sourceResultSaleDtl.getData();
                 String rootPath = session.getServletContext().getRealPath("/");
                 for(PurchaseorCountviews d:purchaseorCountViewList){
@@ -199,10 +202,15 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
-                this.outFile("采购-" + dateString + ".xlsx", file, contentType);
+                this.outFile("采购明细明细导出-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出采购明细所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchpuchaseGrid")){
                 long startTime = System.currentTimeMillis();
                 DataSourceResult dataResult = purchaseorCountDao.getpurchaseList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询采购单所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<PurchaseNodeatilViews> PurchaseNodeatildatas =( List<PurchaseNodeatilViews>) dataResult.getData();
                 for(int i=0;i<PurchaseNodeatildatas.size();i++){
                     PurchaseNodeatilViews purchaseNodeatilViews = (PurchaseNodeatilViews) PurchaseNodeatildatas.get(i);
@@ -241,9 +249,14 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("采购-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出采购单所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchpuchaseBystyeidGrid")){
                 long startTime = System.currentTimeMillis();
                 DataSourceResult dataResult = purchaseorCountDao.getPurchaseBybystyleidList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询采购按商品汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<PurchaseBystyleid> PurchaseBystyleiddatas =( List<PurchaseBystyleid>) dataResult.getData();
                 ExportParams params = new ExportParams("采购按商品汇总", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
@@ -268,9 +281,14 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("采购按商品汇总-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按采购按商品汇总所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchpuchaseBydestunitidGrid")){
                 long startTime = System.currentTimeMillis();
                 DataSourceResult dataResult = purchaseorCountDao.getPurchaseBydestunitidList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询按采购按厂家汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<PurchaseBydestunitid> PurchaseBydestunitdatas =( List<PurchaseBydestunitid>) dataResult.getData();
                 ExportParams params = new ExportParams("采购按厂家汇总", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
@@ -295,6 +313,8 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("采购按厂家汇总-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按采购按厂家汇总所需的时间:"+(exportendtTime-exportstartTime));
             }
         }catch (Exception e){
             e.printStackTrace();
