@@ -61,6 +61,8 @@ public class EpcStock implements Serializable {
 	@Transient
 	private String sizeName;
 
+
+
 	@Column()
 	public Boolean isOvered() {
 		return isOvered;
@@ -368,4 +370,47 @@ public class EpcStock implements Serializable {
 	public void setUnicode(String unicode) {
 		this.unicode = unicode;
 	}
+
+
+
+	@Transient
+	private String originBillNo; //原始销售单号
+	public String getOriginBillNo() { return originBillNo; }
+	public void setOriginBillNo(String originBillNo) { this.originBillNo = originBillNo; }
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@Transient
+	private Date lastSaleTime;//最近一次销售时间
+	public Date getLastSaleTime() { return lastSaleTime; }
+	public void setLastSaleTime(Date lastSaleTime) { this.lastSaleTime = lastSaleTime; }
+
+	@Transient
+	private Long saleCycle; //销售周期（开单当天时间－销售单时间）
+	public Long getSaleCycle() { return saleCycle; }
+	public void setSaleCycle(Long saleCycle) { this.saleCycle = saleCycle; }
+
+	public EpcStock() { }
+
+	public EpcStock(String code, String sku, String styleId, String colorId, String sizeId, String originBillNo, Date lastSaleTime,String floor) {
+		this.code = code;
+		this.sku = sku;
+		this.styleId = styleId;
+		this.colorId = colorId;
+		this.sizeId = sizeId;
+//		this.price = price;
+		this.originBillNo = originBillNo;
+		this.lastSaleTime = lastSaleTime;
+		this.floor=floor;
+//		this.saleCycle = saleCycle;
+//		this.inStock=inStock;
+	}
+
+
+
+
+
+
+
+
+
 }

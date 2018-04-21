@@ -23,9 +23,10 @@ import com.casesoft.dmc.model.stock.EpcStock;
  */
 @Service
 @Transactional
-public class EpcStockService extends AbstractBaseService<EpcStock,String>{
-	@Autowired
-	private  EpcStockDao  epcStockDao;
+public class EpcStockService extends AbstractBaseService<EpcStock, String> {
+    @Autowired
+    private EpcStockDao epcStockDao;
+
     @Override
     public Page<EpcStock> findPage(Page<EpcStock> page, List<PropertyFilter> filters) {
         return null;
@@ -35,21 +36,24 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
     public void save(EpcStock entity) {
 
     }
-	public List<EpcStock> findEpcStock(String storageId){
-		String hql="from EpcStock epcStock where epcStock.warehouseId=? and epcStock.inStock=1";
-		return this.epcStockDao.find(hql, new Object[]{storageId});
-	}
-	public void saveEpcStocks(List<EpcStock> stocks) {
-		Session session = this.epcStockDao.getSession();
-		for (int i = 0; i < stocks.size(); i++) {
-			EpcStock epcStock = (EpcStock) session.merge(stocks.get(i));
-			session.saveOrUpdate(epcStock);
-			if ((i + 1) % stocks.size() == 0) {
-				session.flush();
-				session.clear();
-			}
-		}
-	}
+
+    public List<EpcStock> findEpcStock(String storageId) {
+        String hql = "from EpcStock epcStock where epcStock.warehouseId=? and epcStock.inStock=1";
+        return this.epcStockDao.find(hql, new Object[]{storageId});
+    }
+
+    public void saveEpcStocks(List<EpcStock> stocks) {
+        Session session = this.epcStockDao.getSession();
+        for (int i = 0; i < stocks.size(); i++) {
+            EpcStock epcStock = (EpcStock) session.merge(stocks.get(i));
+            session.saveOrUpdate(epcStock);
+            if ((i + 1) % stocks.size() == 0) {
+                session.flush();
+                session.clear();
+            }
+        }
+    }
+
     public List<BillDtl> findEpcStockSKUByWharehousId(String warehouseId, String sku,
                                                       String ownerId, String styleId) {
 
@@ -70,34 +74,37 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
 
         }
         hql+=" group by epcstock.warehouseId,epcstock.sku ,epcstock.styleId,epcstock.colorId,epcstock.sizeId";*/
-        String hql="select new com.casesoft.dmc.model.erp.BillDtl(epcstock.warehId,epcstock.sku,"
+        String hql = "select new com.casesoft.dmc.model.erp.BillDtl(epcstock.warehId,epcstock.sku,"
                 + "epcstock.styleId,epcstock.colorId ,epcstock.sizeId ,epcstock.qty ) "
                 + " from DetailStockView epcstock where  epcstock.warehId is not null  ";
-        if(CommonUtil.isNotBlank(warehouseId)){
-            hql+="and  epcstock.warehId='"+warehouseId+"' ";
+        if (CommonUtil.isNotBlank(warehouseId)) {
+            hql += "and  epcstock.warehId='" + warehouseId + "' ";
         }
-        if(CommonUtil.isNotBlank(sku)){
-            hql+=" and  epcstock.sku like'"+sku+"%' ";
+        if (CommonUtil.isNotBlank(sku)) {
+            hql += " and  epcstock.sku like'" + sku + "%' ";
         }
-        if(CommonUtil.isNotBlank(ownerId)){
-            hql+=" and  epcstock.ownerId='"+ownerId+"' ";
+        if (CommonUtil.isNotBlank(ownerId)) {
+            hql += " and  epcstock.ownerId='" + ownerId + "' ";
         }
-        if(CommonUtil.isNotBlank(styleId)){
-            hql+=" and  replace(epcstock.styleId,' ','') like '"+styleId+"%' ";
+        if (CommonUtil.isNotBlank(styleId)) {
+            hql += " and  replace(epcstock.styleId,' ','') like '" + styleId + "%' ";
 
         }
-        return this.epcStockDao.find(hql,new Object[]{});
+        return this.epcStockDao.find(hql, new Object[]{});
     }
+
     public void saveAll(List<EpcStock> entitys) {
-    	this.epcStockDao.doBatchInsert(entitys);
+        this.epcStockDao.doBatchInsert(entitys);
     }
-    public List<EpcStock> findStock(String warehouse){
-    	if(CommonUtil.isNotBlank(warehouse)){
-    		return this.epcStockDao.find("from EpcStock e where e.warehouseId=? and e.inStock=1", new Object[]{warehouse});    		
-    	}else{
-    		return this.epcStockDao.find("from EpcStock e where e.inStock=1", new Object[]{});    			
-    	}
+
+    public List<EpcStock> findStock(String warehouse) {
+        if (CommonUtil.isNotBlank(warehouse)) {
+            return this.epcStockDao.find("from EpcStock e where e.warehouseId=? and e.inStock=1", new Object[]{warehouse});
+        } else {
+            return this.epcStockDao.find("from EpcStock e where e.inStock=1", new Object[]{});
+        }
     }
+
     @Override
     public EpcStock load(String id) {
         return null;
@@ -112,18 +119,32 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
     public List<EpcStock> find(List<PropertyFilter> filters) {
         return null;
     }
-    public List<EpcStock> findEpcInCodes(String codes){
-    	String hql = "from EpcStock epcstock where  epcstock.inStock=1 and ("
-				+ codes + ")";
-		return this.epcStockDao.find(hql, new Object[] {});   
-		}
+
+    public List<EpcStock> findEpcInCodes(String codes) {
+        String hql = "from EpcStock epcstock where  epcstock.inStock=1 and ("
+                + codes + ")";
+        return this.epcStockDao.find(hql, new Object[]{});
+    }
 
 
     public List<EpcStock> findEpcByCodes(String codeStr) {
         String hql = "from EpcStock epcstock where ("
                 + codeStr + ")";
-        return this.epcStockDao.find(hql, new Object[] {});
+        return this.epcStockDao.find(hql, new Object[]{});
     }
+
+    public List<EpcStock> findEpcSaleReturnByCodes(String codeStr) {
+        String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
+                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor) " +
+                "FROM Record r,Business b,EpcStock e " +
+                "WHERE (" + codeStr + ") "+
+                "AND r.taskId=b.id "+
+                "AND r.code=e.code " +
+                "AND r.token=10 " +
+                "ORDER BY r.scanTime DESC";
+        return this.epcStockDao.find(hql, new Object[]{});
+    }
+
     @Override
     public List<EpcStock> getAll() {
         return this.epcStockDao.getAll();
@@ -136,7 +157,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
 
     @Override
     public void update(EpcStock entity) {
-     this.epcStockDao.update(entity);
+        this.epcStockDao.update(entity);
     }
 
     @Override
@@ -148,56 +169,73 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
     public void delete(String id) {
 
     }
+
     public void deleteAll() {
         this.epcStockDao.batchExecute("delete EpcStock b");
     }
 
 
     public EpcStock findEpcInCode(String warehId, String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=1 and code=? and warehouseId=?",new Object[]{code,warehId});
+        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=1 and code=? and warehouseId=?", new Object[]{code, warehId});
     }
 
     public EpcStock findEpcNotInCode(String warehId, String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?",new Object[]{code,warehId});
+        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
     }
 
-    public EpcStock findProductByCode(String code){
+    public EpcStock findProductByCode(String code) {
         return this.epcStockDao.findUnique("from EpcStock where code=?", code);
     }
 
     public List<EpcStock> findEpcInCodes(String warehId, String codes) {
-        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and "+ codes + " and epcstock.warehouseId=?",new Object[]{warehId});
+        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
     }
 
     public List<EpcStock> findEpcNotInCodes(String warehId, String codes) {
-        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=0  and "+ codes + " and (epcstock.warehouse2Id=? or epcstock.warehouseId=?)",new Object[]{warehId,warehId});
+        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=0  and " + codes + " and (epcstock.warehouse2Id=? or epcstock.warehouseId=?)", new Object[]{warehId, warehId});
     }
 
     public EpcStock findEpcAllowInCode(String warehId, String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where code=? and (warehouse2Id=? or warehouseId = ?)",new Object[]{code,warehId,warehId});
+        return this.epcStockDao.findUnique("from EpcStock epcstock where code=? and (warehouse2Id=? or warehouseId = ?)", new Object[]{code, warehId, warehId});
     }
 
-    public EpcStock findEpcAllowInCode( String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where code=?",new Object[]{code});
+    public EpcStock findEpcAllowInCode(String code) {
+        return this.epcStockDao.findUnique("from EpcStock epcstock where code=?", new Object[]{code});
     }
 
-    public EpcStock findStockEpcByCode(String code){
+    public List<EpcStock> findSaleReturnDtl(String code) {
+        String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
+                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor) " +
+                "FROM Record r,Business b,EpcStock e " +
+                "WHERE r.taskId=b.id " +
+                "AND r.code=e.code " +
+                "AND r.code=? " +
+                "AND r.token=10 " +
+                "ORDER BY r.scanTime DESC";
+        return this.epcStockDao.find(hql, new Object[]{code});
+
+    }
+
+    public EpcStock findStockEpcByCode(String code) {
         String hql = "from EpcStock where code=?";
         return this.epcStockDao.findUnique(hql, code);
     }
 
-    public Epc findTagEpcByCode(String code){
+    public Epc findTagEpcByCode(String code) {
         String hql = "from Epc where code=?";
         return this.epcStockDao.findUnique(hql, code);
     }
+
     public List<Epc> findTagEpcByCodes(String codes) {
-        return this.epcStockDao.find("from Epc epc where  "+ codes );
+        return this.epcStockDao.find("from Epc epc where  " + codes);
     }
+
     public List<EpcStock> findCodes(String warehId, String codes) {
-        return this.epcStockDao.find("from EpcStock epcstock where  "+ codes + " and epcstock.warehouseId=?",new Object[]{warehId});
+        return this.epcStockDao.find("from EpcStock epcstock where  " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
     }
+
     public List<EpcStock> findAlertEpcInCodes(String warehId, String codes) {
-        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1 and (epcstock.dressingStatus <> 1 or epcstock.dressingStatus is null ) and "+ codes + " and epcstock.warehouseId=?",new Object[]{warehId});
+        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1 and (epcstock.dressingStatus <> 1 or epcstock.dressingStatus is null ) and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
     }
 
     public List<EpcStock> findInStockEpcBySku(String sku, String warehouseId) {
@@ -206,17 +244,19 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
 
     /**
      * epcStock调整入库
+     *
      * @param code 唯一码
      */
-    public void updateEpcStockIn(String code){
+    public void updateEpcStockIn(String code) {
         this.epcStockDao.batchExecute("update EpcStock set inStock=1 where code=?", code);
     }
 
     /**
      * epcStock调整出库
+     *
      * @param code 唯一码
      */
-    public void updateEpcStockOut(String code){
+    public void updateEpcStockOut(String code) {
         this.epcStockDao.batchExecute("update EpcStock set inStock=0 where code=?", code);
     }
 
@@ -225,11 +265,11 @@ public class EpcStockService extends AbstractBaseService<EpcStock,String>{
      * 销售退货单和寄售单，后台校验重复入库。根据epcList返回在库的epcStock。
      *
      * @param epcList epcList
-     * @return  epcStockList
+     * @return epcStockList
      */
-    public List<EpcStock> findInStockByEpcList(List<Epc> epcList){
+    public List<EpcStock> findInStockByEpcList(List<Epc> epcList) {
         List<String> codeList = new ArrayList<>();
-        for (Epc epc:epcList) {
+        for (Epc epc : epcList) {
             codeList.add(epc.getCode());
         }
         String codeListStr = TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code");

@@ -1622,7 +1622,8 @@ function set(id) {
 }
 function showCodesDetail(uniqueCodes) {
 
-    $("#show-uniqueCode-list").modal('show');
-    initUniqueCodeList(uniqueCodes);
-    codeListReload(uniqueCodes);
+    // $("#show-uniqueCode-list").modal('show');
+    $("#show-uniqueCode-saleReturn-list").modal('show');
+    initUniqueCodeSaleReturnList(uniqueCodes);
+    codeSaleReturnListReload(uniqueCodes);
 }

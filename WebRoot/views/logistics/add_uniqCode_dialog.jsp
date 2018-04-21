@@ -76,7 +76,11 @@
                 {name: 'preCast', label: '采购价', width: 40, hidden: true},  //事前成本价(采购价)
                 {name: 'wsPrice', label: '销售价格', width: 40, hidden: true},  //门店批发价格
                 {name: 'puPrice', label: '销售价格', width: 40, hidden: true},  //代理商批发价格
-                {name: 'stockPrice', label: '库存金额', width: 40, hidden: true} //库存金额
+                {name: 'stockPrice', label: '库存金额', width: 40, hidden: true}, //库存金额
+                /* Anna */
+                {name: 'originBillNo', label: '原始单号', width: 100},
+                {name: 'lastSaleTime', label: '最后销售时间', width: 100},
+                {name: 'saleCycle', label: '销售周期', width: 60,cellattr: addCellAttr} //销售周期（开单当天时间－销售单时间）
             ],
             rownumbers: true,
             viewrecords: true,
@@ -84,12 +88,18 @@
             altRows: true,
             multiselect: false,
             shrinkToFit: true,
-            sortname: 'updateTime',
+            sortname: 'lastSaleTime',
             sortorder: "desc"
 
     });
         var parent_column = $("#uniqueCodeGrid").closest('.modal-dialog');
         $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width() - 5);
+    }
+
+    function addCellAttr(rowId, val, rawObject, cm, rdata) {
+        if (rawObject.saleCycle >= 20) {
+            return "style='color:red'";
+        }
     }
 
     function initUniqeCodeGridColumn(storeType) {
@@ -183,7 +193,7 @@
                 var ajax_url;
                 var ajax_data;
                 if (taskType === -1) {
-                    ajax_url = basePath + "/stock/warehStock/inCheckEpcStock.do";
+                    ajax_url = basePath + "/stock/warehStock/inCheckEpcStockAndFindDate.do";
                     ajax_data = {warehId: wareHouse, code: code, billNo: billNo}
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStock.do";
