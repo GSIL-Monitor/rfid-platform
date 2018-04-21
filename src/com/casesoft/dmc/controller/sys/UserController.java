@@ -126,6 +126,12 @@ public class UserController extends BaseController implements IBaseInfoControlle
                 u.setPhone(user.getPhone());
                 u.setType(Constant.UserType.User);
                 u.setSrc(Constant.DataSrc.SYS);
+                u.setName(user.getName());
+                u.setPassword(user.getPassword());
+                u.setIsAdmin(user.getIsAdmin());
+                u.setRoleId(user.getRoleId());
+                u.setPhone(user.getPhone());
+                u.setOwnerId(user.getOwnerId());
             }else {
                 return returnFailInfo("登录名已存在，请重新输入");
             }
