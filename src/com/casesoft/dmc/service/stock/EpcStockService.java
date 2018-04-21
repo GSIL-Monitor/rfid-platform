@@ -135,7 +135,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     public List<EpcStock> findEpcSaleReturnByCodes(String codeStr) {
         String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
-                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor) " +
+                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
                 "FROM Record r,Business b,EpcStock e " +
                 "WHERE (" + codeStr + ") "+
                 "AND r.taskId=b.id "+
@@ -205,7 +205,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     public List<EpcStock> findSaleReturnDtl(String code) {
         String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
-                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor) " +
+                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
                 "FROM Record r,Business b,EpcStock e " +
                 "WHERE r.taskId=b.id " +
                 "AND r.code=e.code " +

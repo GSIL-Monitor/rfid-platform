@@ -391,7 +391,7 @@ public class EpcStock implements Serializable {
 
 	public EpcStock() { }
 
-	public EpcStock(String code, String sku, String styleId, String colorId, String sizeId, String originBillNo, Date lastSaleTime,String floor) {
+	public EpcStock(String code, String sku, String styleId, String colorId, String sizeId, String originBillNo, Date lastSaleTime,String floor,String warehouseId) {
 		this.code = code;
 		this.sku = sku;
 		this.styleId = styleId;
@@ -401,6 +401,7 @@ public class EpcStock implements Serializable {
 		this.originBillNo = originBillNo;
 		this.lastSaleTime = lastSaleTime;
 		this.floor=floor;
+		this.warehouseId=warehouseId;
 //		this.saleCycle = saleCycle;
 //		this.inStock=inStock;
 	}

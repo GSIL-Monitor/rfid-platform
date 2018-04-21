@@ -2,6 +2,7 @@ package com.casesoft.dmc.controller.stock;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
@@ -300,9 +301,9 @@ public class WarehStockController extends BaseController {
                     }
                 }
             }
-            List<EpcStock> epcStockList=this.epcStockService.findSaleReturnDtl(code);
+            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnDtl(code);
             EpcStock epcStock = epcStockList.get(0);
-            Long cycle=((new Date()).getTime()-epcStock.getLastSaleTime().getTime())/ 1000 / 60 / 60 / 24;
+            Long cycle = ((new Date()).getTime() - epcStock.getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
             epcStock.setSaleCycle(cycle);
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);
@@ -414,11 +415,11 @@ public class WarehStockController extends BaseController {
         try {
             boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
                     .getValue("is_wxshop"));
-            if(CommonUtil.isNotBlank(is_wxshop)){
-                if (Boolean.parseBoolean(PropertyUtil.getValue("is_wxshop"))){
-                    if(billNo.startsWith(BillConstant.BillPrefix.saleOrder)){
+            if (CommonUtil.isNotBlank(is_wxshop)) {
+                if (Boolean.parseBoolean(PropertyUtil.getValue("is_wxshop"))) {
+                    if (billNo.startsWith(BillConstant.BillPrefix.saleOrder)) {
                         //微商城销售单更新
-                        this.saleOrderBillService.ShopBilldeal(billNo,codes);
+                        this.saleOrderBillService.ShopBilldeal(billNo, codes);
                     }
                 }
             }
@@ -533,10 +534,12 @@ public class WarehStockController extends BaseController {
             codeListStringForSql = CodeListString.toString();
         }
         List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql);
-        Long cycle=((new Date()).getTime()-epcStockList.get(0).getLastSaleTime().getTime())/ 1000 / 60 / 60 / 24;
+        Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+        Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
         epcStockList.get(0).setSaleCycle(cycle);
-
-        return epcStockList;
+        epcStockList.get(0).setFloor(unit.getName());
+        List<EpcStock> epcStockList1 = epcStockList.subList(0, 1);
+        return epcStockList1;
     }
 
     /***
@@ -697,17 +700,17 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("/getStyleIdByCode")
     @ResponseBody
-    public MessageBox getStyleIdByCode(String code) throws Exception{
+    public MessageBox getStyleIdByCode(String code) throws Exception {
         this.logAllRequestParams();
         if (code.length() != 13) {
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
         }
         EpcStock epcStock = this.epcStockService.findStockEpcByCode(code);
-        if(CommonUtil.isNotBlank(epcStock)){
+        if (CommonUtil.isNotBlank(epcStock)) {
             return new MessageBox(true, "查询成功", epcStock.getStyleId());
-        }else {
-            return new MessageBox(false, "查询不到唯一码：" + code +" 对应的商品");
+        } else {
+            return new MessageBox(false, "查询不到唯一码：" + code + " 对应的商品");
         }
 
     }
