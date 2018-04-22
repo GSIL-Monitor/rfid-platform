@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.lang.reflect.AnnotatedArrayType;
 import java.util.Date;
 
 /**
@@ -27,13 +28,16 @@ public class BillRecord {
 
 
 
-    /* 新增 by Anna */
+    /**
+     * add by Anna on 2018/4/22.
+     * 销售退货 保存调用 新增三字段
+     */
     @Column()
     private String originBillNo; //原始单号
     @Column()
     private Date lastSaleTime; //最近一次销售时间
     @Column()
-    private Integer saleCycle; //销售周期（开单当天时间－销售单时间）
+    private Long saleCycle; //销售周期（开单当天时间－销售单时间）
 
     public String getOriginBillNo() { return originBillNo; }
 
@@ -43,9 +47,20 @@ public class BillRecord {
 
     public void setLastSaleTime(Date lastSaleTime) { this.lastSaleTime = lastSaleTime; }
 
-    public Integer getSaleCycle() { return saleCycle; }
+    public Long getSaleCycle() { return saleCycle; }
 
-    public void setSaleCycle(Integer saleCycle) { this.saleCycle = saleCycle; }
+    public void setSaleCycle(Long saleCycle) { this.saleCycle = saleCycle; }
+
+    public BillRecord(String id, String code, String billNo, String sku, String originBillNo, Date lastSaleTime, Long saleCycle) {
+        this.id = id;
+        this.code = code;
+        this.billNo = billNo;
+        this.sku = sku;
+        this.originBillNo = originBillNo;
+        this.lastSaleTime = lastSaleTime;
+        this.saleCycle = saleCycle;
+    }
+
     /* end */
 
     public BillRecord() {
@@ -57,6 +72,7 @@ public class BillRecord {
         this.billNo = billNo;
         this.sku = sku;
     }
+
 
     public String getId() {
         return id;

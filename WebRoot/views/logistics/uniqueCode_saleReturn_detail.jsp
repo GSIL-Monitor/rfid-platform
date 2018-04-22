@@ -72,7 +72,7 @@
             sortorder: "desc"
         });
         var parent_column = $("#uniqueCodeGrid").closest('.modal-dialog');
-        // $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width());
+        $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width());
     }
 
     function addCellAttr(rowId, val, rawObject, cm, rdata) {
