@@ -26,8 +26,10 @@ public class TransferOrderBill extends BaseBill{
     @Column()
     private Double totInVal =0D;//实际入库总金额
     @Column()
+    @Excel(name="出库状态",replace = { "订单状态_0", "已出库_1" , "出库中_2"})
     private int outStatus=0;
     @Column()
+    @Excel(name="入库状态",replace = { "订单状态_0", "已入库_1" , "入库中_2"})
     private int inStatus =0;
 
     public String getId() {

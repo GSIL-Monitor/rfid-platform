@@ -58,6 +58,7 @@ public abstract class BaseBill {
     @Column(length = 200)
     protected String origAddr;// 发货地址
     @Column(length = 2)
+    @Excel(name="状态",replace = {  "撤销_-1","录入_0", "审核_1" , "结束_2", "操作中_3", "申请撤销_4"})
     protected Integer status ; //单据状态
     @Column(length = 50)
     protected String oprId;// 操作者Id
