@@ -1713,6 +1713,8 @@ function set(id) {
 function showCodesDetail(uniqueCodes) {
 
     // $("#show-uniqueCode-list").modal('show');
+    customerId=$("#search_origUnitId").val();
+
     $("#show-uniqueCode-saleReturn-list").modal('show');
     initUniqueCodeSaleReturnList(uniqueCodes);
     codeSaleReturnListReload(uniqueCodes);

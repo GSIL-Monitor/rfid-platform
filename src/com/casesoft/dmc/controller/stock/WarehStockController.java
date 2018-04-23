@@ -518,7 +518,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping(value = "/findCodeSaleReturnList")
     @ResponseBody
-    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes) {
+    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes,String customerId) {
         String codeListStringForSql = "";
         if (CommonUtil.isNotBlank(uniqueCodes)) {
             String[] codesArray = uniqueCodes.split(",");
@@ -534,7 +534,7 @@ public class WarehStockController extends BaseController {
             }
             codeListStringForSql = CodeListString.toString();
         }
-        List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql);
+        List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql,customerId);
         Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
         Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
         epcStockList.get(0).setSaleCycle(cycle);

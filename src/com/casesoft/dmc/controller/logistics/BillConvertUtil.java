@@ -1722,7 +1722,7 @@ public class BillConvertUtil {
         for (SaleOrderReturnBillDtl detail : saleOrderReturnBillDtls) {
 
             //从EpcStock中取出三字段信息 Anna
-            List<EpcStock> epcStockList = epcStockService.findSaleReturnDtl(detail.getUniqueCodes());
+            List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByCustomerDtl(detail.getUniqueCodes(),bill.getOrigUnitId());
             Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
             epcStockList.get(0).setSaleCycle(cycle);
             EpcStock epcStock = epcStockList.get(0);

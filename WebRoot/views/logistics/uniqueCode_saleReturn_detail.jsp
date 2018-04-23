@@ -35,7 +35,7 @@
         $("#uniqueCodeSaleReturnListGrid").jqGrid({
             height: 400,
             // url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes,
-            url: basePath + "/stock/warehStock/findCodeSaleReturnList.do?uniqueCodes=" + uniqueCodes,
+            url: basePath + "/stock/warehStock/findCodeSaleReturnList.do?uniqueCodes=" + uniqueCodes + "&customerId=" + customerId,
             datatype: "json",
             mtype: "POST",
             colModel: [
@@ -86,7 +86,7 @@
         $("#uniqueCodeSaleReturnListGrid").clearGridData();
         $("#uniqueCodeSaleReturnListGrid").jqGrid('setGridParam', {
             // url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes
-            url: basePath + "/stock/warehStock/findCodeSaleReturnList.do?uniqueCodes=" + uniqueCodes
+            url: basePath + "/stock/warehStock/findCodeSaleReturnList.do?uniqueCodes=" + uniqueCodes + "&customerId=" + customerId
         }).trigger("reloadGrid");
     }
 </script>
