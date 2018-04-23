@@ -48,7 +48,7 @@ public class PurchaseNodeatilViews {
     @Excel(name="备注")
     private String  remark;
 
-    @Transient
+    @Column()
     @Excel(name="单据类型")
     private String saletype;
 

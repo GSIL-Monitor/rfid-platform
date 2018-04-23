@@ -76,15 +76,15 @@ public class PurchaseorCountviewsSearch extends BaseController {
         List<PurchaseorCountviews> datanew =new ArrayList<PurchaseorCountviews>();
         for(int i=0;i<data.size();i++){
             PurchaseorCountviews purchaseorCountviews = (PurchaseorCountviews) data.get(i);
-            String billno = purchaseorCountviews.getBillid();
+           /* String billno = purchaseorCountviews.getBillid();
             if(billno.contains(BillConstant.BillPrefix.purchase)){
                 purchaseorCountviews.setSaletype("采购订单");
             }
             if(billno.contains(BillConstant.BillPrefix.purchaseReturn)){
                 purchaseorCountviews.setSaletype("采购退货订单");
-              /*  Integer qty = purchaseorCountviews.getQty();
-                purchaseorCountviews.setQty(Integer.parseInt("-"+qty));*/
-            }
+              *//*  Integer qty = purchaseorCountviews.getQty();
+                purchaseorCountviews.setQty(Integer.parseInt("-"+qty));*//*
+            }*/
             File file =  new File(rootPath + "/product/photo/" + purchaseorCountviews.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
@@ -105,7 +105,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
     DataSourceResult readpurchase(@RequestBody DataSourceRequest request) {
 
         DataSourceResult dataResult = purchaseorCountDao.getpurchaseList(request);
-        String rootPath = session.getServletContext().getRealPath("/");
+       /* String rootPath = session.getServletContext().getRealPath("/");
         List<?> data = dataResult.getData();
         List<PurchaseNodeatilViews> datanew =new ArrayList<PurchaseNodeatilViews>();
         for(int i=0;i<data.size();i++){
@@ -122,7 +122,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
 
             datanew.add(purchaseNodeatilViews);
         }
-        dataResult.setData(datanew);
+        dataResult.setData(datanew);*/
         return dataResult;
     }
    @RequestMapping(value = "/export", method = RequestMethod.POST)
