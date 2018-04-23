@@ -85,7 +85,7 @@
             altRows: true,
             rowNum: 10,
             rowList: [10, 20, 50],
-            pager: "#unitSelect_Page",
+            pager: "#vendorSelect_Page",
             multiselect: false,
             shrinkToFit: true,
             sortname: 'id',

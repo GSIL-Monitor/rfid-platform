@@ -375,8 +375,8 @@
 
 <jsp:include page="search_js.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
-<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_class1_dialog.jsp"></jsp:include>
+<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
 <%--<jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>--%>
 <script type="text/javascript" src="<%=basePath%>/views/search/PurchaseorCountviewsSearchController.js"></script>
 <script>

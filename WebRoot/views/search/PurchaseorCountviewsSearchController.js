@@ -218,9 +218,9 @@ function exportExcel() {
 }
 
 function openSearchClass1Dialog() {
-
-
-    $("#modal_class1_search_table").modal('show').on('shown.bs.modal', function () {
+    console.log("123");
+    $("#modal_class1_search_tables").modal('show').on('shown.bs.modal', function () {
+        console.log("1234");
         initClass1Select_Grid();
     });
    /* $("#searchVendorDialog_buttonGroup").html("" +
@@ -232,7 +232,7 @@ function selectClass1() {
     var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
     $("#filter_eq_class1").val(rowData.code);
     $("#filter_eq_class1Name").val(rowData.name);
-    $("#modal_class1_search_table").modal('hide');
+    $("#modal_class1_search_tables").modal('hide');
 }
 var dialogOpenPage;
 function openSearchGuestDialog() {

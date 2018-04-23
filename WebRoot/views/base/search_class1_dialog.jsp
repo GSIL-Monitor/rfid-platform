@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div id="modal_class1_search_table" class="modal fade" tabindex="-1">
+<div id="modal_class1_search_tables" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header no-padding">
@@ -21,19 +21,19 @@
             <div class="modal-body no-padding">
                 <div class="widget-body">
 
-                    <div class="widget-main" id="search_unit_Panel">
-                        <form class="form-horizontal" role="form" id="search_vendor_Form">
+                    <div class="widget-main" id="search_class1_Panel">
+                        <form class="form-horizontal" role="form" id="search_class1_Form">
                             <div class="form-group">
-                                <label class="col-xs-2 control-label text-right" for="search_vendor">厂家</label>
+                                <label class="col-xs-2 control-label text-right" for="search_class1">厂家</label>
                                 <div class="col-xs-8">
-                                    <input class="col-xs-4 form-control" id="search_vendor"
+                                    <input class="col-xs-4 form-control" id="search_class1"
                                            name="filter_LIKES_name_OR_code"
                                            type="text" placeholder="输入名称"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-xs-4 col-xs-offset-4">
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="search_Vendor()">
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="search_class1name()">
                                         <i class="ace-icon fa fa-search"></i>
                                         <span class="bigger-110">查询</span>
                                     </button>
@@ -57,8 +57,8 @@
     </div><!-- /.modal-dialog -->
 </div>
 <script>
-    function search_Vendor() {
-        var serializy = $("#search_vendor_Form").serializeArray();
+    function search_class1name() {
+        var serializy = $("#search_class1_Form").serializeArray();
         var param = array2obj(serializy);
         $("#class1Select_Grid").jqGrid('setGridParam', {
             url: basePath + "/sys/property/findclassname.do?filter_EQS_type=C1",
@@ -68,16 +68,10 @@
         $("#class1Select_Grid").trigger("reloadGrid");
     }
 
-    function openSelectVendorDialog(vendorId, vendorName, dialogOpenPage) {
-        $("#modal_class1_search_table").data("vendorId", vendorId);
-        $("#modal_class1_search_table").data("vendorName", vendorName);
-        $("#modal_class1_search_table").on('show.bs.modal', function () {
-            initVendorSelect_Grid();
-        }).modal("show");
-        class1GridReload();
-    }
+
 
     function initClass1Select_Grid() {
+        debugger
         $("#class1Select_Grid").jqGrid({
             height: "auto",
             url: basePath + "/sys/property/findclassname.do?filter_EQS_type=C1",
@@ -135,7 +129,7 @@
     }
 
     function closeClass1Dialog() {
-        $("#modal_class1_search_table").modal('hide');
+        $("#modal_class1_search_tables").modal('hide');
     }
 
 </script>
