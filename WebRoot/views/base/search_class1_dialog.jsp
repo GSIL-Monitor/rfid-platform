@@ -100,6 +100,7 @@
         });
 
         var parent_column = $("#class1Select_Grid").closest('.modal-dialog');
+        $("#class1Select_Page_left").css("width","2px");
         $("#class1Select_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
     }
 
