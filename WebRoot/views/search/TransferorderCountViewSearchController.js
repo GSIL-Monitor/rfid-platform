@@ -533,7 +533,7 @@ function initTranKendoUIGrid() {
                 },
                 {
                     field: "status",
-                    title: "入库状态",
+                    title: "状态",
                     width: "150px",
                     template:function(data) {
                         var value = "";
