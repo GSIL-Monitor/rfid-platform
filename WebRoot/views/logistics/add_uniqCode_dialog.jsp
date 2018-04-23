@@ -7,7 +7,7 @@
 --%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <div id="add-uniqCode-dialog" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" style="width:950px;align-content: center;">
+    <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
                 <button type="button" class="close" data-dismiss="modal"
@@ -39,8 +39,8 @@
         <div class="modal-footer">
             <%--<label class="control-label col-sm-3" for="codeQty" style="text-align: center">已添加数量：</label>--%>
             <%--<div class="col-sm-1">--%>
-                <%--<input class="form-control" type="text" id="codeQty"--%>
-                       <%--style="float: left;background-color: transparent;border: none" readonly value="0">--%>
+            <%--<input class="form-control" type="text" id="codeQty"--%>
+            <%--style="float: left;background-color: transparent;border: none" readonly value="0">--%>
             <%--</div>--%>
 
             <div class="col-lg-4">
@@ -63,24 +63,20 @@
             height: 400,
             datatype:"local",
             colModel: [
-                {name: 'code', label: '唯一码', width: 100},
+                {name: 'code', label: '唯一码', width: 60},
                 {name: 'updateTime', label: '修改时间', hidden: true, width: 40},
-                {name: 'styleId', label: '款号', width: 40, hidden: true},
-                {name: 'colorId', label: '色码', width: 40, hidden: true},
-                {name: 'sizeId', label: '尺码', width: 40, hidden: true},
-                {name: 'sku', label: 'SKU', width: 120},
+                {name: 'styleId', label: '款号', width: 40},
+                {name: 'colorId', label: '色码', width: 40},
+                {name: 'sizeId', label: '尺码', width: 40},
+                {name: 'sku', label: 'SKU', width: 40},
                 {name: 'styleName', label: '款式', width: 40, hidden: true},
                 {name: 'colorName', label: '颜色', width: 40, hidden: true},
                 {name: 'sizeName', label: '尺寸', width: 40, hidden: true},
-                {name: 'price', label: '销售价格', width: 100},                  //吊牌价格
+                {name: 'price', label: '销售价格', width: 40},                  //吊牌价格
                 {name: 'preCast', label: '采购价', width: 40, hidden: true},  //事前成本价(采购价)
                 {name: 'wsPrice', label: '销售价格', width: 40, hidden: true},  //门店批发价格
                 {name: 'puPrice', label: '销售价格', width: 40, hidden: true},  //代理商批发价格
-                {name: 'stockPrice', label: '库存金额', width: 40, hidden: true}, //库存金额
-                /* Anna */
-                {name: 'originBillNo', label: '原始单号', width: 160},
-                {name: 'lastSaleTime', label: '最后销售时间', width: 160},
-                {name: 'saleCycle', label: '销售周期', width: 70,cellattr: addCellAttr} //销售周期（开单当天时间－销售单时间）
+                {name: 'stockPrice', label: '库存金额', width: 40, hidden: true} //库存金额
             ],
             rownumbers: true,
             viewrecords: true,
@@ -88,18 +84,12 @@
             altRows: true,
             multiselect: false,
             shrinkToFit: true,
-            sortname: 'lastSaleTime',
+            sortname: 'updateTime',
             sortorder: "desc"
 
-    });
+        });
         var parent_column = $("#uniqueCodeGrid").closest('.modal-dialog');
         $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width() - 5);
-    }
-
-    function addCellAttr(rowId, val, rawObject, cm, rdata) {
-        if (rawObject.saleCycle >= 20) {
-            return "style='color:red'";
-        }
     }
 
     function initUniqeCodeGridColumn(storeType) {
@@ -193,7 +183,7 @@
                 var ajax_url;
                 var ajax_data;
                 if (taskType === -1) {
-                    ajax_url = basePath + "/stock/warehStock/inCheckEpcStockAndFindDate.do";
+                    ajax_url = basePath + "/stock/warehStock/inCheckEpcStock.do";
                     ajax_data = {warehId: wareHouse, code: code, billNo: billNo}
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStock.do";
@@ -288,3 +278,4 @@
         }
     }
 </script>
+

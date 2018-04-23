@@ -216,6 +216,22 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     }
 
+    public List<EpcStock> findSaleReturnFilterByCustomerDtl(String code,String customerId) {
+        String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
+                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
+                "FROM Record r,Business b,EpcStock e " +
+                "WHERE r.taskId=b.id " +
+                "AND r.code=e.code " +
+                "AND r.code=? " +
+                "AND b.destUnitId=? "+
+                "AND r.token=10 " +
+                "ORDER BY r.scanTime DESC";
+        return this.epcStockDao.find(hql, new Object[]{code,customerId});
+
+    }
+
+
+
     public EpcStock findStockEpcByCode(String code) {
         String hql = "from EpcStock where code=?";
         return this.epcStockDao.findUnique(hql, code);

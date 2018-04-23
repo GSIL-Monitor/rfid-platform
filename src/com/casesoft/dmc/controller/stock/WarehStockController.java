@@ -277,7 +277,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("inCheckEpcStockAndFindDate")
     @ResponseBody
-    public MessageBox inCheckEpcStockAndFindDate(String warehId, String code, String billNo) {
+    public MessageBox inCheckEpcStockAndFindDate(String warehId, String code, String billNo,String customerId) {
         if (code.length() != 13) {
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
@@ -301,7 +301,8 @@ public class WarehStockController extends BaseController {
                     }
                 }
             }
-            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnDtl(code);
+
+            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByCustomerDtl(code,customerId);
             EpcStock epcStock = epcStockList.get(0);
             Long cycle = ((new Date()).getTime() - epcStock.getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
             epcStock.setSaleCycle(cycle);

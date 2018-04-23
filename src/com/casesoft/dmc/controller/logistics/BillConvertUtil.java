@@ -1706,11 +1706,9 @@ public class BillConvertUtil {
      * 转换销售退货单（保存调用）
      */
     public static void convertToSaleOrderReturnBill(SaleOrderReturnBill bill, List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls, User user) {
-
         if (CommonUtil.isNotBlank(user)) {
             bill.setOprId(user.getCode());
         }
-
         Long totQty = 0L;
         Long actQty = 0L;
         Long outQty = 0L;
@@ -1720,12 +1718,10 @@ public class BillConvertUtil {
         Double totOutVal = 0D;
         Double totInVal = 0D;
 
-
         List<BillRecord> billRecordList = new ArrayList<>();
         for (SaleOrderReturnBillDtl detail : saleOrderReturnBillDtls) {
 
-
-            //从EpcStock中取出三字段信息
+            //从EpcStock中取出三字段信息 Anna
             List<EpcStock> epcStockList = epcStockService.findSaleReturnDtl(detail.getUniqueCodes());
             Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
             epcStockList.get(0).setSaleCycle(cycle);

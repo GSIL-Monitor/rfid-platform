@@ -3,6 +3,7 @@ var addDetailgridiCol;//存储iCol
 var allCodes; //用于拼接所有添加过的唯一码，防止重复添加
 var taskType; //用于判断出入库类型 1入库 0 出库
 var wareHouse;
+var customerId; //保存所选择的客户
 var inOntWareHouseValid; //用于判断在编辑BillDtl时出入库操作是否需要校验，使用哪种校验。
 var skuQty = {};//保存每个SKU对应的出入库数量。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
@@ -467,6 +468,7 @@ function setFooterData() {
         totActPrice: -Math.abs(sum_totActPrice)
     });
 }
+
 function addDetail() {
     var ct = $("#search_customerType").val();
     if (ct && ct != null) {
@@ -659,6 +661,8 @@ function save() {
         dtlArray.push(rowData);
     });
     showWaitingPage();
+    //将客户传回去
+    $.ajax({});
     $.ajax({
         dataType: "json",
         async: false,
@@ -710,6 +714,7 @@ function deleteRow(rowId) {
 
     saveother(totActPrice);
 }
+
 function saveother(totActPrice) {
 
     $("#search_customerType").removeAttr('disabled');
@@ -786,6 +791,7 @@ function saveother(totActPrice) {
         }
     });
 }
+
 function initEditFormValid() {
     $('#editForm').bootstrapValidator({
         message: '输入值无效',
@@ -876,10 +882,14 @@ function initEditFormValid() {
     });
 
 }
+
 //扫码
 function addUniqCode() {
     var ct = $("#search_customerType").val();
+
     if (ct && ct != null) {
+
+        customerId=$("#search_origUnitId").val();
 
         inOntWareHouseValid = 'addPage_scanUniqueCode';
         billNo = $("#search_billNo").val();
@@ -1178,6 +1188,7 @@ function wareHouseInOut(type) {
         bootbox.alert("请先保存当前单据");
     }
 }
+
 function quitback() {
     $.ajax({
         url: basePath + "/logistics/saleOrderReturn/quit.do?billNo=" + billNo,
@@ -1430,7 +1441,9 @@ function confirmWareHouseIn() {
 
     $("#add-uniqCode-dialog").modal('hide');
 }
+
 var dialogOpenPage;
+
 function openSearchGuestDialog() {
     dialogOpenPage = "saleOrderReturn";
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
@@ -1448,9 +1461,11 @@ function input_keydown() {
         }
     })
 }
+
 function search_discount_onblur() {
     setDiscount();
 }
+
 //将整单折扣设置到明细中
 function setDiscount() {
 
@@ -1471,6 +1486,7 @@ function setDiscount() {
     }
     setFooterData();
 }
+
 function doPrint() {
 
     /*$("#editForm").resetForm();*/
@@ -1693,6 +1709,7 @@ function set(id) {
         }
     });
 }
+
 function showCodesDetail(uniqueCodes) {
 
     // $("#show-uniqueCode-list").modal('show');

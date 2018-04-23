@@ -216,7 +216,7 @@
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
-<jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
+<jsp:include page="add_uniqCode_SaleReturn_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="uniqueCode_saleReturn_detail.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
