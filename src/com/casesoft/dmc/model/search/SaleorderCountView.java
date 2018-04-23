@@ -31,12 +31,12 @@ public class SaleorderCountView {
         this.id = id;
     }
     @Column()
-    @Excel(name = "实际数量")
     private Integer actqty;
     @Column()
     @Excel(name = "颜色")
     private String colorid;
     @Column()
+    @Excel(name = "入库数量")
     private Integer initqty;
     @Column()
     private Integer manualqty;
@@ -77,12 +77,15 @@ public class SaleorderCountView {
     @Column()
     private Double totprice;
     @Column()
+    @Excel(name="出库数量")
     private Integer outqty;
     @Column()
     private Double outval;
     @Column()
+    @Excel(name="入库状态",replace = { "订单状态_0", "已入库_1","入库中_4"})
     private Integer instatus;
     @Column()
+    @Excel(name="出库状态",replace = { "订单状态_0", "已出库_2","出库中_3"})
     private Integer outstatus;
     @Column()
     private Double stockval;
@@ -151,6 +154,7 @@ public class SaleorderCountView {
     @Column()
     private Double payprice;
     @Column()
+    @Excel(name="单据状态",replace = { "撤销_-1", "录入_0","审核_1","结束_2","操作中_3","申请撤销_4","商城订单暂存_5","商城订单录入_6"})
     private Integer status;
     @Column()
     private Double totprices;
@@ -517,7 +521,7 @@ public class SaleorderCountView {
         this.busnissname = busnissname;
     }
 
-    @Transient
+    @Column()
     @Excel(name="单据类型")
     private String saletype;
 
@@ -532,6 +536,7 @@ public class SaleorderCountView {
     @Column()
     private String deport;
     @Column()
+    @Excel(name="仓库")
     private String deportname;
 
     public String getDeportname() {

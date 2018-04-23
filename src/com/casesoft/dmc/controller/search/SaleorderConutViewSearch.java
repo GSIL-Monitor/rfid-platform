@@ -86,26 +86,26 @@ public class SaleorderConutViewSearch extends BaseController {
         List<SaleorderCountView> datanew =new ArrayList<SaleorderCountView>();
         for(int i=0;i<data.size();i++){
             SaleorderCountView saleorderCountView = (SaleorderCountView) data.get(i);
-            String billno = saleorderCountView.getBillno();
+           /* String billno = saleorderCountView.getBillno();
             if(billno.contains(BillConstant.BillPrefix.saleOrder)){
                 saleorderCountView.setSaletype("销售订单");
-               /* if(saleorderCountView.getOutqty()==saleorderCountView.getQty()){
+               *//* if(saleorderCountView.getOutqty()==saleorderCountView.getQty()){
                     saleorderCountView.setScreening("N");
                 }else{
                     saleorderCountView.setScreening("Y");
-                }*/
+                }*//*
 
             }
             if(billno.contains(BillConstant.BillPrefix.SaleOrderReturn)){
                 saleorderCountView.setSaletype("销售退货订单");
-               /* if(saleorderCountView.getInitqty()==saleorderCountView.getQty()){
+               *//* if(saleorderCountView.getInitqty()==saleorderCountView.getQty()){
                     saleorderCountView.setScreening("N");
                 }else{
                     saleorderCountView.setScreening("Y");
-                }*/
-               /* Integer qty = saleorderCountView.getQty();
-                saleorderCountView.setQty(Integer.parseInt("-"+qty));*/
-            }
+                }*//*
+               *//* Integer qty = saleorderCountView.getQty();
+                saleorderCountView.setQty(Integer.parseInt("-"+qty));*//*
+            }*/
             File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
@@ -126,7 +126,7 @@ public class SaleorderConutViewSearch extends BaseController {
     DataSourceResult readsale(@RequestBody DataSourceRequest request) {
 
         DataSourceResult dataResult = saleorderCountDao.getSaleList(request);
-        List<?> data = dataResult.getData();
+       /* List<?> data = dataResult.getData();
         List<SaleNodeatilViews> datanew =new ArrayList<SaleNodeatilViews>();
         for(int i=0;i<data.size();i++){
             SaleNodeatilViews saleNodeatilViews = (SaleNodeatilViews) data.get(i);
@@ -141,7 +141,7 @@ public class SaleorderConutViewSearch extends BaseController {
             }
             datanew.add(saleNodeatilViews);
         }
-        dataResult.setData(datanew);
+        dataResult.setData(datanew);*/
         return dataResult;
     }
     @RequestMapping(value = "/readSaleBybusinessname", method = RequestMethod.POST)
