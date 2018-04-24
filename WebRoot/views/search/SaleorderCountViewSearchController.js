@@ -503,7 +503,7 @@ function initKendoUIGrid() {
                         if (url == null) {
                             return "无图片";
                         } else {
-                            return "<img width=80 height=100 src='" + data.url + "' alt='" + data.styleid + "'/>";
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
                         }
                     }
 
@@ -2300,4 +2300,19 @@ function initSelectOrigForm() {
             }
         }
     });
+}
+function hideImage() {
+    $("#divshowImage").hide();
+
+}
+function showImagesUrl(url) {
+    debugger
+    console.log(url);
+    var Url="";
+    var urlArray=url.split("_");
+    var urlArrays=urlArray[1].split(".");
+    Url=urlArray[0]+"."+urlArrays[1];
+    $("#showImage").attr("src",Url);
+    $("#divshowImage").show();
+
 }

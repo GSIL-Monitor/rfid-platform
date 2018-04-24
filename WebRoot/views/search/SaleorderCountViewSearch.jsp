@@ -368,6 +368,9 @@
                         <input id="gridId" type=hidden  name='gridId' value=''>
                         <input id="request" type=hidden  name='request' value=''>
                     </form>
+                    <div id ="divshowImage" class="divshowImage" style="display: none">
+                        <img class="showImage" id="showImage" onclick="hideImage()">
+                    </div>
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
