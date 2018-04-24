@@ -85,7 +85,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
               *//*  Integer qty = purchaseorCountviews.getQty();
                 purchaseorCountviews.setQty(Integer.parseInt("-"+qty));*//*
             }*/
-            File file =  new File(rootPath + "/product/photo/" + purchaseorCountviews.getStyleid());
+           /* File file =  new File(rootPath + "/product/photo/" + purchaseorCountviews.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -94,7 +94,9 @@ public class PurchaseorCountviewsSearch extends BaseController {
                         purchaseorCountviews.setUrl("/product/photo/" + purchaseorCountviews.getStyleid()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(purchaseorCountviews.getStyleid(), rootPath);
+            purchaseorCountviews.setUrl(url);
             datanew.add(purchaseorCountviews);
         }
         dataResult.setData(datanew);
