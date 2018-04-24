@@ -108,7 +108,7 @@ public class SaleorderConutViewSearch extends BaseController {
                *//* Integer qty = saleorderCountView.getQty();
                 saleorderCountView.setQty(Integer.parseInt("-"+qty));*//*
             }*/
-            File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleid());
+           /* File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -118,7 +118,9 @@ public class SaleorderConutViewSearch extends BaseController {
                         saleorderCountView.setUrl("/product/photo/" + saleorderCountView.getStyleid()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(saleorderCountView.getStyleid(), rootPath);
+            saleorderCountView.setUrl(url);
             datanew.add(saleorderCountView);
         }
         dataResult.setData(datanew);
