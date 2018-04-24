@@ -78,13 +78,13 @@ public class WarehStockController extends BaseController {
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     @ResponseBody
     public DataSourceResult read(@RequestBody DataSourceRequest request) {
-        return detailStockDao.getList(request);
+        return detailStockDao.getList(request,this.session);
     }
 
     @RequestMapping(value = "/pageCode", method = RequestMethod.POST)
     @ResponseBody
     public DataSourceResult readCode(@RequestBody DataSourceRequest request) {
-        return detailStockDao.getCodeList(request);
+        return detailStockDao.getCodeList(request,this.session);
     }
 
     @RequestMapping(value = "/pageStyle", method = RequestMethod.POST)
