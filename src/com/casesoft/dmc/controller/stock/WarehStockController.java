@@ -555,11 +555,18 @@ public class WarehStockController extends BaseController {
             }
         } else {
             List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(epcStockList.get(0).getOriginBillNo(), codeListStringForSql);
-            Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
-
-            epcStockList.get(0).setSaleCycle(billRecordList.get(0).getSaleCycle());
-            epcStockList.get(0).setFloor(unit.getName());
-            epcStockList1 = epcStockList.subList(0, 1);
+            if (billRecordList.isEmpty() || billRecordList.size() == 0){
+                Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
+                Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                epcStockList.get(0).setFloor(unit.getName());
+                epcStockList.get(0).setSaleCycle(cycle);
+                epcStockList1 = epcStockList.subList(0, 1);
+            }else {
+                Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
+                epcStockList.get(0).setSaleCycle(billRecordList.get(0).getSaleCycle());
+                epcStockList.get(0).setFloor(unit.getName());
+                epcStockList1 = epcStockList.subList(0, 1);
+            }
         }
 
         return epcStockList1;
