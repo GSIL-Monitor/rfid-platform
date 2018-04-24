@@ -3,7 +3,6 @@ var addDetailgridiCol;//存储iCol
 var allCodes; //用于拼接所有添加过的唯一码，防止重复添加
 var taskType; //用于判断出入库类型 1入库 0 出库
 var wareHouse;
-var customerId; //保存所选择的客户
 var inOntWareHouseValid; //用于判断在编辑BillDtl时出入库操作是否需要校验，使用哪种校验。
 var skuQty = {};//保存每个SKU对应的出入库数量。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
@@ -889,8 +888,6 @@ function addUniqCode() {
 
     if (ct && ct != null) {
 
-        customerId=$("#search_origUnitId").val();
-
         inOntWareHouseValid = 'addPage_scanUniqueCode';
         billNo = $("#search_billNo").val();
         if ($("#search_origId").val() && $("#search_origId").val() !== null) {
@@ -1710,10 +1707,12 @@ function set(id) {
     });
 }
 
+
 function showCodesDetail(uniqueCodes) {
 
     // $("#show-uniqueCode-list").modal('show');
-    customerId=$("#search_origUnitId").val();
+
+    wareHouse = $("#search_destId").val();
 
     $("#show-uniqueCode-saleReturn-list").modal('show');
     initUniqueCodeSaleReturnList(uniqueCodes);

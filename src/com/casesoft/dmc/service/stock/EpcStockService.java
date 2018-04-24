@@ -133,15 +133,21 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.find(hql, new Object[]{});
     }
 
-    public List<EpcStock> findEpcSaleReturnByCodes(String codeStr, String customerId) {
+    public List<EpcStock> findSaleReturnEpcByCodes(String codeStr) {
+        String hql = "from EpcStock e where ("
+                + codeStr + ")";
+        return this.epcStockDao.find(hql, new Object[]{});
+    }
+
+    public List<EpcStock> findEpcSaleReturnByCodes(String codeStr, String warehId) {
         String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
                 "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
                 "FROM Record r,Business b,EpcStock e " +
                 "WHERE (" + codeStr + ") " +
                 "AND r.taskId=b.id " +
-                "AND b.destUnitId='" + customerId + "' " +
+                "AND r.origId='" + warehId + "' " +
                 "AND r.code=e.code " +
-//                "AND r.token=10 " +
+                "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
         return this.epcStockDao.find(hql, new Object[]{});
     }
@@ -204,30 +210,18 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.findUnique("from EpcStock epcstock where code=?", new Object[]{code});
     }
 
-    public List<EpcStock> findSaleReturnDtl(String code) {
+
+    public List<EpcStock> findSaleReturnFilterByOriginIdDtl(String code, String warehId) {
         String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
                 "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
                 "FROM Record r,Business b,EpcStock e " +
                 "WHERE r.taskId=b.id " +
                 "AND r.code=e.code " +
                 "AND r.code=? " +
+                "AND r.origId=? " +
                 "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
-        return this.epcStockDao.find(hql, new Object[]{code});
-
-    }
-
-    public List<EpcStock> findSaleReturnFilterByCustomerDtl(String code, String customerId) {
-        String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
-                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
-                "FROM Record r,Business b,EpcStock e " +
-                "WHERE r.taskId=b.id " +
-                "AND r.code=e.code " +
-                "AND r.code=? " +
-                "AND b.destUnitId=? " +
-                "AND r.token=10 " +
-                "ORDER BY r.scanTime DESC";
-        return this.epcStockDao.find(hql, new Object[]{code, customerId});
+        return this.epcStockDao.find(hql, new Object[]{code, warehId});
 
     }
 

@@ -3,6 +3,7 @@ package com.casesoft.dmc.controller.stock;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
@@ -29,6 +30,7 @@ import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -63,6 +65,8 @@ public class WarehStockController extends BaseController {
     private EpcStockService epcStockService;
     @Autowired
     private SaleOrderBillService saleOrderBillService;
+    @Autowired
+    private SaleOrderReturnBillService saleOrderReturnBillService;
 
     @RequestMapping(value = "/index")
     public String index() {
@@ -277,7 +281,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("inCheckEpcStockAndFindDate")
     @ResponseBody
-    public MessageBox inCheckEpcStockAndFindDate(String warehId, String code, String billNo,String customerId) {
+    public MessageBox inCheckEpcStockAndFindDate(String warehId, String code, String billNo) {
         if (code.length() != 13) {
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
@@ -302,10 +306,15 @@ public class WarehStockController extends BaseController {
                 }
             }
 
-            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByCustomerDtl(code,customerId);
-            EpcStock epcStock = epcStockList.get(0);
-            Long cycle = ((new Date()).getTime() - epcStock.getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
-            epcStock.setSaleCycle(cycle);
+            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId);
+            EpcStock epcStock;
+            if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                epcStock = this.epcStockService.findEpcAllowInCode(code);
+            } else {
+                epcStock = epcStockList.get(0);
+                Long cycle = ((new Date()).getTime() - epcStock.getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                epcStock.setSaleCycle(cycle);
+            }
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);
                 if (epcStock.getInStock() == 0) {
@@ -518,7 +527,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping(value = "/findCodeSaleReturnList")
     @ResponseBody
-    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes,String customerId) {
+    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes, String warehId) {
         String codeListStringForSql = "";
         if (CommonUtil.isNotBlank(uniqueCodes)) {
             String[] codesArray = uniqueCodes.split(",");
@@ -534,12 +543,25 @@ public class WarehStockController extends BaseController {
             }
             codeListStringForSql = CodeListString.toString();
         }
-        List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql,customerId);
-        Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
-        Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
-        epcStockList.get(0).setSaleCycle(cycle);
-        epcStockList.get(0).setFloor(unit.getName());
-        List<EpcStock> epcStockList1 = epcStockList.subList(0, 1);
+
+        //查看唯一码时，直接从BillRecord中取值
+        List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql, warehId);
+        List<EpcStock> epcStockList1;
+        if (epcStockList.isEmpty() || epcStockList.size() == 0) {
+            epcStockList1 = this.epcStockService.findSaleReturnEpcByCodes(codeListStringForSql);
+            for (EpcStock epc : epcStockList1) {
+                Unit unit = CacheManager.getUnitById(epc.getWarehouseId());
+                epc.setFloor(unit.getName());
+            }
+        } else {
+            List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(epcStockList.get(0).getOriginBillNo(), codeListStringForSql);
+            Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
+
+            epcStockList.get(0).setSaleCycle(billRecordList.get(0).getSaleCycle());
+            epcStockList.get(0).setFloor(unit.getName());
+            epcStockList1 = epcStockList.subList(0, 1);
+        }
+
         return epcStockList1;
     }
 

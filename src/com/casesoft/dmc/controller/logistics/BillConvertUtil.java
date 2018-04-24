@@ -1721,11 +1721,25 @@ public class BillConvertUtil {
         List<BillRecord> billRecordList = new ArrayList<>();
         for (SaleOrderReturnBillDtl detail : saleOrderReturnBillDtls) {
 
-            //从EpcStock中取出三字段信息 Anna
-            List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByCustomerDtl(detail.getUniqueCodes(),bill.getOrigUnitId());
-            Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
-            epcStockList.get(0).setSaleCycle(cycle);
-            EpcStock epcStock = epcStockList.get(0);
+            /*从EpcStock中取出三字段信息 add by Anna*/
+            List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(detail.getUniqueCodes(), bill.getDestId());
+            EpcStock epcStock;
+            String originBillNo;
+            Date lastSaleTime;
+            Long saleCycle;
+            if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                originBillNo = null;
+                lastSaleTime = null;
+                saleCycle = null;
+            } else {
+                Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                epcStockList.get(0).setSaleCycle(cycle);
+                epcStock = epcStockList.get(0);
+                originBillNo = epcStock.getOriginBillNo();
+                lastSaleTime = epcStock.getLastSaleTime();
+                saleCycle = epcStock.getSaleCycle();
+            }
+            /* end */
 
             detail.setId(new GuidCreator().toString());
             detail.setBillId(bill.getId());
@@ -1741,7 +1755,7 @@ public class BillConvertUtil {
             totInVal = inQty * detail.getActPrice();
             if (CommonUtil.isNotBlank(detail.getUniqueCodes())) {
                 for (String code : detail.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(detail.getBillNo() + "-" + code, code, detail.getBillNo(), detail.getSku(),epcStock.getOriginBillNo(),epcStock.getLastSaleTime(),epcStock.getSaleCycle());
+                    BillRecord billRecord = new BillRecord(detail.getBillNo() + "-" + code, code, detail.getBillNo(), detail.getSku(), originBillNo, lastSaleTime, saleCycle);
                     billRecordList.add(billRecord);
                 }
             }

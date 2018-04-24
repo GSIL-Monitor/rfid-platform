@@ -72,99 +72,99 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     public void saveReturnBatch(SaleOrderReturnBill bill, List<SaleOrderReturnBillDtl> details) {
         this.saleOrderReturnBillDao.batchExecute("delete from SaleOrderReturnBillDtl sd where sd.billNo=?", bill.getBillNo());
         this.saleOrderReturnBillDao.batchExecute("delete from BillRecord where billNo=?", bill.getBillNo());
-        String curYearMonth = CommonUtil.getDateString(new Date(),"yyyy-MM");
+        String curYearMonth = CommonUtil.getDateString(new Date(), "yyyy-MM");
         Logger logger = LoggerFactory.getLogger(SaleOrderReturnBill.class);
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
-        String preOrigUnitId= this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
+        String preOrigUnitId = this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
         Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{bill.getOrigUnitId()});
         Double preDiffPrice = this.saleOrderReturnBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
         Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
         Boolean isUpdateMonthAccount = false;
         isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(bill.getBillDate(), "yyyy-MM"));
-        if(isUpdateMonthAccount){
-            Map<String,MonthAccountStatement> preMonthAccountMap = new HashMap<>();
-            List<MonthAccountStatement> preMonthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc",preOrigUnitId);
-            for(MonthAccountStatement m : preMonthAcountList){
-                preMonthAccountMap.put(m.getId(),m);
+        if (isUpdateMonthAccount) {
+            Map<String, MonthAccountStatement> preMonthAccountMap = new HashMap<>();
+            List<MonthAccountStatement> preMonthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc", preOrigUnitId);
+            for (MonthAccountStatement m : preMonthAcountList) {
+                preMonthAccountMap.put(m.getId(), m);
             }
             List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
-            MonthAccountUtil.updateMonthAcoutData(bill.getBillDate(),preMonthAccountMap,updateMonthAccountList,preOrigUnitId,preDiffPrice,false);
+            MonthAccountUtil.updateMonthAcoutData(bill.getBillDate(), preMonthAccountMap, updateMonthAccountList, preOrigUnitId, preDiffPrice, false);
             this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
 
         }
-        if(CommonUtil.isNotBlank(preOrigUnitId)){
+        if (CommonUtil.isNotBlank(preOrigUnitId)) {
             Unit preUnit = CacheManager.getUnitByCode(preOrigUnitId);
-            if(CommonUtil.isNotBlank(preUnit)){
-                this.saleOrderReturnBillDao.batchExecute("update Unit set owingValue = owingValue - ? where id =?", preDiffPrice,preOrigUnitId);
+            if (CommonUtil.isNotBlank(preUnit)) {
+                this.saleOrderReturnBillDao.batchExecute("update Unit set owingValue = owingValue - ? where id =?", preDiffPrice, preOrigUnitId);
                 /*logger.error("销售退货单"+bill.getBillNo()+"金额"+diffPrice+"客户"+preUnit.getName()+"欠款金额"+(preUnit.getOwingValue()-preDiffPrice));*/
-                logger.error("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单本单差额"+preDiffPrice);
+                logger.error("Unit原来客户" + preUnit.getName() + "Unit原来客户编号" + preUnit.getId() + "原单本单差额" + preDiffPrice);
 
-            }else{
-               /* Customer customer = CacheManager.getCustomerById(preOrigUnitId);*/
+            } else {
+                /* Customer customer = CacheManager.getCustomerById(preOrigUnitId);*/
 
-                this.saleOrderReturnBillDao.batchExecute("update Customer set owingValue = owingValue - ? where id =?", preDiffPrice,preOrigUnitId);
+                this.saleOrderReturnBillDao.batchExecute("update Customer set owingValue = owingValue - ? where id =?", preDiffPrice, preOrigUnitId);
                 /*logger.error("销售退货单"+bill.getBillNo()+"金额"+diffPrice+"客户"+customer.getName()+"欠款金额"+(customer.getOwingValue()-preDiffPrice));*/
-                logger.error("Customer原来客户编号"+preOrigUnitId+"原单本单差额"+preDiffPrice);
+                logger.error("Customer原来客户编号" + preOrigUnitId + "原单本单差额" + preDiffPrice);
             }
         }
         if (CommonUtil.isBlank(unit)) {
 
-            if(CommonUtil.isBlank(customer.getOwingValue())){
+            if (CommonUtil.isBlank(customer.getOwingValue())) {
                 customer.setOwingValue(0.0);
             }
-            logger.error("销售退货单"+bill.getBillNo()+"本单差额"+diffPrice+"unit客户"+customer.getName()+"unit客户编号"+customer.getId()+"欠款金额"+(customer.getOwingValue()+diffPrice)+"原欠款金额"+(customer.getOwingValue()));
-            if(CommonUtil.isNotBlank(preOrigUnitId) && preOrigUnitId.equals(customer.getCode())){
-                this.saleOrderReturnBillDao.batchExecute("update Customer set owingValue = ? where id =?", customer.getOwingValue() -preDiffPrice + diffPrice,preOrigUnitId);
-            }else{
-                customer.setOwingValue(customer.getOwingValue()  + diffPrice);
+            logger.error("销售退货单" + bill.getBillNo() + "本单差额" + diffPrice + "unit客户" + customer.getName() + "unit客户编号" + customer.getId() + "欠款金额" + (customer.getOwingValue() + diffPrice) + "原欠款金额" + (customer.getOwingValue()));
+            if (CommonUtil.isNotBlank(preOrigUnitId) && preOrigUnitId.equals(customer.getCode())) {
+                this.saleOrderReturnBillDao.batchExecute("update Customer set owingValue = ? where id =?", customer.getOwingValue() - preDiffPrice + diffPrice, preOrigUnitId);
+            } else {
+                customer.setOwingValue(customer.getOwingValue() + diffPrice);
             }
             this.saleOrderReturnBillDao.saveOrUpdateX(customer);
         } else {
-            if(CommonUtil.isBlank(unit.getOwingValue())){
+            if (CommonUtil.isBlank(unit.getOwingValue())) {
                 unit.setOwingValue(0.0);
             }
-            logger.error("销售退货单"+bill.getBillNo()+"本单差额"+diffPrice+"unit客户"+unit.getName()+"unit客户编号"+unit.getId()+"欠款金额"+(unit.getOwingValue()+diffPrice)+"原欠款金额"+(unit.getOwingValue()));
-            if(CommonUtil.isNotBlank(preOrigUnitId) && preOrigUnitId.equals(unit.getCode())){
-                this.saleOrderReturnBillDao.batchExecute("update Unit set owingValue = ? where id =?", unit.getOwingValue() -preDiffPrice + diffPrice,preOrigUnitId);
-            }else{
-                unit.setOwingValue(unit.getOwingValue()  + diffPrice);
+            logger.error("销售退货单" + bill.getBillNo() + "本单差额" + diffPrice + "unit客户" + unit.getName() + "unit客户编号" + unit.getId() + "欠款金额" + (unit.getOwingValue() + diffPrice) + "原欠款金额" + (unit.getOwingValue()));
+            if (CommonUtil.isNotBlank(preOrigUnitId) && preOrigUnitId.equals(unit.getCode())) {
+                this.saleOrderReturnBillDao.batchExecute("update Unit set owingValue = ? where id =?", unit.getOwingValue() - preDiffPrice + diffPrice, preOrigUnitId);
+            } else {
+                unit.setOwingValue(unit.getOwingValue() + diffPrice);
             }
             this.saleOrderReturnBillDao.saveOrUpdateX(unit);
         }
 
-        if(isUpdateMonthAccount){
-            Map<String,MonthAccountStatement> monthAccountMap = new HashMap<>();
-            List<MonthAccountStatement> monthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc",bill.getOrigUnitId());
-            for(MonthAccountStatement m : monthAcountList){
-                monthAccountMap.put(m.getId(),m);
+        if (isUpdateMonthAccount) {
+            Map<String, MonthAccountStatement> monthAccountMap = new HashMap<>();
+            List<MonthAccountStatement> monthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc", bill.getOrigUnitId());
+            for (MonthAccountStatement m : monthAcountList) {
+                monthAccountMap.put(m.getId(), m);
             }
             List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
-            MonthAccountUtil.updateMonthAcoutData(bill.getBillDate(),monthAccountMap,updateMonthAccountList,bill.getOrigUnitId(),diffPrice,true);
+            MonthAccountUtil.updateMonthAcoutData(bill.getBillDate(), monthAccountMap, updateMonthAccountList, bill.getOrigUnitId(), diffPrice, true);
             this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
         }
         this.saleOrderReturnBillDao.saveOrUpdate(bill);
         this.saleOrderReturnBillDao.doBatchInsert(details);
-        if(CommonUtil.isNotBlank(bill.getBillRecordList())){
+        if (CommonUtil.isNotBlank(bill.getBillRecordList())) {
             this.saleOrderReturnBillDao.doBatchInsert(bill.getBillRecordList());
         }
         //退算积分
         //查询库户
-       customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
+        customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
         Unit units = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{bill.getOrigUnitId()});
-        if(CommonUtil.isNotBlank(customer)){
-            if(CommonUtil.isNotBlank(customer.getVipMessage())){
+        if (CommonUtil.isNotBlank(customer)) {
+            if (CommonUtil.isNotBlank(customer.getVipMessage())) {
                 //根据code查询
-                ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
-                for(SaleOrderReturnBillDtl saleOrderReturnBillDtl:details) {
+                ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
+                for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
                     String uniqueCodes = saleOrderReturnBillDtl.getUniqueCodes();
                     if (CommonUtil.isNotBlank(uniqueCodes)) {
                         String[] split = uniqueCodes.split(",");
                         for (int i = 0; i < split.length; i++) {
                             List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
                             PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{BillRecords.get(0).getBillNo()});
-                            if(CommonUtil.isNotBlank(pointsChange)){
+                            if (CommonUtil.isNotBlank(pointsChange)) {
                                 PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                if(CommonUtil.isNotBlank(pointsRule)){
+                                if (CommonUtil.isNotBlank(pointsRule)) {
                                     Double actPrice = saleOrderReturnBillDtl.getActPrice();
                                     double points = pointsRule.getUnitPoints() / 100 * actPrice;
                                     //Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
@@ -186,27 +186,27 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
                         }
                     }
-                    if(list.size()!=0){
+                    if (list.size() != 0) {
                         this.saleOrderReturnBillDao.doBatchInsert(list);
                     }
 
                 }
             }
         }
-        if(CommonUtil.isNotBlank(units)){
-            if(CommonUtil.isNotBlank(units.getVipMessage())){
+        if (CommonUtil.isNotBlank(units)) {
+            if (CommonUtil.isNotBlank(units.getVipMessage())) {
                 //根据code查询
-                ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
-                for(SaleOrderReturnBillDtl saleOrderReturnBillDtl:details) {
+                ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
+                for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
                     String uniqueCodes = saleOrderReturnBillDtl.getUniqueCodes();
                     if (CommonUtil.isNotBlank(uniqueCodes)) {
                         String[] split = uniqueCodes.split(",");
                         for (int i = 0; i < split.length; i++) {
                             List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
                             PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{BillRecords.get(0).getBillNo()});
-                            if(CommonUtil.isNotBlank(pointsChange)){
+                            if (CommonUtil.isNotBlank(pointsChange)) {
                                 PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                if(CommonUtil.isNotBlank(pointsRule)){
+                                if (CommonUtil.isNotBlank(pointsRule)) {
                                     Double actPrice = saleOrderReturnBillDtl.getActPrice();
                                     double points = pointsRule.getUnitPoints() / 100 * actPrice;
                                     //Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
@@ -228,14 +228,13 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
                         }
                     }
-                    if(list.size()!=0){
+                    if (list.size() != 0) {
                         this.saleOrderReturnBillDao.doBatchInsert(list);
                     }
 
                 }
             }
         }
-
 
 
     }
@@ -247,33 +246,33 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         if (CommonUtil.isBlank(unit)) {
             Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
             customer.setOwingValue(customer.getOwingValue() - diffPrice);
-            logger.error("销售退货单"+saleOrderReturnBill.getBillNo()+"金额"+diffPrice+"客户"+customer.getName()+"欠款金额"+(customer.getOwingValue() - diffPrice));
+            logger.error("销售退货单" + saleOrderReturnBill.getBillNo() + "金额" + diffPrice + "客户" + customer.getName() + "欠款金额" + (customer.getOwingValue() - diffPrice));
             this.saleOrderReturnBillDao.saveOrUpdateX(customer);
         } else {
             unit.setOwingValue(unit.getOwingValue() - diffPrice);
-            logger.error("销售退货单"+saleOrderReturnBill.getBillNo()+"金额"+diffPrice+"客户"+unit.getName()+"欠款金额"+(unit.getOwingValue() - diffPrice));
+            logger.error("销售退货单" + saleOrderReturnBill.getBillNo() + "金额" + diffPrice + "客户" + unit.getName() + "欠款金额" + (unit.getOwingValue() - diffPrice));
             this.saleOrderReturnBillDao.saveOrUpdateX(unit);
         }
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
         //退算积分
         Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
-        if(CommonUtil.isNotBlank(customer)){
-            if(CommonUtil.isNotBlank(customer.getVipMessage())){
+        if (CommonUtil.isNotBlank(customer)) {
+            if (CommonUtil.isNotBlank(customer.getVipMessage())) {
                 //根据code查询
-                ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
+                ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
                 List<SaleOrderReturnBillDtl> details = this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo = ? ", new Object[]{saleOrderReturnBill.getBillNo()});
-                if(CommonUtil.isNotBlank(details)){
-                    for(SaleOrderReturnBillDtl saleOrderReturnBillDtl:details) {
+                if (CommonUtil.isNotBlank(details)) {
+                    for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
                         String uniqueCodes = saleOrderReturnBillDtl.getUniqueCodes();
                         if (CommonUtil.isNotBlank(uniqueCodes)) {
                             String[] split = uniqueCodes.split(",");
                             for (int i = 0; i < split.length; i++) {
                                 List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
                                 PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{BillRecords.get(0).getBillNo()});
-                                if(CommonUtil.isNotBlank(pointsChange)){
+                                if (CommonUtil.isNotBlank(pointsChange)) {
                                     PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                    if(CommonUtil.isNotBlank(pointsRule)){
+                                    if (CommonUtil.isNotBlank(pointsRule)) {
                                         Double actPrice = saleOrderReturnBillDtl.getActPrice();
                                         double points = pointsRule.getUnitPoints() / 100 * actPrice;
                                         // Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
@@ -295,7 +294,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
                             }
                         }
-                        if(list.size()!=0){
+                        if (list.size() != 0) {
                             this.saleOrderReturnBillDao.doBatchInsert(list);
                         }
 
@@ -303,8 +302,6 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
                 }
             }
         }
-
-
 
 
     }
@@ -316,7 +313,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
     @Override
     public SaleOrderReturnBill get(String propertyName, Object value) {
-        return this.saleOrderReturnBillDao.findUniqueBy(propertyName,value);
+        return this.saleOrderReturnBillDao.findUniqueBy(propertyName, value);
     }
 
     @Override
@@ -376,51 +373,52 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
     }
 
-    public SaleOrderReturnBill findUniqueByBillNo(String billNo){
-        return this.saleOrderReturnBillDao.findUnique("from SaleOrderReturnBill pcrb where  pcrb.billNo=?",new Object[]{billNo});
+    public SaleOrderReturnBill findUniqueByBillNo(String billNo) {
+        return this.saleOrderReturnBillDao.findUnique("from SaleOrderReturnBill pcrb where  pcrb.billNo=?", new Object[]{billNo});
     }
 
-    public List<SaleOrderReturnBillDtl> findDetailsByBillNo(String billNo){
-        String hql="from SaleOrderReturnBillDtl pd where pd.billNo=?";
-        return this.saleOrderReturnBillDao.find(hql,new Object[]{billNo});
+    public List<SaleOrderReturnBillDtl> findDetailsByBillNo(String billNo) {
+        String hql = "from SaleOrderReturnBillDtl pd where pd.billNo=?";
+        return this.saleOrderReturnBillDao.find(hql, new Object[]{billNo});
     }
+
     public MessageBox saveBusiness(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> purchaseOrderBillDtlList, Business business) throws Exception {
         MessageBox messageBox = this.taskService.checkEpcStock(business);
-        if(messageBox.getSuccess()){
+        if (messageBox.getSuccess()) {
             this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
             this.saleOrderReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
             this.taskService.webSave(business);
-            if(CommonUtil.isNotBlank(saleOrderReturnBill.getBillRecordList())){
+            if (CommonUtil.isNotBlank(saleOrderReturnBill.getBillRecordList())) {
                 this.saleOrderReturnBillDao.doBatchInsert(saleOrderReturnBill.getBillRecordList());
             }
             //记录第一次入库时间
-            if(business.getType().equals(Constant.TaskType.Inbound)){
+            if (business.getType().equals(Constant.TaskType.Inbound)) {
                 List<Record> recordList = business.getRecordList();
-                ArrayList<CodeFirstTime> list=new ArrayList<CodeFirstTime>();
-                for(int i=0;i<recordList.size();i++){
-                    CodeFirstTime codeFirstTime =this.saleOrderReturnBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?",new Object[]{recordList.get(i).getCode(),saleOrderReturnBill.getDestId()});
-                    if(CommonUtil.isBlank(codeFirstTime)){
-                        CodeFirstTime newcodeFirstTime=new CodeFirstTime();
-                        newcodeFirstTime.setId(recordList.get(i).getCode()+"-"+saleOrderReturnBill.getDestId());
+                ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
+                for (int i = 0; i < recordList.size(); i++) {
+                    CodeFirstTime codeFirstTime = this.saleOrderReturnBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?", new Object[]{recordList.get(i).getCode(), saleOrderReturnBill.getDestId()});
+                    if (CommonUtil.isBlank(codeFirstTime)) {
+                        CodeFirstTime newcodeFirstTime = new CodeFirstTime();
+                        newcodeFirstTime.setId(recordList.get(i).getCode() + "-" + saleOrderReturnBill.getDestId());
                         newcodeFirstTime.setCode(recordList.get(i).getCode());
                         newcodeFirstTime.setWarehouseId(saleOrderReturnBill.getDestId());
                         newcodeFirstTime.setFirstTime(new Date());
                         Unit unitByCode = CacheManager.getUnitByCode(saleOrderReturnBill.getDestUnitId());
-                        if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
+                        if (CommonUtil.isNotBlank(unitByCode) && CommonUtil.isNotBlank(unitByCode.getGroupId()) && unitByCode.getGroupId().equals("JMS")) {
                             newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
-                        }else{
+                        } else {
                             Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
                             newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
                         }
                         list.add(newcodeFirstTime);
                     }
                 }
-                if(list.size()!=0){
+                if (list.size() != 0) {
                     this.saleOrderReturnBillDao.doBatchInsert(list);
                 }
             }
             return messageBox;
-        }else{
+        } else {
             return messageBox;
         }
 
@@ -434,66 +432,74 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
 
     public List<BillRecord> getBillRecod(String billNo) {
-        return  this.saleOrderReturnBillDao.find("from BillRecord where billNo=?",new Object[]{billNo});
+        return this.saleOrderReturnBillDao.find("from BillRecord where billNo=?", new Object[]{billNo});
+    }
+
+    public List<BillRecord> getBillRecordForCycle(String originBillNo, String code) {
+        String hql = "select e from BillRecord e " +
+                "WHERE (" + code + ") " +
+                "AND e.originBillNo='" + originBillNo + "'";
+        return this.saleOrderReturnBillDao.find(hql, new Object[]{});
     }
 
 
-    public String handleMoneycancel(String billNo,String srcBillNo){
-        try{
-            List<SaleOrderReturnBillDtl> SaleOrderReturnBillDtllist= this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo=?", new Object[]{billNo});
-            List<ConsignmentBillDtl> ConsignmentBillDtllist=this.saleOrderReturnBillDao.find("from ConsignmentBillDtl where billNo=?", new Object[]{srcBillNo});
-            for(SaleOrderReturnBillDtl saleOrderReturnBillDtl:SaleOrderReturnBillDtllist){
-               for(int i=0;i<ConsignmentBillDtllist.size();i++){
-                   if(saleOrderReturnBillDtl.getSku().equals(ConsignmentBillDtllist.get(i).getSku())){
-                       ConsignmentBillDtl consignmentBillDtl= ConsignmentBillDtllist.get(i);
-                       consignmentBillDtl.setOutMonyQty( consignmentBillDtl.getOutMonyQty()-1);
-                       this.consignmentBillDtlDao.update(consignmentBillDtl);
-                   }
-               }
-            }
-            return "";
-        }catch (Exception e){
-            return "取消失败";
-        }
-    }
-    public String handleMoneycancelSO(String billNo,String srcBillNo){
-        try{
-            List<SaleOrderReturnBillDtl> SaleOrderReturnBillDtllist= this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo=?", new Object[]{billNo});
-            List<SaleOrderBillDtl> SaleOrderBillDtllist=this.saleOrderReturnBillDao.find("from SaleOrderBillDtl where billNo=?", new Object[]{srcBillNo});
-            for(SaleOrderReturnBillDtl saleOrderReturnBillDtl:SaleOrderReturnBillDtllist){
-                for(int i=0;i<SaleOrderBillDtllist.size();i++){
-                    if(saleOrderReturnBillDtl.getSku().equals(SaleOrderBillDtllist.get(i).getSku())){
-                        SaleOrderBillDtl saleOrderBillDtl= SaleOrderBillDtllist.get(i);
-                        this.consignmentBillDtlDao.batchExecute("update SaleOrderBillDtl set returnQty=? where id=?",saleOrderBillDtl.getReturnQty()-1,saleOrderBillDtl.getId());
+    public String handleMoneycancel(String billNo, String srcBillNo) {
+        try {
+            List<SaleOrderReturnBillDtl> SaleOrderReturnBillDtllist = this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo=?", new Object[]{billNo});
+            List<ConsignmentBillDtl> ConsignmentBillDtllist = this.saleOrderReturnBillDao.find("from ConsignmentBillDtl where billNo=?", new Object[]{srcBillNo});
+            for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : SaleOrderReturnBillDtllist) {
+                for (int i = 0; i < ConsignmentBillDtllist.size(); i++) {
+                    if (saleOrderReturnBillDtl.getSku().equals(ConsignmentBillDtllist.get(i).getSku())) {
+                        ConsignmentBillDtl consignmentBillDtl = ConsignmentBillDtllist.get(i);
+                        consignmentBillDtl.setOutMonyQty(consignmentBillDtl.getOutMonyQty() - 1);
+                        this.consignmentBillDtlDao.update(consignmentBillDtl);
                     }
                 }
             }
             return "";
-        }catch (Exception e){
+        } catch (Exception e) {
             return "取消失败";
         }
     }
 
-    public String handleQtycancel(String billNo,String srcBillNo,User currentUser){
-        try{
-            boolean isok=true;
-            List<BillRecord> list= this.saleOrderReturnBillDao.find("from BillRecord where billNo=? ", new Object[]{billNo});
+    public String handleMoneycancelSO(String billNo, String srcBillNo) {
+        try {
+            List<SaleOrderReturnBillDtl> SaleOrderReturnBillDtllist = this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo=?", new Object[]{billNo});
+            List<SaleOrderBillDtl> SaleOrderBillDtllist = this.saleOrderReturnBillDao.find("from SaleOrderBillDtl where billNo=?", new Object[]{srcBillNo});
+            for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : SaleOrderReturnBillDtllist) {
+                for (int i = 0; i < SaleOrderBillDtllist.size(); i++) {
+                    if (saleOrderReturnBillDtl.getSku().equals(SaleOrderBillDtllist.get(i).getSku())) {
+                        SaleOrderBillDtl saleOrderBillDtl = SaleOrderBillDtllist.get(i);
+                        this.consignmentBillDtlDao.batchExecute("update SaleOrderBillDtl set returnQty=? where id=?", saleOrderBillDtl.getReturnQty() - 1, saleOrderBillDtl.getId());
+                    }
+                }
+            }
+            return "";
+        } catch (Exception e) {
+            return "取消失败";
+        }
+    }
+
+    public String handleQtycancel(String billNo, String srcBillNo, User currentUser) {
+        try {
+            boolean isok = true;
+            List<BillRecord> list = this.saleOrderReturnBillDao.find("from BillRecord where billNo=? ", new Object[]{billNo});
             ConsignmentBill load = this.consignmentBillDao.load(srcBillNo);
             List<Record> recordList = new ArrayList<>();
             Business bus = new Business();
             String taksId = "TSK" + CommonUtil.getDateString(new Date(), "yyyyMMdd") + System.currentTimeMillis();
             Map<String, BusinessDtl> businessDtlMap = new HashMap<>();
-            for(BillRecord billRecord:list){
-                List<BillRecord> listcode= this.saleOrderReturnBillDao.find("from BillRecord where code=? order by id desc", new Object[]{billRecord.getCode()});
+            for (BillRecord billRecord : list) {
+                List<BillRecord> listcode = this.saleOrderReturnBillDao.find("from BillRecord where code=? order by id desc", new Object[]{billRecord.getCode()});
                 BillRecord billRecord1 = listcode.get(0);
-               if(!billRecord1.getBillNo().equals(billNo)){
-                   isok=false;
-               }
+                if (!billRecord1.getBillNo().equals(billNo)) {
+                    isok = false;
+                }
             }
-            if(isok){
-                for(BillRecord billRecord:list){
-                    this.saleOrderReturnBillDao.batchExecute("update EpcStock set inStock=1, warehouseId=? where code=?",load.getDestId(),billRecord.getCode());
-                    this.saleOrderReturnBillDao.batchExecute("update ConsignmentBill set totOutQty=?",load.getTotOutQty()-1L);
+            if (isok) {
+                for (BillRecord billRecord : list) {
+                    this.saleOrderReturnBillDao.batchExecute("update EpcStock set inStock=1, warehouseId=? where code=?", load.getDestId(), billRecord.getCode());
+                    this.saleOrderReturnBillDao.batchExecute("update ConsignmentBill set totOutQty=?", load.getTotOutQty() - 1L);
                     Record record = new Record(billRecord.getCode(), taksId, taksId, Constant.Token.Storage_Consigment_Inbound, "KE000001", "");
                     BusinessDtl dtl = new BusinessDtl(taksId, currentUser.getOwnerId(), Constant.Token.Storage_Consigment_Inbound, "KE000001", billRecord.getSku(), 1);
                     record.setSku(billRecord.getSku());
@@ -505,21 +511,21 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
                     dtl.setType(Constant.TaskType.Inbound);
                     businessDtlMap.put(billRecord.getSku(), dtl);
                 }
-                List<SaleOrderReturnBillDtl> SaleOrderReturnBillDtllist= this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo=?", new Object[]{billNo});
-                List<ConsignmentBillDtl> ConsignmentBillDtllist=this.saleOrderReturnBillDao.find("from ConsignmentBillDtl where billNo=?", new Object[]{srcBillNo});
+                List<SaleOrderReturnBillDtl> SaleOrderReturnBillDtllist = this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo=?", new Object[]{billNo});
+                List<ConsignmentBillDtl> ConsignmentBillDtllist = this.saleOrderReturnBillDao.find("from ConsignmentBillDtl where billNo=?", new Object[]{srcBillNo});
                 Double totPreVal = 0D;
                 Double totRcvPrice = 0d;
-                for(SaleOrderReturnBillDtl saleOrderReturnBillDtl:SaleOrderReturnBillDtllist){
-                    for(int i=0;i<ConsignmentBillDtllist.size();i++){
-                        if(saleOrderReturnBillDtl.getSku().equals(ConsignmentBillDtllist.get(i).getSku())){
-                            ConsignmentBillDtl consignmentBillDtl= ConsignmentBillDtllist.get(i);
-                            consignmentBillDtl.setOutQty( consignmentBillDtl.getOutQty()-1);
-                            consignmentBillDtl.setBeforeoutQty(consignmentBillDtl.getBeforeoutQty()-1);
+                for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : SaleOrderReturnBillDtllist) {
+                    for (int i = 0; i < ConsignmentBillDtllist.size(); i++) {
+                        if (saleOrderReturnBillDtl.getSku().equals(ConsignmentBillDtllist.get(i).getSku())) {
+                            ConsignmentBillDtl consignmentBillDtl = ConsignmentBillDtllist.get(i);
+                            consignmentBillDtl.setOutQty(consignmentBillDtl.getOutQty() - 1);
+                            consignmentBillDtl.setBeforeoutQty(consignmentBillDtl.getBeforeoutQty() - 1);
                             this.consignmentBillDtlDao.update(consignmentBillDtl);
-                            this.saleOrderReturnBillDao.batchExecute("update ConsignmentBill set totOutVal=?",load.getTotOutVal()-consignmentBillDtl.getActPrice());
+                            this.saleOrderReturnBillDao.batchExecute("update ConsignmentBill set totOutVal=?", load.getTotOutVal() - consignmentBillDtl.getActPrice());
                         }
-                        for(int a=0;a<recordList.size();a++){
-                            if(ConsignmentBillDtllist.get(i).getSku().equals(recordList.get(a).getSku())){
+                        for (int a = 0; a < recordList.size(); a++) {
+                            if (ConsignmentBillDtllist.get(i).getSku().equals(recordList.get(a).getSku())) {
                                 Record record = recordList.get(a);
                                 record.setOwnerId(currentUser.getOwnerId());
                                 record.setDestId(load.getDestId());
@@ -533,8 +539,8 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
                                 record.setPrice(ConsignmentBillDtllist.get(i).getActPrice());
                                 BusinessDtl dtl = businessDtlMap.get(recordList.get(a).getSku());
                                 totPreVal += recordList.get(a).getPrice();
-                                totRcvPrice+= ConsignmentBillDtllist.get(i).getPrice();
-                                dtl.setPreVal(dtl.getQty()*ConsignmentBillDtllist.get(i).getActPrice());
+                                totRcvPrice += ConsignmentBillDtllist.get(i).getPrice();
+                                dtl.setPreVal(dtl.getQty() * ConsignmentBillDtllist.get(i).getActPrice());
                             }
                         }
 
@@ -569,16 +575,16 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
               /*  load.setTotOutQty(Long.getLong((load.getTotOutQty().intValue()-sum)+""));
                 this.consignmentBillDao.update(load);*/
                 return null;
-            }else{
+            } else {
                 return "取消失败";
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return "取消失败";
         }
 
     }
 
     public Integer findBillStatus(String billNo) {
-        return this.saleOrderReturnBillDao.findUnique("select status from SaleOrderReturnBill where id=?",billNo);
+        return this.saleOrderReturnBillDao.findUnique("select status from SaleOrderReturnBill where id=?", billNo);
     }
 }
