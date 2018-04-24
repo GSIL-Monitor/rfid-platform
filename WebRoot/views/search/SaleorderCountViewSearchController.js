@@ -100,6 +100,8 @@ function initMultiSelect() {
         success: function (data, textStatus) {
             $("#filter_in_deport").empty();
             $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#filter_in_deport").append("<option value='allDG' style='background-color: #eeeeee'>所有门店仓库</option>");
+            $("#filter_in_deport").append("<option value='allJMS' style='background-color: #eeeeee'>所有加盟商仓库</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -134,6 +136,8 @@ function initMultiSelect() {
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
                 $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+                $("#filter_in_deport").append("<option value='allDG' style='background-color: #eeeeee'>所有门店仓库</option>");
+                $("#filter_in_deport").append("<option value='allJMS' style='background-color: #eeeeee'>所有加盟商仓库</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -2313,5 +2317,20 @@ function showImagesUrl(url) {
     Url=urlArray[0]+"."+urlArrays[1];
     $("#showImage").attr("src",Url);
     $("#divshowImage").show();
+
+}
+function changedeport() {
+    var deport=$("#filter_in_deport").val();
+    if(deport=="allDG"){
+        $("#filter_contains_groupid").val("DG");
+        $("#filter_in_deport").attr("name","");
+    }else if(deport=="allJMS"){
+        $("#filter_contains_groupid").val("JMS");
+        $("#filter_in_deport").attr("name","");
+    }else{
+        $("#filter_contains_groupid").val("");
+        $("#filter_in_deport").attr("name","filter_in_deport");
+    }
+
 
 }
