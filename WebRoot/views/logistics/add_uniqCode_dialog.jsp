@@ -39,8 +39,8 @@
         <div class="modal-footer">
             <%--<label class="control-label col-sm-3" for="codeQty" style="text-align: center">已添加数量：</label>--%>
             <%--<div class="col-sm-1">--%>
-                <%--<input class="form-control" type="text" id="codeQty"--%>
-                       <%--style="float: left;background-color: transparent;border: none" readonly value="0">--%>
+            <%--<input class="form-control" type="text" id="codeQty"--%>
+            <%--style="float: left;background-color: transparent;border: none" readonly value="0">--%>
             <%--</div>--%>
 
             <div class="col-lg-4">
@@ -87,7 +87,7 @@
             sortname: 'updateTime',
             sortorder: "desc"
 
-    });
+        });
         var parent_column = $("#uniqueCodeGrid").closest('.modal-dialog');
         $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width() - 5);
     }
@@ -278,3 +278,4 @@
         }
     }
 </script>
+
