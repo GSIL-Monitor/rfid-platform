@@ -14,6 +14,9 @@ $(function () {
 function refresh(){
     location.reload(true);
 }
+function closeEditDialog() {
+    $("#edit-dialog").modal('hide');
+}
 function initdate() {
     $.ajax({
         url : basePath + "/location/Regional/findprovince.do",

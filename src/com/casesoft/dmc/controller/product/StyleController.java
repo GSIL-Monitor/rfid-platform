@@ -166,7 +166,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
 		mv.addObject("styleId", styleId);
-		mv.addObject("v",propertyTypeList);
+		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("roleId",getCurrentUser().getRoleId());
 		mv.addObject("userId",getCurrentUser().getId());
 		return mv;
