@@ -1,8 +1,10 @@
 package com.casesoft.dmc.service.search;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
@@ -78,7 +80,7 @@ public class DetailStockDaoImpl implements DetailStockDao {
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockChatView.class);
         String rootPath = session.getServletContext().getRealPath("/");
         for(DetailStockChatView d : (List<DetailStockChatView>) dataSourceResult.getData()){
-            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
+            /*File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -98,7 +100,9 @@ public class DetailStockDaoImpl implements DetailStockDao {
                         }
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
+            d.setUrl(url);
         }
         return dataSourceResult;
     }

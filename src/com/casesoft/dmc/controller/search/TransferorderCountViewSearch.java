@@ -81,7 +81,7 @@ public class TransferorderCountViewSearch extends BaseController {
         for(int i=0;i<data.size();i++){
             TransferorderCountView saleorderCountView = (TransferorderCountView) data.get(i);
 
-            File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleId());
+           /* File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleId());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -90,7 +90,9 @@ public class TransferorderCountViewSearch extends BaseController {
                         saleorderCountView.setUrl("/product/photo/" + saleorderCountView.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(saleorderCountView.getStyleId(), rootPath);
+            saleorderCountView.setUrl(url);
             datanew.add(saleorderCountView);
         }
         dataResult.setData(datanew);

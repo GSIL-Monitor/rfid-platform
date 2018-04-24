@@ -107,7 +107,7 @@ public class WXProductApiController extends ApiBaseController {
         page = this.styleService.findPage(page,filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(Style d : page.getRows()){
-            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
+           /* File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -116,7 +116,9 @@ public class WXProductApiController extends ApiBaseController {
                         d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
+            d.setUrl(url);
         }
         return this.returnSuccessInfo("获取成功",page.getRows());
     }

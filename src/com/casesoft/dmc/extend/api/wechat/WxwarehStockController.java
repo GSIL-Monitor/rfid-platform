@@ -1,6 +1,7 @@
 package com.casesoft.dmc.extend.api.wechat;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.ImgUtil;
@@ -76,7 +77,7 @@ public class WxwarehStockController extends ApiBaseController {
         page = this.detailStockViewChatService.findPage(page,filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(DetailStockChatView d : page.getRows()){
-            File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
+           /* File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -85,7 +86,9 @@ public class WxwarehStockController extends ApiBaseController {
                         d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
+            d.setUrl(url);
         }
         return this.returnSuccessInfo("获取成功",page.getRows());
     }
