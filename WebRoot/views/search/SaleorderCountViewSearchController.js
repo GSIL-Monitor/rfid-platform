@@ -503,7 +503,7 @@ function initKendoUIGrid() {
                         if (url == null) {
                             return "无图片";
                         } else {
-                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath+ data.url + "' alt='" + data.styleid + "'/>";
                         }
                     }
 
