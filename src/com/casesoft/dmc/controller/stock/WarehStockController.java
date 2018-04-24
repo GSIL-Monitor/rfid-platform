@@ -1,6 +1,10 @@
 package com.casesoft.dmc.controller.stock;
 
+import java.util.ArrayList;
+import java.util.List;
 
+import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.task.TaskUtil;
@@ -19,7 +23,6 @@ import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
 import com.casesoft.dmc.model.search.DetailStockView;
-import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 
 import com.casesoft.dmc.model.tag.Epc;
@@ -27,6 +30,7 @@ import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -42,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.DatatypeConverter;
+import java.text.SimpleDateFormat;
 
 import java.io.*;
 import java.util.*;
@@ -60,6 +65,8 @@ public class WarehStockController extends BaseController {
     private EpcStockService epcStockService;
     @Autowired
     private SaleOrderBillService saleOrderBillService;
+    @Autowired
+    private SaleOrderReturnBillService saleOrderReturnBillService;
 
     @RequestMapping(value = "/index")
     public String index() {
@@ -264,6 +271,81 @@ public class WarehStockController extends BaseController {
 
     }
 
+    /**
+     * add by Anna 2018-04-20
+     * 销售退货流程新增查看 原始单号＋最近销售日期＋销售周期
+     *
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @param code    唯一码
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     */
+    @RequestMapping("inCheckEpcStockAndFindDate")
+    @ResponseBody
+    public MessageBox inCheckEpcStockAndFindDate(String warehId, String code, String billNo) {
+        if (code.length() != 13) {
+            String epcCode = code.toUpperCase();
+            code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+        }
+        try {
+            if (CommonUtil.isNotBlank(billNo)) {
+                List<Business> businessList = this.taskService.findBusinessByBillNo(billNo);
+                if (CommonUtil.isNotBlank(businessList)) {
+                    List<String> taskIdList = new ArrayList<>();
+                    for (Business business : businessList) {
+                        taskIdList.add(business.getId());
+                    }
+                    String taskIdStr = TaskUtil.getSqlStrByList(taskIdList, Record.class, "taskId");
+                    List<Record> recordList = this.taskService.findRecordByTaskIdAndType(taskIdStr, 1);
+                    List<String> codeList = new ArrayList<>();
+                    for (Record record : recordList) {
+                        codeList.add(record.getCode());
+                    }
+                    if (codeList.contains(code)) {
+                        return new MessageBox(false, "唯一码:" + code + " 在本单已入，不能重复入库");
+                    }
+                }
+            }
+
+            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId);
+            EpcStock epcStock;
+            if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                epcStock = this.epcStockService.findEpcAllowInCode(code);
+            } else {
+                epcStock = epcStockList.get(0);
+                Long cycle = ((new Date()).getTime() - epcStock.getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                epcStock.setSaleCycle(cycle);
+            }
+            if (CommonUtil.isNotBlank(epcStock)) {
+                StockUtil.convertEpcStock(epcStock);
+                if (epcStock.getInStock() == 0) {
+                    return new MessageBox(true, "", epcStock);
+                } else {
+                    return new MessageBox(false, "唯一码:" + code + "不能入库");
+                }
+            } else {
+                Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
+                if (CommonUtil.isNotBlank(tagEpc)) {
+                    epcStock = new EpcStock();
+                    epcStock.setId(code);
+                    epcStock.setCode(code);
+                    epcStock.setSku(tagEpc.getSku());
+                    epcStock.setStyleId(tagEpc.getStyleId());
+                    epcStock.setColorId(tagEpc.getColorId());
+                    epcStock.setSizeId(tagEpc.getSizeId());
+                    epcStock.setInStock(0);
+                    epcStock.setWarehouseId(warehId);
+                    StockUtil.convertEpcStock(epcStock);
+                    return new MessageBox(true, "", epcStock);
+                } else {
+                    return new MessageBox(false, "唯一码:" + code + "不能入库");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+    }
+
 
     /**
      * 直接入库唯一码验证
@@ -343,11 +425,11 @@ public class WarehStockController extends BaseController {
         try {
             boolean is_wxshop = Boolean.parseBoolean(PropertyUtil
                     .getValue("is_wxshop"));
-            if(CommonUtil.isNotBlank(is_wxshop)){
-                if (Boolean.parseBoolean(PropertyUtil.getValue("is_wxshop"))){
-                    if(billNo.startsWith(BillConstant.BillPrefix.saleOrder)){
+            if (CommonUtil.isNotBlank(is_wxshop)) {
+                if (Boolean.parseBoolean(PropertyUtil.getValue("is_wxshop"))) {
+                    if (billNo.startsWith(BillConstant.BillPrefix.saleOrder)) {
                         //微商城销售单更新
-                        this.saleOrderBillService.ShopBilldeal(billNo,codes);
+                        this.saleOrderBillService.ShopBilldeal(billNo, codes);
                     }
                 }
             }
@@ -436,6 +518,59 @@ public class WarehStockController extends BaseController {
         }
     }
 
+    /***
+     * Anna
+     * 销售退货表－唯一码明细中显示 原始单据，销售
+     *
+     * @param uniqueCodes 单据明细中，唯一码拼接起来的字符串
+     * @return 唯一码明细
+     */
+    @RequestMapping(value = "/findCodeSaleReturnList")
+    @ResponseBody
+    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes, String warehId) {
+        String codeListStringForSql = "";
+        if (CommonUtil.isNotBlank(uniqueCodes)) {
+            String[] codesArray = uniqueCodes.split(",");
+            StringBuilder CodeListString = new StringBuilder();
+            CodeListString.append("e.code in (");
+            for (int i = 0; i < codesArray.length; i++) {
+                CodeListString.append("'").append(codesArray[i]).append("'");
+                if (i == codesArray.length - 1) {
+                    CodeListString.append(")");
+                } else {
+                    CodeListString.append(",");
+                }
+            }
+            codeListStringForSql = CodeListString.toString();
+        }
+
+        //查看唯一码时，直接从BillRecord中取值
+        List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql, warehId);
+        List<EpcStock> epcStockList1;
+        if (epcStockList.isEmpty() || epcStockList.size() == 0) {
+            epcStockList1 = this.epcStockService.findSaleReturnEpcByCodes(codeListStringForSql);
+            for (EpcStock epc : epcStockList1) {
+                Unit unit = CacheManager.getUnitById(epc.getWarehouseId());
+                epc.setFloor(unit.getName());
+            }
+        } else {
+            List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(epcStockList.get(0).getOriginBillNo(), codeListStringForSql);
+            if (billRecordList.isEmpty() || billRecordList.size() == 0){
+                Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
+                Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                epcStockList.get(0).setFloor(unit.getName());
+                epcStockList.get(0).setSaleCycle(cycle);
+                epcStockList1 = epcStockList.subList(0, 1);
+            }else {
+                Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
+                epcStockList.get(0).setSaleCycle(billRecordList.get(0).getSaleCycle());
+                epcStockList.get(0).setFloor(unit.getName());
+                epcStockList1 = epcStockList.subList(0, 1);
+            }
+        }
+
+        return epcStockList1;
+    }
 
     /***
      * Wang Yushen
@@ -595,17 +730,17 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("/getStyleIdByCode")
     @ResponseBody
-    public MessageBox getStyleIdByCode(String code) throws Exception{
+    public MessageBox getStyleIdByCode(String code) throws Exception {
         this.logAllRequestParams();
         if (code.length() != 13) {
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
         }
         EpcStock epcStock = this.epcStockService.findStockEpcByCode(code);
-        if(CommonUtil.isNotBlank(epcStock)){
+        if (CommonUtil.isNotBlank(epcStock)) {
             return new MessageBox(true, "查询成功", epcStock.getStyleId());
-        }else {
-            return new MessageBox(false, "查询不到唯一码：" + code +" 对应的商品");
+        } else {
+            return new MessageBox(false, "查询不到唯一码：" + code + " 对应的商品");
         }
 
     }
