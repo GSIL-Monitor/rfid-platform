@@ -2306,7 +2306,6 @@ function hideImage() {
 
 }
 function showImagesUrl(url) {
-    debugger
     console.log(url);
     var Url="";
     var urlArray=url.split("_");
