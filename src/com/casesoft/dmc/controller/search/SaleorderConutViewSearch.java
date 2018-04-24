@@ -2,6 +2,7 @@ package com.casesoft.dmc.controller.search;
 
 
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.DataSourceRequest;
@@ -9,6 +10,7 @@ import com.casesoft.dmc.core.controller.DataSourceResult;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
@@ -112,6 +114,7 @@ public class SaleorderConutViewSearch extends BaseController {
                 if(files.length > 0){
                     File[] photos = files[0].listFiles();
                     if(photos.length > 0){
+                        String url = StyleUtil.exportImgUrl(saleorderCountView.getStyleid(), rootPath, ImgUtil.ImgExt.small);
                         saleorderCountView.setUrl("/product/photo/" + saleorderCountView.getStyleid()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }

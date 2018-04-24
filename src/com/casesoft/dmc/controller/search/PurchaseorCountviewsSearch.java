@@ -154,7 +154,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 List<PurchaseorCountviews> purchaseorCountViewList=(List<PurchaseorCountviews>)sourceResultSaleDtl.getData();
                 String rootPath = session.getServletContext().getRealPath("/");
                 for(PurchaseorCountviews d:purchaseorCountViewList){
-                    File file =  new File(rootPath + "/product/photo/" + d.getStyleid());
+                   /* File file =  new File(rootPath + "/product/photo/" + d.getStyleid());
                     if(file.exists()){
                         File[] files = file.listFiles();
                         if(files.length > 0){
@@ -169,7 +169,9 @@ public class PurchaseorCountviewsSearch extends BaseController {
                     if (CommonUtil.isBlank(d.getUrl())) {
                         //没有图片设置默认图片
                         d.setUrl("/product/photo/noImg.png");
-                    }
+                    }*/
+                    String url = StyleUtil.returnImageUrl(d.getStyleid(), rootPath);
+                    d.setUrl(url);
                     String billno = d.getBillid();
                     if(billno.contains(BillConstant.BillPrefix.purchase)){
                         d.setSaletype("采购订单");
