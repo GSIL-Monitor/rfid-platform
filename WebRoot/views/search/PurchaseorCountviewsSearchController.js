@@ -371,7 +371,7 @@ function initKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -713,7 +713,7 @@ function initKendoUIPurchaseGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -964,7 +964,7 @@ function initKendoUIPurchasestyeidGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1116,7 +1116,7 @@ function initKendoUIPurchasedestunitidGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1172,11 +1172,34 @@ function initKendoUIPurchasedestunitidGrid() {
 
 }
 function newchooseExportFunction() {
-    if(exportExcelid === "searchGrid"||exportExcelid === "searchpuchaseGrid"){
+    if(exportExcelid === "searchpuchaseGrid"){
         exportExcelPOI();
-    }else {
+    }else if(exportExcelid === "searchGrid"){
+        exportExcelImagePOI();
+    } else {
         exportExcelProPOI();
     }
+}
+function exportExcelImagePOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    console.log(gridData);
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = gridData.dataSource._page;
+    request.pageSize = gridData.dataSource._pageSize;
+    request.take = gridData.dataSource._pageSize;
+    request.sort =gridData.dataSource._sort;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+    var url=basePath+"/search/PurchaseorCountviews/exportnew.do";
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
 }
 function exportExcelProPOI() {
     var filters = serializeToFilter($("#searchForm"));

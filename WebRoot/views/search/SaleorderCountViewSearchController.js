@@ -313,34 +313,33 @@ function exportExcelPOI() {
     })*/
   //window.location.href=basePath+"/search/saleorderCountView/export.do?gridId="+exportExcelid + "&request="+JSON.stringify(request);
     var url=basePath+"/search/saleorderCountView/export.do";
-   /* document.write("<form action="+url+" method=post name=form1 style='display:none'>");
-    document.write("<input type=hidden  name='gridId' value='"+exportExcelid+"'>");
-    document.write("<input type=hidden  name='request' value='"+JSON.stringify(request)+"'>");
-    document.write("</form>");
-    document.form1.submit();*/
+
    $("#form1").attr("action",url);
    $("#gridId").val(exportExcelid);
    $("#request").val(JSON.stringify(request));
     $("#form1").submit();
-   /* var Path=basePath+"/search/saleorderCountView/export.do";
-    document.write("<form action="+Path+" method=post name=form1 style='display:none'>");
-    document.write("<input type=hidden name=name value='"+username+"'");
-    document.write("</form>");
-    document.form1.submit();*/
-    // $("#" + exportExcelid).children().find(".k-grid-excel").click();
-    /*$("from").ajaxSubmit({
-        type: 'post', // 提交方式 get/post
-        url: 'basePath+"/search/saleorderCountView/export.do', // 需要提交的 url
-        data: {
-            gridId: exportExcelid,
-            request: JSON.stringify(request)
-        },
-        success: function(data) { // data 保存提交后返回的数据，一般为 json 数据
-            // 此处可对 data 作相关处理
-            alert('提交成功！');
-        }
 
-   });*/
+   /* $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+   var options  = {
+        url:url,   //同action
+        type:'post',
+        success:function(data)
+        {
+             alert('成功..');
+        },
+        complete:function(xhr){//请求完成
+
+            alert('请求完成..');
+        },
+        error: function(xhr,status,msg){
+
+            alert('加载中..');
+
+        }
+    };
+    $("#form1").ajaxSubmit(options);*/
+
 }
 
 function showAdvSearchPanel() {
