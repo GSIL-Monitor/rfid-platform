@@ -13,6 +13,8 @@ import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.PurchaseorCountDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.PurchaseBydestunitid;
+import com.casesoft.dmc.model.logistics.PurchaseBystyleid;
 import com.casesoft.dmc.model.search.*;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -74,16 +76,16 @@ public class PurchaseorCountviewsSearch extends BaseController {
         List<PurchaseorCountviews> datanew =new ArrayList<PurchaseorCountviews>();
         for(int i=0;i<data.size();i++){
             PurchaseorCountviews purchaseorCountviews = (PurchaseorCountviews) data.get(i);
-            String billno = purchaseorCountviews.getBillid();
+           /* String billno = purchaseorCountviews.getBillid();
             if(billno.contains(BillConstant.BillPrefix.purchase)){
                 purchaseorCountviews.setSaletype("采购订单");
             }
             if(billno.contains(BillConstant.BillPrefix.purchaseReturn)){
                 purchaseorCountviews.setSaletype("采购退货订单");
-              /*  Integer qty = purchaseorCountviews.getQty();
-                purchaseorCountviews.setQty(Integer.parseInt("-"+qty));*/
-            }
-            File file =  new File(rootPath + "/product/photo/" + purchaseorCountviews.getStyleid());
+              *//*  Integer qty = purchaseorCountviews.getQty();
+                purchaseorCountviews.setQty(Integer.parseInt("-"+qty));*//*
+            }*/
+           /* File file =  new File(rootPath + "/product/photo/" + purchaseorCountviews.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -92,7 +94,9 @@ public class PurchaseorCountviewsSearch extends BaseController {
                         purchaseorCountviews.setUrl("/product/photo/" + purchaseorCountviews.getStyleid()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(purchaseorCountviews.getStyleid(), rootPath);
+            purchaseorCountviews.setUrl(url);
             datanew.add(purchaseorCountviews);
         }
         dataResult.setData(datanew);
@@ -103,7 +107,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
     DataSourceResult readpurchase(@RequestBody DataSourceRequest request) {
 
         DataSourceResult dataResult = purchaseorCountDao.getpurchaseList(request);
-        String rootPath = session.getServletContext().getRealPath("/");
+       /* String rootPath = session.getServletContext().getRealPath("/");
         List<?> data = dataResult.getData();
         List<PurchaseNodeatilViews> datanew =new ArrayList<PurchaseNodeatilViews>();
         for(int i=0;i<data.size();i++){
@@ -120,7 +124,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
 
             datanew.add(purchaseNodeatilViews);
         }
-        dataResult.setData(datanew);
+        dataResult.setData(datanew);*/
         return dataResult;
     }
    @RequestMapping(value = "/export", method = RequestMethod.POST)
@@ -146,10 +150,13 @@ public class PurchaseorCountviewsSearch extends BaseController {
             if(gridId.equals("searchGrid")){
                 long startTime = System.currentTimeMillis();
                 DataSourceResult sourceResultSaleDtl = purchaseorCountDao.getList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询采购明细所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<PurchaseorCountviews> purchaseorCountViewList=(List<PurchaseorCountviews>)sourceResultSaleDtl.getData();
                 String rootPath = session.getServletContext().getRealPath("/");
                 for(PurchaseorCountviews d:purchaseorCountViewList){
-                    File file =  new File(rootPath + "/product/photo/" + d.getStyleid());
+                   /* File file =  new File(rootPath + "/product/photo/" + d.getStyleid());
                     if(file.exists()){
                         File[] files = file.listFiles();
                         if(files.length > 0){
@@ -164,7 +171,9 @@ public class PurchaseorCountviewsSearch extends BaseController {
                     if (CommonUtil.isBlank(d.getUrl())) {
                         //没有图片设置默认图片
                         d.setUrl("/product/photo/noImg.png");
-                    }
+                    }*/
+                    String url = StyleUtil.returnImageUrl(d.getStyleid(), rootPath);
+                    d.setUrl(url);
                     String billno = d.getBillid();
                     if(billno.contains(BillConstant.BillPrefix.purchase)){
                         d.setSaletype("采购订单");
@@ -192,13 +201,124 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 workbook.write(fos);
                 fos.close();
                 long endTime = System.currentTimeMillis();
-                System.out.println("采购明细明细导出："+(endTime - startTime));
                 logger.error("采购明细明细导出："+(endTime - startTime));
                 FileWriter fileWriter = new FileWriter(file.getName(), true);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
-                this.outFile("采购明细明细-" + dateString + ".xlsx", file, contentType);
+                this.outFile("采购明细明细导出-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出采购明细所需的时间:"+(exportendtTime-exportstartTime));
+            }else if(gridId.equals("searchpuchaseGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult dataResult = purchaseorCountDao.getpurchaseList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询采购单所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
+                List<PurchaseNodeatilViews> PurchaseNodeatildatas =( List<PurchaseNodeatilViews>) dataResult.getData();
+                for(int i=0;i<PurchaseNodeatildatas.size();i++){
+                    PurchaseNodeatilViews purchaseNodeatilViews = (PurchaseNodeatilViews) PurchaseNodeatildatas.get(i);
+                    String billno = purchaseNodeatilViews.getBillno();
+                    if(billno.contains(BillConstant.BillPrefix.purchase)){
+                        purchaseNodeatilViews.setSaletype("采购订单");
+                    }
+                    if(billno.contains(BillConstant.BillPrefix.purchaseReturn)){
+                        purchaseNodeatilViews.setSaletype("采购退货订单");
+                        //Integer qty = purchaseNodeatilViews.getTotqty();
+                        //purchaseNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                    }
+
+
+                }
+                ExportParams params = new ExportParams("采购", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\采购-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "采购-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, PurchaseNodeatilViews.class, PurchaseNodeatildatas);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                logger.error("采购导出："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("采购-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出采购单所需的时间:"+(exportendtTime-exportstartTime));
+            }else if(gridId.equals("searchpuchaseBystyeidGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult dataResult = purchaseorCountDao.getPurchaseBybystyleidList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询采购按商品汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
+                List<PurchaseBystyleid> PurchaseBystyleiddatas =( List<PurchaseBystyleid>) dataResult.getData();
+                ExportParams params = new ExportParams("采购按商品汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\采购按商品汇总-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "采购按商品汇总-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, PurchaseBystyleid.class, PurchaseBystyleiddatas);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                logger.error("采购按商品汇总："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("采购按商品汇总-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按采购按商品汇总所需的时间:"+(exportendtTime-exportstartTime));
+            }else if(gridId.equals("searchpuchaseBydestunitidGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult dataResult = purchaseorCountDao.getPurchaseBydestunitidList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询按采购按厂家汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
+                List<PurchaseBydestunitid> PurchaseBydestunitdatas =( List<PurchaseBydestunitid>) dataResult.getData();
+                ExportParams params = new ExportParams("采购按厂家汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\采购按厂家汇总-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "采购按商品汇总-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, PurchaseBydestunitid.class, PurchaseBydestunitdatas);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                logger.error("采购按厂家汇总："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("采购按厂家汇总-" + dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按采购按厂家汇总所需的时间:"+(exportendtTime-exportstartTime));
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -272,13 +392,13 @@ public class PurchaseorCountviewsSearch extends BaseController {
 
     }
 
-    @RequestMapping(value = "/readpurchaseBybusinessname", method = RequestMethod.POST)
+    @RequestMapping(value = "/readpurchaseBybystyleid", method = RequestMethod.POST)
     public @ResponseBody
     DataSourceResult readSaleBybusinessname(@RequestBody DataSourceRequest request) {
 
         DataSourceResult dataResult = null;
         try {
-            dataResult = purchaseorCountDao.getPurchaseBybusinessnameList(request);
+            dataResult = purchaseorCountDao.getPurchaseBybystyleidList(request);
         } catch (Exception e) {
             e.printStackTrace();
         }

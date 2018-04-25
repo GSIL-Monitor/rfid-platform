@@ -467,6 +467,7 @@ function setFooterData() {
         totActPrice: -Math.abs(sum_totActPrice)
     });
 }
+
 function addDetail() {
     var ct = $("#search_customerType").val();
     if (ct && ct != null) {
@@ -479,6 +480,79 @@ function addDetail() {
     } else {
         bootbox.alert("请选择客户！");
     }
+}
+
+//新增不关闭
+function addProductButNotShut() {
+    if (addDetailgridiRow != null && addDetailgridiCol != null) {
+        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+        addDetailgridiRow = null;
+        addDetailgridiCol = null;
+    }
+
+    var addProductInfo = [];
+    if (editcolosizeRow != null) {
+
+        $('#color_size_grid').saveRow(editcolosizeRow, false, 'clientArray');//仅保存数据到grid中，而不会发送ajax请求服务器
+    }
+    var ct = $("#search_customerType").val();
+    var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
+    $.each($("#color_size_grid").getDataIDs(), function (index, value) {
+
+        var productInfo = $("#color_size_grid").getRowData(value);
+        if (productInfo.qty > 0) {
+
+            if (ct == "CT-AT") {//省代价格
+                productInfo.price = styleRow.puPrice;
+            } else if (ct == "CT-ST") {//门店价格
+                productInfo.price = styleRow.wsPrice;
+            } else if (ct == "CT-LS") {//吊牌价格
+                productInfo.price = styleRow.price;
+            }
+            productInfo.outQty = 0;
+            productInfo.inQty = 0;
+            productInfo.status = 0;
+            productInfo.inStatus = 0;
+            productInfo.outStatus = 0;
+            if ($("#search_discount").val() && $("#search_discount").val() !== null) {
+                productInfo.discount = $("#search_discount").val();
+            } else {
+                productInfo.discount = 100;
+            }
+            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+            productInfo.totPrice = productInfo.qty * productInfo.price;
+            productInfo.totActPrice = productInfo.qty * productInfo.actPrice;
+            productInfo.sku = productInfo.code;
+            productInfo.inStockType = styleRow.class6;
+            addProductInfo.push(productInfo);
+        }
+    });
+
+    jQuery("#color_size_grid").trigger("reloadGrid");  //清空数据重新加载
+
+    var isAdd = true;
+    $.each(addProductInfo, function (index, value) {
+        isAdd = true;
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.code === dtlRow.sku) {
+                dtlRow.qty = parseInt(dtlRow.qty) + parseInt(value.qty);
+                dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                if (dtlRow.id) {
+                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                } else {
+                    $("#addDetailgrid").setRowData(dtlndex, dtlRow);
+                }
+                isAdd = false;
+            }
+        });
+        if (isAdd) {
+            $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+        }
+    });
+    setFooterData();
+
 }
 
 function addProductInfo() {
@@ -586,6 +660,8 @@ function save() {
         dtlArray.push(rowData);
     });
     showWaitingPage();
+    //将客户传回去
+    $.ajax({});
     $.ajax({
         dataType: "json",
         async: false,
@@ -637,6 +713,7 @@ function deleteRow(rowId) {
 
     saveother(totActPrice);
 }
+
 function saveother(totActPrice) {
 
     $("#search_customerType").removeAttr('disabled');
@@ -713,6 +790,7 @@ function saveother(totActPrice) {
         }
     });
 }
+
 function initEditFormValid() {
     $('#editForm').bootstrapValidator({
         message: '输入值无效',
@@ -803,9 +881,11 @@ function initEditFormValid() {
     });
 
 }
+
 //扫码
 function addUniqCode() {
     var ct = $("#search_customerType").val();
+
     if (ct && ct != null) {
 
         inOntWareHouseValid = 'addPage_scanUniqueCode';
@@ -1105,6 +1185,7 @@ function wareHouseInOut(type) {
         bootbox.alert("请先保存当前单据");
     }
 }
+
 function quitback() {
     $.ajax({
         url: basePath + "/logistics/saleOrderReturn/quit.do?billNo=" + billNo,
@@ -1357,7 +1438,9 @@ function confirmWareHouseIn() {
 
     $("#add-uniqCode-dialog").modal('hide');
 }
+
 var dialogOpenPage;
+
 function openSearchGuestDialog() {
     dialogOpenPage = "saleOrderReturn";
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
@@ -1375,9 +1458,11 @@ function input_keydown() {
         }
     })
 }
+
 function search_discount_onblur() {
     setDiscount();
 }
+
 //将整单折扣设置到明细中
 function setDiscount() {
 
@@ -1398,6 +1483,7 @@ function setDiscount() {
     }
     setFooterData();
 }
+
 function doPrint() {
 
     /*$("#editForm").resetForm();*/
@@ -1620,9 +1706,15 @@ function set(id) {
         }
     });
 }
+
+
 function showCodesDetail(uniqueCodes) {
 
-    $("#show-uniqueCode-list").modal('show');
-    initUniqueCodeList(uniqueCodes);
-    codeListReload(uniqueCodes);
+    // $("#show-uniqueCode-list").modal('show');
+
+    wareHouse = $("#search_destId").val();
+
+    $("#show-uniqueCode-saleReturn-list").modal('show');
+    initUniqueCodeSaleReturnList(uniqueCodes);
+    codeSaleReturnListReload(uniqueCodes);
 }

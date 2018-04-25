@@ -85,7 +85,7 @@
             altRows: true,
             rowNum: 10,
             rowList: [10, 20, 50],
-            pager: "#unitSelect_Page",
+            pager: "#vendorSelect_Page",
             multiselect: false,
             shrinkToFit: true,
             sortname: 'id',
@@ -107,6 +107,7 @@
         });
 
         var parent_column = $("#vendorSelect_Grid").closest('.modal-dialog');
+        $("#vendorSelect_Page_left").css("width","2px");
         $("#vendorSelect_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
     }
     function confirm_selected_VendorId_purchaseOrder() {

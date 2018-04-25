@@ -35,7 +35,6 @@
                             <%--<input class="form-control" id="form_sortId" name="sortId"--%>
                             <%--type="text"/>--%>
                             <select class="form-control" id="form_sortId" name="sortId" placeholder="">
-                                <option value="" style="background-color: #eeeeee">--请选择尺寸组--</option>
                             </select>
                         </div>
                     </div>
@@ -53,9 +52,9 @@
     </div>
 </div>
 <script>
-    initSelect();
 
-    function initSelect() {
+    function initSelectSize() {
+        $("#form_sortId").empty();
         $.ajax({
             url: basePath + "/prod/size/listSizeSort.do?",
             cache: false,
@@ -100,6 +99,7 @@
                     $("#form_sizeId").multiselect('rebuild');*/
                 }
             }, 'json');
+        $("#form_sortId").empty();
     }
     function closeSizeDialog() {
         $("#edit_size_dialog").modal('hide');
@@ -108,6 +108,7 @@
     $(function () {
         $("#edit_size_dialog").on('show.bs.modal', function () {
             initeditSizeFormValid();
+            initSelectSize();
         });
     });
 

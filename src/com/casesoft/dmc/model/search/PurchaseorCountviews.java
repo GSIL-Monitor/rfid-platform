@@ -61,13 +61,16 @@ public class PurchaseorCountviews {
     @Excel(name="出入仓库")
     private String destname;
     @Column()
+    @Excel(name="出库状态",replace = { "订单状态_0" , "已入库_1", "入库中_4"})
     private Integer instatus;
     @Column()
+    @Excel(name="出库状态",replace = { "订单状态_0" , "已出库_2", "出库中_3"})
     private Integer outstatus;
     @Transient
     @Excel(name="图片", width = 25D,type = 2)
     private String url;
     @Column()
+    @Excel(name="单据状态",replace = { "撤销_-1", "录入_0" , "审核_1", "结束_2", "操作中_3", "申请撤销_4"})
     private Integer status;
 
     public Integer getStatus() {
@@ -160,7 +163,7 @@ public class PurchaseorCountviews {
         this.class1Name = class1Name;
     }
 
-    @Transient
+    @Column()
     @Excel(name="单据类型")
     private String saletype;
 

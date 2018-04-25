@@ -1,5 +1,6 @@
 package com.casesoft.dmc.extend.api.wechat;
 
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
@@ -323,7 +324,7 @@ public class WxSaleCountViewController extends ApiBaseController {
             if(billno.contains(BillConstant.BillPrefix.SaleOrderReturn)){
                 saleNodeatilViews.setSaletype("销售退货");
                 Integer qty = saleNodeatilViews.getTotqty();
-                saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
+                //saleNodeatilViews.setTotqty(Integer.parseInt("-"+qty));
                 saleNodeatilViews.setIshow(true);
             }
             if(CommonUtil.isNotBlank(saleNodeatilViews.getCustomertypeid())){
@@ -379,7 +380,7 @@ public class WxSaleCountViewController extends ApiBaseController {
             salebystyleids = this.saleNodeatilViewsService.WxfindSalebystyleidList(pageSize, pageNo, filters);
             String rootPath = this.getSession().getServletContext().getRealPath("/");
             for(Salebystyleid salebystyleid: salebystyleids){
-                File file =  new File(rootPath + "/product/photo/" + salebystyleid.getStyleid());
+               /* File file =  new File(rootPath + "/product/photo/" + salebystyleid.getStyleid());
                 if(file.exists()){
                     File[] files = file.listFiles();
                     if(files.length > 0){
@@ -388,7 +389,9 @@ public class WxSaleCountViewController extends ApiBaseController {
                             salebystyleid.setUrl("/product/photo/" + salebystyleid.getStyleid()+"/"+files[0].getName()+"/"+photos[0].getName());
                         }
                     }
-                }
+                }*/
+                String url = StyleUtil.returnImageUrl(salebystyleid.getStyleid(), rootPath);
+                salebystyleid.setUrl(url);
             }
         } catch (SQLException e) {
             e.printStackTrace();

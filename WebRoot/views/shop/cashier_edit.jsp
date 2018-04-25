@@ -165,7 +165,7 @@
     });
     function init() {
         initEditFormValid();
-        var flag = "${pageType}";
+        flag = "${pageType}";
         var active = $(".active");
         var html = "";
         if (flag == "add") {
@@ -194,7 +194,7 @@
         }
         cs.showProgressBar();
         debugger;
-        $.post(basePath + "/shop/cashier/save.do", $("#editForm")
+        $.post(basePath + "/shop/cashier/save.do?flag="+flag, $("#editForm")
             .serialize(), function (result) {
             debugger;
             cs.closeProgressBar();

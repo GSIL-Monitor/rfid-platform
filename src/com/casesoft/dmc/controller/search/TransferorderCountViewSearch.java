@@ -9,10 +9,14 @@ import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.ImgUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.TransferorderCountDao;
 
+import com.casesoft.dmc.model.logistics.TransferOrderBill;
+import com.casesoft.dmc.model.search.TransByOrig;
+import com.casesoft.dmc.model.search.TransByStyleId;
 import com.casesoft.dmc.model.search.TransferorderCountView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -23,6 +27,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
+import org.jeecgframework.poi.excel.entity.params.ExcelExportEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,7 +81,7 @@ public class TransferorderCountViewSearch extends BaseController {
         for(int i=0;i<data.size();i++){
             TransferorderCountView saleorderCountView = (TransferorderCountView) data.get(i);
 
-            File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleId());
+           /* File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleId());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -85,7 +90,9 @@ public class TransferorderCountViewSearch extends BaseController {
                         saleorderCountView.setUrl("/product/photo/" + saleorderCountView.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(saleorderCountView.getStyleId(), rootPath);
+            saleorderCountView.setUrl(url);
             datanew.add(saleorderCountView);
         }
         dataResult.setData(datanew);
@@ -214,31 +221,31 @@ public class TransferorderCountViewSearch extends BaseController {
         if(CommonUtil.isNotBlank(billNos)){
             map.put("billNos",billNos.size()+"");
         }else{
-            map.put("billNos","");
+            map.put("billNos","0");
         }
         List<Object> styleids = this.transferOrderBillService.findgroupSum(hqlstyleid);
         if(CommonUtil.isNotBlank(styleids)){
             map.put("styleids",styleids.size()+"");
         }else{
-            map.put("styleids","");
+            map.put("styleids","0");
         }
         Long aDouble = this.transferOrderBillService.findtransferCountnum(hqlsumnum);
         if(CommonUtil.isNotBlank(aDouble)){
             map.put("sumnum",aDouble+"");
         }else{
-            map.put("sumnum","");
+            map.put("sumnum","0");
         }
         List<Object> origids = this.transferOrderBillService.findgroupSum(hqlorigid);
         if(CommonUtil.isNotBlank(origids)){
             map.put("origids",origids.size()+"");
         }else{
-            map.put("origids","");
+            map.put("origids","0");
         }
         List<Object> destids = this.transferOrderBillService.findgroupSum(hqldestid);
         if(CommonUtil.isNotBlank(origids)){
             map.put("destids",destids.size()+"");
         }else{
-            map.put("destids","");
+            map.put("destids","0");
         }
         return new MessageBox(true, "成功",map);
     }
@@ -253,25 +260,6 @@ public class TransferorderCountViewSearch extends BaseController {
                 DataSourceResult sourceResultSaleDtl = this.transferorderCountDao.getList(dataSourceRequest);
                 List<TransferorderCountView> SaleDtlViewList = (List<TransferorderCountView>) sourceResultSaleDtl.getData();
                 String rootPath = session.getServletContext().getRealPath("/");
-                for (TransferorderCountView d : SaleDtlViewList) {
-                    File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
-                    if(file.exists()){
-                        File[] files = file.listFiles();
-                        if(files.length > 0){
-                            File[] photos = files[0].listFiles();
-                            if(photos.length > 0){
-                                //d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
-                                String url = StyleUtil.exportImgUrl(d.getStyleId(), rootPath, ImgUtil.ImgExt.small);
-                                d.setUrl(url);
-                            }
-                        }
-                    }
-                    if (CommonUtil.isBlank(d.getUrl())) {
-                        //没有图片设置默认图片
-                        d.setUrl("/product/photo/noImg.png");
-                    }
-                }
-
                 ExportParams params = new ExportParams("调拨明细", "sheet1", ExcelType.XSSF);
                 //ExportParams params = new ExportParams("大数据测试", "测试");
                 String path = Constant.Folder.Report_File_Folder;
@@ -297,10 +285,166 @@ public class TransferorderCountViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("调拨明细-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchTranGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult sourceResultSaleDtl = this.transferorderCountDao.getTranList(dataSourceRequest);
+                List<TransferOrderBill> TransferOrderList = (List<TransferOrderBill>) sourceResultSaleDtl.getData();
+                String rootPath = session.getServletContext().getRealPath("/");
+                ExportParams params = new ExportParams("调拨", "sheet1", ExcelType.XSSF);
+                //ExportParams params = new ExportParams("大数据测试", "测试");
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\调拨-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "调拨-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, TransferOrderBill.class, TransferOrderList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                System.out.println("库存调拨导出："+(endTime - startTime));
+                logger.error("库存调拨导出："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("调拨-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchTranStyleGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult sourceResultSaleDtl = this.transferorderCountDao.getTransByStyleId(dataSourceRequest);
+                List<TransByStyleId> TransByStyleIdList = (List<TransByStyleId>) sourceResultSaleDtl.getData();
+
+                ExportParams params = new ExportParams("调拨按商品汇总", "sheet1", ExcelType.XSSF);
+                //ExportParams params = new ExportParams("大数据测试", "测试");
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\调拨按商品汇总-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "调拨按商品汇总-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, TransByStyleId.class, TransByStyleIdList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                System.out.println("调拨按商品汇总导出："+(endTime - startTime));
+                logger.error("调拨按商品汇总导出："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("调拨按商品汇总-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchTransByOrigGrid")){
+                long startTime = System.currentTimeMillis();
+                DataSourceResult transByOrigDtl = this.transferorderCountDao.getTransByOrig(dataSourceRequest);
+                List<TransByOrig> TransByOrigList = (List<TransByOrig>) transByOrigDtl.getData();
+
+                ExportParams params = new ExportParams("调拨按仓库汇总", "sheet1", ExcelType.XSSF);
+                //ExportParams params = new ExportParams("大数据测试", "测试");
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\调拨按仓库汇总-" + dateString + ".xlsx");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "调拨按仓库汇总-" + dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, TransferorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, TransByOrig.class, TransByOrigList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                long endTime = System.currentTimeMillis();
+                System.out.println("调拨按仓库汇总导出："+(endTime - startTime));
+                logger.error("调拨按仓库汇总导出："+(endTime - startTime));
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("调拨按仓库汇总-" + dateString + ".xlsx", file, contentType);
+            }else if(gridId.equals("searchTransByStyleIdandSizeIdGrid")){
+                DataSourceResult dataResult = this.transferorderCountDao.getTransBystyleandsize(dataSourceRequest);
+                List<ExcelExportEntity> entity = new ArrayList<ExcelExportEntity>();
+                ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+                list=(ArrayList<Map<String,Object>>)dataResult.getData();
+                //拼接表头map
+                Map<String,Object> keynmap=list.get(0);
+                Iterator it = keynmap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    Object key = entry.getKey();
+                    if(key.equals("styleid")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款号", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+                    if(key.equals("colorid")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款号", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+                    if(key.equals("billno")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款号", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+                    if(key.equals("styleName")){
+                        ExcelExportEntity excelentity = new ExcelExportEntity("款名", key);
+                        excelentity.setWidth(40D);
+                        entity.add(excelentity);
+                    }
+
+                }
+                String sizeArray = PropertyUtil.getValue("sizeArray");
+                String[] sizeArrays = sizeArray.split(",");
+                for(int b=0;b<sizeArrays.length;b++){
+                    ExcelExportEntity excelentity = new ExcelExportEntity(sizeArrays[b], sizeArrays[b]);
+                    excelentity.setWidth(40D);
+                    entity.add(excelentity);
+                }
+                long startSizeTime = System.currentTimeMillis();
+                List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list);
+                Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("调拨按商品尺码汇总", "sheet1", ExcelType.XSSF), entity,
+                        maps);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files = new File(path + "\\调拨按商品尺码汇总");
+
+                if (!files.exists())
+                    files.mkdirs();
+                File file = new File(files, "调拨按商品尺码汇总-" + dateString + ".xlsx");
+                file.createNewFile();
+           /* for(DetailStockChatView d : list){
+                if(CommonUtil.isBlank(d.getUrl())){
+                    //没有图片设置默认图片
+                    d.setUrl("/product/photo/noImg.png");
+                }
+            }*/
+
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                FileWriter fileWriter = new FileWriter(file.getName(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("调拨按商品尺码汇总-" + dateString + ".xlsx", file, contentType);
             }
             //return null;
             //return new MessageBox(true, "导出成功，请在桌面查看");
-        }catch (IOException e){
+        }catch (Exception e){
             e.printStackTrace();
             // return new MessageBox(false, "导出失败");
         }

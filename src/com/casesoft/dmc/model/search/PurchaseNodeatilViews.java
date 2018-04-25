@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.search;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import org.jeecgframework.poi.excel.annotation.Excel;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,8 +17,10 @@ public class PurchaseNodeatilViews {
     private String id;
     @JSONField(format="yyyy-MM-dd")
     @Column(nullable = false,length = 19)
+    @Excel(name="时间")
     private Date billDate;
     @Column()
+    @Excel(name="单号")
     private String billno;
     @Column()
     private String origunitid;
@@ -26,21 +29,27 @@ public class PurchaseNodeatilViews {
     @Column()
     private String destid;
     @Column()
+    @Excel(name="出入仓库")
     private String destname;
     @Column()
     private String destunitid;
     @Column()
     private String  destunitname;
     @Column()
+    @Excel(name="数量")
     private Integer totqty;
     @Column()
+    @Excel(name="出入库数量")
     private Integer  totinqty;
     @Column()
+    @Excel(name="金额")
     private Double totinval;
     @Column()
+    @Excel(name="备注")
     private String  remark;
 
-    @Transient
+    @Column()
+    @Excel(name="单据类型")
     private String saletype;
 
     public String getSaletype() {

@@ -221,7 +221,7 @@
                                            <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
                                             </select>--%>
                                             <select class="form-control" id="filter_in_deport" name="filter_in_deport"
-                                                       style="width: 100%;" >
+                                                       style="width: 100%;" onchange="changedeport()">
                                             </select>
                                         </div>
                                       <%-- <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_origid">收货仓店</label>--%>
@@ -368,6 +368,9 @@
                         <input id="gridId" type=hidden  name='gridId' value=''>
                         <input id="request" type=hidden  name='request' value=''>
                     </form>
+                    <div id ="divshowImage" class="divshowImage" style="display: none">
+                        <img class="showImage" id="showImage" onclick="hideImage()">
+                    </div>
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->

@@ -15,7 +15,7 @@
                     <div class="widget-main">
                         <form class="form-horizontal" role="form" id="addColorSizeFrom">
 
-                            <div class="form-group">
+                            <div class="form-group" id="colorGroup">
                                 <label class="control-label col-sm-4" for="form_colorId_select">选择颜色</label>
                                 <div class="col-xs-6 col-sm-6">
                                     <div class ="input-group ">
@@ -62,14 +62,16 @@
         $("#modal-colorAndSize").on('show.bs.modal',function(){
             $("#addColorSizeFrom").resetForm();
             initColor();
+            inimultiSize();
             $("#form_sizeId").multiselect('refresh');
         });
 
     });
 
 
-
 function colAndSize(){
+    $("#form_colorId_select").empty();
+    $("#form_sizeId").empty();
     $("#modal-colorAndSize").modal('hide');
 }
 

@@ -1,6 +1,7 @@
 package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -114,7 +115,7 @@ public class MergeReplenishBillService  implements IBaseService<MergeReplenishBi
              map.put("colorid",mergeReplenishBillDtl.getColorid());
              map.put("Allqty",mergeReplenishBillDtl.getAllqyt());
             String rootPath = session.getServletContext().getRealPath("/");
-            File file =  new File(rootPath + "/product/photo/" + mergeReplenishBillDtl.getStyleid());
+           /* File file =  new File(rootPath + "/product/photo/" + mergeReplenishBillDtl.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
@@ -139,8 +140,10 @@ public class MergeReplenishBillService  implements IBaseService<MergeReplenishBi
             }else{
                 map.put("url","");
 
-            }
-             //根据sizeid分组查询结果
+            }*/
+            String url = StyleUtil.returnImageUrl(mergeReplenishBillDtl.getStyleid(), rootPath);
+            map.put("url",url);
+            //根据sizeid分组查询结果
             for(Object object:objects){
                 String hqlszides="from Recordsize t where t.billNo= ? and t.sizeid=? and t.recordid=?";
                 Recordsize Recordsizes = this.mergeReplenishBillDao.findUnique(hqlszides, new Object[]{billNo,object+"",mergeReplenishBillDtl.getId()});

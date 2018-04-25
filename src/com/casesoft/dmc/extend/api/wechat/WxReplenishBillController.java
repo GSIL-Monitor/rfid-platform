@@ -3,6 +3,7 @@ package com.casesoft.dmc.extend.api.wechat;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -76,7 +77,7 @@ public class WxReplenishBillController extends ApiBaseController {
         map.put("styleId",styleId);
         map.put("styleName",byStyleId.get(0).getStyleName());
         String rootPath = this.getSession().getServletContext().getRealPath("/");
-        File file =  new File(rootPath + "/product/photo/" + styleId);
+       /* File file =  new File(rootPath + "/product/photo/" + styleId);
         if(file.exists()){
             File[] files = file.listFiles();
             if(files.length > 0){
@@ -88,8 +89,9 @@ public class WxReplenishBillController extends ApiBaseController {
             }
         }else{
             map.put("url","");
-        }
-
+        }*/
+        String url = StyleUtil.returnImageUrl(styleId, rootPath);
+        map.put("url",url);
         List<Map<String,Object>> colorIdList= new ArrayList< Map<String,Object>>();
 
         for(int i=0;i<byStyleId.size();i++){

@@ -112,34 +112,46 @@ public class UserController extends BaseController implements IBaseInfoControlle
 	@Override
 	public MessageBox save(User user) throws Exception {
         this.logAllRequestParams();
+        String pageType = this.getReqParam("pageType");
         User sessionUser = this.getCurrentUser();
         User u=this.userService.getUserByCode(user.getCode());
-        if (CommonUtil.isBlank(u)){
-            u=new User();
-            u.setId(user.getCode());
-            u.setCode(user.getCode());
-            u.setLocked(0);
-            u.setCreatorId(sessionUser.getCode());
-            u.setCreateDate(new Date());
-            u.setPhone(user.getPhone());
-            u.setType(Constant.UserType.User);
-            u.setSrc(Constant.DataSrc.SYS);
-        }
+        if (pageType.equals("add")){
+            if (CommonUtil.isBlank(u)){
+                u=new User();
+                u.setId(user.getCode());
+                u.setCode(user.getCode());
+                u.setLocked(0);
+                u.setCreatorId(sessionUser.getCode());
+                u.setCreateDate(new Date());
+                u.setPhone(user.getPhone());
+                u.setType(Constant.UserType.User);
+                u.setSrc(Constant.DataSrc.SYS);
+                u.setName(user.getName());
+                u.setPassword(user.getPassword());
+                u.setIsAdmin(user.getIsAdmin());
+                u.setRoleId(user.getRoleId());
+                u.setPhone(user.getPhone());
+                u.setOwnerId(user.getOwnerId());
+            }else {
+                return returnFailInfo("登录名已存在，请重新输入");
+            }
+        }else {
             u.setName(user.getName());
             u.setPassword(user.getPassword());
             u.setIsAdmin(user.getIsAdmin());
             u.setRoleId(user.getRoleId());
             u.setPhone(user.getPhone());
             u.setOwnerId(user.getOwnerId());
+        }
            try {
                this.userService.save(u);
                CacheManager.refreshUserCache();
-               return returnSuccessInfo("修改成功");
+               return returnSuccessInfo("保存成功");
            }catch (Exception e){
-               return returnFailInfo("修改失败");
+                /*将异常打印到日志*/
+                this.logger.error(e.getMessage());
+                return returnFailInfo("保存失败");
            }
-
-
 	}
 
 	@Override

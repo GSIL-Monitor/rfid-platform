@@ -69,6 +69,7 @@ public class SaleNodeatilViews {
     @Column()
     private String paytype;
     @Column()
+    @Excel(name = "备注")
     private String remark;
     @Column()
     private Integer skuqty;
@@ -79,7 +80,7 @@ public class SaleNodeatilViews {
     @Excel(name = "单据数量")
     private Integer totqty;
     @Column()
-    @Excel(name = "客户类型")
+    @Excel(name = "客户类型",replace = { "省代客户_CT-AT", "门店客户_CT-ST","零售客户_CT-LS"})
     private String customertypeid;
     @Column()
     private String srcbillno;
@@ -408,7 +409,7 @@ public class SaleNodeatilViews {
     private String busnissname;
     @Column()
     private String deport;
-    @Transient
+    @Column()
     @Excel(name = "单据类型")
     private String saletype;
 

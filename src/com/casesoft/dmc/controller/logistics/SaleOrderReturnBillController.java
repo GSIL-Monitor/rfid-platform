@@ -275,6 +275,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             }
             User currentUser = CacheManager.getUserById(userId);
             saleOrderReturnBill.setId(saleOrderReturnBill.getBillNo());
+            // set&get BillRecordList
             BillConvertUtil.convertToSaleOrderReturnBill(saleOrderReturnBill, saleOrderReturnBillDtls, currentUser);
             this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill, saleOrderReturnBillDtls);
             return returnSuccessInfo("保存成功", saleOrderReturnBill.getBillNo());

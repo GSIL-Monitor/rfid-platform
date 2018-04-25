@@ -2,6 +2,7 @@ package com.casesoft.dmc.controller.search;
 
 
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.DataSourceRequest;
@@ -9,10 +10,13 @@ import com.casesoft.dmc.core.controller.DataSourceResult;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.SaleByOrignames;
+import com.casesoft.dmc.model.logistics.SaleBybusinessname;
 import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.search.saleorderCount;
@@ -84,36 +88,39 @@ public class SaleorderConutViewSearch extends BaseController {
         List<SaleorderCountView> datanew =new ArrayList<SaleorderCountView>();
         for(int i=0;i<data.size();i++){
             SaleorderCountView saleorderCountView = (SaleorderCountView) data.get(i);
-            String billno = saleorderCountView.getBillno();
+           /* String billno = saleorderCountView.getBillno();
             if(billno.contains(BillConstant.BillPrefix.saleOrder)){
                 saleorderCountView.setSaletype("销售订单");
-               /* if(saleorderCountView.getOutqty()==saleorderCountView.getQty()){
+               *//* if(saleorderCountView.getOutqty()==saleorderCountView.getQty()){
                     saleorderCountView.setScreening("N");
                 }else{
                     saleorderCountView.setScreening("Y");
-                }*/
+                }*//*
 
             }
             if(billno.contains(BillConstant.BillPrefix.SaleOrderReturn)){
                 saleorderCountView.setSaletype("销售退货订单");
-               /* if(saleorderCountView.getInitqty()==saleorderCountView.getQty()){
+               *//* if(saleorderCountView.getInitqty()==saleorderCountView.getQty()){
                     saleorderCountView.setScreening("N");
                 }else{
                     saleorderCountView.setScreening("Y");
-                }*/
-               /* Integer qty = saleorderCountView.getQty();
-                saleorderCountView.setQty(Integer.parseInt("-"+qty));*/
-            }
-            File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleid());
+                }*//*
+               *//* Integer qty = saleorderCountView.getQty();
+                saleorderCountView.setQty(Integer.parseInt("-"+qty));*//*
+            }*/
+           /* File file =  new File(rootPath + "/product/photo/" + saleorderCountView.getStyleid());
             if(file.exists()){
                 File[] files = file.listFiles();
                 if(files.length > 0){
                     File[] photos = files[0].listFiles();
                     if(photos.length > 0){
+                        String url = StyleUtil.exportImgUrl(saleorderCountView.getStyleid(), rootPath, ImgUtil.ImgExt.small);
                         saleorderCountView.setUrl("/product/photo/" + saleorderCountView.getStyleid()+"/"+files[0].getName()+"/"+photos[0].getName());
                     }
                 }
-            }
+            }*/
+            String url = StyleUtil.returnImageUrl(saleorderCountView.getStyleid(), rootPath);
+            saleorderCountView.setUrl(url);
             datanew.add(saleorderCountView);
         }
         dataResult.setData(datanew);
@@ -124,7 +131,7 @@ public class SaleorderConutViewSearch extends BaseController {
     DataSourceResult readsale(@RequestBody DataSourceRequest request) {
 
         DataSourceResult dataResult = saleorderCountDao.getSaleList(request);
-        List<?> data = dataResult.getData();
+       /* List<?> data = dataResult.getData();
         List<SaleNodeatilViews> datanew =new ArrayList<SaleNodeatilViews>();
         for(int i=0;i<data.size();i++){
             SaleNodeatilViews saleNodeatilViews = (SaleNodeatilViews) data.get(i);
@@ -139,7 +146,7 @@ public class SaleorderConutViewSearch extends BaseController {
             }
             datanew.add(saleNodeatilViews);
         }
-        dataResult.setData(datanew);
+        dataResult.setData(datanew);*/
         return dataResult;
     }
     @RequestMapping(value = "/readSaleBybusinessname", method = RequestMethod.POST)
@@ -220,7 +227,11 @@ public class SaleorderConutViewSearch extends BaseController {
                 Long exportendtTime= System.currentTimeMillis();
                 logger.error("导出销售明细所需的时间:"+(exportendtTime-exportstartTime));
             }else if(gridId.equals("searchsaleGrid")){
+                Long startTime= System.currentTimeMillis();
                 DataSourceResult sourceResultBillSum = this.saleorderCountDao.getSaleList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询销售单据所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
                 List<SaleNodeatilViews> BillSumViewList = (List<SaleNodeatilViews>) sourceResultBillSum.getData();
                 ExportParams params = new ExportParams("按单据汇总", "sheet1", ExcelType.XSSF);
                 //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleNodeatilViews.class, BillSumViewList);
@@ -242,10 +253,72 @@ public class SaleorderConutViewSearch extends BaseController {
                 bufferedWriter.close();
                 String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
                 this.outFile("按单据汇总-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出销售单据所需的时间:"+(exportendtTime-exportstartTime));
+            }else if(gridId.equals("searchsalebusinessnameGrid")){
+                Long startTime= System.currentTimeMillis();
+                DataSourceResult sourceResultbusinessnameDtl = this.saleorderCountDao.getSaleBybusinessnameList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询按销售员汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
+                List<SaleBybusinessname> SalebusinessnameList = (List<SaleBybusinessname>) sourceResultbusinessnameDtl.getData();
+                ExportParams params = new ExportParams("按销售员汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files=new File(path + "\\按销售员汇总-" +  dateString + ".xlsx");
+
+                if(!files.exists())
+                    files.mkdirs();
+                File file =new File(files,"按销售员汇总-" +  dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleBybusinessname.class, SalebusinessnameList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                FileWriter fileWriter=new FileWriter(file.getName(),true);
+                BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("按销售员汇总-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按销售员汇总所需的时间:"+(exportendtTime-exportstartTime));
+            }else if(gridId.equals("searchsaleorignameGrid")){
+                Long startTime= System.currentTimeMillis();
+                DataSourceResult sourceResultbusinessnameDtl = this.saleorderCountDao.getSaleByorignameList(dataSourceRequest);
+                Long endtTime= System.currentTimeMillis();
+                logger.error("查询按部门汇总所需的时间:"+(endtTime-startTime));
+                Long exportstartTime= System.currentTimeMillis();
+                List<SaleByOrignames> SaleOrignamesList = (List<SaleByOrignames>) sourceResultbusinessnameDtl.getData();
+                ExportParams params = new ExportParams("按部门汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files=new File(path + "\\按部门汇总-" +  dateString + ".xlsx");
+
+                if(!files.exists())
+                    files.mkdirs();
+                File file =new File(files,"按部门汇总-" +  dateString + ".xlsx");
+                //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleorderCountView.class, SaleDtlViewList);
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleByOrignames.class, SaleOrignamesList);
+                ExcelExportUtil.closeExportBigExcel();
+                //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
+                FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+                workbook.write(fos);
+                fos.close();
+                FileWriter fileWriter=new FileWriter(file.getName(),true);
+                BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
+                bufferedWriter.close();
+                String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;";
+                this.outFile("按部门汇总-" +  dateString + ".xlsx", file, contentType);
+                Long exportendtTime= System.currentTimeMillis();
+                logger.error("导出按部门汇总所需的时间:"+(exportendtTime-exportstartTime));
             }
             //return null;
             //return new MessageBox(true, "导出成功，请在桌面查看");
-        }catch (IOException e){
+        }catch (Exception e){
             e.printStackTrace();
            // return new MessageBox(false, "导出失败");
         }

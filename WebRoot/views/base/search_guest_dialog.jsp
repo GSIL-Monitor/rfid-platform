@@ -60,6 +60,7 @@
     var url;
     $(function () {
         customerkeydowns();
+
     });
     function customerkeydowns() {
         //监听回车键
@@ -83,7 +84,7 @@
     }
 
     function initGuestSelect_Grid() {
-        debugger;
+
         if (dialogOpenPage === "transferOrderOrig" || dialogOpenPage === "transferOrderUnit") {
 
             url ="";

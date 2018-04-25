@@ -128,6 +128,7 @@ function showAdvSearchPanel() {
 
 }
 function add(){
+    pageType="add";
     $("#editForm").resetForm();
     $("#form_code").attr("readOnly",false);
     $("#form_isAdmin").find("option[value='1']").removeAttr("selected");
@@ -135,6 +136,7 @@ function add(){
     $("#edit-dialog").modal('show');
 }
 function edit(){
+    pageType="edit"
 	$("#editForm").resetForm();
     $("#form_code").attr("readOnly",true);
     var rowId = $("#grid").jqGrid("getGridParam", "selrow");
@@ -165,7 +167,7 @@ function save(){
     var progressDialog = bootbox.dialog({
         message: '<p><i class="fa fa-spin fa-spinner"></i> 数据上传中...</p>'
     });
-    $.post(basePath+"/sys/user/save.do",
+    $.post(basePath+"/sys/user/save.do?pageType="+pageType,
         $("#editForm").serialize(),
         function(result) {
             if(result.success == true || result.success == 'true') {
@@ -174,6 +176,7 @@ function save(){
                 $("#grid").trigger("reloadGrid");
             }else{
                 bootbox.alert(result.msg);
+                progressDialog.modal('hide');
             }
         }, 'json');
 }

@@ -53,7 +53,7 @@ public class PurchaseorCountDaoImpl implements PurchaseorCountDao {
     }
 
     @Override
-    public DataSourceResult getPurchaseBybusinessnameList(DataSourceRequest request) throws SQLException {
+    public DataSourceResult getPurchaseBybystyleidList(DataSourceRequest request) throws SQLException {
         ResultSet rs=null;
         CallableStatement cs=null;
         Connection con=null;

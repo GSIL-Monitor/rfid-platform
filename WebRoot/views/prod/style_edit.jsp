@@ -163,8 +163,7 @@
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_class1">品牌</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class ="input-group col-xs-2">
-
+                                                    <div class ="input-group ">
                                                         <select class="chosen-select form-control" id="form_class1" name="class1">
                                                             <option value='' style='background-color: #eeeeee'>请选择品牌</option>")
                                                         </select>
@@ -180,11 +179,8 @@
 
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_class2">${classTypes[1].value}</label>
-
-
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class ="input-group col-xs-2">
-
+                                                    <div class ="input-group ">
                                                         <select class="chosen-select form-control" id="form_class2" name="class2">
                                                             <option value="" style="background-color: #eeeeee">请选择${classTypes[1].value}</option>
                                                         </select>
@@ -471,7 +467,6 @@
         setTimeout(function(){
             setUrl();
         },500);
-
         $("#form_sizeId").multiselect({
             inheritClass: true,
             includeSelectAllOption: true,
@@ -485,7 +480,6 @@
         $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
         $("div.btn-group").css("padding", "0");
 
-
     });
     //更改select背景色
     function changeBackColor() {
@@ -497,11 +491,10 @@
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C1",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class1").empty();
                 $("#form_class1").multiselect({
                     inheritClass: true,
@@ -512,35 +505,34 @@
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
                         var a=option[0].text;
                         if(a.length>5){
                             $("#form_class1").next().children("button").text(a.substr(0, 5)+"...");
                         }
-
-
-
                     }
                 });
                 $("#form_class1").append(" <option value='' style='background-color: #eeeeee'>请选择品牌</option>");
+                var value = "value";
+                var text ="text";
                 for (var i = 0; i < json.length; i++) {
+                    value=json[i].code;
+                    text =
                     $("#form_class1").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class1").find("option[value='${style.class1}']").attr("selected",true);
                 }
                 $('#form_class1').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
-
-
-
         });
+
+
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C2",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -555,39 +547,31 @@
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
                         var a=option[0].text;
                         if(a.length>5){
                             $("#form_class2").next().children("button").text(a.substr(0, 5)+"...");
                         }
-
-
-
                     }
                 });
                 $("#form_class2").append(" <option value='' style='background-color: #eeeeee'>请选择年份</option>");
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class2").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class2").find("option[value='${style.class2}']").attr("selected",true);
                 }
                 $('#form_class2').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
-
-
-
         });
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C3",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class3").empty();
                 $("#form_class3").multiselect({
                     inheritClass: true,
@@ -598,32 +582,28 @@
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
                         var a=option[0].text;
                         if(a.length>5){
                             $("#form_class3").next().children("button").text(a.substr(0, 5)+"...");
                         }
-
-
-
                     }
                 });
                 $("#form_class3").append(" <option value='' style='background-color: #eeeeee'>请选择大类</option>");
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class3").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class3").find("option[value='${style.class3}']").attr("selected",true);
                 }
                 $('#form_class3').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C4",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
@@ -638,36 +618,31 @@
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
                         var a=option[0].text;
                         if(a.length>5){
                             $("#form_class4").next().children("button").text(a.substr(0, 5)+"...");
                         }
-
-
-
                     }
                 });
                 $("#form_class4").append(" <option value='' style='background-color: #eeeeee'>请选择小类</option>");
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class4").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class4").find("option[value='${style.class4}']").attr("selected",true);
                 }
                 $('#form_class4').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C5",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class5").empty();
                 $("#form_class5").multiselect({
                     inheritClass: true,
@@ -683,31 +658,27 @@
                         if(a.length>5){
                             $("#form_class5").next().children("button").text(a.substr(0, 5)+"...");
                         }
-
-
-
                     }
                 });
                 /*  $("#form_class5").append(" <option value='' style='background-color: #eeeeee'>请选择性别</option>");*/
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class5").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class5").find("option[value='${style.class5}']").attr("selected",true);
                 }
                 $('#form_class5').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C6",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class6").empty();
                 $("#form_class6").multiselect({
                     inheritClass: true,
@@ -718,7 +689,6 @@
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
                         var a=option[0].text;
                         if(a.length>5){
                             $("#form_class6").next().children("button").text(a.substr(0, 5)+"...");
@@ -728,23 +698,22 @@
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class6").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class6").find("option[value='${style.class6}']").attr("selected",true);
                 }
                 $('#form_class6').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
 
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C7",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class7").empty();
                 $("#form_class7").multiselect({
                     inheritClass: true,
@@ -755,7 +724,6 @@
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
                         var a=option[0].text;
                         if(a.length>5){
                             $("#form_class7").next().children("button").text(a.substr(0, 5)+"...");
@@ -766,23 +734,22 @@
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class7").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class7").find("option[value='${style.class6}']").attr("selected",true);
                 }
                 $('#form_class7').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
 
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C8",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class8").empty();
                 $("#form_class8").multiselect({
                     inheritClass: true,
@@ -804,23 +771,22 @@
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class8").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
                 }
-
                 if("${pageType}"=="edit"){
                     $("#form_class8").find("option[value='${style.class8}']").attr("selected",true);
                 }
                 $('#form_class8').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
 
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C9",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class9").empty();
                 $("#form_class9").multiselect({
                     inheritClass: true,
@@ -844,18 +810,18 @@
                     $("#form_class9").find("option[value='${style.class9}']").attr("selected",true);
                 }
                 $('#form_class9').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
 
         $.ajax({
             url:basePath+"/sys/property/searchByType.do?type=C10",
             cache:false,
-            async:false,
+            async:true,
             type:"POST",
             success:function (data,textStatus) {
                 var json=data;
-
                 $("#form_class10").empty();
                 $("#form_class10").multiselect({
                     inheritClass: true,
@@ -880,20 +846,33 @@
                     $("#form_class10").find("option[value='${style.class10}']").attr("selected",true);
                 }
                 $('#form_class10').multiselect('rebuild');
-
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
-        initSizeSort();
-        iniBrandCode();
-        initColor();
-        inimultiSize();
+        $.ajax({
+            url: basePath + "/prod/size/listSizeSort.do?",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#form_sizeSortId").append("<option value='" + json[i].id + "'>" + "[" + json[i].id + "]" + json[i].sortName + "</option>");
+                    $("#form_sizeSortId").trigger('chosen:updated');
+                }
+                if ("${pageType}" == "edit") {
+                    $("#form_sizeSortId").find("option[value='${style.sizeSortId}']").attr("selected", true);
+                }
+            }
+        });
     }
     function inputPriceKeydown(){
         $("#form_price").keydown(function (event) {
             if (event.keyCode==13){
             var preCate = $("#form_preCast").val();
             var price = $("#form_price").val();
-                if(preCate>price){
+                if(Math.round(preCate)>Math.round(price)){
                     bootbox.alert("价格不符合规则");
                 }else {
                     priceIsUse();
@@ -922,7 +901,7 @@
             $.ajax({
                 url:basePath+"/sys/pricingRules/list.do",
                 cache:false,
-                async:false,
+                async:true,
                 inheritClass:true,
                 type:"POST",
                 data:{
@@ -948,6 +927,7 @@
             url=basePath + "/prod/product/page.do?filter_EQS_styleId=${styleId}";
         }
         $("#CSGrid").jqGrid("setGridParam",{
+            datatype: 'json',
             url:url,
             page : 1
         });
@@ -967,7 +947,7 @@
 
     function saveStyleAndProduct(str) {
         var isSeries = $("#form_isSeries").val();
-        if (isSeries=="Y"){
+        if (isSeries=="N"){
             $('#editStyleForm').data('bootstrapValidator').validate();
             if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                 return;
@@ -1056,7 +1036,7 @@
     function iniGrid() {
         $("#CSGrid").jqGrid({
             height: "300px",
-            datatype: 'json',
+            datatype: 'local',
             mtype: 'POST',
             colModel: [
                 {
@@ -1105,130 +1085,49 @@
                 editDtailRowId = rowid;
                 $('#CSGrid').editRow(rowid);
             }
-
         });
         $("#CSGrid").setGridWidth($("#parentWidth").width());
     }
     function saveItem(rowId) {
         editDtailRowId = null;
         $('#CSGrid').saveRow(rowId);
-
     }
     function inimultiSize() {
+        var sizeSortIdValue= $("#form_sizeSortId").val();
         $.ajax({
             url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId=${style.sizeSortId}",
             cache: false,
-            async: false,
+            async: true,
             type: 'POST',
-
             success: function (data, textStatus) {
+                $("#form_sizeId").empty();
                 var index =1;
                 for(var key in data){
-                    $("#form_sizeId").append("<optgroup label='"+key+"' class= 'group"+index+"'>");
-                    $.each(data[key],function(index,value){
-                        $("#form_sizeId").append("<option value='" + value.sizeId + "'>" + value.sizeName + "</option>");
-                    });
-                    index++;
-                    $("#form_sizeId").append("</optgroup>");
+                    if (sizeSortIdValue==(key.slice(1,3))){
+                        $("#form_sizeId").append("<optgroup label='"+key+"' class= 'group"+index+"'>");
+                        $.each(data[key],function(index,value){
+                            $("#form_sizeId").append("<option value='" + value.sizeId + "'>" + value.sizeName + "</option>");
+                        });
+                        index++;
+                        $("#form_sizeId").append("</optgroup>");
+                    }
                 }
                 $('#form_sizeId').multiselect({
                     maxHeight: "400"
                 });
                 $('#form_sizeId').multiselect('rebuild');
-
-            }
-        });
-    }
-
-    function initSizeSort() {
-        $.ajax({
-            url: basePath + "/prod/size/listSizeSort.do?",
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (data, textStatus) {
-                var json = data;
-                $("#form_sizeSortId").empty();
-                $("#form_sizeSortId").multiselect({
-                    inheritClass: true,
-                    includeSelectAllOption: true,
-                    selectAllNumber: true,
-                    enableFiltering: true,
-                    filterPlaceholder:"请选择尺寸组",
-                    maxHeight: "400",
-                    onChange: function (option, checked) {//change事件改变
-                        //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
-                        var a=option[0].text;
-                        if(a.length>5){
-                            $("#form_sizeSortId").next().children("button").text(a.substr(0, 5)+"...");
-                        }
-
-
-
-                    }
-                });
-                $("#form_sizeSortId").append(" <option value='' style='background-color: #eeeeee'>请选择尺寸组</option>");
-                for (var i = 0; i < json.length; i++) {
-                    $("#form_sizeSortId").append("<option value='"+json[i].id+"' style='background-color: #eeeeee'>"+ "[" + json[i].id + "]" + json[i].sortName + "</option>");
-                }
-
-                if("${pageType}"=="edit"){
-                    $("#form_sizeSortId").find("option[value='${style.sizeSortId}']").attr("selected",true);
-                }
-                $('#form_sizeSortId').multiselect('rebuild');
-            }
-
-        });
-    }
-
-    function iniBrandCode(){
-        $.ajax({
-            url:basePath+"/sys/property/searchByType.do?type=C1",
-            cache:false,
-            async:false,
-            type:"POST",
-            success:function (data,textStatus) {
-                var json=data;
-
-                $("#form_class1").empty();
-                $("#form_class1").multiselect({
-                    inheritClass: true,
-                    includeSelectAllOption: true,
-                    selectAllNumber: true,
-                    enableFiltering: true,
-                    filterPlaceholder:"请选择品牌",
-                    maxHeight: "400",
-                    onChange: function (option, checked) {//change事件改变
-                        //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
-
-                        var a=option[0].text;
-                        if(a.length>5){
-                            $("#form_class1").next().children("button").text(a.substr(0, 5)+"...");
-                        }
-
-
-
-                    }
-                });
-                $("#form_class1").append(" <option value='' style='background-color: #eeeeee'>选择品牌</option>");
-                for (var i = 0; i < json.length; i++) {
-                    $("#form_class1").append("<option value='"+json[i].code+"' style='background-color: #eeeeee'>"+json[i].name+"</option>");
-                }
-
-                if("${pageType}"=="edit"){
-                    $("#form_class1").find("option[value='${style.brandCode}']").attr("selected",true);
-                }
-                $('#form_class1').multiselect('rebuild');
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
     }
 
     function initColor() {
+
         $.ajax({
             url: basePath + "/prod/color/list.do?",
             cache: false,
-            async: false,
+            async: true,
             type: "POST",
             success: function (data, textStatus) {
                 var json = data;
@@ -1249,6 +1148,8 @@
                     $("#form_colorId_select").append("<option value='" + json[i].colorId + "' style='background-color: " + backColor + "'>" + json[i].colorName + "</option>");
                 }
                 $('#form_colorId_select').multiselect('rebuild');
+                $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
+                $("div.btn-group").css("padding", "0");
             }
         });
     }

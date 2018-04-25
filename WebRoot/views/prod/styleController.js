@@ -54,7 +54,7 @@ function initGrid() {
         pager: "#grid-pager",
         multiselect: false,
         shrinkToFit: false,
-        sortname : 'id',
+        sortname : 'updateTime',
         sortorder : "desc",
         autoScroll:false
 

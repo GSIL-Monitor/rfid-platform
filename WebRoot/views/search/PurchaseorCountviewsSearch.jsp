@@ -192,6 +192,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                         <div id="class1">
                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_class1">厂家</label>
 
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -212,6 +213,7 @@
                                                         style="width: 100%;" >
                                                 </select>--%>
                                             </div>
+                                         </div>
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destid">仓店</label>
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                             <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
@@ -242,6 +244,28 @@
 								                      </span>
                                                 <input class="form-control" id="filter_eq_stylename"
                                                        type="text"  readonly  placeholder="款名"/>
+                                            </div>
+                                        </div>
+                                        <div id="destunitid">
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_class1">供应商</label>
+
+                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
+                                                       placeholder="模糊查询"/> -->
+                                                <div class="input-group">
+                                                    <input class="form-control" id="filter_eq_destunitid"
+                                                           type="text" name="filter_eq_destunitid" readonly/>
+                                                    <span class="input-group-btn">
+                                                             <button class="btn btn-sm btn-default" type="button" onclick="openSearchVendorDialog()">
+                                                                 <i class="ace-icon fa fa-list"></i>
+                                                             </button>
+                                                          </span>
+                                                    <input class="form-control" id="filter_eq_destunitname"
+                                                           type="text" name="filter_eq_destunitname" readonly  placeholder="供应商"/>
+                                                </div>
+                                                <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"
+                                                        style="width: 100%;" >
+                                                </select>--%>
                                             </div>
                                         </div>
 
@@ -333,7 +357,9 @@
                             <input id="gridId" type=hidden  name='gridId' value=''>
                             <input id="request" type=hidden  name='request' value=''>
                         </form>
-
+                        <div id ="divshowImage" class="divshowImage" style="display: none">
+                            <img class="showImage" id="showImage" onclick="hideImage()">
+                        </div>
 
                         <!-- PAGE CONTENT ENDS -->
                     </div>
@@ -351,8 +377,8 @@
 
 <jsp:include page="search_js.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
-<%--<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>--%>
 <jsp:include page="../base/search_class1_dialog.jsp"></jsp:include>
+<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
 <%--<jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>--%>
 <script type="text/javascript" src="<%=basePath%>/views/search/PurchaseorCountviewsSearchController.js"></script>
 <script>
@@ -411,6 +437,8 @@
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").show();
+        $("#destunitid").show();
+        $("#class1").show();
         exportExcelid="searchGrid";
         initKendoUIGrid();
     }
@@ -420,6 +448,8 @@
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").hide();
+        $("#destunitid").hide();
+        $("#class1").hide();
         exportExcelid="searchpuchaseGrid";
         initKendoUIPurchaseGrid();
     }
@@ -430,6 +460,8 @@
         $("#searchpuchaseBystyeidGrid").show();
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").show();
+        $("#destunitid").hide();
+        $("#class1").hide();
         exportExcelid="searchpuchaseBystyeidGrid";
         initKendoUIPurchasestyeidGrid();
     }
@@ -439,6 +471,8 @@
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").show();
         $("#styleid").show();
+        $("#destunitid").hide();
+        $("#class1").hide();
         exportExcelid="searchpuchaseBydestunitidGrid";
         initKendoUIPurchasedestunitidGrid();
     }

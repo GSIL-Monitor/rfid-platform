@@ -1,5 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
+import org.jeecgframework.poi.excel.annotation.Excel;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,16 +16,20 @@ public class TransferOrderBill extends BaseBill{
     private String id;
 
     @Column()
+    @Excel(name="已出库数量")
     private Long totOutQty=0L;//出库总数量
     @Column()
     private Double totOutVal=0D;//出库总金额
     @Column()
+    @Excel(name="已入库数量")
     private Long totInQty =0L;//实际入库总数量
     @Column()
     private Double totInVal =0D;//实际入库总金额
     @Column()
+    @Excel(name="出库状态",replace = { "订单状态_0", "已出库_1" , "出库中_2"})
     private int outStatus=0;
     @Column()
+    @Excel(name="入库状态",replace = { "订单状态_0", "已入库_1" , "入库中_2"})
     private int inStatus =0;
 
     public String getId() {

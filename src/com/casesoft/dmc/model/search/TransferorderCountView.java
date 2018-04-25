@@ -23,8 +23,10 @@ public class TransferorderCountView {
     @Excel(name="日期", width = 25D)
     private Date billDate;
     @Column()
+    @Excel(name="入库状态",replace = {"订单状态_0", "已入库_1","入库中_2" })
     private Integer status;
     @Column()
+    @Excel(name="出库状态",replace = {"订单状态_0", "已出库_1","出库中_2" })
     private Integer outStatus;
     @Column()
     private String origUnitId;
@@ -47,6 +49,7 @@ public class TransferorderCountView {
     @Excel(name="入库仓库", width = 25D)
     private String destName;
     @Column()
+    @Excel(name="款号", width = 25D)
     private String styleId;
     @Column()
     @Excel(name="款名", width = 25D)

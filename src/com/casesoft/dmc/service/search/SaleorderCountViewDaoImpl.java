@@ -4,6 +4,7 @@ import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
+import com.casesoft.dmc.model.logistics.SaleByOrignames;
 import com.casesoft.dmc.model.logistics.SaleBybusinessname;
 import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.SaleorderCountView;
@@ -162,7 +163,7 @@ public class SaleorderCountViewDaoImpl implements SaleorderCountDao {
           /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);
             sort(criteria, sortDescriptors());*/
             result.setData(list);
-            result.setTotal(list.size());
+            result.setTotal(Long.parseLong(cs.getObject(7)+""));
 
            /* request.toDataSourceResult(sessionFactory.getCurrentSession(), SaleBybusinessname.class);*/
 
@@ -238,48 +239,48 @@ public class SaleorderCountViewDaoImpl implements SaleorderCountDao {
             //cs.registerOutParameter("resultSet", -10);
             cs.execute();
             rs=(ResultSet)cs.getObject(8);
-            ArrayList<SaleBybusinessname> list=new ArrayList<SaleBybusinessname>();
+            ArrayList<SaleByOrignames> list=new ArrayList<SaleByOrignames>();
             while (rs!=null&& rs.next()){
-                SaleBybusinessname saleBybusinessname=new SaleBybusinessname();
+                SaleByOrignames saleByOrignames=new SaleByOrignames();
                 //String a=rs.getObject(1).toString();
                 /*if(CommonUtil.isNotBlank(rs.getObject(1))){
                     saleBybusinessname.setBusnissname(rs.getObject(1).toString());
                 }*/
                 if(CommonUtil.isNotBlank(rs.getObject(1))){
-                    saleBybusinessname.setOrigname(rs.getObject(1).toString());
+                    saleByOrignames.setOrigname(rs.getObject(1).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(2))){
-                    saleBybusinessname.setPrecast(rs.getObject(2).toString());
+                    saleByOrignames.setPrecast(rs.getObject(2).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(3))){
-                    saleBybusinessname.setGross(rs.getObject(3).toString());
+                    saleByOrignames.setGross(rs.getObject(3).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(4))){
-                    saleBybusinessname.setSalesum(rs.getObject(4).toString());
+                    saleByOrignames.setSalesum(rs.getObject(4).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(5))){
-                    saleBybusinessname.setSalereturnsum(rs.getObject(5).toString());
+                    saleByOrignames.setSalereturnsum(rs.getObject(5).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(6))){
-                    saleBybusinessname.setSalemoney(rs.getObject(6).toString());
+                    saleByOrignames.setSalemoney(rs.getObject(6).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(7))){
-                    saleBybusinessname.setSalereturnmoney(rs.getObject(7).toString());
+                    saleByOrignames.setSalereturnmoney(rs.getObject(7).toString());
                 }
 
                 if(CommonUtil.isNotBlank(rs.getObject(8))){
-                    saleBybusinessname.setGrossprofits(rs.getObject(8).toString());
+                    saleByOrignames.setGrossprofits(rs.getObject(8).toString());
                 }
                 if(CommonUtil.isNotBlank(rs.getObject(9))){
-                    saleBybusinessname.setTotactprice(rs.getObject(9).toString());
+                    saleByOrignames.setTotactprice(rs.getObject(9).toString());
                 }
-                list.add(saleBybusinessname);
+                list.add(saleByOrignames);
             }
             DataSourceResult result = new DataSourceResult();
           /* Criteria criteria = session.createCriteria(SaleBybusinessname.class);
             sort(criteria, sortDescriptors());*/
             result.setData(list);
-            result.setTotal(list.size());
+            result.setTotal(Long.parseLong(cs.getObject(7)+""));
 
            /* request.toDataSourceResult(sessionFactory.getCurrentSession(), SaleBybusinessname.class);*/
 

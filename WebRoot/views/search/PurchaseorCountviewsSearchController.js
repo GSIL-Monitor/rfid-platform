@@ -218,9 +218,9 @@ function exportExcel() {
 }
 
 function openSearchClass1Dialog() {
-
-
-    $("#modal_class1_search_table").modal('show').on('shown.bs.modal', function () {
+    console.log("123");
+    $("#modal_class1_search_tables").modal('show').on('shown.bs.modal', function () {
+        console.log("1234");
         initClass1Select_Grid();
     });
    /* $("#searchVendorDialog_buttonGroup").html("" +
@@ -232,7 +232,7 @@ function selectClass1() {
     var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
     $("#filter_eq_class1").val(rowData.code);
     $("#filter_eq_class1Name").val(rowData.name);
-    $("#modal_class1_search_table").modal('hide');
+    $("#modal_class1_search_tables").modal('hide');
 }
 var dialogOpenPage;
 function openSearchGuestDialog() {
@@ -394,7 +394,7 @@ function initKendoUIGrid() {
                         if (url == null) {
                             return "无图片";
                         } else {
-                            return "<img width=80 height=100 src='" + data.url + "' alt='" + data.styleid + "'/>";
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
                         }
                     }
 
@@ -929,7 +929,7 @@ function initKendoUIPurchasestyeidGrid() {
 
                 transport: {
                     read: {
-                        url: basePath + "/search/PurchaseorCountviews/readpurchaseBybusinessname.do",
+                        url: basePath + "/search/PurchaseorCountviews/readpurchaseBybystyleid.do",
                         type: "POST",
                         dataType: "json",
                         async: false,
@@ -1172,11 +1172,30 @@ function initKendoUIPurchasedestunitidGrid() {
 
 }
 function newchooseExportFunction() {
-    if(exportExcelid === "searchGrid"){
+    if(exportExcelid === "searchGrid"||exportExcelid === "searchpuchaseGrid"){
         exportExcelPOI();
     }else {
-        exportExcel();
+        exportExcelProPOI();
     }
+}
+function exportExcelProPOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = 1;
+    request.pageSize = total;
+    request.take = total;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+    var url=basePath+"/search/PurchaseorCountviews/exportnew.do";
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
 }
 
 function exportExcelPOI() {
@@ -1197,4 +1216,36 @@ function exportExcelPOI() {
     $("#gridId").val(exportExcelid);
     $("#request").val(JSON.stringify(request));
     $("#form1").submit();
+}
+
+var dialogOpenPage;
+function openSearchVendorDialog() {
+    dialogOpenPage = "purchaseOrder";
+    $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
+        initVendorSelect_Grid();
+    });
+    $("#searchVendorDialog_buttonGroup").html("" +
+        "<button type='button'  class='btn btn-primary' onclick='selected_VendorId_purchaseOrder()'>确认</button>"
+    );
+}
+function selected_VendorId_purchaseOrder() {
+    var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+    var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+    $("#filter_eq_destunitid").val(rowData.id);
+    $("#filter_eq_destunitname").val(rowData.name);
+    $("#modal_vendor_search_table").modal('hide');
+}
+function hideImage() {
+    $("#divshowImage").hide();
+
+}
+function showImagesUrl(url) {
+    console.log(url);
+    var Url="";
+    var urlArray=url.split("_");
+    var urlArrays=urlArray[1].split(".");
+    Url=urlArray[0]+"."+urlArrays[1];
+    $("#showImage").attr("src",Url);
+    $("#divshowImage").show();
+
 }
