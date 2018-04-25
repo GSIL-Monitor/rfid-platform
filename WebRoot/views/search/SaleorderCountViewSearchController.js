@@ -483,7 +483,7 @@ function initKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -920,7 +920,7 @@ function initnoKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1265,7 +1265,7 @@ function initKendoUIGridSale() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1582,7 +1582,7 @@ function initKendoUIGridSalebusinessname(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1788,7 +1788,7 @@ function initKendoUIGridSalebusinessnameno(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1990,7 +1990,7 @@ function initKendoUIGridSaleorigname(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -2191,7 +2191,7 @@ function initKendoUIGridSaleorignameno(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
