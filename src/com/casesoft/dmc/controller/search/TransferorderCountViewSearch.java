@@ -260,6 +260,10 @@ public class TransferorderCountViewSearch extends BaseController {
                 DataSourceResult sourceResultSaleDtl = this.transferorderCountDao.getList(dataSourceRequest);
                 List<TransferorderCountView> SaleDtlViewList = (List<TransferorderCountView>) sourceResultSaleDtl.getData();
                 String rootPath = session.getServletContext().getRealPath("/");
+                for(int i=0;i<SaleDtlViewList.size();i++){
+                    String url = StyleUtil.returnImageUrl(SaleDtlViewList.get(i).getStyleId(), rootPath);
+                    SaleDtlViewList.get(i).setUrl(url);
+                }
                 ExportParams params = new ExportParams("调拨明细", "sheet1", ExcelType.XSSF);
                 //ExportParams params = new ExportParams("大数据测试", "测试");
                 String path = Constant.Folder.Report_File_Folder;
