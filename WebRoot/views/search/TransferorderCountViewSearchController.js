@@ -210,7 +210,7 @@ function initKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -479,7 +479,7 @@ function initTranKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -764,7 +764,7 @@ function initTranStyleKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -930,7 +930,7 @@ function initTransByOrigKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1073,7 +1073,7 @@ function initTransByStyleIdandSizeIdKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1224,8 +1224,10 @@ function exportExcelProPOI() {
 
 }
 function newchooseExportFunction() {
-    if(exportExcelid === "searchGrid"||exportExcelid === "searchTranGrid"){
+    if(exportExcelid === "searchTranGrid"){
         exportExcelPOI();
+    }else if(exportExcelid === "searchGrid"||exportExcelid === "searchTransByStyleIdandSizeIdGrid"){
+        exportExcelimagePOI();
     }else {
         exportExcelProPOI();
     }
@@ -1233,6 +1235,28 @@ function newchooseExportFunction() {
 function hideImage() {
     $("#divshowImage").hide();
 
+}
+function exportExcelimagePOI() {
+    var filters = serializeToFilter($("#searchForm"));
+    var gridData = $("#" + exportExcelid).data("kendoGrid");
+    var total = gridData.dataSource._total;
+    var request = {};
+    request.page = gridData.dataSource._page;
+    request.pageSize = gridData.dataSource._pageSize;
+    request.take = gridData.dataSource._pageSize;
+    request.sort =gridData.dataSource._sort;
+    request.skip = 0;
+    request.filter = {
+        logic: "and",
+        filters : filters
+    };
+
+    var url=basePath+"/search/transferorderCountViewSearch/export.do";
+
+    $("#form1").attr("action",url);
+    $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+    $("#form1").submit();
 }
 function showImagesUrl(url) {
     console.log(url);
