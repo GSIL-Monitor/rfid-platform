@@ -51,6 +51,18 @@ public class DetailStockView extends BaseProductView {
     @Excel(name = "库存金额")
     private Double inStockPrice;
 
+    @Transient
+    @Excel(name = "图片", type = 2 ,width = 20 , height = 20)
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getColorname() {
         return colorname;
     }

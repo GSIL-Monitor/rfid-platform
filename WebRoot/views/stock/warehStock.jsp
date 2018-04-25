@@ -182,6 +182,9 @@
 
                         <!-- PAGE CONTENT ENDS -->
                     </div>
+                    <div id ="divshowImage" class="divshowImage" style="display: none">
+                        <img class="showImage" id="showImage" onclick="hideImage()">
+                    </div>
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
