@@ -303,7 +303,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 "AND bill.status <> -1  " +
                 "And bill.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND bill.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') " +
                 "GROUP BY bill.billDate,bill.buyahandId " +
-                "ORDER BY bill.billDate desc ";
+                "ORDER BY bill.billDate asc ";
         return this.purchaseBillOrderDao.find(hql, new Object[]{styleId, sbillDate, ebillDate});
     }
 
