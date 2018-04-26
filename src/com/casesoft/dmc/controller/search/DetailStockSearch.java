@@ -77,7 +77,7 @@ public class DetailStockSearch  extends BaseController {
             File file =new File(files,"库存，按SKU汇总 -" +  dateString + ".xlsx");
             file.createNewFile();
             //Workbook workbook = ExcelExportUtil.exportExcel(params, DetailStockView.class, detailStockViews);
-            Workbook workbook = ExcelExportUtil.exportBigExcel(params, DetailStockChatView.class, detailStockViews);
+            Workbook workbook = ExcelExportUtil.exportBigExcel(params, DetailStockView.class, detailStockViews);
             ExcelExportUtil.closeExportBigExcel();
             FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
             workbook.write(fos);

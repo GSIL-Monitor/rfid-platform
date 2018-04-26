@@ -96,6 +96,8 @@ public class WXProductApiController extends ApiBaseController {
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         Page<Style> page = new Page<Style>(Integer.parseInt(pageSize));
+        page.setOrderBy("updateTime");
+        page.setOrder("desc");
         page.setPage(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
         if(CommonUtil.isNotBlank(sortName)){

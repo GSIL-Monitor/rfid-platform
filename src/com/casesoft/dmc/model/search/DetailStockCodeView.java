@@ -55,6 +55,18 @@ public class DetailStockCodeView extends BaseProductView{
     @Excel(name = "入库时长")
     private Long inStockDays; //在仓库时长
 
+    @Transient
+    @Excel(name = "图片", type = 2 ,width = 20 , height = 20)
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getWarehName() {
         return warehName;
     }

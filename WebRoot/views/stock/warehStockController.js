@@ -259,6 +259,19 @@ function initKendoUIGrid() {
             resizable: true,
             scrollable: true,
             columns: [
+                {
+                    field: "", title: "图片", width: 100,
+                    template: function (data) {
+                        debugger;
+                        var url = data.url;
+                        if (url == null) {
+                            return "无图片";
+                        } else {
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                        }
+                    }
+
+                },
 
                 {
                     field: "warehName", title: "仓库", width: 150,
@@ -424,6 +437,19 @@ function initCodeKendoUIGrid() {
             resizable: true,
             scrollable: true,
             columns: [
+                {
+                    field: "", title: "图片", width: 100,
+                    template: function (data) {
+                        debugger;
+                        var url = data.url;
+                        if (url == null) {
+                            return "无图片";
+                        } else {
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                        }
+                    }
+
+                },
 
                 {
                     field: "warehName", title: "仓库", width: 100,
@@ -589,7 +615,7 @@ function initstyleKendoUIGrid() {
                         if (url == null) {
                             return "无图片";
                         } else {
-                            return "<img width=80 height=100 src='" +basePath + data.url + "' alt='" + data.styleId + "'/>";
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
                         }
                     }
 
@@ -636,7 +662,7 @@ function initstyleKendoUIGrid() {
                         var price=data.price.toFixed(2);
                         return price;
                     }
-                },
+                }
 
 
             ]
@@ -647,6 +673,22 @@ function initstyleKendoUIGrid() {
         search();
     }
 
+
+}
+
+function hideImage() {
+    $("#divshowImage").hide();
+
+}
+function showImagesUrl(url) {
+    debugger;
+    console.log(url);
+    var Url="";
+    var urlArray=url.split("_");
+    var urlArrays=urlArray[1].split(".");
+    Url=urlArray[0]+"."+urlArrays[1];
+    $("#showImage").attr("src",Url);
+    $("#divshowImage").show();
 
 }
 

@@ -32,6 +32,7 @@ public class DetailStockDaoImpl implements DetailStockDao {
     @Autowired
     private CodeFirstTimeService codeFirstTimeService;
 
+
     @Override
     public DataSourceResult getList(DataSourceRequest request) {
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockView.class);
@@ -76,6 +77,37 @@ public class DetailStockDaoImpl implements DetailStockDao {
     }
 
     @Override
+    public DataSourceResult getCodeList(DataSourceRequest request, HttpSession session) {
+        DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockCodeView.class);
+        String rootPath = session.getServletContext().getRealPath("/");
+        List<String> warehouseCodeList = new ArrayList<>();
+        for (DetailStockCodeView dtl : (List<DetailStockCodeView>) dataSourceResult.getData()) {
+            warehouseCodeList.add(dtl.getCode() + "-" + dtl.getWarehId());
+        }
+        String idListStr = TaskUtil.getSqlStrByList(warehouseCodeList, CodeFirstTime.class, "id");
+        List<CodeFirstTime> firstInStockList = this.codeFirstTimeService.findByIds(idListStr);
+        Map<String, CodeFirstTime> firstInStockMap = new HashMap<>();
+        for (CodeFirstTime first : firstInStockList) {
+            firstInStockMap.put(first.getCode(), first);
+        }
+        for (DetailStockCodeView dtl : (List<DetailStockCodeView>) dataSourceResult.getData()) {
+            String url = StyleUtil.returnImageUrl(dtl.getStyleId(),rootPath);
+            dtl.setUrl(url);
+            CodeFirstTime firstInStock = firstInStockMap.get(dtl.getCode());
+            if (CommonUtil.isNotBlank(firstInStock)) {
+                dtl.setFirstInStockTime(firstInStock.getFirstTime());
+                long days = ((new Date()).getTime() - firstInStock.getFirstTime().getTime()) / (1000 * 3600 * 24);
+                dtl.setInStockDays(days);
+                Unit unit = CacheManager.getUnitById(dtl.getWarehId());
+                if(CommonUtil.isNotBlank(unit)){
+                    dtl.setWarehName(unit.getName());
+                }
+            }
+        }
+        return dataSourceResult;
+    }
+
+    @Override
     public DataSourceResult getStyleList(DataSourceRequest request, HttpSession session) {
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockChatView.class);
         String rootPath = session.getServletContext().getRealPath("/");
@@ -103,6 +135,21 @@ public class DetailStockDaoImpl implements DetailStockDao {
             }*/
             String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
             d.setUrl(url);
+        }
+        return dataSourceResult;
+    }
+    @Override
+    public DataSourceResult getList(DataSourceRequest request,HttpSession session) {
+        DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockView.class);
+        String rootPath = session.getServletContext().getRealPath("/");
+        for (DetailStockView dtl : (List<DetailStockView>) dataSourceResult.getData()) {
+            String url = StyleUtil.returnImageUrl(dtl.getStyleId(),rootPath);
+            dtl.setUrl(url);
+            dtl.setInStockPrice((double) Math.round(dtl.getPrice() * dtl.getQty()));
+            Unit unit = CacheManager.getUnitById(dtl.getWarehId());
+            if(CommonUtil.isNotBlank(unit)){
+                dtl.setWarehName(unit.getName());
+            }
         }
         return dataSourceResult;
     }

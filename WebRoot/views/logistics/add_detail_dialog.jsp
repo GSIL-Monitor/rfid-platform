@@ -77,8 +77,11 @@
     var editcolosizeRow = null;
     var parent_dialog = $("#modal-addDetail-table");
     $(function () {
-        initStyleGrid();
-        initColorSizeGrid();
+
+        $("#modal-addDetail-table").on('show.bs.modal', function () {
+            initeditColorFormValid();
+            $("#form_colorId").attr("disabled", true);
+        });
 
     });
     function initStyleGridColumn(storeType){

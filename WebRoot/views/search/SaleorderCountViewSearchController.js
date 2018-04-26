@@ -100,6 +100,8 @@ function initMultiSelect() {
         success: function (data, textStatus) {
             $("#filter_in_deport").empty();
             $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#filter_in_deport").append("<option value='allDG' style='background-color: #eeeeee'>所有门店仓库</option>");
+            $("#filter_in_deport").append("<option value='allJMS' style='background-color: #eeeeee'>所有加盟商仓库</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -134,6 +136,8 @@ function initMultiSelect() {
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
                 $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+                $("#filter_in_deport").append("<option value='allDG' style='background-color: #eeeeee'>所有门店仓库</option>");
+                $("#filter_in_deport").append("<option value='allJMS' style='background-color: #eeeeee'>所有加盟商仓库</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -309,34 +313,33 @@ function exportExcelPOI() {
     })*/
   //window.location.href=basePath+"/search/saleorderCountView/export.do?gridId="+exportExcelid + "&request="+JSON.stringify(request);
     var url=basePath+"/search/saleorderCountView/export.do";
-   /* document.write("<form action="+url+" method=post name=form1 style='display:none'>");
-    document.write("<input type=hidden  name='gridId' value='"+exportExcelid+"'>");
-    document.write("<input type=hidden  name='request' value='"+JSON.stringify(request)+"'>");
-    document.write("</form>");
-    document.form1.submit();*/
+
    $("#form1").attr("action",url);
    $("#gridId").val(exportExcelid);
    $("#request").val(JSON.stringify(request));
     $("#form1").submit();
-   /* var Path=basePath+"/search/saleorderCountView/export.do";
-    document.write("<form action="+Path+" method=post name=form1 style='display:none'>");
-    document.write("<input type=hidden name=name value='"+username+"'");
-    document.write("</form>");
-    document.form1.submit();*/
-    // $("#" + exportExcelid).children().find(".k-grid-excel").click();
-    /*$("from").ajaxSubmit({
-        type: 'post', // 提交方式 get/post
-        url: 'basePath+"/search/saleorderCountView/export.do', // 需要提交的 url
-        data: {
-            gridId: exportExcelid,
-            request: JSON.stringify(request)
-        },
-        success: function(data) { // data 保存提交后返回的数据，一般为 json 数据
-            // 此处可对 data 作相关处理
-            alert('提交成功！');
-        }
 
-   });*/
+   /* $("#gridId").val(exportExcelid);
+    $("#request").val(JSON.stringify(request));
+   var options  = {
+        url:url,   //同action
+        type:'post',
+        success:function(data)
+        {
+             alert('成功..');
+        },
+        complete:function(xhr){//请求完成
+
+            alert('请求完成..');
+        },
+        error: function(xhr,status,msg){
+
+            alert('加载中..');
+
+        }
+    };
+    $("#form1").ajaxSubmit(options);*/
+
 }
 
 function showAdvSearchPanel() {
@@ -480,7 +483,7 @@ function initKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -503,7 +506,7 @@ function initKendoUIGrid() {
                         if (url == null) {
                             return "无图片";
                         } else {
-                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath+ data.url + "' alt='" + data.styleid + "'/>";
                         }
                     }
 
@@ -917,7 +920,7 @@ function initnoKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1262,7 +1265,7 @@ function initKendoUIGridSale() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1579,7 +1582,7 @@ function initKendoUIGridSalebusinessname(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1785,7 +1788,7 @@ function initKendoUIGridSalebusinessnameno(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -1987,7 +1990,7 @@ function initKendoUIGridSaleorigname(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -2188,7 +2191,7 @@ function initKendoUIGridSaleorignameno(){
                 input: true,
                 buttonCount: 5,
                 pageSize: 100.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
 
             groupable: true,
@@ -2306,7 +2309,6 @@ function hideImage() {
 
 }
 function showImagesUrl(url) {
-    debugger
     console.log(url);
     var Url="";
     var urlArray=url.split("_");
@@ -2314,5 +2316,20 @@ function showImagesUrl(url) {
     Url=urlArray[0]+"."+urlArrays[1];
     $("#showImage").attr("src",Url);
     $("#divshowImage").show();
+
+}
+function changedeport() {
+    var deport=$("#filter_in_deport").val();
+    if(deport=="allDG"){
+        $("#filter_contains_groupid").val("DG");
+        $("#filter_in_deport").attr("name","");
+    }else if(deport=="allJMS"){
+        $("#filter_contains_groupid").val("JMS");
+        $("#filter_in_deport").attr("name","");
+    }else{
+        $("#filter_contains_groupid").val("");
+        $("#filter_in_deport").attr("name","filter_in_deport");
+    }
+
 
 }
