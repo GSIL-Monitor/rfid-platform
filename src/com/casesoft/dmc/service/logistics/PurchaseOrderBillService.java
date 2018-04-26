@@ -293,27 +293,30 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         return this.purchaseBillOrderDao.find("from PurchaseOrderBillDtl where billNo=?", new Object[]{billNo});
     }
 
-    /* add by Anna */
+    //采购数量详情
     public List<PurchaseBystyleid> findBillDtlByStyleId(String styleId, String sbillDate, String ebillDate) {
-        String hql = "SELECT new com.casesoft.dmc.model.logistics.PurchaseBystyleid(dtl.styleId,dtl.sku,SUM(dtl.qty) as totQty) " +
+        String hql = "SELECT new com.casesoft.dmc.model.logistics.PurchaseBystyleid" +
+                "(bill.billDate,bill.buyahandId,SUM(dtl.qty) as totQty) " +
                 "FROM PurchaseOrderBillDtl dtl,PurchaseOrderBill bill " +
                 "WHERE dtl.billNo=bill.billNo " +
                 "AND dtl.styleId=? " +
                 "AND bill.status <> -1  " +
-                "And bill.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND bill.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') "+
-                "GROUP BY dtl.styleId,dtl.sku";
-        return this.purchaseBillOrderDao.find(hql, new Object[]{styleId,sbillDate,ebillDate});
+                "And bill.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND bill.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') " +
+                "GROUP BY bill.billDate,bill.buyahandId " +
+                "ORDER BY bill.billDate asc ";
+        return this.purchaseBillOrderDao.find(hql, new Object[]{styleId, sbillDate, ebillDate});
     }
-    /* add by Anna */
+
+    //采购总数
     public List<PurchaseBystyleid> findPurchaseTotByStyleId(String styleId, String sbillDate, String ebillDate) {
         String hql = "SELECT new com.casesoft.dmc.model.logistics.PurchaseBystyleid(dtl.styleId,SUM(dtl.qty) as totQty) " +
                 "FROM PurchaseOrderBillDtl dtl,PurchaseOrderBill bill " +
                 "WHERE dtl.billNo=bill.billNo " +
                 "AND dtl.styleId=? " +
                 "AND bill.status <> -1 " +
-                "And bill.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND bill.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') "+
+                "And bill.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND bill.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') " +
                 "GROUP BY dtl.styleId";
-        return this.purchaseBillOrderDao.find(hql, new Object[]{styleId,sbillDate,ebillDate});
+        return this.purchaseBillOrderDao.find(hql, new Object[]{styleId, sbillDate, ebillDate});
     }
 
     public void saveBirthTag(Init master, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList) {
@@ -382,6 +385,6 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     }
 
     public Integer findBillStatus(String billNo) {
-        return this.purchaseBillOrderDao.findUnique("select status from PurchaseOrderBill where id = ?",billNo);
+        return this.purchaseBillOrderDao.findUnique("select status from PurchaseOrderBill where id = ?", billNo);
     }
 }
