@@ -145,7 +145,8 @@ public class TransferorderCountViewSearch extends BaseController {
             ArrayList<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
             list=(ArrayList<Map<String,Object>>)dataResult.getData();
             long startSizeTime = System.currentTimeMillis();
-            List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list);
+            String rootPath = this.getSession().getServletContext().getRealPath("/");
+            List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list,rootPath);
             long endSizeTime = System.currentTimeMillis();
             logger.error("查询款式和颜色分组尺寸的时间："+(endTime-startTime));
             dataResult.setData(maps);
@@ -419,8 +420,15 @@ public class TransferorderCountViewSearch extends BaseController {
                     excelentity.setWidth(40D);
                     entity.add(excelentity);
                 }
+                ExcelExportEntity excelentity = new ExcelExportEntity("图片", "Url");
+                excelentity.setHeight(30D);
+                excelentity.setWidth(30D);
+                excelentity.setExportImageType(1);
+                excelentity.setType(2);
+                entity.add(excelentity);
                 long startSizeTime = System.currentTimeMillis();
-                List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list);
+                String rootPath = this.getSession().getServletContext().getRealPath("/");
+                List<Map<String, Object>> maps = this.transferOrderBillService.fillTransMap(list,rootPath);
                 Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("调拨按商品尺码汇总", "sheet1", ExcelType.XSSF), entity,
                         maps);
                 String path = Constant.Folder.Report_File_Folder;

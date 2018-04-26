@@ -2,6 +2,7 @@ package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
@@ -214,7 +215,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
         return this.transferOrderBillDao.findUnique(hql);
     }
 
-    public List<Map<String,Object>> fillTransMap(List<Map<String,Object>> list) throws Exception {
+    public List<Map<String,Object>> fillTransMap(List<Map<String,Object>> list,String rootPath) throws Exception {
 
         for(int i=0;i<list.size();i++){
             Map<String, Object> map = list.get(i);
@@ -239,6 +240,8 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
                 }
 
             }
+            String url = StyleUtil.returnImageUrl(styleid, rootPath);
+            map.put("Url",url);
             String sizeArray = PropertyUtil.getValue("sizeArray");
             String[] sizeArrays = sizeArray.split(",");
             for(int b=0;b<sizeArrays.length;b++){
