@@ -313,6 +313,23 @@ public class WXProductApiController extends ApiBaseController {
     }
 
     /**
+     * add by Anna
+     * 微信小程序－商品款式新增－品牌筛选
+     */
+    @RequestMapping(value="/searchBrands")
+    @ResponseBody
+    public Page<PropertyKey> searchBrands(Page<PropertyKey> page){
+        this.logAllRequestParams();
+        page.setPageProperty();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        return this.propertyService.findPageForKey(page,filters);
+
+    }
+
+
+
+
+    /**
      * 微信小程序上传图片测试*/
 
     @RequestMapping("/picture")
