@@ -1258,7 +1258,7 @@ function exportExcelimagePOI() {
     request.pageSize = gridData.dataSource._pageSize;
     request.take = gridData.dataSource._pageSize;
     request.sort =gridData.dataSource._sort;
-    request.skip = 0;
+    request.skip = gridData.dataSource._skip;
     request.filter = {
         logic: "and",
         filters : filters
