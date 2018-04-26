@@ -1096,6 +1096,19 @@ function initTransByStyleIdandSizeIdKendoUIGrid() {
 
                 },
                 {
+                    field: "", title: "图片", width: 100,
+                    template: function (data) {
+
+                        var url = data.Url;
+                        if (url == null) {
+                            return "无图片";
+                        } else {
+                            return "<img width=80 height=100 onclick=showImagesUrl('" +basePath + data.Url + "') src='" +basePath+ data.Url + "' alt='" + data.styleid + "'/>";
+                        }
+                    }
+
+                },
+                {
                     field: "styleName",
                     title: "款名",
                     width: "180px",

@@ -233,7 +233,7 @@
                                                     </button>
                                                 </span>
                                                     <input class="form-control" id="search_origUnitName" type="text"
-                                                           name="filter_eq_origUnitName" readonly/>
+                                                           name="" readonly/>
                                                 </div>
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
@@ -242,15 +242,17 @@
                                                 </select>
 
                                             </div>
-                                            <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
-                                            <div class="col-xs-2">
-                                                <select class="form-control" id="select_outStatus"
-                                                        name="filter_eq_outStatus">
-                                                    <option value="">--请选择--</option>
-                                                    <option value="0">订单状态</option>
-                                                    <option value="2">已出库</option>
-                                                    <option value="3">出库中</option>
-                                                </select>
+                                            <div id="outStatus">
+                                                <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
+                                                <div class="col-xs-2">
+                                                    <select class="form-control" id="select_outStatus"
+                                                            name="filter_eq_outStatus">
+                                                        <option value="">--请选择--</option>
+                                                        <option value="0">订单状态</option>
+                                                        <option value="2">已出库</option>
+                                                        <option value="3">出库中</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -266,7 +268,7 @@
                                                     </button>
                                                 </span>
                                                     <input class="form-control" id="search_destUnitName" type="text"
-                                                           name="filter_eq_destUnitName" readonly/>
+                                                           name="" readonly/>
                                                 </div>
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
@@ -274,15 +276,17 @@
                                                 <select class="form-control" id="search_destId" name="filter_eq_destId">
                                                 </select>
                                             </div>
-                                            <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
-                                            <div class="col-xs-2">
-                                                <select class="form-control" id="select_instatus"
-                                                        name="filter_eq_inStatus">
-                                                    <option value="">--请选择--</option>
-                                                    <option value="0">订单状态</option>
-                                                    <option value="1">已入库</option>
-                                                    <option value="4">入库中</option>
-                                                </select>
+                                            <div id="inStatus">
+                                                <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
+                                                <div class="col-xs-2">
+                                                    <select class="form-control" id="select_instatus"
+                                                            name="filter_eq_inStatus">
+                                                        <option value="">--请选择--</option>
+                                                        <option value="0">订单状态</option>
+                                                        <option value="1">已入库</option>
+                                                        <option value="4">入库中</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -438,6 +442,8 @@
         $("#styleid").show();
         $("#billno").show();
         $("#isshow").show();
+        $("#inStatus").show();
+        $("#outStatus").show();
         /*$("#styleid").show();
         $("#styleids").show();
         $("#styleidname").show();
@@ -457,6 +463,8 @@
         $("#styleid").hide();
         $("#billno").show();
         $("#isshow").show();
+        $("#inStatus").show();
+        $("#outStatus").show();
         initTranKendoUIGrid();
 
     }
@@ -471,6 +479,8 @@
         $("#styleid").show();
         $("#billno").hide();
         $("#isshow").hide();
+        $("#inStatus").hide();
+        $("#outStatus").hide();
         initTranStyleKendoUIGrid();
 
 
@@ -486,6 +496,8 @@
         $("#styleid").hide();
         $("#billno").hide();
         $("#isshow").hide();
+        $("#inStatus").hide();
+        $("#outStatus").hide();
         initTransByOrigKendoUIGrid();
 
     }
@@ -497,9 +509,11 @@
         $("#searchTransByStyleIdandSizeIdGrid").show();
         exportExcelid="searchTransByStyleIdandSizeIdGrid";
         $("#clean").click();
-        $("#styleid").hide();
-        $("#billno").hide();
-        $("#isshow").hide();
+        $("#styleid").show();
+        $("#billno").show();
+        $("#isshow").show();
+        $("#inStatus").hide();
+        $("#outStatus").hide();
         initTransByStyleIdandSizeIdKendoUIGrid();
     }
 
