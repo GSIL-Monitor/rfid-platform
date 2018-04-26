@@ -3,6 +3,7 @@ package com.casesoft.dmc.controller.stock;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
@@ -17,12 +18,10 @@ import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.DetailStockDao;
-import com.casesoft.dmc.model.erp.BillDtl;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
-import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.model.sys.Unit;
 
 import com.casesoft.dmc.model.tag.Epc;
@@ -44,12 +43,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.DatatypeConverter;
-import java.text.SimpleDateFormat;
 
 import java.io.*;
 import java.util.*;
+
+import static com.casesoft.dmc.core.Constant.rootPath;
 
 /**
  * Created by WingLi on 2017-01-03.
@@ -116,6 +115,11 @@ public class WarehStockController extends BaseController {
             DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
             DataSourceResult sourceResultSaleDtl = this.detailStockDao.getStyleList(dataSourceRequest, this.session);
             List<DetailStockChatView> resultList = (List<DetailStockChatView>) sourceResultSaleDtl.getData();
+            String rootPath = session.getServletContext().getRealPath("/");
+            for (DetailStockChatView dsc :resultList){
+                String url = StyleUtil.returnImageUrl(dsc.getStyleId(),rootPath);
+                dsc.setUrl(url);
+            }
             ExportParams params = new ExportParams("库存，按款汇总", "sheet1", ExcelType.XSSF);
             String path = Constant.Folder.Report_File_Folder;
             String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
@@ -155,7 +159,11 @@ public class WarehStockController extends BaseController {
             DataSourceResult sourceResultSaleDtl = this.detailStockDao.getCodeList(dataSourceRequest);
             List<DetailStockCodeView> detailStockCodeViews = (List<DetailStockCodeView>) sourceResultSaleDtl.getData();
             ExportParams params = new ExportParams("库存，按Code汇总", "sheet1", ExcelType.XSSF);
-
+            String rootPath = session.getServletContext().getRealPath("/");
+            for (DetailStockCodeView detailStockCodeView :detailStockCodeViews){
+                String url = StyleUtil.returnImageUrl(detailStockCodeView.getStyleId(),rootPath);
+                detailStockCodeView.setUrl(url);
+            }
             String path = Constant.Folder.Report_File_Folder;
             String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
             File files = new File(path + "\\库存，按Code汇总");

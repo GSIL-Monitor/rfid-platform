@@ -39,12 +39,13 @@ function exportExcel() {
 function exportExcelPOI() {
     var filters = serializeToFilter($("#searchForm"));
     var gridData = $("#" + exportExcelid).data("kendoGrid");
-    var total = gridData.dataSource._total;
+    console.log(gridData);
     var request = {};
-    request.page = 1;
-    request.pageSize = -1;
-    request.take = total;
-    request.skip = 0;
+    request.page = gridData.dataSource._page;
+    request.pageSize = gridData.dataSource._pageSize;
+    request.take = gridData.dataSource._pageSize;
+    request.sort =gridData.dataSource._sort;
+    request.skip = gridData.dataSource._skip;
     request.filter = {
         logic: "and",
         filters: filters
@@ -108,12 +109,6 @@ function search() {
         operator: "eq",
         value: 9
     });
-    /*  filters.push({
-     field: "ownerId",
-     operator: "eq",
-     value: ownerId
-     });*/
-
     if(exportExcelid === "stockstyleGrid"){
         //按款汇总将 SKU属性改为货号
         $.each(filters,function (index,value) {
@@ -220,6 +215,7 @@ function initKendoUIGrid() {
                         return JSON.stringify(options);
                     }
                 },
+                sort: [{field: "styleId", dir: "desc"}],
                 pageSize: 500.0,
                 serverSorting: true,
                 serverPaging: true,
@@ -245,7 +241,7 @@ function initKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 500.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
             height: 680,
             groupable: true,
@@ -304,6 +300,7 @@ function initKendoUIGrid() {
                 {field: "styleName", title: "款名", width: 100},
                 {field: "colorId", title: "色号", width: 80},
                 {field: "sizeId", title: "尺号", width: 80},
+                {field: "class1Name", title: "厂家", width: 80},
 
                 {
                     field: "qty", title: "库存数量", width: 80,
@@ -398,6 +395,7 @@ function initCodeKendoUIGrid() {
                         return JSON.stringify(options);
                     }
                 },
+                sort: [{field: "styleId", dir: "desc"}],
                 pageSize: 500.0,
                 serverSorting: true,
                 serverPaging: true,
@@ -423,7 +421,7 @@ function initCodeKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 500.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
             height: 680,
             groupable: true,
@@ -482,6 +480,7 @@ function initCodeKendoUIGrid() {
                 {field: "styleName", title: "款名", width: 80},
                 {field: "colorId", title: "色号", width: 60},
                 {field: "sizeId", title: "尺号", width: 60},
+                {field: "class1Name", title: "厂家", width: 80},
                 {field: "code", title: "Code", width: 100},
 
                 {
@@ -569,6 +568,7 @@ function initstyleKendoUIGrid() {
                         return JSON.stringify(options);
                     }
                 },
+                sort: [{field: "styleId", dir: "desc"}],
                 pageSize: 500.0,
                 serverSorting: true,
                 serverPaging: true,
@@ -593,7 +593,7 @@ function initstyleKendoUIGrid() {
                 input: true,
                 buttonCount: 5,
                 pageSize: 500.0,
-                pageSizes: [100, 500, 1000, 2000, 5000]
+                pageSizes: [100, 500, 1000, 2000]
             },
             height: 680,
             groupable: true,
@@ -649,6 +649,7 @@ function initstyleKendoUIGrid() {
                 },
 
                 {field: "styleName", title: "款名", width: 80},
+                {field: "class1Name", title: "厂家", width: 80},
                 {
                     field: "qty", title: "库存数量", width: 80,
                     groupable: false,
@@ -696,6 +697,24 @@ function onGrouping(arg) {
     /*
      kendoConsole.log("Group on " + kendo.stringify(arg.groups));
      */
+}
+
+function openSearchClass1Dialog() {
+    console.log("123");
+    $("#modal_class1_search_tables").modal('show').on('shown.bs.modal', function () {
+        initClass1Select_Grid();
+    });
+    /* $("#searchVendorDialog_buttonGroup").html("" +
+     "<button type='button'  class='btn btn-primary' onclick='confirm_selected_VendorId_purchaseOrder_search()'>确认</button>"
+     );*/
+}
+
+function selectClass1() {
+    var rowId = $("#class1Select_Grid").jqGrid("getGridParam", "selrow");
+    var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
+    $("#filter_eq_class1").val(rowData.code);
+    $("#filter_eq_class1Name").val(rowData.name);
+    $("#modal_class1_search_tables").modal('hide');
 }
 
 function showDetails(e) {
