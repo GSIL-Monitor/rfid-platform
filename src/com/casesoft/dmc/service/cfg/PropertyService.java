@@ -19,135 +19,140 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 
 @Service
 @Transactional
-public class PropertyService implements IBaseService<PropertyType, String>{
+public class PropertyService implements IBaseService<PropertyType, String> {
 
 
-	@Autowired
-	private PropertyKeyDao propertyKeyDao;
-	
-	@Autowired
-	private PropertyTypeDao propertyTypeDao;
-	
-	
-	
-	@Override
-	@Transactional(readOnly = true)
-	public Page<PropertyType> findPage(Page<PropertyType> page,
-			List<PropertyFilter> filters) {
-		return this.propertyTypeDao.findPage(page, filters);
-	}
+    @Autowired
+    private PropertyKeyDao propertyKeyDao;
+
+    @Autowired
+    private PropertyTypeDao propertyTypeDao;
 
 
-	
-	@Transactional(readOnly = true)
-	public List<PropertyKey> getPropertyKeyByType(String type){
-		String hql = "from PropertyKey p where p.type=?";
-		return this.propertyKeyDao.find(hql,new Object[]{type});
-		
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PropertyType> findPage(Page<PropertyType> page,
+                                       List<PropertyFilter> filters) {
+        return this.propertyTypeDao.findPage(page, filters);
+    }
+
+    //add by Anna
+    @Transactional(readOnly = true)
+    public Page<PropertyKey> findPageForKey(Page<PropertyKey> page, List<PropertyFilter> filters) {
+        return this.propertyKeyDao.findPage(page, filters);
+    }
 
 
-	public PropertyType findPropertyTypebyid(String id){
-		return this.propertyTypeDao.findUnique("from PropertyType u where u.id='" + id + "'");
-	}
+    @Transactional(readOnly = true)
+    public List<PropertyKey> getPropertyKeyByType(String type) {
+        String hql = "from PropertyKey p where p.type=?";
+        return this.propertyKeyDao.find(hql, new Object[]{type});
 
-	public PropertyKey findPropertyKeybyid(String id){
-		return this.propertyKeyDao.findUnique("from PropertyKey u where u.id='" + id + "'");
-	}
+    }
 
-	public PropertyKey findPropertyKeybytype(String code){
-		return this.propertyKeyDao.findUnique("from PropertyKey u where u.code='" + code + "'");
-	}
 
-	@Override
-	public void save(PropertyType entity) {
-		// TODO Auto-generated method stub
-		this.propertyTypeDao.saveOrUpdate(entity);
-	}
+    public PropertyType findPropertyTypebyid(String id) {
+        return this.propertyTypeDao.findUnique("from PropertyType u where u.id='" + id + "'");
+    }
 
-	public void saveKey(PropertyKey entity) {
-		// TODO Auto-generated method stub
-		//this.propertyTypeDao.saveOrUpdate(entity);
-		this.propertyTypeDao.saveOrUpdateX(entity);
-	}
+    public PropertyKey findPropertyKeybyid(String id) {
+        return this.propertyKeyDao.findUnique("from PropertyKey u where u.id='" + id + "'");
+    }
 
-	public Integer findtypeNum(String type){
-		String hql="select count(type) from PropertyType t where t.type='" + type + "'";
-		Long unique = this.propertyTypeDao.findUnique(hql);
-		return unique.intValue();
-	}
-	public Integer findtkeyNum(String type){
-		String hql="select count(type) from PropertyKey t where t.type='" + type + "'";
-		Long unique = this.propertyTypeDao.findUnique(hql);
-		return unique.intValue();
-	}
+    public PropertyKey findPropertyKeybytype(String code) {
+        return this.propertyKeyDao.findUnique("from PropertyKey u where u.code='" + code + "'");
+    }
 
-	@Override
-	public PropertyType load(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void save(PropertyType entity) {
+        // TODO Auto-generated method stub
+        this.propertyTypeDao.saveOrUpdate(entity);
+    }
 
-	@Override
-	public PropertyType get(String propertyName, Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public void saveKey(PropertyKey entity) {
+        // TODO Auto-generated method stub
+        //this.propertyTypeDao.saveOrUpdate(entity);
+        this.propertyTypeDao.saveOrUpdateX(entity);
+    }
 
-	@Override
-	public List<PropertyType> find(List<PropertyFilter> filters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Integer findtypeNum(String type) {
+        String hql = "select count(type) from PropertyType t where t.type='" + type + "'";
+        Long unique = this.propertyTypeDao.findUnique(hql);
+        return unique.intValue();
+    }
 
-	@Override
-	public List<PropertyType> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Integer findtkeyNum(String type) {
+        String hql = "select count(type) from PropertyKey t where t.type='" + type + "'";
+        Long unique = this.propertyTypeDao.findUnique(hql);
+        return unique.intValue();
+    }
 
-	@Override
-	public <X> List<X> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public PropertyType load(String id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void update(PropertyType entity) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public PropertyType get(String propertyName, Object value) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void delete(PropertyType entity) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public List<PropertyType> find(List<PropertyFilter> filters) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void delete(String id) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public List<PropertyType> getAll() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public List<List<PropertyKey>> getPropertyKeyByTypes(String[] typeList) {
-		List<List<PropertyKey>> result=new ArrayList<>();
-		String hql="from PropertyKey p where p.type=?";
-		List<PropertyKey> propertyKeyList=new ArrayList<>();
-		for (String type:typeList){
-			propertyKeyList=this.propertyKeyDao.find(hql,new Object[]{type});
-			result.add(propertyKeyList);
-		}
-		return result;
-	}
+    @Override
+    public <X> List<X> findAll() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public PropertyKey findPropertyKeyBytypeAndCode(String class1){
-		String hql="from PropertyKey t where t.type='C1' and code=?";
-		PropertyKey unique = this.propertyKeyDao.findUnique(hql, new Object[]{class1});
-		return unique;
-	}
+    @Override
+    public void update(PropertyType entity) {
+        // TODO Auto-generated method stub
 
-	public PropertyKey findPropertyKeyByNameAndType(String name, String type) {
-		return this.propertyKeyDao.findUnique("from PropertyKey t where t.name=? and t.type=?",new Object[]{name,type});
-	}
+    }
+
+    @Override
+    public void delete(PropertyType entity) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void delete(String id) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public List<List<PropertyKey>> getPropertyKeyByTypes(String[] typeList) {
+        List<List<PropertyKey>> result = new ArrayList<>();
+        String hql = "from PropertyKey p where p.type=?";
+        List<PropertyKey> propertyKeyList = new ArrayList<>();
+        for (String type : typeList) {
+            propertyKeyList = this.propertyKeyDao.find(hql, new Object[]{type});
+            result.add(propertyKeyList);
+        }
+        return result;
+    }
+
+    public PropertyKey findPropertyKeyBytypeAndCode(String class1) {
+        String hql = "from PropertyKey t where t.type='C1' and code=?";
+        PropertyKey unique = this.propertyKeyDao.findUnique(hql, new Object[]{class1});
+        return unique;
+    }
+
+    public PropertyKey findPropertyKeyByNameAndType(String name, String type) {
+        return this.propertyKeyDao.findUnique("from PropertyKey t where t.name=? and t.type=?", new Object[]{name, type});
+    }
 }
