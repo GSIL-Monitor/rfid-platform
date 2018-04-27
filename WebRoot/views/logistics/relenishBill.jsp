@@ -117,47 +117,24 @@
                                             </div>
                                         </div>--%>
                                     </div>
-                                    <%--<div class="form-group">
-                                          <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
-                                          <div class="col-xs-2">
-                                              <select class="form-control" id="search_origId" name="filter_LIKES_origId" style="width: 100%;">
-                                              </select>
-                                          </div>
-                                          <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
-                                          <div class="col-xs-2">
-                                              <select class="form-control" id="select_outStatus"
-                                                      name="filter_INI_outStatus">
-                                                  <option value="">--请选择--</option>
-                                                  <option value="0,3">订单状态</option>
-                                                  <option value="2">已出库</option>
-                                                  <option value="3">出库中</option>
-                                              </select>
-                                          </div>
-                                      <label class="col-xs-1 control-label" for="search_busnissId">销售员</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control selectpicker show-tick" id="search_busnissId"
-                                                    name="filter_EQS_busnissId"
-                                                    style="width: 100%;" data-live-search="true">
-                                            </select>
-                                        </div>
-                                    </div>--%>
-                                   <%-- <div class="form-group">
-                                        <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control" id="search_destId" name="filter_LIKES_destId" style="width: 100%;">
-                                            </select>
-                                        </div>
-                                        <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control" id="select_inStatus"
-                                                    name="filter_INI_inStatus">
-                                                <option value="">--请选择--</option>
-                                                <option value="0">订单状态</option>
-                                                <option value="1">已入库</option>
-                                                <option value="4">入库中</option>
-                                            </select>
-                                        </div>
-                                    </div>--%>
+                                    <div class="form-group">
+                                        <label class="col-xs-1 control-label" for="search_styleid">款号</label>
+                                            <div class="col-xs-2">
+                                                <div class="input-group">
+                                                    <input class="form-control" id="search_styleid"
+                                                           type="text" name="filter_EQS_styleid" readonly/>
+                                                    <span class="input-group-btn">
+                                                                 <button class="btn btn-sm btn-default" type="button" onclick="openstyleDialog('#search_styleid','#filter_eq_stylename')">
+                                                                     <i class="ace-icon fa fa-list"></i>
+                                                                 </button>
+                                                              </span>
+                                                    <input class="form-control" id="filter_eq_stylename"
+                                                           type="text" name="" readonly  placeholder="款名"/>
+                                                </div>
+                                            </div>
+
+                                    </div>
+
 
                                     <div class="form-group">
                                         <div class="col-sm-offset-5 col-sm-10">
@@ -191,6 +168,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
+<jsp:include page="../base/style_dialog.jsp"></jsp:include>
 <jsp:include page="add_saleOrder_code_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
