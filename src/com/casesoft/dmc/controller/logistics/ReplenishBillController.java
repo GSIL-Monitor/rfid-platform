@@ -57,8 +57,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         return mv;
     }
 
-    @RequestMapping(value = "/page")
-    @ResponseBody
+
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page, String userId) throws Exception {
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
@@ -75,6 +74,27 @@ public class ReplenishBillController extends BaseController implements ILogistic
         page = this.replenishBillService.findPage(page, filters);
         return page;
     }
+    @RequestMapping(value = "/page")
+    @ResponseBody
+    public Page<ReplenishBill> findPagePro(Page<ReplenishBill> page, String userId) throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
+        User CurrentUser = CacheManager.getUserById(userId);
+        String ownerId = CurrentUser.getOwnerId();
+        String id = CurrentUser.getId();
+        if (!id.equals("admin")) {
+            PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
+            filters.add(filter);
+        }
+        page.setPageProperty();
+        page = this.replenishBillService.findPagePro(page, filters);
+        return page;
+    }
+
+
+
     @Override
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page) throws Exception {
         return null;
