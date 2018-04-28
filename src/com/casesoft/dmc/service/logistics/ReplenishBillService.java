@@ -591,4 +591,10 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
 
     }
 
+    public List<PurchaseOrderBill> findpurchaseOrderBillonReplenishBill(String billno){
+        String hql="from PurchaseOrderBill where srcBillNo=?";
+        List<PurchaseOrderBill> lists = this.replenishBillDao.find(hql, new Object[]{billno});
+        return lists;
+    }
+
 }

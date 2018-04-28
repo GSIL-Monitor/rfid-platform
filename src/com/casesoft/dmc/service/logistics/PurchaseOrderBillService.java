@@ -208,6 +208,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
             unit.setOwingValue(owingValue+(actPrice-payPrice));
             this.unitDao.update(unit);*/
         }
+        purchaseOrderBill.setSrcBillNo(replenishBillNo);
         this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
         this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
         if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {

@@ -297,5 +297,15 @@ public class ReplenishBillController extends BaseController implements ILogistic
 
     }
 
+    public List<PurchaseOrderBill> findpurchaseOrderBillonReplenishBill(String billno){
+        try {
+            List<PurchaseOrderBill> purchaseOrderBills = this.replenishBillService.findpurchaseOrderBillonReplenishBill(billno);
+            return purchaseOrderBills;
+        }catch (Exception e){
+            return null;
+        }
+
+    }
+
 
 }
