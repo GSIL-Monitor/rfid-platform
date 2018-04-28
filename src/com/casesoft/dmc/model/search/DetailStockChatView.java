@@ -67,20 +67,14 @@ public class DetailStockChatView {
     private String ownerId;
     @Column()
     private Integer warehType;
-    @Column()
-    private String groupId;
 
-    public String getGroupId() {
-        return groupId;
-    }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
 
     @Column()
     @Excel(name = "厂家")
     private String class1Name;
+    @Column()
+    private String groupId;
 
     public String getGroupId() {
         return groupId;
@@ -89,9 +83,6 @@ public class DetailStockChatView {
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-
-    @Column()
-    private String groupId;
 
     public String getClass1Name() {
         return class1Name;
