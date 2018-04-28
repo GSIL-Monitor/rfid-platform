@@ -477,6 +477,24 @@ public class WXProductApiController extends ApiBaseController {
 
     /**
      * add by yushen
+     * 查找所有颜色尺寸，不分页
+     */
+    @RequestMapping(value = "/searchColors")
+    @ResponseBody
+    public Map<String, Object> searchColors() throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<PropertyFilter> colorFilters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Map<String, String> colorSortMap = new HashMap<>();
+        colorSortMap.put("colorName", "asc");
+
+        List<Color> colors = this.colorService.find(colorFilters, colorSortMap);
+        map.put("colors", colors);
+
+        return map;
+    }
+
+    /**
+     * add by yushen
      * 查找款所对应商品的所有颜色尺寸
      */
     @RequestMapping(value = "/listColorAndSizeByStyleId")
