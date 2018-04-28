@@ -13,6 +13,7 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class ReplenishBillController extends BaseController implements ILogistic
     private ReplenishBillService replenishBillService;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private PurchaseOrderBillService purchaseOrderBillService;
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
@@ -296,7 +299,8 @@ public class ReplenishBillController extends BaseController implements ILogistic
 
 
     }
-
+    @RequestMapping(value = "/findpurchaseOrderBillonReplenishBill")
+    @ResponseBody
     public List<PurchaseOrderBill> findpurchaseOrderBillonReplenishBill(String billno){
         try {
             List<PurchaseOrderBill> purchaseOrderBills = this.replenishBillService.findpurchaseOrderBillonReplenishBill(billno);
@@ -306,6 +310,23 @@ public class ReplenishBillController extends BaseController implements ILogistic
         }
 
     }
+    @RequestMapping(value = "/findPurchase")
+    @ResponseBody
+    public ModelAndView findPurchase(String billNo,String url){
+        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
+        ModelAndView mv = new ModelAndView("views/logistics/purchaseOrderBillDetail");
+        mv.addObject("pageType", "edit");
+        mv.addObject("purchaseOrderBill", purchaseOrderBill);
+        mv.addObject("mainUrl", url);
+        User user = this.getCurrentUser();
+        mv.addObject("OwnerId", user.getOwnerId());
+        mv.addObject("userId", getCurrentUser().getId());
+        Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        mv.addObject("defaultWarehId", defaultWarehId);
+        return mv;
+    }
+
 
 
 }

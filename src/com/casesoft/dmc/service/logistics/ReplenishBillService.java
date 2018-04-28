@@ -90,7 +90,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                     String styleid =(String) propertyFilter.getMatchValue();
                     cs.setString(3, styleid);
                 }
-                if(propertyName.equals("billId")&&name.equals("LIKE")){
+                if(propertyName.equals("billNo")&&name.equals("LIKE")){
                     String styleid =(String) propertyFilter.getMatchValue();
                     cs.setString(4, styleid);
                 }
