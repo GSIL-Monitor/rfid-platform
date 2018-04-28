@@ -14,12 +14,12 @@
                         aria-hidden="true">
                     <span class="white">&times;</span>
                 </button>
-                退货单
+                采购单
             </div>
         </div>
         <div class="modal-content">
             <div class="hr hr4"></div>
-            <table id="findRetrunNoListGrid"></table>
+            <table id="findPurchaseListGrid"></table>
         </div>
     </div>
 </div>
@@ -31,17 +31,17 @@
 
     function initUniqueretrunList() {
         debugger;
-        $("#findRetrunNoListGrid").jqGrid({
+        $("#findPurchaseListGrid").jqGrid({
             height: 400,
-            url: basePath + "/logistics/Consignment/findSaleOrderReturnBillNo.do?billno=" + $("#search_billNo").val(),
+            url: basePath + "/logistics/relenishBill/findpurchaseOrderBillonReplenishBill.do?billno=" + $("#search_billNo").val(),
             datatype: "json",
             mtype: "POST",
             colModel: [
                 {name: 'id', label: '单号', width: 150},
                 {name: 'billDate', label: '时间', width: 150},
-                {name: 'origUnitName', label: '退货客户',  width: 150},
-                {name: 'destUnitName',label:'收货方',width:150},
-                {name: 'totQty', label: '数量',  width: 150},
+                {name: 'destName', label: '收货仓库',  width: 150},
+                {name: 'totQty',label:'单据数量',width:150},
+                {name: 'totInQty', label: '已入库数量',  width: 150},
 
             ],
             rownumbers: true,
@@ -53,65 +53,16 @@
             sortname: 'code',
             sortorder: "desc",
             ondblClickRow: function (rowid) {
-                var row = $("#findRetrunNoListGrid").jqGrid("getRowData", rowid);
+                var row = $("#findPurchaseListGrid").jqGrid("getRowData", rowid);
                 /* $(viewId).val(row.code);
                  $(viewTextId).val(row.name);
                  closeUnitSelectDialog();*/
-
-                if(billNo.indexOf("CM")!=-1){
-                    $.ajax({
-                        url: basePath +"/logistics/Consignment/quit.do?billNo=" +billNo,
-                        cache: false,
-                        async: false,
-                        type: "POST",
-                        success: function (data, textStatus) {
-
-                            if(textStatus=="success"){
-                                $.gritter.add({
-                                    text: billNo+"可以编辑",
-                                    class_name: 'gritter-success  gritter-light'
-                                });
-                                window.location.href=basePath+"/logistics/saleOrderReturn/findsaleReturn.do?billNo="+row.id+"&url=/logistics/Consignment/index.do";
-                            }
-
-                        }
-                    });
-
-                }
-                if(billNo.indexOf("SO")!=-1){
-                    $.ajax({
-                        url: basePath +"/logistics/saleOrder/quit.do?billNo=" +billNo,
-                        cache: false,
-                        async: false,
-                        type: "POST",
-                        success: function (data, textStatus) {
-
-                            if(textStatus=="success"){
-                                $.gritter.add({
-                                    text: billNo+"可以编辑",
-                                    class_name: 'gritter-success  gritter-light'
-                                });
-                                window.location.href=basePath+"/logistics/saleOrderReturn/findsaleReturn.do?billNo="+row.id+"&url=/logistics/saleOrder/index.do";
-                            }
-
-                        }
-                    });
-
-                }
-
-
-
+                window.location.href=basePath+"/logistics/relenishBill/findPurchase.do?billNo="+row.id+"&url=/logistics/relenishBill/index.do";
             }
         });
-        var parent_column = $("#findRetrunNoListGrid").closest('.modal-dialog');
-        $("#findRetrunNoListGrid").jqGrid('setGridWidth', parent_column.width());
+        var parent_column = $("#findPurchaseListGrid").closest('.modal-dialog');
+        $("#findPurchaseListGrid").jqGrid('setGridWidth', parent_column.width());
     }
 
-    function retrunListReload() {
-        debugger;
-        $("#uniqueCodeListGrid").clearGridData();
-        $("#uniqueCodeListGrid").jqGrid('setGridParam', {
-            url: basePath + "/logistics/Consignment/findSaleOrderReturnBillNo.do?billno=" + $("#search_billNo").val()
-        }).trigger("reloadGrid");
-    }
+
 </script>

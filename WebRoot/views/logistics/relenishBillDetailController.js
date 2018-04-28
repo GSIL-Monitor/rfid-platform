@@ -105,6 +105,10 @@ function initButtonGroup() {
         "<button id='SODtl_changePurchase' type='button' style='margin-left: 20px;display: none' class='btn btn-sm btn-primary' onclick='changePurchase()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>生成采购单</span>" +
+        "</button>"+
+        "<button id='CMDtl_findPurcahse' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findPurcahse()'>" +
+        "    <i class='ace-icon fa fa-search'></i>" +
+        "    <span class='bigger-110'>查找采购单</span>" +
         "</button>"
     );
 
@@ -583,3 +587,8 @@ function changePurchase() {
         }
     });
 }
+function findPurcahse() {
+    $("#show-findPurchase-list").modal('show');
+    initUniqueretrunList();
+}
+
