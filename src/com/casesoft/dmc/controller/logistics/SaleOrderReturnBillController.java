@@ -444,5 +444,20 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             return new MessageBox(false, sb.toString());
         }
     }
+    @RequestMapping(value = "/findsaleReturn")
+    @ResponseBody
+    public ModelAndView findsaleReturn(String billNo,String url){
+        SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.findBillByBillNo(billNo);
+        ModelAndView mav = new ModelAndView("/views/logistics/saleOrderReturnDetail");
+        mav.addObject("ownerId", getCurrentUser().getOwnerId());
+        mav.addObject("userId",getCurrentUser().getId());
+        mav.addObject("saleOrderReturn", saleOrderReturnBill);
+        mav.addObject("roleid", getCurrentUser().getRoleId());
+        mav.addObject("pageType", "edit");
+        Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+        mav.addObject("ownersId", unit.getOwnerids());
+        mav.addObject("mainUrl", url);
+        return mav;
+    }
 
 }

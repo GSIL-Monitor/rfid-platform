@@ -94,7 +94,7 @@
                 url = basePath + "/unit/page.do?filter_INI_type=1,2,4&filter_EQI_status=1&filter_EQS_ownerids="+ownersId;
             }
             $("#guestSelect_Grid").jqGrid({
-                height: "auto",
+                height: 350,
                 url: url,
                 mtype: "POST",
                 datatype: "json",
@@ -170,7 +170,7 @@
                 url = basePath + "/sys/guest/page.do?filter_EQI_status=1&filter_EQS_ownerids="+ownersId;
             }
             $("#guestSelect_Grid").jqGrid({
-                height: "auto",
+                height: 350,
                 url: url,
                 mtype: "POST",
                 datatype: "json",
@@ -252,7 +252,7 @@
             }
 
             $("#guestSelect_Grid").jqGrid({
-                height: "auto",
+                height: 350,
                 url: url,
                 mtype: "POST",
                 datatype: "json",

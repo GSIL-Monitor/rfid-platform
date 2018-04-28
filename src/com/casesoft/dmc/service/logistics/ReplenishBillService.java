@@ -2,6 +2,7 @@ package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
+import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -12,10 +13,18 @@ import com.casesoft.dmc.dao.sys.UserDao;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import oracle.jdbc.driver.OracleTypes;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.*;
 
 /**
@@ -40,9 +49,104 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
     @Autowired
     private ReplenishBillDtlDao replenishBillDtlDao;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page, List<PropertyFilter> filters) {
         return this.replenishBillDao.findPage(page,filters);
+    }
+    public  Page<ReplenishBill> findPagePro(Page<ReplenishBill> page, List<PropertyFilter> filters){
+        ResultSet rs=null;
+        CallableStatement cs=null;
+        Connection con=null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            con = SessionFactoryUtils.getDataSource(session.getSessionFactory()).getConnection();
+            cs = con.prepareCall("{call findrelenishBillORDel(?,?,?,?,?,?,?,?,?)}");
+            //设置参数
+            //填充空数据
+            cs.setString(1, "");
+            cs.setString(2, "");
+            cs.setString(3, "");
+            cs.setString(4, "");
+            cs.setString(5, "");
+            for(int i=0;i<filters.size();i++){
+                PropertyFilter propertyFilter = filters.get(i);
+                String propertyName = propertyFilter.getPropertyNames()[0];
+                PropertyFilter.MatchType matchType = propertyFilter.getMatchType();
+                String name = matchType.name();
+                if(propertyName.equals("billDate")&&name.equals("GE")){
+                    Date matchValue =(Date) propertyFilter.getMatchValue();
+                    String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd");
+                    cs.setString(1, dateString);
+                }
+                if(propertyName.equals("billDate")&&name.equals("LE")){
+                    Date matchValue =(Date) propertyFilter.getMatchValue();
+                    String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd");
+                    cs.setString(2, dateString);
+                }
+                if(propertyName.equals("styleid")&&name.equals("EQ")){
+                    String styleid =(String) propertyFilter.getMatchValue();
+                    cs.setString(3, styleid);
+                }
+                if(propertyName.equals("billId")&&name.equals("LIKE")){
+                    String styleid =(String) propertyFilter.getMatchValue();
+                    cs.setString(4, styleid);
+                }
+                if(propertyName.equals("busnissId")&&name.equals("EQ")){
+                    String busnissId =(String) propertyFilter.getMatchValue();
+                    cs.setString(5, busnissId);
+                }
+
+            }
+            Integer beginIndex=(page.getPage()-1)*(page.getPageSize())+1;
+            Integer endIndex=(page.getPage())*(page.getPageSize());
+            cs.setDouble(6,beginIndex.doubleValue());
+            cs.setDouble(7,endIndex.doubleValue());
+            cs.registerOutParameter(8, Types.INTEGER);
+            cs.registerOutParameter(9, OracleTypes.CURSOR);
+            //cs.registerOutParameter("resultSet", -10);
+            cs.execute();
+            rs=(ResultSet)cs.getObject(9);
+            ArrayList<ReplenishBill> list=new ArrayList<ReplenishBill>();
+            while (rs!=null&&rs.next()){
+                ReplenishBill replenishBill=new ReplenishBill();
+                if(CommonUtil.isNotBlank(rs.getObject(1))){
+                    replenishBill.setBillNo(rs.getObject(1).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(2))){
+                    replenishBill.setStatus(Integer.parseInt(rs.getObject(2).toString()));
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(3))){
+                    replenishBill.setBusnissId(rs.getObject(3).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(4))){
+                    replenishBill.setBusnissName(rs.getObject(4).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(5))){
+                    replenishBill.setRemark(rs.getObject(5).toString());
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(6))){
+                    replenishBill.setBillDate(CommonUtil.converStrToDate(rs.getObject(6).toString(),"yyyy-MM-dd"));
+                }
+                if(CommonUtil.isNotBlank(rs.getObject(7))){
+                    replenishBill.setTotQty(Long.parseLong(rs.getObject(7).toString()));
+                }
+                list.add(replenishBill);
+            }
+            page.setRows(list);
+            Object object = cs.getObject(8);
+            page.setTotal(Integer.parseInt(object.toString()));
+            int totPage=Integer.parseInt(object.toString())/page.getPageSize();
+            page.setTotPage(totPage+1);
+            return page;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+
     }
 
     @Override
@@ -485,6 +589,12 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
             return false;
         }
 
+    }
+
+    public List<PurchaseOrderBill> findpurchaseOrderBillonReplenishBill(String billno){
+        String hql="from PurchaseOrderBill where srcBillNo=?";
+        List<PurchaseOrderBill> lists = this.replenishBillDao.find(hql, new Object[]{billno});
+        return lists;
     }
 
 }

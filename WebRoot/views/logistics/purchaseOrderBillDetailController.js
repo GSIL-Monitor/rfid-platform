@@ -83,7 +83,7 @@ function initButtonGroup() {
             "</button>");
         $("#editDetail").show();
         $("#addDetail").hide();
-        $("#search_vendor_button").attr({"disabled": "disabled"});
+        /*$("#search_vendor_button").attr({"disabled": "disabled"});*/
         if(userId==="admin"){
             $("#buttonGroup").html("" +
                 "<button type='button' class='btn btn-sm btn-primary' onclick='save()'" +
