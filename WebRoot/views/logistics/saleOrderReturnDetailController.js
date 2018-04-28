@@ -658,7 +658,7 @@ function saveother(totActPrice) {
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("不能在相同的单位之间做销售退货");
-        hideWaitingPage()
+        cs.closeProgressBar();
         return;
     }
 
@@ -667,7 +667,7 @@ function saveother(totActPrice) {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
-        hideWaitingPage()
+        cs.closeProgressBar();
         return;
     }
 
