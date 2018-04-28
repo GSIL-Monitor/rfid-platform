@@ -649,7 +649,7 @@ function saveItem(rowId) {
 
 }
 
-function addProductInfo() {
+function addProductInfo(status) {
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -713,12 +713,15 @@ function addProductInfo() {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
     });
-    $("#modal-addDetail-table").modal('hide');
+    if(status){
+        $("#modal-addDetail-table").modal('hide');
+    }
     setFooterData();
 
 }
 
 function save() {
+    cs.showProgressBar();
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
     $("#search_destId").removeAttr('disabled');
@@ -726,6 +729,7 @@ function save() {
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("不能在相同的单位之间销售");
+        cs.closeProgressBar();
         return;
     }
 
@@ -738,6 +742,7 @@ function save() {
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加销售商品！");
+        cs.closeProgressBar();
         return;
     }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
@@ -754,7 +759,6 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $.ajax({
         dataType: "json",
         async: false,
@@ -766,7 +770,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -882,7 +886,7 @@ function addProductsOnCode() {
 function wareHouseOut() {
     var billNo = $("#search_billNo").val();
     if (billNo && billNo != null) {
-        showWaitingPage();
+        cs.showProgressBar();
         var allUniqueCodes = "";
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             var rowData = $("#addDetailgrid").getRowData(value);
@@ -932,7 +936,7 @@ function wareHouseOut() {
             }
         });
         if (epcArray.length == 0) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $.gritter.add({
                 text: "请扫码出库",
                 class_name: 'gritter-success  gritter-light'
@@ -957,7 +961,7 @@ function wareHouseOut() {
             },
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                cs.closeProgressBar();
                 if (msg.success) {
                     $.gritter.add({
                         text: msg.msg,
@@ -1104,7 +1108,7 @@ function confirmWareHouseOut() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         url: basePath + "/logistics/saleOrder/convertOut.do",
@@ -1115,7 +1119,7 @@ function confirmWareHouseOut() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -1187,7 +1191,7 @@ function wareHouseIn() {
 }
 
 function confirmWareHouseIn() {
-    showWaitingPage();
+    cs.showProgressBar();
     var billNo = $("#search_billNo").val();
     var epcArray = [];
     $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
@@ -1210,7 +1214,7 @@ function confirmWareHouseIn() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -1228,7 +1232,7 @@ function confirmWareHouseIn() {
 
 function confirm_warehousing(epcinArray) {
     var billNo = $("#search_billNo").val();
-    showWaitingPage();
+    cs.showProgressBar();
     $("#fb_comfirm_in").attr({"disabled": "disabled"});
     $.ajax({
         dataType: "json",
@@ -1241,7 +1245,7 @@ function confirm_warehousing(epcinArray) {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#fb_comfirm_in").removeAttr("disabled");
             if (msg.success) {
                 bootbox.alert({
@@ -1424,7 +1428,7 @@ function Returngoods() {
             dtlArray.push(rowData);
         }
     });
-    showWaitingPage();
+    cs.showProgressBar();
     if (dtlArray.length > 0) {
         $.ajax({
             dataType: "json",
@@ -1437,7 +1441,7 @@ function Returngoods() {
             },
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                cs.closeProgressBar();
                 if (msg.success) {
                     $.gritter.add({
                         text: msg.msg,

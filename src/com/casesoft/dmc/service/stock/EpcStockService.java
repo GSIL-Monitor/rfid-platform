@@ -134,7 +134,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     }
 
     public List<EpcStock> findSaleReturnEpcByCodes(String codeStr) {
-        String hql = "from EpcStock e where ("
+        String hql = "from EpcStock epcstock where ("
                 + codeStr + ")";
         return this.epcStockDao.find(hql, new Object[]{});
     }
@@ -224,6 +224,22 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.find(hql, new Object[]{code, warehId});
 
     }
+
+
+    public List<EpcStock> findSaleReturnFilterByDestIdDtl(String code, String warehId) {
+        String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
+                "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
+                "FROM Record r,Business b,EpcStock e " +
+                "WHERE r.taskId=b.id " +
+                "AND r.code=e.code " +
+                "AND r.code=? " +
+                "AND r.destId=? " +
+                "AND r.token=10 " +
+                "ORDER BY r.scanTime DESC";
+        return this.epcStockDao.find(hql, new Object[]{code, warehId});
+
+    }
+
 
 
     public EpcStock findStockEpcByCode(String code) {
