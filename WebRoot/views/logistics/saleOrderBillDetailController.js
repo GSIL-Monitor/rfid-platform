@@ -790,6 +790,7 @@ function saveother(totActPrice) {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        cs.closeProgressBar();
         return;
     }
     /* if ($("#addDetailgrid").getDataIDs().length == 0) {
@@ -1249,7 +1250,7 @@ function wareHouseOut() {
             }
         });
     } else {
-        hideWaitingPage()
+        cs.closeProgressBar()
         bootbox.alert("请先保存当前单据");
     }
 }
