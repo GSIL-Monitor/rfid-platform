@@ -161,7 +161,7 @@
                                                 <input class="form-control" id="filter_eq_class1"
                                                        type="text" name="filter_eq_class1" readonly/>
                                                 <span class="input-group-btn">
-                                                         <button class="btn btn-sm btn-default" type="button" onclick="openSearchClass1Dialog()">
+                                                         <button class="btn btn-sm btn-default" type="button" onclick="initClass1Select_Grid('#filter_eq_class1','#filter_eq_class1Name')">
                                                              <i class="ace-icon fa fa-list"></i>
                                                          </button>
 								                      </span>

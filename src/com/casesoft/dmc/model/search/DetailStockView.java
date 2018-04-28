@@ -66,6 +66,17 @@ public class DetailStockView extends BaseProductView {
     @Excel(name = "图片", type = 2 ,width = 20 , height = 20)
     private String url;
 
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    @Column()
+    private String groupId;
+
     public String getUrl() {
         return url;
     }

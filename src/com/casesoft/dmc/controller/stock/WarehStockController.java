@@ -30,6 +30,7 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -66,6 +67,8 @@ public class WarehStockController extends BaseController {
     private SaleOrderBillService saleOrderBillService;
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
+    @Autowired
+    private UnitService unitService;
 
     @RequestMapping(value = "/index")
     public String index() {
