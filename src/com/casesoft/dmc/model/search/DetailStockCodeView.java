@@ -59,6 +59,18 @@ public class DetailStockCodeView extends BaseProductView{
     @Excel(name = "图片", type = 2 ,width = 20 , height = 20)
     private String url;
 
+    @Column()
+    @Excel(name = "厂家")
+    private String class1Name;
+
+    public String getClass1Name() {
+        return class1Name;
+    }
+
+    public void setClass1Name(String class1Name) {
+        this.class1Name = class1Name;
+    }
+
     public String getUrl() {
         return url;
     }

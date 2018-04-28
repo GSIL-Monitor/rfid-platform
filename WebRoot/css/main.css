@@ -27,8 +27,8 @@ body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6 { font-family: Micro
     z-index:2;
 }
 .showImage{
-    width: 700px;
-    height: 650px
+    width: 60%;
+    height: 40%
 }
 
 

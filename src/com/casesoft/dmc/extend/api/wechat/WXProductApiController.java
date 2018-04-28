@@ -313,6 +313,23 @@ public class WXProductApiController extends ApiBaseController {
     }
 
     /**
+     * add by Anna
+     * 微信小程序－商品款式新增－品牌筛选
+     */
+    @RequestMapping(value="/searchBrands")
+    @ResponseBody
+    public Page<PropertyKey> searchBrands(Page<PropertyKey> page){
+        this.logAllRequestParams();
+        page.setPageProperty();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        return this.propertyService.findPageForKey(page,filters);
+
+    }
+
+
+
+
+    /**
      * 微信小程序上传图片测试*/
 
     @RequestMapping("/picture")
@@ -455,6 +472,24 @@ public class WXProductApiController extends ApiBaseController {
         List<Size> sizes = this.sizeService.find(sizeFilters, sizeSortMap);
         map.put("colors", colors);
         map.put("sizes", sizes);
+        return map;
+    }
+
+    /**
+     * add by yushen
+     * 查找所有颜色尺寸，不分页
+     */
+    @RequestMapping(value = "/searchColors")
+    @ResponseBody
+    public Map<String, Object> searchColors() throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<PropertyFilter> colorFilters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Map<String, String> colorSortMap = new HashMap<>();
+        colorSortMap.put("colorName", "asc");
+
+        List<Color> colors = this.colorService.find(colorFilters, colorSortMap);
+        map.put("colors", colors);
+
         return map;
     }
 

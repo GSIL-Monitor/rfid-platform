@@ -153,6 +153,27 @@
                                                    placeholder="模糊查询"/>
                                         </div>
 
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_class1">厂家</label>
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
+                                                   placeholder="模糊查询"/> -->
+                                            <div class="input-group">
+                                                <input class="form-control" id="filter_eq_class1"
+                                                       type="text" name="filter_eq_class1" readonly/>
+                                                <span class="input-group-btn">
+                                                         <button class="btn btn-sm btn-default" type="button" onclick="openSearchClass1Dialog()">
+                                                             <i class="ace-icon fa fa-list"></i>
+                                                         </button>
+								                      </span>
+                                                <input class="form-control" id="filter_eq_class1Name"
+                                                       type="text" name="filter_eq_class1Name" readonly  placeholder="厂家"/>
+                                            </div>
+                                            <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"
+                                                    style="width: 100%;" >
+                                            </select>--%>
+                                        </div>
+
+
                                     </div>
                                     <!-- #section:elements.form -->
 
@@ -201,6 +222,7 @@
 <%--<jsp:include page="../search/search_js.jsp"></jsp:include>--%>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
 <jsp:include page="inStockCode_list.jsp"></jsp:include>
+<jsp:include page="../base/search_class1_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/stock/warehStockController.js"></script>
 <script>
     function stockeSkuDetail() {

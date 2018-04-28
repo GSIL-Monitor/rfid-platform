@@ -2,6 +2,7 @@ package com.casesoft.dmc.controller.search;
 
 
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.DataSourceRequest;
@@ -68,6 +69,11 @@ public class DetailStockSearch  extends BaseController {
             DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
             DataSourceResult sourceResultSaleDtl = this.detailStockDao.getList(dataSourceRequest);
             List<DetailStockView> detailStockViews = (List<DetailStockView>) sourceResultSaleDtl.getData();
+            String rootPath = session.getServletContext().getRealPath("/");
+            for (DetailStockView detailStockView :detailStockViews){
+                String url = StyleUtil.returnImageUrl(detailStockView.getStyleId(),rootPath);
+                detailStockView.setUrl(url);
+            }
             ExportParams params = new ExportParams("库存，按SKU汇总", "sheet1", ExcelType.XSSF);
             String path = Constant.Folder.Report_File_Folder;
             String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");

@@ -340,9 +340,9 @@ public class EpcStock implements Serializable {
 		this.wsPrice = wsPrice;
 	}
 
-	@Transient
-	private String isAlert;
 
+	private String isAlert;
+	@Transient
 	public String getIsAlert() {
 		return isAlert;
 	}
@@ -350,9 +350,9 @@ public class EpcStock implements Serializable {
 	public void setIsAlert(String isAlert) {
 		this.isAlert = isAlert;
 	}
-	@Transient
-	private String storage;
 
+	private String storage;
+	@Transient
 	public String getStorage() {
 		return storage;
 	}
@@ -373,19 +373,22 @@ public class EpcStock implements Serializable {
 
 
 
-	@Transient
+
 	private String originBillNo; //原始销售单号
+	@Transient
 	public String getOriginBillNo() { return originBillNo; }
 	public void setOriginBillNo(String originBillNo) { this.originBillNo = originBillNo; }
 
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	@Transient
 	private Date lastSaleTime;//最近一次销售时间
+
+	@Transient
 	public Date getLastSaleTime() { return lastSaleTime; }
 	public void setLastSaleTime(Date lastSaleTime) { this.lastSaleTime = lastSaleTime; }
 
-	@Transient
+
 	private Long saleCycle; //销售周期（开单当天时间－销售单时间）
+	@Transient
 	public Long getSaleCycle() { return saleCycle; }
 	public void setSaleCycle(Long saleCycle) { this.saleCycle = saleCycle; }
 

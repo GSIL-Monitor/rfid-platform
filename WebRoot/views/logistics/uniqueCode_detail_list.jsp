@@ -69,11 +69,11 @@
         $("#uniqueCodeGrid").jqGrid('setGridWidth', parent_column.width());
     }
 
-    function codeListReload(uniqueCodes) {
+    function codeListReload(uniqueCodes,billNo) {
         debugger;
         $("#uniqueCodeListGrid").clearGridData();
         $("#uniqueCodeListGrid").jqGrid('setGridParam', {
-            url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes
+            url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes+"&billNo="+billNo
         }).trigger("reloadGrid");
     }
 </script>

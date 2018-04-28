@@ -50,6 +50,17 @@ public class DetailStockView extends BaseProductView {
     @Transient
     @Excel(name = "库存金额")
     private Double inStockPrice;
+    @Column()
+    @Excel(name="厂家")
+    private String class1Name;
+
+    public String getClass1Name() {
+        return class1Name;
+    }
+
+    public void setClass1Name(String class1Name) {
+        this.class1Name = class1Name;
+    }
 
     @Transient
     @Excel(name = "图片", type = 2 ,width = 20 , height = 20)

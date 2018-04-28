@@ -3,6 +3,7 @@ package com.casesoft.dmc.controller.stock;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
@@ -116,6 +117,11 @@ public class WarehStockController extends BaseController {
             DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
             DataSourceResult sourceResultSaleDtl = this.detailStockDao.getStyleList(dataSourceRequest, this.session);
             List<DetailStockChatView> resultList = (List<DetailStockChatView>) sourceResultSaleDtl.getData();
+            String rootPath = session.getServletContext().getRealPath("/");
+            for (DetailStockChatView dsc :resultList){
+                String url = StyleUtil.returnImageUrl(dsc.getStyleId(),rootPath);
+                dsc.setUrl(url);
+            }
             ExportParams params = new ExportParams("库存，按款汇总", "sheet1", ExcelType.XSSF);
             String path = Constant.Folder.Report_File_Folder;
             String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
@@ -155,7 +161,11 @@ public class WarehStockController extends BaseController {
             DataSourceResult sourceResultSaleDtl = this.detailStockDao.getCodeList(dataSourceRequest);
             List<DetailStockCodeView> detailStockCodeViews = (List<DetailStockCodeView>) sourceResultSaleDtl.getData();
             ExportParams params = new ExportParams("库存，按Code汇总", "sheet1", ExcelType.XSSF);
-
+            String rootPath = session.getServletContext().getRealPath("/");
+            for (DetailStockCodeView detailStockCodeView :detailStockCodeViews){
+                String url = StyleUtil.returnImageUrl(detailStockCodeView.getStyleId(),rootPath);
+                detailStockCodeView.setUrl(url);
+            }
             String path = Constant.Folder.Report_File_Folder;
             String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
             File files = new File(path + "\\库存，按Code汇总");
@@ -181,15 +191,16 @@ public class WarehStockController extends BaseController {
         }
     }
 
+
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param code    唯一码
-     * @param type    出入库类型 0出库，1入库
+     * @param type 出库入库类型 0,出库,1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
      */
-    @RequestMapping("checkEpcStock")
+    @RequestMapping("checkEpcStockAndFindDate")
     @ResponseBody
-    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo) {
+    public MessageBox checkEpcStockAndFindDate(String warehId, String code, String billNo,Integer type){
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -220,10 +231,27 @@ public class WarehStockController extends BaseController {
             }
 
             EpcStock epcStock;
+
+            List<EpcStock> epcStockList = new ArrayList<>();
             if (Constant.TaskType.Outbound == type) {
-                epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId);
+                if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                    epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                }else{
+                    epcStock = epcStockList.get(0);
+                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    epcStock.setSaleCycle(cycle);
+                }
+
             } else {
-                epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId);
+                if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                }else{
+                    epcStock = epcStockList.get(0);
+                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    epcStock.setSaleCycle(cycle);
+                }
             }
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);
@@ -312,7 +340,7 @@ public class WarehStockController extends BaseController {
                 epcStock = this.epcStockService.findEpcAllowInCode(code);
             } else {
                 epcStock = epcStockList.get(0);
-                Long cycle = ((new Date()).getTime() - epcStock.getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
                 epcStock.setSaleCycle(cycle);
             }
             if (CommonUtil.isNotBlank(epcStock)) {
@@ -411,6 +439,71 @@ public class WarehStockController extends BaseController {
             return new MessageBox(false, e.getMessage());
         }
     }
+
+
+    /**
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @param code    唯一码
+     * @param type    出入库类型 0出库，1入库
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     *
+     * 扫描检测唯一吗是否可以出/入库(存在库存表中)
+     */
+    @RequestMapping("checkEpcStock")
+    @ResponseBody
+    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo) {
+        try {
+            if (code.length() != 13) {
+                String epcCode = code.toUpperCase();
+                code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+            }
+
+            if (CommonUtil.isNotBlank(billNo)) {
+                List<Business> businessList = this.taskService.findBusinessByBillNo(billNo);
+                if (CommonUtil.isNotBlank(businessList)) {
+                    List<String> taskIdList = new ArrayList<>();
+                    for (Business business : businessList) {
+                        taskIdList.add(business.getId());
+                    }
+                    String taskIdStr = TaskUtil.getSqlStrByList(taskIdList, Record.class, "taskId");
+                    List<Record> recordList = this.taskService.findRecordByTaskIdAndType(taskIdStr, type);
+                    List<String> codeList = new ArrayList<>();
+                    for (Record record : recordList) {
+                        codeList.add(record.getCode());
+                    }
+                    if (codeList.contains(code)) {
+                        if (type == 0) {
+                            return new MessageBox(false, "唯一码:" + code + " 在本单已出，不能重复出库");
+                        } else if (type == 1) {
+                            return new MessageBox(false, "唯一码:" + code + " 在本单已入，不能重复入库");
+                        }
+                    }
+                }
+            }
+
+            EpcStock epcStock;
+            if (Constant.TaskType.Outbound == type) {
+                epcStock = this.epcStockService.findEpcInCode(warehId, code);
+            } else {
+                epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+            }
+            if (CommonUtil.isNotBlank(epcStock)) {
+                StockUtil.convertEpcStock(epcStock);
+                return new MessageBox(true, "", epcStock);
+            } else {
+                if (Constant.TaskType.Outbound == type) {
+                    return new MessageBox(false, "唯一码:" + code + "不能出库");
+                } else {
+                    return new MessageBox(false, "唯一码:" + code + "不能入库");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+
+    }
+
 
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
@@ -524,52 +617,46 @@ public class WarehStockController extends BaseController {
      *
      * @param uniqueCodes 单据明细中，唯一码拼接起来的字符串
      * @return 唯一码明细
+     *
      */
     @RequestMapping(value = "/findCodeSaleReturnList")
     @ResponseBody
-    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes, String warehId) {
-        String codeListStringForSql = "";
+    public List<EpcStock> findCodeSaleReturnList(String uniqueCodes, String billNo) {
+        List<String> codeList = new ArrayList<>();
         if (CommonUtil.isNotBlank(uniqueCodes)) {
-            String[] codesArray = uniqueCodes.split(",");
-            StringBuilder CodeListString = new StringBuilder();
-            CodeListString.append("e.code in (");
-            for (int i = 0; i < codesArray.length; i++) {
-                CodeListString.append("'").append(codesArray[i]).append("'");
-                if (i == codesArray.length - 1) {
-                    CodeListString.append(")");
-                } else {
-                    CodeListString.append(",");
-                }
+            for(String code : uniqueCodes.split(",")){
+                codeList.add(code);
             }
-            codeListStringForSql = CodeListString.toString();
         }
-
-        //查看唯一码时，直接从BillRecord中取值
-        List<EpcStock> epcStockList = this.epcStockService.findEpcSaleReturnByCodes(codeListStringForSql, warehId);
-        List<EpcStock> epcStockList1;
-        if (epcStockList.isEmpty() || epcStockList.size() == 0) {
-            epcStockList1 = this.epcStockService.findSaleReturnEpcByCodes(codeListStringForSql);
-            for (EpcStock epc : epcStockList1) {
+        Map<String,BillRecord> billRecordMap = new HashMap<>();
+        if(CommonUtil.isNotBlank(billNo) && CommonUtil.isNotBlank(uniqueCodes)){
+            List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(TaskUtil.getSqlStrByList(codeList,BillRecord.class,"code"),billNo);
+            for(BillRecord b : billRecordList){
+                billRecordMap.put(b.getCode(),b);
+            }
+        }
+        List<EpcStock> epcStockList = new ArrayList<>();
+        if(CommonUtil.isNotBlank(uniqueCodes)) {
+            epcStockList = this.epcStockService.findSaleReturnEpcByCodes(TaskUtil.getSqlStrByList(codeList,EpcStock.class,"code"));
+            for(EpcStock epc : epcStockList){
+                BillRecord billRecord = billRecordMap.get(epc.getCode());
+                if(CommonUtil.isNotBlank(billRecord)){
+                    if(CommonUtil.isNotBlank(billRecord.getLastSaleTime())){
+                        epc.setLastSaleTime(billRecord.getLastSaleTime());
+                    }
+                    if(CommonUtil.isNotBlank(billRecord.getOriginBillNo())){
+                        epc.setOriginBillNo(billRecord.getOriginBillNo());
+                    }
+                    if(CommonUtil.isNotBlank(billRecord.getSaleCycle())){
+                        epc.setSaleCycle(billRecord.getSaleCycle());
+                    }
+                }
                 Unit unit = CacheManager.getUnitById(epc.getWarehouseId());
                 epc.setFloor(unit.getName());
             }
-        } else {
-            List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(epcStockList.get(0).getOriginBillNo(), codeListStringForSql);
-            if (billRecordList.isEmpty() || billRecordList.size() == 0){
-                Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
-                Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
-                epcStockList.get(0).setFloor(unit.getName());
-                epcStockList.get(0).setSaleCycle(cycle);
-                epcStockList1 = epcStockList.subList(0, 1);
-            }else {
-                Unit unit = CacheManager.getUnitById(epcStockList.get(0).getWarehouseId());
-                epcStockList.get(0).setSaleCycle(billRecordList.get(0).getSaleCycle());
-                epcStockList.get(0).setFloor(unit.getName());
-                epcStockList1 = epcStockList.subList(0, 1);
-            }
         }
 
-        return epcStockList1;
+        return epcStockList;
     }
 
     /***

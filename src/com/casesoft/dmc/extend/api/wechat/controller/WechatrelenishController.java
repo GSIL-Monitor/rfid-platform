@@ -386,6 +386,8 @@ public class WechatrelenishController extends ApiBaseController {
 
     /**
      * add by Anna
+     * @param sbillDate 开始时间
+     * @param ebillDate 结束时间
      * 进销存信息内查看采购量-详细
      */
     @RequestMapping(value = "/findPurchaseByStyleId.do")
@@ -399,6 +401,8 @@ public class WechatrelenishController extends ApiBaseController {
 
     /**
      * add by Anna
+     * @param sbillDate 开始时间
+     * @param ebillDate 结束时间
      * 进销存信息内查看采购量－总采购量
      */
     @RequestMapping(value = "/findPurchaseTotal.do")

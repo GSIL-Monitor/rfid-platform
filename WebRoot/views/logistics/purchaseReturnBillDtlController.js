@@ -241,7 +241,11 @@ function addDetail() {
     });
 }
 
-function addProductInfo() {
+
+/**
+ * status 是否关闭对话框
+ * */
+function addProductInfo(status) {
     if (editDtailRowId != null) {
         $('#addDetailgrid').saveRow(editcolosizeRow);
     }
@@ -282,23 +286,28 @@ function addProductInfo() {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
     });
-    $("#modal-addDetail-table").modal('hide');
+    if(status){
+        $("#modal-addDetail-table").modal('hide');
+    }
     setFooterData();
 }
 
 function save() {
-
+    cs.showProgressBar();
     $("#editForm").data('bootstrapValidator').destroy();
     $('#editForm').data('bootstrapValidator', null);
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+         cs.closeProgressBar();
         return;
     }
     if (!isPassed) {
+        cs.closeProgressBar();
         bootbox.alert("请确保表格中数据准确");
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
+        cs.closeProgressBar();
         bootbox.alert("请添加退货商品");
         return;
     }
@@ -310,7 +319,7 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
+
     $.ajax({
         dataType: "json",
         // async:false,
@@ -322,7 +331,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -554,7 +563,7 @@ function wareHouseOut() {
         });
 
         var returnValue = "";
-        showWaitingPage();
+        cs.showProgressBar();
         $.ajax({
             // async: false,
             dataType: "json",
@@ -567,7 +576,7 @@ function wareHouseOut() {
             },
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                cs.closeProgressBar();
                 if (msg.success) {
                     $.gritter.add({
                         text: msg.msg,
@@ -724,7 +733,7 @@ function confirmWareHouseOut() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         // async:false,
@@ -737,7 +746,7 @@ function confirmWareHouseOut() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
