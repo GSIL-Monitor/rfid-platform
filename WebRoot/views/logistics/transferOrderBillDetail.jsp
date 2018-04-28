@@ -130,7 +130,7 @@
 
                                     <div class="col-xs-9 col-sm-9">
                                             <textarea maxlength="400" class="form-control" id="form_remark"
-                                                      name="remark">{transferOrderBill.remark}</textarea>
+                                                      name="remark">${transferOrderBill.remark}</textarea>
                                     </div>
                                 </div>
                                 <div>
