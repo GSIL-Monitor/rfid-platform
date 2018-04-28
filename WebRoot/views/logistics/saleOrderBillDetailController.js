@@ -342,6 +342,7 @@ function initButtonGroup() {
 }
 
 function initGrid() {
+    
 
     $("#addDetailgrid").jqGrid({
         height: 'auto',
@@ -772,7 +773,7 @@ function deleteItem(rowId) {
 }
 
 function saveother(totActPrice) {
-    showWaitingPage();
+     cs.showProgressBar();
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
     $("#search_destId").removeAttr('disabled');
@@ -780,7 +781,7 @@ function saveother(totActPrice) {
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("不能在相同的单位之间销售");
-        hideWaitingPage();
+        cs.closeProgressBar();
         return;
     }
 
@@ -919,12 +920,12 @@ function save() {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
-        hideWaitingPage();
+        cs.closeProgressBar();
         return false;
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加销售商品！");
-        hideWaitingPage();
+        cs.closeProgressBar();
         return false;
     }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
@@ -970,7 +971,7 @@ function saveAjax() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#SODtl_wareHouseIn").removeAttr("disabled");
             if (msg.success) {
                 $.gritter.add({
@@ -1095,12 +1096,12 @@ function addProductsOnCode() {
 }
 
 function wareHouseOut() {
-    showWaitingPage();
+     cs.showProgressBar();
     $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
     var billNo = $("#search_billNo").val();
     if (billNo && billNo != null) {
         if (outStockCheck()) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#SODtl_wareHouseOut").removeAttr("disabled");
             return;
         }
@@ -1156,12 +1157,12 @@ function wareHouseOut() {
             }
         });
         if (epcArray.length == 0) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $.gritter.add({
                 text: "请扫码出库",
                 class_name: 'gritter-success  gritter-light'
             });
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#SODtl_wareHouseOut").removeAttr("disabled");
             if (pageType === "edit") {
                 edit_wareHouseOut();
@@ -1185,7 +1186,7 @@ function wareHouseOut() {
             },
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                cs.closeProgressBar();
                 $("#SODtl_wareHouseOut").removeAttr("disabled");
                 if (msg.success) {
                     $.gritter.add({
@@ -1312,7 +1313,7 @@ function outStockCheck() {
 
 
 function confirmWareHouseOut() {
-    showWaitingPage();
+     cs.showProgressBar();
     $("#so_comfirmout_button").attr({"disabled": "disabled"});
     var billNo = $("#search_billNo").val();
     var epcArray = [];
@@ -1323,7 +1324,7 @@ function confirmWareHouseOut() {
     if (epcArray.length == 0) {
         bootbox.alert("请添加唯一码!");
         $("#so_comfirmout_button").removeAttr("disabled");
-        hideWaitingPage();
+        cs.closeProgressBar();
         return;
     }
     $.each(epcArray, function (index, value) {
@@ -1363,7 +1364,7 @@ function confirmWareHouseOut() {
         type: "POST",
         success: function (msg) {
             $("#so_comfirmout_button").removeAttr("disabled");
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -1421,7 +1422,7 @@ function wareHouseIn() {
 }
 
 function confirmWareHouseIn() {
-    showWaitingPage();
+     cs.showProgressBar();
     $("#In_dialog_buttonGroup").attr({"disabled": "disabled"});
     var billNo = $("#search_billNo").val();
     var epcArray = [];
@@ -1432,7 +1433,7 @@ function confirmWareHouseIn() {
     if (epcArray.length == 0) {
         bootbox.alert("请添加唯一码!");
         $("#SODtl_addUniqCode").removeAttr("disabled");
-        hideWaitingPage();
+        cs.closeProgressBar();
         return;
     }
 
@@ -1447,7 +1448,7 @@ function confirmWareHouseIn() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#SODtl_addUniqCode").removeAttr("disabled");
             if (msg.success) {
                 $.gritter.add({
@@ -1632,7 +1633,7 @@ function Returngoods() {
         }
     });
     if (dtlArray.length > 0) {
-        showWaitingPage();
+         cs.showProgressBar();
         $.ajax({
             dataType: "json",
             async: false,
@@ -1644,7 +1645,7 @@ function Returngoods() {
             },
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                cs.closeProgressBar();
                 if (msg.success) {
                     $.gritter.add({
                         text: msg.msg,
