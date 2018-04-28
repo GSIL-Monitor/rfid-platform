@@ -285,7 +285,7 @@ function addDetail() {
     });
 }
 
-function addProductInfo() {
+function addProductInfo(status) {
 
     var addProductInfo = [];
     $('#color_size_grid').saveRow(editcolosizeRow);
@@ -334,7 +334,9 @@ function addProductInfo() {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
     });
-    $("#modal-addDetail-table").modal('hide');
+    if(status){
+        $("#modal-addDetail-table").modal('hide');
+    }
     setFooterData();
 
 }
@@ -354,14 +356,17 @@ function deleteItem(rowId) {
 }
 
 function save() {
+    cs.showProgressBar();
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加补货商品！");
+         cs.closeProgressBar();
         return;
     }
     var issaletype=$("#edit_replenishType input:radio[value='1']").is(':checked');
     var isreturntype=$("#edit_replenishType input:radio[value='0']").is(':checked');
     if(!issaletype&&!isreturntype){
         bootbox.alert("请选择补货类型！");
+         cs.closeProgressBar();
         return;
     }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
@@ -374,7 +379,6 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $.ajax({
         dataType: "json",
         async: false,
@@ -386,7 +390,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+             cs.closeProgressBar();
 
             if (msg.success) {
                 $.gritter.add({
@@ -418,7 +422,7 @@ function saveAndAdd() {
     location.href =  basePath + "/views/logistics/relenishBillDetail.jsp";
 }
 function check() {
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         async: false,
@@ -430,7 +434,7 @@ function check() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+             cs.closeProgressBar();
 
             if (msg.success) {
                 $.gritter.add({
@@ -454,7 +458,7 @@ function check() {
 }
 
 function noCheck() {
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         async: false,
@@ -466,7 +470,7 @@ function noCheck() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+             cs.closeProgressBar();
 
             if (msg.success) {
                 $.gritter.add({
@@ -530,7 +534,7 @@ function changePurchase() {
         bootbox.alert("请添写采购单数量！");
         return;
     }
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         async: false,
@@ -541,7 +545,7 @@ function changePurchase() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+             cs.closeProgressBar();
 
             if (msg.success) {
                 $.gritter.add({

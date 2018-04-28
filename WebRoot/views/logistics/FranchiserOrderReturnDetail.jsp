@@ -190,12 +190,6 @@
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
-<link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.material.min.css" rel="stylesheet">
-<script src="<%=basePath%>/kendoUI/js/kendo.all.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/FranchiserOrderReturnDetailController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>

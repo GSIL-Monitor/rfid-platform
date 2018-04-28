@@ -769,8 +769,8 @@ public class BillConvertUtil {
             styleCountMap.put(e.getStyleId(), e.getStyleId());
             if (saleOrderReturnBillDtlMap.containsKey(sku)) {
                 SaleOrderReturnBillDtl dtl = saleOrderReturnBillDtlMap.get(sku);
-                BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
-                billRecordList.add(billRecord);
+                /*BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
+                billRecordList.add(billRecord);*/
                 dtl.setOutQty(dtl.getOutQty() + 1);
                 dtl.setOutVal(dtl.getOutQty() * dtl.getActPrice());
                 dtl.setOutStatus(BillConstant.BillDtlStatus.Outing);
@@ -909,8 +909,8 @@ public class BillConvertUtil {
             styleCountMap.put(e.getStyleId(), e.getStyleId());
             if (purchaseBillDtlMap.containsKey(sku)) {
                 SaleOrderReturnBillDtl dtl = purchaseBillDtlMap.get(sku);
-                BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
-                billRecordList.add(billRecord);
+                /*BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
+                billRecordList.add(billRecord);*/
                 dtl.setInQty(dtl.getInQty() + 1);
                 dtl.setInVal(dtl.getInQty() * dtl.getActPrice());
                 dtl.setInStatus(BillConstant.BillDtlStatus.Ining);
@@ -1722,7 +1722,9 @@ public class BillConvertUtil {
         for (SaleOrderReturnBillDtl detail : saleOrderReturnBillDtls) {
 
             /*从EpcStock中取出三字段信息 add by Anna*/
-            List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(detail.getUniqueCodes(), bill.getDestId());
+            /*List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(detail.getUniqueCodes(), bill.getDestId());
+            Map<String,EpcStock> epcStockMap = new HashMap<>()
+
             EpcStock epcStock;
             String originBillNo;
             Date lastSaleTime;
@@ -1738,7 +1740,7 @@ public class BillConvertUtil {
                 originBillNo = epcStock.getOriginBillNo();
                 lastSaleTime = epcStock.getLastSaleTime();
                 saleCycle = epcStock.getSaleCycle();
-            }
+            }*/
             /* end */
 
             detail.setId(new GuidCreator().toString());
@@ -1755,7 +1757,23 @@ public class BillConvertUtil {
             totInVal = inQty * detail.getActPrice();
             if (CommonUtil.isNotBlank(detail.getUniqueCodes())) {
                 for (String code : detail.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(detail.getBillNo() + "-" + code, code, detail.getBillNo(), detail.getSku(), originBillNo, lastSaleTime, saleCycle);
+                    BillRecord billRecord = new BillRecord(detail.getBillNo() + "-" + code, code, detail.getBillNo(), detail.getSku());
+                    List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(code, bill.getDestId());
+                    EpcStock epcStock;
+                    String originBillNo;
+                    Date lastSaleTime;
+                    Long saleCycle;
+                    if (!(epcStockList.size() == 0 || epcStockList.isEmpty())) {
+                        Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
+                        epcStockList.get(0).setSaleCycle(cycle);
+                        epcStock = epcStockList.get(0);
+                        originBillNo = epcStock.getOriginBillNo();
+                        lastSaleTime = epcStock.getLastSaleTime();
+                        saleCycle = epcStock.getSaleCycle();
+                        billRecord.setOriginBillNo(originBillNo);
+                        billRecord.setLastSaleTime(lastSaleTime);
+                        billRecord.setSaleCycle(saleCycle);
+                    }
                     billRecordList.add(billRecord);
                 }
             }
@@ -1962,7 +1980,7 @@ public class BillConvertUtil {
 
     /***
      * 采购单转入库单据（客户端查询调用）
-     * */
+     */
     public static List<Bill> convertPurchaseToBill(List<PurchaseOrderBill> purchaseOrderBillList, int token) {
         List<Bill> billList = new ArrayList<>();
         for (PurchaseOrderBill p : purchaseOrderBillList) {
@@ -1987,7 +2005,7 @@ public class BillConvertUtil {
 
     /***
      * 销售订单转出入库单据（客户端查询调用）
-     * */
+     */
     public static List<Bill> convertsaleOrderToBill(List<SaleOrderBill> saleOrderBillList, int token) {
         List<Bill> billList = new ArrayList<>();
         for (SaleOrderBill s : saleOrderBillList) {
@@ -2100,7 +2118,7 @@ public class BillConvertUtil {
 
     /***
      * 采购订单明细转入库单明细（客户端查询调用）
-     * */
+     */
     public static List<BillDtl> covertPurchaseDtlToBillDtl(List<PurchaseOrderBillDtl> purchaseOrderBillDtlList) {
         List<BillDtl> billDtlList = new ArrayList<>();
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
@@ -2123,7 +2141,7 @@ public class BillConvertUtil {
 
     /***
      * 销售订单明细转出入库单据明细（客户端查询调用）
-     * */
+     */
     public static List<BillDtl> covertSaleOrderDtlToBillDtl(List<SaleOrderBillDtl> saleOrderBillDtlList, int token) {
         List<BillDtl> billDtlList = new ArrayList<>();
         for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {

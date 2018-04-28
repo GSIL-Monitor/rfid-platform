@@ -289,71 +289,16 @@ function saveItem(rowId) {
     $("#addDetailgrid").setRowData(rowId, value);
     setFooterData();
 }
-// function addDetail() {
-//     $("#stylegrid").setGridParam().hideCol("preCast").trigger("reloadGrid");
-//     $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
-//         $("#StyleSearchForm").resetForm();
-//         $("#stylegrid").clearGridData();
-//         $("#color_size_grid").clearGridData();
-//     });
-// }
-//
-// function addProductInfo() {
-//     if (editDtailRowId != null) {
-//         $('#addDetailgrid').saveRow(editcolosizeRow);
-//     }
-//     if (editcolosizeRow != null) {
-//         $('#color_size_grid').saveRow(editcolosizeRow);
-//     }
-//     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
-//
-//     var addProductInfo = [];
-//     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
-//         var productInfo = $("#color_size_grid").getRowData(value);
-//         if (productInfo.qty > 0) {
-//             productInfo.price = styleRow.price;
-//             productInfo.outQty = 0;
-//             productInfo.inQty = 0;
-//             productInfo.status = 0;
-//             productInfo.inStatus = 0;
-//             productInfo.outStatus = 0;
-//             productInfo.sku = productInfo.code;
-//             productInfo.totPrice = productInfo.qty * productInfo.price;
-//             productInfo.sku = productInfo.code;
-//             addProductInfo.push(productInfo);
-//         }
-//     });
-//     var isAdd = true;
-//     $.each(addProductInfo, function (index, value) {
-//         isAdd = true;
-//         $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
-//             var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
-//             if (value.code === dtlRow.sku) {
-//                 dtlRow.qty = parseInt(dtlRow.qty) + parseInt(value.qty);
-//                 dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-//                 if (dtlRow.id) {
-//                     $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
-//                 } else {
-//                     $("#addDetailgrid").setRowData(dtlndex, dtlRow);
-//                 }
-//                 isAdd = false;
-//             }
-//         });
-//         if (isAdd) {
-//             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
-//         }
-//     });
-//     $("#modal-addDetail-table").modal('hide');
-//     setFooterData();
-//
-// }
+
 
 function save() {
+   cs.showProgressBar();
     $("#search_origId").removeAttr('disabled');
     $("#search_destId").removeAttr('disabled');
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("请选择不同的仓库进行调拨");
+         cs.closeProgressBar();
         return;
     }
 
@@ -362,6 +307,7 @@ function save() {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+         cs.closeProgressBar();
         return;
     }
 
@@ -371,6 +317,7 @@ function save() {
     }
     if ($("#addDetailgrid").getDataIDs().length === 0) {
         bootbox.alert("请添加入库商品");
+         cs.closeProgressBar();
         return;
     }
     var dtlArray = [];
@@ -378,7 +325,6 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $.ajax({
         dataType: "json",
         // async:false,
@@ -390,7 +336,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+             cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -517,7 +463,7 @@ function wareHouseOut() {
     }
 
 
-    showWaitingPage();
+   cs.showProgressBar();
     var billNo = $("#search_billNo").val();
     if (billNo && billNo !== null) {
 
@@ -545,7 +491,7 @@ function wareHouseOut() {
                 text: "请扫码添加出库商品",
                 class_name: 'gritter-success  gritter-light'
             });
-            hideWaitingPage();
+             cs.closeProgressBar();
             $("#TODtl_wareHouseOut").removeAttr("disabled");
             return;
         }
@@ -568,7 +514,7 @@ function wareHouseOut() {
             },
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                 cs.closeProgressBar();
                 $("#TODtl_wareHouseOut").removeAttr("disabled");
                 if (msg.success) {
                     $.gritter.add({
@@ -649,7 +595,7 @@ function wareHouseIn() {
 
 function confirmWareHouseIn() {
     $("#WareHouseIn_dialog_buttonGroup").attr({"disabled": "disabled"});
-    showWaitingPage();
+   cs.showProgressBar();
     var billNo = $("#search_billNo").val();
 
     var epcArray = [];
@@ -659,7 +605,7 @@ function confirmWareHouseIn() {
     });
     if (epcArray.length == 0) {
         bootbox.alert("请添加唯一码!");
-        hideWaitingPage();
+         cs.closeProgressBar();
         $("#WareHouseIn_dialog_buttonGroup").removeAttr("disabled");
         return;
     }
@@ -675,7 +621,7 @@ function confirmWareHouseIn() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+             cs.closeProgressBar();
             $("#WareHouseIn_dialog_buttonGroup").removeAttr("disabled");
             if (msg.success) {
                 $.gritter.add({

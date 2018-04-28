@@ -435,11 +435,11 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         return this.saleOrderReturnBillDao.find("from BillRecord where billNo=?", new Object[]{billNo});
     }
 
-    public List<BillRecord> getBillRecordForCycle(String originBillNo, String code) {
-        String hql = "select e from BillRecord e " +
-                "WHERE (" + code + ") " +
-                "AND e.originBillNo='" + originBillNo + "'";
-        return this.saleOrderReturnBillDao.find(hql, new Object[]{});
+    public List<BillRecord> getBillRecordForCycle( String code,String billNo) {
+        String hql = "from BillRecord billrecord " +
+                "WHERE  "+ code  +
+                "AND billrecord.billNo=?";
+        return this.saleOrderReturnBillDao.find(hql, new Object[]{billNo});
     }
 
 

@@ -66,8 +66,8 @@
         </div>
         <div class="modal-footer">
 
-            <button type="button"  class="btn btn-primary" onclick="addProductButNotShut()">新增</button>
-            <button type="button"  class="btn btn-primary" onclick="addProductInfo()">新增并关闭</button>
+            <button type="button"  class="btn btn-primary" onclick="addProductInfo(false)">新增</button>
+            <button type="button"  class="btn btn-primary" onclick="addProductInfo(true)">新增并关闭</button>
 
         </div>
     </div>
@@ -79,8 +79,9 @@
     $(function () {
 
         $("#modal-addDetail-table").on('show.bs.modal', function () {
-            initeditColorFormValid();
-            $("#form_colorId").attr("disabled", true);
+            initStyleGrid();
+            initColorSizeGrid();
+            searchStyle();
         });
 
     });
@@ -103,8 +104,7 @@
     function initStyleGrid() {
         $("#stylegrid").jqGrid({
             height:  "350",
-            url:searchStyleUrl,
-            datatype: "json",
+            datatype: "local",
             colModel: [
                 {name: 'id', label:'编号',editable:true,width: 100,hidden:true},
                 {name: 'styleId', label: '款号',editable:true, width: 100,sortable: true},
@@ -147,6 +147,7 @@
         $("#stylegrid").jqGrid("setGridParam",{
             url: searchStyleUrl,
             page : 1,
+            datatype: "json",
             postData : params
         }).trigger('reloadGrid');
     }

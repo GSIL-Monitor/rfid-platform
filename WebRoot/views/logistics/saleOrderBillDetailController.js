@@ -772,6 +772,7 @@ function deleteItem(rowId) {
 }
 
 function saveother(totActPrice) {
+    showWaitingPage();
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
     $("#search_destId").removeAttr('disabled');
@@ -779,6 +780,7 @@ function saveother(totActPrice) {
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("不能在相同的单位之间销售");
+        hideWaitingPage();
         return;
     }
 
@@ -824,81 +826,8 @@ function saveItem(rowId) {
     setFooterData();
 }
 
-//新增不关闭
-function addProductButNotShut() {
-    if (addDetailgridiRow != null && addDetailgridiCol != null) {
-        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
-        addDetailgridiRow = null;
-        addDetailgridiCol = null;
-    }
 
-    var addProductInfo = [];
-    if (editcolosizeRow != null) {
-
-        $('#color_size_grid').saveRow(editcolosizeRow, false, 'clientArray');//仅保存数据到grid中，而不会发送ajax请求服务器
-    }
-    var ct = $("#search_customerType").val();
-    var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
-    $.each($("#color_size_grid").getDataIDs(), function (index, value) {
-
-        var productInfo = $("#color_size_grid").getRowData(value);
-        if (productInfo.qty > 0) {
-
-            if (ct == "CT-AT") {//省代价格
-                productInfo.price = styleRow.puPrice;
-            } else if (ct == "CT-ST") {//门店价格
-                productInfo.price = styleRow.wsPrice;
-            } else if (ct == "CT-LS") {//吊牌价格
-                productInfo.price = styleRow.price;
-            }
-            productInfo.outQty = 0;
-            productInfo.inQty = 0;
-            productInfo.status = 0;
-            productInfo.inStatus = 0;
-            productInfo.outStatus = 0;
-            if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                productInfo.discount = $("#search_discount").val();
-            } else {
-                productInfo.discount = 100;
-            }
-            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
-            productInfo.totPrice = productInfo.qty * productInfo.price;
-            productInfo.totActPrice = productInfo.qty * productInfo.actPrice;
-            productInfo.sku = productInfo.code;
-            productInfo.inStockType = styleRow.class6;
-            addProductInfo.push(productInfo);
-        }
-    });
-
-    jQuery("#color_size_grid").trigger("reloadGrid");  //清空数据重新加载
-
-    var isAdd = true;
-    $.each(addProductInfo, function (index, value) {
-        isAdd = true;
-        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
-            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
-            if (value.code === dtlRow.sku) {
-                dtlRow.qty = parseInt(dtlRow.qty) + parseInt(value.qty);
-                dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-                dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
-                if (dtlRow.id) {
-                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
-                } else {
-                    $("#addDetailgrid").setRowData(dtlndex, dtlRow);
-                }
-                isAdd = false;
-            }
-        });
-        if (isAdd) {
-            $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
-        }
-    });
-    setFooterData();
-
-}
-
-//新增并关闭
-function addProductInfo() {
+function addProductInfo(status) {
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
@@ -964,14 +893,16 @@ function addProductInfo() {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
     });
-    $("#modal-addDetail-table").modal('hide');
+    if(status) {
+        $("#modal-addDetail-table").modal('hide');
+    }
     setFooterData();
 
 }
 
 
 function save() {
-
+    cs.showProgressBar();
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
     $("#search_destId").removeAttr('disabled');
@@ -979,6 +910,7 @@ function save() {
 
     if ($("#search_origId").val() == $("#search_destId").val()) {
         bootbox.alert("不能在相同的单位之间销售");
+        cs.closeProgressBar();
         return false;
     }
 
@@ -987,10 +919,12 @@ function save() {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        hideWaitingPage();
         return false;
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加销售商品！");
+        hideWaitingPage();
         return false;
     }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
@@ -1024,7 +958,6 @@ function saveAjax() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $("#SODtl_wareHouseIn").attr({"disabled": "disabled"});
     $.ajax({
         dataType: "json",
@@ -1315,6 +1248,7 @@ function wareHouseOut() {
             }
         });
     } else {
+        hideWaitingPage()
         bootbox.alert("请先保存当前单据");
     }
 }
