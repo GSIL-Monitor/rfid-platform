@@ -83,7 +83,7 @@ function initButtonGroup() {
             "</button>");
         $("#editDetail").show();
         $("#addDetail").hide();
-        $("#search_vendor_button").attr({"disabled": "disabled"});
+        /*$("#search_vendor_button").attr({"disabled": "disabled"});*/
         if(userId==="admin"){
             $("#buttonGroup").html("" +
                 "<button type='button' class='btn btn-sm btn-primary' onclick='save()'" +
@@ -560,7 +560,8 @@ function saveItem(rowId) {
 }
 
 
-function addProductInfo() {
+
+function addProductInfo(status) {
     if (editDtailRowId != null) {
         $('#addDetailgrid').saveRow(editcolosizeRow);
     }
@@ -605,7 +606,9 @@ function addProductInfo() {
 
 
     });
-    $("#modal-addDetail-table").modal('hide');
+    if(status){
+        $("#modal-addDetail-table").modal('hide');
+    }
     setFooterData();
 
 }
@@ -631,14 +634,14 @@ function convertToTagBirth() {
         var rowData = $("#editDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         url: basePath + "/logistics/purchase/covertToTagBirth.do",
         data: {strDtlList: JSON.stringify(dtlArray)},
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -653,7 +656,7 @@ function convertToTagBirth() {
 }
 
 function save() {
-    debugger;
+    cs.showProgressBar();
     $("#search_destId").removeAttr('disabled');
 
     $("#editForm").data('bootstrapValidator').destroy();
@@ -661,6 +664,7 @@ function save() {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        cs.closeProgressBar();
         return;
     }
     if (editDtailRowId != null) {
@@ -669,6 +673,7 @@ function save() {
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加采购商品");
+        cs.closeProgressBar();
         return;
     }
     /*if (editDtailRowIds != null && editDtailColumn != null) {
@@ -692,7 +697,6 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $.ajax({
         dataType: "json",
         // async:false,
@@ -704,7 +708,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             debugger
             if (msg.success) {
                 $.gritter.add({
@@ -754,14 +758,14 @@ function saveCovert() {
             var rowData = $("#editDetailgrid").getRowData(value);
             dtlArray.push(rowData);
         });
-        showWaitingPage();
+        cs.showProgressBar();
         $.ajax({
             dataType: "json",
             url: basePath + "/logistics/purchase/convert.do",
             data: {strDtlList: JSON.stringify(dtlArray), recordList: JSON.stringify(epcArray)},
             type: "POST",
             success: function (msg) {
-                hideWaitingPage();
+                cs.closeProgressBar();
                 if (msg.success) {
                     $.gritter.add({
                         text: msg.msg,

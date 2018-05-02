@@ -262,7 +262,11 @@ public class RoleController extends BaseController implements IBaseInfoControlle
                 rs.setWxUrl(resource.getWxUrl());
             }
         try {
-            this.resourceService.deleteAndSave(resource.getCode(),rs);
+            if (resource.getCode().equals("")){
+                this.resourceService.save(rs);
+            }else {
+                this.resourceService.deleteAndSave(resource.getCode(),rs);
+            }
             return this.returnSuccessInfo("保存成功");
         }catch (Exception e){
             e.printStackTrace();

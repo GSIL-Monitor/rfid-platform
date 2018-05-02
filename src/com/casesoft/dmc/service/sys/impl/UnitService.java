@@ -85,7 +85,7 @@ public class UnitService extends AbstractBaseService<Unit, String> {
 
     @Override
     public Unit get(String propertyName, Object value) {
-        return null;
+        return this.unitDao.findUniqueBy(propertyName, value);
     }
 
     public Unit getunitbyId(String id) {

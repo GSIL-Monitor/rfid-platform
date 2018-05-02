@@ -13,6 +13,7 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class ReplenishBillController extends BaseController implements ILogistic
     private ReplenishBillService replenishBillService;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private PurchaseOrderBillService purchaseOrderBillService;
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
@@ -57,8 +60,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         return mv;
     }
 
-    @RequestMapping(value = "/page")
-    @ResponseBody
+
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page, String userId) throws Exception {
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
@@ -75,6 +77,27 @@ public class ReplenishBillController extends BaseController implements ILogistic
         page = this.replenishBillService.findPage(page, filters);
         return page;
     }
+    @RequestMapping(value = "/page")
+    @ResponseBody
+    public Page<ReplenishBill> findPagePro(Page<ReplenishBill> page, String userId) throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
+        User CurrentUser = CacheManager.getUserById(userId);
+        String ownerId = CurrentUser.getOwnerId();
+        String id = CurrentUser.getId();
+        if (!id.equals("admin")) {
+            PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
+            filters.add(filter);
+        }
+        page.setPageProperty();
+        page = this.replenishBillService.findPagePro(page, filters);
+        return page;
+    }
+
+
+
     @Override
     public Page<ReplenishBill> findPage(Page<ReplenishBill> page) throws Exception {
         return null;
@@ -276,6 +299,34 @@ public class ReplenishBillController extends BaseController implements ILogistic
 
 
     }
+    @RequestMapping(value = "/findpurchaseOrderBillonReplenishBill")
+    @ResponseBody
+    public List<PurchaseOrderBill> findpurchaseOrderBillonReplenishBill(String billno){
+        try {
+            List<PurchaseOrderBill> purchaseOrderBills = this.replenishBillService.findpurchaseOrderBillonReplenishBill(billno);
+            return purchaseOrderBills;
+        }catch (Exception e){
+            return null;
+        }
+
+    }
+    @RequestMapping(value = "/findPurchase")
+    @ResponseBody
+    public ModelAndView findPurchase(String billNo,String url){
+        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
+        ModelAndView mv = new ModelAndView("views/logistics/purchaseOrderBillDetail");
+        mv.addObject("pageType", "edit");
+        mv.addObject("purchaseOrderBill", purchaseOrderBill);
+        mv.addObject("mainUrl", url);
+        User user = this.getCurrentUser();
+        mv.addObject("OwnerId", user.getOwnerId());
+        mv.addObject("userId", getCurrentUser().getId());
+        Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        mv.addObject("defaultWarehId", defaultWarehId);
+        return mv;
+    }
+
 
 
 }

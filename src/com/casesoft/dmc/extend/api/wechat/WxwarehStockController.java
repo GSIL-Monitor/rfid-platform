@@ -94,15 +94,15 @@ public class WxwarehStockController extends ApiBaseController {
     }
     @RequestMapping(value = "/findtitleMessage.do")
     @ResponseBody
-    public MessageBox findtitleMessage(String warehId,String styleid){
+    public MessageBox findtitleMessage(String warehId,String styleid,String groupId){
         try {
             String[] aArray = new String[2];
-            Long num = this.detailStockViewChatService.findwarehNum(warehId, styleid);
+            Long num = this.detailStockViewChatService.findwarehNum(warehId, styleid,groupId);
             if(CommonUtil.isBlank(num)){
                 num=0L;
             }
             aArray[0]=num+"";
-            Double Monnum = this.detailStockViewChatService.findwarehMun(warehId, styleid);
+            Double Monnum = this.detailStockViewChatService.findwarehMun(warehId, styleid,groupId);
             if(CommonUtil.isBlank(Monnum)){
                 Monnum=0D;
             }

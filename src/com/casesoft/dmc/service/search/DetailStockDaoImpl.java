@@ -9,6 +9,7 @@ import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,10 +32,13 @@ public class DetailStockDaoImpl implements DetailStockDao {
     private SessionFactory sessionFactory;
     @Autowired
     private CodeFirstTimeService codeFirstTimeService;
+    @Autowired
+    private UnitService unitService;
 
 
     @Override
     public DataSourceResult getList(DataSourceRequest request) {
+        valueNew(request);
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockView.class);
         for (DetailStockView dtl : (List<DetailStockView>) dataSourceResult.getData()) {
             dtl.setInStockPrice((double) Math.round(dtl.getPrice() * dtl.getQty()));
@@ -48,6 +52,7 @@ public class DetailStockDaoImpl implements DetailStockDao {
 
     @Override
     public DataSourceResult getCodeList(DataSourceRequest request) {
+        valueNew(request);
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockCodeView.class);
         List<String> warehouseCodeList = new ArrayList<>();
         for (DetailStockCodeView dtl : (List<DetailStockCodeView>) dataSourceResult.getData()) {
@@ -78,6 +83,7 @@ public class DetailStockDaoImpl implements DetailStockDao {
 
     @Override
     public DataSourceResult getCodeList(DataSourceRequest request, HttpSession session) {
+        valueNew(request);
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockCodeView.class);
         String rootPath = session.getServletContext().getRealPath("/");
         List<String> warehouseCodeList = new ArrayList<>();
@@ -109,6 +115,7 @@ public class DetailStockDaoImpl implements DetailStockDao {
 
     @Override
     public DataSourceResult getStyleList(DataSourceRequest request, HttpSession session) {
+        valueNew(request);
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockChatView.class);
         String rootPath = session.getServletContext().getRealPath("/");
         for(DetailStockChatView d : (List<DetailStockChatView>) dataSourceResult.getData()){
@@ -140,6 +147,7 @@ public class DetailStockDaoImpl implements DetailStockDao {
     }
     @Override
     public DataSourceResult getList(DataSourceRequest request,HttpSession session) {
+        valueNew(request);
         DataSourceResult dataSourceResult = request.toDataSourceResult(sessionFactory.getCurrentSession(), DetailStockView.class);
         String rootPath = session.getServletContext().getRealPath("/");
         for (DetailStockView dtl : (List<DetailStockView>) dataSourceResult.getData()) {
@@ -152,5 +160,16 @@ public class DetailStockDaoImpl implements DetailStockDao {
             }
         }
         return dataSourceResult;
+    }
+
+    public DataSourceRequest valueNew(DataSourceRequest request){
+        Object value = request.getFilter().getFilters().get(0).getValue();
+        if (value.equals("DG")){
+            request.getFilter().getFilters().get(0).setField("groupId");
+        }
+        if (value.equals("JMS")){
+            request.getFilter().getFilters().get(0).setField("groupId");
+        }
+        return request;
     }
 }

@@ -2,8 +2,6 @@ var searchUrl = basePath + "/logistics/saleOrder/page.do?filter_GTI_status=-1&us
 $(function () {
     initGrid();
     initForm();
-    initProgressDialog();
-    initNotification();
     if(billNo){
         bootbox.alert("单据"+billNo+"正在编辑中");
     }else{
@@ -409,35 +407,7 @@ function showAdvSearchPanel() {
 
     $("#searchPanel").slideToggle("fast");
 }
-function initProgressDialog() {
-    $("#progressDialog").kendoDialog({
-        width: "400px",
-        height: "250px",
-        title: "提示",
-        closable: false,
-        animation: true,
-        modal: true,
-        content: '<center><h3>正在处理中...</h3></center>' +
-        '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">' +
-        '<span class="sr-only">100%</span></div></div>',
-        buttonLayout: "normal"
-    }).data("kendoDialog").close();
-}
-function openProgress() {
-    $("#progressDialog").data('kendoDialog').open();
-}
-function closeProgress() {
-    $("#progressDialog").data('kendoDialog').close();
-}
 
-function initNotification() {
-    $("#notification").kendoNotification({
-        position: {
-            top: 50
-        },
-        stacking: "left"
-    }).data("kendoNotification").hide();
-}
 
 var dialogOpenPage;
 function openSearchGuestDialog() {

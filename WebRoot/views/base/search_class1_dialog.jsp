@@ -70,38 +70,43 @@
 
 
 
-    function initClass1Select_Grid() {
-        debugger
-        $("#class1Select_Grid").jqGrid({
-            height: "auto",
-            url: basePath + "/sys/property/findclassname.do?filter_EQS_type=C1",
-            mtype: "POST",
-            datatype: "json",
-            colModel: [
-                {name: 'id', label: 'id', width: 40},
-                {name: 'name', label: '厂家', editable: true, width: 30},
-                {name: 'code', label: 'CODE', width: 50}
-            ],
-            viewrecords: true,
-            autowidth: true,
-            rownumbers: true,
-            altRows: true,
-            rowNum: 10,
-            rowList: [10, 20, 50],
-            pager: "#class1Select_Page",
-            multiselect: false,
-            shrinkToFit: true,
-            sortname: 'id',
-            sortorder: "desc",
-            ondblClickRow: function (rowId) {
-                assignClaas1Value(rowId);
-                closeClass1Dialog();
-            }
-        });
-
-        var parent_column = $("#class1Select_Grid").closest('.modal-dialog');
-        $("#class1Select_Page_left").css("width","2px");
-        $("#class1Select_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
+    function initClass1Select_Grid(viewId,viewTextId,callbackFun) {
+        $("#modal_class1_search_tables").data("viewId",viewId);
+        $("#modal_class1_search_tables").data("viewTextId",viewTextId);
+        $("#modal_class1_search_tables").data("callbackFun",callbackFun);
+        $("#modal_class1_search_tables").on('show.bs.modal',function () {
+            $("#class1Select_Grid").jqGrid({
+                height: "auto",
+                url: basePath + "/sys/property/findclassname.do?filter_EQS_type=C1",
+                mtype: "POST",
+                datatype: "json",
+                colModel: [
+                    {name: 'id', label: 'id', width: 40},
+                    {name: 'name', label: '厂家', editable: true, width: 30},
+                    {name: 'code', label: 'CODE', width: 50}
+                ],
+                viewrecords: true,
+                autowidth: true,
+                rownumbers: true,
+                altRows: true,
+                rowNum: 10,
+                rowList: [10, 20, 50],
+                pager: "#class1Select_Page",
+                multiselect: false,
+                shrinkToFit: true,
+                sortname: 'id',
+                sortorder: "desc",
+                ondblClickRow: function (rowid) {
+                    var row=$("#class1Select_Grid").jqGrid("getRowData",rowid);
+                    $(viewId).val(row.code);
+                    $(viewTextId).val(row.name);
+                    closeClass1Dialog();
+                }
+            });
+            var parent_column = $("#class1Select_Grid").closest('.modal-dialog');
+            $("#class1Select_Page_left").css("width","2px");
+            $("#class1Select_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
+        }).modal("show");
     }
 
   /*  function selectClass1() {
@@ -112,7 +117,6 @@
     }*/
 
     function assignClaas1Value(rowId) {
-        debugger;
         var row = $("#class1Select_Grid").jqGrid("getRowData", rowId);
       /*  var vendorId = $("#modal_class1_search_table").data("vendorId");
         var vendorName = $("#modal_class1_search_table").data("vendorName");*/

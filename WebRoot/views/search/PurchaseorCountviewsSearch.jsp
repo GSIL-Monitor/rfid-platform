@@ -202,7 +202,7 @@
                                                     <input class="form-control" id="filter_eq_class1"
                                                            type="text" name="filter_eq_class1" readonly/>
                                                     <span class="input-group-btn">
-                                                         <button class="btn btn-sm btn-default" type="button" onclick="openSearchClass1Dialog()">
+                                                         <button class="btn btn-sm btn-default" type="button" onclick="initClass1Select_Grid('#filter_eq_class1','#filter_eq_class1Name')">
                                                              <i class="ace-icon fa fa-list"></i>
                                                          </button>
 								                      </span>
@@ -214,7 +214,7 @@
                                                 </select>--%>
                                             </div>
                                          </div>
-                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destid">仓店</label>
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destid">仓库</label>
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                             <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
                                              </select>--%>

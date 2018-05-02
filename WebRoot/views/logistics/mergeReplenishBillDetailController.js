@@ -33,11 +33,11 @@ function initButtonGroup() {
         "<button id='SODtl_changNum' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='onchangNum()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>转换数量</span>" +
-        "</button>"+
+        "</button>" +
         "<button id='SODtl_save_changNum' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='onchangPurchase()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>转换采购单</span>" +
-        "</button>"+
+        "</button>" +
         "<button id='SODtl_export_changNum' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='exportmessage()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>导出</span>" +
@@ -57,35 +57,34 @@ function initGrid() {
         type: "POST",
         success: function (data, textStatus) {
             debugger;
-            var messagekey=data.result.key;
-            var messageresult=data.result.result;
+            var messagekey = data.result.key;
+            var messageresult = data.result.result;
 
-            var model=[];
-            for(var i=0;i<messagekey.length;i++){
-                if(messagekey[i].name=="url"){
+            var model = [];
+            for (var i = 0; i < messagekey.length; i++) {
+                if (messagekey[i].name == "url") {
                     model.push({
-                        name:messagekey[i].name,
-                        label:messagekey[i].label,
-                        sortable:messagekey[i].sortable,
-                        width:100
+                        name: messagekey[i].name,
+                        label: messagekey[i].label,
+                        sortable: messagekey[i].sortable,
+                        width: 100
                     });
-                }else{
+                } else {
                     model.push({
-                        name:messagekey[i].name,
-                        label:messagekey[i].label,
-                        width:100
+                        name: messagekey[i].name,
+                        label: messagekey[i].label,
+                        width: 100
                     });
                 }
 
 
-
             }
-             debugger;
+            debugger;
             $("#addDetailgrid").jqGrid({
                 height: 'auto',
                 datatype: "json",
 
-                colModel:model,
+                colModel: model,
                 autowidth: true,
                 rownumbers: true,
                 altRows: true,
@@ -104,18 +103,18 @@ function initGrid() {
 
                 }
             });
-            $("#addDetailgrid").setColProp("url",{
-                formatter:function imageFormatter(cellvalue, options, rowObject){
-                    if (rowObject.url ==  null) {
+            $("#addDetailgrid").setColProp("url", {
+                formatter: function imageFormatter(cellvalue, options, rowObject) {
+                    if (rowObject.url == null) {
                         return "无图片";
                     } else {
-                        return "<img width=80 height=100 src='" +basePath + rowObject.url + "' alt='" + rowObject.styleid + "'/>";
+                        return "<img width=80 height=100 src='" + basePath + rowObject.url + "' alt='" + rowObject.styleid + "'/>";
                     }
 
                 }
             });
             for (var i = 0; i < messageresult.length; i++) {
-                $("#addDetailgrid").jqGrid('addRowData', i , messageresult[i]);
+                $("#addDetailgrid").jqGrid('addRowData', i, messageresult[i]);
             }
 
         }
@@ -141,7 +140,7 @@ function addDetail() {
     });
 }
 
-function addProductInfo() {
+function addProductInfo(status) {
     debugger;
     var addProductInfo = [];
     $('#color_size_grid').saveRow(editcolosizeRow);
@@ -178,7 +177,9 @@ function addProductInfo() {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
     });
-    $("#modal-addDetail-table").modal('hide');
+    if (status) {
+        $("#modal-addDetail-table").modal('hide');
+    }
     setFooterData();
 
 }
@@ -198,8 +199,10 @@ function deleteItem(rowId) {
 }
 
 function save() {
+    cs.showProgressBar();
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加补货商品！");
+        cs.closeProgressBar();
         return;
     }
     var dtlArray = [];
@@ -207,7 +210,7 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
+
     $.ajax({
         dataType: "json",
         async: false,
@@ -219,7 +222,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
 
             if (msg.success) {
                 $.gritter.add({
@@ -246,7 +249,7 @@ function onchangNum() {
 }
 
 function onchangPurchase() {
-    showWaitingPage();
+    cs.showProgressBar();
     $("#SODtl_save_changNum").attr({"disabled": "disabled"});
     $.ajax({
         dataType: "json",
@@ -257,7 +260,7 @@ function onchangPurchase() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#SODtl_save_changNum").removeAttr("disabled");
             if (msg.success) {
                 $.gritter.add({
@@ -274,22 +277,22 @@ function onchangPurchase() {
 
 function exportmessage() {
 
-    var exportUrl=basePath + "/logistics/mergeReplenishBillController/exportmessage.do";
-    $("#form1").attr("action",exportUrl);
+    var exportUrl = basePath + "/logistics/mergeReplenishBillController/exportmessage.do";
+    $("#form1").attr("action", exportUrl);
     $("#billNo").val(billNo);
     $("#form1").submit();
 }
 function savemerege() {
 
-    $("#meregegrid").saveCell	(editDtailiRow,editDtailiCol);
-    editDtailiRow=null;
-    editDtailiCol=null;
+    $("#meregegrid").saveCell(editDtailiRow, editDtailiCol);
+    editDtailiRow = null;
+    editDtailiCol = null;
     var dtlArray = [];
     $.each($("#meregegrid").getDataIDs(), function (index, value) {
         var rowData = $("#meregegrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         // async:false,
@@ -299,7 +302,7 @@ function savemerege() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -307,9 +310,9 @@ function savemerege() {
                 });
                 debugger;
                 /*$("#search_billNo").val(msg.result);*/
-              /*  billNo = msg.result;*/
+                /*  billNo = msg.result;*/
                 $("#search_billNo").val(billNo);
-                issaleretrun=true;
+                issaleretrun = true;
             } else {
                 bootbox.alert(msg.msg);
             }

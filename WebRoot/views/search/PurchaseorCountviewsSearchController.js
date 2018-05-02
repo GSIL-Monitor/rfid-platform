@@ -217,16 +217,6 @@ function exportExcel() {
     $("#"+exportExcelid).children().find(".k-grid-excel").click();
 }
 
-function openSearchClass1Dialog() {
-    console.log("123");
-    $("#modal_class1_search_tables").modal('show').on('shown.bs.modal', function () {
-        console.log("1234");
-        initClass1Select_Grid();
-    });
-   /* $("#searchVendorDialog_buttonGroup").html("" +
-        "<button type='button'  class='btn btn-primary' onclick='confirm_selected_VendorId_purchaseOrder_search()'>确认</button>"
-    );*/
-}
 function selectClass1() {
     var rowId = $("#class1Select_Grid").jqGrid("getGridParam", "selrow");
     var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
