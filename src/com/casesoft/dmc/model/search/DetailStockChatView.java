@@ -68,17 +68,6 @@ public class DetailStockChatView {
     @Column()
     private Integer warehType;
     @Column()
-    private String groupId;
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    @Column()
     @Excel(name = "厂家")
     private String class1Name;
     @Column()
