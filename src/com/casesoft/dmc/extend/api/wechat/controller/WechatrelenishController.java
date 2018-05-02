@@ -179,16 +179,24 @@ public class WechatrelenishController extends ApiBaseController {
         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList, PurchaseOrderBillDtl.class);
         /* List<ReplenishBillDtl> replenishBillDtls = JSON.parseArray(ReplenishBillDtl, ReplenishBillDtl.class);*/
         try {
-            String prefix = BillConstant.BillPrefix.purchase
-                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
-            //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
-            purchaseOrderBill.setId(prefix);
-            purchaseOrderBill.setBillNo(prefix);
-            User curUser = CacheManager.getUserById(userId);
-            BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList, curUser);
-            this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList, replenishBillNo, curUser);
-            System.out.println(purchaseOrderBill.getBillNo());
-            return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
+            //筛选明细中的数据（排除明细中已经完成的）
+            purchaseOrderBillDtlList=this.purchaseOrderBillService.filtrateMessage(purchaseOrderBillDtlList,replenishBillNo);
+            if(purchaseOrderBillDtlList.size()>0){
+                String prefix = BillConstant.BillPrefix.purchase
+                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+                //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
+                purchaseOrderBill.setId(prefix);
+                purchaseOrderBill.setBillNo(prefix);
+                User curUser = CacheManager.getUserById(userId);
+                BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList, curUser);
+                this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList, replenishBillNo, curUser);
+                System.out.println(purchaseOrderBill.getBillNo());
+                return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
+            }else{
+                return new MessageBox(true, "保存成功");
+            }
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

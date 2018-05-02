@@ -192,6 +192,30 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         }
     }
 
+    /**
+     * 筛选purchaseOrderBillDtlList中的数据
+     * @param purchaseOrderBillDtlList
+     * @param replenishBillNo
+     * @return
+     */
+    public List<PurchaseOrderBillDtl> filtrateMessage(List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, String replenishBillNo){
+        if (purchaseOrderBillDtlList.size() != 0) {
+            for (int i = 0; i < purchaseOrderBillDtlList.size(); i++) {
+                PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseOrderBillDtlList.get(i);
+                String hql = "from ReplenishBillDtl t where t.sku=? and t.billId=?";
+                ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
+                if (unique.getQty() <= unique.getActConvertQty()) {
+                    if(purchaseOrderBillDtl.getQty()>(unique.getQty()-unique.getActConvertQty())){
+                        purchaseOrderBillDtlList.remove(i);
+                    }
+
+                }
+            }
+        }
+        return purchaseOrderBillDtlList;
+    }
+
+
     public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, String replenishBillNo, User curUser) throws ParseException {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if (CommonUtil.isBlank(purchaseOrderBill1)) {
