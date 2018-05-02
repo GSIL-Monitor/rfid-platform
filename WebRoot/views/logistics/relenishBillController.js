@@ -194,3 +194,11 @@ function _search() {
     });
     $("#grid").trigger("reloadGrid");
 }
+
+function selectClass1() {
+    var rowId = $("#class1Select_Grid").jqGrid("getGridParam", "selrow");
+    var rowData = $("#class1Select_Grid").jqGrid('getRowData', rowId);
+    $("#search_class1").val(rowData.code);
+    $("#filter_eq_class1Name").val(rowData.name);
+    $("#modal_class1_search_tables").modal('hide');
+}

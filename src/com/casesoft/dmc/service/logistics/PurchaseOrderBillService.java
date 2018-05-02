@@ -192,6 +192,47 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         }
     }
 
+    /**
+     * 筛选purchaseOrderBillDtlList中的数据
+     * @param purchaseOrderBillDtlList
+     * @param replenishBillNo
+     * @return
+     */
+    public List<PurchaseOrderBillDtl> filtrateMessage(List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, String replenishBillNo) throws ParseException {
+        if (purchaseOrderBillDtlList.size() != 0) {
+            for (int i = 0; i < purchaseOrderBillDtlList.size();) {
+                PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseOrderBillDtlList.get(i);
+               String hql = "from ReplenishBillDtl t where t.sku=? and t.billId=?";
+                ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
+                /*if (unique.getQty() <= unique.getActConvertQty()) {
+                    if(purchaseOrderBillDtl.getQty()>(unique.getQty()-unique.getActConvertQty())){
+                        purchaseOrderBillDtlList.remove(i);
+                        String changehql = "from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=?";
+                        ChangeReplenishBillDtl changeReplenishBillDtl = this.replenishBillDtlDao.findUnique(changehql, new Object[]{replenishBillNo,purchaseOrderBillDtl.getSku()});
+                        changeReplenishBillDtl.setExpectTime(CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd"));
+                        this.changeReplenishBillDtlDao.update(changeReplenishBillDtl);
+                    }else{
+                        i++;
+                    }
+
+                }else{
+                    i++;
+                }*/
+                if(purchaseOrderBillDtl.getQty()==0&&unique.getActConvertQty()!=0){
+                    purchaseOrderBillDtlList.remove(i);
+                    String changehql = "from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=?";
+                    ChangeReplenishBillDtl changeReplenishBillDtl = this.replenishBillDtlDao.findUnique(changehql, new Object[]{replenishBillNo,purchaseOrderBillDtl.getSku()});
+                    changeReplenishBillDtl.setExpectTime(CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd"));
+                    this.changeReplenishBillDtlDao.update(changeReplenishBillDtl);
+                }else{
+                    i++;
+                }
+            }
+        }
+        return purchaseOrderBillDtlList;
+    }
+
+
     public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, String replenishBillNo, User curUser) throws ParseException {
         PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
         if (CommonUtil.isBlank(purchaseOrderBill1)) {

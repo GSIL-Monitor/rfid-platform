@@ -132,6 +132,20 @@
                                                            type="text" name="" readonly  placeholder="款名"/>
                                                 </div>
                                             </div>
+                                        <label class="col-xs-1 control-label" for="search_class1">厂家</label>
+                                        <div class="col-xs-2">
+                                            <div class="input-group">
+                                                <input class="form-control" id="search_class1"
+                                                       type="text" name="filter_EQS_class1" readonly/>
+                                                <span class="input-group-btn">
+                                                                 <button class="btn btn-sm btn-default" type="button" onclick="initClass1Select_Grid('#search_class1','#filter_eq_class1Name')">
+                                                                     <i class="ace-icon fa fa-list"></i>
+                                                                 </button>
+                                                              </span>
+                                                <input class="form-control" id="filter_eq_class1Name"
+                                                       type="text" name="" readonly  placeholder="厂家"/>
+                                            </div>
+                                        </div>
 
                                     </div>
 
@@ -170,6 +184,7 @@
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
 <jsp:include page="add_saleOrder_code_dialog.jsp"></jsp:include>
+<jsp:include page="../base/search_class1_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
 <link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
