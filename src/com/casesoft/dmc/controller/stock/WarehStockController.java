@@ -32,7 +32,6 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
-import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -69,8 +68,6 @@ public class WarehStockController extends BaseController {
     private SaleOrderBillService saleOrderBillService;
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
-    @Autowired
-    private UnitService unitService;
 
     @RequestMapping(value = "/index")
     public String index() {
@@ -237,7 +234,7 @@ public class WarehStockController extends BaseController {
 
             List<EpcStock> epcStockList = new ArrayList<>();
             if (Constant.TaskType.Outbound == type) {
-                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId);
+                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
                     epcStock = this.epcStockService.findEpcInCode(warehId, code);
                 }else{
@@ -247,7 +244,7 @@ public class WarehStockController extends BaseController {
                 }
 
             } else {
-                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId);
+                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
                     epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
                 }else{
@@ -337,7 +334,7 @@ public class WarehStockController extends BaseController {
                 }
             }
 
-            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId);
+            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
             EpcStock epcStock;
             if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
                 epcStock = this.epcStockService.findEpcAllowInCode(code);

@@ -210,36 +210,53 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.findUnique("from EpcStock epcstock where code=?", new Object[]{code});
     }
 
-
-    public List<EpcStock> findSaleReturnFilterByOriginIdDtl(String code, String warehId) {
+    /* *
+     * @param code  唯一吗
+     * @param warehId 仓库
+     * @param type 库存状态 0,null 0标识校验不在库,null标识校验信息
+     * 查询销售退货单入库唯一吗关联销售单据
+     * */
+    public List<EpcStock> findSaleReturnFilterByOriginIdDtl(String code, String warehId, Integer type) {
         String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
                 "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
                 "FROM Record r,Business b,EpcStock e " +
                 "WHERE r.taskId=b.id " +
                 "AND r.code=e.code " +
                 "AND r.code=? " +
-                "AND r.origId=? " +
-                "AND r.token=10 " +
+                "AND r.origId=? ";
+        if (CommonUtil.isNotBlank(type)) {
+            hql += "AND e.inStock=" + type
+                +" AND (e.warehouseId = r.origId or e.warehouse2Id = r.origId) ";
+        }
+        hql += "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
         return this.epcStockDao.find(hql, new Object[]{code, warehId});
 
     }
 
-
-    public List<EpcStock> findSaleReturnFilterByDestIdDtl(String code, String warehId) {
+    /* *
+     * @param code  唯一吗
+     * @param warehId 仓库
+     * @param type 库存状态 1,null 1标识校验在库,null标识校验信息
+     * 查询销售退货单出库唯一吗关联销售单据
+     * */
+    public List<EpcStock> findSaleReturnFilterByDestIdDtl(String code, String warehId, int type) {
         String hql = "SELECT new com.casesoft.dmc.model.stock.EpcStock" +
                 "(r.code,e.sku, e.styleId, e.colorId, e.sizeId, b.billNo as originBillNo, b.beginTime as lastSaleTime,e.floor,e.warehouseId) " +
                 "FROM Record r,Business b,EpcStock e " +
                 "WHERE r.taskId=b.id " +
                 "AND r.code=e.code " +
                 "AND r.code=? " +
-                "AND r.destId=? " +
-                "AND r.token=10 " +
+                "AND r.destId=? ";
+        if (CommonUtil.isNotBlank(type)) {
+            hql += "AND e.inStock=" + type
+                + " AND e.warehouseId = r.destId " ;
+        }
+        hql += "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
         return this.epcStockDao.find(hql, new Object[]{code, warehId});
 
     }
-
 
 
     public EpcStock findStockEpcByCode(String code) {
