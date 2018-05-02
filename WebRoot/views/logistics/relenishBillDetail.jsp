@@ -164,7 +164,7 @@
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
-
+<jsp:include page="findPurchaseOrder.jsp"></jsp:include>
 
 <jsp:include page="relenishBillDetail_edit.jsp"></jsp:include>
 
