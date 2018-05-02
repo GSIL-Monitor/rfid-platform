@@ -119,13 +119,13 @@ public class GuestService implements IBaseService<Unit,String>{
 
 	}
 
-	public void updateUnit(Unit guest) {
-		this.guestDao.batchExecute("delete Customer where id = ?",guest.getId());
+	public void updateUnit(Unit guest,Customer preCustomer) {
+		this.guestDao.saveOrUpdateX(preCustomer);
 		this.guestDao.saveOrUpdate(guest);
 	}
 
-	public void updateCustomer(Customer guest) {
-		this.guestDao.batchExecute("delete Unit where id = ?",guest.getId());
+	public void updateCustomer(Customer guest,Unit preUnit) {
+		this.guestDao.saveOrUpdate(preUnit);
 		this.guestDao.saveOrUpdateX(guest);
 	}
 }

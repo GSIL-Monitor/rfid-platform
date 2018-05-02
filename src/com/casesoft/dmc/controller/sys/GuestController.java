@@ -171,6 +171,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
         ModelAndView mav = new ModelAndView("/views/sys/guest_edit");
         mav.addObject("pageType", "add");
         mav.addObject("ownerId", getCurrentUser().getOwnerId());
+        mav.addObject("userId", getCurrentUser().getId());
         return mav;
     }
 
@@ -180,6 +181,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
         ModelAndView mav = new ModelAndView("/views/sys/guest_edit");
         mav.addObject("pageType", "edit");
         mav.addObject("ownerId", getCurrentUser().getOwnerId());
+        mav.addObject("userId", getCurrentUser().getId());
         if (!"CT-LS".equals(unitType)) {
             Unit gst = CacheManager.getUnitByCode(id);
             if (CommonUtil.isNotBlank(CacheManager.getUnitById(gst.getOwnerId()))) {
@@ -314,11 +316,11 @@ public class GuestController extends BaseController implements IBaseInfoControll
         if (!preType.equals(entity.getType().toString())) {
            deletePre = true;
         }
-        if (entity.getType().equals(Constant.UnitType.Shop) || entity.getType().equals(Constant.UnitType.Agent)) {
+        if (entity.getType().equals(Constant.UnitType.Shop) || entity.getType().equals(Constant.UnitType.Agent)) {//Shop=4门店 Agent=2代理商
             try {
                 Unit guest = CacheManager.getUnitById(entity.getId());
+                Customer preCustomer = CacheManager.getCustomerById(entity.getId());
                 if(CommonUtil.isBlank(guest)){
-                    Customer preCustomer = CacheManager.getCustomerById(entity.getId());
                     guest = new Unit();
                     guest.setId(entity.getId());
                     guest.setCode(entity.getId());
@@ -360,8 +362,13 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setRemark(entity.getRemark());
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
+                if (preCustomer.getStatus()==1){
+                    preCustomer.setStatus(0);
+                }else {
+                    preCustomer.setStatus(1);
+                }
                 if(deletePre){
-                    this.guestService.updateUnit(guest);
+                    this.guestService.updateUnit(guest,preCustomer);
                     CacheManager.refreshCustomer();
                 }else{
                     this.guestService.save(guest);
@@ -376,8 +383,8 @@ public class GuestController extends BaseController implements IBaseInfoControll
         } else {
             try {
                 Customer guest = CacheManager.getCustomerById(entity.getId());
+                Unit preUnit = CacheManager.getUnitById(entity.getId());
                 if(CommonUtil.isBlank(guest)){
-                    Unit preUnit = CacheManager.getUnitById(entity.getId());
                     guest = new Customer();
                     guest.setId(preUnit.getId());
                     guest.setCode(preUnit.getId());
@@ -419,8 +426,13 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setRemark(entity.getRemark());
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
+                if (preUnit.getStatus()==1){
+                    preUnit.setStatus(0);
+                }else {
+                    preUnit.setStatus(1);
+                }
                 if(deletePre){
-                    this.guestService.updateCustomer(guest);
+                    this.guestService.updateCustomer(guest,preUnit);
                 }else {
                     this.customerService.save(guest);
                 }
@@ -431,9 +443,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 e.printStackTrace();
                 return returnFailInfo("保存失败");
             }
-
         }
-
     }
 
     @Override

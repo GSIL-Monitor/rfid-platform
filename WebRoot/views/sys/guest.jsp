@@ -70,7 +70,6 @@
                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_unitType">客户类型</label>
                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                 <select id="search_unitType" class="chosen-select form-control" name="filter_EQS_unitType">
-                                    <option value="">--请选择--</option>
                                     <option value="CT-AT">省代客户</option>
                                     <option value="CT-ST">门店客户</option>
                                     <option value="CT-LS">零售客户</option>

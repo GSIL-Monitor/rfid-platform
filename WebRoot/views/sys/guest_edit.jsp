@@ -18,7 +18,8 @@
     <script>
         var basePath = "<%=basePath%>";
         var pageType = "${pageType}";
-        var curOwnerId="${ownerId}"
+        var curOwnerId="${ownerId}";
+        var userId="${userId}";
     </script>
 
 </head>
@@ -290,9 +291,11 @@
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>
 <script>
     $(function () {
-
         keydowns();
-
+        if (userId=="admin"){
+        }else {
+            $("#edit_type").attr("disabled",true);
+        }
     });
     function initData() {
         if(""=="${guest.sex}")
