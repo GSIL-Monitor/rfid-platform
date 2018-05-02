@@ -62,10 +62,9 @@
                                        for="edit_type">客户类型</label>
                                 <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
                                     <select class="chosen-select form-control" id="edit_type" name="type" onchange="typeChange()">
-                                        <option value="">--请选择--</option>
+                                        <option value="6">零售客户</option>
                                         <option value="2">省代客户</option>
                                         <option value="4">门店客户</option>
-                                        <option value="6">零售客户</option>
                                     </select>
                                 </div>
                             </div>
