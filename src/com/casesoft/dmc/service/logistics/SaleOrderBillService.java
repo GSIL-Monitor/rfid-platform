@@ -16,6 +16,7 @@ import com.casesoft.dmc.dao.logistics.SaleOrderReturnBillDao;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.shop.PointsChange;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
@@ -701,6 +702,21 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     public Object findsaleOrderOrsaleRetrunMessage(String hql){
         Object unique = this.saleOrderBillDao.findUnique(hql);
         return unique;
+    }
+
+    //销售数量详情
+    public List<SaleorderCountView> findsaleDtlByStyleId(String styleId, String sbillDate, String ebillDate) {
+        String hql = "SELECT new com.casesoft.dmc.model.search.SaleorderCountView" +
+                "(s.origname,SUM(s.qty) as sumQty) " +
+                "FROM SaleorderCountView s " +
+                "WHERE s.styleid=? " +
+                "AND s.status <> -1  " +
+                "AND s.groupid=? "+
+                "AND s.saletype='销售订单' "+
+                "AND s.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND s.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') " +
+                "GROUP BY s.origname "+
+                "ORDER BY s.origname asc";
+        return this.saleOrderBillDao.find(hql, new Object[]{styleId,"DG", sbillDate, ebillDate});
     }
 
 

@@ -1758,7 +1758,7 @@ public class BillConvertUtil {
             if (CommonUtil.isNotBlank(detail.getUniqueCodes())) {
                 for (String code : detail.getUniqueCodes().split(",")) {
                     BillRecord billRecord = new BillRecord(detail.getBillNo() + "-" + code, code, detail.getBillNo(), detail.getSku());
-                    List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(code, bill.getDestId());
+                    List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(code, bill.getDestId(),null);
                     EpcStock epcStock;
                     String originBillNo;
                     Date lastSaleTime;

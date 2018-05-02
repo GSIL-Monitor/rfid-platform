@@ -20,7 +20,7 @@ public class SaleorderCountView {
     @Excel(name = "单号", width = 20D)
     private String billno;
     @Column()
-    @Excel(name="实际价格")
+    @Excel(name = "实际价格")
     private Double actprice;
 
     public String getId() {
@@ -30,6 +30,7 @@ public class SaleorderCountView {
     public void setId(String id) {
         this.id = id;
     }
+
     @Column()
     private Integer actqty;
     @Column()
@@ -51,10 +52,10 @@ public class SaleorderCountView {
     @Column()
     private Integer scanqty;
     @Column()
-    @Excel(name="尺号")
+    @Excel(name = "尺号")
     private String sizeid;
     @Column()
-    @Excel(name="款名")
+    @Excel(name = "款名")
     private String stylename;
 
     public String getStylename() {
@@ -66,37 +67,37 @@ public class SaleorderCountView {
     }
 
     @Column()
-    @Excel(name="SKU", width = 20D)
+    @Excel(name = "SKU", width = 20D)
     private String sku;
     @Column()
-    @Excel(name="款号")
+    @Excel(name = "款号")
     private String styleid;
     @Column()
-    @Excel(name="实际金额")
+    @Excel(name = "实际金额")
     private Double totactprice;
     @Column()
     private Double totprice;
     @Column()
-    @Excel(name="出库数量")
+    @Excel(name = "出库数量")
     private Integer outqty;
     @Column()
     private Double outval;
     @Column()
-    @Excel(name="入库状态",replace = { "订单状态_0", "已入库_1","入库中_4"})
+    @Excel(name = "入库状态", replace = {"订单状态_0", "已入库_1", "入库中_4"})
     private Integer instatus;
     @Column()
-    @Excel(name="出库状态",replace = { "订单状态_0", "已出库_2","出库中_3"})
+    @Excel(name = "出库状态", replace = {"订单状态_0", "已出库_2", "出库中_3"})
     private Integer outstatus;
     @Column()
     private Double stockval;
-   /* @Column()
-    private Double avgpreprice;*/
+    /* @Column()
+     private Double avgpreprice;*/
     @Column()
     private Double inval;
-   /* @Column()
-    private Double profit;*/
+    /* @Column()
+     private Double profit;*/
     @Column()
-    @Excel(name="折扣")
+    @Excel(name = "折扣")
     private Double discount;
 
     public Double getDiscount() {
@@ -107,11 +108,11 @@ public class SaleorderCountView {
         this.discount = discount;
     }
 
-/*    @Column()
-    private Double profitrate;*/
-    @JSONField(format="yyyy-MM-dd")
-    @Column(nullable = false,length = 19)
-    @Excel(name="日期", width = 25D)
+    /*    @Column()
+        private Double profitrate;*/
+    @JSONField(format = "yyyy-MM-dd")
+    @Column(nullable = false, length = 19)
+    @Excel(name = "日期", width = 25D)
     private Date billDate;
     @Column()
     private String destid;
@@ -125,7 +126,7 @@ public class SaleorderCountView {
     @Column()
     private String origid;
     @Column()
-    @Excel(name="发货仓店")
+    @Excel(name = "发货仓店")
     private String origname;
 
     public String getDestid() {
@@ -147,14 +148,14 @@ public class SaleorderCountView {
     @Column()
     private String origunitid;
     @Column()
-    @Excel(name="客户编号", width = 20D)
+    @Excel(name = "客户编号", width = 20D)
     private String origunitname;
     @Column()
     private String ownerid;
     @Column()
     private Double payprice;
     @Column()
-    @Excel(name="单据状态",replace = { "撤销_-1", "录入_0","审核_1","结束_2","操作中_3","申请撤销_4","商城订单暂存_5","商城订单录入_6"})
+    @Excel(name = "单据状态", replace = {"撤销_-1", "录入_0", "审核_1", "结束_2", "操作中_3", "申请撤销_4", "商城订单暂存_5", "商城订单录入_6"})
     private Integer status;
     @Column()
     private Double totprices;
@@ -510,7 +511,7 @@ public class SaleorderCountView {
     /*@Column()
     private Double profitrates;*/
     @Column()
-    @Excel(name="客户编号")
+    @Excel(name = "客户编号")
     private String busnissname;
 
     public String getBusnissname() {
@@ -522,7 +523,7 @@ public class SaleorderCountView {
     }
 
     @Column()
-    @Excel(name="单据类型")
+    @Excel(name = "单据类型")
     private String saletype;
 
     public String getSaletype() {
@@ -536,7 +537,7 @@ public class SaleorderCountView {
     @Column()
     private String deport;
     @Column()
-    @Excel(name="仓库")
+    @Excel(name = "仓库")
     private String deportname;
 
     public String getDeportname() {
@@ -554,6 +555,7 @@ public class SaleorderCountView {
     public void setDeport(String deport) {
         this.deport = deport;
     }
+
     @Column()
     private String precast;
     @Column()
@@ -586,6 +588,7 @@ public class SaleorderCountView {
     public void setGrossprofits(String grossprofits) {
         this.grossprofits = grossprofits;
     }
+
     @Transient
     private boolean ishow;
 
@@ -596,6 +599,7 @@ public class SaleorderCountView {
     public void setIshow(boolean ishow) {
         this.ishow = ishow;
     }
+
     @Column()
     private String groupid;
 
@@ -605,5 +609,24 @@ public class SaleorderCountView {
 
     public void setGroupid(String groupid) {
         this.groupid = groupid;
+    }
+
+
+
+    @Transient
+    private Long sumQty; //销售数量求和
+    public Long getSumQty() {
+        return sumQty;
+    }
+    public void setSumQty(Long sumQty) {
+        this.sumQty = sumQty;
+    }
+
+    public SaleorderCountView() {
+    }
+
+    public SaleorderCountView(String origname, Long sumQty) {
+        this.origname = origname;
+        this.sumQty = sumQty;
     }
 }

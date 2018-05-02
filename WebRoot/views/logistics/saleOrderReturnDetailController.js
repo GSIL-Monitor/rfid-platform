@@ -1651,5 +1651,5 @@ function showCodesDetail(uniqueCodes) {
 
     $("#show-uniqueCode-saleReturn-list").modal('show');
     initUniqueCodeSaleReturnList(uniqueCodes,billNo);
-    //codeSaleReturnListReload(uniqueCodes,billNo);
+    codeSaleReturnListReload(uniqueCodes,billNo);
 }
