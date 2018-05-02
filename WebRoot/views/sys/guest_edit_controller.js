@@ -36,6 +36,7 @@ function initButtonGroup(){
     }
 }
 function updateGuest(){
+    $("#edit_type").attr("disabled",false);
     $('#editForm').data('bootstrapValidator').validate();
     if ($("#edit_ownerId").val() == "") {
         bootbox.alert("请选择所属方");
@@ -88,6 +89,7 @@ function initSelectBusinessIdForm() {
 
 
 function saveGuest() {
+    $("#edit_type").attr("disabled",false);
     $('#editForm').data('bootstrapValidator').validate();
     if ($("#edit_ownerId").val() == "") {
         bootbox.alert("请选择所属方");
@@ -138,7 +140,7 @@ function initEditFormValid() {
                 validators: {
                     notEmpty: {
                         message: '名称不能为空'
-                    } ,
+                    }
                 }
             },
             discount: {
@@ -198,7 +200,7 @@ function initEditFormValid() {
                         message:'请输入正确的传真号码'
                     }
                 }
-            },
+            }
         }
     });
 }
