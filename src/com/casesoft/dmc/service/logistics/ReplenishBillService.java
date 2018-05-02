@@ -63,7 +63,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         try {
             Session session = sessionFactory.getCurrentSession();
             con = SessionFactoryUtils.getDataSource(session.getSessionFactory()).getConnection();
-            cs = con.prepareCall("{call findrelenishBillORDel(?,?,?,?,?,?,?,?,?)}");
+            cs = con.prepareCall("{call findrelenishBillORDel(?,?,?,?,?,?,?,?,?,?)}");
             //设置参数
             //填充空数据
             cs.setString(1, "");
@@ -71,6 +71,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
             cs.setString(3, "");
             cs.setString(4, "");
             cs.setString(5, "");
+            cs.setString(6, "");
             for(int i=0;i<filters.size();i++){
                 PropertyFilter propertyFilter = filters.get(i);
                 String propertyName = propertyFilter.getPropertyNames()[0];
@@ -98,17 +99,21 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                     String busnissId =(String) propertyFilter.getMatchValue();
                     cs.setString(5, busnissId);
                 }
+                if(propertyName.equals("class1")&&name.equals("EQ")){
+                    String class1 =(String) propertyFilter.getMatchValue();
+                    cs.setString(6, class1);
+                }
 
             }
             Integer beginIndex=(page.getPage()-1)*(page.getPageSize())+1;
             Integer endIndex=(page.getPage())*(page.getPageSize());
-            cs.setDouble(6,beginIndex.doubleValue());
-            cs.setDouble(7,endIndex.doubleValue());
-            cs.registerOutParameter(8, Types.INTEGER);
-            cs.registerOutParameter(9, OracleTypes.CURSOR);
+            cs.setDouble(7,beginIndex.doubleValue());
+            cs.setDouble(8,endIndex.doubleValue());
+            cs.registerOutParameter(9, Types.INTEGER);
+            cs.registerOutParameter(10, OracleTypes.CURSOR);
             //cs.registerOutParameter("resultSet", -10);
             cs.execute();
-            rs=(ResultSet)cs.getObject(9);
+            rs=(ResultSet)cs.getObject(10);
             ArrayList<ReplenishBill> list=new ArrayList<ReplenishBill>();
             while (rs!=null&&rs.next()){
                 ReplenishBill replenishBill=new ReplenishBill();
@@ -136,7 +141,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                 list.add(replenishBill);
             }
             page.setRows(list);
-            Object object = cs.getObject(8);
+            Object object = cs.getObject(9);
             page.setTotal(Integer.parseInt(object.toString()));
             int totPage=Integer.parseInt(object.toString())/page.getPageSize();
             page.setTotPage(totPage+1);
