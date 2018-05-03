@@ -535,7 +535,9 @@ public class CacheManager {
 		List<Customer> sList = customerService.getAll();
 		Map<String, Customer> settingMap = new HashMap<String, Customer>();
 		for (Customer s : sList) {
-			settingMap.put(s.getId(), s);
+			if(s.getStatus() ==1){
+				settingMap.put(s.getId(), s);
+			}
 		}
 		cache.put(new Element("customer", settingMap));
 	}
@@ -870,7 +872,9 @@ public class CacheManager {
 			if (unit.getType() == 1) {
 				company = unit;
 			}
-			unitMap.put(unit.getId(), unit);
+			if(unit.getStatus()== 1){
+				unitMap.put(unit.getId(), unit);
+			}
 		}
 		cache.put(new Element("UnitMap", unitMap));
 
