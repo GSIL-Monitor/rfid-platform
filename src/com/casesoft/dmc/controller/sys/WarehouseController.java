@@ -1,9 +1,6 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -73,7 +70,16 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
-        List<Unit> warehouse=this.warehouseService.find(filters);
+		List<Unit> warehouse=new ArrayList<>();
+		Unit unit = new Unit();
+		Unit unit1 = new Unit();
+		unit.setCode("DG");
+		unit.setName("所有店柜");
+		unit1.setCode("JMS");
+		unit1.setName("所有加盟商");
+		warehouse.add(unit);
+		warehouse.add(unit1);
+		warehouse.addAll(this.warehouseService.find(filters));
 		return warehouse;
 	}
 
