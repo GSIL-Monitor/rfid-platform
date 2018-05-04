@@ -587,4 +587,8 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     public Integer findBillStatus(String billNo) {
         return this.saleOrderReturnBillDao.findUnique("select status from SaleOrderReturnBill where id=?", billNo);
     }
+
+    public long findSbByDuId (String origUnitId){
+        return this.saleOrderReturnBillDao.findUnique("select count (*) from SaleOrderReturnBill where origUnitId=?",origUnitId);
+    }
 }
