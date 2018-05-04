@@ -57,6 +57,16 @@ function initGrid() {
         datatype: "json",
         mtype: 'POST',
         colModel: [
+            {
+                name: 'url', label: '图片', width: 50, sortable: false,
+                formatter: function (cellValue, options, rowObject) {
+                    if (rowObject.url ==  null) {
+                        return "无图片";
+                    } else {
+                        return "<img width=80 height=100 src='" +basePath + rowObject.url + "' alt='" + rowObject.styleid + "'/>";
+                    }
+                }
+            },
             {name: 'id', label: '单据编号', sortable: true, width: 45},
             {name: 'sku', label: 'SKU', sortable: true, width: 35},
             {name: 'fristtime', label: '第一次到货时间', width: 35},
