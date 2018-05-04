@@ -326,9 +326,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
     @ResponseBody
     public MessageBox update(Unit entity) throws Exception {
         String preType = this.getReqParam("preType");
-        Boolean deletePre = false;
+        Boolean updatePre = false;
         if (!preType.equals(entity.getType().toString())) {
-           deletePre = true;
+            updatePre = true;
         }
         if (entity.getType().equals(Constant.UnitType.Shop) || entity.getType().equals(Constant.UnitType.Agent)) {//Shop=4门店 Agent=2代理商
             try {
@@ -376,12 +376,12 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setRemark(entity.getRemark());
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
-                if (preCustomer.getStatus()==1){
-                    preCustomer.setStatus(0);
-                }else {
-                    preCustomer.setStatus(1);
-                }
-                if(deletePre){
+                if(updatePre){
+                    if (preCustomer.getStatus()==1){
+                        preCustomer.setStatus(0);
+                    }else {
+                        preCustomer.setStatus(1);
+                    }
                     this.guestService.updateUnit(guest,preCustomer);
                     CacheManager.refreshCustomer();
                 }else{
@@ -440,12 +440,12 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setRemark(entity.getRemark());
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
-                if (preUnit.getStatus()==1){
-                    preUnit.setStatus(0);
-                }else {
-                    preUnit.setStatus(1);
-                }
-                if(deletePre){
+                if(updatePre){
+                    if (preUnit.getStatus()==1){
+                        preUnit.setStatus(0);
+                    }else {
+                        preUnit.setStatus(1);
+                    }
                     this.guestService.updateCustomer(guest,preUnit);
                 }else {
                     this.customerService.save(guest);
