@@ -952,11 +952,7 @@ public class CacheManager {
 	public static Unit getUnitByCode(String code) {
 		Element result = cache.get("UnitMap");
 		Map<String, Unit> unitMap = (Map<String, Unit>) result.getValue();
-		for (Unit u : unitMap.values()) {
-			if (u.getCode().equals(code))
-				return u;
-		}
-		return null;
+		return unitMap.get(code);
 	}
 
 	private static void initAuthCache() {
