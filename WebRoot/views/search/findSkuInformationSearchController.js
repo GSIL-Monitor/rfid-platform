@@ -102,8 +102,9 @@ function initGrid() {
         autowidth: true,
         rownumbers: true,
         altRows: true,
-        rowNum: 20,
-        rowList: [20, 50, 100],
+        rowNum: 100,
+        rowList: [100, 500, 1000,2000
+        ],
         pager: "#grid-pager",
         multiselect: false,
         shrinkToFit: true,
