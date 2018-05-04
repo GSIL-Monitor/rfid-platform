@@ -763,6 +763,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     }
 
+    public long findSbByDuId (String destUnitId){
+        return this.saleOrderBillDao.findUnique("select count(*) from SaleOrderBill where destUnitId=?",destUnitId);
+    }
 
     public Integer findBillStatus(String billNo) {
        return this.saleOrderBillDao.findUnique("select status from SaleOrderBill where id=?",billNo);
