@@ -98,8 +98,11 @@ public class UserController extends BaseController implements IBaseInfoControlle
         if (CommonUtil.isNotBlank(users)) {
             for (User u : users) {
                 if (CommonUtil.isNotBlank(u.getOwnerId())) {
-                    String ownerName = CacheManager.getUnitById(u.getOwnerId()).getName();
-                    u.setUnitName(ownerName);
+                    Unit unit = CacheManager.getUnitById(u.getOwnerId());
+                    if (CommonUtil.isNotBlank(unit)){
+                        String ownerName = CacheManager.getUnitById(u.getOwnerId()).getName();
+                        u.setUnitName(ownerName);
+                    }
                 }
              }
             return users;

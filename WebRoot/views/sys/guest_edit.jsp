@@ -20,6 +20,7 @@
         var pageType = "${pageType}";
         var curOwnerId="${ownerId}";
         var userId="${userId}";
+        var linkman="${guest.linkman}";
     </script>
 
 </head>
@@ -196,9 +197,7 @@
                                     <%--<input id="edit_linkman" class="form-control" name="linkman"
                                            value="${guest.linkman}"/>--%>
                                     <%--<select id="edit_linkman" class="form-control" name="linkman" value="${guest.linkman}"></select>--%>
-                                        <select class="form-control selectpicker show-tick" id="edit_linkman"
-                                                name="linkman"
-                                                style="width: 100%;" data-live-search="true"></select>
+                                        <select class="form-control selectpicker show-tick" id="edit_linkman" name="linkman" style="width: 100%;" data-live-search="true"></select>
                                 </div>
                                 <label class="col-xs-4 col-sm-4 col-md-3 col-lg-3 control-label text-right"
                                        for="edit_createTime">建立时间</label>
@@ -303,8 +302,10 @@
         else
             $("#edit_sex input:radio[value=${guest.sex}]").attr("checked", "checked");
         $("#edit_type").find("option[value=${guest.type}]").attr("selected", true);
-
-            $("#edit_status").find("option[value=${guest.status}]").attr("selected", true);
+        $("#edit_status").find("option[value=${guest.status}]").attr("selected", true);
+        if (linkman!=""){
+            $("#edit_linkman").find("option[value="+linkman+"]").attr("selected", true);
+        }
         console.log("init over");
     }
     function keydowns() {
