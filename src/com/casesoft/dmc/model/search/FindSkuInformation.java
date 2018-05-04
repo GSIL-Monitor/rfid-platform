@@ -18,6 +18,24 @@ public class FindSkuInformation {
     private String class1name;//厂家名
     private String instocktype;//入库类型
     private String buyahandname;
+    private String styleid;
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getStyleid() {
+        return styleid;
+    }
+
+    public void setStyleid(String styleid) {
+        this.styleid = styleid;
+    }
 
     public String getBuyahandname() {
         return buyahandname;

@@ -189,6 +189,9 @@ public class FindSkuInformationService implements IBaseService<FindSkuInformatio
                 if(CommonUtil.isNotBlank(rs.getObject(13))){
                     findSkuInformation.setBuyahandname(rs.getObject(13).toString());
                 }
+                if(CommonUtil.isNotBlank(rs.getObject(14))){
+                    findSkuInformation.setStyleid(rs.getObject(14).toString());
+                }
                 list.add(findSkuInformation);
             }
             page.setRows(list);

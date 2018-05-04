@@ -1,5 +1,6 @@
 package com.casesoft.dmc.controller.search;
 
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -32,7 +33,11 @@ public class FindSkuInformationController extends BaseController implements IBas
                 .getRequest());
         page.setPageProperty();
         page= this.findSkuInformationService.findPagePro(page, filters);
-
+        String rootPath = session.getServletContext().getRealPath("/");
+        for(int i=0;i<page.getRows().size();i++){
+            String url = StyleUtil.returnImageUrl(page.getRows().get(i).getStyleid(), rootPath);
+            page.getRows().get(i).setUrl(url);
+        }
         return page;
     }
 
