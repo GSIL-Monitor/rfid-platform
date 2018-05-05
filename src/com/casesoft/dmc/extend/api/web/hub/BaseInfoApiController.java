@@ -631,12 +631,12 @@ public class BaseInfoApiController extends ApiBaseController {
     public MessageBox getDefaultwarehouse(String userId) {
 
         try {
-            User user = CacheManager.getUserById(userId);
+            User user = this.userService.getUser(userId);
             if (CommonUtil.isBlank(user)) {
                 return returnFailInfo("查询用户失败");
             } else {
-                Unit u = CacheManager.getUnitByCode(user.getOwnerId());
-                Unit defaultWareh = CacheManager.getUnitByCode(u.getDefaultWarehId());
+                Unit u = this.unitService.getunitbyId(user.getOwnerId());
+                Unit defaultWareh = this.unitService.getunitbyId(u.getDefaultWarehId());
                 if(CommonUtil.isNotBlank(defaultWareh)){
                     u.setDefaultWarehouseName(defaultWareh.getName());
                 }
