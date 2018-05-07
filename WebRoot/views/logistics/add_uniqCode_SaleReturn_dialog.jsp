@@ -71,6 +71,11 @@
             height: 400,
             datatype: "local",
             colModel: [
+                {name:'',label:'操作',width:40,
+                    formatter:function (cellValue, options, rowObject) {
+                        return "<a style='margin-left: 10px' href='javascript:void(0);' onclick=deleteUniqueCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
+                },
                 {name: 'code', label: '唯一码', width: 100},
                 {name: 'updateTime', label: '修改时间', hidden: true, width: 40},
                 {name: 'styleId', label: '款号', width: 40, hidden: true},
@@ -81,15 +86,16 @@
                 {name: 'colorName', label: '颜色', width: 40, hidden: true},
                 {name: 'sizeName', label: '尺寸', width: 40, hidden: true},
                 {name: 'price', label: '销售价格', width: 100},                  //吊牌价格
-                {name: 'preCast', label: '采购价', width: 40, hidden: true},  //事前成本价(采购价)
-                {name: 'wsPrice', label: '销售价格', width: 40, hidden: true},  //门店批发价格
-                {name: 'puPrice', label: '销售价格', width: 40, hidden: true},  //代理商批发价格
-                {name: 'stockPrice', label: '库存金额', width: 40, hidden: true}, //库存金额
+                {name: 'preCast', label: '采购价', width: 100, hidden: true},  //事前成本价(采购价)
+                {name: 'wsPrice', label: '销售价格', width: 100, hidden: true},  //门店批发价格
+                {name: 'puPrice', label: '销售价格', width: 100, hidden: true},  //代理商批发价格
+                {name: 'stockPrice', label: '库存金额', width: 100, hidden: true}, //库存金额
                 /* add by Anna */
                 {name: 'originBillNo', label: '原始单号', width: 160},
                 {name: 'lastSaleTime', label: '最后销售时间', width: 160},
                 {name: 'saleCycle', label: '销售周期', width: 70, cellattr: addCellAttr} //销售周期（开单当天时间－销售单时间）
             ],
+
             rownumbers: true,
             viewrecords: true,
             autowidth: true,
@@ -238,6 +244,14 @@
         })
     }
 
+    function deleteUniqueCode(rowId){
+        var row = $('#uniqueCodeGrid').getRowData(rowId);
+        $("#uniqueCodeGrid").jqGrid("delRowData", rowId);
+        allCodes = allCodes.replace(row.code,"");
+        console.log(allCodes);
+        var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
+        $("#codeQty").text(scanCodeQty);
+    }
     //billDtl页面编辑进入时，销售出库和入库按钮的校验，判断当前code的SKU是否可以出入库
     function skuValid(result) {
         if (inOntWareHouseValid === 'wareHouseOut_valid') {//出库，edit_wareHouseOut()中对参数赋值
