@@ -1,24 +1,39 @@
 package com.casesoft.dmc.model.search;
 
+import org.jeecgframework.poi.excel.annotation.Excel;
+
 /**
  * Created by Administrator on 2018/5/4.
  */
 public class FindSkuInformation {
-
+    @Excel(name="sku")
     private String sku;//sku
+    @Excel(name="第一次到货时间")
     private String fristtime;//第一次到货时间
+    @Excel(name="最后到货时间")
     private String endtime;//最后到货时间
+    @Excel(name="billdate")
     private String billdate;//下单时间
+    @Excel(name="单号")
     private String id;//单号
+    @Excel(name="数量")
     private String qty;//数量
+    @Excel(name="到货数量")
     private String inqty;//到货数量
+    @Excel(name="分配仓库")
     private String destname;//分配仓库
     private String destid;
+    @Excel(name="供应商")
     private String origunitname;//供应商
+    @Excel(name="厂家名")
     private String class1name;//厂家名
+    @Excel(name="入库类型")
     private String instocktype;//入库类型
+    @Excel(name="买手")
     private String buyahandname;
+    @Excel(name="款号")
     private String styleid;
+    @Excel(name="图片", width = 25D,type = 2)
     private String url;
 
     public String getUrl() {

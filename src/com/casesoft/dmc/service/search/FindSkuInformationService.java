@@ -120,9 +120,9 @@ public class FindSkuInformationService implements IBaseService<FindSkuInformatio
                     String styleid =(String) propertyFilter.getMatchValue();
                     cs.setString(3, styleid);
                 }
-                if(propertyName.equals("billId")&&name.equals("LIKE")){
-                    String billId =(String) propertyFilter.getMatchValue();
-                    cs.setString(4, billId);
+                if(propertyName.equals("billNo")&&name.equals("LIKE")){
+                    String billNo =(String) propertyFilter.getMatchValue();
+                    cs.setString(4, billNo);
                 }
                 if(propertyName.equals("class1")&&name.equals("EQ")){
                     String class1 =(String) propertyFilter.getMatchValue();
