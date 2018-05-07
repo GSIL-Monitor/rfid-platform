@@ -70,7 +70,15 @@ function initGrid() {
             {name: 'id', label: '单据编号', sortable: true, width: 45},
             {name: 'sku', label: 'SKU', sortable: true, width: 35},
             {name: 'fristtime', label: '第一次到货时间', width: 35},
-            {name: 'endtime', label: '最后到货时间', width: 30},
+            {name: 'endtime', label: '最后到货时间', width: 30,
+                formatter: function (cellValue, options, rowObject) {
+                       if(parseInt(rowObject.qty)==parseInt(rowObject.inqty)){
+
+                            return rowObject.endtime;
+                       }else{
+                           return "";
+                       }
+                }},
             {name: 'billdate', label: '下单时间', width: 30},
             {name: 'qty', label: '数量', width: 50},
             {name: 'inqty', label: '到货数量', width: 50},
@@ -139,5 +147,35 @@ function _search() {
         postData: params
     });
     $("#grid").trigger("reloadGrid");
+}
+
+function exportMessage() {
+    var pages={};
+    pages.page=$("#grid-pager_center").find("input").val();
+    var rows=[];
+    rows.push($("#grid-pager_center").find("select").val());
+    pages.rows=rows;
+    pages.sord="desc";
+    pages.sidx="billNo";
+    var serializeArray = $("#searchForm").serializeArray();
+    var params = array2obj(serializeArray);
+    console.log(serializeArray);
+    console.log(params);
+    var url=basePath+"/search/findSkuInformation/exportnew.do";
+    $("#form1").attr("action",url);
+    $("#pages").val(JSON.stringify(pages));
+
+    for(var i=0;i<serializeArray.length;i++){
+        if(serializeArray[i].value!="" ){
+            var String="<input  type=hidden  name='" + serializeArray[i].name + "' value='" + serializeArray[i].value + "'>"
+            console.log(String);
+            $("#form1").append(String);
+        }
+
+
+    }
+
+    $("#form1").submit();
+    
 }
 

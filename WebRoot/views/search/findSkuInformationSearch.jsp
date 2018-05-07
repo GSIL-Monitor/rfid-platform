@@ -42,6 +42,12 @@
                                             <span class="bigger-110">刷新</span>
                                         </button>
                                     </div>
+                                    <div class="btn-group btn-group-sm pull-left">
+                                        <button class="btn btn-info" onclick="exportMessage()">
+                                            <i class="ace-icon fa fa-refresh"></i>
+                                            <span class="bigger-110">导出</span>
+                                        </button>
+                                    </div>
 
                                     <div class="btn-group btn-group-sm pull-right">
                                         <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
@@ -145,6 +151,10 @@
                                     </div>
                                 </form>
                             </div>
+                            <form  id="form1" action="" method=post name=form1 style='display:none'>
+                                <input id="pages" type=hidden  name='pages' value=''>
+
+                            </form>
                         </div>
                         <table id="grid"></table>
                         <div id="grid-pager"></div>
