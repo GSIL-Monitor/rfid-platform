@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.casesoft.dmc.controller.product.StyleUtil;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
@@ -26,12 +27,15 @@ import com.casesoft.dmc.model.search.DetailStockCodeView;
 import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.model.sys.Unit;
 
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
+import com.casesoft.dmc.service.sys.impl.WarehouseService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -68,10 +72,30 @@ public class WarehStockController extends BaseController {
     private SaleOrderBillService saleOrderBillService;
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
+    @Autowired
+    private WarehouseService warehouseService;
+    @Autowired
+    private UnitService unitService;
 
     @RequestMapping(value = "/index")
     public String index() {
         String ownerId = this.getCurrentUser().getOwnerId();
+        User currentUser = this.getCurrentUser();
+        Unit unitById = CacheManager.getUnitById(currentUser.getOwnerId());
+        if(CommonUtil.isBlank(unitById)){
+            unitById=this.unitService.getunitbyId(currentUser.getOwnerId());
+        }
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        if(CommonUtil.isNotBlank(unitById.getGroupId())){
+            if(unitById.getGroupId().equals("JMS")){
+                PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
+                filters.add(filter);
+                List<Unit> units = this.warehouseService.find(filters);
+                this.getRequest().setAttribute("JMSCODE", units.get(0).getCode());
+                this.getRequest().setAttribute("JMSNAME", units.get(0).getName());
+            }
+        }
         this.getRequest().setAttribute("ownerId", ownerId);
         return "/views/stock/warehStock";
     }

@@ -4,6 +4,8 @@ import java.util.*;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,8 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 
 	 @Autowired
 	 private WarehouseService warehouseService;
+	@Autowired
+	private UnitService unitService;
 	
 	 @Override
 	    @RequestMapping(value = "/index")
@@ -71,15 +75,40 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
 		List<Unit> warehouse=new ArrayList<>();
-		Unit unit = new Unit();
-		Unit unit1 = new Unit();
-		unit.setCode("DG");
-		unit.setName("所有店柜");
-		unit1.setCode("JMS");
-		unit1.setName("所有加盟商");
-		warehouse.add(unit);
-		warehouse.add(unit1);
-		warehouse.addAll(this.warehouseService.find(filters));
+		User currentUser = this.getCurrentUser();
+		Unit unitById = CacheManager.getUnitById(currentUser.getOwnerId());
+		if(CommonUtil.isBlank(unitById)){
+			unitById=this.unitService.getunitbyId(currentUser.getOwnerId());
+		}
+		if(CommonUtil.isNotBlank(unitById.getGroupId())){
+			if(unitById.getGroupId().equals("JMS")){
+				PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
+				filters.add(filter);
+				warehouse.addAll(this.warehouseService.find(filters));
+			}else{
+				Unit unit = new Unit();
+				Unit unit1 = new Unit();
+				unit.setCode("DG");
+				unit.setName("所有店柜");
+				unit1.setCode("JMS");
+				unit1.setName("所有加盟商");
+				warehouse.add(unit);
+				warehouse.add(unit1);
+				warehouse.addAll(this.warehouseService.find(filters));
+			}
+		}else{
+			Unit unit = new Unit();
+			Unit unit1 = new Unit();
+			unit.setCode("DG");
+			unit.setName("所有店柜");
+			unit1.setCode("JMS");
+			unit1.setName("所有加盟商");
+			warehouse.add(unit);
+			warehouse.add(unit1);
+			warehouse.addAll(this.warehouseService.find(filters));
+		}
+
+
 		return warehouse;
 	}
 

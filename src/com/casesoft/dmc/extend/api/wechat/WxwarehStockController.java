@@ -17,6 +17,7 @@ import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.search.DetailStockCodeViewService;
 import com.casesoft.dmc.service.search.DetailStockViewChatService;
 import com.casesoft.dmc.service.search.DetailStockViewService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.WarehouseService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ public class WxwarehStockController extends ApiBaseController {
 
     @Autowired
     private DetailStockViewService detailStockViewService;
+    @Autowired
+    private UnitService unitService;
 
     @Override
     public String index() {
@@ -52,10 +55,21 @@ public class WxwarehStockController extends ApiBaseController {
     }
     @RequestMapping(value = "/findwarehId.do")
     @ResponseBody
-    public MessageBox findwarehId(){
+    public MessageBox findwarehId(String ownerId){
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
+        Unit unitById = CacheManager.getUnitById(ownerId);
+        if(CommonUtil.isBlank(unitById)){
+            unitById=this.unitService.getunitbyId(ownerId);
+        }
+        if(CommonUtil.isNotBlank(unitById.getGroupId())){
+            if(unitById.getGroupId().equals("JMS")){
+                PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
+                filters.add(filter);
+
+            }
+        }
         List<Unit> warehouse=this.warehouseService.find(filters);
 
         return returnSuccessInfo("保存成功",warehouse);
