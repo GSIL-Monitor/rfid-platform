@@ -102,8 +102,28 @@ function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast");
 }
 function search() {
+
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var filters = serializeToFilter($("#searchForm"));
+    var isok=true;
+    if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
+        isok=false;
+        for(var i=0;i<filters.length;i++){
+            if(filters[i]==warehId){
+                isok=true;
+            }
+
+        }
+
+    }
+    if(isok==false){
+        $.gritter.add({
+            text: "请选择仓库",
+            class_name: 'gritter-success  gritter-light'
+        });
+        return false
+    }
+
     filters.push({
         field: "warehType",
         operator: "eq",
@@ -136,17 +156,38 @@ function initMultiSelect() {
             }
         }
     });
-    $("#filter_in_warehId").kendoMultiSelect({
-        dataTextField: "name",
-        dataValueField: "code",
-        height: 400,
-        suggest: true,
-        dataSource: {
-            transport: {
-                read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-            }
-        },
-    });
+    console.log(JMSCODE);
+    console.log(JMSNAME);
+    if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
+        $("#filter_in_warehId").kendoMultiSelect({
+            dataTextField: "name",
+            dataValueField: "code",
+            height: 400,
+            suggest: true,
+            dataSource: {
+                transport: {
+                    read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
+                }
+            },
+            value:JMSCODE,
+            text:JMSNAME
+        });
+    }else{
+        $("#filter_in_warehId").kendoMultiSelect({
+            dataTextField: "name",
+            dataValueField: "code",
+            height: 400,
+            suggest: true,
+            dataSource: {
+                transport: {
+                    read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
+                }
+            },
+        });
+    }
+
+
+
     $("#filter_in_destUnitId").kendoMultiSelect({
         dataTextField: "name",
         dataValueField: "code",

@@ -10,6 +10,8 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var ownerId = "${ownerId}";
+        var JMSCODE = "${JMSCODE}";
+        var JMSNAME = "${JMSNAME}";
     </script>
 
 </head>
