@@ -135,8 +135,8 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(saleOrderBill.getBillDate(), "yyyy-MM"));
 
 
-        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
-        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
+        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", new Object[]{saleOrderBill.getDestUnitId()});
+        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ? and status=1", new Object[]{saleOrderBill.getDestUnitId()});
         Double preDiffPrice = this.saleOrderBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
         //更新客户月结表数据
         if(isUpdateMonthAccount){
@@ -763,6 +763,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     }
 
+    public long findSbByDuId (String destUnitId){
+        return this.saleOrderBillDao.findUnique("select count(*) from SaleOrderBill where destUnitId=?",destUnitId);
+    }
 
     public Integer findBillStatus(String billNo) {
        return this.saleOrderBillDao.findUnique("select status from SaleOrderBill where id=?",billNo);

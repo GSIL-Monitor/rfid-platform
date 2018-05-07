@@ -47,7 +47,8 @@ function changeStatus(rowId) {
         dataType: 'json',
         data: {
             id: row.id,
-            status: status
+            status: status,
+            type:row.unitType
         },
         success: function (result) {
             cs.closeProgressBar();

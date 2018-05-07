@@ -76,9 +76,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         Logger logger = LoggerFactory.getLogger(SaleOrderReturnBill.class);
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
         String preOrigUnitId = this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
-        Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{bill.getOrigUnitId()});
+        Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", new Object[]{bill.getOrigUnitId()});
         Double preDiffPrice = this.saleOrderReturnBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
-        Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
+        Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", new Object[]{bill.getOrigUnitId()});
         Boolean isUpdateMonthAccount = false;
         isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(bill.getBillDate(), "yyyy-MM"));
         if (isUpdateMonthAccount) {
@@ -586,5 +586,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
     public Integer findBillStatus(String billNo) {
         return this.saleOrderReturnBillDao.findUnique("select status from SaleOrderReturnBill where id=?", billNo);
+    }
+
+    public long findSbByDuId (String origUnitId){
+        return this.saleOrderReturnBillDao.findUnique("select count (*) from SaleOrderReturnBill where origUnitId=?",origUnitId);
     }
 }

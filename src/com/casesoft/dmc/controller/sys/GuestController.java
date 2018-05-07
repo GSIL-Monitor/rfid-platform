@@ -8,9 +8,13 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.logistics.SaleOrderBill;
+import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.sys.GuestViewService;
@@ -42,6 +46,10 @@ public class GuestController extends BaseController implements IBaseInfoControll
 
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private SaleOrderBillService saleOrderBillService;
+    @Autowired
+    private SaleOrderReturnBillService saleOrderReturnBillService;
 
     //@RequestMapping(value = "/index")
     @Override
@@ -110,26 +118,32 @@ public class GuestController extends BaseController implements IBaseInfoControll
     @ResponseBody
     public MessageBox changeStatus(String id, Integer status, String type) {
         this.logAllRequestParams();
-        if (!"CT-LS".equals(type)) {
-            Unit gst = this.guestService.findById(id);
-            gst.setStatus(status == 1 ? 0 : 1);
-            try {
-                this.guestService.save(gst);
-                return returnSuccessInfo("更改成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return returnFailInfo("更改失败");
+        long saleOrderBill = this.saleOrderBillService.findSbByDuId(id);
+        long saleOrderReturnBills =this.saleOrderReturnBillService.findSbByDuId(id);
+        if (saleOrderBill == 0 && saleOrderReturnBills == 0){
+            if (!"CT-LS".equals(type)) {
+                Unit gst = this.guestService.findById(id);
+                gst.setStatus(status == 1 ? 0 : 1);
+                try {
+                    this.guestService.save(gst);
+                    return returnSuccessInfo("更改成功");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return returnFailInfo("更改失败");
+                }
+            } else {
+                Customer gst = this.customerService.getCustomerById(id);
+                gst.setStatus(status == 1 ? 0 : 1);
+                try {
+                    this.customerService.save(gst);
+                    return returnSuccessInfo("更改成功");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return returnFailInfo("更改失败");
+                }
             }
-        } else {
-            Customer gst = this.customerService.getCustomerById(id);
-            gst.setStatus(status == 1 ? 0 : 1);
-            try {
-                this.customerService.save(gst);
-                return returnSuccessInfo("更改成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return returnFailInfo("更改失败");
-            }
+        }else {
+            return returnFailInfo("客户已开过单不能废除");
         }
     }
     /**
@@ -312,9 +326,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
     @ResponseBody
     public MessageBox update(Unit entity) throws Exception {
         String preType = this.getReqParam("preType");
-        Boolean deletePre = false;
+        Boolean updatePre = false;
         if (!preType.equals(entity.getType().toString())) {
-           deletePre = true;
+            updatePre = true;
         }
         if (entity.getType().equals(Constant.UnitType.Shop) || entity.getType().equals(Constant.UnitType.Agent)) {//Shop=4门店 Agent=2代理商
             try {
@@ -362,12 +376,12 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setRemark(entity.getRemark());
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
-                if (preCustomer.getStatus()==1){
-                    preCustomer.setStatus(0);
-                }else {
-                    preCustomer.setStatus(1);
-                }
-                if(deletePre){
+                if(updatePre){
+                    if (preCustomer.getStatus()==1){
+                        preCustomer.setStatus(0);
+                    }else {
+                        preCustomer.setStatus(1);
+                    }
                     this.guestService.updateUnit(guest,preCustomer);
                     CacheManager.refreshCustomer();
                 }else{
@@ -426,12 +440,12 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setRemark(entity.getRemark());
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
-                if (preUnit.getStatus()==1){
-                    preUnit.setStatus(0);
-                }else {
-                    preUnit.setStatus(1);
-                }
-                if(deletePre){
+                if(updatePre){
+                    if (preUnit.getStatus()==1){
+                        preUnit.setStatus(0);
+                    }else {
+                        preUnit.setStatus(1);
+                    }
                     this.guestService.updateCustomer(guest,preUnit);
                 }else {
                     this.customerService.save(guest);
