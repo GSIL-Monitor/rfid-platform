@@ -59,15 +59,19 @@ public class WxwarehStockController extends ApiBaseController {
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
-        Unit unitById = CacheManager.getUnitById(ownerId);
-        if(CommonUtil.isBlank(unitById)){
-            unitById=this.unitService.getunitbyId(ownerId);
-        }
-        if(CommonUtil.isNotBlank(unitById.getGroupId())){
-            if(unitById.getGroupId().equals("JMS")){
-                PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
-                filters.add(filter);
+        if(CommonUtil.isNotBlank(ownerId)) {
+            Unit unitById = CacheManager.getUnitById(ownerId);
+            if (CommonUtil.isBlank(unitById)) {
+                unitById = this.unitService.getunitbyId(ownerId);
+            }
+            if (CommonUtil.isNotBlank(unitById)) {
+                if (CommonUtil.isNotBlank(unitById.getGroupId())) {
+                    if (unitById.getGroupId().equals("JMS")) {
+                        PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
+                        filters.add(filter);
 
+                    }
+                }
             }
         }
         List<Unit> warehouse=this.warehouseService.find(filters);
