@@ -951,7 +951,7 @@ public class InitUtil {
 				}
 
 				sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
-						.append(",").append(class7).append(",").append(p.getRemark());
+						.append(",").append(class7).append(",").append(style.getRemark());
 			} else {
 				sb.append(",").append("").append(",").append("").append(",").append("").append(",").append("");
 			}
@@ -1038,7 +1038,7 @@ public class InitUtil {
 
 
 							sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
-									.append(",").append(class7).append(",").append(p.getRemark());
+									.append(",").append(class7).append(",").append(style.getRemark());
 						} else {
 							sb.append(",").append("").append(",").append("").append(",").append("");
 						}
@@ -1198,7 +1198,7 @@ public class InitUtil {
 					class7 = style.getClass7();
 				}
 				sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
-						.append(",").append(class7);
+						.append(",").append(class7).append(",").append(style.getRemark());
 			} else {
 				sb.append(",").append("").append(",").append("").append(",").append("");
 			}

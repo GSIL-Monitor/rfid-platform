@@ -63,6 +63,11 @@
             height: 400,
             datatype:"local",
             colModel: [
+                {name:'',label:'操作',width:40,
+                    formatter:function (cellValue, options, rowObject) {
+                        return "<a style='margin-left: 10px' href='javascript:void(0);' onclick=deleteUniqueCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
+                },
                 {name: 'code', label: '唯一码', width: 60},
                 {name: 'updateTime', label: '修改时间', hidden: true, width: 40},
                 {name: 'styleId', label: '款号', width: 40},
@@ -154,7 +159,14 @@
             }
         });
     }
-
+    function deleteUniqueCode(rowId){
+        var row = $('#uniqueCodeGrid').getRowData(rowId);
+        $("#uniqueCodeGrid").jqGrid("delRowData", rowId);
+        allCodes = allCodes.replace(row.code,"");
+        console.log(allCodes);
+        var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
+        $("#codeQty").text(scanCodeQty);
+    }
     function keydown() {
         //监听回车键
         $("#add_uniqueCode").keydown(function (event) {
