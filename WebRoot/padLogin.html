@@ -1,6 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
+    <script>
+        var basePathAll=window.location.href;
+        var basePath=basePathAll.split("padLogin")[0];
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CaseSoft RFID">
@@ -39,6 +44,8 @@
     <!--[if lt IE 9]>
     <script src="Olive/assets/js/html5shiv.js"></script>
     <script src="Olive/assets/js/respond.js"></script>
+    <script src="Olive/plugin/bootstrap3-dialog/js/bootstrap-dialog.js"></script>
+    <script src="Olive/assets/js/bootbox.js"></script>
     <![endif]-->
     <style>
         body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6 { font-family: Microsoft YaHei,'宋体' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
@@ -47,18 +54,13 @@
             top:50%;
             transform:translateY(30%);
         }
-
         .login-bg
         {
             background-image:url(images/bg/login_bg.jpg);
             background-repeat:no-repeat;
         }
-
     </style>
-
     <script type="text/javascript">
-
-
         function check(){
             var frm = document.loginForm;
             if(frm.code.value==""){
@@ -85,34 +87,8 @@
                 return true;
             }
         }
-
-        function isExistUser() {
-            var strcookie = document.cookie;
-            var arrcookie = strcookie.split(";");
-            for(var i=0;i<arrcookie.length;i++) {
-                var arr = arrcookie[i].split("=");
-                if("userId" === arr[0] && "exist" == arr[1]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-      /*  function checkParent() {
-
-            var message = '<%=message%>';
-            if(message != 'null')
-                document.getElementById("messagePanel").style.display="";//messagePanel
-
-
-            if (window.parent.length > 0) {
-                window.parent.location.href = "<%=basePath%>oliveLogin.jsp";
-            }
-
-
-        }*/
-
     </script>
+
 </head>
 <body class="login-layout">
 <div class="main-container " >
@@ -122,13 +98,9 @@
                 <div class="login-container">
                     <div class="center">
                         <h2>
-                            <img src="images/icon/casesoft-white.png" style="width:25px;height:25px;margin-top:-7px;"/>
-                            <span class="red">RFID-SMART</span>
-                            <span class="white" id="id-text2">大数据平台</span>
+                            <span class="white" id="id-text2">自助收银</span>
                         </h2>
-                        <h4 class="blue" id="id-company-text">HUB 4.0 &copy; 凯施智联</h4>
                     </div>
-
                     <div class="space-6"></div>
                     <div class="position-relative">
                         <div id="login-box" class="login-box visible widget-box no-border">
@@ -138,10 +110,8 @@
                                         <i class="ace-icon fa fa-coffee green"></i>
                                         用户登录
                                     </h4>
-
                                     <div class="space-6"></div>
-
-                                    <form id="loginForm" name="loginForm" action="sys/user/login.do?loginType=SU" method="post" onsubmit="return check();">
+                                    <form id="loginForm" name="loginForm"  onsubmit="return check();">
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
@@ -149,23 +119,19 @@
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                                             </label>
-
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" name="password"  id="password" class="form-control" placeholder="密码" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                                             </label>
-
                                             <div class="space"></div>
-
                                             <div class="clearfix">
                                                 <label class="inline">
                                                     <input id="ck_remMe" type="checkbox" class="ace" />
                                                     <span class="lbl"> 记住我</span>
                                                 </label>
-
-                                                <button type="submit" class="width-35 pull-right btn btn-sm btn-primary">
+                                                <button class="width-35 pull-right btn btn-sm btn-primary " type="button" onclick="sure()">
                                                     <i class="ace-icon fa fa-key"></i>
                                                     <span class="bigger-110">确定</span>
                                                 </button>
@@ -174,40 +140,10 @@
                                             <div class="space-4"></div>
                                         </fieldset>
                                     </form>
-                                    <div id="messagePanel" style="display:none">
-                                        <span class="label label-important">错误</span>
-                                        <label id="message"><%=message %></label>
-                                    </div>
-
-                                  <!--  <div class="social-or-login center">
-                                        <span class="bigger-110">支持浏览器</span>
-                                    </div>
-
-                                    <div class="space-6"></div>
-
-
-                                    <div class="social-login center">
-                                        <a class="btn btn-primary" href="https://www.google.com/intl/zh-CN/chrome/browser/" target="_blank">
-                                            <i class="ace-icon fa fa-chrome"></i>
-                                        </a>
-
-                                        <a class="btn btn-info" href="http://firefox.com.cn/download/" target="_blank">
-                                            <i class="ace-icon fa fa-firefox"></i>
-                                        </a>
-
-                                        <a class="btn btn-danger" href="http://windows.microsoft.com/zh-CN/internet-explorer/products/ie/home" target="_blank">
-                                            <i class="ace-icon fa fa-internet-explorer"></i>
-                                        </a>
-                                    </div>-->
                                 </div><!-- /.widget-main -->
-
-
                             </div><!-- /.widget-body -->
                         </div><!-- /.login-box -->
-
                     </div><!-- /.position-relative -->
-
-
                 </div>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -234,15 +170,14 @@
 <script src="Olive/plugin/jquery.cookie.js"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
+    var userId;
+    var ownerId;
     jQuery(function($) {
-
         if ($.cookie("rmbUser") == "true") {
             $("#ck_remMe").attr("checked", true);
             $("#code").val($.cookie("code"));
             $("#password").val($.cookie("password"));
         }
-
-
         $(document).on('click', '.toolbar a[data-target]', function(e) {
             e.preventDefault();
             var target = $(this).data('target');
@@ -250,6 +185,30 @@
             $(target).addClass('visible');//show target
         });
     });
+
+    function sure() {
+        var code = $("#code").val();
+        var password = $("#password").val();
+        $.ajax({
+            dataType: "json",
+            url: basePath + "pad/padUser/loginWS.do",
+            data:{
+                code:code,
+                password:password
+            },
+            type: "POST",
+            success: function (msg) {
+                if(msg.success){
+                    userId=msg.result.id;
+                    ownerId=msg.result.ownerId;
+                    window.location.href=basePath+'views/pad/padUser.html?userId='+userId+'&basePath='+basePath+'&ownerId='+ownerId;
+                }else{
+                    window.location.href=basePath+'padLogin.html';
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }
 
 
 </script>

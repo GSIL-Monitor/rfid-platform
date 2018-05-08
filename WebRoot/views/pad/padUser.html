@@ -97,6 +97,7 @@
     var ownerId;
     var userId;
     var basePath;
+    var defaultSaleStaffId;
     var urlString = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
     var theRequest = new Object();
     if ( urlString.indexOf( "?" ) != -1 ) {
@@ -110,22 +111,26 @@
     userId=theRequest.userId;
     ownerId=theRequest.ownerId;
     function scan() {
-
+        window.location.href=basePath+'views/pad/scanning.html';
     }
     function set(){
-
+        window.location.href=basePath+'views/pad/setUp.html?basePath='+basePath;
     }
     $(function () {
         $.ajax({
             dataType: "json",
             url: basePath + "api/hub/base/getDefaultwarehouseWs.do",
+            cache: false,
+            async: false,
             data:{
                 userId:userId
             },
             type: "POST",
             success: function (msg) {
                 if(msg.success){
+                    defaultSaleStaffId=msg.result.defaultSaleStaffId;
                     $("#search_origId").val(msg.result.defaultWarehouseName);
+                    $("#search_origId").attr("readOnly",true);
                 }
             }
         });
