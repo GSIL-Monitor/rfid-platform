@@ -102,14 +102,13 @@ function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast");
 }
 function search() {
-
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var filters = serializeToFilter($("#searchForm"));
     var isok=true;
     if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
         isok=false;
         for(var i=0;i<filters.length;i++){
-            if(filters[i]==warehId){
+            if(filters[i].field=="warehId"){
                 isok=true;
             }
 
