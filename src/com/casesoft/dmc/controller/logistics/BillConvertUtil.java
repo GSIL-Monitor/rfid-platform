@@ -359,7 +359,8 @@ public class BillConvertUtil {
     }
 
     /**
-     * 转换补货为采购订单单据（保存调用）
+     * modify by yushen
+     * 微信小程序补货处理，将补货单转为采购单据
      */
     public static void covertToPurchaseWeChatBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, User curUser) {
         if (CommonUtil.isNotBlank(curUser)) {
@@ -3487,5 +3488,40 @@ public class BillConvertUtil {
         replenishBill.setOwnerId(curUser.getOwnerId());
         replenishBill.setBillDate(new Date());
         replenishBill.setStatus(BillConstant.BillStatus.Enter);
+    }
+
+    /**
+     * add by yushen
+     * 用于小程序补货处理
+     */
+    public static void convertReplenishInProcessing(ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtlList) throws Exception{
+        Long totQty = replenishBill.getTotQty();
+
+        Integer sumDtlConvertQty = 0;
+        for(ReplenishBillDtl dtl : replenishBillDtlList){
+            dtl.setActConvertQty(dtl.getActConvertQty() + dtl.getConvertQty());
+            dtl.setConvertQty(0);
+            if(dtl.getActConvertQty() > dtl.getQty().intValue()){
+                throw new Exception(dtl.getSku() + "超出单据需求数量");
+            }else if(dtl.getActConvertQty() == dtl.getQty().intValue()) {
+                dtl.setStatus(0); //0 表示该sku已全部处理
+            }else if(dtl.getActConvertQty() < dtl.getQty().intValue()){
+                dtl.setStatus(1); //1 表示该sku未处理完
+            }
+            sumDtlConvertQty += dtl.getActConvertQty();
+        }
+
+        if(sumDtlConvertQty == 0){
+            replenishBill.setStatus(BillConstant.BillStatus.Enter);
+        }else if(sumDtlConvertQty < totQty){
+            replenishBill.setStatus(BillConstant.BillStatus.Doing);
+            replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
+        }else if(sumDtlConvertQty == totQty.intValue()){
+            replenishBill.setStatus(BillConstant.BillStatus.End);
+            replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
+        } else if(sumDtlConvertQty > totQty){
+            throw new Exception("超出单据总需求数");
+        }
+
     }
 }

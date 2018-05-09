@@ -163,8 +163,52 @@ public class WechatrelenishController extends ApiBaseController {
         return this.returnSuccessInfo("获取成功", page.getRows());
     }
 
-    @RequestMapping(value = "/savepurchaseBill.do")
-    @ApiOperation(value = "保存采购单")
+//    @RequestMapping(value = "/savepurchaseBill.do")
+//    @ApiOperation(value = "保存采购单")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "purchaseBillStr", value = "采购单", dataType = "string", paramType = "query", example = "{'origUnitId':'MIGAO','origUnitName':'米高','destId':'AUTO_WH001','billDate':'2018-03-20 00:00:00.0','payPrice':'100','payType':'','discount':'','remark':'','status':'0'}"),
+//            @ApiImplicitParam(name = "strDtlList", value = "采购单详情", dataType = "String", paramType = "query", example = "[{'id': '','sku': 'z6005一色S','status': '0','inStatus': '','printStatus': '0','inStockType': 'BH','inStockTypeName': '补货','styleId': 'z6005','colorId': '一色','sizeId': 'S','styleName': '上衣','colorName': '一色','sizeName': 'S','qty': '3','actPrintQty': '','inQty': '','price':'220','discount': '100','totPrice': '660','actPrice': '220','totActPrice': '660','expectTime': '2018-03-20 00:00:00.0'}]"),
+//            @ApiImplicitParam(name = "userId", value = "userId", dataType = "String", paramType = "query"),
+//            @ApiImplicitParam(name = "replenishBillNo", value = "补货单单号", dataType = "String", paramType = "query")
+//
+//    })
+//    @ResponseBody
+//    public MessageBox savepurchaseBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) {
+//        this.logAllRequestParams();
+//        PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
+//        List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList, PurchaseOrderBillDtl.class);
+//        /* List<ReplenishBillDtl> replenishBillDtls = JSON.parseArray(ReplenishBillDtl, ReplenishBillDtl.class);*/
+//        try {
+//            //筛选明细中的数据（排除明细中已经完成的）
+//            purchaseOrderBillDtlList=this.purchaseOrderBillService.filtrateMessage(purchaseOrderBillDtlList,replenishBillNo);
+//            if(purchaseOrderBillDtlList.size()>0){
+//                String prefix = BillConstant.BillPrefix.purchase
+//                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+//                //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
+//                purchaseOrderBill.setId(prefix);
+//                purchaseOrderBill.setBillNo(prefix);
+//                User curUser = CacheManager.getUserById(userId);
+//                BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList, curUser);
+//                this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList, replenishBillNo, curUser);
+//                System.out.println(purchaseOrderBill.getBillNo());
+//                return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
+//            }else{
+//                return new MessageBox(true, "保存成功");
+//            }
+//
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new MessageBox(false, e.getMessage());
+//        }
+//    }
+
+    /**
+     * add by yushen 处理补货单，生成采购单，更新补货单状态
+     */
+    @RequestMapping(value = "/processReplenishBill.do")
+    @ApiOperation(value = "处理补货单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "purchaseBillStr", value = "采购单", dataType = "string", paramType = "query", example = "{'origUnitId':'MIGAO','origUnitName':'米高','destId':'AUTO_WH001','billDate':'2018-03-20 00:00:00.0','payPrice':'100','payType':'','discount':'','remark':'','status':'0'}"),
             @ApiImplicitParam(name = "strDtlList", value = "采购单详情", dataType = "String", paramType = "query", example = "[{'id': '','sku': 'z6005一色S','status': '0','inStatus': '','printStatus': '0','inStockType': 'BH','inStockTypeName': '补货','styleId': 'z6005','colorId': '一色','sizeId': 'S','styleName': '上衣','colorName': '一色','sizeName': 'S','qty': '3','actPrintQty': '','inQty': '','price':'220','discount': '100','totPrice': '660','actPrice': '220','totActPrice': '660','expectTime': '2018-03-20 00:00:00.0'}]"),
@@ -173,36 +217,58 @@ public class WechatrelenishController extends ApiBaseController {
 
     })
     @ResponseBody
-    public MessageBox savepurchaseBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) {
+    public MessageBox processReplenishBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) throws Exception{
         this.logAllRequestParams();
         PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList, PurchaseOrderBillDtl.class);
-        /* List<ReplenishBillDtl> replenishBillDtls = JSON.parseArray(ReplenishBillDtl, ReplenishBillDtl.class);*/
-        try {
-            //筛选明细中的数据（排除明细中已经完成的）
-            purchaseOrderBillDtlList=this.purchaseOrderBillService.filtrateMessage(purchaseOrderBillDtlList,replenishBillNo);
-            if(purchaseOrderBillDtlList.size()>0){
-                String prefix = BillConstant.BillPrefix.purchase
-                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
-                //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
-                purchaseOrderBill.setId(prefix);
-                purchaseOrderBill.setBillNo(prefix);
-                User curUser = CacheManager.getUserById(userId);
-                BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, purchaseOrderBillDtlList, curUser);
-                this.purchaseOrderBillService.saveWechat(purchaseOrderBill, purchaseOrderBillDtlList, replenishBillNo, curUser);
-                System.out.println(purchaseOrderBill.getBillNo());
-                return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
-            }else{
-                return new MessageBox(true, "保存成功");
+        List<PurchaseOrderBillDtl> filteredDtlList = new ArrayList<>();  //存放转换数量大于零的明细
+        ReplenishBill replenishBill = replenishBillService.get("id", replenishBillNo);
+        List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(replenishBillNo);
+
+        Map<String, ReplenishBillDtl> sku2billDtlMap = new HashMap<>();
+        for (ReplenishBillDtl rDtl : replenishBillDtlList) {
+            sku2billDtlMap.put(rDtl.getSku(), rDtl);
+        }
+
+        //将转换数量放入补货单明细，并过滤出转换数量大于零的采购明细
+        Long totConvertQty = 0L;
+        for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
+            Long convertQty = pDtl.getQty();
+            if(CommonUtil.isBlank(convertQty)){
+                convertQty = 0L;
             }
+            totConvertQty += convertQty;
+            String thisSku = pDtl.getSku();
+            ReplenishBillDtl replenishBillDtl = sku2billDtlMap.get(thisSku);
+            if (convertQty > 0) {
+                replenishBillDtl.setConvertQty(convertQty.intValue());
+                replenishBillDtl.setLastTime(pDtl.getExpectTime());
+                filteredDtlList.add(pDtl);
+            }
+        }
+        //总转换数量小于1，返回错误：没有待处理的商品
+        if (totConvertQty < 1) {
+            throw new Exception("没有待处理的商品");
+//            return new MessageBox(false, "没有待处理的商品");
+        }
 
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new MessageBox(false, e.getMessage());
+        if (filteredDtlList.size() > 0) {
+            String prefix = BillConstant.BillPrefix.purchase
+                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+            purchaseOrderBill.setId(prefix);
+            purchaseOrderBill.setBillNo(prefix);
+            User curUser = CacheManager.getUserById(userId);
+            BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, filteredDtlList, curUser);
+            BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList);
+            this.purchaseOrderBillService.processReplenishBill(purchaseOrderBill, filteredDtlList, replenishBill, replenishBillDtlList, curUser);
+            return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
+        }else{
+            return new MessageBox(true, "保存成功");
         }
     }
+
+
+
 
     @RequestMapping(value = "/findUnitStock.do")
     @ApiOperation(value = "获取供应商信息")
@@ -380,13 +446,46 @@ public class WechatrelenishController extends ApiBaseController {
 
     /**
      * add by yushen
+     * 查看所有采购单据
+     */
+    @RequestMapping(value = "/findPurchaseOrderList.do")
+    @ResponseBody
+    public MessageBox findPurchaseOrderList(String pageSize, String pageNo, String userId) {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        if (CommonUtil.isNotBlank(userId)) {
+            PropertyFilter filter = new PropertyFilter("EQS_userId", userId);
+            filters.add(filter);
+        }
+        Page<PurchaseOrderBill> page = new Page<PurchaseOrderBill>();
+        page.setPageSize(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setPage(Integer.parseInt(pageNo));
+        page.setSort("billDate");
+        page.setOrder("desc");
+        page.setPageProperty();
+        Page<PurchaseOrderBill> purchaseOrderBillPage = this.purchaseOrderBillService.findPage(page, filters);
+        for (PurchaseOrderBill bill : purchaseOrderBillPage.getRows()) {
+            List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
+            bill.setDtlList(billDtlList);
+        }
+
+        return new MessageBox(true, "success", purchaseOrderBillPage);
+    }
+
+    /**
+     * add by yushen
      * 买手处理完补货后，查看补单转换的采购单
      */
-    @RequestMapping(value = "/findHandleAndPurchaseBill.do")
+    @RequestMapping(value = "/getPurchaseBillDtl.do")
     @ResponseBody
-    public MessageBox findHandleAndPurchaseBill(String purchaseNo) {
+    public MessageBox getPurchaseBillDtl(String purchaseNo) {
         this.logAllRequestParams();
         PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(purchaseNo);
+        User buyer = CacheManager.getUserById(purchaseOrderBill.getBuyahandId());
+        if(CommonUtil.isNotBlank(buyer)){
+            purchaseOrderBill.setBuyahandName(buyer.getName());
+        }
         List<PurchaseOrderBillDtl> billDtls = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseNo);
         purchaseOrderBill.setDtlList(billDtls);
         return new MessageBox(true, "success", purchaseOrderBill);

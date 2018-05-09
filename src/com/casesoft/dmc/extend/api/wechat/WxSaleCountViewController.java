@@ -308,13 +308,13 @@ public class WxSaleCountViewController extends ApiBaseController {
             SaleorderCountView saleorderCountView = page.getRows().get(i);
             String billno = saleorderCountView.getBillno();
             if (billno.contains(BillConstant.BillPrefix.saleOrder)) {
-                saleorderCountView.setSaletype("销售订单");
+             /*   saleorderCountView.setSaletype("销售订单");*/
                 saleorderCountView.setIshow(true);
             }
             if (billno.contains(BillConstant.BillPrefix.SaleOrderReturn)) {
-                saleorderCountView.setSaletype("销售退货");
-                Integer qty = saleorderCountView.getQty();/*
-                saleorderCountView.setQty(Integer.parseInt("-"+qty));*/
+               /* saleorderCountView.setSaletype("销售退货");
+                Integer qty = saleorderCountView.getQty();*//**/
+               /* saleorderCountView.setQty(Integer.parseInt("-"+qty));*/
                 saleorderCountView.setIshow(true);
             }
         }

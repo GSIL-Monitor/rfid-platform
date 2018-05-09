@@ -35,7 +35,8 @@ public class PurchaseOrderBillDtl extends BaseBillDtl {
 
     @Column()
     private Integer printQty;//待打印数量
-    @Transient
+
+    @Column()
     private String expectTime;//预计时间
 
     public String getExpectTime() {

@@ -233,102 +233,18 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     }
 
 
-    public void saveWechat(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, String replenishBillNo, User curUser) throws ParseException {
-        PurchaseOrderBill purchaseOrderBill1 = this.purchaseBillOrderDao.get(purchaseOrderBill.getBillNo());
-        if (CommonUtil.isBlank(purchaseOrderBill1)) {
-            Double actPrice = purchaseOrderBill.getActPrice();
-            Double payPrice = purchaseOrderBill.getPayPrice();
-            if (CommonUtil.isBlank(actPrice)) {
-                actPrice = 0.0;
-            }
-            if (CommonUtil.isBlank(payPrice)) {
-                payPrice = 0.0;
-            }
-            /*Unit unit = this.unitDao.get(purchaseOrderBill.getOrigUnitId());
-            Double owingValue = unit.getOwingValue();
-            unit.setOwingValue(owingValue+(actPrice-payPrice));
-            this.unitDao.update(unit);*/
-        }
-        purchaseOrderBill.setSrcBillNo(replenishBillNo);
+    //modify by yushen 同时反写补货单明细的数据。
+    public void processReplenishBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtl, User curUser) {
+
+        purchaseOrderBill.setSrcBillNo(replenishBill.getBillNo());
         this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
         this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
         if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {
             this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
         }
-        ArrayList<ChangeReplenishBillDtl> list = new ArrayList<ChangeReplenishBillDtl>();
-        if (purchaseOrderBillDtlList.size() != 0) {
-            for (int i = 0; i < purchaseOrderBillDtlList.size(); i++) {
-                PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseOrderBillDtlList.get(i);
-                String hql = "from ReplenishBillDtl t where t.sku=? and t.billId=?";
-                ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
-                if (unique.getQty() > unique.getActConvertQty()) {
-                    if (unique.getQty() <= purchaseOrderBillDtl.getQty()) {
-                        unique.setStatus(0);//已完成
-                        Long qty = purchaseOrderBillDtl.getQty();
-                        if (CommonUtil.isBlank(qty)) {
-                            qty = 0L;
-                        }
-                        Integer actConvertQty = unique.getActConvertQty();
-                        if (CommonUtil.isBlank(actConvertQty)) {
-                            actConvertQty = 0;
-                        }
-                        Integer sum = actConvertQty + Integer.parseInt(purchaseOrderBillDtl.getQty() + "");
-                        unique.setActConvertQty(sum);
-                    } else {
-                        unique.setStatus(1);//未完成
-                        Long qty = purchaseOrderBillDtl.getQty();
-                        if (CommonUtil.isBlank(qty)) {
-                            qty = 0L;
-                        }
-                        Integer actConvertQty = unique.getActConvertQty();
-                        if (CommonUtil.isBlank(actConvertQty)) {
-                            actConvertQty = 0;
-                        }
-                        Integer sum = actConvertQty + Integer.parseInt(purchaseOrderBillDtl.getQty() + "");
-                        unique.setActConvertQty(sum);
-                    }
-                } else {
-                    unique.setStatus(0);//已完成
-                }
-                this.replenishBillDtlDao.saveOrUpdate(unique);
-                ChangeReplenishBillDtl changeReplenishBillDtl = new ChangeReplenishBillDtl();
-                changeReplenishBillDtl.setId(new GuidCreator().toString());
-                changeReplenishBillDtl.setReplenishNo(replenishBillNo);
-                changeReplenishBillDtl.setSku(purchaseOrderBillDtl.getSku());
-                changeReplenishBillDtl.setPurchaseNo(purchaseOrderBill.getBillNo());
-                changeReplenishBillDtl.setBillDate(new Date());
-                changeReplenishBillDtl.setQty(purchaseOrderBillDtl.getQty() + "");
-                changeReplenishBillDtl.setOwnerId(curUser.getOwnerId());
-                changeReplenishBillDtl.setUserId(curUser.getId());
-                //添加预计时间
-                Date date = CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd");
-                changeReplenishBillDtl.setExpectTime(date);
-                list.add(changeReplenishBillDtl);
 
-            }
-        }
-        if (list.size() != 0) {
-            this.changeReplenishBillDtlDao.doBatchInsert(list);
-        }
-        //反写PurchaseOrderBill的状态
-        String hql = "from ReplenishBillDtl t where t.billId=?";
-        List<ReplenishBillDtl> ReplenishBillDtls = this.replenishBillDtlDao.find(hql, new Object[]{replenishBillNo});
-        boolean iscomplete = true;
-        for (ReplenishBillDtl replenishBillDtl : ReplenishBillDtls) {
-            Integer actConvertQty = replenishBillDtl.getActConvertQty();
-            Long qty = replenishBillDtl.getQty();
-            if (actConvertQty < Integer.parseInt(qty + "")) {
-                iscomplete = false;
-            }
-        }
-        if (iscomplete) {
-            String hqlreplenishBillNo = " update ReplenishBill set status=2 where billNo=?";
-            this.replenishBillDao.batchExecute(hqlreplenishBillNo, new Object[]{replenishBillNo});
-        } else {
-            String hqlreplenishBillNo = " update ReplenishBill set status=3 where billNo=?";
-            this.replenishBillDao.batchExecute(hqlreplenishBillNo, new Object[]{replenishBillNo});
-        }
-
+        this.replenishBillDao.saveOrUpdate(replenishBill);
+        this.replenishBillDao.doBatchInsert(replenishBillDtl);
     }
 
     public List<PurchaseOrderBillDtl> findBillDtlByBillNo(String billNo) {
