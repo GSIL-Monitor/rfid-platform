@@ -63,16 +63,25 @@
     </div>
     <div class="row2 col-lg-12 col-md-12 col-sm-12 ">
             <div class="center-vertical">
-                <label class="col-xs-2 center-vertical" for="search_origId">出库仓库</label>
-                <div class="col-xs-4 center-vertical">
+                <label class="col-xs-1 center-vertical" for="search_origId">出库仓库</label>
+                <div class="col-xs-3 center-vertical">
                     <input class="form-control" id="search_origId" >
                     </input>
                 </div>
-                <label class="col-xs-2 center-vertical" for="search_busnissId">销售员</label>
-                <div class="col-xs-4 center-vertical">
+                <label class="col-xs-1 center-vertical" for="search_busnissId">销售员</label>
+                <div class="col-xs-3 center-vertical">
                     <select class="form-control selectpicker show-tick" id="search_busnissId"
                             name="busnissId"
                             style="width: 100%;" data-live-search="true">
+                    </select>
+                </div>
+                <label class="col-xs-1 center-vertical" for="type">类型</label>
+                <div class="col-xs-3 center-vertical">
+                    <select class="form-control selectpicker show-tick" id="type"
+                            name="type"
+                            style="width: 100%;" data-live-search="true">
+                        <option value="0">销售管理</option>
+                        <option value="1">退货管理</option>
                     </select>
                 </div>
             </div>
@@ -138,9 +147,10 @@
     });
 
     function scan() {
+        var type= $("#type").val();
         var busnissId = $("#search_busnissId").val();
         var origId = $("#search_origId").val();
-        window.location.href=basePath+'views/pad/scanning.html?basePath='+basePath+'&busnissId='+busnissId+'&origId='+origId;
+        window.location.href=basePath+'views/pad/customer.html?basePath='+basePath+'&busnissId='+busnissId+'&origId='+origId+'&type='+type;
     }
     function set(){
         window.location.href=basePath+'views/pad/setUp.html?basePath='+basePath;

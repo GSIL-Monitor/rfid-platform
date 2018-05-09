@@ -2,9 +2,249 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>自助收银</title>
+    <script>
+        var taskType;
+        var basePath;
+        var origId;
+        var urlString = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+        var theRequest = new Object();
+        if ( urlString.indexOf( "?" ) != -1 ) {
+            var str = urlString.substr( 1 );
+        } //substr()方法返回从参数值开始到结束的字符串；
+        var strs = str.split( "&" );
+        for ( var i = 0; i < strs.length; i++ ) {
+            theRequest[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+        }
+        basePath = theRequest.basePath;
+        origId = theRequest.origId;
+    </script>
+
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+    <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+    <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link href="../../Olive/assets/css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <style>
+        .row{
+            height:15%;
+        }
+        .row1{
+            height: 70%;
+        }
+        .row2{
+            height: 15%;
+        }
+        .row3{
+            height: 100%;
+        }
+        .row4{
+            height: 50%;
+        }
+        .center-vertical {
+            position:relative;
+            top:50%;
+            transform:translateY(-50%)
+        }
+        .btnstart{
+            width:80%;
+            height:80%;
+            background:url('/images/pad/start.png')  no-repeat left top;
+            background-size:contain;
+            color:#0a0a0a;
+        }
+        .btnstop{
+            width:80%;
+            height:80%;
+            background:url('/images/pad/stop.png')  no-repeat left top;
+            background-size:contain;
+            color:#0a0a0a;
+        }
+        .footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
+    <div class="row col-lg-12 col-md-12 col-sm-12 ">
+        <h1 align="center">
+            自助收银
+        </h1>
+    </div>
+    <div class="row1 col-lg-12 col-md-12 col-sm-12">
+            <table id="addDetailgrid"></table>
+            <div id="grid-pager"></div>
+    </div>
+    <div class="row2 col-lg-12 col-md-12 col-sm-12 footer">
+        <div class="col-lg-3 col-md-3 col-sm-3 center">
+            <button class="btn btn-primary center-vertical" onclick="back() " type="button">上一步</button>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 center">
+            <button class="btn btn-primary center-vertical" type="button" onclick="start()">开始扫描</button>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 center">
+            <button class="btn btn-primary center-vertical" onclick="stop()" type="button">停止扫描</button>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 center">
+            <button class="btn btn-primary center-vertical" onclick="sureProduct()" type="button">确认</button>
+        </div>
+    </div>
 
+<script>
+    $(function () {
+        $("#addDetailgrid").jqGrid({
+            height: "auto",
+            datatype: "local",
+            url: basePath + "logistics/saleOrder/findBillDtl.do?billNo=SO180508141352998",
+            mtype: 'POST',
+            colModel: [
+                {name: 'id', label: 'id', hidden: true},
+                {name: 'billId', label: 'billId', hidden: true},
+                {name: 'billNo', label: 'billNo', hidden: true},
+                {name: 'status', hidden: true},
+                {name: 'inStatus', hidden: true},
+                {name: 'outStatus', hidden: true},
+                {name: "operation", label: "操作",hidden:true},
+                {name: 'statusImg', label: '状态',hidden:true},
+                {name: 'inStatusImg', label: '入库状态',hidden:true},
+                {name: 'outStatusImg', label: '出库状态',hidden:true},
+                {name: 'styleId', label: '款号',hidden:true},
+                {name: 'styleName', label: '款名', width: 40},
+                {name: 'colorId', label: '色码', width: 40},
+                {name: 'colorName', label: '颜色',hidden:true},
+                {name: 'sizeId', label: '尺码',hidden:true},
+                {name: 'sizeName', label: '尺码', width: 40},
+                {
+                    name: 'qty', label: '数量', editable: true, width: 40,
+                    editrules: {
+                        number: true,
+                        minValue: 1
+                    },
+                    editoptions: {
+                        dataInit: function (e) {
+                            $(e).spinner();
+                        }
+                    }
+                },
+                {name: 'outQty', label: '已出库数量',hidden:true},
+                {name: 'inQty', label: '已入库数量',hidden:true},
+                {name: 'sku', label: 'SKU', width: 50},
+                {
+                    name: 'price', label: '销售价格', width: 40,
+                    editrules: {
+                        number: true
+                    }
+                },
+                {name: 'totPrice', label: '销售金额',hidden:true},
+                {
+                    name: 'discount', label: "折扣", hidden:true, editable: true,
+                    editrules: {
+                        number: true,
+                        minValue: 0,
+                        maxValue: 100
+                    }
+                },
+                {
+                    name: 'actPrice', label: '实际价格', editable: true, hidden:true,
+                    editrules: {
+                        number: true,
+                        minValue: 0
+                    }
+                },
+                {name: 'totActPrice', label: '实际金额', hidden:true},
+                {name: 'uniqueCodes', label: '唯一码', hidden: true}
+            ],
+            viewrecords: true,
+            autowidth: true,
+            rownumbers: true,
+            altRows: true,
+            rowNum: -1,
+            pager: '#grid-pager',
+            multiselect: false,
+            shrinkToFit: true,
+            sortname: 'id',
+            sortorder: "asc",
+            afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+                if (cellname === "discount") {
+                    var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                    var var_totActPrice = Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
+                    $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+                } else if (cellname === "actPrice") {
+                    var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
+                    var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
+                    $('#addDetailgrid').setCell(rowid, "discount", var_discount);
+                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+                } else if (cellname === "qty") {
+                    $('#addDetailgrid').setCell(rowid, "totPrice", Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100);
+                    $('#addDetailgrid').setCell(rowid, "totActPrice", Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100);
+                }
+                setFooterData();
+            },
+            gridComplete: function () {
+                setFooterData();
+            }
+        });
+    });
+    function setFooterData() {
+        var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
+        var sum_price = $("#addDetailgrid").getCol('price', false, 'sum');
+        $("#addDetailgrid").footerData('set', {
+            styleId: "合计",
+            qty: sum_qty,
+            price: sum_price
+        });
+    }
+    function sureProduct() {
+    }
+    function back() {
+
+    }
+    function start() {
+        taskType = 0;
+        $.ajax({
+            async: false,
+            url:  basePath + "/pad/PadUserController/checkEpcStock.do",
+            data: {
+                warehId: origId,
+                code: code,
+                type: taskType,
+                billNo: billNo
+            },
+            datatype: "json",
+            datatype: "json",
+            type: "POST",
+            success: function (data) {
+                if (data.success) {
+                    if (skuValid(data.result)) {
+                        $("#uniqueCodeGrid").addRowData($('#uniqueCodeGrid').getDataIDs().length, data.result, 'first');
+                        allCodes = allCodes + "," + code;
+                        var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
+                        $("#codeQty").text(scanCodeQty);
+                    }
+                } else {
+                    $.gritter.add({
+                        text: data.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }
+                $('#uniqCode-editForm').clearForm();
+                progressDialog.modal('hide');
+            }
+        });
+    }
+</script>
 </body>
 </html>
