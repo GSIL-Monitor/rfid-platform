@@ -21,6 +21,8 @@
     <meta charset="utf-8">
     <title>自助收银</title>
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/padBase.css">
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -124,7 +126,16 @@
                 }
             }
         });
-    })
+    });
+
+    function scan() {
+        var busnissId = $("#search_busnissId").val();
+        var origId = $("#search_origId").val();
+        window.location.href=basePath+'views/pad/scanning.html?basePath='+basePath+'&busnissId='+busnissId+'&origId='+origId;
+    }
+    function set(){
+        window.location.href=basePath+'views/pad/setUp.html?basePath='+basePath;
+    }
 </script>
 </body>
 </html>

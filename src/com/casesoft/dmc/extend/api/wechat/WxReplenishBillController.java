@@ -77,19 +77,6 @@ public class WxReplenishBillController extends ApiBaseController {
         map.put("styleId",styleId);
         map.put("styleName",byStyleId.get(0).getStyleName());
         String rootPath = this.getSession().getServletContext().getRealPath("/");
-       /* File file =  new File(rootPath + "/product/photo/" + styleId);
-        if(file.exists()){
-            File[] files = file.listFiles();
-            if(files.length > 0){
-                File[] photos = files[0].listFiles();
-                if(photos.length > 0){
-                    //d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
-                    map.put("url","/product/photo/" + styleId+"/"+files[0].getName()+"/"+photos[0].getName());
-                }
-            }
-        }else{
-            map.put("url","");
-        }*/
         String url = StyleUtil.returnImageUrl(styleId, rootPath);
         map.put("url",url);
         List<Map<String,Object>> colorIdList= new ArrayList< Map<String,Object>>();

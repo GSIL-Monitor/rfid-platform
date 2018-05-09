@@ -11,6 +11,7 @@
         var pageType = "${pageType}";
         var billNo = "${purchaseOrderBill.billNo}";
         var purchaseOrder_destId = "${purchaseOrderBill.destId}";
+        var purchaseOrder_orderWarehouseId = "${purchaseOrderBill.orderWarehouseId}";
         var saleOrder_buyahandId = "${purchaseOrderBill.buyahandId}";
         var curOwnerId = "${ownerId}";
         var userId = "${userId}";
@@ -106,6 +107,12 @@
                                     <div class="col-xs-2">
                                         <input class="form-control" id="search_payType" name="payType"
                                                type="text" value="${purchaseOrderBill.payType}"/>
+                                    </div>
+                                    <label class="col-xs-1 control-label" for="search_orderWarehouseId"></span>订货仓库</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control" id="search_orderWarehouseId" name="orderWarehouseId"
+                                                style="width: 100%;" value="${purchaseOrderBill.orderWarehouseId}">
+                                        </select>
                                     </div>
 
                                 </div>

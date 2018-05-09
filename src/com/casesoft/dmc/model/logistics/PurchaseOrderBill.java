@@ -28,13 +28,42 @@ public class PurchaseOrderBill extends BaseBill {
     private Double totInVal=0D;//
     @Column()
     private String buyahandId;//买手的id
+    @Transient
+    private String buyahandName;//买手名
     @Column()
+    private String orderWarehouseId; //订货仓库Id
+    @Column
+    private String orderWarehouseName; //订货仓库名
     public String getBuyahandId() {
         return buyahandId;
     }
 
     public void setBuyahandId(String buyahandId) {
         this.buyahandId = buyahandId;
+    }
+
+    public String getBuyahandName() {
+        return buyahandName;
+    }
+
+    public void setBuyahandName(String buyahandName) {
+        this.buyahandName = buyahandName;
+    }
+
+    public String getOrderWarehouseId() {
+        return orderWarehouseId;
+    }
+
+    public void setOrderWarehouseId(String orderWarehouseId) {
+        this.orderWarehouseId = orderWarehouseId;
+    }
+
+    public String getOrderWarehouseName() {
+        return orderWarehouseName;
+    }
+
+    public void setOrderWarehouseName(String orderWarehouseName) {
+        this.orderWarehouseName = orderWarehouseName;
     }
 
     public String getId() {

@@ -16,6 +16,7 @@ function initForm() {
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     } else if (pageType === "edit") {
         $("#search_destId").val(purchaseOrder_destId);
+        $("#search_orderWarehouseId").val(purchaseOrder_orderWarehouseId);
         if(userId!=="admin"){
             $("#search_destId").attr('disabled', true);
         }
@@ -60,6 +61,22 @@ function initSelectDestForm() {
             }
         });
     }
+
+    $.ajax({
+        url: basePath + "/unit/list.do?filter_EQI_type=9",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_orderWarehouseId").empty();
+            $("#search_orderWarehouseId").append("<option value='' style='background-color: #eeeeee'>--请选择订货仓库--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_orderWarehouseId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#search_orderWarehouseId").trigger('chosen:updated');
+            }
+        }
+    });
 
     $("#search_destId").val($("#defaultWarehId").val());
 }

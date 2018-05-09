@@ -98,7 +98,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         return purchaseOrderBillDtls;
     }
 
-    @RequestMapping(value = "/save")
+    @RequestMapping(value = {"/save","/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(String purchaseBillStr, String strDtlList, String userId) throws Exception {

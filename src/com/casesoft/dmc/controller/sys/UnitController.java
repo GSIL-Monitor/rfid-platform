@@ -38,7 +38,7 @@ public class UnitController extends BaseController implements IBaseInfoControlle
         return "views/sys/unit";
     }
 
-    @RequestMapping(value="/page")
+    @RequestMapping(value={"/page","/pageWS"})
     @ResponseBody
     @Override
     public Page<Unit> findPage(Page<Unit> page) throws Exception {
@@ -50,7 +50,7 @@ public class UnitController extends BaseController implements IBaseInfoControlle
         return page;
     }
 
-    @RequestMapping(value="/list")
+    @RequestMapping(value={"/list","/listWS"})
     @ResponseBody
     @Override
     public List<Unit> list() throws Exception {
