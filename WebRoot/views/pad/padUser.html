@@ -79,12 +79,7 @@
     basePath=theRequest.basePath;
     userId=theRequest.userId;
     ownerId=theRequest.ownerId;
-    function scan() {
-        window.location.href=basePath+'views/pad/scanning.html';
-    }
-    function set(){
-        window.location.href=basePath+'views/pad/setUp.html?basePath='+basePath;
-    }
+
     $(function () {
         $.ajax({
             dataType: "json",
