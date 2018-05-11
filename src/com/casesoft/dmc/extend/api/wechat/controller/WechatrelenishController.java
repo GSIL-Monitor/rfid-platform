@@ -13,6 +13,7 @@ import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.cfg.PropertyKeyService;
@@ -487,6 +488,10 @@ public class WechatrelenishController extends ApiBaseController {
         for (PurchaseOrderBillDtl dtl : billDtls) {
             String imgUrl = StyleUtil.returnImageUrl(dtl.getStyleId(), rootPath);
             dtl.setImgUrl(imgUrl);
+            Style style = CacheManager.getStyleById(dtl.getStyleId());
+            if(CommonUtil.isNotBlank(style)){
+                dtl.setStyleName(style.getStyleName());
+            }
         }
         purchaseOrderBill.setDtlList(billDtls);
         return new MessageBox(true, "success", purchaseOrderBill);
