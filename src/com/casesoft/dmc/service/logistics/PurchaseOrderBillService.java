@@ -222,7 +222,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                     purchaseOrderBillDtlList.remove(i);
                     String changehql = "from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=?";
                     ChangeReplenishBillDtl changeReplenishBillDtl = this.replenishBillDtlDao.findUnique(changehql, new Object[]{replenishBillNo,purchaseOrderBillDtl.getSku()});
-                    changeReplenishBillDtl.setExpectTime(CommonUtil.converStrToDate(purchaseOrderBillDtl.getExpectTime(), "yyyy-MM-dd"));
+                    changeReplenishBillDtl.setExpectTime(purchaseOrderBillDtl.getExpectTime());
                     this.changeReplenishBillDtlDao.update(changeReplenishBillDtl);
                 }else{
                     i++;

@@ -73,7 +73,10 @@ public class BillConvertUtil {
         if (CommonUtil.isNotBlank(ventory)) {
             purchaseOrderBill.setOrigUnitName(ventory.getName());
         }
-
+        Unit orderWarehouse = CacheManager.getUnitByCode(purchaseOrderBill.getOrderWarehouseId());
+        if(CommonUtil.isNotBlank(orderWarehouse)){
+            purchaseOrderBill.setOrderWarehouseName(orderWarehouse.getName());
+        }
         Unit dest = CacheManager.getUnitByCode(purchaseOrderBill.getDestId());
         purchaseOrderBill.setDestName(dest.getName());
         Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());

@@ -64,6 +64,8 @@ public abstract class BaseBillDtl {
     protected String uniqueCodes;
     @Column()
     protected Double discount;
+    @Transient
+    protected String imgUrl;
 
     public String getBillId() {
         return billId;
@@ -255,5 +257,13 @@ public abstract class BaseBillDtl {
 
     public void setDiscount(Double discount) {
         this.discount = discount;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

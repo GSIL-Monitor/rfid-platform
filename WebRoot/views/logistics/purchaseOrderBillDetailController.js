@@ -837,6 +837,13 @@ function initEditFormValid() {
                     }
                 }
             },
+            orderWarehouseId: {
+                validators: {
+                    notEmpty: {
+                        message: '请选择订货仓库'
+                    }
+                }
+            },
             billDate: {
                 validators: {
                     notEmpty: {

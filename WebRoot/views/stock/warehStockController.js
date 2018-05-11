@@ -109,7 +109,7 @@ function search() {
     if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
         isok=false;
         for(var i=0;i<filters.length;i++){
-            if(filters[i]==warehId){
+            if(filters[i].field=="warehId"){
                 isok=true;
             }
 

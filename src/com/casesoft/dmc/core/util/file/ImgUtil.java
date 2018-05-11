@@ -403,11 +403,14 @@ public class ImgUtil {
     }
 
     /**
+     * 弃用该方法，使用StyleUtil.returnImageUrl设置压缩图片路径
      * add by yushen 设置图片路径
+     *
      * @param getStyleId
      * @param rootPath
      * @return
      */
+    @Deprecated
     public static String fetchImgUrl(String getStyleId,String rootPath) {
         File file = new File(rootPath + "/product/photo/" + getStyleId);
         if (file.exists()) {
