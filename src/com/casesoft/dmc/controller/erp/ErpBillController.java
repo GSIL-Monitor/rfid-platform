@@ -108,6 +108,7 @@ public class ErpBillController extends BaseController implements IBaseInfoContro
         }
         ModelAndView mv = new ModelAndView();
         mv.addObject("erpBill", bill);
+        mv.addObject("userId", getCurrentUser().getId());
         mv.setViewName("views/stock/inventoryStockBillDetail");
         return mv;
     }

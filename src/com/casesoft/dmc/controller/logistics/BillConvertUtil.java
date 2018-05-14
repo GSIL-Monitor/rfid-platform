@@ -523,9 +523,13 @@ public class BillConvertUtil {
         Long totQty = 0L;
         List<InitDtl> initDtlList = new ArrayList<>();
         for (LabelChangeBillDel dtl : labelChangeBillDels) {
-            InitDtl detail = new InitDtl();
+                InitDtl detail = new InitDtl();
                 detail.setId(taskId + "-" + dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
                 detail.setStyleId(dtl.getStyleId()+newStylesuffix);
+                Style style= CacheManager.getStyleById(dtl.getStyleId());
+               /* detail.setStyleName(style.getStyleName());
+                detail.setColorName(dtl.getColorId());
+                detail.setSizeName(dtl.getSizeId());*/
                 detail.setColorId(dtl.getColorId());
                 detail.setSizeId(dtl.getSizeId());
                 detail.setSku(dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());

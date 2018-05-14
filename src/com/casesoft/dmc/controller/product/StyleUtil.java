@@ -477,7 +477,7 @@ public class StyleUtil {
                         String maxProductId = productService.getMaxProductId();
                         productnew.setId((Integer.parseInt(maxProductId)+sum)+"");
                         productnew.setStyleId(styleId +seriesid);
-                        productnew.setCode(styleId +labelChangeBill.getNowclass9()+productnew.getColorId()+productnew.getSizeName());
+                        productnew.setCode(styleId +labelChangeBill.getNowclass9().split("-")[1]+productnew.getColorId()+productnew.getSizeName());
                         sum++;
                         listproduct.add(productnew);
                     }
