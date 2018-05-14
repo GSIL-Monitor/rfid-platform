@@ -21,15 +21,10 @@ function initGrid() {
                 formatter: function (cellvalue, options, rowObject) {
                     var billNo = rowObject.billNo;
                     var html;
-                    html = "<a style='margin-left: 20px' href='" + basePath + "/logistics/purchase/edit.do?billNo=" + billNo + "'><i class='ace-icon fa fa-edit' title='编辑'></i></a>";
+                    html = "<a style='margin-left: 20px' href='" + basePath + "/logistics/labelChangeBill/edit.do?billNo=" + billNo + "'><i class='ace-icon fa fa-edit' title='编辑'></i></a>";
 
                     html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
-
-
-                    html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
-
                     return html;
-
                 }
             },
             {name: 'status', hidden: true},
@@ -64,4 +59,30 @@ function initGrid() {
 
 function add(type) {
     location.href = basePath + "/logistics/labelChangeBill/add.do?type="+type;
+}
+
+function cancel(billNo) {
+    cs.showProgressBar();
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/labelChangeBill/cancel.do",
+        data: {
+            billNo: billNo
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+    
 }

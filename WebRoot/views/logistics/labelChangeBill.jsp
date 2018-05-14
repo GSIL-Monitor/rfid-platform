@@ -40,13 +40,13 @@
                                         </button>
                                     </div>
                                     <div class="btn-group btn-group-sm pull-left">
-                                        <button type="button" class="btn btn-primary" onclick="add('series')">
+                                        <button type="button" class="btn btn-primary" onclick="add('CS')">
                                             <i class="ace-icon fa fa-plus"></i>
                                             <span class="bigger-110">转换系列</span>
                                         </button>
                                     </div>
                                     <div class="btn-group btn-group-sm pull-left">
-                                        <button type="button" class="btn btn-primary" onclick="add('price')">
+                                        <button type="button" class="btn btn-primary" onclick="add('PC')">
                                             <i class="ace-icon fa fa-plus"></i>
                                             <span class="bigger-110">转换标签价格</span>
                                         </button>

@@ -10,9 +10,14 @@
         var basePath = "<%=basePath%>";
         var pageType = "${pageType}";
         var userId="${userId}";
-        var billNo = "${LabelChangeBill.billNo}";
+        var billNo = "${labelChangeBill.billNo}";
         var ownersId="${ownersId}";
+        var beforeclass9="${labelChangeBill.beforeclass9}";
+        var origId="${labelChangeBill.origId}";
+        var nowclass9="${labelChangeBill.nowclass9}";
+        var changeType="${labelChangeBill.changeType}";
         var type ="${type}";
+        var defaultWarehId ="${defaultWarehId}";
     </script>
 </head>
 <body class="no-skin">
@@ -54,17 +59,17 @@
                                     <label class="col-xs-1 control-label" for="search_billNo">单据编号</label>
                                     <div class="col-xs-2">
                                         <input class="form-control" id="search_billNo" name="billNo"
-                                               type="text" readOnly value="${LabelChangeBill.billNo}"/>
+                                               type="text" readOnly value="${labelChangeBill.billNo}"/>
                                     </div>
                                     <label class="col-xs-1 control-label" for="search_billDate">单据日期</label>
                                     <div class="col-xs-2">
                                         <input class="form-control date-picker" id="search_billDate" name="billDate"
-                                               type="text" value="${LabelChangeBill.billDate}"/>
+                                               type="text" value="${labelChangeBill.billDate}"/>
                                     </div>
                                     <label class="col-xs-1 control-label" for="search_beforeclass9">原系列</label>
                                     <div class="col-xs-2">
                                         <select class="form-control" id="search_beforeclass9" name="beforeclass9"
-                                                style="width: 100%;" value="${LabelChangeBill.beforeclass9}">
+                                                style="width: 100%;" value="${labelChangeBill.beforeclass9}">
                                         </select>
                                     </div>
                                 </div>
@@ -81,13 +86,13 @@
                                     <label class="col-xs-1 control-label" for="search_origId">仓库</label>
                                     <div class="col-xs-2">
                                         <select class="form-control" id="search_origId" name="origId"
-                                                style="width: 100%;" value="${LabelChangeBill.origId}">
+                                                style="width: 100%;" value="${labelChangeBill.origId}">
                                         </select>
                                     </div>
                                     <label class="col-xs-1 control-label" for="search_nowclass9">现系列</label>
                                     <div class="col-xs-2">
                                         <select class="form-control" id="search_nowclass9" name="nowclass9"
-                                                style="width: 100%;" value="${LabelChangeBill.beforeclass9}">
+                                                style="width: 100%;" value="${labelChangeBill.beforeclass9}">
                                         </select>
                                     </div>
                                 </div>
@@ -96,13 +101,13 @@
                                     <label class="col-xs-1 control-label" for="search_discount">整单折扣</label>
                                     <div class="col-xs-2">
                                         <input class="form-control" id="search_discount" name="discount"
-                                               value="${LabelChangeBill.discount}" onblur="search_discount_onblur()">
+                                               value="${labelChangeBill.discount}" onblur="search_discount_onblur()">
                                         </input>
                                     </div>
                                     <label class="col-xs-1 control-label" for="select_changeType">转变类型</label>
                                     <div class="col-xs-2">
                                         <select class="form-control" id="select_changeType"
-                                                name="changeType">
+                                                name="changeType" value="${labelChangeBill.changeType}">
                                             <option value="">--请选择--</option>
                                             <option value="CS">系列转变</option>
                                             <option value="PC">打折</option>
@@ -117,11 +122,14 @@
 
                                     <div class="col-xs-9 col-sm-9">
                                             <textarea maxlength="400" class="form-control" id="form_remark"
-                                                      name="remark">${LabelChangeBill.remark}</textarea>
+                                                      name="remark">${labelChangeBill.remark}</textarea>
                                     </div>
                                 </div>
                                 <div>
-                                    <input id="search_status" name="status" value="${LabelChangeBill.changeType}"
+                                    <input id="search_status" name="status" value="${labelChangeBill.status}"
+                                           type="hidden">
+                                    </input>
+                                    <input id="search_id" name="id" value="${labelChangeBill.id}"
                                            type="hidden">
                                     </input>
 
