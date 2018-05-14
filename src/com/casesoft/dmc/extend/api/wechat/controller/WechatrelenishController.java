@@ -326,8 +326,9 @@ public class WechatrelenishController extends ApiBaseController {
         //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
         User CurrentUser = CacheManager.getUserById(userId);
         String ownerId = CurrentUser.getOwnerId();
-        String id = CurrentUser.getId();
-        if (!id.equals("admin")) {
+        //只要是管理员权限的账号就可以看所有单据
+//        String id = CurrentUser.getId();
+        if (!ownerId.equals("1")) {
             PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
             filters.add(filter);
         }
