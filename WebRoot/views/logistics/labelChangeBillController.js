@@ -9,8 +9,9 @@ function showAdvSearchPanel() {
 function initGrid() {
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/purchase/page.do?filter_GTI_status=-1",
+        url: basePath + "/logistics/labelChangeBill/page.do",
         datatype: "json",
+        mtype: 'POST',
         sortorder: 'desc',
         colModel: [
 

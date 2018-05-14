@@ -160,6 +160,7 @@ function addUniqCode() {
     //var destId=$("#search_destId").val();
     var beforeclass9=$("#search_beforeclass9").val();
     var nowclass9=$("#search_nowclass9").val();
+    var changeType=$("#select_changeType").val();
     taskType = 0;
     wareHouse=origId;
     if (origId ==""|| origId == null) {
@@ -176,6 +177,10 @@ function addUniqCode() {
     }
     if (nowclass9 ==""|| nowclass9 == null) {
         bootbox.alert("现系列不能为空！")
+        return
+    }
+    if (changeType ==""|| changeType == null) {
+        bootbox.alert("转变类型不能为空！")
         return
     }
     $("#dialog_buttonGroup").html("" +

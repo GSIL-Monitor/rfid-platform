@@ -16,6 +16,7 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var userId="${userId}"
     </script>
     <style>
         #searchBtn:hover {
@@ -115,6 +116,9 @@
                 <div class="widget-toolbar no-border" title="导出" onclick="exportExcel()">
                     <span class="bigger-110"><i class="ace-icon fa fa-file-excel-o"></i></span>
                 </div>
+                <div class="widget-toolbar no-border" title="标签转换" onclick="chageLaber()">
+                    <span class="bigger-110"><i class="ace-icon fa fa-file-excel-o"></i></span>
+                </div>
 
                 <div class="widget-toolbar no-border" style="margin-right: 20px">
                     <label for="displayType">
@@ -172,6 +176,7 @@
     <jsp:include page="../layout/footer.jsp"></jsp:include>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="changeLaber_Dailog.jsp"></jsp:include>
 <script type="text/javascript">
     $(function () {
         initCodedetailGrid();
@@ -369,6 +374,168 @@
             }
         }
     }
+    function chageLaber() {
+        $("#changeLaber-dialog").modal("show");
+        initSelectclass9();
+      
+
+    }
+    function initSelectclass9() {
+        $.ajax({
+            url: basePath + "/sys/property/findclass9name.do?filter_EQS_type=C9",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#search_beforeclass9").empty();
+                $("#search_nowclass9").empty();
+                $("#search_beforeclass9").append("<option value='' style='background-color: #eeeeee'>--请选择原系列--</option>");
+                $("#search_nowclass9").append("<option value='' style='background-color: #eeeeee'>--请选择原系列--</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#search_beforeclass9").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                    $("#search_nowclass9").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                    $("#search_beforeclass9").trigger('chosen:updated');
+                    $("#search_nowclass9").trigger('chosen:updated');
+                }
+            }
+        });
+    }
+    function closeEditDialog() {
+        $("#changeLaber-dialog").modal('hide');
+    }
+    function chageLaberSave() {
+        if($("#select_changeType").val()=="CS"){
+            if($("#search_beforeclass9").val()==""||$("#search_beforeclass9").val()==undefined){
+                $.gritter.add({
+                    text:  "原系列不能为空",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                return;
+            }
+            if($("#search_nowclass9").val()==""||$("#search_nowclass9").val()==undefined){
+                $.gritter.add({
+                    text:  "现系列不能为空",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                return;
+            }
+            if($("#select_changeType").val()==""||$("#select_changeType").val()==undefined){
+                $.gritter.add({
+                    text:  "转变类型不能为空",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                return;
+            }
+            
+        }
+        if($("#select_changeType").val()=="PC"){
+            if($("#select_changeType").val()==""||$("#select_changeType").val()==undefined){
+                $.gritter.add({
+                    text:  "转变类型不能为空",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                return;
+            }
+            if($("#search_discount").val()==""||$("#search_discount").val()==undefined){
+                $.gritter.add({
+                    text:  "折扣不能为空",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                return;
+            }
+        }
+        var dtlArray=groupingSKU();
+        var editChangeForm=array2obj($("#editChangeForm").serializeArray());
+        editChangeForm.origId=$("#search_origId").val().split("]")[0].split("[")[1];
+        editChangeForm.srcBillNo=$("#search_id").val();
+        console.log(editChangeForm)
+        $.ajax({
+            dataType: "json",
+            async: false,
+            url: basePath + "/logistics/labelChangeBill/inventortyChangeLaber.do",
+            data: {
+                bill: JSON.stringify(editChangeForm),
+                strDtlList: JSON.stringify(dtlArray),
+                userId: userId
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#search_billNo").val(msg.result);
+
+                    /*$("#addDetailgrid").jqGrid('setGridParam', {
+                     datatype: "json",
+                     page: 1,
+                     url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + msg.result,
+                     });
+                     $("#addDetailgrid").trigger("reloadGrid");
+                     $("#SODtl_adddoPrint1").show();*/
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+
+    }
+    function groupingSKU() {
+        var dtlArray = [];
+        var codedtlArray=[];
+        $.each($("#codedetaillgrid").getDataIDs(), function (index, value) {
+            var coderowData = $("#codedetaillgrid").getRowData(value);
+            codedtlArray.push(coderowData);
+        });
+        $.each($("#detailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#detailgrid").getRowData(value);
+            var uniqueCodes;
+            /*$.each($("#codedetaillgrid").getDataIDs(), function (index, value) {
+             var coderowData = $("#codedetaillgrid").getRowData(value);
+             if(rowData.sku==coderowData.sku&&coderowData.isScanned==1) {
+             if (uniqueCodes === undefined) {
+             uniqueCodes=coderowData.code;
+             }else {
+             uniqueCodes+=","+coderowData.code;
+             }
+             }
+             });*/
+            $.each(codedtlArray, function (index, value) {
+
+                if(rowData.sku==codedtlArray[index].sku&&codedtlArray[index].isScanned==1) {
+                    if (uniqueCodes === undefined) {
+                        uniqueCodes=codedtlArray[index].code;
+                    }else {
+                        uniqueCodes+=","+codedtlArray[index].code;
+                    }
+                }
+            });
+            var labelChangeBillDel={};
+            labelChangeBillDel.uniqueCodes=uniqueCodes;
+            if (uniqueCodes != undefined) {
+                labelChangeBillDel.qty = uniqueCodes.split(",").length;
+            }
+            labelChangeBillDel.styleId=rowData.styleId;
+            labelChangeBillDel.colorId=rowData.colorId;
+            labelChangeBillDel.sizeId=rowData.sizeId;
+            labelChangeBillDel.outQty=rowData.outQty;
+            labelChangeBillDel.inQty=rowData.inQty;
+            labelChangeBillDel.sku=rowData.sku;
+            labelChangeBillDel.discount=$("#search_discount").val();
+            labelChangeBillDel.price=rowData.price;
+            labelChangeBillDel.actPrice=rowData.price;
+            labelChangeBillDel.totActPrice=rowData.price*labelChangeBillDel.qty
+            dtlArray.push(labelChangeBillDel);
+        });
+        console.log(dtlArray);
+        return dtlArray;
+    }
+
+
 </script>
 </body>
 </html>
