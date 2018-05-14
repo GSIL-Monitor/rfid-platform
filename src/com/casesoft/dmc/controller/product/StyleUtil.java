@@ -457,7 +457,7 @@ public class StyleUtil {
             String seriesid=labelChangeBill.getNowclass9().split("-")[1];
             for(int i=0;i<labelChangeBillDels.size();i++){
                 String styleId = labelChangeBillDels.get(i).getStyleId();
-                Style style= CacheManager.getStyleById(styleId +labelChangeBill.getNowclass9());
+                Style style= CacheManager.getStyleById(styleId +seriesid);
                 if(CommonUtil.isBlank(style)){
                     Style formerstyle = CacheManager.getStyleById(styleId);
                     Style stylenew=new Style();
@@ -475,7 +475,9 @@ public class StyleUtil {
                         Product productnew=new Product();
                         BeanUtils.copyProperties(product,productnew);
                         String maxProductId = productService.getMaxProductId();
-                        productnew.setId((Integer.parseInt(maxProductId)+sum)+"");
+                        String id = ProductUtil.getNewProductId(Integer.parseInt(maxProductId)+sum);
+                        productnew.setId(id);
+
                         productnew.setStyleId(styleId +seriesid);
                         productnew.setCode(styleId +labelChangeBill.getNowclass9().split("-")[1]+productnew.getColorId()+productnew.getSizeName());
                         sum++;

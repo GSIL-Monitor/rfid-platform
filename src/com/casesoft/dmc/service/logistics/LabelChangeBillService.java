@@ -11,15 +11,18 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.LabelChangeBillDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Init;
+import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import com.casesoft.dmc.service.tag.InitService;
+import com.casesoft.dmc.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +57,7 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
 
     @Override
     public LabelChangeBill get(String propertyName, Object value) {
-        return null;
+        return this.labelChangeBillDao.findUniqueBy(propertyName,value);
     }
 
     @Override
@@ -103,13 +106,16 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
             this.labelChangeBillDao.doBatchInsert(labelChangeBill.getBillRecordList());
         }
     }
-
+    /*
+     *保存标签改和标签初始化
+     * by：czf
+     */
     public MessageBox saveLabelChangeBill(User currentUser,LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,String userId,InitService initService,PricingRulesService pricingRulesService,ProductService productService){
 
-            Map<String, Object> map = StyleUtil.newstyleidonlabelChangeBillDel(labelChangeBill, labelChangeBillDels,pricingRulesService,productService);
-            List<Style> listStyle=( List<Style>) map.get("style");
-            List<Product> listproduct=( List<Product>)map.get("product");
-            String newStylesuffix=(String)map.get("newStylesuffix");
+
+            List<Style> listStyle=null;
+            List<Product> listproduct=null;
+            String newStylesuffix=null;
             Init init=null;
             boolean issave=true;
             //2.保存数据，标签初始化
@@ -125,6 +131,10 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
                 labelChangeBill.setId(prefix);
                 labelChangeBill.setBillNo(prefix);
                 labelChangeBill.setBillDate(new Date());
+                Map<String, Object> map = StyleUtil.newstyleidonlabelChangeBillDel(labelChangeBill, labelChangeBillDels,pricingRulesService,productService);
+                 listStyle=( List<Style>) map.get("style");
+                listproduct=( List<Product>)map.get("product");
+                 newStylesuffix=(String)map.get("newStylesuffix");
                 init = BillConvertUtil.labelcovertToTagBirth(taskId, labelChangeBillDels, initService, currentUser,prefix,newStylesuffix);
 
             }else{
@@ -136,5 +146,37 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
             return new MessageBox(true, "保存成功", labelChangeBill.getBillNo());
 
     }
+
+    public List<LabelChangeBillDel> findBillDtl(String billNo){
+        return this.labelChangeBillDao.find("from LabelChangeBillDel where billNo=?", new Object[]{billNo});
+    }
+
+    public List<BillRecord> getBillRecod(String billNo) {
+        return this.labelChangeBillDao.find("from BillRecord where billNo=?", new Object[]{billNo});
+    }
+
+    public void cancel( LabelChangeBill labelChangeBill,Init init){
+        labelChangeBill.setStatus(BillConstant.BillStatus.Cancel);
+        init.setStatus(BillConstant.BillStatus.Cancel);
+        this.labelChangeBillDao.saveOrUpdateX(labelChangeBill);
+        this.labelChangeBillDao.saveOrUpdateX(init);
+    }
+    @Autowired
+    private TaskService taskService;
+    public  MessageBox saveBusinessout(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDelList, Business business,Business businessIn)throws Exception{
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        MessageBox messageBoxIn = this.taskService.checkEpcStock(businessIn);
+        if(messageBox.getSuccess()&&messageBoxIn.getSuccess()){
+            this.labelChangeBillDao.saveOrUpdateX(labelChangeBill);
+            this.labelChangeBillDao.doBatchInsert(labelChangeBillDelList);
+            if (CommonUtil.isNotBlank(labelChangeBill.getBillRecordList())) {
+                this.labelChangeBillDao.doBatchInsert(labelChangeBill.getBillRecordList());
+            }
+            this.taskService.save(business);
+            this.taskService.save(businessIn);
+        }
+        return messageBox;
+    }
+
 
 }
