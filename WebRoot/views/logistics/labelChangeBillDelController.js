@@ -102,12 +102,19 @@ function initGrid() {
             {name: 'id', label: 'id', hidden: true},
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
-            {name: 'styleId', label: '款号', sortable: true, width: 40},
+            {name: 'styleId', label: '原款号', sortable: true, width: 40},
+            {name: 'styleNew', label: '新款号', sortable: true, width: 40},
             {
                 name: "", label: "操作", width: 30, editable: false, sortable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
-                    return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a style='margin-left: 20px' href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    if(pageType!="edit"){
+                        return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a style='margin-left: 20px' href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }else {
+                        return""
+                    }
+
+
                 }
             },
             {name: 'colorId', label: '色码', sortable: true, width: 40},
@@ -162,6 +169,19 @@ function initGrid() {
         footerrow: true,
         cellEdit: true,
         cellsubmit: 'clientArray',
+        afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+
+            if (cellname === "discount") {
+
+                var var_price = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "actPrice")) / 100;
+                var var_totActPrice = Math.round(value *$('#addDetailgrid').getCell(rowid, "totActPrice")) / 100;
+                $('#addDetailgrid').setCell(rowid, "price", var_price);
+                $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+            }
+            setFooterData();
+        },
         gridComplete: function () {
             setFooterData();
         },
@@ -183,9 +203,13 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>"+
-            "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOut()'>" +
+            "<button id='Dtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOutIn()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库入库</span>" +
+            "</button>"+
+            "<button id='Dtl_findBirthno' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findbirth()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>查找标签初始化</span>" +
             "</button>"
 
 
@@ -200,8 +224,11 @@ function initButtonGroup() {
             "<button id='Dtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOutIn()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库入库</span>" +
+            "</button>"+
+            "<button id='Dtl_findBirthno' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findbirth()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>查找标签初始化</span>" +
             "</button>"
-
         );
     }
 
@@ -213,6 +240,7 @@ function addUniqCode() {
     var beforeclass9=$("#search_beforeclass9").val();
     var nowclass9=$("#search_nowclass9").val();
     var changeType=$("#select_changeType").val();
+    var discount=$("#search_discount").val();
     taskType = 0;
     wareHouse=origId;
     if (origId ==""|| origId == null) {
@@ -223,21 +251,23 @@ function addUniqCode() {
         bootbox.alert("入库仓库不能为空！")
         return
     }*/
-    if (beforeclass9 ==""|| beforeclass9 == null) {
-        bootbox.alert("原系列不能为空！")
-        return
-    }
-    if (nowclass9 ==""|| nowclass9 == null) {
-        bootbox.alert("现系列不能为空！")
-        return
-    }
-    if(beforeclass9==nowclass9){
-        bootbox.alert("原系列和现系列不能相同！")
-        return
-    }
-    if (changeType ==""|| changeType == null) {
-        bootbox.alert("转变类型不能为空！")
-        return
+    if(type=="CS"){
+        if (beforeclass9 ==""|| beforeclass9 == null) {
+            bootbox.alert("原系列不能为空！")
+            return
+        }
+        if (nowclass9 ==""|| nowclass9 == null) {
+            bootbox.alert("现系列不能为空！")
+            return
+        }
+        if(beforeclass9==nowclass9){
+            bootbox.alert("原系列和现系列不能相同！")
+            return
+        }
+        if (changeType ==""|| changeType == null) {
+            bootbox.alert("转变类型不能为空！")
+            return
+        }
     }
     $("#dialog_buttonGroup").html("" +
         "<button  type='button' id = 'so_savecode_button'  class='btn btn-primary' onclick='addProductsOnCode()'>保存</button>"
@@ -381,6 +411,17 @@ function save() {
         });
         return;
     }
+    var discount=$("#search_discount").val();
+    if(type=="PC"){
+        if(discount ==""||discount==null){
+            bootbox.alert("折扣不能为空！")
+            return
+        }
+        if(discount>100||discount<=0){
+            bootbox.alert("折扣请添写1到100的数字！")
+            return
+        }
+    }
     cs.showProgressBar();
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
@@ -417,7 +458,7 @@ function save() {
     });
 }
 
-function wareHouseOut() {
+function wareHouseOutIn() {
     cs.showProgressBar();
     $("#Dtl_wareHouseOut").attr({"disabled": "disabled"});
     var billNo = $("#search_billNo").val();
@@ -582,5 +623,35 @@ function outStockCheck() {
         });
         return true;
     }
+}
+function search_discount_onblur() {
+    setDiscount();
+}
+//将整单折扣设置到明细中
+function setDiscount() {
+   /* if (addDetailgridiRow != null && addDetailgridiCol != null) {
+        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+        addDetailgridiRow = null;
+        addDetailgridiCol = null;
+    }*/
+    var discount = $("#search_discount").val();
+    if (discount && discount != null && discount != "") {
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            $('#addDetailgrid').setCell(value, "discount", discount);
+            var var_price = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+            var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "actPrice")) / 100;
+            var var_totActPrice = Math.round(discount *$('#addDetailgrid').getCell(value, "totActPrice")) / 100;
+            $('#addDetailgrid').setCell(value, "price", var_price);
+            $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+            $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+        });
+    }
+    setFooterData();
+}
+function findbirth() {
+    $("#show-findBirthNo-list").modal('show');
+    initBirthNoList();
+
+
 }
 

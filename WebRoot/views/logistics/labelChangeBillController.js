@@ -29,11 +29,10 @@ function initGrid() {
             },
             {name: 'status', hidden: true},
             {name: 'billDate', label: '单据日期', sortable: true, width: 40},
-            {name: 'destName', label: '入库仓库', hidden: true},
-            {name: 'origName', label: '出库仓库', width: 40},
-            {name: 'beforeclass9', label: '原系列', width: 40},
-            {name: 'nowclass9', label: '现系列', width: 40},
-            {name: 'changeType', label: '类型', width: 40},
+            {name: 'origName', label: '仓库', width: 40},
+            {name: 'beforeclass9Name', label: '原系列', width: 40},
+            {name: 'nowclass9Name', label: '现系列', width: 40},
+            {name: 'changeTypeName', label: '类型', width: 40},
             {name: 'remark', label: '备注', sortable: false, width: 40},
             {name: 'id', hidden: true}
         ],
@@ -85,4 +84,7 @@ function cancel(billNo) {
         }
     });
     
+}
+function refresh() {
+    location.reload(true);
 }

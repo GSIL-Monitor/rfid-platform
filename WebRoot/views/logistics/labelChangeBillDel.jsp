@@ -101,7 +101,7 @@
                                     <label class="col-xs-1 control-label" for="search_discount">整单折扣</label>
                                     <div class="col-xs-2">
                                         <input class="form-control" id="search_discount" name="discount"
-                                               value="${labelChangeBill.discount}" onblur="search_discount_onblur()">
+                                               value="${labelChangeBill.discount}" onblur="search_discount_onblur()" onkeyup="value=value.replace(/[^\d]/g,'')">
                                         </input>
                                     </div>
                                     <label class="col-xs-1 control-label" for="select_changeType">转变类型</label>
@@ -183,6 +183,7 @@
 <jsp:include page="findRetrunNo.jsp"></jsp:include>
 <jsp:include page="findWxShop.jsp"></jsp:include>
 <jsp:include page="sendStreamNO.jsp"></jsp:include>
+<jsp:include page="findBirthNo.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/labelChangeBillDelController.js"></script>
