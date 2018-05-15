@@ -1,9 +1,6 @@
 package com.casesoft.dmc.model.logistics;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Administrator on 2018/5/9.
@@ -16,10 +13,41 @@ public class LabelChangeBill extends BaseBill{
     private String id;
     @Column()
     private String beforeclass9;//
+    @Transient
+    private String beforeclass9Name;
     @Column()
     private String nowclass9;
+    @Transient
+    private String nowclass9Name;
     @Column()
     private String changeType;//CS(系列的转换)，PC(价格的转换)
+    @Transient
+    private String changeTypeName;
+
+
+    public String getBeforeclass9Name() {
+        return beforeclass9Name;
+    }
+
+    public void setBeforeclass9Name(String beforeclass9Name) {
+        this.beforeclass9Name = beforeclass9Name;
+    }
+
+    public String getNowclass9Name() {
+        return nowclass9Name;
+    }
+
+    public void setNowclass9Name(String nowclass9Name) {
+        this.nowclass9Name = nowclass9Name;
+    }
+
+    public String getChangeTypeName() {
+        return changeTypeName;
+    }
+
+    public void setChangeTypeName(String changeTypeName) {
+        this.changeTypeName = changeTypeName;
+    }
 
     public String getChangeType() {
         return changeType;

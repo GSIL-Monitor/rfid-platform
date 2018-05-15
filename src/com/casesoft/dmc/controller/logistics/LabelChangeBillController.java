@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
@@ -60,6 +61,28 @@ public class LabelChangeBillController extends BaseController implements ILogist
 
         page.setPageProperty();
         page = this.labelChangeBillService.findPage(page, filters);
+        for(int i=0;i<page.getRows().size();i++){
+            LabelChangeBill labelChangeBill = page.getRows().get(i);
+            String origId = labelChangeBill.getOrigId();
+            Unit unit = CacheManager.getUnitById(origId);
+            labelChangeBill.setOrigName(unit.getName());
+            PropertyKey propertyKeyBefore = CacheManager.getPropertyKey(labelChangeBill.getBeforeclass9());
+            if(CommonUtil.isNotBlank(propertyKeyBefore)) {
+                labelChangeBill.setBeforeclass9Name(propertyKeyBefore.getName());
+            }
+            PropertyKey propertyKeyNow = CacheManager.getPropertyKey(labelChangeBill.getNowclass9());
+            if(CommonUtil.isNotBlank(propertyKeyNow)) {
+                labelChangeBill.setNowclass9Name(propertyKeyNow.getName());
+            }
+            if(CommonUtil.isNotBlank(labelChangeBill.getChangeType())) {
+                if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Series)) {
+                    labelChangeBill.setChangeTypeName("系列转换");
+                }
+                if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Price)) {
+                    labelChangeBill.setChangeTypeName("打折转换");
+                }
+            }
+        }
         return page;
     }
 
@@ -251,6 +274,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
     @RequestMapping(value = "/findBillDtl")
     @ResponseBody
     public List<LabelChangeBillDel> findBillDtl(String billNo){
+        LabelChangeBill labelChangeBill = this.labelChangeBillService.get("billNo", billNo);
         List<LabelChangeBillDel> labelChangeBillDels = this.labelChangeBillService.findBillDtl(billNo);
         List<BillRecord> billRecordList = this.labelChangeBillService.getBillRecod(billNo);
         Map<String, String> codeMap = new HashMap<>();
@@ -269,6 +293,14 @@ public class LabelChangeBillController extends BaseController implements ILogist
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
             if (codeMap.containsKey(dtl.getSku())) {
                 dtl.setUniqueCodes(codeMap.get(dtl.getSku()));
+            }
+            if(CommonUtil.isNotBlank(labelChangeBill.getChangeType())) {
+                if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Series)) {
+                    dtl.setStyleNew(dtl.getStyleId()+labelChangeBill.getNowclass9().split("-")[1]);
+                }
+                if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Price)) {
+                    dtl.setStyleNew(dtl.getStyleId()+BillConstant.styleNew.PriceDiscount);
+                }
             }
         }
         return labelChangeBillDels;
@@ -308,6 +340,11 @@ public class LabelChangeBillController extends BaseController implements ILogist
             return new MessageBox(false, e.getMessage());
         }
 
+    }
+    @RequestMapping(value = "/findInitByLabel")
+    @ResponseBody
+    public List<Init> findInitByLabel(String billNo){
+        return this.initService.findInitByLabel(billNo);
     }
 
 

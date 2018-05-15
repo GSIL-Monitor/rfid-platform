@@ -1,9 +1,6 @@
 package com.casesoft.dmc.model.logistics;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Administrator on 2018/5/9.
@@ -14,6 +11,16 @@ public class LabelChangeBillDel extends BaseBillDtl{
     @Id
     @Column()
     private String id;
+    @Transient
+    private String styleNew;
+
+    public String getStyleNew() {
+        return styleNew;
+    }
+
+    public void setStyleNew(String styleNew) {
+        this.styleNew = styleNew;
+    }
 
     public String getId() {
         return id;
