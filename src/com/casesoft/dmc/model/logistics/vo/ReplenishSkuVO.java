@@ -25,14 +25,14 @@ public class ReplenishSkuVO implements Serializable {
 
     public ReplenishSkuVO(){}
 
-    public ReplenishSkuVO(String sku, String styleId, String colorId, String sizeId, Integer qty, Integer actConvertQty, Integer instockQty){
+    public ReplenishSkuVO(String sku, String styleId, String colorId, String sizeId, Integer skuTotQty, Integer skuTotActConvertQty, Integer skuTotInstockQty){
         this.sku = sku;
         this.styleId = styleId;
         this.colorId = colorId;
         this.sizeId = sizeId;
-        this.skuTotQty = qty;
-        this.skuTotActConvertQty = actConvertQty;
-        this.skuTotInstockQty = instockQty;
+        this.skuTotQty = skuTotQty;
+        this.skuTotActConvertQty = skuTotActConvertQty;
+        this.skuTotInstockQty = skuTotInstockQty;
     }
 
     public String getSku() {

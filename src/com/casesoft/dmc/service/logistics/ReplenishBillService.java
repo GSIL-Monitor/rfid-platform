@@ -612,16 +612,16 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
      */
     public List<ReplenishStyleVO> findReplenishStyleVO(String billNo){
         String getSkuVOHql = "select new com.casesoft.dmc.model.logistics.vo.ReplenishSkuVO" +
-                "(rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty, rd.actConvertQty, COUNT(c.code) as instockQty) " +
+                "(rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty as skuTotQty, rd.actConvertQty as skuTotActConvertQty, COUNT(c.code) as skuTotInstockQty) " +
                 "from ReplenishBill r, ReplenishBillDtl rd, PurchaseOrderBill p, BillRecord c, EpcStock s " +
-                "where r.billno=? and r.BILLNO = p.SRCBILLNO and p.BILLNO = c.BILLNO and rd.SKU=c.SKU and c.CODE = s.CODE " +
-                "GROUP by rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty, rd.actConvertQty;";
+                "where r.billNo=? and r.billNo = p.srcBillNo and p.billNo = c.billNo and rd.sku=c.sku and c.code = s.code " +
+                "GROUP by rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty, rd.actConvertQty";
         List<ReplenishSkuVO> replenishSkuVOList = this.replenishBillDao.find(getSkuVOHql, billNo);
 
         String getCodeVOHql = "select new com.casesoft.dmc.model.logistics.vo.ReplenishCodeVO" +
                 "(rd.sku, c.code, s.warehouseId) " +
                 "from ReplenishBillDtl rd, PurchaseOrderBill p, BillRecord c, EpcStock s " +
-                "where  rd.billNo=? and rd.billNo = p.srcBillNo and p.billNo = c.billNo and rd.sku=c.sku and c.code = s.code;";
+                "where  rd.billNo=? and rd.billNo = p.srcBillNo and p.billNo = c.billNo and rd.sku=c.sku and c.code = s.code";
         List<ReplenishCodeVO> replenishCodeVOList = this.replenishBillDao.find(getCodeVOHql, billNo);
         // TODO: 2018/5/15  codeVOList 放入skuVOList
 

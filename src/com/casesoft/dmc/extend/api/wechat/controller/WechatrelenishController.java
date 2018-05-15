@@ -12,6 +12,7 @@ import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Unit;
@@ -525,6 +526,28 @@ public class WechatrelenishController extends ApiBaseController {
         HashMap<String, Object> map = new HashMap<>();
         List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findPurchaseTotByStyleId(styleId,sbillDate,ebillDate);
         map.put("purchaseBystyleids", purchaseBystyleids);
+        return map;
+    }
+
+    /**
+     * add by Anna 2018-05-15
+     * 补货单内容
+     */
+    @RequestMapping(value = "/findReplenishOrder.do")
+    @ResponseBody
+    public Map<String, Object> findReplenishOrder(String billNo) throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<ReplenishStyleVO> replenishStyleVOS = this.replenishBillService.findReplenishStyleVO(billNo);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for (ReplenishStyleVO voList : replenishStyleVOS) {
+            String imgUrl = StyleUtil.returnImageUrl(voList.getStyleId(), rootPath);
+            voList.setImgUrl(imgUrl);
+            Style style = CacheManager.getStyleById(voList.getStyleId());
+            if(CommonUtil.isNotBlank(style)){
+                voList.setStyleName(style.getStyleName());
+            }
+        }
+        map.put("replenishStyleVOS", replenishStyleVOS);
         return map;
     }
 }
