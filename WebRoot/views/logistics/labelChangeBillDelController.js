@@ -323,7 +323,7 @@ function addProductsOnCode() {
                         return true;
                     }
                     dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                    dtlRow.actPrice = dtlRow.price*dtlRow.discount;
+                    dtlRow.actPrice = (dtlRow.price*dtlRow.discount)/100;
                     dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
                     alltotActPrice += dtlRow.qty * dtlRow.actPrice;
                     dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
@@ -341,7 +341,7 @@ function addProductsOnCode() {
         });
         $("#so_savecode_button").removeAttr("disabled");
         $("#add-uniqCode-dialog").modal('hide');
-
+        setFooterData();
 
     }
 
