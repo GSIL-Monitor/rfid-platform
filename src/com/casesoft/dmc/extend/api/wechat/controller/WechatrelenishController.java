@@ -204,7 +204,7 @@ public class WechatrelenishController extends ApiBaseController {
 
     })
     @ResponseBody
-    public MessageBox processReplenishBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) throws Exception{
+    public MessageBox processReplenishBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) throws Exception {
         this.logAllRequestParams();
         PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList, PurchaseOrderBillDtl.class);
@@ -221,7 +221,7 @@ public class WechatrelenishController extends ApiBaseController {
         Long totConvertQty = 0L;
         for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
             Long convertQty = pDtl.getQty();
-            if(CommonUtil.isBlank(convertQty)){
+            if (CommonUtil.isBlank(convertQty)) {
                 convertQty = 0L;
             }
             totConvertQty += convertQty;
@@ -246,12 +246,12 @@ public class WechatrelenishController extends ApiBaseController {
             purchaseOrderBill.setBillNo(prefix);
             //补货单的买手和仓库信息传递给采购单
             User buyer = CacheManager.getUserById(replenishBill.getBuyahandId());
-            if(CommonUtil.isNotBlank(buyer)){
+            if (CommonUtil.isNotBlank(buyer)) {
                 purchaseOrderBill.setBuyahandId(buyer.getId());
                 purchaseOrderBill.setBuyahandName(buyer.getName());
             }
             Unit warehouse = CacheManager.getUnitByCode(replenishBill.getOwnerId());
-            if(CommonUtil.isNotBlank(warehouse)){
+            if (CommonUtil.isNotBlank(warehouse)) {
                 purchaseOrderBill.setOrderWarehouseId(warehouse.getId());
                 purchaseOrderBill.setOrderWarehouseName(warehouse.getName());
             }
@@ -260,12 +260,10 @@ public class WechatrelenishController extends ApiBaseController {
             BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList);
             this.purchaseOrderBillService.processReplenishBill(purchaseOrderBill, filteredDtlList, replenishBill, replenishBillDtlList, curUser);
             return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
-        }else{
+        } else {
             return new MessageBox(true, "保存成功");
         }
     }
-
-
 
 
     @RequestMapping(value = "/findUnitStock.do")
@@ -322,8 +320,7 @@ public class WechatrelenishController extends ApiBaseController {
     public MessageBox findReplenishOrderList(String pageSize, String pageNo, String userId, String sortOrder) {
 
         this.logAllRequestParams();
-        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
-                .getRequest());
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
         User CurrentUser = CacheManager.getUserById(userId);
         String ownerId = CurrentUser.getOwnerId();
@@ -348,12 +345,23 @@ public class WechatrelenishController extends ApiBaseController {
         page.setOrder(order);
         page.setPageProperty();
         page = this.replenishBillService.findPage(page, filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
         if (CommonUtil.isNotBlank(page.getRows())) {
             for (ReplenishBill replenishBill : page.getRows()) {
                 User user = CacheManager.getUserById(replenishBill.getBuyahandId());
                 if (CommonUtil.isNotBlank(user)) {
                     replenishBill.setBuyahandName(user.getName());
                 }
+                List<ReplenishStyleVO> replenishStyleVOS = this.replenishBillService.findReplenishStyleVO(replenishBill.getBillNo());
+                for (ReplenishStyleVO voList : replenishStyleVOS) {
+                    String imgUrl = StyleUtil.returnImageUrl(voList.getStyleId(), rootPath);
+                    voList.setImgUrl(imgUrl);
+                    Style style = CacheManager.getStyleById(voList.getStyleId());
+                    if (CommonUtil.isNotBlank(style)) {
+                        voList.setStyleName(style.getStyleName());
+                    }
+                }
+                replenishBill.setStyleVOList(replenishStyleVOS);
             }
         }
         return new MessageBox(true, "success", page);
@@ -482,7 +490,7 @@ public class WechatrelenishController extends ApiBaseController {
         this.logAllRequestParams();
         PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(purchaseNo);
         User buyer = CacheManager.getUserById(purchaseOrderBill.getBuyahandId());
-        if(CommonUtil.isNotBlank(buyer)){
+        if (CommonUtil.isNotBlank(buyer)) {
             purchaseOrderBill.setBuyahandName(buyer.getName());
         }
         List<PurchaseOrderBillDtl> billDtls = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseNo);
@@ -491,7 +499,7 @@ public class WechatrelenishController extends ApiBaseController {
             String imgUrl = StyleUtil.returnImageUrl(dtl.getStyleId(), rootPath);
             dtl.setImgUrl(imgUrl);
             Style style = CacheManager.getStyleById(dtl.getStyleId());
-            if(CommonUtil.isNotBlank(style)){
+            if (CommonUtil.isNotBlank(style)) {
                 dtl.setStyleName(style.getStyleName());
             }
         }
@@ -501,30 +509,32 @@ public class WechatrelenishController extends ApiBaseController {
 
     /**
      * add by Anna
+     *
      * @param sbillDate 开始时间
      * @param ebillDate 结束时间
-     * 进销存信息内查看采购量-详细
+     *                  进销存信息内查看采购量-详细
      */
     @RequestMapping(value = "/findPurchaseByStyleId.do")
     @ResponseBody
-    public Map<String, Object> findPurchaseByStyleId(String styleId,String sbillDate,String ebillDate) throws Exception {
+    public Map<String, Object> findPurchaseByStyleId(String styleId, String sbillDate, String ebillDate) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
-        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findBillDtlByStyleId(styleId,sbillDate,ebillDate);
+        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findBillDtlByStyleId(styleId, sbillDate, ebillDate);
         map.put("purchaseBystyleids", purchaseBystyleids);
         return map;
     }
 
     /**
      * add by Anna
+     *
      * @param sbillDate 开始时间
      * @param ebillDate 结束时间
-     * 进销存信息内查看采购量－总采购量
+     *                  进销存信息内查看采购量－总采购量
      */
     @RequestMapping(value = "/findPurchaseTotal.do")
     @ResponseBody
-    public Map<String, Object> findPurchaseTotal(String styleId,String sbillDate,String ebillDate) throws Exception {
+    public Map<String, Object> findPurchaseTotal(String styleId, String sbillDate, String ebillDate) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
-        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findPurchaseTotByStyleId(styleId,sbillDate,ebillDate);
+        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findPurchaseTotByStyleId(styleId, sbillDate, ebillDate);
         map.put("purchaseBystyleids", purchaseBystyleids);
         return map;
     }
@@ -550,4 +560,5 @@ public class WechatrelenishController extends ApiBaseController {
         map.put("replenishStyleVOS", replenishStyleVOS);
         return map;
     }
+
 }

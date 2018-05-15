@@ -1,5 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
+import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -51,6 +53,9 @@ public class ReplenishBill extends BaseBill{
     @Transient
     private List<ReplenishBillDtl> dtlList;
 
+    @Transient
+    private List<ReplenishStyleVO> styleVOList;
+
     public String getId() {
         return id;
     }
@@ -74,4 +79,8 @@ public class ReplenishBill extends BaseBill{
     public void setDtlList(List<ReplenishBillDtl> dtlList) {
         this.dtlList = dtlList;
     }
+
+    public List<ReplenishStyleVO> getStyleVOList() { return styleVOList; }
+
+    public void setStyleVOList(List<ReplenishStyleVO> styleVOList) { this.styleVOList = styleVOList; }
 }

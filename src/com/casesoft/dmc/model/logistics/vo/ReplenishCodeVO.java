@@ -12,6 +12,15 @@ public class ReplenishCodeVO implements Serializable {
     private String sku;
     private String code;
     private String warehouseId;
+    private String warehouseName;
+
+    public ReplenishCodeVO() { }
+
+    public ReplenishCodeVO(String sku, String code, String warehouseId) {
+        this.sku = sku;
+        this.code = code;
+        this.warehouseId = warehouseId;
+    }
 
     public String getSku() {
         return sku;
@@ -36,4 +45,8 @@ public class ReplenishCodeVO implements Serializable {
     public void setWarehouseId(String warehouseId) {
         this.warehouseId = warehouseId;
     }
+
+    public String getWarehouseName() { return warehouseName; }
+
+    public void setWarehouseName(String warehouseName) { this.warehouseName = warehouseName; }
 }

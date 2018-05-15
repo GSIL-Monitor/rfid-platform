@@ -14,9 +14,9 @@ public class ReplenishStyleVO  implements Serializable {
     private String styleName;
     private String imgUrl;
     private List<ReplenishSkuVO> skuVOList;
-    private Integer styleTotQty;
+    private Long styleTotQty;
     private Integer styleTotActConvertQty;
-    private Integer styleTotInstockQty;
+    private Long styleTotInstockQty;
 
     public String getStyleId() {
         return styleId;
@@ -50,29 +50,15 @@ public class ReplenishStyleVO  implements Serializable {
         this.skuVOList = skuVOList;
     }
 
-    public Integer getStyleTotQty() {
-        return styleTotQty;
-    }
+    public Long getStyleTotQty() { return styleTotQty; }
 
-    public void setStyleTotQty(Integer styleTotQty) {
-        this.styleTotQty = styleTotQty;
-    }
+    public void setStyleTotQty(Long styleTotQty) { this.styleTotQty = styleTotQty; }
 
-    public Integer getStyleTotActConvertQty() {
-        return styleTotActConvertQty;
-    }
+    public Integer getStyleTotActConvertQty() { return styleTotActConvertQty; }
 
-    public void setStyleTotActConvertQty(Integer styleTotActConvertQty) {
-        this.styleTotActConvertQty = styleTotActConvertQty;
-    }
+    public void setStyleTotActConvertQty(Integer styleTotActConvertQty) { this.styleTotActConvertQty = styleTotActConvertQty; }
 
-    public Integer getStyleTotInstockQty() {
-        return styleTotInstockQty;
-    }
+    public Long getStyleTotInstockQty() { return styleTotInstockQty; }
 
-    public void setStyleTotInstockQty(Integer styleTotInstockQty) {
-        this.styleTotInstockQty = styleTotInstockQty;
-    }
-
-
+    public void setStyleTotInstockQty(Long styleTotInstockQty) { this.styleTotInstockQty = styleTotInstockQty; }
 }
