@@ -11,6 +11,10 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.dao.sys.UserDao;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.ReplenishCodeVO;
+import com.casesoft.dmc.model.logistics.vo.ReplenishSkuVO;
+import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import oracle.jdbc.driver.OracleTypes;
@@ -602,4 +606,52 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         return lists;
     }
 
+
+    /**
+     * add by yushen 补货单查询补单情况，数据库里查询出以SKU汇总的结果，然后根据款号分组，拼成StyleVO。note：没传session，在controller里设置图片路径
+     */
+    public List<ReplenishStyleVO> findReplenishStyleVO(String billNo){
+        String getSkuVOHql = "select new com.casesoft.dmc.model.logistics.vo.ReplenishSkuVO" +
+                "(rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty, rd.actConvertQty, COUNT(c.code) as instockQty) " +
+                "from ReplenishBill r, ReplenishBillDtl rd, PurchaseOrderBill p, BillRecord c, EpcStock s " +
+                "where r.billno=? and r.BILLNO = p.SRCBILLNO and p.BILLNO = c.BILLNO and rd.SKU=c.SKU and c.CODE = s.CODE " +
+                "GROUP by rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty, rd.actConvertQty;";
+        List<ReplenishSkuVO> replenishSkuVOList = this.replenishBillDao.find(getSkuVOHql, billNo);
+
+        String getCodeVOHql = "select new com.casesoft.dmc.model.logistics.vo.ReplenishCodeVO" +
+                "(rd.sku, c.code, s.warehouseId) " +
+                "from ReplenishBillDtl rd, PurchaseOrderBill p, BillRecord c, EpcStock s " +
+                "where  rd.billNo=? and rd.billNo = p.srcBillNo and p.billNo = c.billNo and rd.sku=c.sku and c.code = s.code;";
+        List<ReplenishCodeVO> replenishCodeVOList = this.replenishBillDao.find(getCodeVOHql, billNo);
+        // TODO: 2018/5/15  codeVOList 放入skuVOList
+
+
+
+        Map<String, ReplenishStyleVO> styleVOMap = new HashMap<>();
+        for (ReplenishSkuVO skuVO : replenishSkuVOList){
+            String currentStyleId = skuVO.getStyleId();
+            if(styleVOMap.containsKey(currentStyleId)){
+                //累加sku中的数量，放入styleVO中
+                styleVOMap.get(currentStyleId).setStyleTotQty(skuVO.getSkuTotQty() + styleVOMap.get(currentStyleId).getStyleTotQty());
+                styleVOMap.get(currentStyleId).setStyleTotActConvertQty(skuVO.getSkuTotActConvertQty() + styleVOMap.get(currentStyleId).getStyleTotActConvertQty());
+                styleVOMap.get(currentStyleId).setStyleTotInstockQty(skuVO.getSkuTotInstockQty() + styleVOMap.get(currentStyleId).getStyleTotInstockQty());
+
+                styleVOMap.get(currentStyleId).getSkuVOList().add(skuVO);
+            }else {
+                ReplenishStyleVO newStyleVO = new ReplenishStyleVO();
+                List<ReplenishSkuVO> newSubSkuVOList = new ArrayList<>();
+                newSubSkuVOList.add(skuVO);
+                newStyleVO.setStyleId(skuVO.getStyleId());
+                Style style = CacheManager.getStyleById(skuVO.getStyleId());
+                if(CommonUtil.isNotBlank(style)){
+                    newStyleVO.setStyleName(style.getStyleName());
+                }
+                newStyleVO.setStyleTotQty(skuVO.getSkuTotQty());
+                newStyleVO.setStyleTotActConvertQty(skuVO.getSkuTotActConvertQty());
+                newStyleVO.setStyleTotInstockQty(skuVO.getSkuTotInstockQty());
+                newStyleVO.setSkuVOList(newSubSkuVOList);
+            }
+        }
+        return new ArrayList<>(styleVOMap.values());
+    }
 }
