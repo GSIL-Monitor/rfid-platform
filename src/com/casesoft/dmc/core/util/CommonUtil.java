@@ -5,6 +5,7 @@
 package com.casesoft.dmc.core.util;
 
 import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.extend.api.wechat.until.AdvancedUtil;
 import com.casesoft.dmc.extend.api.wechat.until.MyX509TrustManager;
@@ -624,6 +625,11 @@ public class CommonUtil {
       throw new RuntimeException(e);
     }
     return encryptStr;
+  }
+
+  public static Map<String,Object> hqlbyBillandBillDel(Class<?> billClass,Class<?> billDtlClass, List<PropertyFilter> filters,String billRelevance,String billDtlbillRelevance){
+
+     return null;
   }
 
 }

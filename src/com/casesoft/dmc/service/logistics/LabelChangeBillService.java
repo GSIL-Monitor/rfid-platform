@@ -167,6 +167,7 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         MessageBox messageBoxIn = this.taskService.checkEpcStock(businessIn);
         if(messageBox.getSuccess()&&messageBoxIn.getSuccess()){
+            labelChangeBill.setStatus(BillConstant.BillStatus.End);
             this.labelChangeBillDao.saveOrUpdateX(labelChangeBill);
             this.labelChangeBillDao.doBatchInsert(labelChangeBillDelList);
             if (CommonUtil.isNotBlank(labelChangeBill.getBillRecordList())) {
