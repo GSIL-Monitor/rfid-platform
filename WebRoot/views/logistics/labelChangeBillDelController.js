@@ -3,6 +3,7 @@ var wareHouse;
 var allCodes; //用于拼接所有添加过的唯一码，防止重复添加
 var inOntWareHouseValid; //用于判断在编辑BillDtl时出入库操作是否需要校验，使用哪种校验。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
+var class9="";
 $(function () {
     initForm();
     initGrid();
@@ -241,8 +242,9 @@ function addUniqCode() {
     var nowclass9=$("#search_nowclass9").val();
     var changeType=$("#select_changeType").val();
     var discount=$("#search_discount").val();
-    taskType = 0;
+    taskType = 3;
     wareHouse=origId;
+    class9=$("#search_beforeclass9").val().split("-")[1];
     if (origId ==""|| origId == null) {
         bootbox.alert("仓库不能为空！")
         return
