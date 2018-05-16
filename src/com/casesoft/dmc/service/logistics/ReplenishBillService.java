@@ -2,7 +2,6 @@ package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
-import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -17,7 +16,6 @@ import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
-import com.sun.tools.javac.util.Convert;
 import oracle.jdbc.driver.OracleTypes;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
