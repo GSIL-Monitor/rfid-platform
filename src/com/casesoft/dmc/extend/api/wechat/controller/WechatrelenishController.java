@@ -229,6 +229,16 @@ public class WechatrelenishController extends ApiBaseController {
             if (convertQty > 0) {
                 replenishBillDtl.setConvertQty(convertQty.intValue());
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
+                //add by yushen 多次备注拼接，存入补货申请单
+                String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
+                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
+                        + "，处理数量：" + pDtl.getQty()
+                        + "，备注说明：" + pDtl.getRemark() + "；<br>";
+                String oldRemark = replenishBillDtl.getRemark();
+                if(CommonUtil.isBlank(oldRemark)){
+                    oldRemark="";
+                }
+                replenishBillDtl.setRemark(oldRemark + remark);
                 filteredDtlList.add(pDtl);
             }
         }
