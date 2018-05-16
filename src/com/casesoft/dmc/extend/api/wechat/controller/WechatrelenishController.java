@@ -233,7 +233,7 @@ public class WechatrelenishController extends ApiBaseController {
                 String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
                         + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
                         + "，处理数量：" + pDtl.getQty()
-                        + "，备注说明：" + pDtl.getRemark() + "；<br>";
+                        + "，备注说明：" + pDtl.getRemark() + "；\n";
                 String oldRemark = replenishBillDtl.getRemark();
                 if(CommonUtil.isBlank(oldRemark)){
                     oldRemark="";

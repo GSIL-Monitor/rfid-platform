@@ -61,6 +61,9 @@ public class ParisService implements IBillWSService {
     @Autowired
     private ConsignmentBillService consignmentBillService;
 
+    @Autowired
+    private ReplenishBillService replenishBillService;
+
     public static Bill getStockBill() {
         return stockBill;
     }
@@ -431,6 +434,21 @@ public class ParisService implements IBillWSService {
                         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = this.copyNewPIBillDtl(dtlListPI);
                         BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, bus);
                         this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
+                        String srcBillNo = purchaseOrderBill.getSrcBillNo();
+                        if(CommonUtil.isNotBlank(srcBillNo)){
+                            ReplenishBill replenishBill = this.replenishBillService.get("id", srcBillNo);
+                            List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(srcBillNo);
+                            //复制一遍，后面保存的时候会先删除
+                            ArrayList<ReplenishBillDtl> newReplenishBillDtlList = new ArrayList<>();
+                            for (ReplenishBillDtl dtl : replenishBillDtlList) {
+                                ReplenishBillDtl replenishBillDtl = new ReplenishBillDtl();
+                                BeanUtils.copyProperties(dtl, replenishBillDtl);
+                                replenishBillDtl.setId(new GuidCreator().toString());
+                                newReplenishBillDtlList.add(replenishBillDtl);
+                            }
+                            BillConvertUtil.convertPurchaseToReplenish(purchaseOrderBill,purchaseOrderBillDtlList,replenishBill,newReplenishBillDtlList);
+                            this.replenishBillService.saveMessage(replenishBill, newReplenishBillDtlList);
+                        }
                         warehouseId=purchaseOrderBill.getDestId();
                         OwnerId=purchaseOrderBill.getDestUnitId();
                         break;

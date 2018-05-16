@@ -105,6 +105,10 @@ public class ReplenishBillDtl extends BaseBillDtl{
 
     @Column()
     private Long franchiseeStockQty;//加盟店库存数量
+
+    @Column()
+    private Integer inQty =0; //入库数量
+
     @Column()
     @JSONField(format = "yyyy-MM-dd")
     private Date  lastTime;
@@ -166,5 +170,13 @@ public class ReplenishBillDtl extends BaseBillDtl{
 
     public void setFranchiseeStockQty(Long franchiseeStockQty) {
         this.franchiseeStockQty = franchiseeStockQty;
+    }
+
+    public Integer getInQty() {
+        return inQty;
+    }
+
+    public void setInQty(Integer inQty) {
+        this.inQty = inQty;
     }
 }

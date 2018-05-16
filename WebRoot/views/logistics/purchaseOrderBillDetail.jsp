@@ -123,6 +123,11 @@
                                                onblur="search_discount_onblur()">
                                         </input>
                                     </div>
+                                    <label class="col-xs-1 control-label" for="search_srcBillNo">补货单编号</label>
+                                    <div class="col-xs-2">
+                                        <input class="form-control" id="search_srcBillNo" name="billNo"
+                                               type="text" readonly value="${purchaseOrderBill.srcBillNo}"/>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-1 control-label"
