@@ -347,6 +347,14 @@ public class LabelChangeBillController extends BaseController implements ILogist
         return this.initService.findInitByLabel(billNo);
     }
 
+    @RequestMapping(value = "/findNewPage")
+    @ResponseBody
+    public Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page) throws Exception {
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        return null;
+    }
+
 
 
 }

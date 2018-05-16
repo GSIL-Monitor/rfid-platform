@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2018/5/9.
@@ -24,6 +25,16 @@ public class LabelChangeBill extends BaseBill{
     @Transient
     private String changeTypeName;
 
+    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType,Date billDate,String origId,String remark) {
+        this.id = id;
+        this.beforeclass9 = beforeclass9;
+        this.nowclass9 = nowclass9;
+        this.changeType = changeType;
+        super.billDate=billDate;
+        super.origId=origId;
+        super.remark=remark;
+
+    }
 
     public String getBeforeclass9Name() {
         return beforeclass9Name;

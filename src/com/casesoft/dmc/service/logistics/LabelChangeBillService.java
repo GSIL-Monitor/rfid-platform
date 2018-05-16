@@ -23,6 +23,7 @@ import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import com.casesoft.dmc.service.tag.InitService;
 import com.casesoft.dmc.service.task.TaskService;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -179,5 +180,11 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
         return messageBox;
     }
 
+
+    public  Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page,List<PropertyFilter> filters,Class<T> billClass,Class<T> billDtlClass,String billConnect,String billDtlConnect){
+
+
+        return null;
+    }
 
 }

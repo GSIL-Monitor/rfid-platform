@@ -90,7 +90,7 @@ public abstract class BaseBill {
 
     @Column(length = 500)
     @Excel(name="备注")
-    private String remark;
+    protected String remark;
 
     public String getOwnerId() {
         return ownerId;

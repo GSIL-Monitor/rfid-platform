@@ -626,9 +626,16 @@ public class CommonUtil {
     }
     return encryptStr;
   }
-
+  /**
+   * 表单和表体的联合查询hql拼接
+   * czf
+   *
+   */
   public static Map<String,Object> hqlbyBillandBillDel(Class<?> billClass,Class<?> billDtlClass, List<PropertyFilter> filters,String billRelevance,String billDtlbillRelevance){
-
+    String tablePath=billClass.getName();
+    String billTable=billClass.getName().split(",")[billClass.getName().split(",").length-1];
+    String billDtlTable=billDtlClass.getName().split(",")[billDtlClass.getName().split(",").length-1];
+    //String hql="select new "+tablePath+"("
      return null;
   }
 
