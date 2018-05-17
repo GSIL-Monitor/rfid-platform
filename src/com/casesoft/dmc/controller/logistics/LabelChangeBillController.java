@@ -106,7 +106,13 @@ public class LabelChangeBillController extends BaseController implements ILogist
             return messageBox;
         }catch (Exception e){
             e.printStackTrace();
-            return new MessageBox(false, e.getMessage());
+            String messge=e.getMessage();
+            if(messge.equals("Could not execute JDBC batch update")){
+                return new MessageBox(false, "已有商品");
+            }else{
+                return new MessageBox(false, e.getMessage());
+            }
+
         }
 
 
@@ -121,7 +127,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
     @ResponseBody
     @Override
     public ModelAndView edit(String billNo) throws Exception {
-        LabelChangeBill labelChangeBill = this.labelChangeBillService.getOnClassHaveConstructor("billNo", billNo,LabelChangeBill.class);
+        LabelChangeBill labelChangeBill = this.labelChangeBillService.get("billNo", billNo);
         ModelAndView mv = new ModelAndView("/views/logistics/labelChangeBillDel");
         mv.addObject("pageType", "edit");
         mv.addObject("labelChangeBill", labelChangeBill);
@@ -355,11 +361,6 @@ public class LabelChangeBillController extends BaseController implements ILogist
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
         return null;
-    }
-    @Test
-    public void text(){
-        LabelChangeBillService labelChangeBillService=new LabelChangeBillService();
-        labelChangeBillService.test(LabelChangeBill.class);
     }
 
 

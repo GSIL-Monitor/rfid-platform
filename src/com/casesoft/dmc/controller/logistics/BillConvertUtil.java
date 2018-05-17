@@ -533,8 +533,8 @@ public class BillConvertUtil {
                 detail.setColorId(dtl.getColorId());
                 detail.setSizeId(dtl.getSizeId());
                 detail.setSku(dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
-                detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
-                detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
+                detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
+                detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
                         + dtl.getQty());
                 detail.setQty(dtl.getQty());
                 detail.setOwnerId("1");

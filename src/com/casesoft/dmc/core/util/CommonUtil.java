@@ -656,26 +656,26 @@ public class CommonUtil {
       String propertyName = propertyFilter.getPropertyNames()[0];
       PropertyFilter.MatchType matchType = propertyFilter.getMatchType();
       String name = matchType.name();
-      if(propertyName.split(".")[1].equals("billDate")&&name.equals("GE")){
+      if(propertyName.indexOf("billDate")!=-1&&name.equals("GE")){
         Date matchValue =(Date) propertyFilter.getMatchValue();
-        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd");
-        hql+=" and "+propertyName+" >= to_date('"+dateString+"','yyyy-MM-dd')";
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd")+" 00;00;00";
+        hql+=" and "+propertyName+" >= to_date('"+dateString+"','yyyy-MM-dd HH24:mi:ss')";
       }
-      if(propertyName.split(".")[1].equals("billDate")&&name.equals("LE")){
+      if(propertyName.indexOf("billDate")!=-1&&name.equals("LE")){
         Date matchValue =(Date) propertyFilter.getMatchValue();
-        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd");
-        hql+=" and "+propertyName+" <=to_date('"+dateString+"','yyyy-MM-dd')";
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd")+" 23:59:59";
+        hql+=" and "+propertyName+" <= to_date('"+dateString+"','yyyy-MM-dd HH24:mi:ss')";
       }
       if(name.equals("EQ")){
         String value =(String) propertyFilter.getMatchValue();
-        hql+="and "+propertyName+"='"+value+"'";
+        hql+=" and "+propertyName+" = '"+value+"'";
       }
       if(name.equals("LIKE")){
         String value =(String) propertyFilter.getMatchValue();
-        hql+="and "+propertyName+"like '%"+value+"%'";
+        hql+=" and "+propertyName+" like '%"+value+"%'";
       }
     }
-
+    hql+=" and t.status <> -1";
     return hql;
   }
 
