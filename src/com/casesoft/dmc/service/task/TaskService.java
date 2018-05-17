@@ -67,7 +67,7 @@ public class TaskService extends AbstractBaseService<Business, String> {
         }
         // 持久化Bill数据
         try {
-            saveBill(bus);
+           // saveBill(bus);
             saveBus(bus);
 
         } catch (Exception e) {
@@ -692,9 +692,9 @@ public class TaskService extends AbstractBaseService<Business, String> {
                 return;
             }
             saveBus(bus);
-            saveBusBill(bus);
+           // saveBusBill(bus);
 
-            updateSrcTask(bus);
+           // updateSrcTask(bus);
             long time2 = System.currentTimeMillis();
             logger.error("存储数据消耗时间：" + (time2 - time1));
         } else {
