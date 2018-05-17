@@ -13,13 +13,24 @@ public class ReplenishCodeVO implements Serializable {
     private String code;
     private String warehouseId;
     private String warehouseName;
+    private Integer inStock;
 
     public ReplenishCodeVO() { }
 
-    public ReplenishCodeVO(String sku, String code, String warehouseId) {
+    public ReplenishCodeVO(String sku, String code, String warehouseId,Integer inStock) {
         this.sku = sku;
         this.code = code;
         this.warehouseId = warehouseId;
+        this.inStock=inStock;
+    }
+
+
+    public Integer getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(Integer inStock) {
+        this.inStock = inStock;
     }
 
     public String getSku() {

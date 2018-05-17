@@ -290,7 +290,13 @@ public class CacheManager {
 		Element result = cache.get("propertyKey");
 		Map<String, PropertyKey> propertyKeyMap = (HashMap<String, PropertyKey>) result
 				.getValue();
-		return propertyKeyMap.get(keyId);
+		PropertyKey propertyKey = propertyKeyMap.get(keyId);
+		if(CommonUtil.isBlank(propertyKey)){
+			PropertyKeyService propertyKeyService = (PropertyKeyService) SpringContextUtil
+					.getBean("propertyKeyService");
+			propertyKey = propertyKeyService.get("id",keyId);
+		}
+		return propertyKey;
 	}
 
 	public static void initPropertyTypeCache() {

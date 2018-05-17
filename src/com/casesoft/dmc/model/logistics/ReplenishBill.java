@@ -24,6 +24,9 @@ public class ReplenishBill extends BaseBill{
     @Column()
     private String replenishType;//补货类型 1.是购货 2.是退货
 
+    @Column()
+    private Long totInQty=0L;
+
     public String getReplenishType() {
         return replenishType;
     }
@@ -87,7 +90,16 @@ public class ReplenishBill extends BaseBill{
         this.dtlList = dtlList;
     }
 
+
     public List<ReplenishStyleVO> getStyleVOList() { return styleVOList; }
 
     public void setStyleVOList(List<ReplenishStyleVO> styleVOList) { this.styleVOList = styleVOList; }
+
+    public Long getTotInQty() {
+        return totInQty;
+    }
+
+    public void setTotInQty(Long totInQty) {
+        this.totInQty = totInQty;
+    }
 }

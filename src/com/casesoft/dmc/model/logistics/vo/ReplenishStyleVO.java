@@ -18,6 +18,14 @@ public class ReplenishStyleVO  implements Serializable {
     private Integer styleTotActConvertQty;
     private Integer styleTotInstockQty;
 
+    public ReplenishStyleVO(){
+
+    }
+
+    public ReplenishStyleVO(String styleId){
+        this.styleId = styleId;
+    }
+
     public String getStyleId() {
         return styleId;
     }

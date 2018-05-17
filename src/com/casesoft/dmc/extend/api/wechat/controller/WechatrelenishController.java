@@ -230,6 +230,16 @@ public class WechatrelenishController extends ApiBaseController {
             if (convertQty > 0) {
                 replenishBillDtl.setConvertQty(convertQty.intValue());
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
+                //add by yushen 多次备注拼接，存入补货申请单
+                String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
+                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
+                        + "，处理数量：" + pDtl.getQty()
+                        + "，备注说明：" + pDtl.getRemark() + "；\n";
+                String oldRemark = replenishBillDtl.getRemark();
+                if(CommonUtil.isBlank(oldRemark)){
+                    oldRemark="";
+                }
+                replenishBillDtl.setRemark(oldRemark + remark);
                 filteredDtlList.add(pDtl);
             }
         }
@@ -352,22 +362,24 @@ public class WechatrelenishController extends ApiBaseController {
                 if (CommonUtil.isNotBlank(user)) {
                     replenishBill.setBuyahandName(user.getName());
                 }
-                List<ReplenishStyleVO> replenishStyleVOS = this.replenishBillService.findReplenishStyleVO(replenishBill.getBillNo());
-                for (ReplenishStyleVO voList : replenishStyleVOS) {
-                    String imgUrl = StyleUtil.returnImageUrl(voList.getStyleId(), rootPath);
-                    voList.setImgUrl(imgUrl);
-                    Style style = CacheManager.getStyleById(voList.getStyleId());
-                    if (CommonUtil.isNotBlank(style)) {
-                        voList.setStyleName(style.getStyleName());
-                    }
-                }
                 Unit unit = CacheManager.getUnitById(replenishBill.getOwnerId());
                 if (unit == null) {
                     replenishBill.setWarehouseName("");
                 } else {
                     replenishBill.setWarehouseName(unit.getName());
                 }
-                replenishBill.setStyleVOList(replenishStyleVOS);
+
+                List<ReplenishStyleVO> styleList = this.replenishBillService.findStyleListByBillNo(replenishBill.getBillNo());
+
+                for (ReplenishStyleVO styleVO : styleList) {
+                    String imgUrl = StyleUtil.returnImageUrl(styleVO.getStyleId(), rootPath);
+                    styleVO.setImgUrl(imgUrl);
+                    Style style = CacheManager.getStyleById(styleVO.getStyleId());
+                    if (CommonUtil.isNotBlank(style)) {
+                        styleVO.setStyleName(style.getStyleName());
+                    }
+                }
+                replenishBill.setStyleVOList(styleList);
             }
         }
         return new MessageBox(true, "success", page);

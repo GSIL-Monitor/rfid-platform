@@ -620,7 +620,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         List<ReplenishSkuVO> replenishSkuVOList = this.replenishBillDao.find(getSkuVOHql, billNo);
 
         String getCodeVOHql = "select new com.casesoft.dmc.model.logistics.vo.ReplenishCodeVO" +
-                "(rd.sku, c.code, s.warehouseId) " +
+                "(rd.sku, c.code, s.warehouseId, s.inStock) " +
                 "from ReplenishBillDtl rd, PurchaseOrderBill p, BillRecord c, EpcStock s " +
                 "where  rd.billNo=? and rd.billNo = p.srcBillNo and p.billNo = c.billNo and rd.sku=c.sku and c.code = s.code";
         List<ReplenishCodeVO> replenishCodeVOList = this.replenishBillDao.find(getCodeVOHql, billNo);
@@ -651,9 +651,14 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                 //累加sku中的数量，放入styleVO中
                 styleVOMap.get(currentStyleId).setStyleTotQty(skuVO.getSkuTotQty() + styleVOMap.get(currentStyleId).getStyleTotQty());
                 styleVOMap.get(currentStyleId).setStyleTotActConvertQty(skuVO.getSkuTotActConvertQty() + styleVOMap.get(currentStyleId).getStyleTotActConvertQty());
-                if (skuVO.getSkuTotInstockQty() != null && styleVOMap.get(currentStyleId).getStyleTotInstockQty() != null) {
-                    styleVOMap.get(currentStyleId).setStyleTotInstockQty(skuVO.getSkuTotInstockQty() + styleVOMap.get(currentStyleId).getStyleTotInstockQty());
+                if(skuVO.getSkuTotInstockQty()==null){
+                    skuVO.setSkuTotInstockQty(0);
                 }
+                if(styleVOMap.get(currentStyleId).getStyleTotInstockQty()==null){
+                    styleVOMap.get(currentStyleId).setStyleTotInstockQty(0);
+                }
+                styleVOMap.get(currentStyleId).setStyleTotInstockQty(skuVO.getSkuTotInstockQty() + styleVOMap.get(currentStyleId).getStyleTotInstockQty());
+
 
                 styleVOMap.get(currentStyleId).getSkuVOList().add(skuVO);
             } else {
@@ -673,5 +678,11 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
             }
         }
         return new ArrayList<>(styleVOMap.values());
+    }
+
+    public List<ReplenishStyleVO> findStyleListByBillNo(String billNO){
+        String hql = "select distinct new com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO"
+                +"(styleId) from ReplenishBillDtl where billNo = ?";
+        return this.replenishBillDao.find(hql, billNO);
     }
 }
