@@ -517,6 +517,49 @@ public class BillConvertUtil {
         master.setRemark(purchaseOrderBillDtlList.get(0).getBillNo());
         return master;
     }
+    /**
+     * 标签替代转标签初始化
+     */
+    public static Init labelcovertToTagBirth(String taskId, List<LabelChangeBillDel> labelChangeBillDels, InitService epcService, User currentUser,String prefix,String newStylesuffix) {
+        Init master = new Init();
+        master.setBillNo(taskId);
+        Long totQty = 0L;
+        List<InitDtl> initDtlList = new ArrayList<>();
+        for (LabelChangeBillDel dtl : labelChangeBillDels) {
+            InitDtl detail = new InitDtl();
+            detail.setId(taskId + "-" + dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
+            detail.setStyleId(dtl.getStyleId()+newStylesuffix);
+            Style style= CacheManager.getStyleById(dtl.getStyleId());
+               /* detail.setStyleName(style.getStyleName());
+                detail.setColorName(dtl.getColorId());
+                detail.setSizeName(dtl.getSizeId());*/
+            detail.setColorId(dtl.getColorId());
+            detail.setSizeId(dtl.getSizeId());
+            detail.setSku(dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
+            detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
+            detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
+                    + dtl.getQty());
+            detail.setQty(dtl.getQty());
+            detail.setOwnerId("1");
+            detail.setStatus(1);
+            totQty += dtl.getQty();
+            detail.setBillNo(taskId);
+            initDtlList.add(detail);
+
+
+
+        }
+        master.setTotEpc(totQty);
+        master.setDtlList(initDtlList);
+        master.setOwnerId("1");
+        master.setHostId(currentUser.getId());
+        master.setTotSku(initDtlList.size());
+        master.setBillDate(new Date());
+        master.setFileName("标签转换单" + prefix);
+        master.setStatus(1);
+        master.setRemark(prefix);
+        return master;
+    }
 
     /**
      * 采购单转入库单（web页面调用）
