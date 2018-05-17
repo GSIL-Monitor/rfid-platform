@@ -24,8 +24,11 @@ public class LabelChangeBill extends BaseBill{
     private String changeType;//CS(系列的转换)，PC(价格的转换)
     @Transient
     private String changeTypeName;
+    public LabelChangeBill(){
 
-    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType,Date billDate,String origId,String remark) {
+    }
+
+    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType,Date billDate,String origId,String remark,String billNo) {
         this.id = id;
         this.beforeclass9 = beforeclass9;
         this.nowclass9 = nowclass9;
@@ -33,6 +36,7 @@ public class LabelChangeBill extends BaseBill{
         super.billDate=billDate;
         super.origId=origId;
         super.remark=remark;
+        super.billNo=billNo;
 
     }
 

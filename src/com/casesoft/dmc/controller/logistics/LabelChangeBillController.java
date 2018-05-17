@@ -25,6 +25,7 @@ import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import com.casesoft.dmc.service.tag.InitService;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +61,8 @@ public class LabelChangeBillController extends BaseController implements ILogist
         //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
 
         page.setPageProperty();
-        page = this.labelChangeBillService.findPage(page, filters);
+        String constructorParameter="id,beforeclass9,nowclass9,changeType,billDate,origId,remark,billNo";
+        page = this.labelChangeBillService.findNewPage(page, filters,LabelChangeBill.class,LabelChangeBillDel.class,constructorParameter);
         for(int i=0;i<page.getRows().size();i++){
             LabelChangeBill labelChangeBill = page.getRows().get(i);
             String origId = labelChangeBill.getOrigId();
@@ -119,7 +121,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
     @ResponseBody
     @Override
     public ModelAndView edit(String billNo) throws Exception {
-        LabelChangeBill labelChangeBill = this.labelChangeBillService.get("billNo", billNo);
+        LabelChangeBill labelChangeBill = this.labelChangeBillService.getOnClassHaveConstructor("billNo", billNo,LabelChangeBill.class);
         ModelAndView mv = new ModelAndView("/views/logistics/labelChangeBillDel");
         mv.addObject("pageType", "edit");
         mv.addObject("labelChangeBill", labelChangeBill);
@@ -353,6 +355,11 @@ public class LabelChangeBillController extends BaseController implements ILogist
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
         return null;
+    }
+    @Test
+    public void text(){
+        LabelChangeBillService labelChangeBillService=new LabelChangeBillService();
+        labelChangeBillService.test(LabelChangeBill.class);
     }
 
 

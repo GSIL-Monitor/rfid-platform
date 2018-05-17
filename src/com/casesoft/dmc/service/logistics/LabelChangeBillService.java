@@ -5,6 +5,7 @@ import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
@@ -16,6 +17,7 @@ import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
@@ -23,11 +25,15 @@ import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import com.casesoft.dmc.service.tag.InitService;
 import com.casesoft.dmc.service.task.TaskService;
-import org.apache.poi.ss.formula.functions.T;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +44,7 @@ import java.util.Map;
  */
 @Service
 @Transactional
-public class LabelChangeBillService implements IBaseService<LabelChangeBill, String> {
+public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill, String> {
     @Autowired
     private LabelChangeBillDao labelChangeBillDao;
     @Override
@@ -60,6 +66,11 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
     public LabelChangeBill get(String propertyName, Object value) {
         return this.labelChangeBillDao.findUniqueBy(propertyName,value);
     }
+    public LabelChangeBill getOnClassHaveConstructor(String propertyName, Object value,Class <?> billClass){
+        String hql="from LabelChangeBill where "+propertyName+" =?";
+        return this.labelChangeBillDao.findUnique(hql,new Object[]{value});
+    }
+
 
     @Override
     public List<LabelChangeBill> find(List<PropertyFilter> filters) {
@@ -180,11 +191,54 @@ public class LabelChangeBillService implements IBaseService<LabelChangeBill, Str
         return messageBox;
     }
 
+    /**
+     *
+     * @param page
+     * @param filters
+     * @param billClass
+     * @param billDtlClass
+     * @param constructorParameter//构造函数的参数
+     * @return
+     */
 
-    public  Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page,List<PropertyFilter> filters,Class<T> billClass,Class<T> billDtlClass,String billConnect,String billDtlConnect){
+    public  Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page, List<PropertyFilter> filters, Class<?> billClass, Class<?> billDtlClass,String constructorParameter){
+        String hql= CommonUtil.hqlbyBillandBillDel(billClass, billDtlClass, filters, constructorParameter);
+         page = this.labelChangeBillDao.findPage(page, hql);
 
+        return page;
+    }
 
-        return null;
+    public void test(Class <?> billClass) {
+        //获取说有属性
+        Field[] fs = billClass.getDeclaredFields();
+        for (Field field : fs) {
+            //得到类的变量的类型的类类型
+            Class fieldType = field.getType();
+            String fieldTypeStr = fieldType.getName();
+            //得到成员变量的名称
+            String fieldname = field.getName();
+            System.out.println("类型：" + fieldTypeStr + "名称：" + fieldname);
+        }
+        //获取构造方法
+        Constructor[] cs2 = billClass.getConstructors();
+        for (Constructor constructor : cs2) {
+            String printstr = "(";
+            String printparameter="(";
+            //获取某个构造方法中的参数数组
+            Parameter[] parameters = constructor.getParameters();
+            for (Parameter parameter : parameters) {
+                printparameter = printparameter+parameter.getName()+",";
+            }
+            System.out.println(printparameter+")");
+            Class[] paramsType = constructor.getParameterTypes();
+            for (Class parameter : paramsType) {
+                printstr = printstr+parameter.getTypeName()+",";
+            }
+            if(printstr.length()>2){
+                printstr = printstr.substring(0, printstr.length()-1);
+            }
+            System.out.println(printstr+")");
+        }
     }
 
 }

@@ -5,6 +5,7 @@
 package com.casesoft.dmc.core.util;
 
 import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.extend.api.wechat.until.AdvancedUtil;
@@ -631,12 +632,51 @@ public class CommonUtil {
    * czf
    *
    */
-  public static Map<String,Object> hqlbyBillandBillDel(Class<?> billClass,Class<?> billDtlClass, List<PropertyFilter> filters,String billRelevance,String billDtlbillRelevance){
+  public static String hqlbyBillandBillDel(Class<?> billClass,Class<?> billDtlClass, List<PropertyFilter> filters,String constructorParameter){
     String tablePath=billClass.getName();
-    String billTable=billClass.getName().split(",")[billClass.getName().split(",").length-1];
-    String billDtlTable=billDtlClass.getName().split(",")[billDtlClass.getName().split(",").length-1];
-    //String hql="select new "+tablePath+"("
-     return null;
+
+    String billDtlTable=billDtlClass.getName();
+    constructorParameter="t."+constructorParameter;
+    constructorParameter=constructorParameter.replaceAll(",",",t.");
+    String hql="select new "+tablePath+"("+constructorParameter+") from "+tablePath+" t,"+billDtlTable+" dtl where t.id=dtl.billId";
+    String hqlQuery = hqlQueryCondition(filters);
+    hql=hql+hqlQuery+" group by "+constructorParameter;
+    return hql;
+  }
+
+  /**
+   * 根据filters拼接hql的查询条件
+   * @param filters
+   * @return
+   */
+  public static String hqlQueryCondition(List<PropertyFilter> filters){
+    String hql="";
+    for(int i=0;i<filters.size();i++){
+      PropertyFilter propertyFilter = filters.get(i);
+      String propertyName = propertyFilter.getPropertyNames()[0];
+      PropertyFilter.MatchType matchType = propertyFilter.getMatchType();
+      String name = matchType.name();
+      if(propertyName.split(".")[1].equals("billDate")&&name.equals("GE")){
+        Date matchValue =(Date) propertyFilter.getMatchValue();
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd");
+        hql+=" and "+propertyName+" >= to_date('"+dateString+"','yyyy-MM-dd')";
+      }
+      if(propertyName.split(".")[1].equals("billDate")&&name.equals("LE")){
+        Date matchValue =(Date) propertyFilter.getMatchValue();
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd");
+        hql+=" and "+propertyName+" <=to_date('"+dateString+"','yyyy-MM-dd')";
+      }
+      if(name.equals("EQ")){
+        String value =(String) propertyFilter.getMatchValue();
+        hql+="and "+propertyName+"='"+value+"'";
+      }
+      if(name.equals("LIKE")){
+        String value =(String) propertyFilter.getMatchValue();
+        hql+="and "+propertyName+"like '%"+value+"%'";
+      }
+    }
+
+    return hql;
   }
 
 }
