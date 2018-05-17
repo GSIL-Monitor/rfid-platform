@@ -324,6 +324,9 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         if (styleList.size() > 0) {
             this.purchaseBillOrderDao.doBatchInsert(styleList);
         }
+        if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {
+            this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+        }
     }
 
     public Object findpurchaseCount(String hql) {
