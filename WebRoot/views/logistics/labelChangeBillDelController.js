@@ -155,7 +155,7 @@ function initGrid() {
                     return totActPrice;
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码',hidden:true}
+            {name: 'uniqueCodes', label: '唯一码'}
 
         ],
         autowidth: true,
@@ -242,7 +242,7 @@ function addUniqCode() {
     var nowclass9=$("#search_nowclass9").val();
     var changeType=$("#select_changeType").val();
     var discount=$("#search_discount").val();
-    taskType = 3;
+
     wareHouse=origId;
     class9=$("#search_beforeclass9").val().split("-")[1];
     if (origId ==""|| origId == null) {
@@ -270,7 +270,11 @@ function addUniqCode() {
             bootbox.alert("转变类型不能为空！")
             return
         }
+        taskType = 3;
+    }else{
+        taskType =0;
     }
+
     $("#dialog_buttonGroup").html("" +
         "<button  type='button' id = 'so_savecode_button'  class='btn btn-primary' onclick='addProductsOnCode()'>保存</button>"
     );
