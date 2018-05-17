@@ -51,6 +51,13 @@ public class ReplenishBill extends BaseBill{
     }
 
     @Transient
+    private String warehouseName;
+
+    public String getWarehouseName() {return warehouseName;}
+
+    public void setWarehouseName(String warehouseName) {this.warehouseName = warehouseName;}
+
+    @Transient
     private List<ReplenishBillDtl> dtlList;
 
     @Transient

@@ -16,7 +16,7 @@ public class ReplenishStyleVO  implements Serializable {
     private List<ReplenishSkuVO> skuVOList;
     private Long styleTotQty;
     private Integer styleTotActConvertQty;
-    private Long styleTotInstockQty;
+    private Integer styleTotInstockQty;
 
     public String getStyleId() {
         return styleId;
@@ -58,7 +58,7 @@ public class ReplenishStyleVO  implements Serializable {
 
     public void setStyleTotActConvertQty(Integer styleTotActConvertQty) { this.styleTotActConvertQty = styleTotActConvertQty; }
 
-    public Long getStyleTotInstockQty() { return styleTotInstockQty; }
+    public Integer getStyleTotInstockQty() { return styleTotInstockQty; }
 
-    public void setStyleTotInstockQty(Long styleTotInstockQty) { this.styleTotInstockQty = styleTotInstockQty; }
+    public void setStyleTotInstockQty(Integer styleTotInstockQty) { this.styleTotInstockQty = styleTotInstockQty; }
 }

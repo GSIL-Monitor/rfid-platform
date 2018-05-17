@@ -361,6 +361,12 @@ public class WechatrelenishController extends ApiBaseController {
                         voList.setStyleName(style.getStyleName());
                     }
                 }
+                Unit unit = CacheManager.getUnitById(replenishBill.getOwnerId());
+                if (unit == null) {
+                    replenishBill.setWarehouseName("");
+                } else {
+                    replenishBill.setWarehouseName(unit.getName());
+                }
                 replenishBill.setStyleVOList(replenishStyleVOS);
             }
         }
@@ -553,7 +559,7 @@ public class WechatrelenishController extends ApiBaseController {
             String imgUrl = StyleUtil.returnImageUrl(voList.getStyleId(), rootPath);
             voList.setImgUrl(imgUrl);
             Style style = CacheManager.getStyleById(voList.getStyleId());
-            if(CommonUtil.isNotBlank(style)){
+            if (CommonUtil.isNotBlank(style)) {
                 voList.setStyleName(style.getStyleName());
             }
         }
