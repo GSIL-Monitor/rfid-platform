@@ -385,8 +385,8 @@ public class BillConvertUtil {
             dtl.setPrintQty(dtl.getQty().intValue());
             Style style = CacheManager.getStyleById(dtl.getStyleId());
             dtl.setPrice(style.getPreCast());
-            dtl.setActPrice(style.getPreCast());
-            dtl.setTotActPrice(style.getPreCast() * Double.parseDouble(dtl.getQty() + ""));
+            dtl.setActPrice(style.getPreCast() * 100);
+            dtl.setTotActPrice(style.getPreCast() * Double.parseDouble(dtl.getQty() + "") * 100);
             dtl.setTotPrice(style.getPreCast() * Double.parseDouble(dtl.getQty() + ""));
             totQty += dtl.getQty();
             actQty += dtl.getQty();
@@ -531,7 +531,6 @@ public class BillConvertUtil {
         Map<String, BusinessDtl> businessDtlMap = new HashMap<>();
         Map<String, String> styleCountMap = new HashMap<>();
         List<Record> recordList = new ArrayList<>();
-        List<BillRecord> billRecordList = new ArrayList<>();
         Double totPreVal = 0D;
         Double totRcvPrice = 0d;
         for (Epc e : epcList) {
@@ -586,8 +585,6 @@ public class BillConvertUtil {
             record.setId(new GuidCreator().toString());
             record.setType(Constant.TaskType.Inbound);
             recordList.add(record);
-            BillRecord billRecord = new BillRecord(purchaseOrderBill.getBillNo() + "-" + record.getCode(), record.getCode(), purchaseOrderBill.getBillNo(), record.getSku());
-            billRecordList.add(billRecord);
         }
         bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
         bus.setId(taksId);
@@ -617,7 +614,6 @@ public class BillConvertUtil {
             purchaseOrderBill.setInStatus(BillConstant.BillInOutStatus.InStore);
             purchaseOrderBill.setStatus(BillConstant.BillStatus.End);
         }
-        purchaseOrderBill.setBillRecordList(billRecordList);
 
         return bus;
     }
@@ -3061,7 +3057,7 @@ public class BillConvertUtil {
             totPreVal += preVal;
             Record r = recordMap.get(s.getCode());
             r.setPrice(preVal);
-            PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getSku());
+            PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getCode());
             purchaseReturnBillDtl.setStockVal(purchaseReturnBillDtl.getStockVal() + preVal);
             BillRecord billRecord = new BillRecord(purchaseReturnBill.getBillNo() + "-" + s.getCode(), s.getCode(), purchaseReturnBill.getBillNo(), s.getSku());
             billRecordList.add(billRecord);
@@ -3547,5 +3543,209 @@ public class BillConvertUtil {
                 rDtl.setInQty(purchaseDtlMap.get(currentSku).getInQty() + rDtl.getInQty());
             }
         }
+    }
+
+    public static  void covertToLabelChangeBill(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,User curUser){
+        if (CommonUtil.isNotBlank(curUser)) {
+            labelChangeBill.setOprId(curUser.getCode());
+        }
+        if (CommonUtil.isBlank(labelChangeBill.getOwnerId())) {
+            labelChangeBill.setOwnerId(curUser.getOwnerId());
+        }
+        List<BillRecord> billRecordList = new ArrayList<>();
+        for(LabelChangeBillDel dtl:labelChangeBillDels){
+            dtl.setId(new GuidCreator().toString());
+            dtl.setBillId(labelChangeBill.getId());
+            dtl.setBillNo(labelChangeBill.getBillNo());
+            if (CommonUtil.isNotBlank(dtl.getUniqueCodes())) {
+                for (String code : dtl.getUniqueCodes().split(",")) {
+                    BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
+                    billRecordList.add(billRecord);
+                }
+            }
+        }
+        labelChangeBill.setBillRecordList(billRecordList);
+    }
+  /*
+    * add by czf
+    * 用于标签管理出库
+   */
+    public static Business covertToLabelChangeBusinessOut(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDelList, List<Epc> epcList, User currentUser){
+        Map<String, LabelChangeBillDel> labelChangeBillDelMap = new HashMap<>();
+        List<BillRecord> billRecordList = new ArrayList<>();
+        for (LabelChangeBillDel billDtl : labelChangeBillDelList) {
+            labelChangeBillDelMap.put(billDtl.getSku(), billDtl);
+        }
+        String taksId = "TSK" + CommonUtil.getDateString(new Date(), "yyyyMMdd") + System.currentTimeMillis();
+        Business bus = new Business();
+        Map<String, BusinessDtl> businessDtlMap = new HashMap<>();
+        Map<String, String> styleCountMap = new HashMap<>();
+        List<Record> recordList = new ArrayList<>();
+        List<String> codeStrList = new ArrayList<>();
+        Map<String, Record> recordMap = new HashMap<>();
+        Double totOutPrice = 0d;
+        for (Epc epc : epcList) {
+            String skuOfEpc = epc.getSku();
+            styleCountMap.put(epc.getStyleId(), epc.getStyleId());
+
+            if (labelChangeBillDelMap.containsKey(skuOfEpc)) {
+                LabelChangeBillDel billDtl = labelChangeBillDelMap.get(skuOfEpc);
+                BillRecord billRecord = new BillRecord(billDtl.getBillNo() + "-" + epc.getCode(), epc.getCode(), billDtl.getBillNo(), billDtl.getSku());
+                billRecordList.add(billRecord);
+                billDtl.setOutQty(billDtl.getOutQty() + 1);
+                totOutPrice += labelChangeBillDelMap.get(skuOfEpc).getPrice();
+                labelChangeBillDelMap.put(skuOfEpc, billDtl);
+            }
+            if (businessDtlMap.containsKey(epc.getSku())) {
+                BusinessDtl businessDtl = businessDtlMap.get(skuOfEpc);
+                businessDtl.setQty(businessDtl.getQty() + 1);
+                businessDtlMap.put(skuOfEpc, businessDtl);
+            } else {
+                BusinessDtl businessDtl = new BusinessDtl(taksId, currentUser.getOwnerId(), Constant.Token.Storage_Outbound, "KE000001", skuOfEpc, 1);
+                businessDtl.setId(new GuidCreator().toString());
+                businessDtl.setStyleId(epc.getStyleId());
+                businessDtl.setColorId(epc.getColorId());
+                businessDtl.setSizeId(epc.getSizeId());
+                businessDtl.setType(Constant.TaskType.Outbound);
+                businessDtl.setDestId(labelChangeBill.getOrigId());
+                businessDtl.setDestUnitId(labelChangeBill.getDestUnitId());
+                businessDtl.setOrigId(labelChangeBill.getOrigId());
+                businessDtl.setOrigUnitId(labelChangeBill.getOrigUnitId());
+                businessDtl.setPreVal(0D);
+                businessDtlMap.put(skuOfEpc, businessDtl);
+            }
+            Record record = new Record(epc.getCode(), taksId, taksId, Constant.Token.Storage_Outbound, "KE000001", "");
+            record.setOwnerId(currentUser.getOwnerId());
+            record.setDestId(labelChangeBill.getOrigId());
+            record.setDestUnitId(labelChangeBill.getDestUnitId());
+            record.setOrigId(labelChangeBill.getOrigId());
+            record.setOrigUnitId(labelChangeBill.getOrigUnitId());
+            record.setSku(skuOfEpc);
+            record.setStyleId(epc.getStyleId());
+            record.setColorId(epc.getColorId());
+            record.setSizeId(epc.getSizeId());
+            record.setPrice(labelChangeBillDelMap.get(skuOfEpc).getActPrice());
+            record.setScanTime(new Date());
+            record.setId(new GuidCreator().toString());
+            record.setType(Constant.TaskType.Outbound);
+            recordList.add(record);
+            codeStrList.add(record.getCode());
+            recordMap.put(record.getCode(), record);
+        }
+        bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
+        bus.setId(taksId);
+        bus.setToken(Constant.Token.Storage_Adjust_Outbound);
+        bus.setBeginTime(new Date());
+        bus.setEndTime(new Date());
+        bus.setBillId(labelChangeBill.getBillNo());
+        bus.setBillNo(labelChangeBill.getBillNo());
+        bus.setDestId(labelChangeBill.getOrigId());
+        bus.setDestUnitId(labelChangeBill.getDestUnitId());
+        bus.setOrigId(labelChangeBill.getOrigId());
+        bus.setOrigUnitId(labelChangeBill.getOrigUnitId());
+        bus.setOwnerId(currentUser.getOwnerId());
+        bus.setDeviceId("KE000001");
+        bus.setStatus(Constant.TaskStatus.Submitted);
+        bus.setTotCarton(1L);
+        bus.setTotEpc((long) epcList.size());
+        bus.setTotPrice(totOutPrice);
+        bus.setTotSku((long) bus.getDtlList().size());
+        bus.setTotStyle((long) styleCountMap.size());
+        bus.setType(Constant.TaskType.Outbound);
+        bus.setRecordList(recordList);
+        labelChangeBill.setBillRecordList(billRecordList);
+
+        return bus;
+    }
+    /*
+     *add by czf
+     * 用于标签管理入库
+     */
+    public static Business covertToLabelChangeBusinessIn(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDelList, List<Epc> epcList, User currentUser){
+        Map<String, LabelChangeBillDel> labelChangeBillDelMap = new HashMap<>();
+        for (LabelChangeBillDel dtl : labelChangeBillDelList) {
+            if(labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Series)){
+                labelChangeBillDelMap.put(dtl.getStyleId()+labelChangeBill.getNowclass9().split("-")[1]+dtl.getColorId()+dtl.getSizeId(), dtl);
+            }
+            if(labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Price)){
+                labelChangeBillDelMap.put(dtl.getStyleId()+BillConstant.styleNew.PriceDiscount+dtl.getColorId()+dtl.getSizeId(), dtl);
+            }
+
+        }
+        String taksId = "TSK" + CommonUtil.getDateString(new Date(), "yyyyMMdd") + System.currentTimeMillis();
+        Business bus = new Business();
+        Map<String, BusinessDtl> businessDtlMap = new HashMap<>();
+        Map<String, String> styleCountMap = new HashMap<>();
+        List<Record> recordList = new ArrayList<>();
+        Double totRcvPrice = 0d;
+        for (Epc e : epcList) {
+            String sku = e.getSku();
+            styleCountMap.put(e.getStyleId(), e.getStyleId());
+            if (labelChangeBillDelMap.containsKey(sku)) {
+                LabelChangeBillDel dtl = labelChangeBillDelMap.get(sku);
+                dtl.setInQty(dtl.getInQty() + 1);
+
+                totRcvPrice += dtl.getPrice();
+                labelChangeBillDelMap.put(sku, dtl);
+                //dtl.setStockVal(dtl.getInVal());
+            }
+            if (businessDtlMap.containsKey(e.getSku())) {
+                BusinessDtl dtl = businessDtlMap.get(sku);
+                dtl.setQty(dtl.getQty() + 1);
+                businessDtlMap.put(sku, dtl);
+            } else {
+                BusinessDtl dtl = new BusinessDtl(taksId, currentUser.getOwnerId(), Constant.Token.Storage_Adjust_Inbound, "KE000001", sku, 1);
+                dtl.setId(new GuidCreator().toString());
+                dtl.setStyleId(e.getStyleId());
+                dtl.setColorId(e.getColorId());
+                dtl.setSizeId(e.getSizeId());
+                dtl.setType(Constant.TaskType.Inbound);
+                dtl.setDestId(labelChangeBill.getOrigId());
+                dtl.setDestUnitId(labelChangeBill.getDestUnitId());
+                dtl.setOrigId(labelChangeBill.getOrigId());
+                dtl.setOrigUnitId(labelChangeBill.getOrigUnitId());
+                businessDtlMap.put(sku, dtl);
+            }
+            Record record = new Record(e.getCode(), taksId, taksId, Constant.Token.Storage_Adjust_Inbound, "KE000001", "");
+            record.setOwnerId(currentUser.getOwnerId());
+            record.setDestId(labelChangeBill.getOrigId());
+            record.setDestUnitId(labelChangeBill.getDestUnitId());
+            record.setOrigId(labelChangeBill.getOrigId());
+            record.setOrigUnitId(labelChangeBill.getOrigUnitId());
+            record.setSku(sku);
+            record.setStyleId(e.getStyleId());
+            record.setColorId(e.getColorId());
+            record.setSizeId(e.getSizeId());
+            record.setPrice(labelChangeBillDelMap.get(record.getSku()).getActPrice());
+            record.setScanTime(new Date());
+            LabelChangeBillDel labelChangeBillDel = labelChangeBillDelMap.get(record.getSku());
+            //record.setExtField(labelChangeBillDel.getInStockType());//record中增加入库类型
+            record.setId(new GuidCreator().toString());
+            record.setType(Constant.TaskType.Inbound);
+            recordList.add(record);
+        }
+        bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
+        bus.setId(taksId);
+        bus.setToken(Constant.Token.Storage_Refund_Inbound);
+        bus.setBeginTime(new Date());
+        bus.setEndTime(new Date());
+        bus.setBillId(labelChangeBill.getBillNo());
+        bus.setBillNo(labelChangeBill.getBillNo());
+        bus.setDestId(labelChangeBill.getOrigId());
+        bus.setDestUnitId(labelChangeBill.getDestUnitId());
+        bus.setOrigId(labelChangeBill.getOrigId());
+        bus.setOrigUnitId(labelChangeBill.getOrigUnitId());
+        bus.setOwnerId(currentUser.getOwnerId());
+        bus.setDeviceId("KE000001");
+        bus.setStatus(Constant.TaskStatus.Submitted);
+        bus.setTotCarton(1L);
+        bus.setTotEpc((long) epcList.size());
+        bus.setTotPrice(totRcvPrice);
+        bus.setTotSku((long) bus.getDtlList().size());
+        bus.setTotStyle((long) styleCountMap.size());
+        bus.setType(Constant.TaskType.Inbound);
+        bus.setRecordList(recordList);
+        bus.setTotPreVal(totRcvPrice);
+        return bus;
     }
 }

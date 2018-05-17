@@ -197,6 +197,11 @@
                 if (taskType === -1) {
                     ajax_url = basePath + "/stock/warehStock/inCheckEpcStock.do";
                     ajax_data = {warehId: wareHouse, code: code, billNo: billNo}
+
+                } else if(taskType === 3){
+                    ajax_url = basePath + "/stock/warehStock/checkLaberEpcStockAndFindDate.do";
+                    ajax_data = {warehId: wareHouse, code: code, type: 0, billNo: billNo,class9:class9};
+
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStock.do";
                     ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo};

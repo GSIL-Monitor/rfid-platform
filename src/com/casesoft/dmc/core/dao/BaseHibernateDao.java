@@ -624,6 +624,22 @@ public BaseHibernateDao() {
     logger.debug("批处理耗时：" + (end - begin) + "毫秒");
     return rows;
   }
+  public Serializable dosaveBatchInsert(final List list) {
+    long begin = System.currentTimeMillis();
+    Integer rows = 0;
+    Session session = this.getSession();
+    for (int i = 0; i < list.size(); i++) {
+      session.save(list.get(i));
+      if ((i + 1) % list.size() == 0) {
+        rows = i;
+        session.flush();
+        session.clear();
+      }
+    }
+    long end = System.currentTimeMillis();
+    logger.debug("批处理耗时：" + (end - begin) + "毫秒");
+    return rows;
+  }
 
   public Serializable doBatchInsert(final Collection set) {
     long begin = System.currentTimeMillis();
