@@ -7,19 +7,19 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.PurchaseOrderBill;
-import com.casesoft.dmc.model.logistics.PurchaseOrderBillDtl;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
+import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.tag.InitService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,8 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
     private PurchaseOrderBillService purchaseOrderBillService;
     @Autowired
     private InitService initService;
-
+    @Autowired
+    private ReplenishBillService replenishBillService;
    /* @Override
     @RequestMapping(value = "/index")
     public String index() {
@@ -322,6 +324,22 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
             PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", purchaseOrderBillDtlList.get(0).getBillNo());
             Business business = BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, epcList, currentUser);
             this.purchaseOrderBillService.saveBusiness(purchaseOrderBill, purchaseOrderBillDtlList, business);
+            String srcBillNo = purchaseOrderBill.getSrcBillNo();
+            //与ParisService.uploadTaskToErp 方法中采购单入库的代码相同，同步修改
+            if(CommonUtil.isNotBlank(srcBillNo)){
+                ReplenishBill replenishBill = this.replenishBillService.get("id", srcBillNo);
+                List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(srcBillNo);
+                //复制一遍，后面保存的时候会先删除
+                ArrayList<ReplenishBillDtl> newReplenishBillDtlList = new ArrayList<>();
+                for (ReplenishBillDtl dtl : replenishBillDtlList) {
+                    ReplenishBillDtl replenishBillDtl = new ReplenishBillDtl();
+                    BeanUtils.copyProperties(dtl, replenishBillDtl);
+                    replenishBillDtl.setId(new GuidCreator().toString());
+                    newReplenishBillDtlList.add(replenishBillDtl);
+                }
+                BillConvertUtil.convertPurchaseToReplenish(purchaseOrderBill,purchaseOrderBillDtlList,replenishBill,newReplenishBillDtlList);
+                this.replenishBillService.saveMessage(replenishBill, newReplenishBillDtlList);
+            }
             return new MessageBox(true, "生成采购入库单");
         } else {
             return new MessageBox(true, "无待入库唯一码信息");

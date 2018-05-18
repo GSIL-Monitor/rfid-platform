@@ -1,5 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -103,14 +105,19 @@ public class ReplenishBillDtl extends BaseBillDtl{
 
     @Column()
     private Long franchiseeStockQty;//加盟店库存数量
-    @Transient
-    private String  lastTime;
 
-    public String getLastTime() {
+    @Column()
+    private Integer inQty =0; //入库数量
+
+    @Column()
+    @JSONField(format = "yyyy-MM-dd")
+    private Date  lastTime;
+
+    public Date getLastTime() {
         return lastTime;
     }
 
-    public void setLastTime(String lastTime) {
+    public void setLastTime(Date lastTime) {
         this.lastTime = lastTime;
     }
 
@@ -163,5 +170,13 @@ public class ReplenishBillDtl extends BaseBillDtl{
 
     public void setFranchiseeStockQty(Long franchiseeStockQty) {
         this.franchiseeStockQty = franchiseeStockQty;
+    }
+
+    public Integer getInQty() {
+        return inQty;
+    }
+
+    public void setInQty(Integer inQty) {
+        this.inQty = inQty;
     }
 }

@@ -3,16 +3,18 @@ package com.casesoft.dmc.extend.api.wechat.controller;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.cfg.PropertyKeyService;
@@ -121,21 +123,6 @@ public class WechatrelenishController extends ApiBaseController {
                     }
                 }
             }
-            List<ChangeReplenishBillDtl> list = this.replenishBillDtlService.findChangeReplenishBillDtl(d.getBillNo(), d.getSku());
-            if (CommonUtil.isNotBlank(list) && list.size() != 0) {
-                //String lasttime=CommonUtil.getDateString(list.get(0).getBillDate(),"yyyy-MM-dd HH:mm:ss");
-                //d.setLastTime(lasttime);
-                String lasttime = CommonUtil.getDateString(list.get(0).getExpectTime(), "yyyy-MM-dd");
-                if (CommonUtil.isNotBlank(lasttime)) {
-                    d.setLastTime(lasttime);
-                } else {
-                    d.setLastTime(null);
-                }
-            } else {
-                d.setLastTime(null);
-            }
-
-
         }
         return this.returnSuccessInfo("获取成功", page.getRows());
 
@@ -217,7 +204,7 @@ public class WechatrelenishController extends ApiBaseController {
 
     })
     @ResponseBody
-    public MessageBox processReplenishBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) throws Exception{
+    public MessageBox processReplenishBill(String purchaseBillStr, String strDtlList, String userId, String replenishBillNo) throws Exception {
         this.logAllRequestParams();
         PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = JSON.parseArray(strDtlList, PurchaseOrderBillDtl.class);
@@ -234,7 +221,7 @@ public class WechatrelenishController extends ApiBaseController {
         Long totConvertQty = 0L;
         for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
             Long convertQty = pDtl.getQty();
-            if(CommonUtil.isBlank(convertQty)){
+            if (CommonUtil.isBlank(convertQty)) {
                 convertQty = 0L;
             }
             totConvertQty += convertQty;
@@ -243,6 +230,16 @@ public class WechatrelenishController extends ApiBaseController {
             if (convertQty > 0) {
                 replenishBillDtl.setConvertQty(convertQty.intValue());
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
+                //add by yushen 多次备注拼接，存入补货申请单
+                String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
+                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
+                        + "，处理数量：" + pDtl.getQty()
+                        + "，备注说明：" + pDtl.getRemark() + "；\n";
+                String oldRemark = replenishBillDtl.getRemark();
+                if(CommonUtil.isBlank(oldRemark)){
+                    oldRemark="";
+                }
+                replenishBillDtl.setRemark(oldRemark + remark);
                 filteredDtlList.add(pDtl);
             }
         }
@@ -257,17 +254,26 @@ public class WechatrelenishController extends ApiBaseController {
                     + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
             purchaseOrderBill.setId(prefix);
             purchaseOrderBill.setBillNo(prefix);
+            //补货单的买手和仓库信息传递给采购单
+            User buyer = CacheManager.getUserById(replenishBill.getBuyahandId());
+            if (CommonUtil.isNotBlank(buyer)) {
+                purchaseOrderBill.setBuyahandId(buyer.getId());
+                purchaseOrderBill.setBuyahandName(buyer.getName());
+            }
+            Unit warehouse = CacheManager.getUnitByCode(replenishBill.getOwnerId());
+            if (CommonUtil.isNotBlank(warehouse)) {
+                purchaseOrderBill.setOrderWarehouseId(warehouse.getId());
+                purchaseOrderBill.setOrderWarehouseName(warehouse.getName());
+            }
             User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, filteredDtlList, curUser);
             BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList);
             this.purchaseOrderBillService.processReplenishBill(purchaseOrderBill, filteredDtlList, replenishBill, replenishBillDtlList, curUser);
             return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
-        }else{
+        } else {
             return new MessageBox(true, "保存成功");
         }
     }
-
-
 
 
     @RequestMapping(value = "/findUnitStock.do")
@@ -324,13 +330,13 @@ public class WechatrelenishController extends ApiBaseController {
     public MessageBox findReplenishOrderList(String pageSize, String pageNo, String userId, String sortOrder) {
 
         this.logAllRequestParams();
-        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
-                .getRequest());
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
         User CurrentUser = CacheManager.getUserById(userId);
         String ownerId = CurrentUser.getOwnerId();
-        String id = CurrentUser.getId();
-        if (!id.equals("admin")) {
+        //只要是管理员权限的账号就可以看所有单据
+//        String id = CurrentUser.getId();
+        if (!ownerId.equals("1")) {
             PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
             filters.add(filter);
         }
@@ -349,12 +355,31 @@ public class WechatrelenishController extends ApiBaseController {
         page.setOrder(order);
         page.setPageProperty();
         page = this.replenishBillService.findPage(page, filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
         if (CommonUtil.isNotBlank(page.getRows())) {
             for (ReplenishBill replenishBill : page.getRows()) {
                 User user = CacheManager.getUserById(replenishBill.getBuyahandId());
                 if (CommonUtil.isNotBlank(user)) {
                     replenishBill.setBuyahandName(user.getName());
                 }
+                Unit unit = CacheManager.getUnitById(replenishBill.getOwnerId());
+                if (unit == null) {
+                    replenishBill.setWarehouseName("");
+                } else {
+                    replenishBill.setWarehouseName(unit.getName());
+                }
+
+                List<ReplenishStyleVO> styleList = this.replenishBillService.findStyleListByBillNo(replenishBill.getBillNo());
+
+                for (ReplenishStyleVO styleVO : styleList) {
+                    String imgUrl = StyleUtil.returnImageUrl(styleVO.getStyleId(), rootPath);
+                    styleVO.setImgUrl(imgUrl);
+                    Style style = CacheManager.getStyleById(styleVO.getStyleId());
+                    if (CommonUtil.isNotBlank(style)) {
+                        styleVO.setStyleName(style.getStyleName());
+                    }
+                }
+                replenishBill.setStyleVOList(styleList);
             }
         }
         return new MessageBox(true, "success", page);
@@ -394,7 +419,7 @@ public class WechatrelenishController extends ApiBaseController {
                 replenishBillDtl.setBuyahandName(orderDtlUser.getName());
             }
             String rootPath = this.getSession().getServletContext().getRealPath("/");
-            String imgUrl = ImgUtil.fetchImgUrl(replenishBillDtl.getStyleId(), rootPath);
+            String imgUrl = StyleUtil.returnImageUrl(replenishBillDtl.getStyleId(), rootPath);
             replenishBillDtl.setUrl(imgUrl);
         }
         replenishBill.setDtlList(replenishBillDtlList);
@@ -483,41 +508,75 @@ public class WechatrelenishController extends ApiBaseController {
         this.logAllRequestParams();
         PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(purchaseNo);
         User buyer = CacheManager.getUserById(purchaseOrderBill.getBuyahandId());
-        if(CommonUtil.isNotBlank(buyer)){
+        if (CommonUtil.isNotBlank(buyer)) {
             purchaseOrderBill.setBuyahandName(buyer.getName());
         }
         List<PurchaseOrderBillDtl> billDtls = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseNo);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for (PurchaseOrderBillDtl dtl : billDtls) {
+            String imgUrl = StyleUtil.returnImageUrl(dtl.getStyleId(), rootPath);
+            dtl.setImgUrl(imgUrl);
+            Style style = CacheManager.getStyleById(dtl.getStyleId());
+            if (CommonUtil.isNotBlank(style)) {
+                dtl.setStyleName(style.getStyleName());
+            }
+        }
         purchaseOrderBill.setDtlList(billDtls);
         return new MessageBox(true, "success", purchaseOrderBill);
     }
 
     /**
      * add by Anna
+     *
      * @param sbillDate 开始时间
      * @param ebillDate 结束时间
-     * 进销存信息内查看采购量-详细
+     *                  进销存信息内查看采购量-详细
      */
     @RequestMapping(value = "/findPurchaseByStyleId.do")
     @ResponseBody
-    public Map<String, Object> findPurchaseByStyleId(String styleId,String sbillDate,String ebillDate) throws Exception {
+    public Map<String, Object> findPurchaseByStyleId(String styleId, String sbillDate, String ebillDate) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
-        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findBillDtlByStyleId(styleId,sbillDate,ebillDate);
+        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findBillDtlByStyleId(styleId, sbillDate, ebillDate);
         map.put("purchaseBystyleids", purchaseBystyleids);
         return map;
     }
 
     /**
      * add by Anna
+     *
      * @param sbillDate 开始时间
      * @param ebillDate 结束时间
-     * 进销存信息内查看采购量－总采购量
+     *                  进销存信息内查看采购量－总采购量
      */
     @RequestMapping(value = "/findPurchaseTotal.do")
     @ResponseBody
-    public Map<String, Object> findPurchaseTotal(String styleId,String sbillDate,String ebillDate) throws Exception {
+    public Map<String, Object> findPurchaseTotal(String styleId, String sbillDate, String ebillDate) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
-        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findPurchaseTotByStyleId(styleId,sbillDate,ebillDate);
+        List<PurchaseBystyleid> purchaseBystyleids = this.purchaseOrderBillService.findPurchaseTotByStyleId(styleId, sbillDate, ebillDate);
         map.put("purchaseBystyleids", purchaseBystyleids);
         return map;
     }
+
+    /**
+     * add by Anna 2018-05-15
+     * 补货单内容
+     */
+    @RequestMapping(value = "/findReplenishOrder.do")
+    @ResponseBody
+    public Map<String, Object> findReplenishOrder(String billNo) throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        List<ReplenishStyleVO> replenishStyleVOS = this.replenishBillService.findReplenishStyleVO(billNo);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for (ReplenishStyleVO voList : replenishStyleVOS) {
+            String imgUrl = StyleUtil.returnImageUrl(voList.getStyleId(), rootPath);
+            voList.setImgUrl(imgUrl);
+            Style style = CacheManager.getStyleById(voList.getStyleId());
+            if (CommonUtil.isNotBlank(style)) {
+                voList.setStyleName(style.getStyleName());
+            }
+        }
+        map.put("replenishStyleVOS", replenishStyleVOS);
+        return map;
+    }
+
 }

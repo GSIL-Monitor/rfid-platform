@@ -73,7 +73,10 @@ public class BillConvertUtil {
         if (CommonUtil.isNotBlank(ventory)) {
             purchaseOrderBill.setOrigUnitName(ventory.getName());
         }
-
+        Unit orderWarehouse = CacheManager.getUnitByCode(purchaseOrderBill.getOrderWarehouseId());
+        if(CommonUtil.isNotBlank(orderWarehouse)){
+            purchaseOrderBill.setOrderWarehouseName(orderWarehouse.getName());
+        }
         Unit dest = CacheManager.getUnitByCode(purchaseOrderBill.getDestId());
         purchaseOrderBill.setDestName(dest.getName());
         Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
@@ -523,10 +526,10 @@ public class BillConvertUtil {
         Long totQty = 0L;
         List<InitDtl> initDtlList = new ArrayList<>();
         for (LabelChangeBillDel dtl : labelChangeBillDels) {
-                InitDtl detail = new InitDtl();
-                detail.setId(taskId + "-" + dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
-                detail.setStyleId(dtl.getStyleId()+newStylesuffix);
-                Style style= CacheManager.getStyleById(dtl.getStyleId());
+            InitDtl detail = new InitDtl();
+            detail.setId(taskId + "-" + dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
+            detail.setStyleId(dtl.getStyleId()+newStylesuffix);
+            Style style= CacheManager.getStyleById(dtl.getStyleId());
                /* detail.setStyleName(style.getStyleName());
                 detail.setColorName(dtl.getColorId());
                 detail.setSizeName(dtl.getSizeId());*/
@@ -3567,7 +3570,22 @@ public class BillConvertUtil {
         }
 
     }
-
+    /**
+     * add by yushen 采购单入库后，反写补货单入库数量
+     */
+    public static void convertPurchaseToReplenish(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtlList) {
+        replenishBill.setTotInQty(purchaseOrderBill.getTotInQty() + replenishBill.getTotInQty());
+        Map<String ,PurchaseOrderBillDtl> purchaseDtlMap = new HashMap<>();
+        for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
+            purchaseDtlMap.put(pDtl.getSku(), pDtl);
+        }
+        for (ReplenishBillDtl rDtl : replenishBillDtlList){
+            String currentSku = rDtl.getSku();
+            if(CommonUtil.isNotBlank(purchaseDtlMap.get(currentSku))){
+                rDtl.setInQty(purchaseDtlMap.get(currentSku).getInQty() + rDtl.getInQty());
+            }
+        }
+    }
     public static  void covertToLabelChangeBill(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,User curUser){
         if (CommonUtil.isNotBlank(curUser)) {
             labelChangeBill.setOprId(curUser.getCode());

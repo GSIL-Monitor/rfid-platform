@@ -76,7 +76,7 @@ public class WXProductApiController extends ApiBaseController {
         page = this.styleService.findPage(page, filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(Style d : page.getRows()){
-            String imgUrl = ImgUtil.fetchImgUrl(d.getStyleId(), rootPath);
+            String imgUrl = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
             d.setUrl(imgUrl);
             //PropertyKey propertyKey = this.propertyService.findPropertyKeyBytypeAndCode(d.getClass1());
             //d.setClass1Name(propertyKey.getName());
@@ -173,7 +173,7 @@ public class WXProductApiController extends ApiBaseController {
     public MessageBox getStyleByIdWS(String styleId) throws Exception{
         Style s = CacheManager.getStyleById(styleId);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
-        String imgUrl = ImgUtil.fetchImgUrl(styleId, rootPath);
+        String imgUrl = StyleUtil.returnImageUrl(styleId, rootPath);
         s.setUrl(imgUrl);
         return this.returnSuccessInfo("ok", s);
     }

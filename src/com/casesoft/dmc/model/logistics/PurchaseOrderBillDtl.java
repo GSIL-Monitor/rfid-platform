@@ -1,6 +1,9 @@
 package com.casesoft.dmc.model.logistics;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Alvin on 2017-06-13.
@@ -37,13 +40,14 @@ public class PurchaseOrderBillDtl extends BaseBillDtl {
     private Integer printQty;//待打印数量
 
     @Column()
-    private String expectTime;//预计时间
+    @JSONField(format = "yyyy-MM-dd")
+    private Date expectTime;//预计时间
 
-    public String getExpectTime() {
+    public Date getExpectTime() {
         return expectTime;
     }
 
-    public void setExpectTime(String expectTime) {
+    public void setExpectTime(Date expectTime) {
         this.expectTime = expectTime;
     }
 

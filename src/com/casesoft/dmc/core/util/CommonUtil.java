@@ -335,6 +335,38 @@ public class CommonUtil {
     // int asciiInt = Integer.parseInt(asciiStr);
     return starStr + (char) Integer.parseInt(asciiStr, 16) + endStr;
   }
+  /**
+   * 判断字符串是否为十六进制
+   * @param str 传入字符串
+   * @Author Alvin
+   * */
+  public  static boolean isHexNumberRex(String str){
+    Pattern p = Pattern.compile("^[0][x][0-9a-fA-F]+$");
+    Matcher matcher = p.matcher(str);
+    return matcher.matches();
+  }
+  /**
+   * 判断字符串是否为十进制数字
+   * *@param str 传入字符串
+   * @Author Alvin
+   * */
+  public static boolean isOctNumberRex(String str){
+    Pattern p = Pattern.compile("^[0][x][0-9]+$");
+    Matcher matcher = p.matcher(str);
+    return matcher.matches();
+  }
+
+  /*
+  *删除字符串末尾多余的0
+  *@param str 传入字符串
+  *@Author Alvin
+  * */
+  public static String delZero(String src) {
+    if (src.endsWith("0"))
+      return delZero(src.substring(0, src.length() - 1));
+    else
+      return src;
+  }
 
   public static String getSuccessJson(String msg) {
     return "{\"success\":\"true\",\"msg\":\"" + msg + "\"}";
