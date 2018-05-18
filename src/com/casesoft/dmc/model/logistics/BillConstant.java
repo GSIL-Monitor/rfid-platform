@@ -77,4 +77,9 @@ public class BillConstant {
         public final static String Series="CS";
         public final static String Price="PC";
     }
+
+    public final static class replenishOption{
+        public final static String Convert = "CONVERT";
+        public final static String Cancel = "CANCEL";
+    }
 }
