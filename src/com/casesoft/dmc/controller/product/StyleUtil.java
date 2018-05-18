@@ -8,6 +8,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.FileUtil;
 import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.vo.TagFactory;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
@@ -39,6 +40,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static javax.swing.plaf.basic.BasicHTML.propertyKey;
 
 public class StyleUtil {
 
@@ -466,10 +469,13 @@ public class StyleUtil {
                     stylenew.setStyleId(styleId + seriesid);
 
                     PricingRules series = pricingRulesService.get("series", seriesid);
-                    stylenew.setPrice(formerstyle.getPreCast()*series.getRule1());
-                    stylenew.setPuPrice(formerstyle.getPreCast()*series.getRule3());
+                    stylenew.setPrice(CommonUtil.doubleChange(formerstyle.getPreCast()*series.getRule1(),1));
+                    stylenew.setPuPrice(CommonUtil.doubleChange(stylenew.getPrice()*series.getRule3(),1));
+                    stylenew.setWsPrice(CommonUtil.doubleChange(stylenew.getPrice()*series.getRule2(),1));
+                    stylenew.setClass9(seriesid);
                     list.add(stylenew);
-                    List<Product> productList = productService.findByStyleId(styleId);
+
+                    /*List<Product> productList = productService.findByStyleId(styleId);
                     for(int a=0;a<productList.size();a++){
                         Product product = productList.get(a);
                         Product productnew=new Product();
@@ -482,8 +488,41 @@ public class StyleUtil {
                         productnew.setCode(styleId +labelChangeBill.getNowclass9().split("-")[1]+productnew.getColorId()+productnew.getSizeName());
                         sum++;
                         listproduct.add(productnew);
-                    }
+                    }*/
                 }
+                String code=styleId +labelChangeBill.getNowclass9().split("-")[1]+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId();
+                Product productByCode = CacheManager.getProductByCode(code);
+                if(CommonUtil.isBlank(productByCode)){
+                    Product oldProperty= CacheManager.getProductByCode(labelChangeBillDels.get(i).getSku());
+                    if(CommonUtil.isNotBlank(oldProperty)){
+                        Product productnew=new Product();
+                        BeanUtils.copyProperties(oldProperty,productnew);
+                        String maxProductId = productService.getMaxProductId();
+                        String id = ProductUtil.getNewProductId(Integer.parseInt(maxProductId)+sum);
+                        productnew.setId(id);
+                        productnew.setStyleId(styleId +seriesid);
+                        productnew.setCode(styleId +labelChangeBill.getNowclass9().split("-")[1]+productnew.getColorId()+productnew.getSizeName());
+                        listproduct.add(productnew);
+                    }else{
+                        Product productnew=new Product();
+                        String maxProductId = productService.getMaxProductId();
+                        String id = ProductUtil.getNewProductId(Integer.parseInt(maxProductId)+sum);
+                        productnew.setId(id);
+                        productnew.setStyleId(styleId +seriesid);
+                        productnew.setCode(styleId +labelChangeBill.getNowclass9().split("-")[1]+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId());
+                        productnew.setStyleName(style.getStyleName());
+                        productnew.setColorId(labelChangeBillDels.get(i).getColorId());
+                        productnew.setColorName(labelChangeBillDels.get(i).getColorId());
+                        productnew.setSizeId(labelChangeBillDels.get(i).getSizeId());
+                        productnew.setSizeName(labelChangeBillDels.get(i).getSizeId());
+                        productnew.setIsDeton(0);
+                        listproduct.add(productnew);
+                    }
+
+
+                    sum++;
+                }
+
             }
             map.put("newStylesuffix",seriesid);
         }
@@ -498,10 +537,11 @@ public class StyleUtil {
                     BeanUtils.copyProperties(formerstyle,stylenew);
                     stylenew.setId(styleId + BillConstant.styleNew.PriceDiscount);
                     stylenew.setStyleId(styleId + BillConstant.styleNew.PriceDiscount);
-                    stylenew.setPrice(formerstyle.getPrice()*labelChangeBillDels.get(i).getDiscount());
-                    stylenew.setPuPrice(formerstyle.getPuPrice()*labelChangeBillDels.get(i).getDiscount());
+                    stylenew.setPrice(CommonUtil.doubleChange(formerstyle.getPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
+                    stylenew.setPuPrice(CommonUtil.doubleChange(formerstyle.getPuPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
+                    stylenew.setWsPrice(CommonUtil.doubleChange(formerstyle.getWsPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
                     list.add(stylenew);
-                    List<Product> productList = productService.findByStyleId(styleId);
+                    /*List<Product> productList = productService.findByStyleId(styleId);
                     for(int a=0;a<productList.size();a++){
                         Product product = productList.get(a);
                         Product productnew=new Product();
@@ -512,7 +552,37 @@ public class StyleUtil {
                         productnew.setCode(styleId +BillConstant.styleNew.PriceDiscount+productnew.getColorId()+productnew.getSizeName());
                         sum++;
                         listproduct.add(productnew);
+                    }*/
+                }
+                String code=styleId +BillConstant.styleNew.PriceDiscount+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId();
+                Product productByCode = CacheManager.getProductByCode(code);
+                if(CommonUtil.isBlank(productByCode)){
+                    Product oldProperty= CacheManager.getProductByCode(labelChangeBillDels.get(i).getSku());
+                    if(CommonUtil.isNotBlank(oldProperty)){
+                        Product productnew=new Product();
+                        BeanUtils.copyProperties(oldProperty,productnew);
+                        String maxProductId = productService.getMaxProductId();
+                        String id = ProductUtil.getNewProductId(Integer.parseInt(maxProductId)+sum);
+                        productnew.setId(id);
+                        productnew.setStyleId(styleId +BillConstant.styleNew.PriceDiscount);
+                        productnew.setCode(styleId +BillConstant.styleNew.PriceDiscount+productnew.getColorId()+productnew.getSizeName());
+                        listproduct.add(productnew);
+                    }else{
+                        Product productnew=new Product();
+                        String maxProductId = productService.getMaxProductId();
+                        String id = ProductUtil.getNewProductId(Integer.parseInt(maxProductId)+sum);
+                        productnew.setId(id);
+                        productnew.setStyleId(styleId +BillConstant.styleNew.PriceDiscount);
+                        productnew.setCode(styleId +BillConstant.styleNew.PriceDiscount+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId());
+                        productnew.setStyleName(style.getStyleName());
+                        productnew.setColorId(labelChangeBillDels.get(i).getColorId());
+                        productnew.setColorName(labelChangeBillDels.get(i).getColorId());
+                        productnew.setSizeId(labelChangeBillDels.get(i).getSizeId());
+                        productnew.setSizeName(labelChangeBillDels.get(i).getSizeId());
+                        productnew.setIsDeton(0);
+                        listproduct.add(productnew);
                     }
+                    sum++;
                 }
             }
             map.put("newStylesuffix",BillConstant.styleNew.PriceDiscount);

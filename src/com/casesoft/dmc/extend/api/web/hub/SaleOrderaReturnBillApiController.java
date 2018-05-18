@@ -50,11 +50,16 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 		List<SaleOrderReturnBill> billList =this.saleOrderReturnBillService.find(filterList);
 		for(SaleOrderReturnBill sb:billList){
 			if(CommonUtil.isNotBlank(sb.getOrigUnitId())){
-				if(sb.getCustomerType().equals(BillConstant.customerType.Customer)){
-					sb.setOrigUnitName(CacheManager.getCustomerById(sb.getOrigUnitId()).getName());
-				}
-				else{
-					sb.setOrigUnitName(CacheManager.getUnitByCode(sb.getOrigUnitId()).getName());
+				if(CommonUtil.isNotBlank(sb.getCustomerType())) {
+					if (sb.getCustomerType().equals(BillConstant.customerType.Customer)) {
+						if(CommonUtil.isNotBlank(CacheManager.getCustomerById(sb.getOrigUnitId()))){
+							sb.setOrigUnitName(CacheManager.getCustomerById(sb.getOrigUnitId()).getName());
+						}
+					} else {
+						if(CommonUtil.isNotBlank(CacheManager.getUnitByCode(sb.getOrigUnitId()))){
+							sb.setOrigUnitName(CacheManager.getUnitByCode(sb.getOrigUnitId()).getName());
+						}
+					}
 				}
 			}
 		}
@@ -97,7 +102,7 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 			User user = CacheManager.getUserById(userId);
 			BillConvertUtil.convertToSaleOrderReturnBill(saleOrderReturnBill, saleOrderReturnBillDtls, user);
 			this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls);
-			return returnSuccessInfo("保存成功");
+			return returnSuccessInfo("保存成功",saleOrderReturnBill.getBillNo());
 		}catch (Exception e){
 			e.printStackTrace();
 			return returnFailInfo("服务器处理失败");

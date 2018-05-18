@@ -61,7 +61,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
         //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
 
         page.setPageProperty();
-        String constructorParameter="id,beforeclass9,nowclass9,changeType,billDate,origId,remark,billNo";
+        String constructorParameter="id,beforeclass9,nowclass9,changeType,billDate,origId,remark,billNo,status";
         page = this.labelChangeBillService.findNewPage(page, filters,LabelChangeBill.class,LabelChangeBillDel.class,constructorParameter);
         for(int i=0;i<page.getRows().size();i++){
             LabelChangeBill labelChangeBill = page.getRows().get(i);
@@ -106,7 +106,13 @@ public class LabelChangeBillController extends BaseController implements ILogist
             return messageBox;
         }catch (Exception e){
             e.printStackTrace();
-            return new MessageBox(false, e.getMessage());
+            String messge=e.getMessage();
+            if(messge.equals("Could not execute JDBC batch update")){
+                return new MessageBox(false, "已有商品");
+            }else{
+                return new MessageBox(false, e.getMessage());
+            }
+
         }
 
 
@@ -121,7 +127,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
     @ResponseBody
     @Override
     public ModelAndView edit(String billNo) throws Exception {
-        LabelChangeBill labelChangeBill = this.labelChangeBillService.getOnClassHaveConstructor("billNo", billNo,LabelChangeBill.class);
+        LabelChangeBill labelChangeBill = this.labelChangeBillService.get("billNo", billNo);
         ModelAndView mv = new ModelAndView("/views/logistics/labelChangeBillDel");
         mv.addObject("pageType", "edit");
         mv.addObject("labelChangeBill", labelChangeBill);
@@ -355,11 +361,6 @@ public class LabelChangeBillController extends BaseController implements ILogist
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
         return null;
-    }
-    @Test
-    public void text(){
-        LabelChangeBillService labelChangeBillService=new LabelChangeBillService();
-        labelChangeBillService.test(LabelChangeBill.class);
     }
 
 

@@ -461,15 +461,14 @@
             },
             type: "POST",
             success: function (msg) {
-                cs.closeProgressBar();
 
+                debugger;
                 if (msg.success) {
                     $.gritter.add({
                         text: msg.msg,
                         class_name: 'gritter-success  gritter-light'
                     });
-                    $("#search_billNo").val(msg.result);
-
+                    $("#changeLaber-dialog").modal("hide");
                     /*$("#addDetailgrid").jqGrid('setGridParam', {
                      datatype: "json",
                      page: 1,
