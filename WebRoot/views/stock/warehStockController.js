@@ -102,7 +102,6 @@ function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast");
 }
 function search() {
-
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var filters = serializeToFilter($("#searchForm"));
     var isok=true;

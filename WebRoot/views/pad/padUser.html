@@ -1,51 +1,36 @@
+<!--<%&#45;&#45;
+  Created by IntelliJ IDEA.
+  User: admin
+  Date: 2018/5/3
+  Time: 13:53
+  To change this template use File | Settings | File Templates.
+&#45;&#45;%>
+<%@ page language="java"
+         import="java.util.*,com.casesoft.dmc.model.sys.User"
+         pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+    User user = (User) session.getAttribute("userSession");
+%>-->
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>自助收银</title>
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="../../Olive/assets/js/jquery.js"></script>
     <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="css/padBase.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
-        .row{
-            height:15%;
-        }
-        .row1{
-            height: 70%;
-        }
-        .row2{
-            height: 15%;
-        }
-        .row3{
-            height: 100%;
-        }
-        .center-vertical {
-            position:relative;
-            top:50%;
-            transform:translateY(-50%)
-        }
-        .btns {
-             width:70%;
-             height:40%;
-             line-height:24px;
-             font-size:24px;
-             background:url('/images/pad/set.png')  no-repeat left top;
-             background-size:contain;
-             color:#0a0a0a;
-         }
-        .btns1 {
-            width:70%;
-            height:40%;
-            line-height:24px;
-            font-size:24px;
-            background:url('/images/pad/scan.png')  no-repeat left top;
-            background-size:contain;
-            color:#0a0a0a;
-        }
+
     </style>
 </head>
-
-<body>
+<body bgcolor="#00008b">
     <div class="row col-lg-12 col-md-12 col-sm-12 ">
             <h1 align="center" class="center-vertical">
                 自助收银
@@ -103,6 +88,7 @@
     basePath=theRequest.basePath;
     userId=theRequest.userId;
     ownerId=theRequest.ownerId;
+
     $(function () {
         $.ajax({
             dataType: "json",

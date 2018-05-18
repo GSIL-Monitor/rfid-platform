@@ -1,5 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
+import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -21,6 +23,9 @@ public class ReplenishBill extends BaseBill{
     private String buyahandId;//买手的id
     @Column()
     private String replenishType;//补货类型 1.是购货 2.是退货
+
+    @Column()
+    private Long totInQty=0L;
 
     public String getReplenishType() {
         return replenishType;
@@ -49,7 +54,17 @@ public class ReplenishBill extends BaseBill{
     }
 
     @Transient
+    private String warehouseName;
+
+    public String getWarehouseName() {return warehouseName;}
+
+    public void setWarehouseName(String warehouseName) {this.warehouseName = warehouseName;}
+
+    @Transient
     private List<ReplenishBillDtl> dtlList;
+
+    @Transient
+    private List<ReplenishStyleVO> styleVOList;
 
     public String getId() {
         return id;
@@ -73,5 +88,18 @@ public class ReplenishBill extends BaseBill{
 
     public void setDtlList(List<ReplenishBillDtl> dtlList) {
         this.dtlList = dtlList;
+    }
+
+
+    public List<ReplenishStyleVO> getStyleVOList() { return styleVOList; }
+
+    public void setStyleVOList(List<ReplenishStyleVO> styleVOList) { this.styleVOList = styleVOList; }
+
+    public Long getTotInQty() {
+        return totInQty;
+    }
+
+    public void setTotInQty(Long totInQty) {
+        this.totInQty = totInQty;
     }
 }
