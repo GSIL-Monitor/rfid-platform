@@ -220,7 +220,7 @@ public class ParisService implements IBillWSService {
                     filters.add(new PropertyFilter("EQS_billNo", billId));
                 }
                 if (CommonUtil.isNotBlank(unitId)) {
-                    filters.add(new PropertyFilter("EQS_origUnitId", unitId));
+                    filters.add(new PropertyFilter("EQS_destUnitId", unitId));
                 }
                 if (CommonUtil.isNotBlank(beginDate)) {
                     filters.add(new PropertyFilter("GED_billDate", beginDate));
@@ -701,6 +701,7 @@ public class ParisService implements IBillWSService {
             case Constant.Token.Shop_Transfer_Outbound:
             case Constant.Token.Storage_Outbound_agent:
             case Constant.Token.Storage_refoundOut_customer:
+            case Constant.Token.Storage_Refund_Outbound:
                 List<String> ocodeList = TaskUtil.getRecordCodes(bus.getRecordList());
                 String ocodes = TaskUtil.getSqlStrByList(ocodeList, EpcStock.class, "code");
                 codeStr = ocodes;
