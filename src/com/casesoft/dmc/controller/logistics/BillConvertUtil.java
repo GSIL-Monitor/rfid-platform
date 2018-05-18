@@ -3570,7 +3570,22 @@ public class BillConvertUtil {
         }
 
     }
-
+    /**
+     * add by yushen 采购单入库后，反写补货单入库数量
+     */
+    public static void convertPurchaseToReplenish(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtlList) {
+        replenishBill.setTotInQty(purchaseOrderBill.getTotInQty() + replenishBill.getTotInQty());
+        Map<String ,PurchaseOrderBillDtl> purchaseDtlMap = new HashMap<>();
+        for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
+            purchaseDtlMap.put(pDtl.getSku(), pDtl);
+        }
+        for (ReplenishBillDtl rDtl : replenishBillDtlList){
+            String currentSku = rDtl.getSku();
+            if(CommonUtil.isNotBlank(purchaseDtlMap.get(currentSku))){
+                rDtl.setInQty(purchaseDtlMap.get(currentSku).getInQty() + rDtl.getInQty());
+            }
+        }
+    }
     public static  void covertToLabelChangeBill(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,User curUser){
         if (CommonUtil.isNotBlank(curUser)) {
             labelChangeBill.setOprId(curUser.getCode());
