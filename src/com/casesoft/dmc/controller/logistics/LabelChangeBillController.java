@@ -61,7 +61,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
         //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
 
         page.setPageProperty();
-        String constructorParameter="id,beforeclass9,nowclass9,changeType,billDate,origId,remark,billNo";
+        String constructorParameter="id,beforeclass9,nowclass9,changeType,billDate,origId,remark,billNo,status";
         page = this.labelChangeBillService.findNewPage(page, filters,LabelChangeBill.class,LabelChangeBillDel.class,constructorParameter);
         for(int i=0;i<page.getRows().size();i++){
             LabelChangeBill labelChangeBill = page.getRows().get(i);

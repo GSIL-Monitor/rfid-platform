@@ -469,9 +469,9 @@ public class StyleUtil {
                     stylenew.setStyleId(styleId + seriesid);
 
                     PricingRules series = pricingRulesService.get("series", seriesid);
-                    stylenew.setPrice(formerstyle.getPreCast()*series.getRule1());
-                    stylenew.setPuPrice(stylenew.getPrice()*series.getRule3());
-                    stylenew.setWsPrice(stylenew.getPrice()*series.getRule2());
+                    stylenew.setPrice(CommonUtil.doubleChange(formerstyle.getPreCast()*series.getRule1(),1));
+                    stylenew.setPuPrice(CommonUtil.doubleChange(stylenew.getPrice()*series.getRule3(),1));
+                    stylenew.setWsPrice(CommonUtil.doubleChange(stylenew.getPrice()*series.getRule2(),1));
                     stylenew.setClass9(seriesid);
                     list.add(stylenew);
 

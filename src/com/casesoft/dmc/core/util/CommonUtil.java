@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -603,6 +604,18 @@ public class CommonUtil {
     //endregion
   }
 
+  /**
+   *
+   * @param num 要改变的Double
+   * @param digit 保留几位
+   * @return
+   */
+  public static Double doubleChange(Double num,int digit){
+    BigDecimal bg = new BigDecimal(num);
+    double numnew = bg.setScale(digit, BigDecimal.ROUND_HALF_UP).doubleValue();
+    return numnew;
+  }
+
 
   /**
    * @Description:加密-32位小写
@@ -675,7 +688,7 @@ public class CommonUtil {
         hql+=" and "+propertyName+" like '%"+value+"%'";
       }
     }
-    hql+=" and t.status <> -1";
+    hql+=" and t.status <> -1 order by t.billDate desc";
     return hql;
   }
 
