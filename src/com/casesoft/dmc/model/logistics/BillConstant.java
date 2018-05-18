@@ -35,6 +35,7 @@ public class BillConstant {
         public final static String inventoryMergeBill="MG";//合并单
         public final static String ReplenishiBill="RE";//补货单
         public final static String ReplenishiBillMerge="ME";//补货合并单
+        public final static String labelChangeBill="LC";//补货合并单
     }
     public final static  class PayBill{
         public final static  String PayForBill ="PB";//付款单
@@ -64,5 +65,16 @@ public class BillConstant {
         public final static String Agent = "CT-AT";     //省代 2
         public final static String Shop = "CT-ST";      // 门店 4
         public final static String Customer ="CT-LS";   //零售
+    }
+
+    public final static class styleNew{
+        public final static String Alice = "AA";
+        public final static String AncientStone = "AS";
+        public final static String PriceDiscount = "PD";
+    }
+
+    public  final static class ChangeType{
+        public final static String Series="CS";
+        public final static String Price="PC";
     }
 }

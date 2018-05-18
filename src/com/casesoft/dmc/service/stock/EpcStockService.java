@@ -117,7 +117,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     @Override
     public List<EpcStock> find(List<PropertyFilter> filters) {
-        return null;
+        return this.epcStockDao.find(filters);
     }
 
     public List<EpcStock> findEpcInCodes(String codes) {

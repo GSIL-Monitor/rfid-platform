@@ -6,6 +6,8 @@ import java.util.List;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
@@ -293,6 +295,89 @@ public class WarehStockController extends BaseController {
         }
 
     }
+    /**标签管理code检验是否入库
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @param code    唯一码
+     * @param type 出库入库类型 0,出库,1入库
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     */
+    @RequestMapping("checkLaberEpcStockAndFindDate")
+    @ResponseBody
+    public MessageBox checkLaberEpcStockAndFindDate(String warehId, String code, String billNo,Integer type,String class9){
+        try {
+            if (code.length() != 13) {
+                String epcCode = code.toUpperCase();
+                code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+            }
+
+            EpcStock epcAllowInCode = this.epcStockService.findEpcAllowInCode(code);
+            Style style = CacheManager.getStyleById(epcAllowInCode.getStyleId());
+            if(!style.getClass9().equals(class9)){
+                return new MessageBox(false, "唯一码:" + code + "系列不对");
+            }
+            if (CommonUtil.isNotBlank(billNo)) {
+                List<Business> businessList = this.taskService.findBusinessByBillNo(billNo);
+                if (CommonUtil.isNotBlank(businessList)) {
+                    List<String> taskIdList = new ArrayList<>();
+                    for (Business business : businessList) {
+                        taskIdList.add(business.getId());
+                    }
+                    String taskIdStr = TaskUtil.getSqlStrByList(taskIdList, Record.class, "taskId");
+                    List<Record> recordList = this.taskService.findRecordByTaskIdAndType(taskIdStr, type);
+                    List<String> codeList = new ArrayList<>();
+                    for (Record record : recordList) {
+                        codeList.add(record.getCode());
+                    }
+                    if (codeList.contains(code)) {
+                        if (type == 0) {
+                            return new MessageBox(false, "唯一码:" + code + " 在本单已出，不能重复出库");
+                        } else if (type == 1) {
+                            return new MessageBox(false, "唯一码:" + code + " 在本单已入，不能重复入库");
+                        }
+                    }
+                }
+            }
+
+            EpcStock epcStock;
+
+            List<EpcStock> epcStockList = new ArrayList<>();
+            if (Constant.TaskType.Outbound == type) {
+                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
+                if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                    epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                }else{
+                    epcStock = epcStockList.get(0);
+                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    epcStock.setSaleCycle(cycle);
+                }
+
+            } else {
+                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
+                if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                }else{
+                    epcStock = epcStockList.get(0);
+                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    epcStock.setSaleCycle(cycle);
+                }
+            }
+            if (CommonUtil.isNotBlank(epcStock)) {
+                StockUtil.convertEpcStock(epcStock);
+                return new MessageBox(true, "", epcStock);
+            } else {
+                if (Constant.TaskType.Outbound == type) {
+                    return new MessageBox(false, "唯一码:" + code + "不能出库");
+                } else {
+                    return new MessageBox(false, "唯一码:" + code + "不能入库");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+
+    }
+
 
     /**
      * @param code 唯一码

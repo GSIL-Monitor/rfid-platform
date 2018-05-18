@@ -227,6 +227,16 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         page = this.propertyKeyService.findPage(page, filters);
         return page;
     }
+    @RequestMapping("/findclass9name")
+    @ResponseBody
+    public List<PropertyKey> findclass9name() throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+
+        List<PropertyKey> propertyKeys = this.propertyKeyService.find(filters);
+        return propertyKeys;
+    }
 
 
 }
