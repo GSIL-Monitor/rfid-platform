@@ -67,3 +67,11 @@
     background-size:contain;
     color:#0a0a0a;
 }
+.footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
+
+.ui-jqgrid .ui-jqgrid-sdiv {position: relative; margin: 0; padding:0; overflow: auto; text-align:left;}
+

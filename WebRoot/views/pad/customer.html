@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100% ; width: 100%">
+<head>
+    <meta charset="utf-8">
+    <title>自助收银</title>
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+    <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="css/padBase.css">
+    <style>
+        .footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body style="height: 100%;width: 100%">
+<div class="row col-lg-12 col-md-12 col-sm-12">
+    <h1 align="center" style="height: 100%">
+        自助收银
+    </h1>
+</div>
+<div class="row1 col-lg-12 col-md-12 col-sm-12 center" >
+    <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 20%">
+        <label class="col-lg-5 col-md-5 col-sm-5 " for="search_origUnitId">选择客户</label>
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="input-group">
+                <input class="form-control" id="search_origUnitId" type="text"
+                       name="origUnitId" value="" readonly/>
+                <span class="input-group-btn">
+                                <button class="btn btn-sm btn-default" id="search_guest_button"
+                                        type="button" data-toggle="modal" data-target="#modal_pad_cur">
+                                    <i class="ace-icon fa fa-list"></i>
+                                </button>
+                            </span>
+                <input class="form-control" id="search_origUnitName" type="text"
+                       name="origUnitName" value="" readonly/>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 20%">
+        <label class="col-lg-5 col-md-5 col-sm-5 " for="search_discount">整单折扣</label>
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <input class="form-control" id="search_discount" name="discount" readonly>
+            </input>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 20%">
+        <label class="col-lg-5 col-md-5 col-sm-5  control-label" for="pre_Balance">售前余额</label>
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <input class="form-control" id="pre_Balance" name="preBalance"
+                   value="" readonly>
+            </input>
+        </div>
+    </div>
+    <input class="form-control" id="search_origId" name="origId" type="hidden">
+    <input class="form-control" id="search_destId" name="destId" type="hidden">
+    <input id="search_status" name="status" type="hidden"/>
+    <input id="search_ownerId" name="ownerId" type="hidden"/>
+    <input id="returnCode" type="hidden" name="origUnitName"  STYLE="display: none"/>
+</div>
+<div class="row2 col-lg-12 col-md-12 col-sm-12 footer">
+    <div class="col-lg-6 col-md-6 col-sm-6 " style="text-align: left">
+        <button class="btn btn-primary center-vertical" onclick="back() " type="button">上一步</button>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 " style="text-align: right">
+        <button class="btn btn-primary center-vertical" onclick="sureCustomer()" type="button">下一步</button>
+    </div>
+</div>
+<div class="modal fade" id="modal_pad_cur" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header no-padding">
+                <div class="table-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span class="white">&times;</span>
+                    </button>
+                    客户查询
+                </div>
+            </div>
+            <div class="modal-body no-padding">
+                <div class="widget-body">
+                    <div class="widget-main" id="search_unit_Panel">
+                        <form class="form-horizontal" role="form" id="search_guest_Form" >
+                            <div class="form-group">
+                                <label class="col-xs-2 control-label text-right" for="search_guest">客户</label>
+                                <div class="col-xs-8">
+                                    <input class="col-xs-4 form-control" id="search_guest"
+                                           name="filter_LIKES_name_OR_tel_OR_vipMessage"
+                                           type="text" placeholder="输入名称或电话或VIP"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-4 col-xs-offset-4">
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="search_Guest()">
+                                        <i class="ace-icon fa fa-search"></i>
+                                        <span class="bigger-110">查询</span>
+                                    </button>
+                                    <button type="reset" class="btn btn-sm btn-warning">
+                                        <i class="ace-icon fa fa-undo"></i>
+                                        <span class="bigger-110">清空</span></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <table id="guestSelect_Grid"></table>
+                <div id="guestSelect_Page"></div>
+            </div>
+            <div class="modal-footer no-margin-top">
+                <div id="searchGuestDialog_buttonGroup"/>
+            </div>
+        </div>
+        <div class="modal-content" style="text-align: right">
+            <button type='button'  class='btn btn-primary' onclick='confirm_selected_GuestId_sale()'>确认</button>
+        </div>
+    </div>
+</div>
+<script>
+    var basePath;//路径
+    var defalutCustomerId;//默认客户
+    var owingValue;//默认客户售前余额
+    var ownerId;
+    var url;
+    basePath=localStorage.getItem("basePath");
+    defalutCustomerId=localStorage.getItem("defalutCustomerId");
+    owingValue=localStorage.getItem("owingValue");
+    ownerId = localStorage.getItem("ownerId");
+    $(function () {
+        if (localStorage.getItem("back")==2){
+            $("#search_origUnitId").val(localStorage.getItem("origUnitId"));
+            $("#search_origUnitName").val(localStorage.getItem("origUnitName"));
+            $("#search_discount").val(localStorage.getItem("discount"));
+            $("#pre_Balance").val(0-localStorage.getItem("owingValue"));
+        }else {
+            $("#search_origUnitId").val(defalutCustomerId);
+            $("#pre_Balance").val(owingValue);
+            $.ajax({
+                url: basePath+"pad/customer/addWS.do",
+                data:{
+                    defalutCustomerId:defalutCustomerId
+                },
+                cache: false,
+                async: false,
+                type: "POST",
+                success: function (msg) {
+                    var origUnitName = msg.result.name;
+                    var discount = msg.result.discount;
+                    var origUnitId = msg.result.id;
+                    $("#search_origUnitName").val(origUnitName);
+                    $("#search_discount").val(discount);
+                    localStorage.setItem("customerType",msg.result.unitType);
+                    localStorage.setItem("origUnitId",origUnitId);
+                    localStorage.setItem("origUnitName",origUnitName);
+                    localStorage.setItem("discount",discount);
+                }
+            });
+        }
+        url= basePath + "pad/customer/pageWS.do?filter_EQI_status=1";
+        $("#guestSelect_Grid").jqGrid({
+            height: 350,
+            url:url,
+            mtype: "POST",
+            datatype: "json",
+            colModel: [
+                {name: 'id', label: 'id', width: 40},
+                {name: 'name', label: '名称', editable: true, width: 30},
+                {name: 'unitType', hidden: true},
+                {name: 'discount', hidden: true},
+                {name: 'owingValue', hidden: true},
+                {
+                    label: '客户类型', editable: true, width: 30,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.unitType == "CT-AT") {
+                            return "省代客户";
+                        } else if (rowObject.unitType == "CT-ST") {
+                            return "门店客户";
+                        } else {
+                            return "零售客户";
+                        }
+                    }
+                },
+                {name: 'unitName', label: '所属门店', width: 30},
+                {name: 'defaultWarehId', hidden: true},
+                {name: 'tel', label: '电话', width: 50}
+            ],
+            viewrecords: true,
+            autowidth: true,
+            rownumbers: true,
+            altRows: true,
+            rowNum: 50,
+            rowList: [10, 20, 50],
+            pager: "#guestSelect_Page",
+            multiselect: false,
+            shrinkToFit: true,
+            sortname: 'id',
+            sortorder: "desc",
+            loadComplete: function(data) {
+                var length=data.rows.length;
+                if(length==1){
+                    $("#guestSelect_Grid").setSelection(data.rows[0].id, true);
+                    confirm_selected_GuestId_sale();
+                }
+                var table = this;
+                setTimeout(function(){
+                    //加载完成后，替换分页按钮图标
+                    updatePagerIcons(table);
+                    enableTooltips(table);
+                }, 0)
+            },
+            ondblClickRow: function (rowid) {
+                confirm_selected_GuestId_sale();
+            }
+        });
+        var parent_column = $("#guestSelect_Grid").closest('.modal-dialog');
+        $("#guestSelect_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
+    });
+
+    function updatePagerIcons(table) {
+        //ui-icon ui-icon-circlesmall-minus
+        var replacement =
+            {
+                'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+                'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+                'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+                'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+            };
+        $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
+            var icon = $(this);
+            var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+            if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+        });
+    }
+    function enableTooltips(table) {
+        $('.navtable .ui-pg-button').tooltip({
+            container : 'body'
+        });
+        $(table).find('.ui-pg-div').tooltip({
+            container : 'body'
+        });
+    }
+
+    function back() {
+        localStorage.setItem("back",1);
+        location.href=basePath+'views/pad/padUser.html';
+    }
+    function sureCustomer() {
+        var origUnitName = $("#search_origUnitName").val();
+        var discount = $("#search_discount").val();
+        location.href=basePath+'views/pad/scanning.html';
+    }
+    function openSearchGuestDialog(){
+        var e1 = document.getElementById('modal_pad_cur');
+        e1.style.visibility =  (e1.style.visibility == "visible"  ) ? "hidden" : "visible";
+    }
+    function search_Guest() {
+        var serializy = $("#search_guest_Form").serializeArray();
+        var param = array2obj(serializy);
+        $("#guestSelect_Grid").jqGrid('setGridParam', {
+            url: url,
+            page: 1,
+            postData: param
+        });
+        $("#guestSelect_Grid").trigger("reloadGrid");
+    }
+    function array2obj(array) {
+        var params = $({});
+        $.each(array, function(i) {
+            var $param = $(this)[0];
+            params.attr($param.name, $param.value);
+        });
+        return params[0];
+    }
+    function confirm_selected_GuestId_sale() {
+        var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+        origUnitId = rowData.id;
+        $("#search_origUnitId").val(origUnitId);
+        $("#search_origUnitName").val(rowData.name);
+        $("#search_customerType").val(rowData.unitType);
+        $("#search_destId").val(rowData.defaultWarehId);
+        $("#pre_Balance").val(0-rowData.owingValue);
+        localStorage.setItem("origUnitName",rowData.name);
+        localStorage.setItem("origUnitId",origUnitId);
+        localStorage.setItem("owingValue",rowData.owingValue);
+        if(rowData.discount==""){
+            localStorage.setItem("discount",100);
+        }else {
+            localStorage.setItem("discount",rowData.discount);
+        }
+        localStorage.setItem("destId",rowData.defaultWarehId);
+        localStorage.setItem("customerType",rowData.unitType);
+        $("#search_discount").val(localStorage.getItem("discount"));
+        $("#modal_pad_cur").modal('hide');
+    }
+</script>
+</body>
+</html>

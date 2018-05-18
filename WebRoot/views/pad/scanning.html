@@ -1,40 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100% ; width: 100%">
 <head>
     <meta charset="UTF-8">
     <title>自助收银</title>
-    <script>
-        var taskType;
-        var basePath;
-        var origId;
-        var urlString = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
-        var theRequest = new Object();
-        if ( urlString.indexOf( "?" ) != -1 ) {
-            var str = urlString.substr( 1 );
-        } //substr()方法返回从参数值开始到结束的字符串；
-        var strs = str.split( "&" );
-        for ( var i = 0; i < strs.length; i++ ) {
-            theRequest[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
-        }
-        basePath = theRequest.basePath;
-        origId = theRequest.origId;
-    </script>
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="css/padBase.css">
 
     <script src="../../Olive/assets/js/jquery.js"></script>
     <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <!--grid.locale-en.js这个文件必须在jquery.jqGrid.min.js之前加载，否则会出问题-->
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
     <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+
     <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
     <script src="../../Olive/assets/js/jquery-ui.js"></script>
     <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
     <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
-    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
-    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
     <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
     <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
-    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
-    <link rel="stylesheet" href="../../Olive/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <link href="../../Olive/assets/css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <script src="../../jslib2/constant.js"></script>
+    <script src="../../Olive/plugin/dateFormatUtil.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+
     <style>
         .row{
             height:15%;
@@ -45,69 +41,164 @@
         .row2{
             height: 15%;
         }
-        .row3{
-            height: 100%;
-        }
-        .row4{
-            height: 50%;
-        }
         .center-vertical {
             position:relative;
             top:50%;
             transform:translateY(-50%)
-        }
-        .btnstart{
-            width:80%;
-            height:80%;
-            background:url('/images/pad/start.png')  no-repeat left top;
-            background-size:contain;
-            color:#0a0a0a;
-        }
-        .btnstop{
-            width:80%;
-            height:80%;
-            background:url('/images/pad/stop.png')  no-repeat left top;
-            background-size:contain;
-            color:#0a0a0a;
         }
         .footer {
             width: 100%;
             position: fixed;
             bottom: 0;
         }
+        img#img{
+            display:none;
+        }
+        .ui-jqgrid tr.ui-row-ltr td,
+        .ui-jqgrid tr.ui-row-rtl td {
+            border-bottom: 1px solid #E1E1E1;
+            padding: 6px 4px;
+            border-color: #E1E1E1;
+        }
     </style>
 </head>
-<body>
-    <div class="row col-lg-12 col-md-12 col-sm-12 ">
-        <h1 align="center">
-            自助收银
-        </h1>
+<body style="width: 100%;height: 100%">
+<div class="row col-lg-12 col-md-12 col-sm-12 ">
+    <h1 align="center">
+        自助收银
+    </h1>
+</div>
+<div class="row1 col-lg-12 col-md-12 col-sm-12">
+        <table id="addDetailgrid"></table>
+        <div id="grid-pager" ></div>
+</div>
+<div class="row2 col-lg-12 col-md-12 col-sm-12 center">
+    <label class="col-lg-3 col-md-3 col-sm-3">折后总金额</label>
+    <input class="col-lg-3 col-md-3 col-sm-3" id="discount_Amount" name="discount_Amount" type="text" readonly/>
+    <label class="col-lg-3 col-md-3 col-sm-3">实收总金额</label>
+    <input class="col-lg-3 col-md-3 col-sm-3" id="collect_Amount" name="collect_Amount" type="text"/>
+</div>
+<div class="row2 col-lg-12 col-md-12 col-sm-12 footer">
+    <div class="col-lg-4 col-md-4 col-sm-4 center">
+        <button class="btn btn-primary center-vertical" onclick="back() " type="button">上一步</button>
     </div>
-    <div class="row1 col-lg-12 col-md-12 col-sm-12">
-            <table id="addDetailgrid"></table>
-            <div id="grid-pager"></div>
+    <div class="col-lg-4 col-md-4 col-sm-4 center">
+        <button class="btn btn-primary center-vertical" type="button" onclick="start()">开始扫描</button>
     </div>
-    <div class="row2 col-lg-12 col-md-12 col-sm-12 footer">
-        <div class="col-lg-3 col-md-3 col-sm-3 center">
-            <button class="btn btn-primary center-vertical" onclick="back() " type="button">上一步</button>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 center">
-            <button class="btn btn-primary center-vertical" type="button" onclick="start()">开始扫描</button>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 center">
-            <button class="btn btn-primary center-vertical" onclick="stop()" type="button">停止扫描</button>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 center">
-            <button class="btn btn-primary center-vertical" onclick="sureProduct()" type="button">确认</button>
-        </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 center">
+        <button class="btn btn-primary center-vertical" data-target="#modal_pad_cur" data-toggle="modal" type="button">买单</button>
     </div>
+</div>
 
+<div class="modal fade" id="modal_pad_cur" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header no-padding">
+                <div class="table-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span class="white">&times;</span>
+                    </button>
+                    支付
+                </div>
+            </div>
+            <div class="modal-body no-padding">
+                <div class="widget-body">
+                    <div class="widget-main" id="search_unit_Panel">
+                        <form class="form-horizontal" role="form" id="search_guest_Form" >
+                            <div class="form-group center">
+                                <label class="" >请选择支付方式</label>
+                            </div>
+                            <div class="radio  radio-inline">
+                                <label>
+                                    <input type="radio" name="radio" id="cash_Payment" value="现金支付" checked>现金支付
+                                </label>
+                            </div>
+                            <div class="radio  radio-inline">
+                                <label>
+                                    <input type="radio" name="radio" id="weChat_payment" value="微信支付">微信支付
+                                </label>
+                            </div>
+                            <img src="../../images/pad/weChatM.png" id="img">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-content" style="text-align: right">
+            <button type='button'  class='btn btn-primary' onclick='save()'>确认</button>
+        </div>
+    </div>
+</div>
+
+<div style="display:none">
+    <form id="editForm" role="form">
+
+        <input id="search_billNo" name="billNo" type="hidden"/>
+
+        <input id="search_billDate" name="billDate" type="hidden"/>
+
+        <input id="search_payType" name="payType" type="hidden"/>
+
+        <input id="search_customerType" name="customerTypeId" type="hidden"/>
+
+        <input id="search_destUnitId" type="hidden" name="destUnitId"/>
+
+        <input id="search_destUnitName" type="hidden" name="destUnitName"/>
+
+        <input id="search_actPrice" name="actPrice" type="hidden" step="0.01"/>
+
+        <input id="search_payPrice" name="payPrice" type="hidden" step="0.01"/>
+
+        <input id="pre_Balance" name="preBalance" type="hidden"/>
+
+        <input id="search_destId" name="destId" type="hidden"/>
+
+        <input id="search_origId" name="origId" type="hidden"/>
+
+        <input  id="after_Balance" name="afterBalance" type="hidden"/>
+
+        <input  id="search_discount" name="discount" type="hidden"/>
+
+        <input  id="search_busnissId" type="hidden" name="busnissId"/>
+
+        <input id="form_remark" type="hidden" name="remark"/>
+
+        <input id="search_status" name="status" type="hidden"/>
+
+        <input id="search_ownerId" name="ownerId" type="hidden"/>
+
+        <input id="search_customertyper" name="customerType" type="hidden"/>
+
+        <input  id="search_origUnitId" type="hidden" name="origUnitId"  />
+
+        <input  id="search_origUnitName" type="hidden" name="origUnitName" />
+    </form>
+</div>
 <script>
+    var type = localStorage.getItem("type");
+    var sum_qty;
+    var sum_price;
+    var sum_actPrice;
+    var sum_totActPrice;
+    var destId = localStorage.getItem("destId");
+    var productListInfo = [];
+    var userId = localStorage.getItem("userId");
+    var discount = localStorage.getItem("discount");
+    var taskType = localStorage.getItem("type");
+    var basePath=localStorage.getItem("basePath");
+    var origId = localStorage.getItem("defaultWarehId");
+    var defaultWarehId = localStorage.getItem("defaultWarehId");
+    var customerType = localStorage.getItem("customerType");
+    $('input:radio[id="weChat_payment"]').change(function () {
+        document.getElementById('img').style.display='block';
+    });
+    $('input:radio[id="cash_Payment"]').change(function () {
+        document.getElementById('img').style.display='none';
+    });
     $(function () {
         $("#addDetailgrid").jqGrid({
             height: "auto",
             datatype: "local",
-            url: basePath + "logistics/saleOrder/findBillDtl.do?billNo=SO180508141352998",
             mtype: 'POST',
             colModel: [
                 {name: 'id', label: 'id', hidden: true},
@@ -120,24 +211,13 @@
                 {name: 'statusImg', label: '状态',hidden:true},
                 {name: 'inStatusImg', label: '入库状态',hidden:true},
                 {name: 'outStatusImg', label: '出库状态',hidden:true},
-                {name: 'styleId', label: '款号',hidden:true},
-                {name: 'styleName', label: '款名', width: 40},
+                {name: 'styleId', label: '款号',width: 40},
+                {name: 'styleName', label: '款名', hidden:true},
                 {name: 'colorId', label: '色码', width: 40},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
                 {name: 'sizeName', label: '尺码', width: 40},
-                {
-                    name: 'qty', label: '数量', editable: true, width: 40,
-                    editrules: {
-                        number: true,
-                        minValue: 1
-                    },
-                    editoptions: {
-                        dataInit: function (e) {
-                            $(e).spinner();
-                        }
-                    }
-                },
+                {name: 'qty', label: '数量', width: 40},
                 {name: 'outQty', label: '已出库数量',hidden:true},
                 {name: 'inQty', label: '已入库数量',hidden:true},
                 {name: 'sku', label: 'SKU', width: 50},
@@ -157,16 +237,15 @@
                     }
                 },
                 {
-                    name: 'actPrice', label: '实际价格', editable: true, hidden:true,
+                    name: 'actPrice', label: '实际价格', editable: true,width:40,
                     editrules: {
                         number: true,
                         minValue: 0
                     }
                 },
-                {name: 'totActPrice', label: '实际金额', hidden:true},
+                {name: 'totActPrice', label: '实际金额', width:40},
                 {name: 'uniqueCodes', label: '唯一码', hidden: true}
             ],
-            viewrecords: true,
             autowidth: true,
             rownumbers: true,
             altRows: true,
@@ -176,74 +255,286 @@
             shrinkToFit: true,
             sortname: 'id',
             sortorder: "asc",
+            footerrow: true,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            afterEditCell: function (rowid, celname, value, iRow, iCol) {
+                addDetailgridiRow = iRow;
+                addDetailgridiCol = iCol;
+            },
             afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
-                if (cellname === "discount") {
-                    var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
-                    var var_totActPrice = Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
-                    $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
-                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
-                } else if (cellname === "actPrice") {
+                if (type == 0){
                     var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
                     var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
                     $('#addDetailgrid').setCell(rowid, "discount", var_discount);
                     $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
-                } else if (cellname === "qty") {
-                    $('#addDetailgrid').setCell(rowid, "totPrice", Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100);
-                    $('#addDetailgrid').setCell(rowid, "totActPrice", Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100);
+                }else {
+                    var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
+                    var var_totActPrice = -Math.abs(Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
+                    $('#addDetailgrid').setCell(rowid, "discount", var_discount);
+                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
                 }
                 setFooterData();
             },
             gridComplete: function () {
                 setFooterData();
+            },
+            loadComplete : function(){
+               var table = this;
+               setTimeout(function(){
+
+                     //加载完成后，替换分页按钮图标
+                     updatePagerIcons(table);
+                     enableTooltips(table);
+               }, 0)
             }
         });
     });
-    function setFooterData() {
-        var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
-        var sum_price = $("#addDetailgrid").getCol('price', false, 'sum');
-        $("#addDetailgrid").footerData('set', {
-            styleId: "合计",
-            qty: sum_qty,
-            price: sum_price
+
+    function updatePagerIcons(table) {
+        //ui-icon ui-icon-circlesmall-minus
+        var replacement =
+            {
+                'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+                'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+                'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+                'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+            };
+        $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
+            var icon = $(this);
+            var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+            if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
         });
     }
-    function sureProduct() {
+    function enableTooltips(table) {
+        $('.navtable .ui-pg-button').tooltip({
+            container : 'body'
+        });
+        $(table).find('.ui-pg-div').tooltip({
+            container : 'body'
+        });
+        }
+
+    function setFooterData() {
+        var sum_qtymin = $("#addDetailgrid").getCol('qty', false, 'sum');
+        var sum_totActPricemin = $("#addDetailgrid").getCol('totActPrice', false, 'sum');
+        sum_totActPrice = sum_totActPricemin.toFixed(1);
+        if (type == 1){
+            $("#addDetailgrid").footerData('set', {
+                styleId: "合计",
+                qty: sum_qtymin,
+                totActPrice: -Math.abs(sum_totActPricemin)
+            });
+            $("#discount_Amount").val(-sum_totActPrice);
+            localStorage.setItem("actPrice",sum_totActPrice);
+            $("#collect_Amount").val(- Math.abs(sum_totActPrice));
+        }else {
+            $("#addDetailgrid").footerData('set', {
+                styleId: "合计",
+                qty: sum_qtymin,
+                totActPrice:sum_totActPrice
+            });
+            $("#discount_Amount").val(sum_totActPrice);
+            localStorage.setItem("actPrice",sum_totActPrice);
+            $("#collect_Amount").val(sum_totActPrice);
+        }
     }
-    function back() {
+    function sureProduct() {
 
     }
+    function back() {
+        localStorage.setItem("back",2);
+        location.href=basePath+'views/pad/customer.html';
+    }
     function start() {
-        taskType = 0;
+        var warehId;
+        if (type == 0){
+            warehId = defaultWarehId;
+        }else {
+            warehId = destId;
+        }
         $.ajax({
+            url:  basePath + "pad/scanning/checkEpcStockWS.do",
             async: false,
-            url:  basePath + "/pad/PadUserController/checkEpcStock.do",
+            datatype: "json",
             data: {
-                warehId: origId,
-                code: code,
-                type: taskType,
-                billNo: billNo
+                warehId: warehId,
+                type: taskType
             },
-            datatype: "json",
-            datatype: "json",
             type: "POST",
             success: function (data) {
                 if (data.success) {
-                    if (skuValid(data.result)) {
-                        $("#uniqueCodeGrid").addRowData($('#uniqueCodeGrid').getDataIDs().length, data.result, 'first');
-                        allCodes = allCodes + "," + code;
-                        var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
-                        $("#codeQty").text(scanCodeQty);
+                    if (data.msg==""){
+                        addProductsOnCode(data.result);
+                    }else {
+                        bootbox.alert(data.msg);
+                        addProductsOnCode(data.result);
                     }
-                } else {
-                    $.gritter.add({
-                        text: data.msg,
-                        class_name: 'gritter-success  gritter-light'
-                    });
                 }
-                $('#uniqCode-editForm').clearForm();
-                progressDialog.modal('hide');
             }
         });
+    }
+    function addProductsOnCode(successEpcStock) {
+        $.each(successEpcStock,function (index,value) {
+            if (customerType == "CT-AT") {//省代价格
+                value.price = value.puPrice;
+            } else if (customerType == "CT-ST") {//门店价格
+                value.price = value.wsPrice;
+            } else if (customerType == "CT-LS") {//吊牌价格
+                value.price = value.price;
+            }
+            value.id = "";
+            value.qty = 1;
+            value.outQty = 0;
+            value.inQty = 0;
+            value.status = 0;
+            value.inStatus = 0;
+            value.outStatus = 0;
+            value.uniqueCodes = value.code;
+            value.discount = discount;
+            value.actPrice = Math.round(value.price * value.discount) / 100;
+            if (type == 0){
+                value.totPrice = value.qty * value.price;
+                value.totActPrice = value.qty * value.actPrice;
+            }else {
+                value.totPrice = - Math.abs(value.qty * value.price);
+                value.totActPrice = - Math.abs(value.qty * value.actPrice);
+            }
+            productListInfo.push(value);
+            var isAdd = true;
+            var alltotActPrice = 0;
+            $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+                var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+                if (value.sku === dtlRow.sku) {
+                    dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                    dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                    dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                    dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                    if (dtlRow.id) {
+                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                    } else {
+                        $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                    }
+                    isAdd = false;
+                }
+            });
+            if (isAdd) {
+                $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+            }
+        });
+        setFooterData();
+    }
+
+    function openSearchGuestDialog(){
+        var e1 = document.getElementById('myModal');
+        e1.style.visibility =  (e1.style.visibility == "visible"  ) ? "hidden" : "visible";
+    }
+
+    function save() {
+        if(productListInfo.length==0){
+            bootbox.alert("您未添加商品，添加商品后再点击确认！");
+        }else {
+            var value=$('input:radio[name="radio"]:checked').val();
+            localStorage.setItem("payType",value);
+            $("#search_payType").val(value);
+            $("#search_billDate").val(getToDay("yyyy-MM-dd"));
+            $("#search_payType").val();
+
+            $("#search_customerType").val(localStorage.getItem("customerType"));
+            $("#search_customertyper").val(localStorage.getItem("customerType"));
+            $("#search_destUnitId").val(localStorage.getItem("origUnitId"));
+            $("#search_destUnitName").val(localStorage.getItem("origUnitName"));
+            $("#search_origUnitName").val(localStorage.getItem("origUnitName"));
+            $("#search_origUnitId").val(localStorage.getItem("origUnitId"));
+            $("#search_actPrice").val(localStorage.getItem("actPrice"));
+            $("#search_payPrice").val($("#collect_Amount").val());
+            $("#pre_Balance").val(localStorage.getItem("owingValue"));
+            $("#search_discount").val(localStorage.getItem("discount"));
+            $("#search_busnissId").val(localStorage.getItem("busnissId"));
+            if (type==0){
+                $("#search_origId").val(origId);
+                $("#search_destId").val(localStorage.getItem("destId"));
+            }else {
+                $("#search_origId").val(localStorage.getItem("destId"));
+                $("#search_destId").val(origId);
+            }
+            var actPrice = parseFloat($("#search_actPrice").val());
+            var payPrice = parseFloat($("#search_payPrice").val());
+            var preBalance = parseFloat($("#pre_Balance").val());
+            var afterBalance = parseFloat(preBalance + payPrice - actPrice).toFixed(2);
+            $("#after_Balance").val(afterBalance);
+
+            var dtlArray = [];
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                var rowData = $("#addDetailgrid").getRowData(value);
+                dtlArray.push(rowData);
+            });
+            var url;
+            if (type == 0){
+                $.ajax({
+                    dataType: "json",
+                    async: false,
+                    url: basePath + "logistics/saleOrder/saveWS.do",
+                    data: {
+                        saleOrderBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
+                        strDtlList: JSON.stringify(dtlArray),
+                        userId: userId
+                    },
+                    type: "POST",
+                    success: function (msg) {
+                        if (msg.success) {
+                            $.gritter.add({
+                                text: msg.msg,
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                            var billNo = msg.result;
+                            localStorage.setItem("billNo",billNo);
+                            $("#modal_pad_cur").modal('hide');
+                            window.location.href=basePath+'views/pad/outTreasury.html';
+                        } else {
+                            bootbox.alert(msg.msg);
+                        }
+                    }
+                });
+            }else {
+                $.ajax({
+                    dataType: "json",
+                    async: false,
+                    url: basePath + "logistics/saleOrderReturn/save.do",
+                    data: {
+                        'bill': JSON.stringify(array2obj($("#editForm").serializeArray())),
+                        'strDtlList': JSON.stringify(dtlArray),
+                        userId: userId
+                    },
+                    type: "POST",
+                    success: function (msg) {
+                        if (msg.success) {
+                            $.gritter.add({
+                                text: msg.msg,
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                            var billNo = msg.result;
+                            localStorage.setItem("billNo",billNo);
+                            $("#modal_pad_cur").modal('hide');
+                            window.location.href=basePath+'views/pad/outTreasury.html';
+                        } else {
+                            bootbox.alert(msg.msg);
+                        }
+                    }
+                });
+            }
+            window.isTrue = true;
+        }
+    }
+
+    function array2obj(array) {
+        var params = $({});
+        $.each(array, function(i) {
+            var $param = $(this)[0];
+            params.attr($param.name, $param.value);
+        });
+        return params[0];
     }
 </script>
 </body>

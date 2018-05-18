@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;width: 100%">
+<head>
+    <meta charset="UTF-8">
+    <title>自助收银</title>
+</head>
+<link rel="stylesheet" href="css/padBase.css">
+<script src="../../Olive/assets/js/jquery.js"></script>
+<script src="../../Olive/assets/js/bootstrap.js"></script>
+<script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+<script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+<script src="../../Olive/assets/js/jquery-ui.js"></script>
+<script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+<script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+<script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+<script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+<script src="../../jslib2/constant.js"></script>
+<script src="../../Olive/plugin/dateFormatUtil.js"></script>
+<script src="../../Olive/assets/js/jquery.gritter.js"></script>
+<script src="../../Olive/assets/js/bootbox.js"></script>
+
+<link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+<link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+<link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+<link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+<link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+<link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+<link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+<link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+
+<body style="width: 100%; height: 100%">
+<div class="row col-lg-12 col-md-12 col-sm-12 ">
+    <h1 align="center" class="center-vertical">
+        自助收银
+    </h1>
+</div>
+<div class="main-container" id="main-container" style="height: 40%">
+    <div class="main-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box widget-color-blue  light-border">
+                    <div class="widget-header">
+                        <h5 class="widget-title">基本信息</h5>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-main padding-12">
+                            <form id="editForm" class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="col-xs-2 control-label" for="search_billNo">单据编号</label>
+                                    <div class="col-xs-4">
+                                        <input class="form-control" id="search_billNo" name="billNo" type="text" readOnly/>
+                                    </div>
+                                    <label class="col-xs-2 control-label" for="search_billDate">单据日期</label>
+                                    <div class="col-xs-4">
+                                        <input class="form-control date-picker" id="search_billDate" name="billDate"
+                                               type="text" readonly/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-2 control-label" for="search_payType">支付方式</label>
+                                    <div class="col-xs-4">
+                                        <input class="form-control" id="search_payType" name="payType"
+                                               type="text" readonly/>
+                                    </div>
+                                    <label class="col-xs-2 control-label" for="search_destUnitId">客户</label>
+                                    <div class="col-xs-4">
+                                        <div class="input-group">
+                                            <input class="form-control" id="search_destUnitId" type="text"
+                                                   name="destUnitId" readonly/>
+                                            <span class="input-group-btn">
+												<button class="btn btn-sm btn-default" id="search_guest_button"
+                                                        type="button">
+													<i class="ace-icon fa fa-list"></i>
+												</button>
+											</span>
+                                            <input class="form-control" id="search_destUnitName" type="text"
+                                                   name="destUnitName" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label" for="search_actPrice">应收金额</label>
+                                        <div class="col-xs-4">
+                                                <input class="form-control" id="search_actPrice" name="actPrice"
+                                                       type="number" step="0.01" readonly/>
+                                        </div>
+
+                                        <label class="col-xs-2 control-label" for="search_payPrice">实收金额</label>
+                                        <div class="col-xs-4">
+                                                <input class="form-control" id="search_payPrice" name="payPrice"
+                                                       type="number" step="0.01" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label" for="pre_Balance">售前余额</label>
+                                        <div class="col-xs-4">
+                                            <input class="form-control" id="pre_Balance" name="preBalance"
+                                                   readonly>
+                                            </input>
+                                        </div>
+                                        <label class="col-xs-2 control-label" for="search_busnissId">销售员</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control selectpicker show-tick" id="search_busnissId"
+                                                    name="busnissId" style="width: 100%;" data-live-search="true">
+                                            </select>
+                                        </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hr hr4"></div>
+    <div class="widget-box transparent" style="height: 40%">
+        <div class="widget-header ">
+            <h4 class="widget-title lighter">单据明细</h4>
+            <div class="widget-toolbar no-border">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active">
+                        <a data-toggle="tab" href="#detail">SKU明细</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="widget-main padding-12 no-padding-left no-padding-right">
+                <div class="tab-content padding-4">
+                    <div id="addDetail" class="tab-pane in active" style="height:80%;">
+                        <table id="addDetailgrid"></table>
+                        <div id="addDetailgrid-pager"></div>
+                    </div>
+                </div>
+                <div id="buttonGroup" style="margin-left: 10%" class="col-sm-offset-4 col-sm-10 ">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var basePath;
+    var userId;
+    var type = localStorage.getItem("type");
+    basePath=localStorage.getItem("basePath");
+    userId=localStorage.getItem("userId");
+    var billNo = localStorage.getItem("billNo");
+    var busnissId = localStorage.getItem("busnissId");
+    $("#search_billDate").val(getToDay("yyyy-MM-dd"));
+    $("#search_billNo").val(localStorage.getItem("billNo"));
+    $("#search_destUnitId").val(localStorage.getItem("origUnitId"));
+    $("#search_destUnitName").val(localStorage.getItem("origUnitName"));
+    $("#search_actPrice").val(localStorage.getItem("actPrice"));
+    $("#search_payPrice").val(localStorage.getItem("actPrice"));
+    $("#pre_Balance").val(localStorage.getItem("owingValue"));
+    $("#search_payType").val(localStorage.getItem("payType"));
+    var ownerId = localStorage.getItem("ownerId");
+    if (type == 0){
+        $("#buttonGroup").html("" +
+            "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOut()'>" +
+            "    <i class='ace-icon fa fa-sign-out right'></i>" +
+            "    <span class='bigger-110'>出售</span>");
+    }else {
+        if (localStorage.getItem("customerType")=="CT-LS"){
+            $("#buttonGroup").html(""+
+                "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
+                "    <i class='ace-icon fa fa-sign-in'></i>" +
+                "    <span class='bigger-110'>入库</span>" +
+                "</button>");
+        }else {
+            $("#buttonGroup").html(""+
+                "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
+                "    <i class='ace-icon fa fa-sign-out'></i>" +
+                "    <span class='bigger-110'>出库</span>" +
+                "</button>" +
+                "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
+                "    <i class='ace-icon fa fa-sign-in'></i>" +
+                "    <span class='bigger-110'>入库</span>" +
+                "</button>");
+            if (localStorage.getItem("out")=="out"){
+                bootbox.alert(localStorage.getItem("outMessage"));
+                $("#SODtl_wareHouseOut").attr('disabled',true);
+                localStorage.removeItem("outMessage");
+            }
+        }
+    }
+    $(function () {
+        var url;
+        if (type == 0){
+            url = basePath+"logistics/saleOrder/findBillDtlWS.do?billNo="+billNo;
+        }else {
+            url = basePath + "logistics/saleOrderReturn/returnDetails.do?billNo=" + billNo;
+        }
+        $("#addDetailgrid").jqGrid({
+            url: url,
+            height: "auto",
+            datatype: "json",
+            page: 1,
+            mtype: 'POST',
+            colModel: [
+                {name: 'id', label: 'id', hidden: true},
+                {name: 'billId', label: 'billId', hidden: true},
+                {name: 'billNo', label: 'billNo', hidden: true},
+                {name: 'status', hidden: true},
+                {name: 'inStatus', hidden: true},
+                {name: 'outStatus', hidden: true},
+                {name: "operation", label: "操作",hidden:true},
+                {name: 'statusImg', label: '状态',hidden:true},
+                {name: 'inStatusImg', label: '入库状态',hidden:true},
+                {name: 'outStatusImg', label: '出库状态',hidden:true},
+                {name: 'styleId', label: '款号',width: 40},
+                {name: 'styleName', label: '款名', hidden:true},
+                {name: 'colorId', label: '色码', width: 40},
+                {name: 'colorName', label: '颜色',hidden:true},
+                {name: 'sizeId', label: '尺码',hidden:true},
+                {name: 'sizeName', label: '尺码', width: 40},
+                {name: 'qty', label: '数量', editable: true, width: 40},
+                {name: 'outQty', label: '已出库数量',hidden:true},
+                {name: 'inQty', label: '已入库数量',hidden:true},
+                {name: 'sku', label: 'SKU', width: 50},
+                {name: 'price', label: '销售价格', width: 40},
+                {name: 'totPrice', label: '销售金额',hidden:true},
+                {
+                    name: 'discount', label: "折扣", hidden:true, editable: true,
+                    editrules: {
+                        number: true,
+                        minValue: 0,
+                        maxValue: 100
+                    }
+                },
+                {
+                    name: 'actPrice', label: '实际价格', editable: true,width:40,
+                    editrules: {
+                        number: true,
+                        minValue: 0
+                    }
+                },
+                {name: 'totActPrice', label: '实际金额', width:40},
+                {name: 'uniqueCodes', label: '唯一码', hidden: true}
+            ],
+            autowidth: true,
+            rownumbers: true,
+            altRows: true,
+            rowNum: -1,
+            pager: '#addDetailgrid-pager',
+            multiselect: false,
+            shrinkToFit: true,
+            sortname: 'id',
+            sortorder: "asc",
+            footerrow: true,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+                var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
+                var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
+                $('#addDetailgrid').setCell(rowid, "discount", var_discount);
+                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+                setFooterData();
+            },
+            gridComplete: function () {
+                setFooterData();
+            },
+            loadComplete : function(){
+                var table = this;
+                setTimeout(function(){
+
+                    //加载完成后，替换分页按钮图标
+                    updatePagerIcons(table);
+                    enableTooltips(table);
+                }, 0)
+            }
+        });
+        $.ajax({
+            url: basePath + "sys/user/list.do?filter_EQI_type=4",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#search_busnissId").empty();
+                $("#search_busnissId").append("<option value='' >--请选择销售员--</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
+                }
+                $("#search_busnissId").val(busnissId);
+                $("#search_busnissId").attr("disabled","disabled");
+            }
+        });
+    });
+
+    function updatePagerIcons(table) {
+        //ui-icon ui-icon-circlesmall-minus
+        var replacement =
+            {
+                'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+                'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+                'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+                'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+            };
+        $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
+            var icon = $(this);
+            var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+            if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+        });
+    }
+    function enableTooltips(table) {
+        $('.navtable .ui-pg-button').tooltip({
+            container : 'body'
+        });
+        $(table).find('.ui-pg-div').tooltip({
+            container : 'body'
+        });
+    }
+
+    function setFooterData() {
+        var sum_outQty = $("#addDetailgrid").getCol('outQty', false, 'sum');
+        var sum_qtymin = $("#addDetailgrid").getCol('qty', false, 'sum');
+        var sum_totActPricemin = $("#addDetailgrid").getCol('totActPrice', false, 'sum');
+        sum_totActPrice = sum_totActPricemin.toFixed(1);
+        sum_qty = sum_qtymin;
+        $("#addDetailgrid").footerData('set', {
+            styleId: "合计",
+            qty: sum_qtymin,
+            totActPrice:sum_totActPrice,
+            outQty: sum_outQty
+        });
+    }
+    function wareHouseOut() {
+        var billNo = $("#search_billNo").val();
+        var allUniqueCodes = "";
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            allUniqueCodes = allUniqueCodes + "," + rowData.uniqueCodes;
+        });
+        if (allUniqueCodes.substr(0, 1) == ",") {
+            allUniqueCodes = allUniqueCodes.substr(1);
+        }
+    var uniqueCodes_inHouse;
+    taskType = 0;
+    wareHouse = localStorage.getItem("defaultWarehId");
+    $.ajax({
+        async: false,
+        dataType: "json",
+        url: basePath + "/stock/warehStock/checkCodesWS.do",
+        data: {
+            warehId: wareHouse,
+            codes: allUniqueCodes,
+            type: taskType,
+            billNo: billNo
+        },
+        type: "POST",
+        success: function (data) {
+            uniqueCodes_inHouse = data.result;
+        }
+    });
+
+    var epcArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        var curOutQty;
+        rowData.outQty == "" ? curOutQty = 0 : curOutQty = rowData.outQty;
+        var codes = rowData.uniqueCodes.split(",");
+        if (codes && codes != null && codes != "") {
+            $.each((codes), function (index, value) {
+                if (rowData.qty > curOutQty) {
+                    if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                        var epc = {};
+                        epc.code = value;
+                        epc.styleId = rowData.styleId;
+                        epc.sizeId = rowData.sizeId;
+                        epc.colorId = rowData.colorId;
+                        epc.qty = 1;
+                        epc.sku = rowData.sku;
+                        epcArray.push(epc);
+                        curOutQty++;
+                    }
+                }
+            })
+        }
+    });
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    $.ajax({
+        async: false,
+        dataType: "json",
+        url: basePath + "/logistics/saleOrder/convertOut.do",
+        data: {
+            billNo: billNo,
+            strEpcList: JSON.stringify(epcArray),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);        //reload前总数量
+                var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);  //reload前总出库数量
+                var all_outQty = sum_outQty + epcArray.length;
+                var diff_qty = sum_qty - all_outQty;
+                var alertMessage;
+                if (sum_qty > all_outQty) {
+                    alertMessage = "已出库数量为：" + all_outQty + "；剩余数量为：" + diff_qty + "，其余商品请扫码出库"
+                } else if (sum_qty == all_outQty) {
+                    alertMessage = "共" + all_outQty + "件商品，已全部出库";
+                }
+                localStorage.setItem("alertMessage",alertMessage);
+                localStorage.setItem("messageType","alertMessage");
+                location.href=basePath+'views/pad/padUser.html';
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+    }
+
+    function wareHouseInOut(type) {
+        cs.showProgressBar();
+        var billNo = $("#search_billNo").val();
+        if (type === "out") {
+            $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
+        }
+        var url_ajax;
+        var inOutString;
+        if (type === "out") {
+            url_ajax = basePath + "logistics/saleOrderReturn/convertOut.do";
+            inOutString = "出";
+            taskType = 0;
+            wareHouse = localStorage.getItem("destId");
+        } else {
+            url_ajax = basePath + "logistics/saleOrderReturn/convertIn.do";
+            inOutString = "入";
+            taskType = -1;
+            wareHouse = localStorage.getItem("defaultWarehId");
+        }
+
+        var allUniqueCodes = "";
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            allUniqueCodes = allUniqueCodes + "," + rowData.uniqueCodes;
+        });
+        if (allUniqueCodes.substr(0, 1) == ",") {
+            allUniqueCodes = allUniqueCodes.substr(1);
+        }
+        var uniqueCodes_inHouse;
+
+        $.ajax({
+            async: false,
+            dataType: "json",
+            url: basePath + "stock/warehStock/checkCodes.do",
+            data: {
+                warehId: wareHouse,
+                codes: allUniqueCodes,
+                type: taskType,
+                billNo: billNo
+            },
+            type: "POST",
+            success: function (data) {
+                uniqueCodes_inHouse = data.result;
+            }
+        });
+
+        var epcArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            var codes = rowData.uniqueCodes.split(",");
+            if (codes && codes != null && codes != "") {
+                $.each(codes, function (index, value) {
+                    if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                        var epc = {};
+                        epc.code = value;
+                        epc.styleId = rowData.styleId;
+                        epc.sizeId = rowData.sizeId;
+                        epc.colorId = rowData.colorId;
+                        epc.qty = 1;
+                        epc.sku = rowData.sku;
+                        epcArray.push(epc)
+                    }
+                });
+            }
+        });
+        var dtlArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            dtlArray.push(rowData);
+        });
+        $.ajax({
+            async: false,
+            dataType: "json",
+            url: url_ajax,
+            data: {
+                billNo: billNo,
+                strEpcList: JSON.stringify(epcArray),
+                strDtlList: JSON.stringify(dtlArray),
+                userId: userId
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+                if (type === "out") {
+                    $("#SODtl_wareHouseOut").removeAttr("disabled");
+                }
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);        //reload前总数量
+                    var diff_qty = sum_qty - epcArray.length;
+                    var alertMessage;
+                    if (sum_qty > epcArray.length) {
+                        alertMessage = "已" + inOutString + "库数量为：" + epcArray.length + "；剩余数量为：" + diff_qty + "，其余商品请扫码" + inOutString + "库"
+                    } else if (sum_qty === epcArray.length) {
+                        alertMessage = "共" + epcArray.length + "件商品，已全部" + inOutString + "库";
+                    }
+                    if (type === "out"){
+                        location.href=basePath+'views/pad/outTreasury.html';
+                        localStorage.setItem("outMessage",alertMessage);
+                        localStorage.setItem("out","out");
+                    }else {
+                        localStorage.setItem("alertMessage",alertMessage);
+                        localStorage.setItem("messageType","alertMessage");
+                        localStorage.removeItem("destId");
+                        localStorage.removeItem("out");
+                        location.href=basePath+'views/pad/padUser.html';
+                    }
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }
+
+</script>
+</html>

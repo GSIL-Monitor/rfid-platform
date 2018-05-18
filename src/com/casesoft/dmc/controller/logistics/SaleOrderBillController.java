@@ -153,7 +153,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         return new MessageBox(true, "申请成功");
     }
 
-    @RequestMapping(value = "/findBillDtl")
+    @RequestMapping(value = {"/findBillDtl","/findBillDtlWS"})
     @ResponseBody
     public List<SaleOrderBillDtl> findBillDtl(String billNo) throws Exception {
         this.logAllRequestParams();
@@ -182,13 +182,13 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         return saleOrderBillDtls;
     }
 
-    @RequestMapping(value = "/save")
+    @RequestMapping(value = {"/save","/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(String saleOrderBillStr, String strDtlList, String userId) throws Exception {
         this.logAllRequestParams();
         try {
-            SaleOrderBill saleOrderBill = JSON.parseObject(saleOrderBillStr, SaleOrderBill.class);
+             SaleOrderBill saleOrderBill = JSON.parseObject(saleOrderBillStr, SaleOrderBill.class);
             if(CommonUtil.isNotBlank(saleOrderBill.getBillNo())){
                 Integer status = this.saleOrderBillService.findBillStatus(saleOrderBill.getBillNo());
                 if(status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
@@ -362,7 +362,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/convertOut")
+    @RequestMapping(value = {"/convertOut","/convertOutWS"})
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderBillDtl> saleOrderBillDtlList = this.saleOrderBillService.findBillDtlByBillNo(billNo);
