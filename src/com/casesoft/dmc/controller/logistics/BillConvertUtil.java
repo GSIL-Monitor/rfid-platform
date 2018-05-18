@@ -533,18 +533,18 @@ public class BillConvertUtil {
                /* detail.setStyleName(style.getStyleName());
                 detail.setColorName(dtl.getColorId());
                 detail.setSizeName(dtl.getSizeId());*/
-            detail.setColorId(dtl.getColorId());
-            detail.setSizeId(dtl.getSizeId());
-            detail.setSku(dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
-            detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
-            detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
-                    + dtl.getQty());
-            detail.setQty(dtl.getQty());
-            detail.setOwnerId("1");
-            detail.setStatus(1);
-            totQty += dtl.getQty();
-            detail.setBillNo(taskId);
-            initDtlList.add(detail);
+                detail.setColorId(dtl.getColorId());
+                detail.setSizeId(dtl.getSizeId());
+                detail.setSku(dtl.getStyleId()+newStylesuffix+dtl.getColorId()+dtl.getSizeId());
+                detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
+                detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
+                        + dtl.getQty());
+                detail.setQty(dtl.getQty());
+                detail.setOwnerId("1");
+                detail.setStatus(1);
+                totQty += dtl.getQty();
+                detail.setBillNo(taskId);
+                initDtlList.add(detail);
 
 
 
@@ -3570,7 +3570,6 @@ public class BillConvertUtil {
         }
 
     }
-
     /**
      * add by yushen 采购单入库后，反写补货单入库数量
      */
@@ -3587,7 +3586,6 @@ public class BillConvertUtil {
             }
         }
     }
-
     public static  void covertToLabelChangeBill(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,User curUser){
         if (CommonUtil.isNotBlank(curUser)) {
             labelChangeBill.setOprId(curUser.getCode());

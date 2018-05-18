@@ -155,7 +155,13 @@ function initGrid() {
                     return totActPrice;
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码',hidden:true}
+            {
+                name: '', label: '唯一码明细', width: 40, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.sku + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                }
+            },
+            {name: 'uniqueCodes', label: '唯一码',hidden: true}
 
         ],
         autowidth: true,
@@ -242,7 +248,7 @@ function addUniqCode() {
     var nowclass9=$("#search_nowclass9").val();
     var changeType=$("#select_changeType").val();
     var discount=$("#search_discount").val();
-    taskType = 3;
+
     wareHouse=origId;
     class9=$("#search_beforeclass9").val().split("-")[1];
     if (origId ==""|| origId == null) {
@@ -270,7 +276,11 @@ function addUniqCode() {
             bootbox.alert("转变类型不能为空！")
             return
         }
+        taskType = 3;
+    }else{
+        taskType =0;
     }
+
     $("#dialog_buttonGroup").html("" +
         "<button  type='button' id = 'so_savecode_button'  class='btn btn-primary' onclick='addProductsOnCode()'>保存</button>"
     );
@@ -655,5 +665,35 @@ function findbirth() {
     initBirthNoList();
 
 
+}
+
+function showCodesDetail(sku) {
+
+    var billNo = $("#search_billNo").val();
+    var uniqueCodes = "";
+    $.ajax({
+        async: false,
+        dataType: "json",
+        url: basePath + "/stock/warehStock/findCodesStr.do",
+        data: {
+            sku: sku,
+            billNo: billNo
+        },
+        type: "POST",
+        success: function (result) {
+            if (result.success) {
+                uniqueCodes = result.result;
+            } else {
+                $.gritter.add({
+                    text: result.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+        }
+    });
+
+    $("#show-uniqueCode-list").modal('show');
+    initUniqueCodeList(uniqueCodes);
+    codeListReload(uniqueCodes);
 }
 
