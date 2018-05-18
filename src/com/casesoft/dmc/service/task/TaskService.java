@@ -692,6 +692,9 @@ public class TaskService extends AbstractBaseService<Business, String> {
                 return;
             }
             saveBus(bus);
+            if(bus.getToken().intValue() == Constant.Token.Storage_Inventory){
+                saveBusBill(bus);
+            }
            // saveBusBill(bus);
 
            // updateSrcTask(bus);
