@@ -3540,13 +3540,18 @@ public class BillConvertUtil {
      * add by yushen
      * 用于小程序补货处理
      */
-    public static void convertReplenishInProcessing(ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtlList) throws Exception{
+    public static void convertReplenishInProcessing(ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtlList, String option) throws Exception{
         Long totQty = replenishBill.getTotQty();
 
         Integer sumDtlConvertQty = 0;
         for(ReplenishBillDtl dtl : replenishBillDtlList){
-            dtl.setActConvertQty(dtl.getActConvertQty() + dtl.getConvertQty());
-            dtl.setConvertQty(0);
+            if("CONVERT".equals(option)){
+                dtl.setActConvertQty(dtl.getActConvertQty() + dtl.getConvertQty());
+                dtl.setConvertQty(0);
+            }else if("CANCEL".equals(option)){
+                dtl.setActConvertQty(dtl.getActConvertQty() - dtl.getConvertQty());
+                dtl.setConvertQty(0);
+            }
             if(dtl.getActConvertQty() > dtl.getQty().intValue()){
                 throw new Exception(dtl.getSku() + "超出单据需求数量");
             }else if(dtl.getActConvertQty() == dtl.getQty().intValue()) {
