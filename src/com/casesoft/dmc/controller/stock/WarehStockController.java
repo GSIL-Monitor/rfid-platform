@@ -535,7 +535,7 @@ public class WarehStockController extends BaseController {
      * @param type    出入库类型 0出库，1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
      */
-    @RequestMapping("checkCodes")
+    @RequestMapping({"/checkCodes","/checkCodesWS"})
     @ResponseBody
     public MessageBox checkCodes(String warehId, String codes, Integer type, String billNo) {
         //判断单据单据是否是商城

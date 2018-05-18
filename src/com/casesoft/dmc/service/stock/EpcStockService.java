@@ -198,6 +198,10 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
     }
 
+    public List<EpcStock> findEpcCodes(String codes){
+        return this.epcStockDao.find("from EpcStock epcstock where" + codes);
+    }
+
     public List<EpcStock> findEpcNotInCodes(String warehId, String codes) {
         return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=0  and " + codes + " and (epcstock.warehouse2Id=? or epcstock.warehouseId=?)", new Object[]{warehId, warehId});
     }

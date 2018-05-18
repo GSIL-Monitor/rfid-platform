@@ -1,11 +1,21 @@
-<html lang="en">
+<html lang="en" style="height: 100% ;width: 100%">
 
 <head>
     <meta charset="utf-8">
     <title>自助收银</title>
-    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="../../Olive/assets/js/jquery.js"></script>
     <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="css/padBase.css">
     <style>
         .row{
             height:15%;
@@ -31,6 +41,7 @@
              font-size:24px;
              background:url('/images/pad/set.png')  no-repeat left top;
              background-size:contain;
+             border:none;
              color:#0a0a0a;
          }
         .btns1 {
@@ -40,14 +51,15 @@
             font-size:24px;
             background:url('/images/pad/scan.png')  no-repeat left top;
             background-size:contain;
+            border:none;
             color:#0a0a0a;
         }
     </style>
 </head>
 
-<body>
+<body style="height: 100% ; width: 100%">
     <div class="row col-lg-12 col-md-12 col-sm-12 ">
-            <h1 align="center" class="center-vertical">
+            <h1 align="center" >
                 自助收银
             </h1>
     </div>
@@ -63,7 +75,7 @@
     </div>
     <div class="row2 col-lg-12 col-md-12 col-sm-12 ">
             <div class="center-vertical">
-                <label class="col-xs-1 center-vertical" for="search_origId">出库仓库</label>
+                <label class="col-xs-1 center-vertical" for="search_origId">本店仓库</label>
                 <div class="col-xs-3 center-vertical">
                     <input class="form-control" id="search_origId" >
                     </input>
@@ -75,13 +87,14 @@
                             style="width: 100%;" data-live-search="true">
                     </select>
                 </div>
-                <label class="col-xs-1 center-vertical" for="type">类型</label>
+                <label class="col-xs-1 center-vertical" for="type">服务类型</label>
                 <div class="col-xs-3 center-vertical">
                     <select class="form-control selectpicker show-tick" id="type"
                             name="type"
                             style="width: 100%;" data-live-search="true">
-                        <option value="0">销售管理</option>
-                        <option value="1">退货管理</option>
+                        <option value="">请选择服务类型</option>
+                        <option value="0">销售模式</option>
+                        <option value="1">退货模式</option>
                     </select>
                 </div>
             </div>
@@ -91,18 +104,18 @@
     var userId;
     var basePath;
     var defaultSaleStaffId;
-    var urlString = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
-    var theRequest = new Object();
-    if ( urlString.indexOf( "?" ) != -1 ) {
-        var str = urlString.substr( 1 );
-    } //substr()方法返回从参数值开始到结束的字符串；
-    var strs = str.split( "&" );
-    for ( var i = 0; i < strs.length; i++ ) {
-        theRequest[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+    var owingValue;
+    var defalutCustomerId;
+    var defaultWarehId;
+    var type;
+    if (localStorage.getItem("messageType")=="alertMessage"){
+        bootbox.alert(localStorage.getItem("alertMessage"));
     }
-    basePath=theRequest.basePath;
-    userId=theRequest.userId;
-    ownerId=theRequest.ownerId;
+    type = localStorage.getItem("type");
+    $("#type").val(type);
+    basePath=localStorage.getItem("basePath");
+    userId=localStorage.getItem("userId");
+    ownerId=localStorage.getItem("ownerId");
     $(function () {
         $.ajax({
             dataType: "json",
@@ -116,7 +129,15 @@
             success: function (msg) {
                 if(msg.success){
                     defaultSaleStaffId=msg.result.defaultSaleStaffId;
+                    defalutCustomerId=msg.result.defalutCustomerId;
+                    owingValue = msg.result.owingValue;
+                    defaultWarehId = msg.result.defaultWarehId;
+                    localStorage.setItem("defaultSaleStaffId", defaultSaleStaffId);
+                    localStorage.setItem("defalutCustomerId", defalutCustomerId);
+                    localStorage.setItem("owingValue", owingValue);
+                    localStorage.setItem("defaultWarehId",defaultWarehId);
                     $("#search_origId").val(msg.result.defaultWarehouseName);
+
                     $("#search_origId").attr("readOnly",true);
                 }
             }
@@ -144,16 +165,27 @@
                 }
             }
         });
+        if (localStorage.getItem("back")==1){
+            $("#search_busnissId").val(localStorage.getItem("busnissId"));
+            $("#type").val(localStorage.getItem("type"));
+        }
     });
 
     function scan() {
-        var type= $("#type").val();
-        var busnissId = $("#search_busnissId").val();
-        var origId = $("#search_origId").val();
-        window.location.href=basePath+'views/pad/customer.html?basePath='+basePath+'&busnissId='+busnissId+'&origId='+origId+'&type='+type;
+        if($("#type").val()==""){
+            bootbox.alert("请选择服务类型");
+        }else {
+            type= $("#type").val();
+            var busnissId = $("#search_busnissId").val();
+            var origId = $("#search_origId").val();
+            localStorage.setItem("type",type);
+            localStorage.setItem("busnissId",busnissId);
+            localStorage.setItem("origId",origId);
+            window.location.href=basePath+'views/pad/customer.html';
+        }
     }
     function set(){
-        window.location.href=basePath+'views/pad/setUp.html?basePath='+basePath;
+        window.location.href=basePath+'views/pad/setUp.html';
     }
 </script>
 </body>
