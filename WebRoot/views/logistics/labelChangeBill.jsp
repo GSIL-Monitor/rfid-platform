@@ -86,6 +86,15 @@
                                                        data-date-format="yyyy-mm-dd"/>
                                             </div>
                                         </div>
+                                        <label class="col-xs-1 control-label" for="select_changeType">转变类型</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control" id="select_changeType"
+                                                    name="filter_EQS_t.changeType">
+                                                <option value="">--请选择--</option>
+                                                <option value="CS">系列转变</option>
+                                                <option value="PC">打折</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="form-group">
 
@@ -95,6 +104,35 @@
                                             </select>
                                         </div>
                                         <%--<input id="search_unitId" type="text" value="${OwnerId}" name="filter_EQS_unitId" style="display: none">--%>
+                                        <label class="col-xs-1 control-label" for="search_nowclass9">现系列</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control" id="search_nowclass9" name="filter_EQS_t.nowclass9"
+                                                    style="width: 100%;">
+                                            </select>
+                                        </div>
+                                        <label class="col-xs-1 control-label" for="search_beforeclass9">原系列</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control" id="search_beforeclass9" name="filter_EQS_t.beforeclass9"
+                                                    style="width: 100%;">
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-1 control-label" for="search_styleid">款号</label>
+                                        <div class="col-xs-2">
+                                            <div class="input-group">
+                                                <input class="form-control" id="search_styleid"
+                                                       type="text" name="filter_EQS_dtl.styleId" readonly/>
+                                                <span class="input-group-btn">
+                                                                 <button class="btn btn-sm btn-default" type="button" onclick="openstyleDialog('#search_styleid','#filter_eq_stylename')">
+                                                                     <i class="ace-icon fa fa-list"></i>
+                                                                 </button>
+                                                              </span>
+                                                <input class="form-control" id="filter_eq_stylename"
+                                                       type="text" name="" readonly  placeholder="款名"/>
+                                            </div>
+                                        </div>
 
                                     </div>
 
@@ -133,7 +171,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="purchaseOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
-<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+<jsp:include page="../base/style_dialog.jsp"></jsp:include>
 
 <script type="text/javascript" src="<%=basePath%>/views/logistics/labelChangeBillController.js"></script>
 
