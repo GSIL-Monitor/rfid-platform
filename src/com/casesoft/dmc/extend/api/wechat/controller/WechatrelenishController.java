@@ -12,6 +12,7 @@ import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo;
 import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
@@ -232,12 +233,12 @@ public class WechatrelenishController extends ApiBaseController {
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
                 //add by yushen 多次备注拼接，存入补货申请单
                 String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
-                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
+                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(), "yyyy-MM-dd")
                         + "，处理数量：" + pDtl.getQty()
                         + "，备注说明：" + pDtl.getRemark() + "；\n";
                 String oldRemark = replenishBillDtl.getRemark();
-                if(CommonUtil.isBlank(oldRemark)){
-                    oldRemark="";
+                if (CommonUtil.isBlank(oldRemark)) {
+                    oldRemark = "";
                 }
                 replenishBillDtl.setRemark(oldRemark + remark);
                 filteredDtlList.add(pDtl);
@@ -399,6 +400,23 @@ public class WechatrelenishController extends ApiBaseController {
     }
 
     /**
+     * 撤销非录入状态的采购单的接口。
+     */
+    @RequestMapping(value = "/cancelPurchaseOrderList.do")
+    @ResponseBody
+    public MessageBox cancelPurchaseOrderList(String billNo, String srcBillNo) throws Exception {
+        if (srcBillNo == null) {
+            PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
+            purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.purchaseOrderBillService.cancel(purchaseOrderBill);
+            return new MessageBox(true, "撤销成功");
+        } else {
+            return new MessageBox(false, "撤销失败");
+        }
+    }
+
+
+    /**
      * add by yushen
      * 销售员下补货单后，查看补货单明细的接口。
      */
@@ -491,8 +509,24 @@ public class WechatrelenishController extends ApiBaseController {
         page.setPageProperty();
         Page<PurchaseOrderBill> purchaseOrderBillPage = this.purchaseOrderBillService.findPage(page, filters);
         for (PurchaseOrderBill bill : purchaseOrderBillPage.getRows()) {
+            User orderDtlUser = CacheManager.getUserById(bill.getBuyahandId());
+            if (CommonUtil.isNotBlank(orderDtlUser)) {
+                bill.setBuyahandName(orderDtlUser.getName());
+            }
+
             List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
+            List<PurchaseStyleVo> styleList = this.purchaseOrderBillService.findStyleListByBillNo(bill.getBillNo());
+            for (PurchaseStyleVo newStyleList : styleList) {
+                String rootPath = this.getSession().getServletContext().getRealPath("/");
+                String imgUrl = StyleUtil.returnImageUrl(newStyleList.getStyleId(), rootPath);
+                newStyleList.setImgUrl(imgUrl);
+                Style style = CacheManager.getStyleById(newStyleList.getStyleId());
+                if (CommonUtil.isNotBlank(style)) {
+                    newStyleList.setStyleName(style.getStyleName());
+                }
+            }
             bill.setDtlList(billDtlList);
+            bill.setStyleList(styleList);
         }
 
         return new MessageBox(true, "success", purchaseOrderBillPage);
