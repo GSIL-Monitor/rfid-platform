@@ -1,5 +1,7 @@
 $(function () {
     initGrid();
+    initSelectOrigForm();
+    initSelectclass9();
 });
 function showAdvSearchPanel() {
 
@@ -22,8 +24,9 @@ function initGrid() {
                     var billNo = rowObject.billNo;
                     var html;
                     html = "<a style='margin-left: 20px' href='" + basePath + "/logistics/labelChangeBill/edit.do?billNo=" + billNo + "'><i class='ace-icon fa fa-edit' title='编辑'></i></a>";
-
-                    html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
+                    if(rowObject.status!=2){
+                        html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
+                    }
                     return html;
                 }
             },
@@ -87,4 +90,57 @@ function cancel(billNo) {
 }
 function refresh() {
     location.reload(true);
+}
+function _search() {
+
+    var serializeArray = $("#searchForm").serializeArray();
+    var params = array2obj(serializeArray);
+    $("#grid").jqGrid('setGridParam', {
+        page: 1,
+        url: basePath + "/logistics/labelChangeBill/page.do",
+        postData: params
+    });
+    $("#grid").trigger("reloadGrid");
+}
+function initSelectOrigForm() {
+
+
+    $.ajax({
+        url: basePath + "/unit/list.do?filter_EQI_type=9",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_origId").empty();
+            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择仓库--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#search_origId").trigger('chosen:updated');
+            }
+        }
+    });
+}
+function initSelectclass9() {
+    $.ajax({
+        url: basePath + "/sys/property/findclass9name.do?filter_EQS_type=C9",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_beforeclass9").empty();
+            $("#search_nowclass9").empty();
+            $("#search_beforeclass9").append("<option value='' style='background-color: #eeeeee'>--请选择原系列--</option>");
+            $("#search_nowclass9").append("<option value='' style='background-color: #eeeeee'>--请选择原系列--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_beforeclass9").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#search_nowclass9").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#search_beforeclass9").trigger('chosen:updated');
+                $("#search_nowclass9").trigger('chosen:updated');
+            }
+        }
+    });
+
+
 }

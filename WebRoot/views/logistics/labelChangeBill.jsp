@@ -68,7 +68,7 @@
                                     <div class="form-group">
                                         <label class="col-xs-1 control-label" for="search_billId">单号</label>
                                         <div class="col-xs-2">
-                                            <input class="form-control" id="search_billId" name="filter_LIKES_billNo"
+                                            <input class="form-control" id="search_billId" name="filter_LIKES_t.billNo"
                                                    type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                    placeholder="模糊查询"/>
                                         </div>
@@ -76,54 +76,64 @@
                                         <div class="col-xs-2">
                                             <div class="input-group">
                                                 <input class="form-control date-picker" id="search_createTime"
-                                                       type="text" name="filter_GED_billDate"
+                                                       type="text" name="filter_GED_t.billDate"
                                                        data-date-format="yyyy-mm-dd"/>
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-exchange"></i>
                                                 </span>
                                                 <input class="form-control date-picker" type="text"
-                                                       class="input-sm form-control" name="filter_LED_billDate"
+                                                       class="input-sm form-control" name="filter_LED_t.billDate"
                                                        data-date-format="yyyy-mm-dd"/>
                                             </div>
                                         </div>
+                                        <label class="col-xs-1 control-label" for="select_changeType">转变类型</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control" id="select_changeType"
+                                                    name="filter_EQS_t.changeType">
+                                                <option value="">--请选择--</option>
+                                                <option value="CS">系列转变</option>
+                                                <option value="PC">打折</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-1 control-label" for="search_origUnitId">供应商</label>
-                                        <%--<div class="col-xs-2">--%>
-                                        <%--<input class="form-control" id="search_origUnitId"--%>
-                                        <%--name="filter_EQS_origUnitId" style="width: 100%;"--%>
-                                        <%--placeholder="模糊查询"/>--%>
-                                        <%--</div>--%>
+
+                                        <label class="col-xs-1 control-label" for="search_origId">仓库</label>
                                         <div class="col-xs-2">
-                                            <div class="input-group">
-                                                <input class="form-control" id="search_origUnitId" type="text"
-                                                       name="filter_EQS_origUnitId" readonly/>
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-sm btn-default" id="search_vendor_button"
-                                                            type="button" onclick="openSearchVendorDialog()">
-                                                        <i class="ace-icon fa fa-list"></i>
-                                                    </button>
-											    </span>
-                                                <input class="form-control" id="search_origUnitName" type="text"
-                                                       name="origUnitName" readonly/>
-                                            </div>
-                                        </div>
-                                        <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control" id="search_destId" name="filter_LIKES_destId" style="width: 100%;">
+                                            <select class="form-control" id="search_origId" name="filter_EQS_t.origId" style="width: 100%;">
                                             </select>
                                         </div>
                                         <%--<input id="search_unitId" type="text" value="${OwnerId}" name="filter_EQS_unitId" style="display: none">--%>
-                                        <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
+                                        <label class="col-xs-1 control-label" for="search_nowclass9">现系列</label>
                                         <div class="col-xs-2">
-                                            <select class="form-control" id="select_inStatus"
-                                                    name="filter_EQI_inStatus">
-                                                <option value="">--请选择--</option>
-                                                <option value="0">订单状态</option>
-                                                <option value="1">已入库</option>
-                                                <option value="4">入库中</option>
+                                            <select class="form-control" id="search_nowclass9" name="filter_EQS_t.nowclass9"
+                                                    style="width: 100%;">
                                             </select>
                                         </div>
+                                        <label class="col-xs-1 control-label" for="search_beforeclass9">原系列</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control" id="search_beforeclass9" name="filter_EQS_t.beforeclass9"
+                                                    style="width: 100%;">
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-1 control-label" for="search_styleid">款号</label>
+                                        <div class="col-xs-2">
+                                            <div class="input-group">
+                                                <input class="form-control" id="search_styleid"
+                                                       type="text" name="filter_EQS_dtl.styleId" readonly/>
+                                                <span class="input-group-btn">
+                                                                 <button class="btn btn-sm btn-default" type="button" onclick="openstyleDialog('#search_styleid','#filter_eq_stylename')">
+                                                                     <i class="ace-icon fa fa-list"></i>
+                                                                 </button>
+                                                              </span>
+                                                <input class="form-control" id="filter_eq_stylename"
+                                                       type="text" name="" readonly  placeholder="款名"/>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     <div class="form-group">
@@ -132,8 +142,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning"
-                                            >
+                                            <button type="reset" class="btn btn-sm btn-warning">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
@@ -162,7 +171,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="purchaseOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
-<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+<jsp:include page="../base/style_dialog.jsp"></jsp:include>
 
 <script type="text/javascript" src="<%=basePath%>/views/logistics/labelChangeBillController.js"></script>
 

@@ -66,12 +66,6 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
     public LabelChangeBill get(String propertyName, Object value) {
         return this.labelChangeBillDao.findUniqueBy(propertyName,value);
     }
-    public LabelChangeBill getOnClassHaveConstructor(String propertyName, Object value,Class <?> billClass){
-        String hql="from LabelChangeBill where "+propertyName+" =?";
-        return this.labelChangeBillDao.findUnique(hql,new Object[]{value});
-    }
-
-
     @Override
     public List<LabelChangeBill> find(List<PropertyFilter> filters) {
         return null;
@@ -142,6 +136,7 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
                 String taskId = initService.findMaxNo(prefixTaskId);
                 labelChangeBill.setId(prefix);
                 labelChangeBill.setBillNo(prefix);
+                labelChangeBill.setStatus(0);
                 labelChangeBill.setBillDate(new Date());
                 Map<String, Object> map = StyleUtil.newstyleidonlabelChangeBillDel(labelChangeBill, labelChangeBillDels,pricingRulesService,productService);
                  listStyle=( List<Style>) map.get("style");
@@ -195,8 +190,8 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
      *
      * @param page
      * @param filters
-     * @param billClass
-     * @param billDtlClass
+     * @param billClass//单据的class
+     * @param billDtlClass//单据详情的class
      * @param constructorParameter//构造函数的参数
      * @return
      */
@@ -208,37 +203,5 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
         return page;
     }
 
-    public void test(Class <?> billClass) {
-        //获取说有属性
-        Field[] fs = billClass.getDeclaredFields();
-        for (Field field : fs) {
-            //得到类的变量的类型的类类型
-            Class fieldType = field.getType();
-            String fieldTypeStr = fieldType.getName();
-            //得到成员变量的名称
-            String fieldname = field.getName();
-            System.out.println("类型：" + fieldTypeStr + "名称：" + fieldname);
-        }
-        //获取构造方法
-        Constructor[] cs2 = billClass.getConstructors();
-        for (Constructor constructor : cs2) {
-            String printstr = "(";
-            String printparameter="(";
-            //获取某个构造方法中的参数数组
-            Parameter[] parameters = constructor.getParameters();
-            for (Parameter parameter : parameters) {
-                printparameter = printparameter+parameter.getName()+",";
-            }
-            System.out.println(printparameter+")");
-            Class[] paramsType = constructor.getParameterTypes();
-            for (Class parameter : paramsType) {
-                printstr = printstr+parameter.getTypeName()+",";
-            }
-            if(printstr.length()>2){
-                printstr = printstr.substring(0, printstr.length()-1);
-            }
-            System.out.println(printstr+")");
-        }
-    }
 
 }

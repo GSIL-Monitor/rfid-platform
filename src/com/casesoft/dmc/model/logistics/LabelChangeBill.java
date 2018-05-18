@@ -28,7 +28,7 @@ public class LabelChangeBill extends BaseBill{
 
     }
 
-    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType,Date billDate,String origId,String remark,String billNo) {
+    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType,Date billDate,String origId,String remark,String billNo,Integer status) {
         this.id = id;
         this.beforeclass9 = beforeclass9;
         this.nowclass9 = nowclass9;
@@ -37,6 +37,7 @@ public class LabelChangeBill extends BaseBill{
         super.origId=origId;
         super.remark=remark;
         super.billNo=billNo;
+        super.status=status;
 
     }
 
