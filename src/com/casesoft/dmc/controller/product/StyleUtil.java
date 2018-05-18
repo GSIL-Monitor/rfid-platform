@@ -537,10 +537,11 @@ public class StyleUtil {
                     BeanUtils.copyProperties(formerstyle,stylenew);
                     stylenew.setId(styleId + BillConstant.styleNew.PriceDiscount);
                     stylenew.setStyleId(styleId + BillConstant.styleNew.PriceDiscount);
-                    stylenew.setPrice(formerstyle.getPrice()*labelChangeBillDels.get(i).getDiscount());
-                    stylenew.setPuPrice(formerstyle.getPuPrice()*labelChangeBillDels.get(i).getDiscount());
+                    stylenew.setPrice(CommonUtil.doubleChange(formerstyle.getPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
+                    stylenew.setPuPrice(CommonUtil.doubleChange(formerstyle.getPuPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
+                    stylenew.setWsPrice(CommonUtil.doubleChange(formerstyle.getWsPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
                     list.add(stylenew);
-                   /* List<Product> productList = productService.findByStyleId(styleId);
+                    /*List<Product> productList = productService.findByStyleId(styleId);
                     for(int a=0;a<productList.size();a++){
                         Product product = productList.get(a);
                         Product productnew=new Product();
