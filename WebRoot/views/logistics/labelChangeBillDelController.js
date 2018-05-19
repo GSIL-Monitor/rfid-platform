@@ -421,18 +421,22 @@ function save() {
             text: "请扫描需要该标签的商品",
             class_name: 'gritter-success  gritter-light'
         });
+        addDisabled();
         return;
     }
     var discount=$("#search_discount").val();
     if(type=="PC"){
         if(discount ==""||discount==null){
             bootbox.alert("折扣不能为空！")
+            addDisabled();
             return
         }
         if(discount>100||discount<=0){
             bootbox.alert("折扣请添写1到100的数字！")
+            addDisabled();
             return
         }
+
     }
     cs.showProgressBar();
     var dtlArray = [];
@@ -695,5 +699,21 @@ function showCodesDetail(sku) {
     $("#show-uniqueCode-list").modal('show');
     initUniqueCodeList(uniqueCodes);
     codeListReload(uniqueCodes);
+}
+
+function  addDisabled() {
+    if(type=="CS"){
+        $("#search_discount").attr('disabled', true);
+
+    }
+    if(type=="PC"){
+        $("#search_nowclass9").attr('disabled', true);
+        $("#search_beforeclass9").attr('disabled', true);
+    }
+
+    $("#select_changeType").val(type);
+    $("#select_changeType").attr('disabled', true);
+    $("#search_origId").val(defaultWarehId);
+    $("#search_origId").attr('disabled', true);
 }
 
