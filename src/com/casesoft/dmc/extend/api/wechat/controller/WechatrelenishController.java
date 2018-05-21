@@ -401,7 +401,7 @@ public class WechatrelenishController extends ApiBaseController {
     @ResponseBody
     public MessageBox cancelReplenishOrderList(String billNo) throws Exception {
         ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
-        if (replenishBill.getStatus() == BillConstant.BillStatus.Cancel) {
+        if (replenishBill.getStatus().intValue() == BillConstant.BillStatus.Cancel.intValue()) {
             return new MessageBox(true, "此单已被撤销");
         } else {
             replenishBill.setStatus(BillConstant.BillStatus.Cancel);
@@ -418,41 +418,45 @@ public class WechatrelenishController extends ApiBaseController {
     @ResponseBody
     public MessageBox cancelPurchaseOrderList(String billNo) throws Exception {
         PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
-          //新增的采购单直接撤销
-        if(purchaseOrderBill.getSrcBillNo()==null) {
-            purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-            this.purchaseOrderBillService.cancel(purchaseOrderBill);
-            return new MessageBox(true, "撤销成功");
-        }else{
-            //转的采购单更新处理数量
-            List<PurchaseOrderBillDtl> purchaseDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseOrderBill.getBillNo());
-            ReplenishBill replenishBill = replenishBillService.get("id", purchaseOrderBill.getSrcBillNo());
-            List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(purchaseOrderBill.getSrcBillNo());
+        if (purchaseOrderBill.getStatus().intValue() == BillConstant.BillStatus.Cancel.intValue()) {
+            return new MessageBox(true, "此单已被撤销");
+        } else {
+            //新增的采购单直接撤销
+            if (purchaseOrderBill.getSrcBillNo() == null) {
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.purchaseOrderBillService.cancel(purchaseOrderBill);
+                return new MessageBox(true, "撤销成功");
+            } else {
+                //转的采购单更新处理数量
+                List<PurchaseOrderBillDtl> purchaseDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseOrderBill.getBillNo());
+                ReplenishBill replenishBill = replenishBillService.get("id", purchaseOrderBill.getSrcBillNo());
+                List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(purchaseOrderBill.getSrcBillNo());
 
-            for(PurchaseOrderBillDtl thisPurchaseDtl:purchaseDtlList){
-                for(ReplenishBillDtl thisReplenishDtl:replenishBillDtlList){
-                    if(thisPurchaseDtl.getSku().equals(thisReplenishDtl.getSku())){
-                        thisReplenishDtl.setConvertQty(thisPurchaseDtl.getQty().intValue());
+                for (PurchaseOrderBillDtl thisPurchaseDtl : purchaseDtlList) {
+                    for (ReplenishBillDtl thisReplenishDtl : replenishBillDtlList) {
+                        if (thisPurchaseDtl.getSku().equals(thisReplenishDtl.getSku())) {
+                            thisReplenishDtl.setConvertQty(thisPurchaseDtl.getQty().intValue());
+                        }
                     }
                 }
+
+                ArrayList<ReplenishBillDtl> newReplenishDtls = new ArrayList<>();
+                for (ReplenishBillDtl thisDtl : replenishBillDtlList) {
+                    ReplenishBillDtl thisReplenishDtl = new ReplenishBillDtl();
+                    BeanUtils.copyProperties(thisDtl, thisReplenishDtl);
+                    thisReplenishDtl.setId(new GuidCreator().toString());
+                    newReplenishDtls.add(thisReplenishDtl);
+                }
+
+                BillConvertUtil.convertReplenishInProcessing(replenishBill, newReplenishDtls, BillConstant.replenishOption.Cancel);
+
+                this.replenishBillService.saveMessage(replenishBill, newReplenishDtls);
+
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.purchaseOrderBillService.cancel(purchaseOrderBill);
+
+                return new MessageBox(false, "撤销成功", billNo);
             }
-
-            ArrayList<ReplenishBillDtl> newReplenishDtls = new ArrayList<>();
-            for(ReplenishBillDtl thisDtl :  replenishBillDtlList){
-                ReplenishBillDtl thisReplenishDtl = new ReplenishBillDtl();
-                BeanUtils.copyProperties(thisDtl, thisReplenishDtl);
-                thisReplenishDtl.setId(new GuidCreator().toString());
-                newReplenishDtls.add(thisReplenishDtl);
-            }
-
-            BillConvertUtil.convertReplenishInProcessing(replenishBill, newReplenishDtls, BillConstant.replenishOption.Cancel);
-
-            this.replenishBillService.saveMessage(replenishBill,newReplenishDtls);
-
-            purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-            this.purchaseOrderBillService.cancel(purchaseOrderBill);
-
-            return new MessageBox(false, "撤销成功",billNo);
         }
 
     }
