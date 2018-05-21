@@ -576,6 +576,7 @@ public class BillConvertUtil {
         Map<String, BusinessDtl> businessDtlMap = new HashMap<>();
         Map<String, String> styleCountMap = new HashMap<>();
         List<Record> recordList = new ArrayList<>();
+        List<BillRecord> billRecordList = new ArrayList<>();
         Double totPreVal = 0D;
         Double totRcvPrice = 0d;
         for (Epc e : epcList) {
@@ -630,6 +631,8 @@ public class BillConvertUtil {
             record.setId(new GuidCreator().toString());
             record.setType(Constant.TaskType.Inbound);
             recordList.add(record);
+            BillRecord billRecord = new BillRecord(purchaseOrderBill.getBillNo() + "-" + record.getCode(), record.getCode(), purchaseOrderBill.getBillNo(), record.getSku());
+            billRecordList.add(billRecord);
         }
         bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
         bus.setId(taksId);
@@ -659,7 +662,7 @@ public class BillConvertUtil {
             purchaseOrderBill.setInStatus(BillConstant.BillInOutStatus.InStore);
             purchaseOrderBill.setStatus(BillConstant.BillStatus.End);
         }
-
+        purchaseOrderBill.setBillRecordList(billRecordList);
         return bus;
     }
 
@@ -3102,7 +3105,8 @@ public class BillConvertUtil {
             totPreVal += preVal;
             Record r = recordMap.get(s.getCode());
             r.setPrice(preVal);
-            PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getCode());
+            PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getSku());
+            //PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getCode());
             purchaseReturnBillDtl.setStockVal(purchaseReturnBillDtl.getStockVal() + preVal);
             BillRecord billRecord = new BillRecord(purchaseReturnBill.getBillNo() + "-" + s.getCode(), s.getCode(), purchaseReturnBill.getBillNo(), s.getSku());
             billRecordList.add(billRecord);
