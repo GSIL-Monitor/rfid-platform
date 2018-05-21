@@ -85,7 +85,7 @@ public class VendorController extends BaseController implements IBaseInfoControl
 		return vendors;
 	}
 	
-	@RequestMapping(value="/save")
+	@RequestMapping(value={"/save","/saveWS"})
 	@ResponseBody
 	@Override
 	public MessageBox save(Unit unit) throws Exception {
