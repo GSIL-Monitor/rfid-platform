@@ -1353,7 +1353,7 @@ public class BillConvertUtil {
 
         }
         saleOrderBill.setBillRecordList(billRecordList);
-        saleOrderBill.setOwnerId(curUser.getOwnerId());
+
         if (CommonUtil.isBlank(saleOrderBill.getStatus())) {
             saleOrderBill.setStatus(BillConstant.BillStatus.Enter);
         }
