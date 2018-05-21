@@ -6,12 +6,14 @@ import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo;
 import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
@@ -25,6 +27,7 @@ import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import io.swagger.annotations.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -231,18 +234,18 @@ public class WechatrelenishController extends ApiBaseController {
                 replenishBillDtl.setConvertQty(convertQty.intValue());
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
                 String dtlRemark = pDtl.getRemark();
-                if(CommonUtil.isBlank(dtlRemark)){
+                if (CommonUtil.isBlank(dtlRemark)) {
                     dtlRemark = "无";
                 }
 
                 //add by yushen 多次备注拼接，存入补货申请单
                 String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
-                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
+                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(), "yyyy-MM-dd")
                         + "，处理数量：" + pDtl.getQty()
                         + "，备注说明：" + dtlRemark + "；\n";
                 String oldRemark = replenishBillDtl.getRemark();
-                if(CommonUtil.isBlank(oldRemark)){
-                    oldRemark="";
+                if (CommonUtil.isBlank(oldRemark)) {
+                    oldRemark = "";
                 }
                 replenishBillDtl.setRemark(oldRemark + remark);
                 filteredDtlList.add(pDtl);
@@ -270,6 +273,7 @@ public class WechatrelenishController extends ApiBaseController {
                 purchaseOrderBill.setOrderWarehouseId(warehouse.getId());
                 purchaseOrderBill.setOrderWarehouseName(warehouse.getName());
             }
+
             User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, filteredDtlList, curUser);
             BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList, BillConstant.replenishOption.Convert);
@@ -397,11 +401,66 @@ public class WechatrelenishController extends ApiBaseController {
     @ResponseBody
     public MessageBox cancelReplenishOrderList(String billNo) throws Exception {
         ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
-        replenishBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.replenishBillService.cancelUpdate(replenishBill);
-        return new MessageBox(true, "撤销成功");
+        if (replenishBill.getStatus().intValue() == BillConstant.BillStatus.Cancel.intValue()) {
+            return new MessageBox(true, "此单已被撤销");
+        } else {
+            replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.replenishBillService.cancelUpdate(replenishBill);
+            return new MessageBox(true, "撤销成功");
+        }
 
     }
+
+    /**
+     * 撤销录入状态的采购单的接口。
+     */
+    @RequestMapping(value = "/cancelPurchaseOrderList.do")
+    @ResponseBody
+    public MessageBox cancelPurchaseOrderList(String billNo) throws Exception {
+        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
+        if (purchaseOrderBill.getStatus().intValue() == BillConstant.BillStatus.Cancel.intValue()) {
+            return new MessageBox(true, "此单已被撤销");
+        } else {
+            //新增的采购单直接撤销
+            if (purchaseOrderBill.getSrcBillNo() == null) {
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.purchaseOrderBillService.cancel(purchaseOrderBill);
+                return new MessageBox(true, "撤销成功");
+            } else {
+                //转的采购单更新处理数量
+                List<PurchaseOrderBillDtl> purchaseDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseOrderBill.getBillNo());
+                ReplenishBill replenishBill = replenishBillService.get("id", purchaseOrderBill.getSrcBillNo());
+                List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(purchaseOrderBill.getSrcBillNo());
+
+                for (PurchaseOrderBillDtl thisPurchaseDtl : purchaseDtlList) {
+                    for (ReplenishBillDtl thisReplenishDtl : replenishBillDtlList) {
+                        if (thisPurchaseDtl.getSku().equals(thisReplenishDtl.getSku())) {
+                            thisReplenishDtl.setConvertQty(thisPurchaseDtl.getQty().intValue());
+                        }
+                    }
+                }
+
+                ArrayList<ReplenishBillDtl> newReplenishDtls = new ArrayList<>();
+                for (ReplenishBillDtl thisDtl : replenishBillDtlList) {
+                    ReplenishBillDtl thisReplenishDtl = new ReplenishBillDtl();
+                    BeanUtils.copyProperties(thisDtl, thisReplenishDtl);
+                    thisReplenishDtl.setId(new GuidCreator().toString());
+                    newReplenishDtls.add(thisReplenishDtl);
+                }
+
+                BillConvertUtil.convertReplenishInProcessing(replenishBill, newReplenishDtls, BillConstant.replenishOption.Cancel);
+
+                this.replenishBillService.saveMessage(replenishBill, newReplenishDtls);
+
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.purchaseOrderBillService.cancel(purchaseOrderBill);
+
+                return new MessageBox(false, "撤销成功", billNo);
+            }
+        }
+
+    }
+
 
     /**
      * add by yushen
@@ -496,8 +555,24 @@ public class WechatrelenishController extends ApiBaseController {
         page.setPageProperty();
         Page<PurchaseOrderBill> purchaseOrderBillPage = this.purchaseOrderBillService.findPage(page, filters);
         for (PurchaseOrderBill bill : purchaseOrderBillPage.getRows()) {
+            User orderDtlUser = CacheManager.getUserById(bill.getBuyahandId());
+            if (CommonUtil.isNotBlank(orderDtlUser)) {
+                bill.setBuyahandName(orderDtlUser.getName());
+            }
+
             List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
+            List<PurchaseStyleVo> styleList = this.purchaseOrderBillService.findStyleListByBillNo(bill.getBillNo());
+            for (PurchaseStyleVo newStyleList : styleList) {
+                String rootPath = this.getSession().getServletContext().getRealPath("/");
+                String imgUrl = StyleUtil.returnImageUrl(newStyleList.getStyleId(), rootPath);
+                newStyleList.setImgUrl(imgUrl);
+                Style style = CacheManager.getStyleById(newStyleList.getStyleId());
+                if (CommonUtil.isNotBlank(style)) {
+                    newStyleList.setStyleName(style.getStyleName());
+                }
+            }
             bill.setDtlList(billDtlList);
+            bill.setStyleList(styleList);
         }
 
         return new MessageBox(true, "success", purchaseOrderBillPage);

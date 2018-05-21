@@ -11,6 +11,7 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.dao.sys.UnitDao;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
@@ -249,6 +250,12 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
 
     public List<PurchaseOrderBillDtl> findBillDtlByBillNo(String billNo) {
         return this.purchaseBillOrderDao.find("from PurchaseOrderBillDtl where billNo=?", new Object[]{billNo});
+    }
+
+    public List<PurchaseStyleVo> findStyleListByBillNo(String billNO){
+        String hql = "select distinct new com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo"
+                +"(dtl.styleId) from PurchaseOrderBillDtl dtl where dtl.billNo = ?";
+        return this.purchaseBillOrderDao.find(hql, billNO);
     }
 
     //采购数量详情
