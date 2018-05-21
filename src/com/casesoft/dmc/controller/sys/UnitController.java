@@ -45,6 +45,8 @@ public class UnitController extends BaseController implements IBaseInfoControlle
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
+        page.setSort("updateTime");
+        page.setOrder("desc");
         page.setPageProperty();
         page = this.unitService.findPage(page,filters);
         return page;

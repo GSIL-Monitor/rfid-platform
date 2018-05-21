@@ -395,6 +395,7 @@ public class WechatrelenishController extends ApiBaseController {
     }
 
     /**
+     * add by Anna
      * 撤销未处理的补货单的接口。
      */
     @RequestMapping(value = "/cancelReplenishOrderList.do")
@@ -412,6 +413,7 @@ public class WechatrelenishController extends ApiBaseController {
     }
 
     /**
+     * add by Anna
      * 撤销录入状态的采购单的接口。
      */
     @RequestMapping(value = "/cancelPurchaseOrderList.do")
