@@ -606,6 +606,16 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         return lists;
     }
 
+    /**
+     * 补货单按款搜索去重得到billNo
+     * @param styleSearch
+     */
+    public List<String> findBillDtlBillNoByStyleId(String styleSearch) {
+        String hql = "select distinct billNo "
+                + "from ReplenishBillDtl  where styleId like '%" + styleSearch + "%'";
+        return this.replenishBillDao.find(hql);
+    }
+
 
     /**
      * add by yushen 补货单查询补单情况，数据库里查询出以SKU汇总的结果，然后根据款号分组，拼成StyleVO。note：没传session，在controller里设置图片路径

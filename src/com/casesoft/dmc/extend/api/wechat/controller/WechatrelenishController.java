@@ -561,8 +561,7 @@ public class WechatrelenishController extends ApiBaseController {
             if (CommonUtil.isNotBlank(orderDtlUser)) {
                 bill.setBuyahandName(orderDtlUser.getName());
             }
-
-            List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
+            //List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
             List<PurchaseStyleVo> styleList = this.purchaseOrderBillService.findStyleListByBillNo(bill.getBillNo());
             for (PurchaseStyleVo newStyleList : styleList) {
                 String rootPath = this.getSession().getServletContext().getRealPath("/");
@@ -573,11 +572,39 @@ public class WechatrelenishController extends ApiBaseController {
                     newStyleList.setStyleName(style.getStyleName());
                 }
             }
-            bill.setDtlList(billDtlList);
+            //bill.setDtlList(billDtlList);
             bill.setStyleList(styleList);
         }
-
         return new MessageBox(true, "success", purchaseOrderBillPage);
+    }
+
+    /**
+     * add by Anna
+     * 采购单 补货单 按款查询得到拼接的billNo
+     */
+    @RequestMapping(value = "/searchStyleId.do")
+    @ResponseBody
+    public String searchStyleId(String styleSearch,String searchType) {
+        List<String> billDtlBillNoList=new ArrayList<>();
+        //获取搜索的styleId的单号
+        if(searchType.equals("purchaseOrder")) {  //采购单查询
+            billDtlBillNoList = this.purchaseOrderBillService.findBillDtlBillNoByStyleId(styleSearch);
+        }else if(searchType.equals("replenishOrder")){ //补货单查询
+            billDtlBillNoList = this.replenishBillService.findBillDtlBillNoByStyleId(styleSearch);
+
+        }
+        String billNoStr = "";
+        if (billDtlBillNoList.size() <= 50) {  //限制查询到的单号最多50个
+            for (int i = 0; i < billDtlBillNoList.size(); i++) {
+                if (i < billDtlBillNoList.size() - 1) {  //不拼接最后一个字符
+                    billNoStr += billDtlBillNoList.get(i).toString();
+                    billNoStr += ",";
+                } else {
+                    billNoStr += billDtlBillNoList.get(i).toString();
+                }
+            }
+        }
+        return billNoStr;
     }
 
     /**
