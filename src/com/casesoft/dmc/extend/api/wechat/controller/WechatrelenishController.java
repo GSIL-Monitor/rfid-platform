@@ -221,18 +221,24 @@ public class WechatrelenishController extends ApiBaseController {
         }
 
         //将转换数量放入补货单明细，并过滤出转换数量大于零的采购明细
-        Long totConvertQty = 0L;
+        Long totConvertQty = 0L; //总转换数量
+        Integer totCancelQty = 0; //总撤销数量
         for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
             Long convertQty = pDtl.getQty();
+            Integer cancelQty = pDtl.getCancelQty();
             if (CommonUtil.isBlank(convertQty)) {
                 convertQty = 0L;
+            }if(CommonUtil.isBlank(cancelQty)){
+                cancelQty = 0;
             }
             totConvertQty += convertQty;
+            totCancelQty += cancelQty;
             String thisSku = pDtl.getSku();
             ReplenishBillDtl replenishBillDtl = sku2billDtlMap.get(thisSku);
-            if (convertQty > 0) {
+            if (convertQty > 0 || cancelQty > 0) {
                 replenishBillDtl.setConvertQty(convertQty.intValue());
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
+                replenishBillDtl.setConvertquitQty(cancelQty);
                 String dtlRemark = pDtl.getRemark();
                 if (CommonUtil.isBlank(dtlRemark)) {
                     dtlRemark = "无";
@@ -248,15 +254,17 @@ public class WechatrelenishController extends ApiBaseController {
                     oldRemark = "";
                 }
                 replenishBillDtl.setRemark(oldRemark + remark);
-                filteredDtlList.add(pDtl);
+                if(convertQty > 0){
+                    filteredDtlList.add(pDtl);
+                }
             }
         }
         //总转换数量小于1，返回错误：没有待处理的商品
-        if (totConvertQty < 1) {
+        if (totConvertQty < 1 && totCancelQty < 1) {
             throw new Exception("没有待处理的商品");
-//            return new MessageBox(false, "没有待处理的商品");
         }
 
+        User curUser = CacheManager.getUserById(userId);
         if (filteredDtlList.size() > 0) {
             String prefix = BillConstant.BillPrefix.purchase
                     + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
@@ -274,14 +282,12 @@ public class WechatrelenishController extends ApiBaseController {
                 purchaseOrderBill.setOrderWarehouseName(warehouse.getName());
             }
 
-            User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, filteredDtlList, curUser);
+        }
             BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList, BillConstant.replenishOption.Convert);
             this.purchaseOrderBillService.processReplenishBill(purchaseOrderBill, filteredDtlList, replenishBill, replenishBillDtlList, curUser);
             return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
-        } else {
-            return new MessageBox(true, "保存成功");
-        }
+
     }
 
 

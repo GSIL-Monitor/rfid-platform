@@ -17,7 +17,9 @@ public class ReplenishBill extends BaseBill{
     private String id;
 
     @Column()
-    private Long totConvertQty=0L;//
+    private Long totConvertQty=0L;//总转换数量
+    @Column()
+    private Long totCancelQty = 0L;//总撤销数量
 
     @Column()
     private String buyahandId;//买手的id
@@ -80,6 +82,14 @@ public class ReplenishBill extends BaseBill{
 
     public void setTotConvertQty(Long totConvertQty) {
         this.totConvertQty = totConvertQty;
+    }
+
+    public Long getTotCancelQty() {
+        return totCancelQty;
+    }
+
+    public void setTotCancelQty(Long totCancelQty) {
+        this.totCancelQty = totCancelQty;
     }
 
     public List<ReplenishBillDtl> getDtlList() {

@@ -16,6 +16,8 @@ public class BillConstant {
         public final static Integer shophold = 6;//商城订单暂存
         public final static Integer shopEnter = 7;//商城订单录入
         public final static Integer noCheck=8;//反审核
+        public final static Integer EndWithCancel = 9;//部分完成部分撤销
+        public final static Integer ThirdPartyCancel = -3; //第三方撤销，例如：补货单由销售员提出，又采购员全部撤销时的状态
 
     }
     public final static class BillInOutStatus{
@@ -81,5 +83,13 @@ public class BillConstant {
     public final static class replenishOption{
         public final static String Convert = "CONVERT";
         public final static String Cancel = "CANCEL";
+    }
+
+    public final static class replenishBillDtlStatus{
+        public final static Integer Order = 0;   //订单状态
+        public final static Integer Doing = 1; //部分处理
+        public final static Integer End = 2;  //全部完成
+        public final static Integer EndWithCancel = 3; //部分完成部分撤销
+        public final static Integer Cancel = 4;  //全部撤销
     }
 }

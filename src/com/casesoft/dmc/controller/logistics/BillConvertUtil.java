@@ -3550,33 +3550,53 @@ public class BillConvertUtil {
         Long totQty = replenishBill.getTotQty();
 
         Integer sumDtlConvertQty = 0;
+        Integer sumDtlCancelQty = 0;
         for (ReplenishBillDtl dtl : replenishBillDtlList) {
             if ("CONVERT".equals(option)) {
                 dtl.setActConvertQty(dtl.getActConvertQty() + dtl.getConvertQty());
                 dtl.setConvertQty(0);
+                dtl.setActConvertquitQty(dtl.getConvertquitQty());
+                dtl.setConvertquitQty(0);
             } else if ("CANCEL".equals(option)) {
                 dtl.setActConvertQty(dtl.getActConvertQty() - dtl.getConvertQty());
                 dtl.setConvertQty(0);
             }
-            if (dtl.getActConvertQty() > dtl.getQty().intValue()) {
+            //设置明细状态
+            if (dtl.getActConvertQty() + dtl.getActConvertquitQty() > dtl.getQty().intValue()) {
                 throw new Exception(dtl.getSku() + "超出单据需求数量");
-            } else if (dtl.getActConvertQty() == dtl.getQty().intValue()) {
-                dtl.setStatus(0); //0 表示该sku已全部处理
-            } else if (dtl.getActConvertQty() < dtl.getQty().intValue()) {
-                dtl.setStatus(1); //1 表示该sku未处理完
+            }else if(dtl.getActConvertQty() == 0 && dtl.getActConvertquitQty() == 0) {//订单
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.Order);
+            }else if(dtl.getActConvertQty() + dtl.getActConvertquitQty() < dtl.getQty().intValue()){//部分处理
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.Doing);
+            }else if (dtl.getActConvertQty() == dtl.getQty().intValue()) {//全部处理
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.End);
+            }else if (dtl.getActConvertQty() + dtl.getActConvertquitQty() == dtl.getQty().intValue() && dtl.getActConvertQty() > 0 && dtl.getActConvertquitQty() > 0) {//部分完成部分撤销
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.EndWithCancel);
+            }else if(dtl.getActConvertquitQty() == dtl.getQty().intValue()){//全部撤销
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.Cancel);
             }
             sumDtlConvertQty += dtl.getActConvertQty();
+            sumDtlCancelQty += dtl.getActConvertquitQty();
         }
 
-        if (sumDtlConvertQty == 0) {
+        //设置表头状态
+        if (sumDtlConvertQty == 0 && sumDtlCancelQty == 0) {//订单
             replenishBill.setStatus(BillConstant.BillStatus.Enter);
-        } else if (sumDtlConvertQty < totQty) {
+        } else if (sumDtlConvertQty + sumDtlCancelQty < totQty.intValue()) {//部分处理
             replenishBill.setStatus(BillConstant.BillStatus.Doing);
             replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
-        } else if (sumDtlConvertQty == totQty.intValue()) {
+            replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
+        } else if (sumDtlConvertQty == totQty.intValue()) {//全部处理
             replenishBill.setStatus(BillConstant.BillStatus.End);
             replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
-        } else if (sumDtlConvertQty > totQty) {
+        }else if(sumDtlConvertQty + sumDtlCancelQty == totQty.intValue() && sumDtlConvertQty > 0 && sumDtlCancelQty > 0) { //部分完成部分撤销
+            replenishBill.setStatus(BillConstant.BillStatus.EndWithCancel);
+            replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
+            replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
+        }else if(sumDtlCancelQty == totQty.intValue()){//全部撤销
+            replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+            replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
+        } else if (sumDtlConvertQty > totQty.intValue()) {
             throw new Exception("超出单据总需求数");
         }
 
