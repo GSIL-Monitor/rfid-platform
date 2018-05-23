@@ -387,8 +387,8 @@ public class BillConvertUtil {
             dtl.setPrintQty(dtl.getQty().intValue());
             Style style = CacheManager.getStyleById(dtl.getStyleId());
             dtl.setPrice(style.getPreCast());
-            dtl.setActPrice(style.getPreCast() * 100);
-            dtl.setTotActPrice(style.getPreCast() * Double.parseDouble(dtl.getQty() + "") * 100);
+            dtl.setActPrice(style.getPreCast());
+            dtl.setTotActPrice(style.getPreCast() * Double.parseDouble(dtl.getQty() + ""));
             dtl.setTotPrice(style.getPreCast() * Double.parseDouble(dtl.getQty() + ""));
             totQty += dtl.getQty();
             actQty += dtl.getQty();
@@ -576,6 +576,7 @@ public class BillConvertUtil {
         Map<String, BusinessDtl> businessDtlMap = new HashMap<>();
         Map<String, String> styleCountMap = new HashMap<>();
         List<Record> recordList = new ArrayList<>();
+        List<BillRecord> billRecordList = new ArrayList<>();
         Double totPreVal = 0D;
         Double totRcvPrice = 0d;
         for (Epc e : epcList) {
@@ -630,6 +631,8 @@ public class BillConvertUtil {
             record.setId(new GuidCreator().toString());
             record.setType(Constant.TaskType.Inbound);
             recordList.add(record);
+            BillRecord billRecord = new BillRecord(purchaseOrderBill.getBillNo() + "-" + record.getCode(), record.getCode(), purchaseOrderBill.getBillNo(), record.getSku());
+            billRecordList.add(billRecord);
         }
         bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
         bus.setId(taksId);
@@ -659,7 +662,7 @@ public class BillConvertUtil {
             purchaseOrderBill.setInStatus(BillConstant.BillInOutStatus.InStore);
             purchaseOrderBill.setStatus(BillConstant.BillStatus.End);
         }
-
+        purchaseOrderBill.setBillRecordList(billRecordList);
         return bus;
     }
 
@@ -1355,7 +1358,7 @@ public class BillConvertUtil {
 
         }
         saleOrderBill.setBillRecordList(billRecordList);
-        saleOrderBill.setOwnerId(curUser.getOwnerId());
+
         if (CommonUtil.isBlank(saleOrderBill.getStatus())) {
             saleOrderBill.setStatus(BillConstant.BillStatus.Enter);
         }
@@ -3102,7 +3105,8 @@ public class BillConvertUtil {
             totPreVal += preVal;
             Record r = recordMap.get(s.getCode());
             r.setPrice(preVal);
-            PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getCode());
+            PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getSku());
+            //PurchaseReturnBillDtl purchaseReturnBillDtl = detailMap.get(s.getCode());
             purchaseReturnBillDtl.setStockVal(purchaseReturnBillDtl.getStockVal() + preVal);
             BillRecord billRecord = new BillRecord(purchaseReturnBill.getBillNo() + "-" + s.getCode(), s.getCode(), purchaseReturnBill.getBillNo(), s.getSku());
             billRecordList.add(billRecord);
@@ -3546,33 +3550,53 @@ public class BillConvertUtil {
         Long totQty = replenishBill.getTotQty();
 
         Integer sumDtlConvertQty = 0;
+        Integer sumDtlCancelQty = 0;
         for (ReplenishBillDtl dtl : replenishBillDtlList) {
             if ("CONVERT".equals(option)) {
                 dtl.setActConvertQty(dtl.getActConvertQty() + dtl.getConvertQty());
                 dtl.setConvertQty(0);
+                dtl.setActConvertquitQty(dtl.getConvertquitQty());
+                dtl.setConvertquitQty(0);
             } else if ("CANCEL".equals(option)) {
                 dtl.setActConvertQty(dtl.getActConvertQty() - dtl.getConvertQty());
                 dtl.setConvertQty(0);
             }
-            if (dtl.getActConvertQty() > dtl.getQty().intValue()) {
+            //设置明细状态
+            if (dtl.getActConvertQty() + dtl.getActConvertquitQty() > dtl.getQty().intValue()) {
                 throw new Exception(dtl.getSku() + "超出单据需求数量");
-            } else if (dtl.getActConvertQty() == dtl.getQty().intValue()) {
-                dtl.setStatus(0); //0 表示该sku已全部处理
-            } else if (dtl.getActConvertQty() < dtl.getQty().intValue()) {
-                dtl.setStatus(1); //1 表示该sku未处理完
+            }else if(dtl.getActConvertQty() == 0 && dtl.getActConvertquitQty() == 0) {//订单
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.Order);
+            }else if(dtl.getActConvertQty() + dtl.getActConvertquitQty() < dtl.getQty().intValue()){//部分处理
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.Doing);
+            }else if (dtl.getActConvertQty() == dtl.getQty().intValue()) {//全部处理
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.End);
+            }else if (dtl.getActConvertQty() + dtl.getActConvertquitQty() == dtl.getQty().intValue() && dtl.getActConvertQty() > 0 && dtl.getActConvertquitQty() > 0) {//部分完成部分撤销
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.EndWithCancel);
+            }else if(dtl.getActConvertquitQty() == dtl.getQty().intValue()){//全部撤销
+                dtl.setStatus(BillConstant.replenishBillDtlStatus.Cancel);
             }
             sumDtlConvertQty += dtl.getActConvertQty();
+            sumDtlCancelQty += dtl.getActConvertquitQty();
         }
 
-        if (sumDtlConvertQty == 0) {
+        //设置表头状态
+        if (sumDtlConvertQty == 0 && sumDtlCancelQty == 0) {//订单
             replenishBill.setStatus(BillConstant.BillStatus.Enter);
-        } else if (sumDtlConvertQty < totQty) {
+        } else if (sumDtlConvertQty + sumDtlCancelQty < totQty.intValue()) {//部分处理
             replenishBill.setStatus(BillConstant.BillStatus.Doing);
             replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
-        } else if (sumDtlConvertQty == totQty.intValue()) {
+            replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
+        } else if (sumDtlConvertQty == totQty.intValue()) {//全部处理
             replenishBill.setStatus(BillConstant.BillStatus.End);
             replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
-        } else if (sumDtlConvertQty > totQty) {
+        }else if(sumDtlConvertQty + sumDtlCancelQty == totQty.intValue() && sumDtlConvertQty > 0 && sumDtlCancelQty > 0) { //部分完成部分撤销
+            replenishBill.setStatus(BillConstant.BillStatus.EndWithCancel);
+            replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
+            replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
+        }else if(sumDtlCancelQty == totQty.intValue()){//全部撤销
+            replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+            replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
+        } else if (sumDtlConvertQty > totQty.intValue()) {
             throw new Exception("超出单据总需求数");
         }
 

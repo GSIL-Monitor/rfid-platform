@@ -43,6 +43,9 @@ public class PurchaseOrderBillDtl extends BaseBillDtl {
     @JSONField(format = "yyyy-MM-dd")
     private Date expectTime;//预计时间
 
+    @Transient
+    private Integer cancelQty; //临时保存补货处理时的撤销数量
+
     public Date getExpectTime() {
         return expectTime;
     }
@@ -129,5 +132,13 @@ public class PurchaseOrderBillDtl extends BaseBillDtl {
 
     public void setOutVal(Double outVal) {
         this.outVal = outVal;
+    }
+
+    public Integer getCancelQty() {
+        return cancelQty;
+    }
+
+    public void setCancelQty(Integer cancelQty) {
+        this.cancelQty = cancelQty;
     }
 }

@@ -606,13 +606,23 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
         return lists;
     }
 
+    /**
+     * 补货单按款搜索去重得到billNo
+     * @param styleSearch
+     */
+    public List<String> findBillDtlBillNoByStyleId(String styleSearch) {
+        String hql = "select distinct billNo "
+                + "from ReplenishBillDtl  where styleId like '%" + styleSearch + "%'";
+        return this.replenishBillDao.find(hql);
+    }
+
 
     /**
      * add by yushen 补货单查询补单情况，数据库里查询出以SKU汇总的结果，然后根据款号分组，拼成StyleVO。note：没传session，在controller里设置图片路径
      */
     public List<ReplenishStyleVO> findReplenishStyleVO(String billNo) {
         String getSkuVOHql = "select new com.casesoft.dmc.model.logistics.vo.ReplenishSkuVO" +
-                "(rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty as skuTotQty, rd.actConvertQty as skuTotActConvertQty,rd.remark) " +
+                "(rd.sku, rd.styleId, rd.colorId, rd.sizeId, rd.qty as skuTotQty, rd.actConvertQty as skuTotActConvertQty, rd.actConvertquitQty as skuTotActConvertquitQty, rd.remark) " +
                 "from ReplenishBillDtl rd " +
                 "where rd.billNo=? ";
         List<ReplenishSkuVO> replenishSkuVOList = this.replenishBillDao.find(getSkuVOHql, billNo);
@@ -649,6 +659,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                 //累加sku中的数量，放入styleVO中
                 styleVOMap.get(currentStyleId).setStyleTotQty(skuVO.getSkuTotQty() + styleVOMap.get(currentStyleId).getStyleTotQty());
                 styleVOMap.get(currentStyleId).setStyleTotActConvertQty(skuVO.getSkuTotActConvertQty() + styleVOMap.get(currentStyleId).getStyleTotActConvertQty());
+                styleVOMap.get(currentStyleId).setStyleTotActConvertquitQty(skuVO.getSkuTotActConvertquitQty() + styleVOMap.get(currentStyleId).getStyleTotActConvertquitQty());
                 if(skuVO.getSkuTotInstockQty()==null){
                     skuVO.setSkuTotInstockQty(0);
                 }
