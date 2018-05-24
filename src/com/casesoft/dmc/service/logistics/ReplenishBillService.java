@@ -682,6 +682,7 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
                 newStyleVO.setStyleTotQty(skuVO.getSkuTotQty());
                 newStyleVO.setStyleTotActConvertQty(skuVO.getSkuTotActConvertQty());
                 newStyleVO.setStyleTotInstockQty(skuVO.getSkuTotInstockQty());
+                newStyleVO.setStyleTotActConvertquitQty(skuVO.getSkuTotActConvertquitQty());
                 newStyleVO.setSkuVOList(newSubSkuVOList);
                 styleVOMap.put(currentStyleId, newStyleVO);
             }
