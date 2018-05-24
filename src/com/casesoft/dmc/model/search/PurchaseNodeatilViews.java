@@ -51,6 +51,41 @@ public class PurchaseNodeatilViews {
     @Column()
     @Excel(name="单据类型")
     private String saletype;
+    @Column()
+    @Excel(name="任务号")
+    private String taskid;
+
+    @JSONField(format="yyyy-MM-dd")
+    @Column(nullable = false,length = 19)
+    @Excel(name="入库时间")
+    private Date intime;
+    @Column()
+    @Excel(name="入库数量")
+    private Integer inqty;
+
+    public String getTaskid() {
+        return taskid;
+    }
+
+    public void setTaskid(String taskid) {
+        this.taskid = taskid;
+    }
+
+    public Date getIntime() {
+        return intime;
+    }
+
+    public void setIntime(Date intime) {
+        this.intime = intime;
+    }
+
+    public Integer getInqty() {
+        return inqty;
+    }
+
+    public void setInqty(Integer inqty) {
+        this.inqty = inqty;
+    }
 
     public String getSaletype() {
         return saletype;
