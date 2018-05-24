@@ -421,6 +421,11 @@ function initKendoUIGrid() {
                     }
                 },
                 {
+                    field: "intime",
+                    title: "入库时间",
+                    width: "150px"
+                },
+                {
                     title: "日期",
                     field: "billDate",
                     width: "200px",
@@ -457,6 +462,11 @@ function initKendoUIGrid() {
                         var totactprice = data.aggregates.totactprice.sum;
                         return "单号:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
                     }
+                },
+                {
+                    field: "taskid",
+                    title: "任务号",
+                    width: "150px"
                 },
                 {
                     field: "sku",
@@ -559,6 +569,11 @@ function initKendoUIGrid() {
                     field: "qty", title: "数量", width: "80px", groupable: false,
                     aggregates: ["sum"],
                     footerTemplate: "#=sum#"
+                },
+                {
+                    field: "inQty",
+                    title: "入库数量",
+                    width: "150px"
                 },
                 {field: "price", title: "吊牌价", width: "110px", groupable: false, aggregates: ["average"]},
                 {
@@ -744,6 +759,12 @@ function initKendoUIPurchaseGrid() {
                     }
                 },
                 {
+                    field: "intime",
+                    title: "入库时间",
+                    width: "180px",
+
+                },
+                {
                     title: "单号",
                     field: "billno",
                     width: "250px",
@@ -755,6 +776,12 @@ function initKendoUIPurchaseGrid() {
                         var totactprice = data.aggregates.totinval.sum;
                         return "单号:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
                     }
+                },
+                {
+                    field: "taskid",
+                    title: "任务号",
+                    width: "180px",
+
                 },
                 /* {
                  field: "sku",
@@ -838,6 +865,12 @@ function initKendoUIPurchaseGrid() {
                     field: "totqty", title: "数量", width: "80px", groupable: false,
                     aggregates: ["sum"],
                     footerTemplate: "#=sum#"
+                },
+                {
+                    field: "inqty",
+                    title: "入库数量",
+                    width: "180px",
+
                 },
                 /*{field: "totinval", title: "吊牌价", width: "110px", groupable: false, aggregates: ["average"]},*/
                 {
