@@ -3555,7 +3555,7 @@ public class BillConvertUtil {
             if ("CONVERT".equals(option)) {
                 dtl.setActConvertQty(dtl.getActConvertQty() + dtl.getConvertQty());
                 dtl.setConvertQty(0);
-                dtl.setActConvertquitQty(dtl.getConvertquitQty());
+                dtl.setActConvertquitQty(dtl.getConvertquitQty() + dtl.getActConvertquitQty());
                 dtl.setConvertquitQty(0);
             } else if ("CANCEL".equals(option)) {
                 dtl.setActConvertQty(dtl.getActConvertQty() - dtl.getConvertQty());
@@ -3594,7 +3594,7 @@ public class BillConvertUtil {
             replenishBill.setTotConvertQty(Long.valueOf(sumDtlConvertQty));
             replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
         }else if(sumDtlCancelQty == totQty.intValue()){//全部撤销
-            replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+            replenishBill.setStatus(BillConstant.BillStatus.ThirdPartyCancel);
             replenishBill.setTotCancelQty(Long.valueOf(sumDtlCancelQty));
         } else if (sumDtlConvertQty > totQty.intValue()) {
             throw new Exception("超出单据总需求数");
