@@ -26,81 +26,86 @@ import com.casesoft.dmc.service.sys.impl.VendorService;
 
 @Controller
 @RequestMapping("/sys/vendor")
-public class VendorController extends BaseController implements IBaseInfoController<Unit>{
-	
-	@Autowired
-	private VendorService vendorService;
-	@Override
-	@RequestMapping(value = "/index")
-	public String index() {		
-		 return "/views/sys/vendor";
-	}
-	
-    @RequestMapping(value="/page")
-	@ResponseBody
-	@Override
-	public Page<Unit> findPage(Page<Unit> page) throws Exception {
-		this.logAllRequestParams();
+public class VendorController extends BaseController implements IBaseInfoController<Unit> {
+
+    @Autowired
+    private VendorService vendorService;
+
+    @Override
+    @RequestMapping(value = "/index")
+    public String index() {
+        return "/views/sys/vendor";
+    }
+
+    @RequestMapping(value = "/page")
+    @ResponseBody
+    @Override
+    public Page<Unit> findPage(Page<Unit> page) throws Exception {
+        this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
         page.setPageProperty();
-        page = this.vendorService.findPage(page,filters);
-        Map<String,String> propertyKeyMap=new HashMap<String,String>();
-		for(PropertyKey propertyKey:CacheManager.getPropertyKeyMap().values()){
-			if("VT".equals(propertyKey.getType())){
-				propertyKeyMap.put(propertyKey.getCode(),propertyKey.getName());
-			}
-		}
+        page = this.vendorService.findPage(page, filters);
+        Map<String, String> propertyKeyMap = new HashMap<String, String>();
+        for (PropertyKey propertyKey : CacheManager.getPropertyKeyMap().values()) {
+            if ("VT".equals(propertyKey.getType())) {
+                propertyKeyMap.put(propertyKey.getCode(), propertyKey.getName());
+            }
+        }
         //加入所属方的Name
-        for(Unit u: page.getRows()){
-        		String ownerName=CacheManager.getUnitById(u.getOwnerId()).getName();
-                u.setUnitName(ownerName);
-                if(CommonUtil.isNotBlank(propertyKeyMap.get(u.getGroupId()))){
-                	u.setGroupName(propertyKeyMap.get(u.getGroupId()));
-				}
+        for (Unit u : page.getRows()) {
+            String ownerName = CacheManager.getUnitById(u.getOwnerId()).getName();
+            u.setUnitName(ownerName);
+            if (CommonUtil.isNotBlank(propertyKeyMap.get(u.getGroupId()))) {
+                u.setGroupName(propertyKeyMap.get(u.getGroupId()));
+            }
         }
         return page;
-	}
+    }
 
-	@RequestMapping(value = "/checkCode")
-	@ResponseBody
-	public Map<String,Boolean> checkCode(String code,String pageType){
-		Unit vendor =this.vendorService.findUniqueByCode(code);
-		Map<String,Boolean> json = new HashMap<String,Boolean>();
-		if("add".equals(pageType)&&CommonUtil.isNotBlank(vendor)){
-			json.put("valid",false);
-		} else {
-			json.put("valid",true);
-		}
-		return json;
-	}
+    @RequestMapping(value = "/checkCode")
+    @ResponseBody
+    public Map<String, Boolean> checkCode(String code, String pageType) {
+        Unit vendor = this.vendorService.findUniqueByCode(code);
+        Map<String, Boolean> json = new HashMap<String, Boolean>();
+        if ("add".equals(pageType) && CommonUtil.isNotBlank(vendor)) {
+            json.put("valid", false);
+        } else {
+            json.put("valid", true);
+        }
+        return json;
+    }
 
-	@RequestMapping(value="/search")
-	@ResponseBody   
-	@Override
-	public List<Unit> list() throws Exception {
-		List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
-				.getRequest());
-		List<Unit> vendors = this.vendorService.find(filters);
-		return vendors;
-	}
-	
-	@RequestMapping(value={"/save","/saveWS"})
-	@ResponseBody
-	@Override
-	public MessageBox save(Unit unit) throws Exception {
-		this.logAllRequestParams();
-       Unit ut=this.vendorService.findById(unit.getId());
-        if(CommonUtil.isBlank(ut)) {
-        	ut=new Unit();
-        	if(CommonUtil.isBlank(unit.getCode())){
-				String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
-				ut.setCode(code);
-			} else {
-        		ut.setCode(unit.getCode());
-			}
+    @RequestMapping(value = "/search")
+    @ResponseBody
+    @Override
+    public List<Unit> list() throws Exception {
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        List<Unit> vendors = this.vendorService.find(filters);
+        return vendors;
+    }
+
+    @RequestMapping(value = {"/save", "/saveWS"})
+    @ResponseBody
+    public MessageBox save(Unit unit, String userId) throws Exception {
+        this.logAllRequestParams();
+        Unit ut = this.vendorService.findById(unit.getId());
+        if (CommonUtil.isBlank(ut)) {
+            ut = new Unit();
+            if (CommonUtil.isBlank(unit.getCode())) {
+                String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
+                ut.setCode(code);
+            } else {
+                ut.setCode(unit.getCode());
+            }
             ut.setId(ut.getCode());
-            ut.setCreatorId(this.getCurrentUser().getCode());
+            if (this.getCurrentUser() == null) {  //小程序增加供应商，userId传值
+                User CurrentUser = CacheManager.getUserById(userId);
+                ut.setCreatorId(CurrentUser.getCode());
+            }else {   //web增加供应商,session传值
+                ut.setCreatorId(this.getCurrentUser().getCode());
+            }
             ut.setCreateTime(new Date());
         }
         ut.setName(unit.getName());
@@ -109,30 +114,44 @@ public class VendorController extends BaseController implements IBaseInfoControl
         ut.setTel(unit.getTel());
         ut.setGroupId(unit.getGroupId());
         ut.setRemark(unit.getRemark());
-        ut.setUpdaterId(this.getCurrentUser().getCode());
+        if (this.getCurrentUser() == null) {
+            User CurrentUser = CacheManager.getUserById(userId);
+            ut.setUpdaterId(CurrentUser.getCode());
+        }else {
+            ut.setUpdaterId(this.getCurrentUser().getCode());
+        }
         ut.setOwnerId(unit.getOwnerId());
         ut.setSrc(Constant.DataSrc.SYS);
 
         this.vendorService.save(ut);
-		CacheManager.refreshUnitCache();
+        CacheManager.refreshUnitCache();
         return this.returnSuccessInfo("保存成功");
-	}
-	@Override
-	public MessageBox edit(String taskId) throws Exception {
-		return null;
-	}
-	@Override
-	public MessageBox delete(String taskId) throws Exception {
-		
-		return null;
-	}
-	@Override
-	public void exportExcel() throws Exception {
-		
-	}
-	@Override
-	public MessageBox importExcel(MultipartFile file) throws Exception {
-		return null;
-	}
+    }
+
+    @Override
+    public MessageBox save(Unit entity) throws Exception {
+        return null;
+    }
+
+    @Override
+    public MessageBox edit(String taskId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public MessageBox delete(String taskId) throws Exception {
+
+        return null;
+    }
+
+    @Override
+    public void exportExcel() throws Exception {
+
+    }
+
+    @Override
+    public MessageBox importExcel(MultipartFile file) throws Exception {
+        return null;
+    }
 
 }

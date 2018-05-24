@@ -72,6 +72,41 @@ public class PurchaseorCountviews {
     @Column()
     @Excel(name="单据状态",replace = { "撤销_-1", "录入_0" , "审核_1", "结束_2", "操作中_3", "申请撤销_4"})
     private Integer status;
+    @Column()
+    @Excel(name="入库数量")
+    private Integer inQty;
+    @Column()
+    @Excel(name="任务号")
+    private String taskid;
+
+    @JSONField(format="yyyy-MM-dd")
+    @Column(nullable = false,length = 19)
+    @Excel(name="入库时间")
+    private Date intime;
+
+    public Date getIntime() {
+        return intime;
+    }
+
+    public void setIntime(Date intime) {
+        this.intime = intime;
+    }
+
+    public Integer getInQty() {
+        return inQty;
+    }
+
+    public void setInQty(Integer inQty) {
+        this.inQty = inQty;
+    }
+
+    public String getTaskid() {
+        return taskid;
+    }
+
+    public void setTaskid(String taskid) {
+        this.taskid = taskid;
+    }
 
     public Integer getStatus() {
         return status;

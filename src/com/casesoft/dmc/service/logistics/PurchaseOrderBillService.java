@@ -195,15 +195,16 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
 
     /**
      * 筛选purchaseOrderBillDtlList中的数据
+     *
      * @param purchaseOrderBillDtlList
      * @param replenishBillNo
      * @return
      */
     public List<PurchaseOrderBillDtl> filtrateMessage(List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, String replenishBillNo) throws ParseException {
         if (purchaseOrderBillDtlList.size() != 0) {
-            for (int i = 0; i < purchaseOrderBillDtlList.size();) {
+            for (int i = 0; i < purchaseOrderBillDtlList.size(); ) {
                 PurchaseOrderBillDtl purchaseOrderBillDtl = purchaseOrderBillDtlList.get(i);
-               String hql = "from ReplenishBillDtl t where t.sku=? and t.billId=?";
+                String hql = "from ReplenishBillDtl t where t.sku=? and t.billId=?";
                 ReplenishBillDtl unique = this.replenishBillDtlDao.findUnique(hql, new Object[]{purchaseOrderBillDtl.getSku(), replenishBillNo});
                 /*if (unique.getQty() <= unique.getActConvertQty()) {
                     if(purchaseOrderBillDtl.getQty()>(unique.getQty()-unique.getActConvertQty())){
@@ -219,13 +220,13 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
                 }else{
                     i++;
                 }*/
-                if(purchaseOrderBillDtl.getQty()==0&&unique.getActConvertQty()!=0){
+                if (purchaseOrderBillDtl.getQty() == 0 && unique.getActConvertQty() != 0) {
                     purchaseOrderBillDtlList.remove(i);
                     String changehql = "from ChangeReplenishBillDtl t where t.ReplenishNo=? and t.sku=?";
-                    ChangeReplenishBillDtl changeReplenishBillDtl = this.replenishBillDtlDao.findUnique(changehql, new Object[]{replenishBillNo,purchaseOrderBillDtl.getSku()});
+                    ChangeReplenishBillDtl changeReplenishBillDtl = this.replenishBillDtlDao.findUnique(changehql, new Object[]{replenishBillNo, purchaseOrderBillDtl.getSku()});
                     changeReplenishBillDtl.setExpectTime(purchaseOrderBillDtl.getExpectTime());
                     this.changeReplenishBillDtlDao.update(changeReplenishBillDtl);
-                }else{
+                } else {
                     i++;
                 }
             }
@@ -237,11 +238,13 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     //modify by yushen 同时反写补货单明细的数据。
     public void processReplenishBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtl, User curUser) {
 
-        purchaseOrderBill.setSrcBillNo(replenishBill.getBillNo());
-        this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
-        this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
-        if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {
-            this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+        if (purchaseOrderBill.getId() != null) {
+            purchaseOrderBill.setSrcBillNo(replenishBill.getBillNo());
+            this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
+            this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
+            if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {
+                this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+            }
         }
 
         this.replenishBillDao.saveOrUpdate(replenishBill);
@@ -252,9 +255,22 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         return this.purchaseBillOrderDao.find("from PurchaseOrderBillDtl where billNo=?", new Object[]{billNo});
     }
 
-    public List<PurchaseStyleVo> findStyleListByBillNo(String billNO){
+
+    /**
+     * 采购单按款搜索去重得到billNo
+     *
+     * @param styleSearch
+     */
+    public List<String> findBillDtlBillNoByStyleId(String styleSearch) {
+        String hql = "select distinct billNo "
+                + "from PurchaseOrderBillDtl  where styleId like '%" + styleSearch + "%'";
+        return this.purchaseBillOrderDao.find(hql);
+    }
+
+
+    public List<PurchaseStyleVo> findStyleListByBillNo(String billNO) {
         String hql = "select distinct new com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo"
-                +"(dtl.styleId) from PurchaseOrderBillDtl dtl where dtl.billNo = ?";
+                + "(dtl.styleId) from PurchaseOrderBillDtl dtl where dtl.billNo = ? ";
         return this.purchaseBillOrderDao.find(hql, billNO);
     }
 

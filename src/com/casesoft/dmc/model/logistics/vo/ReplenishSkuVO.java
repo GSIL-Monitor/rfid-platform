@@ -22,18 +22,20 @@ public class ReplenishSkuVO implements Serializable {
     private List<ReplenishCodeVO> codeVOList;
     private Long skuTotQty;
     private Integer skuTotActConvertQty;
+    private Integer skuTotActConvertquitQty;
     private Integer skuTotInstockQty;
     private String remark;   //备注
 
     public ReplenishSkuVO(){}
 
-    public ReplenishSkuVO(String sku, String styleId, String colorId, String sizeId, Long skuTotQty, Integer skuTotActConvertQty,String remark) {
+    public ReplenishSkuVO(String sku, String styleId, String colorId, String sizeId, Long skuTotQty, Integer skuTotActConvertQty, Integer skuTotActConvertquitQty, String remark) {
         this.sku = sku;
         this.styleId = styleId;
         this.colorId = colorId;
         this.sizeId = sizeId;
         this.skuTotQty = skuTotQty;
         this.skuTotActConvertQty = skuTotActConvertQty;
+        this.skuTotActConvertquitQty = skuTotActConvertquitQty;
         this.remark=remark;
     }
 
@@ -108,6 +110,14 @@ public class ReplenishSkuVO implements Serializable {
     public Integer getSkuTotActConvertQty() { return skuTotActConvertQty; }
 
     public void setSkuTotActConvertQty(Integer skuTotActConvertQty) { this.skuTotActConvertQty = skuTotActConvertQty; }
+
+    public Integer getSkuTotActConvertquitQty() {
+        return skuTotActConvertquitQty;
+    }
+
+    public void setSkuTotActConvertquitQty(Integer skuTotActConvertquitQty) {
+        this.skuTotActConvertquitQty = skuTotActConvertquitQty;
+    }
 
     public Integer getSkuTotInstockQty() { return skuTotInstockQty; }
 
