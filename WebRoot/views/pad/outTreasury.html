@@ -147,45 +147,32 @@
     var type = localStorage.getItem("type");
     basePath=localStorage.getItem("basePath");
     userId=localStorage.getItem("userId");
-    var billNo = localStorage.getItem("billNo");
+    if (type==0){
+        var billNo = localStorage.getItem("billNo");
+    }else {
+        var billNo = localStorage.getItem("rbillNo");
+    }
     var busnissId = localStorage.getItem("busnissId");
     $("#search_billDate").val(getToDay("yyyy-MM-dd"));
-    $("#search_billNo").val(localStorage.getItem("billNo"));
+    $("#search_billNo").val(billNo);
     $("#search_destUnitId").val(localStorage.getItem("origUnitId"));
     $("#search_destUnitName").val(localStorage.getItem("origUnitName"));
     $("#search_actPrice").val(localStorage.getItem("actPrice"));
-    $("#search_payPrice").val(localStorage.getItem("actPrice"));
+    $("#search_payPrice").val(localStorage.getItem("payPrice"));
     $("#pre_Balance").val(localStorage.getItem("owingValue"));
     $("#search_payType").val(localStorage.getItem("payType"));
     var ownerId = localStorage.getItem("ownerId");
-    if (type == 0){
+    if (type == 0||type==2){
         $("#buttonGroup").html("" +
             "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out right'></i>" +
             "    <span class='bigger-110'>出售</span>");
     }else {
-        if (localStorage.getItem("customerType")=="CT-LS"){
-            $("#buttonGroup").html(""+
-                "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
-                "    <i class='ace-icon fa fa-sign-in'></i>" +
-                "    <span class='bigger-110'>入库</span>" +
-                "</button>");
-        }else {
-            $("#buttonGroup").html(""+
-                "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
-                "    <i class='ace-icon fa fa-sign-out'></i>" +
-                "    <span class='bigger-110'>出库</span>" +
-                "</button>" +
-                "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
-                "    <i class='ace-icon fa fa-sign-in'></i>" +
-                "    <span class='bigger-110'>入库</span>" +
-                "</button>");
-            if (localStorage.getItem("out")=="out"){
-                bootbox.alert(localStorage.getItem("outMessage"));
-                $("#SODtl_wareHouseOut").attr('disabled',true);
-                localStorage.removeItem("outMessage");
-            }
-        }
+        $("#buttonGroup").html(""+
+            "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
+            "    <i class='ace-icon fa fa-sign-in'></i>" +
+            "    <span class='bigger-110'>入库</span>" +
+            "</button>");
     }
     $(function () {
         var url;
@@ -414,9 +401,12 @@
                 } else if (sum_qty == all_outQty) {
                     alertMessage = "共" + all_outQty + "件商品，已全部出库";
                 }
-                localStorage.setItem("alertMessage",alertMessage);
-                localStorage.setItem("messageType","alertMessage");
-                location.href=basePath+'views/pad/padUser.html';
+                bootbox.setDefaults("locale","zh_CN");
+                bootbox.confirm(alertMessage, function(result) {
+                    if (result) {
+                        location.href=basePath+'views/pad/padUser.html';
+                    }
+                });
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -528,11 +518,14 @@
                         localStorage.setItem("outMessage",alertMessage);
                         localStorage.setItem("out","out");
                     }else {
-                        localStorage.setItem("alertMessage",alertMessage);
-                        localStorage.setItem("messageType","alertMessage");
                         localStorage.removeItem("destId");
                         localStorage.removeItem("out");
-                        location.href=basePath+'views/pad/padUser.html';
+                        bootbox.setDefaults("locale","zh_CN");
+                        bootbox.confirm(alertMessage, function(result) {
+                            if (result) {
+                                location.href=basePath+'views/pad/padUser.html';
+                            }
+                        });
                     }
                 } else {
                     bootbox.alert(msg.msg);

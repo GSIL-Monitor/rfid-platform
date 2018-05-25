@@ -30,16 +30,21 @@
     <script src="../../Olive/plugin/dateFormatUtil.js"></script>
     <script src="../../Olive/assets/js/bootbox.js"></script>
     <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+    <script src="../../Olive/assets/js/qrcode.min.js"></script>
+    <script src="../../Olive/assets/js/qrcode.js"></script>
 
     <style>
         .row{
             height:15%;
         }
         .row1{
-            height: 70%;
+            height: 65%;
         }
         .row2{
-            height: 15%;
+            height: 12.5%;
+        }
+        .foot{
+            height: 7.5%;
         }
         .center-vertical {
             position:relative;
@@ -54,12 +59,6 @@
         img#img{
             display:none;
         }
-        .ui-jqgrid tr.ui-row-ltr td,
-        .ui-jqgrid tr.ui-row-rtl td {
-            border-bottom: 1px solid #E1E1E1;
-            padding: 6px 4px;
-            border-color: #E1E1E1;
-        }
     </style>
 </head>
 <body style="width: 100%;height: 100%">
@@ -68,25 +67,26 @@
         自助收银
     </h1>
 </div>
-<div class="row1 col-lg-12 col-md-12 col-sm-12">
-        <table id="addDetailgrid"></table>
-        <div id="grid-pager" ></div>
+<div class=" col-lg-12 col-md-12 col-sm-12" style="height:65% " id="sale">
+    <h5>明细列表</h5>
+    <table id="addDetailgrid"></table>
+    <div id="grid-pager" ></div>
 </div>
 <div class="row2 col-lg-12 col-md-12 col-sm-12 center">
-    <label class="col-lg-3 col-md-3 col-sm-3">折后总金额</label>
-    <input class="col-lg-3 col-md-3 col-sm-3" id="discount_Amount" name="discount_Amount" type="text" readonly/>
-    <label class="col-lg-3 col-md-3 col-sm-3">实收总金额</label>
-    <input class="col-lg-3 col-md-3 col-sm-3" id="collect_Amount" name="collect_Amount" type="text"/>
+    <label class="col-lg-2 col-md-2 col-sm-2 center-vertical">整单折扣</label>
+    <input class="col-lg-2 col-md-2 col-sm-2 center-vertical" id="discount" type="number">
+    <label class="col-lg-2 col-md-2 col-sm-2 center-vertical" id="discount_label">折后总金额</label>
+    <input class="col-lg-2 col-md-2 col-sm-2 center-vertical" id="discount_Amount" name="discount_Amount" type="text"/>
+    <label class="col-lg-2 col-md-2 col-sm-2 center-vertical" id="collect_label">实收总金额</label>
+    <input class="col-lg-2 col-md-2 col-sm-2 center-vertical" id="collect_Amount" name="collect_Amount" type="number" />
+    <input type="hidden" id="sum_totPrice">
 </div>
-<div class="row2 col-lg-12 col-md-12 col-sm-12 footer">
-    <div class="col-lg-4 col-md-4 col-sm-4 center">
-        <button class="btn btn-primary center-vertical" onclick="back() " type="button">上一步</button>
+<div class=" col-lg-12 col-md-12 col-sm-12">
+    <div class="col-lg-6 col-md-6 col-sm-6 center" id="back_div" style="height: 100%">
+        <button class="btn btn-primary " onclick="back() "  type="button">上一步</button>
     </div>
-    <div class="col-lg-4 col-md-4 col-sm-4 center">
-        <button class="btn btn-primary center-vertical" type="button" onclick="start()">开始扫描</button>
-    </div>
-    <div class="col-lg-4 col-md-4 col-sm-4 center">
-        <button class="btn btn-primary center-vertical" data-target="#modal_pad_cur" data-toggle="modal" type="button">买单</button>
+    <div class="col-lg-6 col-md-6 col-sm-6 center" id="check_div" style="height: 100%">
+        <button class="btn btn-primary " id="check" data-target="#modal_pad_cur" data-toggle="modal" type="button">买单</button>
     </div>
 </div>
 
@@ -118,14 +118,16 @@
                                     <input type="radio" name="radio" id="weChat_payment" value="微信支付">微信支付
                                 </label>
                             </div>
-                            <img src="../../images/pad/weChatM.png" id="img">
+                            <div id="payment">
+                                <img src="../../images/pad/weChatM.png" id="img">
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-content" style="text-align: right">
-            <button type='button'  class='btn btn-primary' onclick='save()'>确认</button>
+            <button type='button' id="saveId" class='btn btn-primary' onclick='save()'>确认</button>
         </div>
     </div>
 </div>
@@ -175,25 +177,27 @@
     </form>
 </div>
 <script>
+    var addDetailgridiRow;//存储iRow
+    var addDetailgridiCol;//存储iCol
     var type = localStorage.getItem("type");
-    var sum_qty;
-    var sum_price;
-    var sum_actPrice;
     var sum_totActPrice;
     var destId = localStorage.getItem("destId");
     var productListInfo = [];
     var userId = localStorage.getItem("userId");
     var discount = localStorage.getItem("discount");
-    var taskType = localStorage.getItem("type");
+    $("#discount").val(discount);
     var basePath=localStorage.getItem("basePath");
     var origId = localStorage.getItem("defaultWarehId");
     var defaultWarehId = localStorage.getItem("defaultWarehId");
     var customerType = localStorage.getItem("customerType");
     $('input:radio[id="weChat_payment"]').change(function () {
         document.getElementById('img').style.display='block';
+        $("#saveId").attr('disabled',true);
+
     });
     $('input:radio[id="cash_Payment"]').change(function () {
         document.getElementById('img').style.display='none';
+        $("#saveId").attr('disabled',false);
     });
     $(function () {
         $("#addDetailgrid").jqGrid({
@@ -225,9 +229,18 @@
                     name: 'price', label: '销售价格', width: 40,
                     editrules: {
                         number: true
+                    },
+                    formatter: function (cellValue, options, rowObject) {
+                        var price = parseFloat(cellValue).toFixed(2);
+                        return price;
                     }
                 },
-                {name: 'totPrice', label: '销售金额',hidden:true},
+                {name: 'totPrice', label: '销售金额',width: 40,
+                    formatter: function (cellValue, options, rowObject) {
+                        var totPrice = parseFloat(cellValue).toFixed(2);
+                        return totPrice;
+                    }
+                },
                 {
                     name: 'discount', label: "折扣", hidden:true, editable: true,
                     editrules: {
@@ -241,9 +254,18 @@
                     editrules: {
                         number: true,
                         minValue: 0
+                    },
+                    formatter: function (cellValue, options, rowObject) {
+                        var actPrice = parseFloat(cellValue).toFixed(2);
+                        return actPrice;
                     }
                 },
-                {name: 'totActPrice', label: '实际金额', width:40},
+                {name: 'totActPrice', label: '实际金额', width:40,
+                    formatter: function (cellValue, options, rowObject) {
+                        var totActPrice = parseFloat(cellValue).toFixed(2);
+                        return totActPrice;
+                    }
+                },
                 {name: 'uniqueCodes', label: '唯一码', hidden: true}
             ],
             autowidth: true,
@@ -256,41 +278,26 @@
             sortname: 'id',
             sortorder: "asc",
             footerrow: true,
-            cellEdit: true,
             cellsubmit: 'clientArray',
             afterEditCell: function (rowid, celname, value, iRow, iCol) {
                 addDetailgridiRow = iRow;
                 addDetailgridiCol = iCol;
             },
-            afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
-                if (type == 0){
-                    var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
-                    var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
-                    $('#addDetailgrid').setCell(rowid, "discount", var_discount);
-                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
-                }else {
-                    var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
-                    var var_totActPrice = -Math.abs(Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
-                    $('#addDetailgrid').setCell(rowid, "discount", var_discount);
-                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
-                }
-                setFooterData();
-            },
             gridComplete: function () {
                 setFooterData();
             },
             loadComplete : function(){
-               var table = this;
-               setTimeout(function(){
+                var table = this;
+                setTimeout(function(){
 
-                     //加载完成后，替换分页按钮图标
-                     updatePagerIcons(table);
-                     enableTooltips(table);
-               }, 0)
+                    //加载完成后，替换分页按钮图标
+                    updatePagerIcons(table);
+                    enableTooltips(table);
+                }, 0)
             }
         });
+        addProductsOnCode();
     });
-
     function updatePagerIcons(table) {
         //ui-icon ui-icon-circlesmall-minus
         var replacement =
@@ -314,68 +321,47 @@
         $(table).find('.ui-pg-div').tooltip({
             container : 'body'
         });
-        }
+    }
 
     function setFooterData() {
         var sum_qtymin = $("#addDetailgrid").getCol('qty', false, 'sum');
         var sum_totActPricemin = $("#addDetailgrid").getCol('totActPrice', false, 'sum');
-        sum_totActPrice = sum_totActPricemin.toFixed(1);
+        var sum_totPrice = $("#addDetailgrid").getCol('totPrice',false,'sum');
+        sum_totActPrice = sum_totActPricemin.toFixed(0);
         if (type == 1){
             $("#addDetailgrid").footerData('set', {
                 styleId: "合计",
                 qty: sum_qtymin,
+                totPrice:-Math.abs(sum_totPrice),
                 totActPrice: -Math.abs(sum_totActPricemin)
             });
-            $("#discount_Amount").val(-sum_totActPrice);
-            localStorage.setItem("actPrice",sum_totActPrice);
-            $("#collect_Amount").val(- Math.abs(sum_totActPrice));
+            $("#discount_Amount").val(sum_totActPrice);
+
         }else {
             $("#addDetailgrid").footerData('set', {
                 styleId: "合计",
                 qty: sum_qtymin,
+                totPrice:sum_totPrice,
                 totActPrice:sum_totActPrice
             });
             $("#discount_Amount").val(sum_totActPrice);
-            localStorage.setItem("actPrice",sum_totActPrice);
-            $("#collect_Amount").val(sum_totActPrice);
         }
-    }
-    function sureProduct() {
-
+        localStorage.setItem("search_actPrice",sum_totActPrice);
+        $("#sum_totPrice").val(sum_totPrice);
     }
     function back() {
         localStorage.setItem("back",2);
         location.href=basePath+'views/pad/customer.html';
     }
-    function start() {
-        var warehId;
-        if (type == 0){
-            warehId = defaultWarehId;
-        }else {
-            warehId = destId;
+
+    function addProductsOnCode() {
+        var data;
+        if (type==0){
+            data = localStorage.getItem("successEpcStock");
+        }else if (type==1){
+            data = localStorage.getItem("successReturnEpcStock");
         }
-        $.ajax({
-            url:  basePath + "pad/scanning/checkEpcStockWS.do",
-            async: false,
-            datatype: "json",
-            data: {
-                warehId: warehId,
-                type: taskType
-            },
-            type: "POST",
-            success: function (data) {
-                if (data.success) {
-                    if (data.msg==""){
-                        addProductsOnCode(data.result);
-                    }else {
-                        bootbox.alert(data.msg);
-                        addProductsOnCode(data.result);
-                    }
-                }
-            }
-        });
-    }
-    function addProductsOnCode(successEpcStock) {
+        var successEpcStock = JSON.parse(data);
         $.each(successEpcStock,function (index,value) {
             if (customerType == "CT-AT") {//省代价格
                 value.price = value.puPrice;
@@ -394,12 +380,12 @@
             value.uniqueCodes = value.code;
             value.discount = discount;
             value.actPrice = Math.round(value.price * value.discount) / 100;
-            if (type == 0){
+            if (type==0){
                 value.totPrice = value.qty * value.price;
                 value.totActPrice = value.qty * value.actPrice;
             }else {
-                value.totPrice = - Math.abs(value.qty * value.price);
-                value.totActPrice = - Math.abs(value.qty * value.actPrice);
+                value.totPrice = -Math.abs(value.qty * value.price);
+                value.totActPrice = -Math.abs(value.qty * value.actPrice);
             }
             productListInfo.push(value);
             var isAdd = true;
@@ -407,9 +393,18 @@
             $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
                 var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
                 if (value.sku === dtlRow.sku) {
+                    if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+                        isAdd = false;
+                        return true;
+                    }
                     dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                    dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-                    dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                    if (type==0){
+                        dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                        dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                    }else {
+                        dtlRow.totPrice = - Math.abs(dtlRow.qty * dtlRow.price);
+                        dtlRow.totActPrice = - Math.abs(dtlRow.qty * dtlRow.actPrice);
+                    }
                     dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
                     if (dtlRow.id) {
                         $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
@@ -432,102 +427,95 @@
     }
 
     function save() {
-        if(productListInfo.length==0){
-            bootbox.alert("您未添加商品，添加商品后再点击确认！");
+        var value=$('input:radio[name="radio"]:checked').val();
+        localStorage.setItem("payType",value);
+        $("#search_payType").val(value);
+        $("#search_billDate").val(getToDay("yyyy-MM-dd"));
+        $("#search_customerType").val(localStorage.getItem("customerType"));
+        $("#search_customertyper").val(localStorage.getItem("customerType"));
+        $("#search_destUnitId").val(localStorage.getItem("origUnitId"));
+        $("#search_destUnitName").val(localStorage.getItem("origUnitName"));
+        $("#search_origUnitName").val(localStorage.getItem("origUnitName"));
+        $("#search_origUnitId").val(localStorage.getItem("origUnitId"));
+        $("#search_actPrice").val($("#discount_Amount").val());
+        localStorage.setItem("actPrice",$("#discount_Amount").val());
+        $("#search_payPrice").val($("#collect_Amount").val());
+        localStorage.setItem("payPrice",$("#collect_Amount").val());
+        $("#pre_Balance").val(localStorage.getItem("owingValue"));
+        $("#search_busnissId").val(localStorage.getItem("busnissId"));
+        if (type==0){
+            $("#search_origId").val(origId);
+            $("#search_destId").val(localStorage.getItem("destId"));
         }else {
-            var value=$('input:radio[name="radio"]:checked').val();
-            localStorage.setItem("payType",value);
-            $("#search_payType").val(value);
-            $("#search_billDate").val(getToDay("yyyy-MM-dd"));
-            $("#search_payType").val();
-
-            $("#search_customerType").val(localStorage.getItem("customerType"));
-            $("#search_customertyper").val(localStorage.getItem("customerType"));
-            $("#search_destUnitId").val(localStorage.getItem("origUnitId"));
-            $("#search_destUnitName").val(localStorage.getItem("origUnitName"));
-            $("#search_origUnitName").val(localStorage.getItem("origUnitName"));
-            $("#search_origUnitId").val(localStorage.getItem("origUnitId"));
-            $("#search_actPrice").val(localStorage.getItem("actPrice"));
-            $("#search_payPrice").val($("#collect_Amount").val());
-            $("#pre_Balance").val(localStorage.getItem("owingValue"));
-            $("#search_discount").val(localStorage.getItem("discount"));
-            $("#search_busnissId").val(localStorage.getItem("busnissId"));
-            if (type==0){
-                $("#search_origId").val(origId);
-                $("#search_destId").val(localStorage.getItem("destId"));
-            }else {
-                $("#search_origId").val(localStorage.getItem("destId"));
-                $("#search_destId").val(origId);
-            }
-            var actPrice = parseFloat($("#search_actPrice").val());
-            var payPrice = parseFloat($("#search_payPrice").val());
-            var preBalance = parseFloat($("#pre_Balance").val());
-            var afterBalance = parseFloat(preBalance + payPrice - actPrice).toFixed(2);
-            $("#after_Balance").val(afterBalance);
-
-            var dtlArray = [];
-            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-                var rowData = $("#addDetailgrid").getRowData(value);
-                dtlArray.push(rowData);
-            });
-            var url;
-            if (type == 0){
-                $.ajax({
-                    dataType: "json",
-                    async: false,
-                    url: basePath + "logistics/saleOrder/saveWS.do",
-                    data: {
-                        saleOrderBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
-                        strDtlList: JSON.stringify(dtlArray),
-                        userId: userId
-                    },
-                    type: "POST",
-                    success: function (msg) {
-                        if (msg.success) {
-                            $.gritter.add({
-                                text: msg.msg,
-                                class_name: 'gritter-success  gritter-light'
-                            });
-                            var billNo = msg.result;
-                            localStorage.setItem("billNo",billNo);
-                            $("#modal_pad_cur").modal('hide');
-                            window.location.href=basePath+'views/pad/outTreasury.html';
-                        } else {
-                            bootbox.alert(msg.msg);
-                        }
-                    }
-                });
-            }else {
-                $.ajax({
-                    dataType: "json",
-                    async: false,
-                    url: basePath + "logistics/saleOrderReturn/save.do",
-                    data: {
-                        'bill': JSON.stringify(array2obj($("#editForm").serializeArray())),
-                        'strDtlList': JSON.stringify(dtlArray),
-                        userId: userId
-                    },
-                    type: "POST",
-                    success: function (msg) {
-                        if (msg.success) {
-                            $.gritter.add({
-                                text: msg.msg,
-                                class_name: 'gritter-success  gritter-light'
-                            });
-                            var billNo = msg.result;
-                            localStorage.setItem("billNo",billNo);
-                            $("#modal_pad_cur").modal('hide');
-                            window.location.href=basePath+'views/pad/outTreasury.html';
-                        } else {
-                            bootbox.alert(msg.msg);
-                        }
-                    }
-                });
-            }
-            window.isTrue = true;
+            $("#search_origId").val(localStorage.getItem("destId"));
+            $("#search_destId").val(origId);
         }
-    }
+        var actPrice = parseFloat($("#search_actPrice").val());
+        var payPrice = parseFloat($("#search_payPrice").val());
+        var preBalance = parseFloat($("#pre_Balance").val());
+        var afterBalance = parseFloat(preBalance + payPrice - actPrice).toFixed(2);
+        $("#after_Balance").val(afterBalance);
 
+        var dtlArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            dtlArray.push(rowData);
+        });
+        if (type == 0){
+            $.ajax({
+                dataType: "json",
+                async: false,
+                url: basePath + "logistics/saleOrder/saveWS.do",
+                data: {
+                    saleOrderBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
+                    strDtlList: JSON.stringify(dtlArray),
+                    userId: userId
+                },
+                type: "POST",
+                success: function (msg) {
+                    if (msg.success) {
+                        $.gritter.add({
+                            text: msg.msg,
+                            class_name: 'gritter-success  gritter-light'
+                        });
+                        var billNo = msg.result;
+                        localStorage.setItem("billNo",billNo);
+                        $("#modal_pad_cur").modal('hide');
+                        window.location.href=basePath+'views/pad/outTreasury.html';
+                    } else {
+                        bootbox.alert(msg.msg);
+                    }
+                }
+            });
+        }else if(type==1) {
+            $.ajax({
+                dataType: "json",
+                async: false,
+                url: basePath + "logistics/saleOrderReturn/save.do",
+                data: {
+                    'bill': JSON.stringify(array2obj($("#editForm").serializeArray())),
+                    'strDtlList': JSON.stringify(dtlArray),
+                    userId: userId
+                },
+                type: "POST",
+                success: function (msg) {
+                    if (msg.success) {
+                        $.gritter.add({
+                            text: msg.msg,
+                            class_name: 'gritter-success  gritter-light'
+                        });
+                        var billNo = msg.result;
+                        localStorage.setItem("rbillNo", billNo);
+                        $("#modal_pad_cur").modal('hide');
+                        window.location.href = basePath + 'views/pad/outTreasury.html';
+                    } else {
+                        bootbox.alert(msg.msg);
+                    }
+                }
+            });
+        }
+        window.isTrue = true;
+    }
     function array2obj(array) {
         var params = $({});
         $.each(array, function(i) {
@@ -536,6 +524,56 @@
         });
         return params[0];
     }
+    $('input[id=discount]').change(function() {
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        var discount = $("#discount").val();
+        if (discount && discount != null && discount != "") {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                $('#raddDetailgrid').setCell(value, "discount", discount);
+                var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                if (type==0){
+                    var var_totActPrice = Math.abs(Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100);
+                }else if (type==1){
+                    var var_totActPrice = - Math.abs(Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100);
+                }
+                $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+                $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+            });
+        }
+        $("#search_discount").val(discount);
+        setFooterData();
+    });
+    $('input[id=discount_Amount]').change(function() {
+        var sum_totPrice = $("#sum_totPrice").val();
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#arddDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        var discount_Amount = $("#discount_Amount").val();
+        var discount =Math.abs((discount_Amount/sum_totPrice*100).toFixed(2));
+        $("#eturn_discount").val(discount);
+        if (discount && discount != null && discount != "") {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                $('#addDetailgrid').setCell(value, "discount", discount);
+                var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                if (type==0){
+                    var var_totActPrice = Math.abs(Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100);
+                }else if (type==1){
+                    var var_totActPrice = -Math.abs(Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100);
+                }
+                $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+                $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+            });
+        }
+        $("#discount").val(discount);
+        $("#search_discount").val(discount);
+        setFooterData();
+    });
 </script>
 </body>
 </html>

@@ -40,7 +40,7 @@
 </div>
 <div class="row1 col-lg-12 col-md-12 col-sm-12 center" >
     <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 20%">
-        <label class="col-lg-5 col-md-5 col-sm-5 " for="search_origUnitId">选择客户</label>
+        <label class="col-lg-5 col-md-5 col-sm-5 " for="search_origUnitId">选择客户:</label>
         <div class="col-lg-4 col-md-4 col-sm-4">
             <div class="input-group">
                 <input class="form-control" id="search_origUnitId" type="text"
@@ -57,18 +57,24 @@
         </div>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 20%">
-        <label class="col-lg-5 col-md-5 col-sm-5 " for="search_discount">整单折扣</label>
+        <label class="col-lg-5 col-md-5 col-sm-5 " for="search_discount">整单折扣:</label>
         <div class="col-lg-4 col-md-4 col-sm-4 ">
             <input class="form-control" id="search_discount" name="discount" readonly>
             </input>
         </div>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 20%">
-        <label class="col-lg-5 col-md-5 col-sm-5  control-label" for="pre_Balance">售前余额</label>
+        <label class="col-lg-5 col-md-5 col-sm-5  control-label" for="pre_Balance">售前余额:</label>
         <div class="col-lg-4 col-md-4 col-sm-4 ">
             <input class="form-control" id="pre_Balance" name="preBalance"
                    value="" readonly>
             </input>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 center" style="height: 40%">
+        <label class="col-lg-5 col-md-5 col-sm-5  control-label" for="pre_Balance">会员请扫码:</label>
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <img src="../../images/pad/weChatM.png" id="img">
         </div>
     </div>
     <input class="form-control" id="search_origId" name="origId" type="hidden">
@@ -260,13 +266,16 @@
     }
 
     function back() {
-        localStorage.setItem("back",1);
-        location.href=basePath+'views/pad/padUser.html';
+        location.href=basePath+'views/pad/addUniqCode.html';
     }
     function sureCustomer() {
         var origUnitName = $("#search_origUnitName").val();
         var discount = $("#search_discount").val();
-        location.href=basePath+'views/pad/scanning.html';
+        if (localStorage.getItem("type")==2){
+            window.location.href=basePath+'views/pad/SRscanning.html';
+        }else {
+            window.location.href=basePath+'views/pad/scanning.html';
+        }
     }
     function openSearchGuestDialog(){
         var e1 = document.getElementById('modal_pad_cur');

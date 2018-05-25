@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+
+<head>
+    <meta charset="UTF-8">
+    <title>自助收银</title>
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="css/padBase.css">
+
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <!--grid.locale-en.js这个文件必须在jquery.jqGrid.min.js之前加载，否则会出问题-->
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+    <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+    <script src="../../jslib2/constant.js"></script>
+    <script src="../../Olive/plugin/dateFormatUtil.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+</head>
+<body style="height: 100%">
+<div class="col-lg-12 col-md-12 col-sm-12 " style="height: 15%">
+    <h1 align="center">
+        自助收银
+    </h1>
+</div>
+<div class=" col-lg-12 col-md-12 col-sm-12" >
+    <h5 class="widget-title lighter">明细列表</h5>
+    <table id="uniqueCodeGrid"></table>
+    <div class="modal-footer">
+        <div class="col-lg-4">
+            <span>已添加数量：</span>
+            <span id="codeQty">0</span>
+        </div>
+        <div id="dialog_buttonGroup"></div>
+    </div>
+</div>
+<div class=" col-lg-12 col-md-12 col-sm-12" style="height: 7.5%">
+    <div class="col-lg-4 col-md-4 col-sm-4 center"  style="height: 100%">
+        <button class="btn btn-primary " onclick="back() "  type="button">上一步</button>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 center"  style="height: 100%">
+        <button class="btn btn-primary " type="button"  onclick="start()">继续扫描</button>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 center" style="height: 100%">
+        <button class="btn btn-primary "  type="button" onclick="next()">下一步</button>
+    </div>
+</div>
+</body>
+<script>
+    var basePath=localStorage.getItem("basePath");
+    var type = localStorage.getItem("type");
+    var origId = localStorage.getItem("defaultWarehId");
+    $(function () {
+        initUniqueCodeGrid();
+    });
+    function initUniqueCodeGrid() {
+        $("#uniqueCodeGrid").jqGrid({
+            height: 400,
+            datatype:"local",
+            colModel: [
+                {name: 'code', label: '唯一码', width: 60},
+                {name: 'updateTime', label: '修改时间', hidden: true, width: 40},
+                {name: 'styleId', label: '款号', width: 40},
+                {name: 'colorId', label: '色码', width: 40},
+                {name: 'sizeId', label: '尺码', width: 40},
+                {name: 'sku', label: 'SKU', width: 40},
+                {name: 'styleName', label: '款式', width: 40, hidden: true},
+                {name: 'colorName', label: '颜色', width: 40, hidden: true},
+                {name: 'sizeName', label: '尺寸', width: 40, hidden: true},
+                {name: 'price', label: '销售价格', width: 40},                  //吊牌价格
+                {name: 'preCast', label: '采购价', width: 40, hidden: true},  //事前成本价(采购价)
+                {name: 'wsPrice', label: '销售价格', width: 40, hidden: true},  //门店批发价格
+                {name: 'puPrice', label: '销售价格', width: 40, hidden: true},  //代理商批发价格
+                {name: 'stockPrice', label: '库存金额', width: 40, hidden: true} //库存金额
+            ],
+            rownumbers: true,
+            viewrecords: true,
+            autowidth: true,
+            altRows: true,
+            multiselect: false,
+            shrinkToFit: true,
+            sortname: 'updateTime',
+            sortorder: "desc"
+        });
+        start();
+    }
+    function start() {
+        if (type==2){
+            if (localStorage.getItem("SR")==-1){
+                $.ajax({
+                    url:  basePath + "pad/scanning/checkEpcStockWS.do",
+                    async: false,
+                    datatype: "json",
+                    data: {
+                        warehId: origId,
+                        type:0
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        if (data.success) {
+                            if (data.msg==""){
+                                startCode(data.result);
+                            }else {
+                                bootbox.alert(data.msg);
+                                startCode(data.result);
+                            }
+                        }
+                    }
+                });
+            }else {
+                $.ajax({
+                    url:  basePath + "pad/scanning/checkEpcStockWS.do",
+                    async: false,
+                    datatype: "json",
+                    data: {
+                        warehId: origId,
+                        type:1
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        if (data.success) {
+                            if (data.msg==""){
+                                startCode(data.result);
+                            }else {
+                                bootbox.alert(data.msg);
+                                startCode(data.result);
+                            }
+                        }
+                    }
+                });
+            }
+        }else {
+            $.ajax({
+                url:  basePath + "pad/scanning/checkEpcStockWS.do",
+                async: false,
+                datatype: "json",
+                data: {
+                    warehId: origId,
+                    type:type
+                },
+                type: "POST",
+                success: function (data) {
+                    if (data.success) {
+                        if (data.msg==""){
+                            startCode(data.result);
+                        }else {
+                            bootbox.alert(data.msg);
+                            startCode(data.result);
+                        }
+                    }
+                }
+            });
+        }
+    }
+    function startCode(successEpcStock){
+        $.each(successEpcStock,function (index,value) {
+            var isAdd = true;
+            $.each($("#uniqueCodeGrid").getDataIDs(),function (dtlIndex, dtlValue) {
+                var dtlRow = $("#uniqueCodeGrid").getRowData(dtlValue);
+                if (dtlRow.code.indexOf(value.code)!= -1){
+                    isAdd = false;
+                    return true;
+                }
+            });
+            if (isAdd){
+                $("#uniqueCodeGrid").addRowData($("#uniqueCodeGrid").getDataIDs().length, value);
+            }
+        });
+        var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
+        $("#codeQty").text(scanCodeQty);
+    }
+    function next() {
+        var productListInfo = [];
+        $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
+            var productInfo = $("#uniqueCodeGrid").getRowData(value);
+            productListInfo.push(productInfo);
+        });
+        productListInfo = JSON.stringify(productListInfo);
+        if (productListInfo.length==2){
+            bootbox.alert("您未添加商品，请添加商品后再进行下一步！");
+        }else {
+            if(type==0){
+                localStorage.setItem("successEpcStock",productListInfo);
+                window.location.href=basePath+'views/pad/customerType.html';
+            }else if(type==1){
+                localStorage.setItem("successReturnEpcStock",productListInfo);
+                window.location.href=basePath+'views/pad/customerType.html';
+            }else {
+                if (localStorage.getItem("SR")==-1){
+                    localStorage.setItem("successEpcStock",productListInfo);
+                    bootbox.setDefaults("locale","zh_CN");
+                    bootbox.confirm("请将<<退货物品>>放入规定位置，放好后点击确认按钮！", function(result) {
+                        if (result){
+                            window.location.href=basePath+'views/pad/addUniqCode.html';
+                        }
+                    });
+                    localStorage.setItem("SR",0);
+                }else {
+                    localStorage.setItem("successReturnEpcStock",productListInfo);
+                    window.location.href=basePath+'views/pad/customerType.html';
+                }
+            }
+        }
+    }
+    function back() {
+        localStorage.setItem("back",1);
+        window.location.href=basePath+'views/pad/padUser.html';
+    }
+</script>
+</html>

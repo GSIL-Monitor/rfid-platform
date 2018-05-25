@@ -1,28 +1,16 @@
 package com.casesoft.dmc.controller.pad;
-import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.stock.StockUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.BillRecord;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
-import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
-import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.User;
-import com.casesoft.dmc.model.tag.Epc;
-import com.casesoft.dmc.model.task.Business;
-import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
@@ -41,9 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
-/**
- * 普通用户 user.type=0
- */
 
 @Controller
 @RequestMapping("/pad")
@@ -61,6 +46,13 @@ public class PadUserController extends BaseController implements IBaseInfoContro
     @Autowired
     private GuestViewService guestViewService;
 
+    /**
+     *无人收银验证用户登录
+     * @param code 用户名
+     * @param password 密码
+     * @return LTC time :2018/5/19
+     * @throws Exception
+     */
     @RequestMapping("/padUser/loginWS")
     @ResponseBody
     public MessageBox loginWS(String code, String password) throws Exception {
@@ -88,6 +80,11 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         }
     }
 
+    /**
+     *获取默认客户的各个属性
+     * @param defalutCustomerId 默认客户
+     * @return LTC time :2018/5/19
+     */
     @RequestMapping("/customer/addWS")
     @ResponseBody
     public MessageBox addWS(String defalutCustomerId){
@@ -99,6 +96,13 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(false,"");
         }
     }
+
+    /**
+     * 客户查询
+     * @param page
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("customer/pageWS")
     @ResponseBody
     public Page<GuestView> findPageView(Page<GuestView> page) throws Exception {
@@ -128,15 +132,23 @@ public class PadUserController extends BaseController implements IBaseInfoContro
 
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
-     * @param type    出入库类型 0出库，1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
      * 扫描检测唯一吗是否可以出/入库(存在库存表中)
      */
     @RequestMapping("/scanning/checkEpcStockWS")
     @ResponseBody
-    public MessageBox checkEpcStock(String warehId, Integer type) {
+    public MessageBox checkEpcStock(String warehId ,String type) {
         List<String>codeList = new ArrayList<>();
-        codeList.add("0081800000124");
+        codeList.add("0081020000124");
+        codeList.add("0005360000424");
+        codeList.add("0080570000124");
+        codeList.add("0080560000124");
+        codeList.add("0080550000224");
+        codeList.add("0080550000124");
+        codeList.add("0016460000724");
+        codeList.add("0080510000124");
+        codeList.add("0070650000124");
+        codeList.add("0070650000224");
         int sumCode = codeList.size();
         List<EpcStock> epcStockList = new ArrayList<>();
         List<EpcStock> successEpcStock = new ArrayList<>();
@@ -145,9 +157,13 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         try {
             epcStockList = this.epcStockService.findEpcCodes(TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code"));
             for(EpcStock epcStock :epcStockList) {
-                if (warehId.equals("")){
-                    StockUtil.convertEpcStock(epcStock);
-                    successEpcStock.add(epcStock);
+                if (type.equals("1")){
+                    if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()!=1){
+                        StockUtil.convertEpcStock(epcStock);
+                        successEpcStock.add(epcStock);
+                    }else {
+                        failSqu.add(epcStock.getSku());
+                    }
                 }else {
                     if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()==1){
                         StockUtil.convertEpcStock(epcStock);
@@ -157,10 +173,18 @@ public class PadUserController extends BaseController implements IBaseInfoContro
                     }
                 }
             }
-            if (warehId.equals("")){
-                return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能入库", successEpcStock);
-            }
-            else {
+            if (type.equals("1")){
+                if (failSqu.size()==0) {
+                    return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能入库", successEpcStock);
+                }else {
+                    for (String s :failSqu){
+                        s=s+"、";
+                        failCodestr.append(s);
+                    }
+                    int sumSqu = failSqu.size();
+                    return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能入库,总共："+sumSqu+"件",successEpcStock);
+                }
+            }else {
                 if (failSqu.size()==0) {
                     return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能出库", successEpcStock);
                 }else {
@@ -177,77 +201,6 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(false, e.getMessage());
         }
     }
-
-    @RequestMapping(value = "/save")
-    @ResponseBody
-    public MessageBox save(String saleOrderBillStr, String strDtlList, String userId) throws Exception {
-        this.logAllRequestParams();
-        try {
-            SaleOrderBill saleOrderBill = JSON.parseObject(saleOrderBillStr, SaleOrderBill.class);
-            if(CommonUtil.isNotBlank(saleOrderBill.getBillNo())){
-                Integer status = this.saleOrderBillService.findBillStatus(saleOrderBill.getBillNo());
-                if(status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
-                    return new MessageBox(false, "单据不是录入状态无法保存,请返回");
-                }
-            }
-            saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
-            List<SaleOrderBillDtl> saleOrderBillDtlList = JSON.parseArray(strDtlList, SaleOrderBillDtl.class);
-            User curUser = CacheManager.getUserById(userId);
-            if (CommonUtil.isBlank(saleOrderBill.getBillNo())) {
-                String prefix = BillConstant.BillPrefix.saleOrder
-                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
-                //String billNo = this.saleOrderBillService.findMaxBillNo(prefix);
-                saleOrderBill.setId(prefix);
-                saleOrderBill.setBillNo(prefix);
-            }
-            saleOrderBill.setId(saleOrderBill.getBillNo());
-            BillConvertUtil.covertToSaleOrderBill(saleOrderBill, saleOrderBillDtlList, curUser);
-            this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
-            return new MessageBox(true, "保存成功", saleOrderBill.getBillNo());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new MessageBox(false, e.getMessage());
-        }
-    }
-
-    @RequestMapping(value = "/findBillDtl")
-    @ResponseBody
-    public List<SaleOrderBillDtl> findBillDtl(String billNo) throws Exception {
-        this.logAllRequestParams();
-        List<SaleOrderBillDtl> saleOrderBillDtls = this.saleOrderBillService.findBillDtlByBillNo(billNo);
-        List<BillRecord> billRecordList = this.saleOrderBillService.getBillRecod(billNo);
-        Map<String, String> codeMap = new HashMap<>();
-        for (BillRecord r : billRecordList) {
-            if (codeMap.containsKey(r.getSku())) {
-                String code = codeMap.get(r.getSku());
-                code += "," + r.getCode();
-                codeMap.put(r.getSku(), code);
-            } else {
-                codeMap.put(r.getSku(), r.getCode());
-            }
-        }
-        for (int i = 0; i < saleOrderBillDtls.size(); i++) {
-            SaleOrderBillDtl dtl = saleOrderBillDtls.get(i);
-            dtl.setStyleName(CacheManager.getStyleNameById(dtl.getStyleId()));
-            dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
-            dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
-            dtl.setTagPrice(CacheManager.getStyleById(dtl.getStyleId()).getPrice());
-            if (codeMap.containsKey(dtl.getSku())) {
-                dtl.setUniqueCodes(codeMap.get(dtl.getSku()));
-            }
-        }
-        return saleOrderBillDtls;
-    }
-
-    @RequestMapping(value = "/cancel")
-    @ResponseBody
-    public MessageBox cancel(String billNo) throws Exception {
-        SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
-        saleOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.saleOrderBillService.cancelUpdate(saleOrderBill);
-        return new MessageBox(true, "撤销成功");
-    }
-
     @Override
     public Page<User> findPage(Page<User> page) throws Exception {
         return null;
