@@ -153,7 +153,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="VIPNumber">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>会员卡号:</span>
                         </div>
@@ -161,7 +161,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remark">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>备注:</span>
                         </div>
@@ -193,7 +193,7 @@
                                 </tbody>
                         </table>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="businessId">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>销售员:</span>
                         </div>
@@ -201,7 +201,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="printTime">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>打印时间:</span>
                         </div>
@@ -209,7 +209,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopBefore">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>售前余额:</span>
                         </div>
@@ -217,7 +217,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopAfter">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>售后余额:</span>
                         </div>
@@ -225,7 +225,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="integral">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>积分(本次/剩余):</span>
                         </div>
@@ -233,7 +233,7 @@
                             <span>100/2000</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtend">
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
                             <span >欢迎来到Ancient Stone</span>
                         </div>
@@ -276,49 +276,49 @@
                         <div class="headTitleDiv" id="headPrint">
                             <ul>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'storeName')">
                                         <i></i>
                                         <span>门店名称</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'billType')">
                                         <i></i>
                                         <span>小票类型</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'weChat')">
                                         <i></i>
                                         <span>微信</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'makeBill')">
                                         <i></i>
                                         <span>制单人</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'billDate')">
                                         <i></i>
                                         <span>日期</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'coustmer')">
                                         <i></i>
                                         <span>客户</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'VIPNumber')">
                                         <i></i>
                                         <span>会员卡号</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'remark')">
                                         <i></i>
                                         <span>备注</span>
                                     </div>
@@ -337,34 +337,39 @@
                         <div class="headTitleDiv" id="footerPrint" style="display: none">
                             <ul>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'businessId')">
                                         <i></i>
                                         <span>销售员</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'printTime')">
                                         <i></i>
                                         <span>打印时间</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'shopBefore')">
                                         <i></i>
-                                        <span>售前金额</span>
+                                        <span>售前余额</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'shopAfter')">
                                         <i></i>
-                                        <span>售后金额</span>
+                                        <span>售后余额</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this)">
+                                    <div class="stecs on" onclick="selectThis(this,'integral')">
                                         <i></i>
                                         <span>积分(本次/剩余)</span>
                                     </div>
+                                </li>
+                                <li class="headTitleLi">
+                                    <span>扩展打印(在页脚展示扩展信息,换行请输入&lt;br&gt;)：</span>
+                                    <br>
+                                    <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" onkeyup="writeFootExtend(this)"></textarea>
                                 </li>
                             </ul>
                         </div>

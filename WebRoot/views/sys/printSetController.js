@@ -25,11 +25,17 @@ function selectRuleReceipt(sum) {
     });
 
 }
-function selectThis(t) {
+function selectThis(t,selectId) {
     if($(t).attr("class")=="stecs"){
         $(t).attr("class","stecs on");
+        $("#"+selectId).show();
     }else{
         $(t).attr("class","stecs");
+        $("#"+selectId).hide();
     }
+}
 
+function writeFootExtend(t) {
+    console.log($(t).val());
+    $("#footExtend").find("span").text($(t).val());
 }
