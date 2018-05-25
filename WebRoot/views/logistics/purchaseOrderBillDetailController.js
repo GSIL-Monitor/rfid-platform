@@ -86,6 +86,10 @@ function initButtonGroup() {
     if (pageType === "edit") {
         $("#editDetailgrid").clearGridData();
         $("#buttonGroup").html("" +
+            "<button type='button' class='btn btn-sm btn-primary' onclick='save()'" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>保存</span>" +
+            "</button>"+
             "<button style='margin-left: 20px'type='button' class='btn btn-sm btn-primary' onclick='convertToTagBirth()'" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>标签初始化</span>" +

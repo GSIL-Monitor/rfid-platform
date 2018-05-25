@@ -429,11 +429,10 @@ public class ParisService implements IBillWSService {
                 bus.setBeginTime(new Date());
                 switch (bus.getToken().intValue()) {
                     case Constant.Token.Storage_Inbound:
-                        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(bus.getBillNo());
+                        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("id",bus.getBillNo());
                         List<PurchaseOrderBillDtl> dtlListPI = this.purchaseOrderBillService.findBillDtlByBillNo(bus.getBillNo());
                         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = this.copyNewPIBillDtl(dtlListPI);
                         BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, bus);
-                        this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
                         String srcBillNo = purchaseOrderBill.getSrcBillNo();
                         if(CommonUtil.isNotBlank(srcBillNo)){
                             ReplenishBill replenishBill = this.replenishBillService.get("id", srcBillNo);
@@ -447,6 +446,7 @@ public class ParisService implements IBillWSService {
                                 newReplenishBillDtlList.add(replenishBillDtl);
                             }
                             BillConvertUtil.convertPurchaseToReplenish(purchaseOrderBill,purchaseOrderBillDtlList,replenishBill,newReplenishBillDtlList);
+                            this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
                             this.replenishBillService.saveMessage(replenishBill, newReplenishBillDtlList);
                         }
                         warehouseId=purchaseOrderBill.getDestId();

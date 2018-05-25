@@ -179,7 +179,7 @@ function initButtonGroup() {
         //判断是否是admin
         if(roleid!="0"){
             $("#SODtl_doPrintA4").hide();
-            $("#SODtl_doPrintA41").hide();
+            $("#SODtl_doPrintA4").hide();
         }
     }
     $("#addDetail").show();
@@ -473,14 +473,12 @@ function initeditGrid() {
             {name: 'inQty', label: '已入库数量', width: 40},
             {name: 'sku', label: 'SKU', width: 50},
             {
-                name: 'tagPrice', label: '吊牌价', width: 40,
-                editrules: {
-                    number: true
-                }
+                name: 'tagPrice', label: '吊牌价', width: 40
             },
             {name: 'totPrice', label: '金额', width: 40,
                 formatter: function (cellValue, options, rowObject) {
-                    return rowObject.qty*rowObject.tagPrice
+                    cellValue = rowObject.qty*rowObject.tagPrice;
+                    return cellValue;
                 }
             },
            /* {
@@ -607,10 +605,8 @@ function setFooterData() {
         qty: sum_qty,
         outQty: sum_outQty,
         inQty: sum_inQty,
-        returnQty: sum_returnQty,
-        totPrice: sum_totPrice,
-        totActPrice: sum_totActPrice
-    });
+        totPrice: sum_totPrice
+    },false);
 }
 function addDetail() {
     var ct = $("#search_customerType").val();

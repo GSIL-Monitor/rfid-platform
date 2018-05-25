@@ -238,11 +238,13 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     //modify by yushen 同时反写补货单明细的数据。
     public void processReplenishBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, ReplenishBill replenishBill, List<ReplenishBillDtl> replenishBillDtl, User curUser) {
 
-        purchaseOrderBill.setSrcBillNo(replenishBill.getBillNo());
-        this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
-        this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
-        if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {
-            this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+        if (purchaseOrderBill.getId() != null) {
+            purchaseOrderBill.setSrcBillNo(replenishBill.getBillNo());
+            this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
+            this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
+            if (CommonUtil.isNotBlank(purchaseOrderBill.getBillRecordList())) {
+                this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBill.getBillRecordList());
+            }
         }
 
         this.replenishBillDao.saveOrUpdate(replenishBill);
@@ -256,6 +258,7 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
 
     /**
      * 采购单按款搜索去重得到billNo
+     *
      * @param styleSearch
      */
     public List<String> findBillDtlBillNoByStyleId(String styleSearch) {
