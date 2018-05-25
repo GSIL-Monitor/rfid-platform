@@ -199,10 +199,10 @@
                                                      placeholder="模糊查询"/>
                                           </div>--%>
                                         <div id="billno">
-                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_billno">单号</label>
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_billid">单号</label>
 
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <input class="form-control" id="filter_contains_billno" name="filter_contains_billno" type="text" onkeyup="this.value=this.value.toUpperCase()"
+                                                <input class="form-control" id="filter_contains_billid" name="filter_contains_billid" type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                        placeholder="模糊查询"/>
                                             </div>
                                         </div>
@@ -421,7 +421,7 @@
         $("#intimeDateShow").show();
         $("#destunitid").show();
         $("#class1").show();
-        $("#clearMessage").onclick;
+        $("#clearMessage").click();
         onday();
         exportExcelid="searchGrid";
         initKendoUIGrid();
@@ -435,7 +435,7 @@
         $("#styleid").hide();
         $("#destunitid").hide();
         $("#class1").hide();
-        $("#clearMessage").onclick;
+        $("#clearMessage").click();
         onday();
         exportExcelid="searchpuchaseGrid";
         initKendoUIPurchaseGrid();
@@ -450,7 +450,7 @@
         $("#intimeDateShow").hide();
         $("#destunitid").hide();
         $("#class1").hide();
-        $("#clearMessage").onclick;
+        $("#clearMessage").click();
         onday();
         exportExcelid="searchpuchaseBystyeidGrid";
         initKendoUIPurchasestyeidGrid();
@@ -464,7 +464,7 @@
         $("#intimeDateShow").hide();
         $("#destunitid").hide();
         $("#class1").hide();
-        $("#clearMessage").onclick;
+        $("#clearMessage").click();
         onday();
         exportExcelid="searchpuchaseBydestunitidGrid";
         initKendoUIPurchasedestunitidGrid();
