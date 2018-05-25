@@ -8,19 +8,19 @@ $(function () {
     var day = myDate.getDate();
     if (month < 10) {
         if (day < 10) {
-            $("#filter_gte_billDate").val(year + "-0" + month + "-0" + day);
-            $("#filter_lte_billDate").val(year + "-0" + month + "-0" + day);
+            $("#filter_gte_intimeDate").val(year + "-0" + month + "-0" + day);
+            $("#filter_lte_intimeDate").val(year + "-0" + month + "-0" + day);
         } else {
-            $("#filter_gte_billDate").val(year + "-0" + month + "-" + day);
-            $("#filter_lte_billDate").val(year + "-0" + month + "-" + day);
+            $("#filter_gte_intimeDate").val(year + "-0" + month + "-" + day);
+            $("#filter_lte_intimeDate").val(year + "-0" + month + "-" + day);
         }
     } else {
         if(day < 10){
-            $("#filter_gte_billDate").val(year + "-" + month + "-0" + day);
-            $("#filter_lte_billDate").val(year + "-" + month + "-0" + day);
+            $("#filter_gte_intimeDate").val(year + "-" + month + "-0" + day);
+            $("#filter_lte_intimeDate").val(year + "-" + month + "-0" + day);
         }else{
-            $("#filter_gte_billDate").val(year + "-" + month + "-" + day);
-            $("#filter_lte_billDate").val(year + "-" + month + "-" + day);
+            $("#filter_gte_intimeDate").val(year + "-" + month + "-" + day);
+            $("#filter_lte_intimeDate").val(year + "-" + month + "-" + day);
         }
 
     }
@@ -97,15 +97,15 @@ function initMultiSelect() {
         type: "POST",
         success: function (data, textStatus) {
             $("#filter_in_destid").empty();
-            $("#filter_in_taskDestid").empty();
+            $("#filter_in_orderwarehouseid").empty();
             $("#filter_in_destid").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-            $("#filter_in_taskDestid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
+            $("#filter_in_orderwarehouseid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#filter_in_destid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#filter_in_taskDestid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 $("#filter_in_destid").trigger('chosen:updated');
-                $("#filter_in_taskDestid").trigger('chosen:updated');
+                $("#filter_in_orderwarehouseid").trigger('chosen:updated');
             }
             //$("#filter_in_deport").val(deportId);
         }
@@ -118,17 +118,17 @@ function initMultiSelect() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
-                $("#filter_in_taskDestid").empty();
+                $("#filter_in_orderwarehouseid").empty();
                 //$("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_taskDestid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                    $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                     $("#filter_in_deport").trigger('chosen:updated');
-                    $("#filter_in_taskDestid").trigger('chosen:updated');
+                    $("#filter_in_orderwarehouseid").trigger('chosen:updated');
                 }
                 $("#filter_in_deport").val(deportId);
-                $("#filter_in_taskDestid").val(deportId);
+                $("#filter_in_orderwarehouseid").val(deportId);
             }
         });
     }else{
@@ -139,15 +139,15 @@ function initMultiSelect() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
-                $("#filter_in_taskDestid").empty();
+                $("#filter_in_orderwarehouseid").empty();
                 $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-                $("#filter_in_taskDestid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
+                $("#filter_in_orderwarehouseid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_taskDestid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                    $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                     $("#filter_in_deport").trigger('chosen:updated');
-                    $("#filter_in_taskDestid").trigger('chosen:updated');
+                    $("#filter_in_orderwarehouseid").trigger('chosen:updated');
                 }
                 //$("#filter_in_deport").val(deportId);
             }
@@ -610,8 +610,8 @@ function initKendoUIGrid() {
                     footerTemplate: "#=sum#"
                 },
                 {
-                    field: "taskDestName",
-                    title: "接收仓库",
+                    field: "orderwarehousename",
+                    title: "订货仓库",
                     width: "150px"
                 },
                 {field: "price", title: "吊牌价", width: "110px", groupable: false, aggregates: ["average"]},
@@ -911,8 +911,8 @@ function initKendoUIPurchaseGrid() {
 
                 },
                 {
-                    field: "taskDestName",
-                    title: "接收仓库",
+                    field: "orderwarehousename",
+                    title: "订货仓库",
                     width: "180px",
 
                 },
