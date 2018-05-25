@@ -238,6 +238,16 @@
                                                     style="width: 100%;" >
                                             </select>
                                         </div>
+                                        <div id="taskDestidShow">
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_taskDestid">接收仓库</label>
+                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
+                                                 </select>--%>
+                                                <select class="form-control" id="filter_in_taskDestid" name="filter_in_taskDestid"
+                                                        style="width: 100%;" >
+                                                </select>
+                                            </div>
+                                        </div>
                                         <%--  <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_origid">收货仓店</label>
                                           <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                               <select id="filter_in_origid"name="filter_in_destid" multiple="multiple" data-placeholder="编号列表">
@@ -383,6 +393,25 @@
         }
         search();
     }
+    function onIntimeday() {
+        var myDate=new Date();
+        var year=myDate.getFullYear();
+        var month=myDate.getMonth()+1;
+        var day=myDate.getDate();
+        if(month<10){
+            if(day<10){
+                $("#filter_gte_intimeDate").val(year+"-0"+month+"-0"+day);
+                $("#filter_lte_intimeDate").val(year+"-0"+month+"-0"+day);
+            }else{
+                $("#filter_gte_intimeDate").val(year+"-0"+month+"-"+day);
+                $("#filter_lte_intimeDate").val(year+"-0"+month+"-"+day);
+            }
+        }else{
+            $("#filter_gte_intimeDate").val(year+"-"+month+"-"+day);
+            $("#filter_lte_intimeDate").val(year+"-"+month+"-"+day);
+        }
+
+    }
     function halfmonth() {
         var myDate=new Date();
         var year=myDate.getFullYear();
@@ -419,9 +448,11 @@
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").show();
         $("#intimeDateShow").show();
+        $("#taskDestidShow").show();
         $("#destunitid").show();
         $("#class1").show();
         $("#clearMessage").click();
+        onIntimeday();
         onday();
         exportExcelid="searchGrid";
         initKendoUIGrid();
@@ -432,10 +463,12 @@
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#intimeDateShow").show();
+        $("#taskDestidShow").show();
         $("#styleid").hide();
         $("#destunitid").hide();
         $("#class1").hide();
         $("#clearMessage").click();
+        onIntimeday();
         onday();
         exportExcelid="searchpuchaseGrid";
         initKendoUIPurchaseGrid();
@@ -448,6 +481,7 @@
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").show();
         $("#intimeDateShow").hide();
+        $("#taskDestidShow").hide();
         $("#destunitid").hide();
         $("#class1").hide();
         $("#clearMessage").click();
@@ -462,6 +496,7 @@
         $("#searchpuchaseBydestunitidGrid").show();
         $("#styleid").show();
         $("#intimeDateShow").hide();
+        $("#taskDestidShow").hide();
         $("#destunitid").hide();
         $("#class1").hide();
         $("#clearMessage").click();

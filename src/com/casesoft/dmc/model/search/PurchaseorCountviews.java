@@ -83,6 +83,49 @@ public class PurchaseorCountviews {
     @Column(nullable = false,length = 19)
     @Excel(name="入库时间")
     private Date intimeDate;
+    @Column()
+    @Excel(name="已入库数量")
+    private Integer yetInitQty;
+    @Column()
+    @Excel(name="已入库金额")
+    private Double yetInitPrice;
+    @Column()
+    private String taskDestid;
+    @Column()
+    @Excel(name="接收仓库")
+    private String taskDestName;
+
+    public Integer getYetInitQty() {
+        return yetInitQty;
+    }
+
+    public void setYetInitQty(Integer yetInitQty) {
+        this.yetInitQty = yetInitQty;
+    }
+
+    public Double getYetInitPrice() {
+        return yetInitPrice;
+    }
+
+    public void setYetInitPrice(Double yetInitPrice) {
+        this.yetInitPrice = yetInitPrice;
+    }
+
+    public String getTaskDestid() {
+        return taskDestid;
+    }
+
+    public void setTaskDestid(String taskDestid) {
+        this.taskDestid = taskDestid;
+    }
+
+    public String getTaskDestName() {
+        return taskDestName;
+    }
+
+    public void setTaskDestName(String taskDestName) {
+        this.taskDestName = taskDestName;
+    }
 
     public Date getIntimeDate() {
         return intimeDate;

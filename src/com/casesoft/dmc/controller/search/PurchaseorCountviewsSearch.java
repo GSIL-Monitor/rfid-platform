@@ -218,7 +218,7 @@ public class PurchaseorCountviewsSearch extends BaseController {
                 List<PurchaseNodeatilViews> PurchaseNodeatildatas =( List<PurchaseNodeatilViews>) dataResult.getData();
                 for(int i=0;i<PurchaseNodeatildatas.size();i++){
                     PurchaseNodeatilViews purchaseNodeatilViews = (PurchaseNodeatilViews) PurchaseNodeatildatas.get(i);
-                    String billno = purchaseNodeatilViews.getBillno();
+                    String billno = purchaseNodeatilViews.getBillid();
                     if(billno.contains(BillConstant.BillPrefix.purchase)){
                         purchaseNodeatilViews.setSaletype("采购订单");
                     }
