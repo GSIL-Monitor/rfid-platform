@@ -249,19 +249,19 @@
                     <span style="text-align:center;display: block">小票规格:</span>
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <ul class="stecs" data-name="58" onclick="a(58);">
+                    <ul class="stecs" data-name="58" onclick="selectRuleReceipt(58);">
                         <i></i>
                         <span>58mm</span>
                     </ul>
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <ul class="stecs" data-name="80" onclick="a(80);">
+                    <ul class="stecs" data-name="80" onclick="selectRuleReceipt(80);">
                         <i></i>
                         <span>80mm</span>
                     </ul>
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <ul class="stecs" data-name="110" onclick="a(110);">
+                    <ul class="stecs" data-name="110" onclick="selectRuleReceipt(110);">
                         <i></i>
                         <span>110mm</span>
                     </ul>
@@ -276,49 +276,49 @@
                         <div class="headTitleDiv" id="headPrint">
                             <ul>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>门店名称</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>小票类型</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>微信</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>制单人</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>日期</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>客户</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>会员卡号</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>备注</span>
                                     </div>
@@ -334,34 +334,34 @@
                         <h3  onclick="selectfoorerPrint()">
                             <span style="font-size: 14px;">页脚打印</span>
                         </h3>
-                        <div class="headTitleDiv" id="footerPrint">
+                        <div class="headTitleDiv" id="footerPrint" style="display: none">
                             <ul>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>销售员</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>打印时间</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>售前金额</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>售后金额</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on">
+                                    <div class="stecs on" onclick="selectThis(this)">
                                         <i></i>
                                         <span>积分(本次/剩余)</span>
                                     </div>

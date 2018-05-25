@@ -1,5 +1,5 @@
 $(function () {
-    selectheadPrint();
+
 });
 function selectheadPrint() {
     $("#footerPrint").hide();
@@ -9,7 +9,7 @@ function selectfoorerPrint() {
     $("#footerPrint").show();
     $("#headPrint").hide();
 }
-function a(sum) {
+function selectRuleReceipt(sum) {
     $("#ruleReceipt").find("ul").each(function(index,element){
         var b=$("#ruleReceipt").find("ul")[index].getAttribute('data-name');
         if(b==sum){
@@ -23,5 +23,13 @@ function a(sum) {
         }
 
     });
+
+}
+function selectThis(t) {
+    if($(t).attr("class")=="stecs"){
+        $(t).attr("class","stecs on");
+    }else{
+        $(t).attr("class","stecs");
+    }
 
 }
