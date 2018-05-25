@@ -82,14 +82,14 @@ public class PurchaseorCountviews {
     @JSONField(format="yyyy-MM-dd")
     @Column(nullable = false,length = 19)
     @Excel(name="入库时间")
-    private Date intime;
+    private Date intimeDate;
 
-    public Date getIntime() {
-        return intime;
+    public Date getIntimeDate() {
+        return intimeDate;
     }
 
-    public void setIntime(Date intime) {
-        this.intime = intime;
+    public void setIntimeDate(Date intimeDate) {
+        this.intimeDate = intimeDate;
     }
 
     public Integer getInQty() {

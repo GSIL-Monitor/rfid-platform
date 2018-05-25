@@ -349,6 +349,14 @@ public class PurchaseorCountviewsSearch extends BaseController {
                     String time =value+" 23:59:59";
                     hqlpurchasesum+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
 
+                }else if(key.equals("filter_gte_intimeDate")){
+                    String[] split = key.split("_");
+                    String time =value+" 00:00:00";
+                    hqlpurchasesum+=" and "+split[2]+" >= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
+                }else if(key.equals("filter_lte_intimeDate")){
+                    String[] split = key.split("_");
+                    String time =value+" 23:59:59";
+                    hqlpurchasesum+=" and "+split[2]+" <= to_date('"+time+"','yyyy-MM-dd HH24:mi:ss')";
                 }else {
                     String[] split = key.split("_");
                     if(split[1].equals("contains")){

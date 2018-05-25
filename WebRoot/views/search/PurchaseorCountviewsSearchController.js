@@ -185,7 +185,6 @@ function refresh() {
     resetData();
 }
 function resetData() {
-    debugger;
     var gridData = $("#searchGrid").data("kendoGrid");
     /* $("#filter_in_deport").val(deportId);
      var filters = serializeToFilter($("#searchForm"));*/
@@ -421,7 +420,7 @@ function initKendoUIGrid() {
                     }
                 },
                 {
-                    field: "intime",
+                    field: "intimeDate",
                     title: "入库时间",
                     width: "150px"
                 },
@@ -759,7 +758,7 @@ function initKendoUIPurchaseGrid() {
                     }
                 },
                 {
-                    field: "intime",
+                    field: "intimeDate",
                     title: "入库时间",
                     width: "180px",
 

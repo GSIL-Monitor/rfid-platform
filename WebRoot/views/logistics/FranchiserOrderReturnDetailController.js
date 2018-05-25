@@ -202,10 +202,10 @@ function initGrid() {
             {name: 'outQty', label: '已出库数量', width: 40},
             {name: 'inQty', label: '已入库数量', width: 40},
             {name: 'sku', label: 'sku', width: 50},
-            {name: 'tagPrice', label: '吊牌价', width: 40,
+            {name: 'tagPrice', label: '吊牌价', width: 40},
+            {name: 'totPrice', label: '金额', width: 40,
                 formatter: function (cellValue, options, rowObject) {
-                    var price=parseFloat(cellValue).toFixed(2);
-                    return price;
+                    return rowObject.qty*rowObject.tagPrice
                 }
             },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
@@ -237,14 +237,16 @@ function setFooterData() {
     var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
     var sum_outQty = $("#addDetailgrid").getCol('outQty', false, 'sum');
     var sum_inQty = $("#addDetailgrid").getCol('inQty', false, 'sum');
-    var sum_tagPrice = $("#addDetailgrid").getCol('tagPrice', false, 'sum');
+    var sum_totPrice = $("#addDetailgrid").getCol('totPrice',false, 'sum');
+
     $("#addDetailgrid").footerData('set', {
         styleId: "合计",
         qty: sum_qty,
         outQty: sum_outQty,
         inQty: sum_inQty,
-        tagPrice: sum_tagPrice
-    });
+        totPrice:sum_totPrice
+
+    },false);
 }
 
 function showCodesDetail(uniqueCodes) {

@@ -58,7 +58,7 @@ public class PurchaseNodeatilViews {
     @JSONField(format="yyyy-MM-dd")
     @Column(nullable = false,length = 19)
     @Excel(name="入库时间")
-    private Date intime;
+    private Date intimeDate;
     @Column()
     @Excel(name="入库数量")
     private Integer inqty;
@@ -71,12 +71,12 @@ public class PurchaseNodeatilViews {
         this.taskid = taskid;
     }
 
-    public Date getIntime() {
-        return intime;
+    public Date getIntimeDate() {
+        return intimeDate;
     }
 
-    public void setIntime(Date intime) {
-        this.intime = intime;
+    public void setIntimeDate(Date intimeDate) {
+        this.intimeDate = intimeDate;
     }
 
     public Integer getInqty() {
