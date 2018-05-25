@@ -63,25 +63,25 @@ public class PurchaseNodeatilViews {
     @Excel(name="入库数量")
     private Integer inqty;
     @Column()
-    private String taskDestid;
+    private String orderwarehouseid;
     @Column()
-    @Excel(name="接收仓库")
-    private String taskDestName;
+    @Excel(name="订货仓库")
+    private String orderwarehousename;
 
-    public String getTaskDestid() {
-        return taskDestid;
+    public String getOrderwarehouseid() {
+        return orderwarehouseid;
     }
 
-    public void setTaskDestid(String taskDestid) {
-        this.taskDestid = taskDestid;
+    public void setOrderwarehouseid(String orderwarehouseid) {
+        this.orderwarehouseid = orderwarehouseid;
     }
 
-    public String getTaskDestName() {
-        return taskDestName;
+    public String getOrderwarehousename() {
+        return orderwarehousename;
     }
 
-    public void setTaskDestName(String taskDestName) {
-        this.taskDestName = taskDestName;
+    public void setOrderwarehousename(String orderwarehousename) {
+        this.orderwarehousename = orderwarehousename;
     }
 
     public String getTaskid() {

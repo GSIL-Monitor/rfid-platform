@@ -90,10 +90,28 @@ public class PurchaseorCountviews {
     @Excel(name="已入库金额")
     private Double yetInitPrice;
     @Column()
-    private String taskDestid;
+    private String orderwarehouseid;
+
+    public String getOrderwarehouseid() {
+        return orderwarehouseid;
+    }
+
+    public void setOrderwarehouseid(String orderwarehouseid) {
+        this.orderwarehouseid = orderwarehouseid;
+    }
+
+    public String getOrderwarehousename() {
+        return orderwarehousename;
+    }
+
+    public void setOrderwarehousename(String orderwarehousename) {
+        this.orderwarehousename = orderwarehousename;
+    }
+
     @Column()
-    @Excel(name="接收仓库")
-    private String taskDestName;
+    @Excel(name="订货仓库")
+
+    private String orderwarehousename;
 
     public Integer getYetInitQty() {
         return yetInitQty;
@@ -111,21 +129,7 @@ public class PurchaseorCountviews {
         this.yetInitPrice = yetInitPrice;
     }
 
-    public String getTaskDestid() {
-        return taskDestid;
-    }
 
-    public void setTaskDestid(String taskDestid) {
-        this.taskDestid = taskDestid;
-    }
-
-    public String getTaskDestName() {
-        return taskDestName;
-    }
-
-    public void setTaskDestName(String taskDestName) {
-        this.taskDestName = taskDestName;
-    }
 
     public Date getIntimeDate() {
         return intimeDate;
