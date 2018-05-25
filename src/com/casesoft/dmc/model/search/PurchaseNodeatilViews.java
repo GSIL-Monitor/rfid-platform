@@ -21,7 +21,7 @@ public class PurchaseNodeatilViews {
     private Date billDate;
     @Column()
     @Excel(name="单号")
-    private String billno;
+    private String billid;
     @Column()
     private String origunitid;
     @Column()
@@ -62,6 +62,27 @@ public class PurchaseNodeatilViews {
     @Column()
     @Excel(name="入库数量")
     private Integer inqty;
+    @Column()
+    private String taskDestid;
+    @Column()
+    @Excel(name="接收仓库")
+    private String taskDestName;
+
+    public String getTaskDestid() {
+        return taskDestid;
+    }
+
+    public void setTaskDestid(String taskDestid) {
+        this.taskDestid = taskDestid;
+    }
+
+    public String getTaskDestName() {
+        return taskDestName;
+    }
+
+    public void setTaskDestName(String taskDestName) {
+        this.taskDestName = taskDestName;
+    }
 
     public String getTaskid() {
         return taskid;
@@ -111,12 +132,12 @@ public class PurchaseNodeatilViews {
         this.billDate = billDate;
     }
 
-    public String getBillno() {
-        return billno;
+    public String getBillid() {
+        return billid;
     }
 
-    public void setBillno(String billno) {
-        this.billno = billno;
+    public void setBillid(String billid) {
+        this.billid = billid;
     }
 
     public String getOrigunitid() {
