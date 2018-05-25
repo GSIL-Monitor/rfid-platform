@@ -114,14 +114,14 @@
             <div class="Print-Bg-Center">
                 <div class="Print-Bg-Top">
                     <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4" id="storeName">
                             <span>店铺名称</span>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
                             <span >销售单</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" >
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="weChat" >
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>微信:</span>
                         </div>
@@ -129,7 +129,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBill">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>制单人:</span>
                         </div>
@@ -137,7 +137,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDate">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>日期:</span>
                         </div>
@@ -145,7 +145,7 @@
                             <span>xxxxxx</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>客户:</span>
                         </div>
