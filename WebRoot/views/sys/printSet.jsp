@@ -369,7 +369,7 @@
                                 <li class="headTitleLi">
                                     <span>扩展打印(在页脚展示扩展信息,换行请输入&lt;br&gt;)：</span>
                                     <br>
-                                    <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" onkeyup="writeFootExtend(this)"></textarea>
+                                    <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" onkeyup="writeFootExtend(this)">欢迎来到Ancient Stone</textarea>
                                 </li>
                             </ul>
                         </div>

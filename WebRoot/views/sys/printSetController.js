@@ -37,5 +37,5 @@ function selectThis(t,selectId) {
 
 function writeFootExtend(t) {
     console.log($(t).val());
-    $("#footExtend").find("span").text($(t).val());
+    $("#footExtend").find("span").html($(t).val());
 }
