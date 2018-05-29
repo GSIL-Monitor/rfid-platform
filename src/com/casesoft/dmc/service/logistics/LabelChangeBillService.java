@@ -142,7 +142,7 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
                  listStyle=( List<Style>) map.get("style");
                 listproduct=( List<Product>)map.get("product");
                  newStylesuffix=(String)map.get("newStylesuffix");
-                init = BillConvertUtil.labelcovertToTagBirth(taskId, labelChangeBillDels, initService, currentUser,prefix,newStylesuffix);
+                init = BillConvertUtil.labelcovertToTagBirth(taskId, labelChangeBillDels, initService, currentUser,prefix,newStylesuffix,labelChangeBill.getChangeType());
 
             }else{
                 issave=false;
