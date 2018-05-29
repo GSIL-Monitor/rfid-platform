@@ -429,49 +429,67 @@ function save() {
         if(discount ==""||discount==null){
             bootbox.alert("折扣不能为空！")
             addDisabled();
+
             return
         }
         if(discount>100||discount<=0){
             bootbox.alert("折扣请添写1到100的数字！")
             addDisabled();
+
             return
         }
 
     }
     cs.showProgressBar();
     var dtlArray = [];
+    var isCanSave=true;
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
+        console.log(rowData);
+        var styleId=rowData.styleId;
+        var suffixVariate=styleId.substring(styleId.length-4,styleId.length-2);
+        if(suffixVariate=="PD"){
+            isCanSave=false;
+            return
+        }
         dtlArray.push(rowData);
     });
-    $.ajax({
-        dataType: "json",
-        async: false,
-        url: basePath + "/logistics/labelChangeBill/save.do",
-        data: {
-            bill: JSON.stringify(array2obj($("#editForm").serializeArray())),
-            strDtlList: JSON.stringify(dtlArray),
-            userId: userId
-        },
-        type: "POST",
-        success: function (msg) {
-            cs.closeProgressBar();
+    if(isCanSave){
+        $.ajax({
+            dataType: "json",
+            async: false,
+            url: basePath + "/logistics/labelChangeBill/save.do",
+            data: {
+                bill: JSON.stringify(array2obj($("#editForm").serializeArray())),
+                strDtlList: JSON.stringify(dtlArray),
+                userId: userId
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
 
-            if (msg.success) {
-                $.gritter.add({
-                    text: msg.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#search_billNo").val(msg.result);
-                $("#search_id").val(msg.result);
-                location.href = basePath + "/logistics/labelChangeBill/edit.do?billNo="+ msg.result;
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#search_billNo").val(msg.result);
+                    $("#search_id").val(msg.result);
+                    location.href = basePath + "/logistics/labelChangeBill/edit.do?billNo="+ msg.result;
 
 
-            } else {
-                bootbox.alert(msg.msg);
+                } else {
+                    bootbox.alert(msg.msg);
+                }
             }
-        }
-    });
+        });
+    }else{
+        bootbox.alert("已有打折处理的商品！")
+        addDisabled();
+        cs.closeProgressBar();
+        return
+    }
+
 }
 
 function wareHouseOutIn() {
