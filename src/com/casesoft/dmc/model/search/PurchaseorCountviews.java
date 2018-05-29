@@ -87,7 +87,7 @@ public class PurchaseorCountviews {
     @Excel(name="已入库数量")
     private Integer yetInitQty;
     @Column()
-    @Excel(name="已入库金额")
+    @Excel(name="本次入库金额")
     private Double yetInitPrice;
     @Column()
     private String orderwarehouseid;

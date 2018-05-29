@@ -647,6 +647,11 @@ public class CommonUtil {
     double numnew = bg.setScale(digit, BigDecimal.ROUND_HALF_UP).doubleValue();
     return numnew;
   }
+  //四舍五入把double转化int整型，0.5进一，小于0.5不进一
+  public static int getInt(double number){
+    BigDecimal bd=new BigDecimal(number).setScale(0, BigDecimal.ROUND_HALF_UP);
+    return Integer.parseInt(bd.toString());
+  }
 
 
   /**

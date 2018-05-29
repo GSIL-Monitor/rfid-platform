@@ -523,22 +523,54 @@ public class BillConvertUtil {
     /**
      * 标签替代转标签初始化
      */
-    public static Init labelcovertToTagBirth(String taskId, List<LabelChangeBillDel> labelChangeBillDels, InitService epcService, User currentUser, String prefix, String newStylesuffix) {
+    public static Init labelcovertToTagBirth(String taskId, List<LabelChangeBillDel> labelChangeBillDels, InitService epcService, User currentUser, String prefix, String newStylesuffix,String changeType) {
         Init master = new Init();
         master.setBillNo(taskId);
         Long totQty = 0L;
         List<InitDtl> initDtlList = new ArrayList<>();
+        boolean isUseOldStyle=false;
         for (LabelChangeBillDel dtl : labelChangeBillDels) {
             InitDtl detail = new InitDtl();
-            detail.setId(taskId + "-" + dtl.getStyleId() + newStylesuffix + dtl.getColorId() + dtl.getSizeId());
-            detail.setStyleId(dtl.getStyleId() + newStylesuffix);
-            Style style = CacheManager.getStyleById(dtl.getStyleId());
+            String styleId="";
+            if(changeType.equals(BillConstant.ChangeType.Series)){
+                styleId = dtl.getStyleId();
+                int styleIdLength = styleId.length();
+                String styleTail=styleId.substring(styleIdLength-2,styleIdLength);
+                if(styleTail.equals(BillConstant.styleNew.Alice)||styleTail.equals(BillConstant.styleNew.AncientStone)){
+                    styleId=styleId.substring(0,styleIdLength-2);
+                    Style style= CacheManager.getStyleById(styleId);
+                    if(CommonUtil.isBlank(style)){
+                        isUseOldStyle=false;
+                    }else{
+                        isUseOldStyle=true;
+                    }
+                }
+                String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
+                if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
+                    styleId=styleId.substring(0,styleIdLength-4);
+                }
+                if(!isUseOldStyle){
+                    detail.setId(taskId + "-" + styleId + newStylesuffix + dtl.getColorId() + dtl.getSizeId());
+                    detail.setStyleId(styleId + newStylesuffix);
+                    detail.setSku(styleId + newStylesuffix + dtl.getColorId() + dtl.getSizeId());
+                }else{
+                    detail.setId(taskId + "-" + styleId + dtl.getColorId() + dtl.getSizeId());
+                    detail.setStyleId(styleId);
+                    detail.setSku(styleId+ dtl.getColorId() + dtl.getSizeId());
+                }
+
+            }else{
+                styleId = dtl.getStyleId();
+                detail.setId(taskId + "-" + styleId + newStylesuffix +CommonUtil.getInt(dtl.getDiscount())+ dtl.getColorId() + dtl.getSizeId());
+                detail.setStyleId(styleId + newStylesuffix+CommonUtil.getInt(dtl.getDiscount()));
+                detail.setSku(styleId + newStylesuffix + CommonUtil.getInt(dtl.getDiscount())+dtl.getColorId() + dtl.getSizeId());
+            }
+            Style style = CacheManager.getStyleById(styleId);
                /* detail.setStyleName(style.getStyleName());
                 detail.setColorName(dtl.getColorId());
                 detail.setSizeName(dtl.getSizeId());*/
             detail.setColorId(dtl.getColorId());
             detail.setSizeId(dtl.getSizeId());
-            detail.setSku(dtl.getStyleId() + newStylesuffix + dtl.getColorId() + dtl.getSizeId());
             detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
             detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
                     + dtl.getQty());
@@ -3741,10 +3773,33 @@ public class BillConvertUtil {
         Map<String, LabelChangeBillDel> labelChangeBillDelMap = new HashMap<>();
         for (LabelChangeBillDel dtl : labelChangeBillDelList) {
             if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Series)) {
-                labelChangeBillDelMap.put(dtl.getStyleId() + labelChangeBill.getNowclass9().split("-")[1] + dtl.getColorId() + dtl.getSizeId(), dtl);
+                boolean isUseOldStyle=false;
+                String styleId = dtl.getStyleId();
+                //判断最后两位是有AA,AS,PD
+                int styleIdLength = styleId.length();
+                String styleTail=styleId.substring(styleIdLength-2,styleIdLength);
+                if(styleTail.equals(BillConstant.styleNew.Alice)||styleTail.equals(BillConstant.styleNew.AncientStone)){
+                    styleId=styleId.substring(0,styleIdLength-2);
+                    Style style= CacheManager.getStyleById(styleId);
+                    if(CommonUtil.isBlank(style)){
+                        isUseOldStyle=false;
+                    }else{
+                        isUseOldStyle=true;
+                    }
+                }
+                String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
+                if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
+                    styleId=styleId.substring(0,styleIdLength-4);
+                }
+                if(!isUseOldStyle){
+                    labelChangeBillDelMap.put(styleId + labelChangeBill.getNowclass9().split("-")[1] + dtl.getColorId() + dtl.getSizeId(), dtl);
+                }else{
+                    labelChangeBillDelMap.put(styleId + dtl.getColorId() + dtl.getSizeId(), dtl);
+                }
+
             }
             if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Price)) {
-                labelChangeBillDelMap.put(dtl.getStyleId() + BillConstant.styleNew.PriceDiscount + dtl.getColorId() + dtl.getSizeId(), dtl);
+                labelChangeBillDelMap.put(dtl.getStyleId() + BillConstant.styleNew.PriceDiscount +CommonUtil.getInt(dtl.getDiscount())+ dtl.getColorId() + dtl.getSizeId(), dtl);
             }
 
         }
