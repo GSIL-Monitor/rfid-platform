@@ -546,7 +546,7 @@ public class StyleUtil {
 
                 Style style= CacheManager.getStyleById(styleId +BillConstant.styleNew.PriceDiscount+CommonUtil.getInt(labelChangeBillDels.get(i).getDiscount()));
                 Style oldStyle = CacheManager.getStyleById(styleId);
-                if(CommonUtil.isBlank(style)){
+                if(CommonUtil.isBlank(style)&&CommonUtil.isBlank(mapStyle.get(styleId + BillConstant.styleNew.PriceDiscount+CommonUtil.getInt(labelChangeBillDels.get(i).getDiscount())))){
                     Style styleNew=new Style();
                     BeanUtils.copyProperties(oldStyle,styleNew);
                     styleNew.setId(styleId + BillConstant.styleNew.PriceDiscount+CommonUtil.getInt(labelChangeBillDels.get(i).getDiscount()));
@@ -555,8 +555,9 @@ public class StyleUtil {
                     styleNew.setPuPrice(CommonUtil.doubleChange(oldStyle.getPuPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
                     styleNew.setWsPrice(CommonUtil.doubleChange(oldStyle.getWsPrice()*labelChangeBillDels.get(i).getDiscount()/100,1));
                     list.add(styleNew);
+                    mapStyle.put((styleId + BillConstant.styleNew.PriceDiscount+CommonUtil.getInt(labelChangeBillDels.get(i).getDiscount())),styleNew);
                 }
-                String code=styleId +BillConstant.styleNew.PriceDiscount+labelChangeBillDels.get(i).getDiscount()+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId();
+                String code=styleId +BillConstant.styleNew.PriceDiscount+CommonUtil.getInt(labelChangeBillDels.get(i).getDiscount())+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId();
                 Product productByCode = CacheManager.getProductByCode(code);
                 if(CommonUtil.isBlank(productByCode)){
                     Product oldProduct= CacheManager.getProductByCode(labelChangeBillDels.get(i).getSku());
