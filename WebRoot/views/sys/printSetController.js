@@ -1,3 +1,12 @@
+var printParameter={
+    fontSize58mm:9,//58mm小票字体的大小
+    fontSize80mm:9,//80mm小票字体的大小
+    fontSize110mm:9,//110mm小票字体的大小
+    
+
+};
+
+
 $(function () {
 
 });
