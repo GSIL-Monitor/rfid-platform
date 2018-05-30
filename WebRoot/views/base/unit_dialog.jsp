@@ -113,19 +113,24 @@
         } else if (owner == "withSample") {
             $("#search_unit_type option[value='4']").remove();
             url += constant.unitType.Headquarters + "," + constant.unitType.Agent + "," + constant.unitType.SampleRoom;
-            var temp=$("#search_unit_type").find("option[value=6]").text();
-            if (""==temp) {
+            var temp = $("#search_unit_type").find("option[value=6]").text();
+            if ("" == temp) {
                 $("#search_unit_type").append("<option value='6'>样衣间</option>")
             }
-        } else if(owner=="withShop"){
+        } else if (owner == "withShop") {
             $("#search_unit_type option[value='6']").remove();
-            url +=constant.unitType.Shop+','+constant.unitType.Headquarters+','+constant.unitType.Agent;
-            var temp=$("#search_unit_type").find("option[value=4]").text();
-            if(""==temp){
+            url += constant.unitType.Shop + ',' + constant.unitType.Headquarters + ',' + constant.unitType.Agent;
+            var temp = $("#search_unit_type").find("option[value=4]").text();
+            if ("" == temp) {
                 $("#search_unit_type").append("<option value='4'>门店</option>")
             }
-
-        }else {
+        } else if (owner == "Organization") {
+            $("#group_type").hide();
+            url += constant.unitType.Organization + "," + constant.unitType.Headquarters;
+        } else if (owner == "Shop") {
+            $("#group_type").hide();
+            url += constant.unitType.Organization + "," + constant.unitType.Headquarters;
+        } else {
             $("#group_type").show();
             $("#search_unit_type option[value='6']").remove();
             url += constant.unitType.Agent + "," + constant.unitType.Headquarters;
@@ -140,27 +145,45 @@
                 colModel: [
                     {name: 'id', label: 'id', hidden: true, width: 40},
                     {name: 'code', label: '编号', editable: true, width: 20},
-                    {name: 'name', label: '名称', editable: true, width: 30},
+                    {name: 'name', label: '名称', editable: true, width: 50},
                     {
-                        name: 'type', label: '组织类型', editable: true, width: 30,
+                        name: 'type', label: '组织类型', editable: true, width: 15,
                         formatter: function (cellvalue, options, rowObject) {
                             if (cellvalue == constant.unitType.Agent) {
                                 return "代理商";
                             } else if (cellvalue == constant.unitType.SampleRoom) {
                                 return "样衣间";
+                            } else if (cellvalue == constant.unitType.Headquarters) {
+                                return "总部";
+                            } else if (cellvalue == constant.unitType.Shop) {
+                                return "门店";
+                            } else if (cellvalue == constant.unitType.Warehouse) {
+                                return "仓库";
+                            } else if (cellvalue == constant.unitType.Organization) {
+                                return "公司";
+                            } else if (cellvalue == constant.unitType.Vender) {
+                                return "供应商";
+                            } else if (cellvalue == constant.unitType.NetShop) {
+                                return "网店";
+                            } else if (cellvalue == constant.unitType.Department) {
+                                return "部门";
+                            } else if (cellvalue == constant.unitType.Franchisee) {
+                                return "加盟商";
+                            } else if (cellvalue == constant.unitType.Guest) {
+                                return "客户";
                             } else {
-                                return "品牌商";
+                                return "";
                             }
                         }
                     },
-                    {name: 'createTime', label: '日期', width: 50}
+                    {name: 'createTime', label: '日期', width: 17}
                 ],
                 viewrecords: true,
                 autowidth: true,
                 rownumbers: true,
                 altRows: true,
                 rowNum: 10,
-                rowList: [10,20, 50],
+                rowList: [10, 20, 50],
                 pager: "#unitSelect_Page",
                 multiselect: false,
                 shrinkToFit: true,
