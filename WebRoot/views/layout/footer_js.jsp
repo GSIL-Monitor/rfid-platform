@@ -71,6 +71,7 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 <script src="<%=basePath%>Olive/plugin/fileInput/js/fileinput_locale_zh.js" type="text/javascript"></script>
 <script src="<%=basePath%>Olive/assets/js/dialog.js" type="text/javascript"></script>
 <script type="text/javascript" src="<%=basePath%>/jslib2/constant.js"></script>
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/tree/jstree.min.js"></script>
 
 <script>
     function array2obj(array) {
