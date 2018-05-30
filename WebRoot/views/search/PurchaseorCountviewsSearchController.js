@@ -8,22 +8,23 @@ $(function () {
     var day = myDate.getDate();
     if (month < 10) {
         if (day < 10) {
-            $("#filter_gte_billDate").val(year + "-0" + month + "-0" + day);
-            $("#filter_lte_billDate").val(year + "-0" + month + "-0" + day);
+            $("#filter_gte_intimeDate").val(year + "-0" + month + "-0" + day);
+            $("#filter_lte_intimeDate").val(year + "-0" + month + "-0" + day);
         } else {
-            $("#filter_gte_billDate").val(year + "-0" + month + "-" + day);
-            $("#filter_lte_billDate").val(year + "-0" + month + "-" + day);
+            $("#filter_gte_intimeDate").val(year + "-0" + month + "-" + day);
+            $("#filter_lte_intimeDate").val(year + "-0" + month + "-" + day);
         }
     } else {
         if(day < 10){
-            $("#filter_gte_billDate").val(year + "-" + month + "-0" + day);
-            $("#filter_lte_billDate").val(year + "-" + month + "-0" + day);
+            $("#filter_gte_intimeDate").val(year + "-" + month + "-0" + day);
+            $("#filter_lte_intimeDate").val(year + "-" + month + "-0" + day);
         }else{
-            $("#filter_gte_billDate").val(year + "-" + month + "-" + day);
-            $("#filter_lte_billDate").val(year + "-" + month + "-" + day);
+            $("#filter_gte_intimeDate").val(year + "-" + month + "-" + day);
+            $("#filter_lte_intimeDate").val(year + "-" + month + "-" + day);
         }
 
     }
+    onIntimeday();
     initKendoUIGrid();
     /*if(Codes=="admin"){
         initKendoUIGrid();
@@ -96,11 +97,15 @@ function initMultiSelect() {
         type: "POST",
         success: function (data, textStatus) {
             $("#filter_in_destid").empty();
+            $("#filter_in_orderwarehouseid").empty();
             $("#filter_in_destid").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#filter_in_orderwarehouseid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#filter_in_destid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 $("#filter_in_destid").trigger('chosen:updated');
+                $("#filter_in_orderwarehouseid").trigger('chosen:updated');
             }
             //$("#filter_in_deport").val(deportId);
         }
@@ -113,13 +118,17 @@ function initMultiSelect() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
+                $("#filter_in_orderwarehouseid").empty();
                 //$("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                    $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                     $("#filter_in_deport").trigger('chosen:updated');
+                    $("#filter_in_orderwarehouseid").trigger('chosen:updated');
                 }
                 $("#filter_in_deport").val(deportId);
+                $("#filter_in_orderwarehouseid").val(deportId);
             }
         });
     }else{
@@ -130,11 +139,15 @@ function initMultiSelect() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
+                $("#filter_in_orderwarehouseid").empty();
                 $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+                $("#filter_in_orderwarehouseid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                    $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                     $("#filter_in_deport").trigger('chosen:updated');
+                    $("#filter_in_orderwarehouseid").trigger('chosen:updated');
                 }
                 //$("#filter_in_deport").val(deportId);
             }
@@ -185,7 +198,6 @@ function refresh() {
     resetData();
 }
 function resetData() {
-    debugger;
     var gridData = $("#searchGrid").data("kendoGrid");
     /* $("#filter_in_deport").val(deportId);
      var filters = serializeToFilter($("#searchForm"));*/
@@ -347,6 +359,9 @@ function initKendoUIGrid() {
                     {field: "styleId", aggregate: "count"},
                     {field: "price", aggregate: "average"},
                     {field: "totactprice", aggregate: "sum"},
+                    {field: "inQty", aggregate: "sum"},
+                    {field: "yetInitQty", aggregate: "sum"},
+                    {field: "yetInitPrice", aggregate: "sum"}
 
                 ]
 
@@ -421,6 +436,11 @@ function initKendoUIGrid() {
                     }
                 },
                 {
+                    field: "intimeDate",
+                    title: "入库时间",
+                    width: "150px"
+                },
+                {
                     title: "日期",
                     field: "billDate",
                     width: "200px",
@@ -457,6 +477,11 @@ function initKendoUIGrid() {
                         var totactprice = data.aggregates.totactprice.sum;
                         return "单号:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
                     }
+                },
+                {
+                    field: "taskid",
+                    title: "任务号",
+                    width: "150px"
                 },
                 {
                     field: "sku",
@@ -560,13 +585,41 @@ function initKendoUIGrid() {
                     aggregates: ["sum"],
                     footerTemplate: "#=sum#"
                 },
+                {
+                    field: "inQty",
+                    title: "入库数量",
+                    width: "150px",
+                    groupable: false,
+                    aggregates: ["sum"],
+                    footerTemplate: "#=sum#"
+                },
+                {
+                    field: "yetInitQty",
+                    title: "已入库数量",
+                    width: "150px",
+                    groupable: false,
+                    aggregates: ["sum"],
+                    footerTemplate: "#=sum#"
+                },
+                {
+                    field: "yetInitPrice",
+                    title: "本次入库金额",
+                    width: "150px",
+                    groupable: false,
+                    aggregates: ["sum"],
+                    footerTemplate: "#=sum#"
+                },
+                {
+                    field: "orderwarehousename",
+                    title: "订货仓库",
+                    width: "150px"
+                },
                 {field: "price", title: "吊牌价", width: "110px", groupable: false, aggregates: ["average"]},
                 {
                     field: "outstatus",
                     title: "出库状态",
                     width: "150px",
                     template:function(data) {
-                        debugger;
                         if (data.outstatus == 0) {
                             return "订单状态";
                         } else if (data.outstatus == 2) {
@@ -580,7 +633,7 @@ function initKendoUIGrid() {
                 },
                 {
                     field: "instatus",
-                    title: "出库状态",
+                    title: "入库状态",
                     width: "150px",
                     template:function(data) {
                         if (data.instatus == 0) {
@@ -744,6 +797,12 @@ function initKendoUIPurchaseGrid() {
                     }
                 },
                 {
+                    field: "intimeDate",
+                    title: "入库时间",
+                    width: "180px",
+
+                },
+                {
                     title: "单号",
                     field: "billno",
                     width: "250px",
@@ -755,6 +814,12 @@ function initKendoUIPurchaseGrid() {
                         var totactprice = data.aggregates.totinval.sum;
                         return "单号:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
                     }
+                },
+                {
+                    field: "taskid",
+                    title: "任务号",
+                    width: "180px",
+
                 },
                 /* {
                  field: "sku",
@@ -838,6 +903,18 @@ function initKendoUIPurchaseGrid() {
                     field: "totqty", title: "数量", width: "80px", groupable: false,
                     aggregates: ["sum"],
                     footerTemplate: "#=sum#"
+                },
+                {
+                    field: "inqty",
+                    title: "本次入库数量",
+                    width: "180px",
+
+                },
+                {
+                    field: "orderwarehousename",
+                    title: "订货仓库",
+                    width: "180px",
+
                 },
                 /*{field: "totinval", title: "吊牌价", width: "110px", groupable: false, aggregates: ["average"]},*/
                 {

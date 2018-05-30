@@ -20,6 +20,12 @@ var constant = {
     requestUrl: {}
 };
 
+$(function () {
+
+
+
+
+});
 
 var cs = $.extend({}, cs);
 /* 定义全局对象，类似于命名空间或包的作用 */
@@ -30,14 +36,15 @@ var csProgerssDialog;
 cs.showAlertMsgBox = function (msg) {
     bootbox.alert(msg);
 };
-cs.showProgressBar = function (msg) {
-    var message = msg ? msg : "服务器请求中...";
+cs.showProgressBar = function(msg) {
+    /*var message = msg?msg:"服务器请求中...";
     csProgerssDialog = bootbox.dialog({
-        message: '<p><i class="fa fa-spin fa-spinner"></i>' + message + '</p>'
-    });
+        message: '<p><i class="fa fa-spin fa-spinner"></i>'+message+'</p>'
+    });*/
+    $("#loadingModal").modal('show');
 };
-cs.closeProgressBar = function () {
-    csProgerssDialog.modal('hide');
+cs.closeProgressBar = function() {
+    $("#loadingModal").modal('hide');
 };
 cs.showConfirmMsgBox = function (msg, callbackFunc) {
     bootbox.confirm({

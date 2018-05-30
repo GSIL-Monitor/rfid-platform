@@ -53,8 +53,7 @@ public class PropertyKeyService extends AbstractBaseService<PropertyKey, String>
 
   @Override
   public PropertyKey get(String propertyName, Object value) {
-    // TODO Auto-generated method stub
-    return null;
+    return this.propertyKeyDao.findUniqueBy(propertyName,value);
   }
 
   @Override

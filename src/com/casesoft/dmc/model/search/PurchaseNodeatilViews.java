@@ -21,7 +21,7 @@ public class PurchaseNodeatilViews {
     private Date billDate;
     @Column()
     @Excel(name="单号")
-    private String billno;
+    private String billid;
     @Column()
     private String origunitid;
     @Column()
@@ -51,6 +51,62 @@ public class PurchaseNodeatilViews {
     @Column()
     @Excel(name="单据类型")
     private String saletype;
+    @Column()
+    @Excel(name="任务号")
+    private String taskid;
+
+    @JSONField(format="yyyy-MM-dd")
+    @Column(nullable = false,length = 19)
+    @Excel(name="入库时间")
+    private Date intimeDate;
+    @Column()
+    @Excel(name="入库数量")
+    private Integer inqty;
+    @Column()
+    private String orderwarehouseid;
+    @Column()
+    @Excel(name="订货仓库")
+    private String orderwarehousename;
+
+    public String getOrderwarehouseid() {
+        return orderwarehouseid;
+    }
+
+    public void setOrderwarehouseid(String orderwarehouseid) {
+        this.orderwarehouseid = orderwarehouseid;
+    }
+
+    public String getOrderwarehousename() {
+        return orderwarehousename;
+    }
+
+    public void setOrderwarehousename(String orderwarehousename) {
+        this.orderwarehousename = orderwarehousename;
+    }
+
+    public String getTaskid() {
+        return taskid;
+    }
+
+    public void setTaskid(String taskid) {
+        this.taskid = taskid;
+    }
+
+    public Date getIntimeDate() {
+        return intimeDate;
+    }
+
+    public void setIntimeDate(Date intimeDate) {
+        this.intimeDate = intimeDate;
+    }
+
+    public Integer getInqty() {
+        return inqty;
+    }
+
+    public void setInqty(Integer inqty) {
+        this.inqty = inqty;
+    }
 
     public String getSaletype() {
         return saletype;
@@ -76,12 +132,12 @@ public class PurchaseNodeatilViews {
         this.billDate = billDate;
     }
 
-    public String getBillno() {
-        return billno;
+    public String getBillid() {
+        return billid;
     }
 
-    public void setBillno(String billno) {
-        this.billno = billno;
+    public void setBillid(String billid) {
+        this.billid = billid;
     }
 
     public String getOrigunitid() {

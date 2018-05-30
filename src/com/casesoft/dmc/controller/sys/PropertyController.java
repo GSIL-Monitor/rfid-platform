@@ -102,29 +102,35 @@ public class PropertyController extends BaseController implements IBaseInfoContr
     /**
      * 保存属性信息
      */
-    @RequestMapping(value = "/saveproperty")
+    @RequestMapping(value = {"/saveproperty", "/savepropertyWS"})
     @ResponseBody
-    public MessageBox saveproperty(PropertyKey entity) throws Exception {
+    public MessageBox saveproperty(PropertyKey entity, String userId) throws Exception {
         try {
 
             PropertyKey propertyKey = this.propertyService.findPropertyKeyByNameAndType(entity.getName(), entity.getType());
             if (CommonUtil.isBlank(propertyKey)) {
                 Integer num = this.propertyService.findtkeyNum(entity.getType());
                 entity.setSeqNo((num + 1));
-                User currentUser = getCurrentUser();
+
+                if (getCurrentUser() == null) {     //小程序增加商品，userId传值
+                    User CurrentUser = CacheManager.getUserById(userId);
+                    entity.setOwnerId(CurrentUser.getCreatorId());
+                    entity.setRegisterId(CurrentUser.getId());
+                }else {       //web增加商品,session传值
+                    entity.setOwnerId(getCurrentUser().getCreatorId());
+                    entity.setRegisterId(getCurrentUser().getId());
+                }
+
                 entity.setCode(entity.getSeqNo() + "");
                 entity.setType(entity.getId());
                 entity.setId(entity.getId() + "-" + entity.getCode());
-                entity.setOwnerId(currentUser.getCreatorId());
                 entity.setLocked(0);
                 entity.setRegisterDate(new Date());
-                entity.setRegisterId(currentUser.getId());
                 entity.setYnuse("Y");
                 this.propertyService.saveKey(entity);
             } else {
                 return returnFailInfo("保存失败,名称已存在不能重复添加");
             }
-
 
             CacheManager.refreshPropertyCache();
             return returnSuccessInfo("保存成功", entity);
@@ -226,6 +232,16 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         page.setPageProperty();
         page = this.propertyKeyService.findPage(page, filters);
         return page;
+    }
+    @RequestMapping("/findclass9name")
+    @ResponseBody
+    public List<PropertyKey> findclass9name() throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+
+        List<PropertyKey> propertyKeys = this.propertyKeyService.find(filters);
+        return propertyKeys;
     }
 
 

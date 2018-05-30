@@ -320,6 +320,8 @@ public class WXProductApiController extends ApiBaseController {
     @ResponseBody
     public Page<PropertyKey> searchBrands(Page<PropertyKey> page){
         this.logAllRequestParams();
+        page.setSort("registerDate");
+        page.setOrder("desc");
         page.setPageProperty();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         return this.propertyService.findPageForKey(page,filters);

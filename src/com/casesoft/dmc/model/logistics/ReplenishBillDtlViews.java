@@ -38,6 +38,8 @@ public class ReplenishBillDtlViews {
     private String stylename;
     @Column()
     private Integer convertquitqty;
+    @Column
+    private Integer actConvertquitQty;
     @Column()
     private Integer  franchiseestockqty;
     @Column()
@@ -60,6 +62,10 @@ public class ReplenishBillDtlViews {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    public Integer getActConvertquitQty() { return actConvertquitQty; }
+
+    public void setActConvertquitQty(Integer actConvertquitQty) { this.actConvertquitQty = actConvertquitQty; }
 
     @Transient
     private String url;

@@ -72,6 +72,14 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 <script src="<%=basePath%>Olive/assets/js/dialog.js" type="text/javascript"></script>
 <script type="text/javascript" src="<%=basePath%>/jslib2/constant.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/tree/jstree.min.js"></script>
+<div class="modal fade" id="loadingModal">
+    <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+        <div class="progress progress-striped active" style="margin-bottom: 0;">
+            <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        <h5>服务器请求中...</h5>
+    </div>
+</div>
 
 <script>
     function array2obj(array) {

@@ -176,6 +176,22 @@
                                                         data-date-format="yyyy-mm-dd"/>
                                             </div>
                                         </div>
+                                        <div id="intimeDateShow">
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_gte_intimeDate">入库时间</label>
+
+                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                <div class="input-group">
+                                                    <input  id="filter_gte_intimeDate" class="form-control date-picker" name="filter_gte_intimeDate"
+                                                            data-date-format="yyyy-mm-dd"/>
+                                                    <span class="input-group-addon">
+                                                                <i class="fa fa-exchange"></i>
+                                                          </span>
+                                                    <input  id="filter_lte_intimeDate" class="form-control date-picker"  name="filter_lte_intimeDate"
+                                                            data-date-format="yyyy-mm-dd"/>
+                                                </div>
+
+                                             </div>
+                                        </div>
                                         <%--  <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_taskId">任务号</label>
 
                                           <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -183,10 +199,10 @@
                                                      placeholder="模糊查询"/>
                                           </div>--%>
                                         <div id="billno">
-                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_billno">单号</label>
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_billid">单号</label>
 
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <input class="form-control" id="filter_contains_billno" name="filter_contains_billno" type="text" onkeyup="this.value=this.value.toUpperCase()"
+                                                <input class="form-control" id="filter_contains_billid" name="filter_contains_billid" type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                        placeholder="模糊查询"/>
                                             </div>
                                         </div>
@@ -221,6 +237,16 @@
                                             <select class="form-control" id="filter_in_destid" name="filter_in_destid"
                                                     style="width: 100%;" >
                                             </select>
+                                        </div>
+                                        <div id="orderwarehouseidShow">
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_orderwarehouseid">订货仓库</label>
+                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
+                                                 </select>--%>
+                                                <select class="form-control" id="filter_in_orderwarehouseid" name="filter_in_orderwarehouseid"
+                                                        style="width: 100%;" >
+                                                </select>
+                                            </div>
                                         </div>
                                         <%--  <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_origid">收货仓店</label>
                                           <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -269,44 +295,7 @@
                                             </div>
                                         </div>
 
-                                       <%-- <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_origUnitId">客户</label>
 
-                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                            <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
-                                                   placeholder="模糊查询"/> -->
-                                            <div class="input-group">
-                                                <input class="form-control" id="search_origUnitId"
-                                                       type="text" name="filter_eq_origunitid" readonly/>
-                                                <span class="input-group-btn">
-                                                             <button class="btn btn-sm btn-default" type="button" onclick="openSearchGuestDialog()">
-                                                                 <i class="ace-icon fa fa-list"></i>
-                                                             </button>
-                                                          </span>
-                                                <input class="form-control" id="search_origUnitName"
-                                                       type="text" name="filter_eq_origunitname" readonly  />
-                                            </div>
-                                        </div>--%>
-                                        <%--  &lt;%&ndash;<label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_colorId">色号</label>
-
-                                          <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                              <input class="form-control" id="filter_contains_colorId" name="filter_contains_colorId" type="text"
-                                                     placeholder="模糊查询"/>
-                                          </div>&ndash;%&gt;
-                                         &lt;%&ndash; <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="form_token">入库方式</label>
-
-                                          <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                              <select class="chosen-select form-control" id="form_token" name="filter_eq_token">
-                                                  <option value="">-请选择-</option>
-                                                  <option value="8">仓库入库</option>
-                                                  <option value="23">退货入库</option>
-                                                  <option value="25">调拨入库</option>
-                                                  <option value="29">仓库调整入库</option>
-                                                  <option value="14">门店入库</option>
-                                                  <option value="17">门店销售退货入库</option>
-                                                  <option value="19">门店调拨入库</option>
-                                                  <option value="31">门店调整入库</option>
-                                              </select>
-                                          </div>&ndash;%&gt;--%>
 
                                     </div>
                                     <!-- #section:elements.form -->
@@ -318,6 +307,9 @@
                                                 <span class="bigger-110">查询</span>
                                             </button>
                                             <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                                <i class="ace-icon fa fa-undo"></i>
+                                                <span class="bigger-110">清空</span></button>
+                                            <button id="clearMessage" style="display: none" type="reset" class="btn btn-sm btn-warning">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
@@ -401,6 +393,25 @@
         }
         search();
     }
+    function onIntimeday() {
+        var myDate=new Date();
+        var year=myDate.getFullYear();
+        var month=myDate.getMonth()+1;
+        var day=myDate.getDate();
+        if(month<10){
+            if(day<10){
+                $("#filter_gte_intimeDate").val(year+"-0"+month+"-0"+day);
+                $("#filter_lte_intimeDate").val(year+"-0"+month+"-0"+day);
+            }else{
+                $("#filter_gte_intimeDate").val(year+"-0"+month+"-"+day);
+                $("#filter_lte_intimeDate").val(year+"-0"+month+"-"+day);
+            }
+        }else{
+            $("#filter_gte_intimeDate").val(year+"-"+month+"-"+day);
+            $("#filter_lte_intimeDate").val(year+"-"+month+"-"+day);
+        }
+
+    }
     function halfmonth() {
         var myDate=new Date();
         var year=myDate.getFullYear();
@@ -431,14 +442,17 @@
         search();
     }
     function purchaseDetail() {
-        debugger;
         $("#searchGrid").show();
         $("#searchpuchaseGrid").hide();
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").show();
+        $("#intimeDateShow").show();
+        $("#taskDestidShow").show();
         $("#destunitid").show();
         $("#class1").show();
+        $("#clearMessage").click();
+        onIntimeday();
         exportExcelid="searchGrid";
         initKendoUIGrid();
     }
@@ -447,9 +461,13 @@
         $("#searchpuchaseGrid").show();
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").hide();
+        $("#intimeDateShow").show();
+        $("#orderwarehouseidShow").show();
         $("#styleid").hide();
         $("#destunitid").hide();
         $("#class1").hide();
+        $("#clearMessage").click();
+        onIntimeday();
         exportExcelid="searchpuchaseGrid";
         initKendoUIPurchaseGrid();
     }
@@ -460,8 +478,12 @@
         $("#searchpuchaseBystyeidGrid").show();
         $("#searchpuchaseBydestunitidGrid").hide();
         $("#styleid").show();
+        $("#intimeDateShow").hide();
+        $("#orderwarehouseidShow").hide();
         $("#destunitid").hide();
         $("#class1").hide();
+        $("#clearMessage").click();
+        onday();
         exportExcelid="searchpuchaseBystyeidGrid";
         initKendoUIPurchasestyeidGrid();
     }
@@ -471,65 +493,16 @@
         $("#searchpuchaseBystyeidGrid").hide();
         $("#searchpuchaseBydestunitidGrid").show();
         $("#styleid").show();
+        $("#intimeDateShow").hide();
+        $("#orderwarehouseidShow").hide();
         $("#destunitid").hide();
         $("#class1").hide();
+        $("#clearMessage").click();
+        onday();
         exportExcelid="searchpuchaseBydestunitidGrid";
         initKendoUIPurchasedestunitidGrid();
     }
-   /* function saleDetail() {
-        $("#searchGrid").show();
-        $("#searchsaleGrid").hide();
-        $("#searchsalebusinessnameGrid").hide();
-        $("#searchsalebusinessnameGrid").hide();
-        exportExcelid="searchGrid";
-        $("#styleid").show();
-        $("#destUnitId").show();
-        $("#billno").show();
-        initKendoUIGrid();
-    }
-    function saleorderDetail(){
-        $("#searchGrid").hide();
-        $("#searchsaleGrid").show();
-        $("#searchsalebusinessnameGrid").hide();
-        $("#searchsalebusinessnameGrid").hide();
-        exportExcelid="searchsaleGrid";
-        $("#styleid").hide();
-        $("#destUnitId").show();
-        $("#billno").show();
-        initKendoUIGridSale();
-    }
-    function saleorderbusinessname(){
-        $("#searchGrid").hide();
-        $("#searchsaleGrid").hide();
-        $("#searchsalebusinessnameGrid").show();
-        $("#searchsaleorignameGrid").hide();
-        exportExcelid="searchsalebusinessnameGrid";
-        $("#styleid").hide();
-        $("#destUnitId").hide();
-        $("#billno").hide();
-        if(Codes=="admin"){
-            initKendoUIGridSalebusinessname();
-        }else{
-            initKendoUIGridSalebusinessnameno()
-        }
 
-    }
-    function saleorderorigname(){
-        $("#searchGrid").hide();
-        $("#searchsaleGrid").hide();
-        $("#searchsaleorignameGrid").show();
-        $("#searchsalebusinessnameGrid").hide();
-        exportExcelid="searchsaleorignameGrid";
-        $("#styleid").hide();
-        $("#destUnitId").hide();
-        $("#billno").hide();
-        if(Codes=="admin"){
-            initKendoUIGridSaleorigname();
-        }else{
-            initKendoUIGridSaleorignameno()
-        }
-
-    }*/
 
 
 </script>

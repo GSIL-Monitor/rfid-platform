@@ -61,6 +61,9 @@ public class ParisService implements IBillWSService {
     @Autowired
     private ConsignmentBillService consignmentBillService;
 
+    @Autowired
+    private ReplenishBillService replenishBillService;
+
     public static Bill getStockBill() {
         return stockBill;
     }
@@ -217,7 +220,7 @@ public class ParisService implements IBillWSService {
                     filters.add(new PropertyFilter("EQS_billNo", billId));
                 }
                 if (CommonUtil.isNotBlank(unitId)) {
-                    filters.add(new PropertyFilter("EQS_origUnitId", unitId));
+                    filters.add(new PropertyFilter("EQS_destUnitId", unitId));
                 }
                 if (CommonUtil.isNotBlank(beginDate)) {
                     filters.add(new PropertyFilter("GED_billDate", beginDate));
@@ -426,11 +429,26 @@ public class ParisService implements IBillWSService {
                 bus.setBeginTime(new Date());
                 switch (bus.getToken().intValue()) {
                     case Constant.Token.Storage_Inbound:
-                        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(bus.getBillNo());
+                        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("id",bus.getBillNo());
                         List<PurchaseOrderBillDtl> dtlListPI = this.purchaseOrderBillService.findBillDtlByBillNo(bus.getBillNo());
                         List<PurchaseOrderBillDtl> purchaseOrderBillDtlList = this.copyNewPIBillDtl(dtlListPI);
                         BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, bus);
-                        this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
+                        String srcBillNo = purchaseOrderBill.getSrcBillNo();
+                        if(CommonUtil.isNotBlank(srcBillNo)){
+                            ReplenishBill replenishBill = this.replenishBillService.get("id", srcBillNo);
+                            List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(srcBillNo);
+                            //复制一遍，后面保存的时候会先删除
+                            ArrayList<ReplenishBillDtl> newReplenishBillDtlList = new ArrayList<>();
+                            for (ReplenishBillDtl dtl : replenishBillDtlList) {
+                                ReplenishBillDtl replenishBillDtl = new ReplenishBillDtl();
+                                BeanUtils.copyProperties(dtl, replenishBillDtl);
+                                replenishBillDtl.setId(new GuidCreator().toString());
+                                newReplenishBillDtlList.add(replenishBillDtl);
+                            }
+                            BillConvertUtil.convertPurchaseToReplenish(purchaseOrderBill,purchaseOrderBillDtlList,replenishBill,newReplenishBillDtlList);
+                            this.purchaseOrderBillService.save(purchaseOrderBill, purchaseOrderBillDtlList);
+                            this.replenishBillService.saveMessage(replenishBill, newReplenishBillDtlList);
+                        }
                         warehouseId=purchaseOrderBill.getDestId();
                         OwnerId=purchaseOrderBill.getDestUnitId();
                         break;
@@ -683,6 +701,7 @@ public class ParisService implements IBillWSService {
             case Constant.Token.Shop_Transfer_Outbound:
             case Constant.Token.Storage_Outbound_agent:
             case Constant.Token.Storage_refoundOut_customer:
+            case Constant.Token.Storage_Refund_Outbound:
                 List<String> ocodeList = TaskUtil.getRecordCodes(bus.getRecordList());
                 String ocodes = TaskUtil.getSqlStrByList(ocodeList, EpcStock.class, "code");
                 codeStr = ocodes;

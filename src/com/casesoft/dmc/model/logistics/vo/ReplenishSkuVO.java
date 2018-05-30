@@ -1,5 +1,6 @@
 package com.casesoft.dmc.model.logistics.vo;
 
+import com.casesoft.dmc.core.util.reflection.ConvertUtils;
 import io.swagger.models.auth.In;
 
 import java.io.Serializable;
@@ -19,20 +20,23 @@ public class ReplenishSkuVO implements Serializable {
     private String sizeId;
     private String sizeName;
     private List<ReplenishCodeVO> codeVOList;
-    private Integer skuTotQty;
+    private Long skuTotQty;
     private Integer skuTotActConvertQty;
+    private Integer skuTotActConvertquitQty;
     private Integer skuTotInstockQty;
+    private String remark;   //备注
 
     public ReplenishSkuVO(){}
 
-    public ReplenishSkuVO(String sku, String styleId, String colorId, String sizeId, Integer qty, Integer actConvertQty, Integer instockQty){
+    public ReplenishSkuVO(String sku, String styleId, String colorId, String sizeId, Long skuTotQty, Integer skuTotActConvertQty, Integer skuTotActConvertquitQty, String remark) {
         this.sku = sku;
         this.styleId = styleId;
         this.colorId = colorId;
         this.sizeId = sizeId;
-        this.skuTotQty = qty;
-        this.skuTotActConvertQty = actConvertQty;
-        this.skuTotInstockQty = instockQty;
+        this.skuTotQty = skuTotQty;
+        this.skuTotActConvertQty = skuTotActConvertQty;
+        this.skuTotActConvertquitQty = skuTotActConvertquitQty;
+        this.remark=remark;
     }
 
     public String getSku() {
@@ -99,27 +103,28 @@ public class ReplenishSkuVO implements Serializable {
         this.codeVOList = codeVOList;
     }
 
-    public Integer getSkuTotQty() {
-        return skuTotQty;
+    public Long getSkuTotQty() { return skuTotQty; }
+
+    public void setSkuTotQty(Long skuTotQty) { this.skuTotQty = skuTotQty; }
+
+    public Integer getSkuTotActConvertQty() { return skuTotActConvertQty; }
+
+    public void setSkuTotActConvertQty(Integer skuTotActConvertQty) { this.skuTotActConvertQty = skuTotActConvertQty; }
+
+    public Integer getSkuTotActConvertquitQty() {
+        return skuTotActConvertquitQty;
     }
 
-    public void setSkuTotQty(Integer skuTotQty) {
-        this.skuTotQty = skuTotQty;
+    public void setSkuTotActConvertquitQty(Integer skuTotActConvertquitQty) {
+        this.skuTotActConvertquitQty = skuTotActConvertquitQty;
     }
 
-    public Integer getSkuTotActConvertQty() {
-        return skuTotActConvertQty;
-    }
+    public Integer getSkuTotInstockQty() { return skuTotInstockQty; }
 
-    public void setSkuTotActConvertQty(Integer skuTotActConvertQty) {
-        this.skuTotActConvertQty = skuTotActConvertQty;
-    }
+    public void setSkuTotInstockQty(Integer skuTotInstockQty) { this.skuTotInstockQty = skuTotInstockQty; }
 
-    public Integer getSkuTotInstockQty() {
-        return skuTotInstockQty;
-    }
+    public String getRemark() { return remark; }
 
-    public void setSkuTotInstockQty(Integer skuTotInstockQty) {
-        this.skuTotInstockQty = skuTotInstockQty;
-    }
+    public void setRemark(String remark) { this.remark = remark; }
+
 }
