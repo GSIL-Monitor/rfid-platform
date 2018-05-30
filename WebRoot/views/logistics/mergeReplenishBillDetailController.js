@@ -213,7 +213,7 @@ function save() {
 
     $.ajax({
         dataType: "json",
-        async: false,
+        async:true,
         url: basePath + "/logistics/relenishBill/save.do",
         data: {
             replenishBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
@@ -253,7 +253,7 @@ function onchangPurchase() {
     $("#SODtl_save_changNum").attr({"disabled": "disabled"});
     $.ajax({
         dataType: "json",
-        async: false,
+        async:true,
         url: basePath + "/logistics/mergeReplenishBillController/changePurchase.do",
         data: {
             billNo: billNo
@@ -283,7 +283,7 @@ function exportmessage() {
     $("#form1").submit();
 }
 function savemerege() {
-
+    cs.showProgressBar();
     $("#meregegrid").saveCell(editDtailiRow, editDtailiCol);
     editDtailiRow = null;
     editDtailiCol = null;
@@ -292,10 +292,9 @@ function savemerege() {
         var rowData = $("#meregegrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    cs.showProgressBar();
     $.ajax({
         dataType: "json",
-        // async:false,
+        async:true,
         url: basePath + "/logistics/mergeReplenishBillController/saveRecordsize.do",
         data: {
             'strDtlList': JSON.stringify(dtlArray),

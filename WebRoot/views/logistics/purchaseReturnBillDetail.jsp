@@ -2,7 +2,6 @@
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,10 +10,10 @@
         var basePath = '<%=basePath%>';
         var billNo = "${purchaseReturnBill.billNo}";
         var pageType = '${pageType}';
+        var userId = "${userId}";
         var returnStatus = "${purchaseReturnBill.status}";
         var purchaseReturnOrder_origId = "${purchaseReturnBill.origId}";
         var curOwnerId = "${ownerId}";
-        var userId = "${userId}";
     </script>
 </head>
 <body class="no-skin">
@@ -90,9 +89,8 @@
 
                                     <label class="col-xs-1 control-label" for="search_billDate">单据日期</label>
                                     <div class="col-xs-2">
-                                        <input class="form-control date-picker" name="billDate"
-                                               value='<fmt:formatDate value="${purchaseReturnBill.billDate}" pattern="yyyy-MM-dd" />'
-                                               id="search_billDate"/>
+                                            <input class="form-control date-picker" id="search_billDate" name="billDate"
+                                                   type="text" value="${purchaseReturnBill.billDate}"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -101,7 +99,7 @@
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
                                             <input class="form-control" id="search_payPrice" name="payPrice"
-                                                   value="${purchaseReturnBill.payPrice}"/>
+                                                   type="number" value="${purchaseOrderBill.payPrice}"/>
                                         </div>
                                     </div>
                                 </div>

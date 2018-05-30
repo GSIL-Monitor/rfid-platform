@@ -599,7 +599,7 @@ function save() {
 
     $.ajax({
         dataType: "json",
-        async: false,
+        async: true,
         url: basePath + "/logistics/saleOrderReturn/save.do",
         data: {
             'bill': purchaseReturnBill,
@@ -969,7 +969,7 @@ function wareHouseInOut(type) {
         var uniqueCodes_inHouse;
 
         $.ajax({
-            async: false,
+            async: true,
             dataType: "json",
             url: basePath + "/stock/warehStock/checkCodes.do",
             data: {
@@ -981,135 +981,137 @@ function wareHouseInOut(type) {
             type: "POST",
             success: function (data) {
                 uniqueCodes_inHouse = data.result;
-            }
-        });
 
-        var epcArray = [];
-        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            var rowData = $("#addDetailgrid").getRowData(value);
-            var codes = rowData.uniqueCodes.split(",");
-            if (codes && codes != null && codes != "") {
-                $.each(codes, function (index, value) {
-                    if (uniqueCodes_inHouse.indexOf(value) != -1) {
-                        var epc = {};
-                        epc.code = value;
-                        epc.styleId = rowData.styleId;
-                        epc.sizeId = rowData.sizeId;
-                        epc.colorId = rowData.colorId;
-                        epc.qty = 1;
-                        epc.sku = rowData.sku;
-                        epcArray.push(epc)
+                var epcArray = [];
+                $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                    var rowData = $("#addDetailgrid").getRowData(value);
+                    var codes = rowData.uniqueCodes.split(",");
+                    if (codes && codes != null && codes != "") {
+                        $.each(codes, function (index, value) {
+                            if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                                var epc = {};
+                                epc.code = value;
+                                epc.styleId = rowData.styleId;
+                                epc.sizeId = rowData.sizeId;
+                                epc.colorId = rowData.colorId;
+                                epc.qty = 1;
+                                epc.sku = rowData.sku;
+                                epcArray.push(epc)
+                            }
+                        });
+                    }
+                });
+                if (epcArray.length === 0) {
+                    $.gritter.add({
+                        text: "没有可以直接" + inOutString + "库的商品",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    if (pageType === "edit") {
+                        if (type === "out") {
+                            edit_wareHouseOut();
+                        } else {
+                            edit_wareHouseIn_noOutHouse();
+                        }
+                    }
+                    cs.closeProgressBar();
+                    if (type === "in") {
+                        $("#SODtl_wareHouseIn_noOutHouse").removeAttr("disabled");
+                    } else if (type === "out") {
+                        $("#SODtl_wareHouseOut").removeAttr("disabled");
+                    }
+                    return;
+                }
+
+                var dtlArray = [];
+                $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                    var rowData = $("#addDetailgrid").getRowData(value);
+                    dtlArray.push(rowData);
+                });
+
+                $.ajax({
+                    async: true,
+                    dataType: "json",
+                    url: url_ajax,
+                    data: {
+                        billNo: billNo,
+                        strEpcList: JSON.stringify(epcArray),
+                        strDtlList: JSON.stringify(dtlArray),
+                        userId: userId
+                    },
+                    type: "POST",
+                    success: function (msg) {
+                        cs.closeProgressBar();
+                        if (type === "in") {
+                            $("#SODtl_wareHouseIn_noOutHouse").removeAttr("disabled");
+                        } else if (type === "out") {
+                            $("#SODtl_wareHouseOut").removeAttr("disabled");
+                        }
+                        if (msg.success) {
+                            $.gritter.add({
+                                text: msg.msg,
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                            $("#modal-addEpc-table").modal('hide');
+
+                            var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);        //reload前总数量
+                            $("#addDetailgrid").jqGrid('setGridParam', {
+                                page: 1,
+                                url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + billNo
+                            });
+                            $("#addDetailgrid").trigger("reloadGrid");
+
+                            var diff_qty = sum_qty - epcArray.length;
+                            if (pageType === "edit") {
+                                // $("#addDetailgrid").setColProp('qty',{editable:{value:"True:False"}});
+                                // $("#addDetailgrid-pager_left").hide();
+                                $("#search_guest_button").attr({"disabled": "disabled"});
+                                $("#SODtl_save").attr({"disabled": "disabled"});
+                                $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
+                                $("#search_origId").attr('disabled', true);
+                                $("#search_destId").attr('disabled', true);
+                                $("#search_billDate").attr('readOnly', true);
+                                $("#search_busnissId").attr('disabled', true);
+                                if (sum_qty > epcArray.length) {
+                                    $.gritter.add({
+                                        text: "已" + inOutString + "库数量为：" + epcArray.length + "；剩余数量为：" + diff_qty + "，其余商品请扫码" + inOutString + "库",
+                                        class_name: 'gritter-success  gritter-light'
+                                    });
+                                    if (type === "out") {
+                                        edit_wareHouseOut();
+                                    } else {
+                                        edit_wareHouseIn_noOutHouse();
+                                    }
+                                } else if (sum_qty === epcArray.length) {
+                                    $.gritter.add({
+                                        text: "共" + epcArray.length + "件商品，已全部" + inOutString + "库",
+                                        class_name: 'gritter-success  gritter-light'
+                                    });
+                                }
+                            } else if (pageType === "add") {
+                                var alertMessage;
+                                if (sum_qty > epcArray.length) {
+                                    alertMessage = "已" + inOutString + "库数量为：" + epcArray.length + "；剩余数量为：" + diff_qty + "，其余商品请扫码" + inOutString + "库"
+                                } else if (sum_qty === epcArray.length) {
+                                    alertMessage = "共" + epcArray.length + "件商品，已全部" + inOutString + "库";
+                                }
+                                bootbox.alert({
+                                    buttons: {ok: {label: '确定'}},
+                                    message: alertMessage,
+                                    callback: function () {
+                                        quitback();
+
+                                    },
+                                });
+                            }
+                        } else {
+                            bootbox.alert(msg.msg);
+                        }
                     }
                 });
             }
         });
-        if (epcArray.length === 0) {
-            $.gritter.add({
-                text: "没有可以直接" + inOutString + "库的商品",
-                class_name: 'gritter-success  gritter-light'
-            });
-            if (pageType === "edit") {
-                if (type === "out") {
-                    edit_wareHouseOut();
-                } else {
-                    edit_wareHouseIn_noOutHouse();
-                }
-            }
-             cs.closeProgressBar();
-            if (type === "in") {
-                $("#SODtl_wareHouseIn_noOutHouse").removeAttr("disabled");
-            } else if (type === "out") {
-                $("#SODtl_wareHouseOut").removeAttr("disabled");
-            }
-            return;
-        }
 
-        var dtlArray = [];
-        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            var rowData = $("#addDetailgrid").getRowData(value);
-            dtlArray.push(rowData);
-        });
 
-        $.ajax({
-            async: false,
-            dataType: "json",
-            url: url_ajax,
-            data: {
-                billNo: billNo,
-                strEpcList: JSON.stringify(epcArray),
-                strDtlList: JSON.stringify(dtlArray),
-                userId: userId
-            },
-            type: "POST",
-            success: function (msg) {
-                 cs.closeProgressBar();
-                if (type === "in") {
-                    $("#SODtl_wareHouseIn_noOutHouse").removeAttr("disabled");
-                } else if (type === "out") {
-                    $("#SODtl_wareHouseOut").removeAttr("disabled");
-                }
-                if (msg.success) {
-                    $.gritter.add({
-                        text: msg.msg,
-                        class_name: 'gritter-success  gritter-light'
-                    });
-                    $("#modal-addEpc-table").modal('hide');
-
-                    var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);        //reload前总数量
-                    $("#addDetailgrid").jqGrid('setGridParam', {
-                        page: 1,
-                        url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + billNo
-                    });
-                    $("#addDetailgrid").trigger("reloadGrid");
-
-                    var diff_qty = sum_qty - epcArray.length;
-                    if (pageType === "edit") {
-                        // $("#addDetailgrid").setColProp('qty',{editable:{value:"True:False"}});
-                        // $("#addDetailgrid-pager_left").hide();
-                        $("#search_guest_button").attr({"disabled": "disabled"});
-                        $("#SODtl_save").attr({"disabled": "disabled"});
-                        $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
-                        $("#search_origId").attr('disabled', true);
-                        $("#search_destId").attr('disabled', true);
-                        $("#search_billDate").attr('readOnly', true);
-                        $("#search_busnissId").attr('disabled', true);
-                        if (sum_qty > epcArray.length) {
-                            $.gritter.add({
-                                text: "已" + inOutString + "库数量为：" + epcArray.length + "；剩余数量为：" + diff_qty + "，其余商品请扫码" + inOutString + "库",
-                                class_name: 'gritter-success  gritter-light'
-                            });
-                            if (type === "out") {
-                                edit_wareHouseOut();
-                            } else {
-                                edit_wareHouseIn_noOutHouse();
-                            }
-                        } else if (sum_qty === epcArray.length) {
-                            $.gritter.add({
-                                text: "共" + epcArray.length + "件商品，已全部" + inOutString + "库",
-                                class_name: 'gritter-success  gritter-light'
-                            });
-                        }
-                    } else if (pageType === "add") {
-                        var alertMessage;
-                        if (sum_qty > epcArray.length) {
-                            alertMessage = "已" + inOutString + "库数量为：" + epcArray.length + "；剩余数量为：" + diff_qty + "，其余商品请扫码" + inOutString + "库"
-                        } else if (sum_qty === epcArray.length) {
-                            alertMessage = "共" + epcArray.length + "件商品，已全部" + inOutString + "库";
-                        }
-                        bootbox.alert({
-                            buttons: {ok: {label: '确定'}},
-                            message: alertMessage,
-                            callback: function () {
-                                quitback();
-
-                            },
-                        });
-                    }
-                } else {
-                    bootbox.alert(msg.msg);
-                }
-            }
-        });
     } else {
          cs.closeProgressBar();
         if (type === "in") {
@@ -1125,7 +1127,7 @@ function quitback() {
     $.ajax({
         url: basePath + "/logistics/saleOrderReturn/quit.do?billNo=" + billNo,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
 
