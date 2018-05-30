@@ -1,4 +1,5 @@
 package com.casesoft.dmc.controller.pad;
+
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.stock.StockUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
@@ -8,15 +9,20 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.extend.api.wechat.wxpay.pay.WXPayConfigImpl;
+import com.casesoft.dmc.model.pad.MobilePayment;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.pad.MobilePaymentService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import com.casesoft.dmc.service.task.TaskService;
+import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -26,8 +32,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -45,6 +56,8 @@ public class PadUserController extends BaseController implements IBaseInfoContro
     private CustomerService customerService;
     @Autowired
     private GuestViewService guestViewService;
+    @Autowired
+    private MobilePaymentService mobilePaymentService;
 
     /**
      *无人收银验证用户登录
@@ -201,6 +214,137 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(false, e.getMessage());
         }
     }
+
+    @RequestMapping("/padUser/payType")
+    @ResponseBody
+    public MessageBox payType(String billNo,String payType){
+        try {
+            this.saleOrderBillService.update(payType,billNo);
+            return new MessageBox(true,"修改成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false,"修改失败");
+        }
+    }
+
+    @RequestMapping("/padUser/WXcode")
+    @ResponseBody
+    public MessageBox WXpay(HttpServletRequest request, String payPrice, String billNo) throws Exception {
+        String codeUrl;
+        int price = Integer.parseInt(payPrice)*100;
+        WXPayConfigImpl config = WXPayConfigImpl.getInstance();
+        WXPay wxPay = new WXPay(config);
+        String out_trade_no = billNo;
+        String ip = getIpAddr(request);
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("body", "AS-自助买单");  //商品或支付单简要描述
+        data.put("out_trade_no", out_trade_no); //商户系统内部的订单号,32个字符内、可包含字母
+        data.put("device_info", ""); //微信支付分配的终端设备号，与下单一致
+        data.put("fee_type", "CNY"); //设置货币类型，人民币
+        data.put("total_fee", /*Integer.toString(price)*/"1"); //订单总金额，单位为分，只能为整数
+        data.put("spbill_create_ip", ip); //调用微信支付API的机器IP
+        data.put("notify_url", "http://cwrdf7.natappfree.cc/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
+        data.put("trade_type", "NATIVE");//交易方式，扫码支付
+        data.put("product_id", "12"); //设置trade_type=NATIVE时，此参数必传。此id为二维码中包含的商品ID
+        // data.put("time_expire", "20170112104120");//订单失效时间
+        try {
+            //下单
+            Map<String, String> r = wxPay.unifiedOrder(data);
+            if (r.get("return_code").equals("FAIL")){
+                return new MessageBox(false,"下单失败");
+            }else {
+                codeUrl = r.get("code_url");
+                return new MessageBox(true,"下单成功",codeUrl);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false,"下单失败");
+        }
+    }
+    int wxPayType = 0;
+    @RequestMapping("/padUser/getWxPayNotifyWS")
+    @ResponseBody
+    public void getWxPayNotify(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String notifyData = "";
+        try {
+            InputStream is = req.getInputStream();
+            StringBuffer stringBuffer = new StringBuffer();
+            String s;
+            BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            while ((s = in.readLine()) != null){
+                stringBuffer.append(s);
+            }
+            in.close();
+            is.close();
+            notifyData = stringBuffer.toString();
+            WXPayConfigImpl config = new WXPayConfigImpl();
+            WXPay wxpay = new WXPay(config);
+            Map<String, String> notifyMap = WXPayUtil.xmlToMap(notifyData);  // 转换成map
+            logger.info("微信支付返回的通知为：" + notifyMap);
+            System.out.print(notifyMap);
+            String resXml = "";
+            if (wxpay.isPayResultNotifySignatureValid(notifyMap)) {
+                wxPayType = 1;
+                MobilePayment mobilePayment = new MobilePayment();
+                mobilePayment.setId(notifyMap.get("transaction_id"));
+                mobilePayment.setTradeNo(notifyMap.get("out_trade_no"));
+                mobilePayment.setAppid(notifyMap.get("appid"));
+                mobilePayment.setOpenid(notifyMap.get("openid"));
+                mobilePayment.setFee(notifyMap.get("total_fee"));
+                mobilePayment.setPaymentType("微信支付");
+                mobilePayment.setTime(notifyMap.get("time_end"));
+                this.mobilePaymentService.save(mobilePayment);
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            }
+            else {
+                resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
+                        + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
+                logger.error("支付失败");
+            }
+            resp.setContentType("text/html;charset=UTF-8");
+            OutputStream os = resp.getOutputStream();
+            os.write(resXml.getBytes());
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos.flush();
+            oos.close();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @ResponseBody
+    @RequestMapping("/padUser/getPayState")
+    public MessageBox getPayState(){
+        if (wxPayType==1){
+            return new MessageBox(true,"支付成功",wxPayType);
+        }
+        return null;
+    }
+
+    public static String getIpAddr(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        // 有的手机获取到的ip会有多个，如117.136.74.180, 101.226.125.109，只要取一个即可，否则微信支付会报错
+        String[] ips = ip.split(",");
+        ip = ips[0];
+        return ip;
+    }
+
     @Override
     public Page<User> findPage(Page<User> page) throws Exception {
         return null;
