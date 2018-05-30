@@ -62,6 +62,7 @@
     <![endif]-->
     <link href="<%=basePath%>Olive/plugin/fileInput/css/fileinput.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<%=basePath%>css/main.css" />
+    <link rel="stylesheet" href="<%=basePath%>/Olive/plugin/tree/themes/default/style.min.css">
     <style>
         html { overflow-x:hidden; }
         .ui-jqgrid tr.jqgrow td {font-size:15px;}

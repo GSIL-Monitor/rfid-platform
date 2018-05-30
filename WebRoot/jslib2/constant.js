@@ -2,20 +2,22 @@
  * Created by Wing li on 2014/6/5.
  */
 
-var constant={
-    unitType:{
-        Vender : 0,
-Headquarters : 1,
-Agent : 2,
-Factory : 3,
-Shop : 4,
-NetShop : 5,
-SampleRoom : 6,//
-Department : 7,//
-Warehouse : 9//
+var constant = {
+    unitType: {
+        Vender: 0,
+        Headquarters: 1,
+        Agent: 2,
+        Factory: 3,
+        Shop: 4,
+        NetShop: 5,
+        SampleRoom: 6,//
+        Department: 7,//
+        Franchisee: 8,
+        Warehouse: 9,//
+        Guest: 10,
+        Organization: 11 //组织or公司
     },
-    requestUrl : {
-    }
+    requestUrl: {}
 };
 
 $(function () {
@@ -25,12 +27,13 @@ $(function () {
 
 });
 
-var cs = $.extend({}, cs);/* 定义全局对象，类似于命名空间或包的作用 */
-cs.isBlank = function(v) {
-    return v==undefined || v==null  || v=="" || v==" " || v.length == 0;
+var cs = $.extend({}, cs);
+/* 定义全局对象，类似于命名空间或包的作用 */
+cs.isBlank = function (v) {
+    return v == undefined || v == null || v == "" || v == " " || v.length == 0;
 };
 var csProgerssDialog;
-cs.showAlertMsgBox = function(msg) {
+cs.showAlertMsgBox = function (msg) {
     bootbox.alert(msg);
 };
 cs.showProgressBar = function(msg) {
@@ -43,7 +46,7 @@ cs.showProgressBar = function(msg) {
 cs.closeProgressBar = function() {
     $("#loadingModal").modal('hide');
 };
-cs.showConfirmMsgBox = function(msg,callbackFunc) {
+cs.showConfirmMsgBox = function (msg, callbackFunc) {
     bootbox.confirm({
         buttons: {
             confirm: {
