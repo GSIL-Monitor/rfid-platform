@@ -5,6 +5,8 @@
 package com.casesoft.dmc.core.util;
 
 import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.controller.DataSourceRequest;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.extend.api.wechat.until.AdvancedUtil;
 import com.casesoft.dmc.extend.api.wechat.until.MyX509TrustManager;
@@ -19,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -633,6 +636,23 @@ public class CommonUtil {
     //endregion
   }
 
+  /**
+   *
+   * @param num 要改变的Double
+   * @param digit 保留几位
+   * @return
+   */
+  public static Double doubleChange(Double num,int digit){
+    BigDecimal bg = new BigDecimal(num);
+    double numnew = bg.setScale(digit, BigDecimal.ROUND_HALF_UP).doubleValue();
+    return numnew;
+  }
+  //四舍五入把double转化int整型，0.5进一，小于0.5不进一
+  public static int getInt(double number){
+    BigDecimal bd=new BigDecimal(number).setScale(0, BigDecimal.ROUND_HALF_UP);
+    return Integer.parseInt(bd.toString());
+  }
+
 
   /**
    * @Description:加密-32位小写
@@ -656,6 +676,57 @@ public class CommonUtil {
       throw new RuntimeException(e);
     }
     return encryptStr;
+  }
+  /**
+   * 表单和表体的联合查询hql拼接
+   * czf
+   *
+   */
+  public static String hqlbyBillandBillDel(Class<?> billClass,Class<?> billDtlClass, List<PropertyFilter> filters,String constructorParameter){
+    String tablePath=billClass.getName();
+
+    String billDtlTable=billDtlClass.getName();
+    constructorParameter="t."+constructorParameter;
+    constructorParameter=constructorParameter.replaceAll(",",",t.");
+    String hql="select new "+tablePath+"("+constructorParameter+") from "+tablePath+" t,"+billDtlTable+" dtl where t.id=dtl.billId";
+    String hqlQuery = hqlQueryCondition(filters);
+    hql=hql+hqlQuery+" group by "+constructorParameter;
+    return hql;
+  }
+
+  /**
+   * 根据filters拼接hql的查询条件
+   * @param filters
+   * @return
+   */
+  public static String hqlQueryCondition(List<PropertyFilter> filters){
+    String hql="";
+    for(int i=0;i<filters.size();i++){
+      PropertyFilter propertyFilter = filters.get(i);
+      String propertyName = propertyFilter.getPropertyNames()[0];
+      PropertyFilter.MatchType matchType = propertyFilter.getMatchType();
+      String name = matchType.name();
+      if(propertyName.indexOf("billDate")!=-1&&name.equals("GE")){
+        Date matchValue =(Date) propertyFilter.getMatchValue();
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd")+" 00;00;00";
+        hql+=" and "+propertyName+" >= to_date('"+dateString+"','yyyy-MM-dd HH24:mi:ss')";
+      }
+      if(propertyName.indexOf("billDate")!=-1&&name.equals("LE")){
+        Date matchValue =(Date) propertyFilter.getMatchValue();
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd")+" 23:59:59";
+        hql+=" and "+propertyName+" <= to_date('"+dateString+"','yyyy-MM-dd HH24:mi:ss')";
+      }
+      if(name.equals("EQ")){
+        String value =(String) propertyFilter.getMatchValue();
+        hql+=" and "+propertyName+" = '"+value+"'";
+      }
+      if(name.equals("LIKE")){
+        String value =(String) propertyFilter.getMatchValue();
+        hql+=" and "+propertyName+" like '%"+value+"%'";
+      }
+    }
+    hql+=" and t.status <> -1 order by t.billDate desc";
+    return hql;
   }
 
 }

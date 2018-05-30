@@ -1,5 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
+import com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -129,8 +131,16 @@ public class PurchaseOrderBill extends BaseBill {
         return dtlList;
     }
 
-    public void setDtlList(List<PurchaseOrderBillDtl> dtlList) {
-        this.dtlList = dtlList;
-    }
+    public void setDtlList(List<PurchaseOrderBillDtl> dtlList) { this.dtlList = dtlList; }
 
+
+    /**
+     * add by Anna
+     */
+    @Transient
+    private List<PurchaseStyleVo> styleList;
+
+    public List<PurchaseStyleVo> getStyleList() { return styleList; }
+
+    public void setStyleList(List<PurchaseStyleVo> styleList) { this.styleList = styleList; }
 }

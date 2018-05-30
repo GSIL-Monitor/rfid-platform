@@ -143,7 +143,6 @@ public class BillApiController extends ApiBaseController {
                 vo.setStorageId(bill.getOrigId());
                 vo.setUnit2Id(bill.getDestUnitId());
                 vo.setStorage2Id(bill.getDestId());
-
                 vo.setUnitName(bill.getOrigName());
                 vo.setUnit2Name(bill.getDestName());
                 voList.add(vo);

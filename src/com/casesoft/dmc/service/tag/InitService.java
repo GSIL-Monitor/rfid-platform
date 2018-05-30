@@ -412,4 +412,10 @@ public class InitService extends AbstractBaseService<Init, String> {
         this.initDao.doBatchInsert(styleList);
     }
 
+
+    public List<Init> findInitByLabel(String billNo){
+        String hql="from Init where remark=?";
+       return this.initDao.find(hql,new Object[]{billNo});
+    }
+
 }

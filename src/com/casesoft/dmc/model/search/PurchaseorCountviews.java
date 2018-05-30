@@ -72,6 +72,88 @@ public class PurchaseorCountviews {
     @Column()
     @Excel(name="单据状态",replace = { "撤销_-1", "录入_0" , "审核_1", "结束_2", "操作中_3", "申请撤销_4"})
     private Integer status;
+    @Column()
+    @Excel(name="入库数量")
+    private Integer inQty;
+    @Column()
+    @Excel(name="任务号")
+    private String taskid;
+
+    @JSONField(format="yyyy-MM-dd")
+    @Column(nullable = false,length = 19)
+    @Excel(name="入库时间")
+    private Date intimeDate;
+    @Column()
+    @Excel(name="已入库数量")
+    private Integer yetInitQty;
+    @Column()
+    @Excel(name="本次入库金额")
+    private Double yetInitPrice;
+    @Column()
+    private String orderwarehouseid;
+
+    public String getOrderwarehouseid() {
+        return orderwarehouseid;
+    }
+
+    public void setOrderwarehouseid(String orderwarehouseid) {
+        this.orderwarehouseid = orderwarehouseid;
+    }
+
+    public String getOrderwarehousename() {
+        return orderwarehousename;
+    }
+
+    public void setOrderwarehousename(String orderwarehousename) {
+        this.orderwarehousename = orderwarehousename;
+    }
+
+    @Column()
+    @Excel(name="订货仓库")
+
+    private String orderwarehousename;
+
+    public Integer getYetInitQty() {
+        return yetInitQty;
+    }
+
+    public void setYetInitQty(Integer yetInitQty) {
+        this.yetInitQty = yetInitQty;
+    }
+
+    public Double getYetInitPrice() {
+        return yetInitPrice;
+    }
+
+    public void setYetInitPrice(Double yetInitPrice) {
+        this.yetInitPrice = yetInitPrice;
+    }
+
+
+
+    public Date getIntimeDate() {
+        return intimeDate;
+    }
+
+    public void setIntimeDate(Date intimeDate) {
+        this.intimeDate = intimeDate;
+    }
+
+    public Integer getInQty() {
+        return inQty;
+    }
+
+    public void setInQty(Integer inQty) {
+        this.inQty = inQty;
+    }
+
+    public String getTaskid() {
+        return taskid;
+    }
+
+    public void setTaskid(String taskid) {
+        this.taskid = taskid;
+    }
 
     public Integer getStatus() {
         return status;

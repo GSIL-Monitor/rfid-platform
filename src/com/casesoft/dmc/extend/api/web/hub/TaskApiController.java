@@ -53,7 +53,7 @@ public class TaskApiController extends ApiBaseController {
     @RequestMapping(value = "/uploadTask")
     @ResponseBody
     public MessageBox uploadTaskFileFormDevice(MultipartFile file) throws Exception {
-        String inputPath = PropertyUtil.getValue("MilanUpload");//上传的目录
+        String inputPath = Constant.rootPath+PropertyUtil.getValue("MilanUpload");//上传的目录
         String fileName = file.getOriginalFilename();
         File targetFile = new File(inputPath, fileName);
         inputStreamToFile(file.getInputStream(), targetFile);
@@ -96,10 +96,14 @@ public class TaskApiController extends ApiBaseController {
 
             try {
                 bus = SynTaskUtil.convertZipToDto(new FileInputStream(file));
+                Business business = this.taskService.get("id",bus.getId());
+
                 TaskAdjustUtil.adjustStorageId(bus);
                 if (bus == null)
                     return this.returnFailInfo("文件内容为空");
-
+                if(CommonUtil.isNotBlank(business)){
+                    return this.returnFailInfo("数据已经上传请返回");
+                }
                 if (TagFactory.getCurrentTag().isUniqueCodeStock()){
                     MessageBox msgBox = this.taskService.checkEpcStock(bus);
                     if(!msgBox.getSuccess())

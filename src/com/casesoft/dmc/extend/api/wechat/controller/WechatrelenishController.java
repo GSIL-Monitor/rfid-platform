@@ -6,12 +6,14 @@ import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.vo.PurchaseStyleVo;
 import com.casesoft.dmc.model.logistics.vo.ReplenishStyleVO;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
@@ -25,6 +27,7 @@ import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import io.swagger.annotations.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -218,37 +221,50 @@ public class WechatrelenishController extends ApiBaseController {
         }
 
         //将转换数量放入补货单明细，并过滤出转换数量大于零的采购明细
-        Long totConvertQty = 0L;
+        Long totConvertQty = 0L; //总转换数量
+        Integer totCancelQty = 0; //总撤销数量
         for (PurchaseOrderBillDtl pDtl : purchaseOrderBillDtlList) {
             Long convertQty = pDtl.getQty();
+            Integer cancelQty = pDtl.getCancelQty();
             if (CommonUtil.isBlank(convertQty)) {
                 convertQty = 0L;
+            }if(CommonUtil.isBlank(cancelQty)){
+                cancelQty = 0;
             }
             totConvertQty += convertQty;
+            totCancelQty += cancelQty;
             String thisSku = pDtl.getSku();
             ReplenishBillDtl replenishBillDtl = sku2billDtlMap.get(thisSku);
-            if (convertQty > 0) {
+            if (convertQty > 0 || cancelQty > 0) {
                 replenishBillDtl.setConvertQty(convertQty.intValue());
                 replenishBillDtl.setLastTime(pDtl.getExpectTime());
+                replenishBillDtl.setConvertquitQty(cancelQty);
+                String dtlRemark = pDtl.getRemark();
+                if (CommonUtil.isBlank(dtlRemark)) {
+                    dtlRemark = "无";
+                }
+
                 //add by yushen 多次备注拼接，存入补货申请单
                 String remark = "处理日期：" + CommonUtil.getDateString(new Date(), "yyyy-MM-dd")
-                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(),"yyyy-MM-dd")
+                        + "，预计到货日期：" + CommonUtil.getDateString(pDtl.getExpectTime(), "yyyy-MM-dd")
                         + "，处理数量：" + pDtl.getQty()
-                        + "，备注说明：" + pDtl.getRemark() + "；\n";
+                        + "，备注说明：" + dtlRemark + "；\n";
                 String oldRemark = replenishBillDtl.getRemark();
-                if(CommonUtil.isBlank(oldRemark)){
-                    oldRemark="";
+                if (CommonUtil.isBlank(oldRemark)) {
+                    oldRemark = "";
                 }
                 replenishBillDtl.setRemark(oldRemark + remark);
-                filteredDtlList.add(pDtl);
+                if(convertQty > 0){
+                    filteredDtlList.add(pDtl);
+                }
             }
         }
         //总转换数量小于1，返回错误：没有待处理的商品
-        if (totConvertQty < 1) {
+        if (totConvertQty < 1 && totCancelQty < 1) {
             throw new Exception("没有待处理的商品");
-//            return new MessageBox(false, "没有待处理的商品");
         }
 
+        User curUser = CacheManager.getUserById(userId);
         if (filteredDtlList.size() > 0) {
             String prefix = BillConstant.BillPrefix.purchase
                     + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
@@ -265,14 +281,13 @@ public class WechatrelenishController extends ApiBaseController {
                 purchaseOrderBill.setOrderWarehouseId(warehouse.getId());
                 purchaseOrderBill.setOrderWarehouseName(warehouse.getName());
             }
-            User curUser = CacheManager.getUserById(userId);
+
             BillConvertUtil.covertToPurchaseWeChatBill(purchaseOrderBill, filteredDtlList, curUser);
-            BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList);
+        }
+            BillConvertUtil.convertReplenishInProcessing(replenishBill, replenishBillDtlList, BillConstant.replenishOption.Convert);
             this.purchaseOrderBillService.processReplenishBill(purchaseOrderBill, filteredDtlList, replenishBill, replenishBillDtlList, curUser);
             return new MessageBox(true, "保存成功", purchaseOrderBill.getBillNo());
-        } else {
-            return new MessageBox(true, "保存成功");
-        }
+
     }
 
 
@@ -386,17 +401,74 @@ public class WechatrelenishController extends ApiBaseController {
     }
 
     /**
+     * add by Anna
      * 撤销未处理的补货单的接口。
      */
     @RequestMapping(value = "/cancelReplenishOrderList.do")
     @ResponseBody
     public MessageBox cancelReplenishOrderList(String billNo) throws Exception {
         ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
-        replenishBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.replenishBillService.cancelUpdate(replenishBill);
-        return new MessageBox(true, "撤销成功");
+        if (replenishBill.getStatus().intValue() == BillConstant.BillStatus.Cancel.intValue()) {
+            return new MessageBox(true, "此单已被撤销");
+        } else {
+            replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.replenishBillService.cancelUpdate(replenishBill);
+            return new MessageBox(true, "撤销成功");
+        }
 
     }
+
+    /**
+     * add by Anna
+     * 撤销录入状态的采购单的接口。
+     */
+    @RequestMapping(value = "/cancelPurchaseOrderList.do")
+    @ResponseBody
+    public MessageBox cancelPurchaseOrderList(String billNo) throws Exception {
+        PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
+        if (purchaseOrderBill.getStatus().intValue() == BillConstant.BillStatus.Cancel.intValue()) {
+            return new MessageBox(true, "此单已被撤销");
+        } else {
+            //新增的采购单直接撤销
+            if (purchaseOrderBill.getSrcBillNo() == null) {
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.purchaseOrderBillService.cancel(purchaseOrderBill);
+                return new MessageBox(true, "撤销成功");
+            } else {
+                //转的采购单更新处理数量
+                List<PurchaseOrderBillDtl> purchaseDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(purchaseOrderBill.getBillNo());
+                ReplenishBill replenishBill = replenishBillService.get("id", purchaseOrderBill.getSrcBillNo());
+                List<ReplenishBillDtl> replenishBillDtlList = this.replenishBillService.findBillDtl(purchaseOrderBill.getSrcBillNo());
+
+                for (PurchaseOrderBillDtl thisPurchaseDtl : purchaseDtlList) {
+                    for (ReplenishBillDtl thisReplenishDtl : replenishBillDtlList) {
+                        if (thisPurchaseDtl.getSku().equals(thisReplenishDtl.getSku())) {
+                            thisReplenishDtl.setConvertQty(thisPurchaseDtl.getQty().intValue());
+                        }
+                    }
+                }
+
+                ArrayList<ReplenishBillDtl> newReplenishDtls = new ArrayList<>();
+                for (ReplenishBillDtl thisDtl : replenishBillDtlList) {
+                    ReplenishBillDtl thisReplenishDtl = new ReplenishBillDtl();
+                    BeanUtils.copyProperties(thisDtl, thisReplenishDtl);
+                    thisReplenishDtl.setId(new GuidCreator().toString());
+                    newReplenishDtls.add(thisReplenishDtl);
+                }
+
+                BillConvertUtil.convertReplenishInProcessing(replenishBill, newReplenishDtls, BillConstant.replenishOption.Cancel);
+
+                this.replenishBillService.saveMessage(replenishBill, newReplenishDtls);
+
+                purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.purchaseOrderBillService.cancel(purchaseOrderBill);
+
+                return new MessageBox(false, "撤销成功", billNo);
+            }
+        }
+
+    }
+
 
     /**
      * add by yushen
@@ -491,11 +563,54 @@ public class WechatrelenishController extends ApiBaseController {
         page.setPageProperty();
         Page<PurchaseOrderBill> purchaseOrderBillPage = this.purchaseOrderBillService.findPage(page, filters);
         for (PurchaseOrderBill bill : purchaseOrderBillPage.getRows()) {
-            List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
-            bill.setDtlList(billDtlList);
+            User orderDtlUser = CacheManager.getUserById(bill.getBuyahandId());
+            if (CommonUtil.isNotBlank(orderDtlUser)) {
+                bill.setBuyahandName(orderDtlUser.getName());
+            }
+            //List<PurchaseOrderBillDtl> billDtlList = this.purchaseOrderBillService.findBillDtlByBillNo(bill.getBillNo());
+            List<PurchaseStyleVo> styleList = this.purchaseOrderBillService.findStyleListByBillNo(bill.getBillNo());
+            for (PurchaseStyleVo newStyleList : styleList) {
+                String rootPath = this.getSession().getServletContext().getRealPath("/");
+                String imgUrl = StyleUtil.returnImageUrl(newStyleList.getStyleId(), rootPath);
+                newStyleList.setImgUrl(imgUrl);
+                Style style = CacheManager.getStyleById(newStyleList.getStyleId());
+                if (CommonUtil.isNotBlank(style)) {
+                    newStyleList.setStyleName(style.getStyleName());
+                }
+            }
+            //bill.setDtlList(billDtlList);
+            bill.setStyleList(styleList);
         }
-
         return new MessageBox(true, "success", purchaseOrderBillPage);
+    }
+
+    /**
+     * add by Anna
+     * 采购单 补货单 按款查询得到拼接的billNo
+     */
+    @RequestMapping(value = "/searchStyleId.do")
+    @ResponseBody
+    public String searchStyleId(String styleSearch,String searchType) {
+        List<String> billDtlBillNoList=new ArrayList<>();
+        //获取搜索的styleId的单号
+        if(searchType.equals("purchaseOrder")) {  //采购单查询
+            billDtlBillNoList = this.purchaseOrderBillService.findBillDtlBillNoByStyleId(styleSearch);
+        }else if(searchType.equals("replenishOrder")){ //补货单查询
+            billDtlBillNoList = this.replenishBillService.findBillDtlBillNoByStyleId(styleSearch);
+
+        }
+        String billNoStr = "";
+        if (billDtlBillNoList.size() <= 50) {  //限制查询到的单号最多50个
+            for (int i = 0; i < billDtlBillNoList.size(); i++) {
+                if (i < billDtlBillNoList.size() - 1) {  //不拼接最后一个字符
+                    billNoStr += billDtlBillNoList.get(i).toString();
+                    billNoStr += ",";
+                } else {
+                    billNoStr += billDtlBillNoList.get(i).toString();
+                }
+            }
+        }
+        return billNoStr;
     }
 
     /**
