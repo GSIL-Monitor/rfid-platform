@@ -32,16 +32,8 @@
 </head>
 <body class="no-skin">
 
-<div class="modal fade" id="loadingModal">
-    <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
-        <div class="progress progress-striped active" style="margin-bottom: 0;">
-            <div class="progress-bar" style="width: 100%;"></div>
-        </div>
-        <h5>正在加载...</h5>
-    </div>
-</div>
 
-<div class="main-container" id="main-container">
+<div class="main-container">
     <script type="text/javascript">
         try {
             ace.settings.check('main-container', 'fixed')

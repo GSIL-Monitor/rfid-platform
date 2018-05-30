@@ -23,7 +23,6 @@ function iniForm() {
 
     if (pageType === "add") {
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
-        $("#search_payPrice").val(0);
     } else if (pageType === "edit") {
         $("#search_origId").val(purchaseReturnOrder_origId);
         if(returnStatus !== "0"){
@@ -41,7 +40,7 @@ function initSelectOrigForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#findOwnerId").val(),
         cache: false,
-        async: false,
+        async:false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
@@ -322,7 +321,7 @@ function save() {
 
     $.ajax({
         dataType: "json",
-        // async:false,
+        async:true,
         url: basePath + "/logistics/purchaseReturn/save.do",
         data: {
             'strBill': purchaseReturnBill,
@@ -429,27 +428,20 @@ function initEditFormValid() {
                     }
                 }
             },
-            destId: {
-                validators: {
-                    notEmpty: {
-                        message: "收货仓库不能为空"
-                    }
-                }
-            },
-            billType: {
-                validators: {
-                    notEmpty: {
-                        message: "请填写退货类型"
-                    }
-                }
-            },
             billDate: {
                 validators: {
                     notEmpty: {
                         message: '请选择单据日期'
                     }
                 }
-            }
+            },
+            payPrice: {
+                validators: {
+                    notEmpty: {
+                        message: '金额不能为空'
+                    }
+                }
+            },
         }
     });
 }
@@ -565,7 +557,7 @@ function wareHouseOut() {
         var returnValue = "";
         cs.showProgressBar();
         $.ajax({
-            // async: false,
+            async: true,
             dataType: "json",
             url: basePath + "/logistics/purchaseReturn/convertOut.do",
             data: {
@@ -697,6 +689,7 @@ function edit_wareHouseOut() {
 }
 
 function confirmWareHouseOut() {
+    cs.showProgressBar();
     var billNo = $("#search_billNo").val();
     var epcArray = [];
     $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
@@ -704,6 +697,7 @@ function confirmWareHouseOut() {
         epcArray.push(rowData);
     });
     if (epcArray.length === 0) {
+        cs.showProgressBar();
         bootbox.alert("请添加唯一码!");
         return;
     }
@@ -733,7 +727,6 @@ function confirmWareHouseOut() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         // async:false,

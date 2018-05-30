@@ -19,7 +19,7 @@ function initSelectOrigForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_origUnitId").val(),
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
@@ -37,7 +37,7 @@ function initSelectDestForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
@@ -249,7 +249,7 @@ function quit(billNo) {
     $.ajax({
         url: basePath +"/logistics/saleOrderReturn/quit.do?billNo=" +billNo,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
 

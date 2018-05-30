@@ -18,7 +18,7 @@ function initForm() {
     $("#search_busnissId").attr('disabled', true);
     $("#search_customerType").val(saleOrderReturn_customerType);
     $("#search_origId").val(saleOrderReturn_origId);
-    $("#search_destId").val(saleOrderReturn_destId);
+    $("#search_destId").val(saleOrderReturn_destId);false
     $("#search_busnissId").val(saleOrderReturn_busnissId);
 }
 
@@ -26,7 +26,7 @@ function initCustomerTypeForm() {
     $.ajax({
         url: basePath + "/sys/property/searchByType.do?type=CT",
         cache: false,
-        async: false,
+        async:false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_customerType").empty();
@@ -122,7 +122,7 @@ function initSelectBusinessIdForm() {
     $.ajax({
         url: url,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_busnissId").empty();

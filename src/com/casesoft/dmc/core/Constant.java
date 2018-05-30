@@ -168,6 +168,7 @@ public class Constant {
         public static final int Warehouse = 9;//
 
         public static final int Guest =10;//客户,
+        public static final int Organization = 11; //组织or公司。用于做分级管理，门店的所属方
     }
 
     public static final class UnitCodePrefix {
@@ -185,6 +186,8 @@ public class Constant {
 
         public static final String Warehouse = "AUTO_WH";//仓库
         public static final String Franchisee = "AUTO_FR";//加盟
+
+        public static final String Organization = "AUTO_OR"; //组织or公司
     }
 
     public static final class Token {
@@ -345,5 +348,13 @@ public class Constant {
         public final static class CodePrefix {
             public final static String Customer = "SC";
         }
+    }
+
+    public final static class MultiLevelType{
+        public final static String Company = "COMPANY";
+        public final static String Style = "STYLE";
+        public final static String Color = "COLOR";
+        public final static String Size = "SIZE";
+        public final static String Product = "PRODUCT";
     }
 }

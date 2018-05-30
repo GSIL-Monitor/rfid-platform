@@ -720,7 +720,7 @@ function save() {
     });
     $.ajax({
         dataType: "json",
-        // async:false,
+        async:true,
         url: basePath + "/logistics/purchase/save.do",
         data: {
             purchaseBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
@@ -749,7 +749,7 @@ function quitback() {
     $.ajax({
         url: basePath +"/logistics/purchase/quit.do?billNo=" +$("#search_billNo").val(),
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
 
@@ -765,6 +765,7 @@ function quitback() {
     });
 }
 function saveCovert() {
+    cs.showProgressBar();
     var ids = $("#epcgrid").jqGrid("getGridParam", "selarrrow");
     if (ids.length == 0) {
         bootbox.alert("请选择要入库的唯一码信息");
@@ -779,7 +780,7 @@ function saveCovert() {
             var rowData = $("#editDetailgrid").getRowData(value);
             dtlArray.push(rowData);
         });
-        cs.showProgressBar();
+
         $.ajax({
             dataType: "json",
             url: basePath + "/logistics/purchase/convert.do",
@@ -1263,7 +1264,7 @@ function initSelectbuyahandIdForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_buyahandId").empty();
-            $("#search_buyahandId").append("<option value='' >--请选择销售员--</option>");
+            $("#search_buyahandId").append("<option value='' >--请选择买手--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_buyahandId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");

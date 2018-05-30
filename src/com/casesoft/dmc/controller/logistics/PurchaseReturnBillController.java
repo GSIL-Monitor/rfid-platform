@@ -99,16 +99,15 @@ public class PurchaseReturnBillController extends BaseController implements ILog
     @ResponseBody
     @Override
     public ModelAndView add() throws Exception {
-        ModelAndView mav = new ModelAndView("/views/logistics/purchaseReturnBillDetail");
-        mav.addObject("pageType", "add");
-        User user = this.getCurrentUser();
-        mav.addObject("OwnerId", user.getOwnerId());
-        mav.addObject("userId",getCurrentUser().getId());
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBillDetail");
+        mv.addObject("pageType", "add");
+        mv.addObject("ownerId",getCurrentUser().getOwnerId());
+        mv.addObject("userId",getCurrentUser().getId());
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
-        mav.addObject("defaultWarehId", defaultWarehId);
-        mav.addObject("mainUrl", "/logistics/purchaseReturn/index.do");
-        return mav;
+        mv.addObject("defaultWarehId", defaultWarehId);
+        mv.addObject("mainUrl", "/logistics/purchaseReturn/index.do");
+        return mv;
     }
 
     @RequestMapping(value = "/edit")
@@ -135,17 +134,16 @@ public class PurchaseReturnBillController extends BaseController implements ILog
             }
         }
         if(isAllowEdit){
-            ModelAndView mav = new ModelAndView("/views/logistics/purchaseReturnBillDetail");
-            mav.addObject("pageType", "edit");
-            mav.addObject("purchaseReturnBill", purchaseReturnBill);
-            User user = this.getCurrentUser();
-            mav.addObject("OwnerId", user.getOwnerId());
-            mav.addObject("userId",getCurrentUser().getId());
+            ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBillDetail");
+            mv.addObject("pageType", "edit");
+            mv.addObject("purchaseReturnBill", purchaseReturnBill);
+            mv.addObject("ownerId", getCurrentUser().getOwnerId());
+            mv.addObject("userId", getCurrentUser().getId());
             Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
             String defaultWarehId = unit.getDefaultWarehId();
-            mav.addObject("defaultWarehId", defaultWarehId);
-            mav.addObject("mainUrl", "/logistics/purchaseReturn/back.do?billNo="+billNo);
-            return mav;
+            mv.addObject("defaultWarehId", defaultWarehId);
+            mv.addObject("mainUrl", "/logistics/purchaseReturn/back.do?billNo="+billNo);
+            return mv;
         }else{
             ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBill");
             mv.addObject("billNo",billNo);
@@ -226,7 +224,7 @@ public class PurchaseReturnBillController extends BaseController implements ILog
             List<PurchaseReturnBillDtl> purchaseReturnBillDtls = JSON.parseArray(strDtlList, PurchaseReturnBillDtl.class);
             if (CommonUtil.isBlank(purchaseReturnBill.getBillNo())) {
                 String prefix = BillConstant.BillPrefix.purchaseReturn
-                        + CommonUtil.getDateString(new Date(), "yyMMdd");
+                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
                 String billNo = this.purchaseReturnBillService.findMaxBillNo(prefix);
                 purchaseReturnBill.setBillNo(billNo);
                 purchaseReturnBill.setId(billNo);
@@ -322,14 +320,14 @@ public class PurchaseReturnBillController extends BaseController implements ILog
     @RequestMapping(value = "/copyAdd")
     @ResponseBody
     public ModelAndView addCopy(String billNo) {
-        ModelAndView mav = new ModelAndView("/views/logistics/purchaseReturnBillDetail");
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBillDetail");
         PurchaseReturnBill bill = this.purchaseReturnBillService.findUniqueByBillNo(billNo);
         User user = this.getCurrentUser();
-        mav.addObject("OwnerId", user.getOwnerId());
-        mav.addObject("userId",getCurrentUser().getId());
-        mav.addObject("purchaseReturnBill", bill);
-        mav.addObject("pageType", "copyAdd");
-        mav.addObject("mainUrl", "/logistics/purchaseReturn/index.do");
-        return mav;
+        mv.addObject("OwnerId", user.getOwnerId());
+        mv.addObject("userId",getCurrentUser().getId());
+        mv.addObject("purchaseReturnBill", bill);
+        mv.addObject("pageType", "copyAdd");
+        mv.addObject("mainUrl", "/logistics/purchaseReturn/index.do");
+        return mv;
     }
 }

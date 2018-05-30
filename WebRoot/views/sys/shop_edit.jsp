@@ -50,7 +50,7 @@
                                        type="text" name="ownerId" readonly/>
                                 <span class="input-group-btn">
                                     <button class="btn btn-sm btn-default" type="button"
-                                            onclick="openUnitDialog('#form_ownerId','#form_unitName')">
+                                            onclick="openUnitDialog('#form_ownerId','#form_unitName', null, 'Shop')">
                                         <i class="ace-icon fa fa-list"></i>
                                     </button>
 								</span>

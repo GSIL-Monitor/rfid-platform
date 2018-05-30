@@ -80,13 +80,10 @@ function initGrid() {
                     return html;
                 }
             },
-            {name: 'code', label: '编号', editable: true, width: 100, frozen: true},
+            {name: 'code', label: '编号', editable: true, width: 100},
             {name: 'name', label: '名称', editable: true, width: 150},
-            {name: 'groupId', label: '分类 ', editable: true, width: 100,
-                formatter: function (cellValue, options, rowObject) {
-                    return  rowObject.groupName!=undefined?rowObject.groupName:"未分类";
-                }
-            },
+            {name: 'groupId', hidden: true},
+            {name: 'groupName', label: '分类', editable: true, width: 100},
             {name: 'ownerId',label:'所属方',editable:true,width:100},
             {name: 'unitName',label:'所属方名称',editable:true,sortable:false,width:100},
             {name: 'tel', label: '联系电话', editable: true, width: 200},
