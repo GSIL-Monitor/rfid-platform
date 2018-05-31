@@ -113,60 +113,62 @@
         <div class="col-xs-3 col-sm-3 col-md-3	col-lg-3">
             <div class="Print-Bg-Center">
                 <div class="Print-Bg-Top">
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4" id="storeName">
-                            <span>店铺名称</span>
+                    <div id="printTop">
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4" id="storeName">
+                                <span>店铺名称</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                <span >销售单</span>
+                            </div>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
-                            <span >销售单</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="weChat" >
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>微信:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="weChat" >
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>微信:</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBill">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>制单人:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDate">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>日期:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBill">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>制单人:</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>客户:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="VIPNumber">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>会员卡号:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDate">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>日期:</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>客户:</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="VIPNumber">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>会员卡号:</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remark">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>备注:</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remark">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>备注:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
                     </div>
 
@@ -193,49 +195,51 @@
                                 </tbody>
                         </table>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="businessId">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>销售员:</span>
+                    <div id="printFoot">
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="businessId">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>销售员:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="printTime">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>打印时间:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="printTime">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>打印时间:</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopBefore">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>售前余额:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopAfter">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>售后余额:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopBefore">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>售前余额:</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="integral">
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>积分(本次/剩余):</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>100/2000</span>
+                            </div>
                         </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopAfter">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>售后余额:</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>xxxxxx</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="integral">
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>积分(本次/剩余):</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <span>100/2000</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtend">
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
-                            <span >欢迎来到Ancient Stone</span>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtend">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span >欢迎来到Ancient Stone</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -369,13 +373,18 @@
                                 <li class="headTitleLi">
                                     <span>扩展打印(在页脚展示扩展信息,换行请输入&lt;br&gt;)：</span>
                                     <br>
-                                    <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" onkeyup="writeFootExtend(this)">欢迎来到Ancient Stone</textarea>
+                                    <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="footExtendWrite" onkeyup="writeFootExtend(this)">欢迎来到Ancient Stone</textarea>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
+            <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='test()'>
+              <i class='ace-icon fa fa-save'></i>
+               <span class='bigger-110'>测试</span>
+            </button>
+
         </div>
     </div>
 
