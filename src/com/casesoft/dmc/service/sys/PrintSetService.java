@@ -74,4 +74,10 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
 
         this.printSetDao.saveOrUpdate(entity);
     }
+
+    public PrintSet findPrintSet(String ruleReceipt,String type,String ownerId){
+        String hql="from PrintSet t where t.ownerId=? and t.type=? and t.ruleReceipt=?";
+        PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{ownerId, type, ruleReceipt});
+        return printSet;
+    }
 }

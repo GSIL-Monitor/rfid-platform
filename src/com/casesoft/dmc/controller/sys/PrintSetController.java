@@ -77,9 +77,20 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
             return new MessageBox(true, "保存成功");
         }catch (Exception e){
             e.printStackTrace();
-            return new MessageBox(true, "保存失败");
+            return new MessageBox(false, "保存失败");
+        }
+    }
+    @RequestMapping(value="/findPrintSet")
+    @ResponseBody
+    public MessageBox findPrintSet(String ruleReceipt,String type){
+        try {
+            User currentUser = this.getCurrentUser();
+            PrintSet printSet = this.printSetService.findPrintSet(ruleReceipt, type, currentUser.getOwnerId());
+            return new MessageBox(true, "查询成功",printSet);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
         }
 
-
     }
+
 }
