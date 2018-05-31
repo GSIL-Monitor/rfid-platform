@@ -76,8 +76,8 @@
             background-image: url(<%=basePath%>/images/print/SmallTicketTop.png);
             background-position: center top;
             background-repeat: no-repeat;
-            background-size:100% 100%;
-            padding: 100px 20px;
+            background-size:100%;
+            padding: 100px 40px;
             padding-bottom: 0px;
         }
         .Print-Bg-Center {
@@ -120,6 +120,14 @@
                             </div>
                             <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
                                 <span >销售单</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billNo" >
+                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <span>单号:</span>
+                            </div>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                <span>xxxxxx</span>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="weChat" >
@@ -274,6 +282,34 @@
             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                 <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
                     <div class="headTitle">
+                        <input type="text" id="id" style="display: none"/>
+                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                            <span>小票名称:</span>
+                            <input type="text" id="receiptName"/>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                            <span>小票类型:</span>
+                            <select id="receiptType">
+                                <option value="SO">销售单据</option>
+                                <option value="PI">采购单据</option>
+                                <option value="PR">采购退货</option>
+                                <option value="SR">销售退货</option>
+                                <option value="TR">调拨单</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                            <span>公共类型:</span>
+                            <select id="commonType">
+                                <option value="1">否</option>
+                                <option value="0">是</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                    <div class="headTitle">
                         <h3 onclick="selectheadPrint()">
                             <span style="font-size: 14px;">头部打印</span>
                         </h3>
@@ -289,6 +325,12 @@
                                     <div class="stecs on" onclick="selectThis(this,'billType')">
                                         <i></i>
                                         <span>小票类型</span>
+                                    </div>
+                                </li>
+                                <li class="headTitleLi">
+                                    <div class="stecs on" onclick="selectThis(this,'billNo')">
+                                        <i></i>
+                                        <span>单号</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
@@ -380,10 +422,17 @@
                     </div>
                 </div>
             </div>
-            <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='test()'>
-              <i class='ace-icon fa fa-save'></i>
-               <span class='bigger-110'>测试</span>
-            </button>
+            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                    <div class="headTitle">
+                        <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='test()'>
+                            <i class='ace-icon fa fa-save'></i>
+                            <span class='bigger-110'>测试</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     </div>
