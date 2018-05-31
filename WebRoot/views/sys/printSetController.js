@@ -34,6 +34,7 @@ function selectRuleReceipt(sum) {
         if(b==sum){
             if($(this).attr("class")=="stecs"){
                 $(this).attr("class","stecs on") ;
+                findPrintSet(sum);
             }else{
                 $(this).attr("class","stecs") ;
             }
@@ -59,7 +60,7 @@ function writeFootExtend(t) {
     $("#footExtend").find("span").html($(t).val());
 }
 
-function test() {
+function save() {
     var recordRule="";//记录选择的规格
     var isSavePrint=false;//是否保存
     var printCode="";
@@ -123,9 +124,9 @@ function test() {
                     str+="LODOP.ADD_PRINT_TEXTA("+id+",0,"+left+","+width+","+printParameter.aRowheight+","+message+");";
                     str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
                     if(printCode==""){
-                        printCode+=$(this).find(".col-xs-4").attr("id");
+                        printCode+=$(this).find(".col-xs-8").attr("id");
                     }else {
-                        printCode+=","+$(this).find(".col-xs-4").attr("id");
+                        printCode+=","+$(this).find(".col-xs-8").attr("id");
                     }
                 }
                 if(!$(this).find(".col-xs-4").is(":hidden")||!$(this).find(".col-xs-8").is(":hidden")){
@@ -219,17 +220,18 @@ function test() {
         //得到需要保存的数据
         var printSet={
             id:$("#id").val(),
+            ownerId:$("#ownerId").val(),
             printCont:str,
             printCode:printCode,
             name:$("#receiptName").val(),
-            type:$("#receiptName").val(),
+            type:$("#receiptType").val(),
             printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
             commonType:$("#commonType").val()
         }
-        //saveAjax(printSet);
-        eval(str);
-        LODOP.PREVIEW();
+        saveAjax(printSet);
+        //eval(str);
+        //LODOP.PREVIEW();
     }else{
         $.gritter.add({
             text: "请选择小票的规格",
@@ -256,6 +258,43 @@ function saveAjax(printSet) {
                     class_name: 'gritter-success  gritter-light'
                 });
 
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function findPrintSet(sum) {
+    $.ajax({
+        dataType: "json",
+        async: true,
+        url: basePath + "/sys/printset/findPrintSet.do",
+        data: {
+            ruleReceipt: sum,
+            type:$("#receiptType").val()
+        },
+        type: "POST",
+        success: function (msg) {
+
+            if (msg.success) {
+                var result=msg.result;
+               $("#id").val(result.id);
+                $("#ownerId").val(result.ownerId);
+                $("#receiptName").val(result.name);
+               $("#receiptType").val(result.type);
+               $("#commonType").val(result.commonType);
+                var printFootExtend=""+result.printFootExtend;
+                printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
+                $("#footExtendWrite").val(printFootExtend);
+                $("#footExtend").find("span").html(printFootExtend);
+                $("#headPrint").find("div").each(function (index,element) {
+                      var name=$(this).data("name");
+
+                      if(!(result.printCode.indexOf(name)!= -1)){
+                          $(this).attr("class","stecs");
+                          $("#"+name).hide();
+                      }
+                });
             } else {
                 bootbox.alert(msg.msg);
             }

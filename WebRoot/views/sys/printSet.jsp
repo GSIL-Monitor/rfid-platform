@@ -283,6 +283,7 @@
                 <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
                     <div class="headTitle">
                         <input type="text" id="id" style="display: none"/>
+                        <input type="text" id="ownerId" style="display: none"/>
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>小票名称:</span>
                             <input type="text" id="receiptName"/>
@@ -316,55 +317,55 @@
                         <div class="headTitleDiv" id="headPrint">
                             <ul>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'storeName')">
+                                    <div class="stecs on" data-name="storeName" onclick="selectThis(this,'storeName')">
                                         <i></i>
                                         <span>门店名称</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'billType')">
+                                    <div class="stecs on" data-name="billType" onclick="selectThis(this,'billType')">
                                         <i></i>
                                         <span>小票类型</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'billNo')">
+                                    <div class="stecs on" data-name="billNo" onclick="selectThis(this,'billNo')">
                                         <i></i>
                                         <span>单号</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'weChat')">
+                                    <div class="stecs on" data-name="weChat" onclick="selectThis(this,'weChat')">
                                         <i></i>
                                         <span>微信</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'makeBill')">
+                                    <div class="stecs on" data-name="makeBill" onclick="selectThis(this,'makeBill')">
                                         <i></i>
                                         <span>制单人</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'billDate')">
+                                    <div class="stecs on" data-name="billDate" onclick="selectThis(this,'billDate')">
                                         <i></i>
                                         <span>日期</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'coustmer')">
+                                    <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmer')">
                                         <i></i>
                                         <span>客户</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'VIPNumber')">
+                                    <div class="stecs on" data-name="VIPNumber" onclick="selectThis(this,'VIPNumber')">
                                         <i></i>
                                         <span>会员卡号</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'remark')">
+                                    <div class="stecs on" data-name="remark" onclick="selectThis(this,'remark')">
                                         <i></i>
                                         <span>备注</span>
                                     </div>
@@ -383,31 +384,31 @@
                         <div class="headTitleDiv" id="footerPrint" style="display: none">
                             <ul>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'businessId')">
+                                    <div class="stecs on" data-name="businessId" onclick="selectThis(this,'businessId')">
                                         <i></i>
                                         <span>销售员</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'printTime')">
+                                    <div class="stecs on" data-name="printTime" onclick="selectThis(this,'printTime')">
                                         <i></i>
                                         <span>打印时间</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'shopBefore')">
+                                    <div class="stecs on" data-name="shopBefore" onclick="selectThis(this,'shopBefore')">
                                         <i></i>
                                         <span>售前余额</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'shopAfter')">
+                                    <div class="stecs on" data-name="shopAfter" onclick="selectThis(this,'shopAfter')">
                                         <i></i>
                                         <span>售后余额</span>
                                     </div>
                                 </li>
                                 <li class="headTitleLi">
-                                    <div class="stecs on" onclick="selectThis(this,'integral')">
+                                    <div class="stecs on" data-name="integral" onclick="selectThis(this,'integral')">
                                         <i></i>
                                         <span>积分(本次/剩余)</span>
                                     </div>
@@ -425,9 +426,9 @@
             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                 <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
                     <div class="headTitle">
-                        <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='test()'>
+                        <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>
                             <i class='ace-icon fa fa-save'></i>
-                            <span class='bigger-110'>测试</span>
+                            <span class='bigger-110'>保存</span>
                         </button>
                     </div>
                 </div>
