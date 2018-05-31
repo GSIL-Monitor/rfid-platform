@@ -19,6 +19,7 @@
 <script src="../../Olive/plugin/dateFormatUtil.js"></script>
 <script src="../../Olive/assets/js/jquery.gritter.js"></script>
 <script src="../../Olive/assets/js/bootbox.js"></script>
+<script src="../../Olive/assets/js/jquery.qrcode-0.12.0.min.js"></script>
 
 <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
 <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
@@ -110,8 +111,50 @@
     <div id="raddDetailgrid-pager"></div>
 </div>
 <div  class="col-lg-12 col-md-12 col-sm-12 center">
-    <button class="btn btn-primary " id="SODtl_wareHouseOut" onclick="wareHouseOut() "  type="button">出售</button>
+    <button class="btn btn-primary "  id='check' data-target='#modal_pad_cur' data-toggle='modal' type="button">出售</button>
 </div>
+
+<div class="modal fade" id="modal_pad_cur" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header no-padding">
+                <div class="table-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span class="white">&times;</span>
+                    </button>
+                    支付
+                </div>
+            </div>
+            <div class="modal-body no-padding">
+                <div class="widget-body">
+                    <div class="widget-main" id="search_unit_Panel">
+                        <form class="form-horizontal" role="form" id="search_guest_Form" >
+                            <div class="form-group center">
+                                <label class="" >请选择支付方式</label>
+                            </div>
+                            <div class="radio  radio-inline">
+                                <label>
+                                    <input type="radio" name="radio" id="cash_Payment" value="现金支付" checked>现金支付
+                                </label>
+                            </div>
+                            <div class="radio  radio-inline">
+                                <label>
+                                    <input type="radio" name="radio" id="weChat_payment" value="微信支付">微信支付
+                                </label>
+                            </div>
+                            <div id="payment" class="center">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-content" style="text-align: right">
+            <button type='button' id="saveId" class='btn btn-primary' onclick='wareHouse()'>确认</button>
+        </div>
+    </div>
+</div>
+
 </body>
 <script>
     var basePath;
@@ -130,9 +173,66 @@
     $("#search_actPrice").val(localStorage.getItem("sale_actPrice"));
     $("#search_payPrice").val(localStorage.getItem("return_collect_Amount"));
     $("#pre_Balance").val(localStorage.getItem("owingValue"));
-    $("#search_payType").val(localStorage.getItem("payType"));
     var ownerId = localStorage.getItem("ownerId");
+
+    $('input:radio[id="weChat_payment"]').change(function () {
+        $("#saveId").attr('disabled', true);
+        var payPrice = $("#search_payPrice").val();
+        $.ajax({
+            async: true,
+            dataType: "json",
+            url: basePath + "pad/padUser/WXcode.do",
+            data: {
+                payPrice: payPrice,
+                billNo: billNo
+            },
+            type: "POST",
+            success: function (data) {
+                if (data.success){
+                    var codeUrl = data.result;
+                    jQuery('#payment').qrcode({
+                        render    : "canvas",
+                        text    : codeUrl,
+                        width : "200",               //二维码的宽度
+                        height : "200",              //二维码的高度
+                        background : "#ffffff",       //二维码的后景色
+                        foreground : "#000000",        //二维码的前景色
+                        src: 'img/gray.jpg'             //二维码中间的图片
+                    });
+                    t1 = window.setInterval("getPayState()",1500);
+                }else {
+                    bootbox.setDefaults("locale", "zh_CN");
+                    bootbox.alert(data.msg);
+                }
+            }
+        });
+    });
+
+    function getPayState() {
+        $.ajax({
+            type:"post",
+            url:basePath+"pad/padUser/getPayState.do",
+            cache:false,
+            data:{
+                billNo:billNo
+            },
+            async:true,
+            success:function(result){
+                if(result.success){
+                    wareHouse();
+                    window.clearInterval(t1)
+                }
+            }
+        });
+    }
+
+    $('input:radio[id="cash_Payment"]').change(function () {
+        $("#saveId").attr('disabled', false);
+        $("#payment").empty();
+    });
+
     $(function () {
+        associated();
         $("#addDetailgrid").jqGrid({
             url: basePath+"logistics/saleOrder/findBillDtlWS.do?billNo="+billNo,
             height: "auto",
@@ -306,6 +406,25 @@
             }
         });
     });
+    //关联销售退货单
+    function associated() {
+        $.ajax({
+            async: true,
+            dataType: "json",
+            url: basePath + "pad/padUser/associated.do",
+            data: {
+                billNo: billNo,
+                rbillNo: rbillNo
+            },
+            type: "POST",
+            success: function (data) {
+                if (data.success){
+                    bootbox.setDefaults("locale","zh_CN");
+                    bootbox.alert(data.msg);
+                }
+            }
+        });
+    }
 
     function updatePagerIcons(table) {
         //ui-icon ui-icon-circlesmall-minus
@@ -357,7 +476,6 @@
         });
     }
     function wareHouseOut() {
-        $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
         sale();
         wareHouseIn();
     }
@@ -549,6 +667,28 @@
                     });
                 } else {
                     bootbox.alert(msg.msg+";"+localStorage.getItem("sale_e"));
+                }
+            }
+        });
+    }
+
+    function wareHouse() {
+        var value = $('input:radio[name="radio"]:checked').val();
+        $.ajax({
+            async: false,
+            dataType: "json",
+            url: basePath + "pad/padUser/payType.do",
+            data: {
+                billNo: billNo,
+                payType: value
+            },
+            type: "POST",
+            success: function (msg) {
+                if (msg.success) {
+                    wareHouseOut();
+                } else {
+                    bootbox.setDefaults("locale", "zh_CN");
+                    bootbox.alert(msg.result);
                 }
             }
         });

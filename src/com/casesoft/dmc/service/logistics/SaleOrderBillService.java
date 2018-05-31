@@ -104,6 +104,11 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         this.saleOrderBillDao.batchExecute("update SaleOrderBill set payType = '" +payType+"' where billNo = ?",billNo);
     }
 
+    //更新关联单号
+    public void updateNo(String billNo,String rbillNo){
+        this.saleOrderBillDao.batchExecute("update SaleOrderBill set srcBillNo = '"+rbillNo+"' where billNo = ?",billNo);
+    }
+
     @Override
     public void delete(SaleOrderBill entity) {
         this.saleOrderBillDao.delete(entity);

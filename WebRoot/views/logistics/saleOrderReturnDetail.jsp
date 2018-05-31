@@ -146,7 +146,7 @@
                                                 style="width: 100%;" data-live-search="true">
                                         </select>
                                     </div>
-                                    <label class="col-xs-1 control-label" for="search_srcbillno">原始单号</label>
+                                    <label class="col-xs-1 control-label" for="search_srcbillno">关联单号</label>
                                     <div class="col-xs-2">
                                         <input class="form-control" value="${saleOrderReturn.srcBillNo}" name="srcBillNo"
                                                id="search_srcbillno" readonly/>

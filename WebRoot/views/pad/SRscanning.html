@@ -94,49 +94,7 @@
         <button class="btn btn-primary " onclick="back() "  type="button">上一步</button>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6 center" id="check_div" style="height: 100%">
-        <button class="btn btn-primary " id="check" data-target="#modal_pad_cur" data-toggle="modal" type="button">买单</button>
-    </div>
-</div>
-
-<div class="modal fade" id="modal_pad_cur" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header no-padding">
-                <div class="table-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <span class="white">&times;</span>
-                    </button>
-                    支付
-                </div>
-            </div>
-            <div class="modal-body no-padding">
-                <div class="widget-body">
-                    <div class="widget-main" id="search_unit_Panel">
-                        <form class="form-horizontal" role="form" id="search_guest_Form" >
-                            <div class="form-group center">
-                                <label class="" >请选择支付方式</label>
-                            </div>
-                            <div class="radio  radio-inline">
-                                <label>
-                                    <input type="radio" name="radio" id="cash_Payment" value="现金支付" checked>现金支付
-                                </label>
-                            </div>
-                            <div class="radio  radio-inline">
-                                <label>
-                                    <input type="radio" name="radio" id="weChat_payment" value="微信支付">微信支付
-                                </label>
-                            </div>
-                            <div id="payment">
-                                <img src="../../images/pad/weChatM.png" id="img">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-content" style="text-align: right">
-            <button type='button' id="saveId" class='btn btn-primary' onclick='save()'>确认</button>
-        </div>
+        <button class="btn btn-primary" onclick="save()" type="button">下一步</button>
     </div>
 </div>
 
@@ -724,9 +682,6 @@
         localStorage.setItem("return_collect_Amount",$("#collect_Amount").val())
     }
     function sale_save() {
-        var value=$('input:radio[name="radio"]:checked').val();
-        localStorage.setItem("payType",value);
-        $("#search_payType").val(value);
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
         $("#search_customerType").val(localStorage.getItem("customerType"));
         $("#search_customertyper").val(localStorage.getItem("customerType"));
@@ -777,9 +732,6 @@
         });
     }
     function return_save() {
-        var value=$('input:radio[name="radio"]:checked').val();
-        localStorage.setItem("payType",value);
-        $("#return_search_payType").val(value);
         $("#return_search_billDate").val(getToDay("yyyy-MM-dd"));
         $("#return_search_customerType").val(localStorage.getItem("customerType"));
         $("#return_search_customertyper").val(localStorage.getItem("customerType"));

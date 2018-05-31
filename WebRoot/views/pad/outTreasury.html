@@ -257,10 +257,13 @@
             type:"post",
             url:basePath+"pad/padUser/getPayState.do",
             cache:false,
+            data:{
+              billNo:billNo
+            },
             async:true,
             success:function(result){
-                if(result.result == 1){
-                    wareHouseOut();
+                if(result.success){
+                    wareHouse();
                     window.clearInterval(t1)
                 }
             }

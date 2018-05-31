@@ -8,7 +8,10 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.dao.logistics.*;
+import com.casesoft.dmc.dao.logistics.ConsignmentBillDao;
+import com.casesoft.dmc.dao.logistics.ConsignmentBillDtlDao;
+import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
+import com.casesoft.dmc.dao.logistics.SaleOrderReturnBillDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
@@ -29,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.spi.CurrencyNameProvider;
 
 /**
  * Created by Administrator on 2017-06-29.
@@ -60,6 +62,11 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     public void save(SaleOrderReturnBill entity) {
 
         this.saleOrderReturnBillDao.saveOrUpdate(entity);
+    }
+
+    //更新关联单号
+    public void updateNo(String billNo,String rbillNo){
+        this.saleOrderReturnBillDao.batchExecute("update SaleOrderReturnBill set srcBillNo = '"+billNo+"' where billNo = ?",rbillNo);
     }
 
 

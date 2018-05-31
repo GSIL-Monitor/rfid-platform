@@ -7,6 +7,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.wechat.wxpay.pay.WXPayConfigImpl;
@@ -15,6 +16,7 @@ import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.pad.MobilePaymentService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
@@ -35,12 +37,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-
+/**
+ * pad sale and returnsale Controller
+ * 2018.5.31
+ * liutianci
+ */
 @Controller
 @RequestMapping("/pad")
 public class PadUserController extends BaseController implements IBaseInfoController<User>{
@@ -58,6 +61,8 @@ public class PadUserController extends BaseController implements IBaseInfoContro
     private GuestViewService guestViewService;
     @Autowired
     private MobilePaymentService mobilePaymentService;
+    @Autowired
+    private SaleOrderReturnBillService saleOrderReturnBillService;
 
     /**
      *无人收银验证用户登录
@@ -112,8 +117,8 @@ public class PadUserController extends BaseController implements IBaseInfoContro
 
     /**
      * 客户查询
-     * @param page
-     * @return
+     * @param page 分页
+     * @return page
      * @throws Exception
      */
     @RequestMapping("customer/pageWS")
@@ -215,6 +220,12 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         }
     }
 
+    /**
+     * 选完支付方式后修改单中的支付方式
+     * @param billNo 销售单单号
+     * @param payType 支付类型
+     * @return 结果
+     */
     @RequestMapping("/padUser/payType")
     @ResponseBody
     public MessageBox payType(String billNo,String payType){
@@ -227,6 +238,14 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         }
     }
 
+    /**
+     *
+     * @param request 获取当前ip地址
+     * @param payPrice 支付金额
+     * @param billNo 销售单单号
+     * @return 支付消息
+     * @throws Exception
+     */
     @RequestMapping("/padUser/WXcode")
     @ResponseBody
     public MessageBox WXpay(HttpServletRequest request, String payPrice, String billNo) throws Exception {
@@ -243,7 +262,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         data.put("fee_type", "CNY"); //设置货币类型，人民币
         data.put("total_fee", /*Integer.toString(price)*/"1"); //订单总金额，单位为分，只能为整数
         data.put("spbill_create_ip", ip); //调用微信支付API的机器IP
-        data.put("notify_url", "http://cwrdf7.natappfree.cc/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
+        data.put("notify_url", "http://byaucw.natappfree.cc/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
         data.put("trade_type", "NATIVE");//交易方式，扫码支付
         data.put("product_id", "12"); //设置trade_type=NATIVE时，此参数必传。此id为二维码中包含的商品ID
         // data.put("time_expire", "20170112104120");//订单失效时间
@@ -261,7 +280,15 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(false,"下单失败");
         }
     }
-    int wxPayType = 0;
+    //保存支付成功后的单号
+    HashMap<String,Integer>  wxPayType = new HashMap<String, Integer>();
+
+    /**
+     *
+     * @param req 微信端请求的数据
+     * @param resp 返回微信端的结果
+     * @throws Exception
+     */
     @RequestMapping("/padUser/getWxPayNotifyWS")
     @ResponseBody
     public void getWxPayNotify(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -284,7 +311,8 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             System.out.print(notifyMap);
             String resXml = "";
             if (wxpay.isPayResultNotifySignatureValid(notifyMap)) {
-                wxPayType = 1;
+                wxPayType.put(notifyMap.get("out_trade_no"),1);
+                remove(notifyMap.get("out_trade_no"));
                 MobilePayment mobilePayment = new MobilePayment();
                 mobilePayment.setId(notifyMap.get("transaction_id"));
                 mobilePayment.setTradeNo(notifyMap.get("out_trade_no"));
@@ -313,15 +341,64 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             e.printStackTrace();
         }
     }
+
+    /**
+     *
+     * @param billNo 当前支付的单号
+     * @return liutianci
+     */
     @ResponseBody
     @RequestMapping("/padUser/getPayState")
-    public MessageBox getPayState(){
-        if (wxPayType==1){
-            return new MessageBox(true,"支付成功",wxPayType);
+    public MessageBox getPayState(String billNo){
+        for (String key : wxPayType.keySet()) {
+            if (key.equals(billNo));
+            {
+                wxPayType.remove(billNo);
+                return new MessageBox(true,"支付成功");
+            }
         }
         return null;
     }
 
+    /**
+     * 关联单号
+     * @param billNo 销售单单号
+     * @param rbillNo 退货单单号
+     * @return 保存结果
+     */
+    @ResponseBody
+    @RequestMapping("/padUser/associated")
+    public MessageBox associated(String billNo,String rbillNo){
+        try {
+            this.saleOrderBillService.updateNo(billNo,rbillNo);
+            this.saleOrderReturnBillService.updateNo(billNo,rbillNo);
+            return new MessageBox(true,"销售退货单号关联成功");
+        }catch (Exception e){
+            this.logger.error(e.getMessage());
+            return new MessageBox(true,"销售退货单号关联失败");
+        }
+    }
+
+    public void remove(String billNo) throws Exception {
+        Timer timer= new Timer();
+        TimerTask task  = new TimerTask(){    //创建一个新的计时器任务。
+            @Override
+            public void run() {
+                synchronized(this){
+                    wxPayType.remove(billNo);
+                }
+            }
+        };
+        //超时设定
+        int overTime =Integer.parseInt(PropertyUtil.getValue("overTime"));
+        timer.schedule(task, overTime);
+    }
+
+    /**
+     * 获取当前系统的ip地址
+     * @param request
+     * @return
+     */
     public static String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
