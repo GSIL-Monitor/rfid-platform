@@ -42,6 +42,10 @@ public class UnitService extends AbstractBaseService<Unit, String> {
         this.unitDao.doBatchInsert(unitList);
     }
 
+    public void saveOrUpdate(Unit entity){
+        this.unitDao.saveOrUpdate(entity);
+    }
+
     @Override
     public Unit load(String id) {
         return this.unitDao.load(id);
@@ -75,6 +79,8 @@ public class UnitService extends AbstractBaseService<Unit, String> {
             case Constant.UnitType.Vender://0:
                 unitFlag = Constant.UnitCodePrefix.Vender;//"V";
                 break;
+            case Constant.UnitType.Organization://11:
+                unitFlag = Constant.UnitCodePrefix.Organization;
         }
         String hql = "select max(CAST(SUBSTRING(unit.code," + (unitFlag.length() + 1) + "),integer))"
                 + " from Unit as unit where unit.type=? and unit.isThird is null";

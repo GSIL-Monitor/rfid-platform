@@ -67,7 +67,7 @@ function cancel(billNo) {
     cs.showProgressBar();
     $.ajax({
         dataType: "json",
-        async: false,
+        async: true,
         url: basePath + "/logistics/labelChangeBill/cancel.do",
         data: {
             billNo: billNo
@@ -108,7 +108,7 @@ function initSelectOrigForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9",
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
@@ -125,7 +125,7 @@ function initSelectclass9() {
     $.ajax({
         url: basePath + "/sys/property/findclass9name.do?filter_EQS_type=C9",
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_beforeclass9").empty();

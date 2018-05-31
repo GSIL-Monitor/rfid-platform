@@ -209,10 +209,6 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-undo'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-                /*"<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOut()'>" +
-                 "    <i class='ace-icon fa fa-search'></i>" +
-                 "    <span class='bigger-110'>出库</span>" +
-                 "</button>";*/
             "<button id='CMDtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='confirmWareHouseIn()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>入库</span>" +
@@ -221,26 +217,6 @@ function initButtonGroup() {
     }
     if (pageType === "edit") {
         html +=
-            /*  "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='edit_wareHouseOut()'>" +
-             "    <i class='ace-icon fa fa-search'></i>" +
-             "    <span class='bigger-110'>出库</span>" +
-             "</button>" +*/
-            /* "<button id='CMDtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='confirmWareHouseIn()'>" +
-             "    <i class='ace-icon fa fa-search'></i>" +
-             "    <span class='bigger-110'>入库</span>" +
-             "</button>"+
-             "<button id='CMDtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
-             "    <i class='ace-icon fa fa-undo'></i>" +
-             "    <span class='bigger-110'>扫码</span>" +
-             "</button>" +*/
-            /*  "<button id='CMDtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='confirmWareHouseIn()'>" +
-             "    <i class='ace-icon fa fa-search'></i>" +
-             "    <span class='bigger-110'>入库</span>" +
-             "</button>"+*/
-            /* "<button id='CMDtl_wareHouseSale' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saleRetrun()'>" +
-             "    <i class='ace-icon fa fa-search'></i>" +
-             "    <span class='bigger-110'>退货</span>" +
-             "</button>";*/
             "<button id='CMDtl_wareHouseSale' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saleRetrunNo()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>扫描退货</span>" +
@@ -446,15 +422,6 @@ function initGrid() {
         footerrow: true,
         cellEdit: true,
         cellsubmit: 'clientArray',
-        // onSelectRow: function (rowId, status) {
-        //     if (pageType != "edit") {
-        //         if (editDtailRowId != null) {
-        //             saveItem(editDtailRowId);
-        //         }
-        //         editDtailRowId = rowId;
-        //         $('#addDetailgrid').editRow(rowId);
-        //     }
-        // },
         beforeEditCell: function (rowid, celname, value, iRow, iCol) {
             if (isfrist) {
                 beforsale = $('#addDetailgrid').getCell(rowid, "outMonyQty");
@@ -464,19 +431,7 @@ function initGrid() {
 
         },
         afterEditCell: function (rowid, celname, value, iRow, iCol) {
-            /*addDetailgridiRow = iRow;
-             addDetailgridiCol = iCol;*/
-            //debugger;
-            /* //var sale=$('#addDetailgrid').getCell(rowid, "sale");
-             var outQty=$('#addDetailgrid').getCell(rowid, "outQty");
-             var inQty=$('#addDetailgrid').getCell(rowid, "inQty");
-             if((parseInt(outQty)+parseInt(value))>parseInt(inQty)){
-             $.gritter.add({
-             text: "已超过入库数量",
-             class_name: 'gritter-success  gritter-light'
-             });
-             $('#addDetailgrid').setCell(rowid, "sale", beforsale);
-             }*/
+
             editDtailiRow = iRow;
             editDtailiCol = iCol;
             issaleretrun = false;
@@ -541,24 +496,6 @@ function initGrid() {
         }
     });
 
-    /*if (pageType == "edit") {
-     $("#addDetailgrid").setGridParam().hideCol("operation");
-     } else {
-     $("#addDetailgrid").setGridParam().showCol("operation");
-     $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
-     {
-     edit: false,
-     add: true,
-     addicon: "ace-icon fa fa-plus",
-     addfunc: function () {
-     addDetail();
-     },
-     del: false,
-     search: false,
-     refresh: false,
-     view: false
-     });
-     }*/
     $("#addDetailgrid-pager_center").html("");
 }
 function setFooterData() {
@@ -663,7 +600,7 @@ function addProductInfo() {
 }
 
 function save() {
-    debugger;
+    cs.showProgressBar();
     $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
@@ -675,14 +612,17 @@ function save() {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        cs.closeProgressBar();
         return;
     }
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加退货商品");
+        cs.closeProgressBar();
         return;
     }
     if ($("#search_origId").val() === $("#search_destId").val()) {
         bootbox.alert("相同店不能寄售");
+        cs.closeProgressBar();
         return;
     }
     var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
@@ -698,10 +638,9 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $.ajax({
         dataType: "json",
-        // async:false,
+        async:true,
         url: basePath + "/logistics/Consignment/save.do",
         data: {
             'bill': consignmentBill,
@@ -710,7 +649,7 @@ function save() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -737,7 +676,7 @@ function saveItem(rowId) {
 
 }
 function saveother(totActPrice) {
-    debugger;
+    cs.showProgressBar();
     $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
     $("#search_customerType").removeAttr('disabled');
     $("#search_origId").removeAttr('disabled');
@@ -749,6 +688,7 @@ function saveother(totActPrice) {
     initEditFormValid();
     $('#editForm').data('bootstrapValidator').validate();
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        cs.closeProgressBar();
         return;
     }
     /* if ($("#addDetailgrid").getDataIDs().length == 0) {
@@ -757,6 +697,7 @@ function saveother(totActPrice) {
      }*/
     if ($("#search_origId").val() === $("#search_destId").val()) {
         bootbox.alert("相同店不能寄售");
+        cs.closeProgressBar();
         return;
     }
     //实收金额的计算
@@ -780,10 +721,9 @@ function saveother(totActPrice) {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    showWaitingPage();
     $.ajax({
         dataType: "json",
-        // async:false,
+        async:true,
         url: basePath + "/logistics/Consignment/save.do",
         data: {
             'bill': consignmentBill,
@@ -792,7 +732,7 @@ function saveother(totActPrice) {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -1014,60 +954,7 @@ function addProductsOnCode() {
     }
 }
 
-function wareHouseOut() {
-    var billNo = $("#search_billNo").val();
-    if (billNo && billNo != null) {
-        var epcArray = [];
-        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            var rowData = $("#addDetailgrid").getRowData(value);
-            var codes = rowData.uniqueCodes.split(",");
-            if (codes && codes != null && codes != "") {
-                $.each((codes), function (index, value) {
-                    var epc = {};
-                    epc.code = value;
-                    epc.styleId = rowData.styleId;
-                    epc.sizeId = rowData.sizeId;
-                    epc.colorId = rowData.colorId;
-                    epc.qty = 1;
-                    epc.sku = rowData.sku;
-                    epcArray.push(epc)
-                })
-            }
-        });
-        if (epcArray.length == 0) {
-            bootbox.alert("请添加单据明细！");
-            return;
-        }
-        $.ajax({
-            dataType: "json",
-            url: basePath + "/logistics/Consignment/convertOut.do",
-            data: {
-                billNo: billNo,
-                strEpcList: JSON.stringify(epcArray),
-                userId: userId
-            },
-            type: "POST",
-            success: function (msg) {
-                if (msg.success) {
-                    $.gritter.add({
-                        text: msg.msg,
-                        class_name: 'gritter-success  gritter-light'
-                    });
-                    $("#modal-addEpc-table").modal('hide');
-                    $("#addDetailgrid").jqGrid('setGridParam', {
-                        page: 1,
-                        url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + billNo,
-                    });
-                    $("#addDetailgrid").trigger("reloadGrid");
-                } else {
-                    bootbox.alert(msg.msg);
-                }
-            }
-        });
-    } else {
-        bootbox.alert("请先保存当前单据");
-    }
-}
+
 
 function edit_wareHouseOut() {
     skuQty = {};
@@ -1098,7 +985,7 @@ function edit_wareHouseOut() {
 }
 
 function confirmWareHouseOut() {
-    debugger;
+    cs.showProgressBar();
     var billNo = $("#search_billNo").val();
     var epcArray = [];
     $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
@@ -1107,9 +994,9 @@ function confirmWareHouseOut() {
     });
     if (epcArray.length == 0) {
         bootbox.alert("请添加唯一码!");
+        cs.closeProgressBar();
         return;
     }
-    showWaitingPage();
     $.ajax({
         dataType: "json",
         url: basePath + "/logistics/Consignment/convertOut.do",
@@ -1120,7 +1007,7 @@ function confirmWareHouseOut() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -1136,37 +1023,12 @@ function confirmWareHouseOut() {
     $("#add-uniqCode-dialog").modal('hide');
 }
 
-function wareHouseIn() {
-    skuQty = {};
-    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-        var rowData = $("#addDetailgrid").getRowData(value);
-        skuQty[rowData.sku] = rowData.inQty;
-    });
 
-    inOntWareHouseValid = 'wareHouseIn_valid';
-    taskType = 1;
-    var destId = $("#search_destId").val();
-    wareHouse = destId;
-    var ct = $("#search_customerType").val();
-    if (destId && destId != null) {
-        $("#dialog_buttonGroup").html("" +
-            "<button type='button'  class='btn btn-primary' onclick='confirmWareHouseIn()'>确认入库</button>"
-        );
-        $("#add-uniqCode-dialog").modal('show').on('hidden.bs.modal', function () {
-            $("#uniqueCodeGrid").clearGridData();
-        });
-        initUniqeCodeGridColumn(ct);
-        $("#codeQty").text(0);
-    } else {
-        bootbox.alert("客户仓库不能为空！");
-    }
-    allCodes = "";
-}
 
 function confirmWareHouseIn() {
-
+    cs.showProgressBar();
     $("#CMDtl_wareHouseIn").attr({"disabled": "disabled"});
-    showWaitingPage();
+
     var billNo = $("#search_billNo").val();
 
     if (billNo && billNo != null) {
@@ -1189,18 +1051,19 @@ function confirmWareHouseIn() {
         });
         if (epcArray.length == 0) {
             bootbox.alert("请添加单据明细！");
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#CMDtl_wareHouseIn").removeAttr("disabled");
             return;
         }
     } else {
         bootbox.alert("没有单据单号！");
+        cs.closeProgressBar();
         return;
     }
 
     $.ajax({
         dataType: "json",
-        // async:false,
+        async:true,
         url: basePath + "/logistics/Consignment/convertIn.do",
         data: {
             billNo: billNo,
@@ -1209,19 +1072,14 @@ function confirmWareHouseIn() {
         },
         type: "POST",
         success: function (msg) {
-            hideWaitingPage();
+            cs.closeProgressBar();
             $("#CMDtl_wareHouseIn").removeAttr("disabled");
             if (msg.success) {
-                /* $.gritter.add({
-                 text: msg.msg,
-                 class_name: 'gritter-success  gritter-light'
-                 });*/
                 var inqty = 0;
                 $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                     var rowData = $("#addDetailgrid").getRowData(value);
                     inqty += parseInt(rowData.qty);
                 });
-                //bootbox.alert("已入库"+inqty+"件");
                 $("#modal-addEpc-table").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
                 bootbox.alert({
@@ -1245,7 +1103,7 @@ function quitback() {
     $.ajax({
         url: basePath + "/logistics/Consignment/quit.do?billNo=" + billNo,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
 
@@ -1272,85 +1130,6 @@ function openSearchGuestDialog() {
 
 }
 
-/*function saleRetrun() {
- var isok=true;
- var billNo = $("#search_billNo").val();
- var epcArray = [];
- if(billNo==""){
- $.gritter.add({
- text: "请先保存!",
- class_name: 'gritter-success  gritter-light'
- });
- return;
- }
- var saleRetrunBillNom=$("#saleRetrunBillNom").val();
- var saleRetrunBillNoq=$("#saleRetrunBillNoq").val();
- if(saleRetrunBillNom!=""||saleRetrunBillNoq!=""){
- $.gritter.add({
- text: "此单以退款",
- class_name: 'gritter-success  gritter-light'
- });
- return;
- }else{
- $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
- var rowData = $("#addDetailgrid").getRowData(value);
- if(parseInt(rowData.inQty)==0){
- $.gritter.add({
- text: "请先入库",
- class_name: 'gritter-success  gritter-light'
- });
- isok=false;
-
- }else{
- var codes = rowData.uniqueCodes.split(",");
- if (codes && codes != null && codes != "") {
- $.each((codes), function (index, value) {
- var epc = {};
- epc.code = value;
- epc.styleId = rowData.styleId;
- epc.sizeId = rowData.sizeId;
- epc.colorId = rowData.colorId;
- epc.qty = 1;
- epc.sku = rowData.sku;
- epcArray.push(epc)
- })
- }
- }
- });
-
- }
- if(isok){
- $.ajax({
- dataType: "json",
- async:false,
- url: basePath + "/logistics/Consignment/saleRetrun.do",
- data: {billNo: billNo,strEpcList: JSON.stringify(epcArray)},
- type: "POST",
- success: function (msg) {
- if (msg.success) {
- /!* $.gritter.add({
- text: msg.msg,
- class_name: 'gritter-success  gritter-light'
- });*!/
- $("#modal-addEpc-table").modal('hide');
- $("#addDetailgrid").trigger("reloadGrid");
- bootbox.alert({
- buttons: { ok: {label: '确定',}},
- message: msg.msg,
- callback: function() {
- window.location.href=basePath+'/logistics/Consignment/index.do';
- },
- });
-
- } else {
- bootbox.alert(msg.msg);
- }
- }
- });
- }
-
-
- }*/
 var allCodeStrInDtl = "";  //入库时，所有在单的唯一码
 function initAllCodesList() {
     allCodeStrInDtl = "";
@@ -1482,7 +1261,7 @@ function addProductsOnCodes() {
 }
 
 function updateconsignmentnum(id, outQtys) {
-    showWaitingPage();
+
     $.ajax({
         dataType: "json",
         // async:false,
@@ -1502,8 +1281,7 @@ function updateconsignmentnum(id, outQtys) {
 }
 
 function saleRetrunNook() {
-    
-    debugger;
+    cs.showProgressBar();
     var isok = true;
     var billNo = $("#search_billNo").val();
     var epcArray = [];
@@ -1512,7 +1290,7 @@ function saleRetrunNook() {
             text: "请先保存!",
             class_name: 'gritter-success  gritter-light'
         });
-
+        cs.closeProgressBar();
     } else {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             var rowData = $("#addDetailgrid").getRowData(value);
@@ -1521,6 +1299,7 @@ function saleRetrunNook() {
                     text: "请先入库",
                     class_name: 'gritter-success  gritter-light'
                 });
+                cs.closeProgressBar();
                 isok = false;
 
             } else {
@@ -1576,12 +1355,10 @@ function saleRetrunNook() {
         });
         console.log(dtlArray);
         if (isok) {
-            showWaitingPage();
             $("#CMDtl_wareHouseokSale").hide();
-            debugger;
             $.ajax({
                 dataType: "json",
-                //async: false,
+                async: true,
                 url: basePath + "/logistics/Consignment/saleRetrunNo.do",
                 data: {
                     //billNo: billNo,
@@ -1592,7 +1369,7 @@ function saleRetrunNook() {
                 },
                 type: "POST",
                 success: function (msg) {
-                    hideWaitingPage();
+                    cs.closeProgressBar();
                     $("#CMDtl_wareHouseokSale").show();
                     if (msg.success) {
                         /* $.gritter.add({

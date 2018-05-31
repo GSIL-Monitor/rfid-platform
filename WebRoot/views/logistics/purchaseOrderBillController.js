@@ -20,7 +20,7 @@ function initSelectDestForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9",
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();

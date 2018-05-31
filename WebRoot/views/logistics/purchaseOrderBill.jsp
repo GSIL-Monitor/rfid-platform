@@ -159,13 +159,6 @@
 <jsp:include page="purchaseOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
-<link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.material.min.css" rel="stylesheet">
-<script src="<%=basePath%>/kendoUI/js/kendo.all.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseOrderBillController.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 <div id="dialog"></div>

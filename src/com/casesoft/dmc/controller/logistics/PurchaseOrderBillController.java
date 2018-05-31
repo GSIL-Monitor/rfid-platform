@@ -143,7 +143,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         mv.addObject("pageType", "add");
         mv.addObject("mainUrl", "/logistics/purchase/index.do");
         User user = this.getCurrentUser();
-        mv.addObject("OwnerId", user.getOwnerId());
+        mv.addObject("ownerId", user.getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();

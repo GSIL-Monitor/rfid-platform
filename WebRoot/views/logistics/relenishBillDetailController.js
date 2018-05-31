@@ -43,7 +43,7 @@ function initSelectBusinessIdForm() {
     $.ajax({
         url: url,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_busnissId").empty();

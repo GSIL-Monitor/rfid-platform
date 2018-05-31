@@ -550,7 +550,7 @@ function quitback() {
     $.ajax({
         url: basePath + "/logistics/transferOrder/quit.do?billNo=" + billNo,
         cache: false,
-        async: false,
+        async: true,
         type: "POST",
         success: function (data, textStatus) {
 

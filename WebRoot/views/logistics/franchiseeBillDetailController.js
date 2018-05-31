@@ -757,7 +757,7 @@ function save() {
     });
     $.ajax({
         dataType: "json",
-        async: false,
+        async: true,
         url: basePath + "/logistics/saleOrder/save.do",
         data: {
             saleOrderBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
@@ -893,7 +893,7 @@ function wareHouseOut() {
         }
         var uniqueCodes_inHouse;
         $.ajax({
-            async: false,
+            async: true,
             dataType: "json",
             url: basePath + "/stock/warehStock/checkCodes.do",
             data: {
@@ -1227,9 +1227,16 @@ function confirmWareHouseIn() {
 }
 
 function confirm_warehousing(epcinArray) {
-    var billNo = $("#search_billNo").val();
     cs.showProgressBar();
+    var billNo = $("#search_billNo").val();
     $("#fb_comfirm_in").attr({"disabled": "disabled"});
+    if(epcinArray.length == 0){
+        bootbox.alert("请添加唯一码!");
+        cs.closeProgressBar();
+        $("#fb_comfirm_in").removeAttr("disabled");
+        return;
+
+    }
     $.ajax({
         dataType: "json",
         // async: false,
