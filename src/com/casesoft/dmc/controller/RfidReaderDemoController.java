@@ -21,7 +21,7 @@ public class RfidReaderDemoController {
     private RfidReaderService rfidReaderService;
     private String deviceId = "6252";
 
-    @RequestMapping("/resetWS.do")
+    @RequestMapping("/reset.do")
     @ResponseBody
     public void reset() {
         try {
@@ -59,7 +59,7 @@ public class RfidReaderDemoController {
     @ResponseBody
     public void setOutPutPower() {
         try {
-            rfidReaderService.setOutPutPower(deviceId, (byte) 0x01);
+            rfidReaderService.setOutPutPower(deviceId, (byte) 0x10);
         } catch (RfidReaderException e) {
             e.printStackTrace();
         }
@@ -78,7 +78,7 @@ public class RfidReaderDemoController {
         return outPutPower;
     }
 
-    @RequestMapping("/realTimeInventoryWS.do")
+    @RequestMapping("/realTimeInventory.do")
     @ResponseBody
     public List<String> realTimeInventory() {
         List<String> epcList = null;

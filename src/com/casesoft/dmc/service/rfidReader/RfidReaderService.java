@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.casesoft.dmc.core.exception.RfidReaderException;
 import com.casesoft.dmc.core.exception.RfidReaderExceptionCode;
+import com.casesoft.dmc.core.service.ServiceException;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.rfidReader.SerialCmdGenerator;
 import com.casesoft.dmc.core.util.rfidReader.SerialHandleUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -30,9 +32,6 @@ import static org.apache.xalan.xsltc.compiler.sym.error;
 @Service
 @Transactional
 public class RfidReaderService {
-
-    private String remoteReaderUrl = "http://114.215.186.211:8080/fsu/transparent/rfid/";
-
     /**
      * 读写器复位
      */
@@ -193,7 +192,13 @@ public class RfidReaderService {
      */
     private byte[] httpHandle(String serialPortCmd, String deviceId) throws RfidReaderException {
         byte[] resultData = null;
-
+        String remoteReaderUrl;
+        try {
+            remoteReaderUrl = PropertyUtil.getValue("remote_rfid_reader_url");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("读取配置文件错误");
+        }
         String url = remoteReaderUrl + deviceId + "/" + StringUtils.deleteWhitespace(serialPortCmd);
         HttpGet httpGet = new HttpGet(url);
         System.out.println("executing request: " + httpGet.getURI());
