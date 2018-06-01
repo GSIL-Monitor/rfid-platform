@@ -115,12 +115,20 @@
                 <div class="Print-Bg-Top">
                     <div id="printTop">
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4" id="storeName">
-                                <span>店铺名称</span>
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="storeName">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
                             </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                           <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
                                 <span >销售单</span>
+                            </div>--%>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">销售单</span>
                             </div>
+                            <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                 <span >销售单</span>
+                             </div>--%>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billNo" >
                             <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
@@ -245,7 +253,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtend">
-                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
                                 <span >欢迎来到Ancient Stone</span>
                             </div>
                         </div>

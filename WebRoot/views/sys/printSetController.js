@@ -3,7 +3,7 @@ var printParameter={
     fontSize80mm:9,//80mm小票字体的大小
     fontSize110mm:9,//110mm小票字体的大小
     receiptWidth58mm:220,//58mm小票的宽度
-    receiptWidth80mm:300,//80mm小票的宽度
+    receiptWidth80mm:260,//80mm小票的宽度
     receiptWidth110mm:500,//110mm小票的宽度
     receiptheight58mm:693,//58mm小票的高度
     receiptheight80mm:741,//80mm小票的高度
@@ -101,35 +101,40 @@ function save() {
         var sum=0;
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
-        $("#printTop").find(".col-xs-12").each(function (index,element) {
+        $("#printTop").find(".Print-Bg-Top-div").each(function (index,element) {
             if(index==0){
-                if(!$(this).find(".col-xs-4").is(":hidden")){
-                    var id="\""+$(this).find(".col-xs-4").attr("id")+"\"";
-                    var message="\""+$(this).find(".col-xs-4").find("span").text()+"\"";
-                    var width=parseInt(receiptWith/3*1);
-                    str+="LODOP.ADD_PRINT_TEXTA("+id+",0,10,"+width+","+printParameter.aRowheight+","+message+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                    if(printCode==""){
-                        printCode+=$(this).find(".col-xs-4").attr("id");
-                    }else {
-                        printCode+=","+$(this).find(".col-xs-4").attr("id");
-                    }
-
-                }
                 if(!$(this).find(".col-xs-8").is(":hidden")){
                     var id="\""+$(this).find(".col-xs-8").attr("id")+"\"";
                     var message="\""+$(this).find(".col-xs-8").find("span").text()+"\"";
-                    var left=parseInt(receiptWith/3*1+10);
-                    var width=parseInt(receiptWith/3*2);
-                    str+="LODOP.ADD_PRINT_TEXTA("+id+",0,"+left+","+width+","+printParameter.aRowheight+","+message+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+",0,"+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\",20);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Bold\",1);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
                     if(printCode==""){
                         printCode+=$(this).find(".col-xs-8").attr("id");
                     }else {
                         printCode+=","+$(this).find(".col-xs-8").attr("id");
                     }
                 }
-                if(!$(this).find(".col-xs-4").is(":hidden")||!$(this).find(".col-xs-8").is(":hidden")){
+                if(!$(this).find(".col-xs-8").is(":hidden")){
+                    sum++;
+                }
+            }else if(index==1){
+                if(!$(this).find(".col-xs-8").is(":hidden")){
+                    var id="\""+$(this).find(".col-xs-8").attr("id")+"\"";
+                    var message="\""+$(this).find(".col-xs-8").find("span").text()+"\"";
+                    var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\",20);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Bold\",1);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                    if(printCode==""){
+                        printCode+=$(this).find(".col-xs-8").attr("id");
+                    }else {
+                        printCode+=","+$(this).find(".col-xs-8").attr("id");
+                    }
+                }
+                if(!$(this).find(".col-xs-8").is(":hidden")){
                     sum++;
                 }
             }else{
@@ -231,7 +236,7 @@ function save() {
         }
         saveAjax(printSet);
         //eval(str);
-        //LODOP.PREVIEW();
+       // LODOP.PREVIEW();
     }else{
         $.gritter.add({
             text: "请选择小票的规格",

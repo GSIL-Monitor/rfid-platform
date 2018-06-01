@@ -1675,74 +1675,19 @@ function doPrint() {
     $("#edit-dialog-print").show();
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/findAll.do",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
         success: function (msg) {
             if (msg.success) {
                 var addcont = "";
-                //var ishave = false;
                 for (var i = 0; i < msg.result.length; i++) {
-
-                    if (billNo.indexOf(msg.result[i].type) >= 0) {
-                        if (roleid == "JMSJS" && msg.result[i].isFranchisee == "is") {
-                            addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
                                 "<button class='btn btn-info'>" +
                                 "<i class='cae-icon fa fa-refresh'></i>" +
                                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
                                 "</button>" +
                                 "</div>"
-                        }
-                        if (roleid != "JMSJS" && msg.result[i].isFranchisee != "is") {
-                            addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                                "<button class='btn btn-info'>" +
-                                "<i class='cae-icon fa fa-refresh'></i>" +
-                                "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                                "</button>" +
-                                "</div>"
-                        }
-
-                    }
                 }
-
-                /* for (var i = 0; i < msg.result.length; i++) {
-                 if (msg.result[i].saveownerid == curOwnerId) {
-                 /!* addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                 "<button class='btn btn-info'>" +
-                 "<i class='cae-icon fa fa-refresh'></i>" +
-                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                 "</button>" +
-                 "</div>"*!/
-                 ishave = true;
-                 break;
-                 }
-                 }
-                 if (ishave == true) {
-                 for (var i = 0; i < msg.result.length; i++) {
-                 if (msg.result[i].saveownerid == curOwnerId && billNo.indexOf(msg.result[i].type) >= 0) {
-                 addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                 "<button class='btn btn-info'>" +
-                 "<i class='cae-icon fa fa-refresh'></i>" +
-                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                 "</button>" +
-                 "</div>"
-
-                 }
-                 }
-                 }
-                 if (ishave == false) {
-                 for (var i = 0; i < msg.result.length; i++) {
-                 if (msg.result[i].saveownerid == undefined && billNo.indexOf(msg.result[i].type) >= 0) {
-                 addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                 "<button class='btn btn-info'>" +
-                 "<i class='cae-icon fa fa-refresh'></i>" +
-                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                 "</button>" +
-                 "</div>"
-
-                 }
-                 }
-                 }*/
-
                 $("#addbutton").html(addcont);
 
             } else {
@@ -1755,7 +1700,7 @@ function doPrint() {
 function set(id) {
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/printMessage.do",
+        url: basePath + "/sys/printset/printMessage.do",
         data: {"id": id, "billno": $("#billno").val()},
         type: "POST",
         success: function (msg) {
@@ -1819,8 +1764,8 @@ function set(id) {
             }
         }
     });
-}
 
+}
 function doPrintA4() {
 
     var billno = $("#search_billNo").val();
@@ -1857,6 +1802,7 @@ function doPrintA4() {
                 var allprice = 0;
                 /* var alldiscount=0;*/
                 for (var a = 0; a < contDel.length; a++) {
+                    debugger
                     var conts = contDel[a];
                     /*recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
                      "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
