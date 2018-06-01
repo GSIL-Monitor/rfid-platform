@@ -920,6 +920,9 @@ function doPrint() {
         dataType: "json",
         url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
+        data: {
+            type:"PI"
+        },
         success: function (msg) {
             if (msg.success) {
                 debugger;

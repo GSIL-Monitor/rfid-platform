@@ -1677,6 +1677,9 @@ function doPrint() {
         dataType: "json",
         url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
+        data: {
+            type:"SO"
+        },
         success: function (msg) {
             if (msg.success) {
                 var addcont = "";
