@@ -303,7 +303,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
      *
      * @param code 唯一码
      */
-    public void updateEpcStockOut(String code) {
+    public void updateEpcStockOut(String code){
         this.epcStockDao.batchExecute("update EpcStock set inStock=0 where code=?", code);
     }
 
