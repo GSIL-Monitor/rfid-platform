@@ -1,22 +1,21 @@
 package com.casesoft.dmc.service.stock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.casesoft.dmc.controller.task.TaskUtil;
+import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.service.AbstractBaseService;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.model.erp.BillDtl;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.tag.Epc;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.service.AbstractBaseService;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.dao.stock.EpcStockDao;
-import com.casesoft.dmc.model.stock.EpcStock;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by WingLi on 2015-06-02.
