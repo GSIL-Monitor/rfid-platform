@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                             <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
-                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">销售单</span>
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
                             </div>
                             <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
                                  <span >销售单</span>
@@ -298,7 +298,7 @@
                         </div>
                         <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                             <span>小票类型:</span>
-                            <select id="receiptType">
+                            <select id="receiptType" onchange="receiptTypeSelect()">
                                 <option value="SO">销售单据</option>
                                 <option value="PI">采购单据</option>
                                 <option value="PR">采购退货</option>

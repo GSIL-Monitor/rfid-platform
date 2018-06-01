@@ -313,7 +313,7 @@ function findPrintSet(sum) {
                     $("#id").val("");
                     $("#ownerId").val("");
                     $("#receiptName").val("");
-                    $("#receiptType").val("SO");
+                    //$("#receiptType").val("SO");
                     $("#commonType").val("1");
                     $("#footExtendWrite").val("欢迎来到Ancient Stone");
                     $("#footExtend").find("span").html("欢迎来到Ancient Stone");
@@ -336,4 +336,17 @@ function findPrintSet(sum) {
             }
         }
     });
+}
+function receiptTypeSelect() {
+    var sum;
+
+    $("#ruleReceipt").find("ul").each(function(index,element){
+
+        if(!($(this).attr("class")=="stecs")) {
+            debugger
+            sum=$(this).data("name")
+            findPrintSet(sum);
+        }
+    });
+
 }
