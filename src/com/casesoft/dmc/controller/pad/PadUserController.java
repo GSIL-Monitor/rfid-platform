@@ -6,9 +6,11 @@ import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.exception.RfidReaderException;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.wechat.wxpay.pay.WXPayConfigImpl;
 import com.casesoft.dmc.model.pad.MobilePayment;
@@ -18,6 +20,7 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.pad.MobilePaymentService;
+import com.casesoft.dmc.service.rfidReader.RfidReaderService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.GuestViewService;
@@ -63,6 +66,9 @@ public class PadUserController extends BaseController implements IBaseInfoContro
     private MobilePaymentService mobilePaymentService;
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
+    @Autowired
+    private RfidReaderService rfidReaderService;
+    private String deviceId = "6252";
 
     /**
      *无人收银验证用户登录
@@ -156,68 +162,74 @@ public class PadUserController extends BaseController implements IBaseInfoContro
     @RequestMapping("/scanning/checkEpcStockWS")
     @ResponseBody
     public MessageBox checkEpcStock(String warehId ,String type) {
+        List<String>epcList = new ArrayList<>();
         List<String>codeList = new ArrayList<>();
-        codeList.add("0081020000124");
-        codeList.add("0005360000424");
-        codeList.add("0080570000124");
-        codeList.add("0080560000124");
-        codeList.add("0080550000224");
-        codeList.add("0080550000124");
-        codeList.add("0016460000724");
-        codeList.add("0080510000124");
-        codeList.add("0070650000124");
-        codeList.add("0070650000224");
+        try {
+            epcList = rfidReaderService.fastSwitchAntInventory(deviceId, (byte) 0x01, (byte) 0x00, (byte) 0x01);
+            for (String uniqueCode : epcList){
+                String epcCode = uniqueCode.toUpperCase();
+                uniqueCode = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+                codeList.add(uniqueCode);
+            }
+        }catch (RfidReaderException e){
+            e.printStackTrace();
+        }
         int sumCode = codeList.size();
         List<EpcStock> epcStockList = new ArrayList<>();
         List<EpcStock> successEpcStock = new ArrayList<>();
         List<String> failSqu = new ArrayList<>();
         StringBuffer failCodestr = new StringBuffer();
-        try {
-            epcStockList = this.epcStockService.findEpcCodes(TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code"));
-            for(EpcStock epcStock :epcStockList) {
+        if (sumCode!=0){
+            try {
+                epcStockList = this.epcStockService.findEpcCodes(TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code"));
+                for(EpcStock epcStock :epcStockList) {
+                    if (type.equals("1")){
+                        if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()!=1){
+                            StockUtil.convertEpcStock(epcStock);
+                            successEpcStock.add(epcStock);
+                        }else {
+                            failSqu.add(epcStock.getSku());
+                        }
+                    }else {
+                        if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()==1){
+                            StockUtil.convertEpcStock(epcStock);
+                            successEpcStock.add(epcStock);
+                        }else {
+                            failSqu.add(epcStock.getSku());
+                        }
+                    }
+                }
                 if (type.equals("1")){
-                    if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()!=1){
-                        StockUtil.convertEpcStock(epcStock);
-                        successEpcStock.add(epcStock);
+                    if (failSqu.size()==0) {
+                        return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能入库", successEpcStock);
                     }else {
-                        failSqu.add(epcStock.getSku());
+                        for (String s :failSqu){
+                            s=s+"、";
+                            failCodestr.append(s);
+                        }
+                        int sumSqu = failSqu.size();
+                        return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能入库,总共："+sumSqu+"件",successEpcStock);
                     }
                 }else {
-                    if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()==1){
-                        StockUtil.convertEpcStock(epcStock);
-                        successEpcStock.add(epcStock);
+                    if (failSqu.size()==0) {
+                        return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能出库", successEpcStock);
                     }else {
-                        failSqu.add(epcStock.getSku());
+                        for (String s :failSqu){
+                            s=s+"、";
+                            failCodestr.append(s);
+                        }
+                        int sumSqu = failSqu.size();
+                        return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能出库,总共："+sumSqu+"件",successEpcStock);
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new MessageBox(false, e.getMessage());
             }
-            if (type.equals("1")){
-                if (failSqu.size()==0) {
-                    return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能入库", successEpcStock);
-                }else {
-                    for (String s :failSqu){
-                        s=s+"、";
-                        failCodestr.append(s);
-                    }
-                    int sumSqu = failSqu.size();
-                    return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能入库,总共："+sumSqu+"件",successEpcStock);
-                }
-            }else {
-                if (failSqu.size()==0) {
-                    return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能出库", successEpcStock);
-                }else {
-                    for (String s :failSqu){
-                        s=s+"、";
-                        failCodestr.append(s);
-                    }
-                    int sumSqu = failSqu.size();
-                    return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能出库,总共："+sumSqu+"件",successEpcStock);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new MessageBox(false, e.getMessage());
+        }else {
+            return new MessageBox(false,"未扫描到商品！");
         }
+
     }
 
     /**
