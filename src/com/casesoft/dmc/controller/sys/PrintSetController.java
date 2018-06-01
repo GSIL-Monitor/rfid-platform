@@ -96,10 +96,10 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     }
     @RequestMapping(value="/findPrintSetListByOwnerId")
     @ResponseBody
-    public MessageBox findPrintSetListByOwnerId(){
+    public MessageBox findPrintSetListByOwnerId(String type){
         try {
             User currentUser = this.getCurrentUser();
-            List<PrintSet> printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId());
+            List<PrintSet> printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type);
             return new MessageBox(true, "查询成功",printSets);
         }catch (Exception e){
             return new MessageBox(false, "查询失败");
