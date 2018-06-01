@@ -278,23 +278,54 @@ function findPrintSet(sum) {
 
             if (msg.success) {
                 var result=msg.result;
-               $("#id").val(result.id);
-                $("#ownerId").val(result.ownerId);
-                $("#receiptName").val(result.name);
-               $("#receiptType").val(result.type);
-               $("#commonType").val(result.commonType);
-                var printFootExtend=""+result.printFootExtend;
-                printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
-                $("#footExtendWrite").val(printFootExtend);
-                $("#footExtend").find("span").html(printFootExtend);
-                $("#headPrint").find("div").each(function (index,element) {
-                      var name=$(this).data("name");
+                if(result!=undefined){
+                    $("#id").val(result.id);
+                    $("#ownerId").val(result.ownerId);
+                    $("#receiptName").val(result.name);
+                    $("#receiptType").val(result.type);
+                    $("#commonType").val(result.commonType);
+                    var printFootExtend=""+result.printFootExtend;
+                    printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
+                    $("#footExtendWrite").val(printFootExtend);
+                    $("#footExtend").find("span").html(printFootExtend);
+                    $("#headPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
 
-                      if(!(result.printCode.indexOf(name)!= -1)){
-                          $(this).attr("class","stecs");
-                          $("#"+name).hide();
-                      }
-                });
+                        if(!(result.printCode.indexOf(name)!= -1)){
+                            $(this).attr("class","stecs");
+                            $("#"+name).hide();
+                        }
+                    });
+                    $("#footerPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+
+                        if(!(result.printCode.indexOf(name)!= -1)){
+                            $(this).attr("class","stecs");
+                            $("#"+name).hide();
+                        }
+                    });
+                }else{
+                    $("#id").val("");
+                    $("#ownerId").val("");
+                    $("#receiptName").val("");
+                    $("#receiptType").val("SO");
+                    $("#commonType").val("1");
+                    $("#footExtendWrite").val("欢迎来到Ancient Stone");
+                    $("#footExtend").find("span").html("欢迎来到Ancient Stone");
+                    $("#headPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+                        $(this).attr("class","stecs on");
+                        $("#"+name).show();
+
+                    });
+                    $("#footerPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+                        $(this).attr("class","stecs on");
+                        $("#"+name).show();
+
+                    });
+                }
+
             } else {
                 bootbox.alert(msg.msg);
             }
