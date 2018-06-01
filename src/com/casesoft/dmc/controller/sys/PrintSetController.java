@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/5/31.
@@ -87,6 +88,28 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
             User currentUser = this.getCurrentUser();
             PrintSet printSet = this.printSetService.findPrintSet(ruleReceipt, type, currentUser.getOwnerId());
             return new MessageBox(true, "查询成功",printSet);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
+        }
+
+    }
+    @RequestMapping(value="/findPrintSetListByOwnerId")
+    @ResponseBody
+    public MessageBox findPrintSetListByOwnerId(){
+        try {
+            User currentUser = this.getCurrentUser();
+            List<PrintSet> printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId());
+            return new MessageBox(true, "查询成功",printSets);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
+        }
+    }
+    @RequestMapping(value="/printMessage")
+    @ResponseBody
+    public MessageBox printMessage(String id,String billno){
+        try {
+            Map<String, Object> map = this.printSetService.printMessage(id, billno);
+            return new MessageBox(true, "查询成功",map);
         }catch (Exception e){
             return new MessageBox(false, "查询失败");
         }
