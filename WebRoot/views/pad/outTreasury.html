@@ -241,7 +241,7 @@
                         height : "200",              //二维码的高度
                         background : "#ffffff",       //二维码的后景色
                         foreground : "#000000",        //二维码的前景色
-                        src: 'img/gray.jpg'             //二维码中间的图片
+                        src: 'WebRoot/images/pad/AS.png'            //二维码中间的图片
                     });
                     t1 = window.setInterval("getPayState()",1500);
                 }else {
@@ -274,6 +274,7 @@
     $('input:radio[id="cash_Payment"]').change(function () {
         $("#saveId").attr('disabled', false);
         $("#payment").empty();
+        window.clearInterval(t1)
     });
     $(function () {
         var url;

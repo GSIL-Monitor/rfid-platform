@@ -262,7 +262,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         data.put("fee_type", "CNY"); //设置货币类型，人民币
         data.put("total_fee", /*Integer.toString(price)*/"1"); //订单总金额，单位为分，只能为整数
         data.put("spbill_create_ip", ip); //调用微信支付API的机器IP
-        data.put("notify_url", "http://byaucw.natappfree.cc/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
+        data.put("notify_url", "http://6kiqhy.natappfree.cc/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
         data.put("trade_type", "NATIVE");//交易方式，扫码支付
         data.put("product_id", "12"); //设置trade_type=NATIVE时，此参数必传。此id为二维码中包含的商品ID
         // data.put("time_expire", "20170112104120");//订单失效时间
