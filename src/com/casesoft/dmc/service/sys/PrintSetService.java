@@ -6,9 +6,7 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PrintSetDao;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
-import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.PrintSet;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.*;
@@ -145,6 +143,25 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
                 mapcont.put("shopBefore","");
             }
             List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billno);
+            map.put("print",printSet);
+            map.put("cont",mapcont);
+            map.put("contDel",billDtlByBillNo);
+        }
+        if(billno.indexOf(BillConstant.BillPrefix.purchase)!=-1){
+            Map<String,Object> mapcont=new HashMap<String,Object>();
+            String hql="from PrintSet t where t.id=?";
+            PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+            PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(billno);
+            mapcont.put("storeName","Ancient Stone");
+            mapcont.put("billType","采购单");
+            mapcont.put("billNo",billno);
+            User user = CacheManager.getUserById(purchaseOrderBill.getOprId());
+            mapcont.put("makeBill",user.getName());
+            mapcont.put("billDate", CommonUtil.getDateString(purchaseOrderBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("coustmer",purchaseOrderBill.getDestUnitName());
+            mapcont.put("remark",purchaseOrderBill.getRemark());
+            mapcont.put("printTime",CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            List<PurchaseOrderBillDtl> billDtlByBillNo = this.purchaseOrderBillService.findBillDtlByBillNo(billno);
             map.put("print",printSet);
             map.put("cont",mapcont);
             map.put("contDel",billDtlByBillNo);

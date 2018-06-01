@@ -26,6 +26,7 @@ import java.util.Map;
 public class PrintSetController extends BaseController implements IBaseInfoController<PrintSet> {
     @Autowired
     private PrintSetService  printSetService;
+
     @Override
     public Page<PrintSet> findPage(Page<PrintSet> page) throws Exception {
         return null;
@@ -60,10 +61,10 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     public MessageBox importExcel(MultipartFile file) throws Exception {
         return null;
     }
-
+    @RequestMapping(value = "/index")
     @Override
     public String index() {
-        return null;
+        return "views/sys/printSet";
     }
     @RequestMapping(value="/savePrintSetMessage")
     @ResponseBody
