@@ -20,7 +20,7 @@ $(function () {
     input_keydown();
     initButtonGroup();
     initEditFormValid();
-    $(".selectpicker").selectpicker({'noneResultsText': ''});
+
 });
 
 function initForm() {
@@ -52,6 +52,7 @@ function initForm() {
         $("#search_busnissId").val(saleOrder_busnissId);
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     }
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function initCustomerTypeForm() {
@@ -84,7 +85,6 @@ function initSelectOrigForm() {
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
         }
     });
@@ -102,7 +102,6 @@ function initSelectDestForm() {
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_destId").trigger('chosen:updated');
             }
         }
     });

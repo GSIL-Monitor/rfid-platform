@@ -10,6 +10,7 @@ $(function () {
 
 function initForm() {
     initSelectBusinessIdForm();
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function initSelectBusinessIdForm() {
@@ -22,7 +23,7 @@ function initSelectBusinessIdForm() {
     $.ajax({
         url: url,
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_busnissId").empty();

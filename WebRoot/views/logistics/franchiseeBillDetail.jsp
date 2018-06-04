@@ -121,14 +121,14 @@
 
                                     <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
                                     <div class="col-xs-2">
-                                        <select class="form-control" id="search_destId" name="destId"
-                                                style="width: 100%;" value="${saleOrderBill.destId}">
+                                        <select class="form-control selectpicker show-tick" id="search_destId" name="destId"
+                                                style="width: 100%;" value="${saleOrderBill.destId}" data-live-search="true">
                                         </select>
                                     </div>
                                     <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
                                     <div class="col-xs-2">
-                                        <select class="form-control" id="search_origId" name="origId"
-                                                style="width: 100%;" value="${saleOrderBill.origId}">
+                                        <select class="form-control selectpicker show-tick" id="search_origId" name="origId"
+                                                style="width: 100%;" value="${saleOrderBill.origId}" data-live-search="true">
                                         </select>
                                     </div>
                                 </div>
@@ -216,13 +216,7 @@
 <jsp:include page="in_uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
-<link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.material.min.css" rel="stylesheet">
-<script src="<%=basePath%>/kendoUI/js/kendo.all.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
+
 <script type="text/javascript" src="<%=basePath%>/views/logistics/franchiseeBillDetailController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>

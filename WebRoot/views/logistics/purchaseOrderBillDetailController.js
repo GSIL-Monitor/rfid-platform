@@ -8,6 +8,7 @@ $(function () {
     if(billNo!=""){
         sessionStorage.setItem("billNopurchase",billNo);
     }
+    $(".selectpicker").selectpicker('refresh');
 });
 
 function initForm() {
@@ -25,6 +26,7 @@ function initForm() {
         $("#search_billNo").val("");
         $("#search_destId").val(purchaseOrder_destId);
     }
+
 }
 
 function initSelectDestForm() {
@@ -36,11 +38,10 @@ function initSelectDestForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_destId").empty();
-                $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+                $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_destId").trigger('chosen:updated');
                 }
             }
         });
@@ -52,11 +53,10 @@ function initSelectDestForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_destId").empty();
-                $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+                $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_destId").trigger('chosen:updated');
                 }
             }
         });
@@ -69,11 +69,10 @@ function initSelectDestForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_orderWarehouseId").empty();
-            $("#search_orderWarehouseId").append("<option value='' style='background-color: #eeeeee'>--请选择订货仓库--</option>");
+            $("#search_orderWarehouseId").append("<option value=''>--请选择订货仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_orderWarehouseId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_orderWarehouseId").trigger('chosen:updated');
             }
         }
     });

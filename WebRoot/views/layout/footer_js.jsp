@@ -156,8 +156,14 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
             $(window).triggerHandler('resize.jqGrid');
             initLayout();
         });
-        
         $("#grid").css("background","#FFFFFF");
+        $(".selectpicker").selectpicker({'noneResultsText': '没有匹配结果'});
     });
+
+
+    function _reset(){
+        $(".selectpicker").selectpicker('val', '')
+        $(".selectpicker").selectpicker('refresh');
+    }
 
 </script>

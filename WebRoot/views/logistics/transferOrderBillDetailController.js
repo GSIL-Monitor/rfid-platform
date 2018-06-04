@@ -28,6 +28,7 @@ function initForm() {
     } else if (pageType === "edit") {
         $("#search_origId").val(transferOrder_origId);
         $("#search_destId").val(transferOrder_destId);
+
         if (transferOrder_status != "0") {
             $("#search_origId").attr('disabled', true);
             $("#search_destId").attr('disabled', true);
@@ -39,6 +40,8 @@ function initForm() {
         $("#search_destId").val(transferOrder_destId);
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     }
+    $(".selectpicker").selectpicker('refresh');
+    $('.selectpicker').selectpicker('render');
 }
 
 function initSelectOrigForm() {
@@ -49,11 +52,10 @@ function initSelectOrigForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
-            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+            $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
         }
     });
@@ -66,11 +68,10 @@ function initSelectDestForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
-            $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_destId").trigger('chosen:updated');
             }
         }
     });

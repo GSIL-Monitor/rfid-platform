@@ -60,6 +60,8 @@ function initForm() {
         $("#search_busnissId").val(saleOrderReturn_busnissId);
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     }
+    $(".selectpicker").selectpicker('refresh');
+    $('.selectpicker').selectpicker('render');
     $("#search_customerType").attr('disabled', true);
 }
 
@@ -96,11 +98,11 @@ function initSelectOrigForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+                $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
+                    $("#search_origId").selectpicker('refresh');
                 }
             }
         });
@@ -112,11 +114,11 @@ function initSelectOrigForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+                $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
+                    $("#search_origId").selectpicker('refresh');
                 }
             }
         });
@@ -137,7 +139,7 @@ function initSelectDestForm() {
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_destId").trigger('chosen:updated');
+                    $("#search_destId").selectpicker('refresh');
                 }
             }
         });
@@ -153,7 +155,7 @@ function initSelectDestForm() {
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_destId").trigger('chosen:updated');
+                    $("#search_destId").selectpicker('refresh');
                 }
             }
         });
@@ -180,7 +182,7 @@ function initSelectBusinessIdForm() {
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
-                // $("#search_busnissId").trigger('chosen:updated');
+                // $("#search_busnissId").selectpicker('refresh');
             }
             if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
                 $("#search_busnissId").val(defaultSaleStaffId);
