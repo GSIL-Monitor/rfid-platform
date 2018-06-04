@@ -48,12 +48,6 @@ public abstract class BaseStyle {
     protected String class10;//商品级别
 
 
-    @Transient
-    protected String rules;//商品定价规则
-    public String getRules() { return rules; }
-    public void setRules(String rules) { this.rules = rules; }
-
-
     @Column(unique = true, nullable = false, length = 20)
     public String getStyleId() {
         return this.styleId;

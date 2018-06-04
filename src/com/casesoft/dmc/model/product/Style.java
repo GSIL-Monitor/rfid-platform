@@ -77,7 +77,7 @@ public class Style extends BaseStyle implements java.io.Serializable {
     }
 
     public Style(String id, String styleId, int isDeton, String sizeSort, String styleName, String styleEname, double price
-            , double preCast, double wsPrice,double purPrice, String brandCode, String brand,String rules
+            , double preCast, double wsPrice,double purPrice, String brandCode, String brand
             , String class1, String class2, String class3, String class4
             , String class5, String class6, String class7, String class8
             , String class9, String class10) {
@@ -102,7 +102,7 @@ public class Style extends BaseStyle implements java.io.Serializable {
         super.setClass8(class8);
         super.setClass9(class9);
         super.setClass10(class10);
-        super.setRules(rules);
+//        super.setRules(rules);
     }
 
     /**
