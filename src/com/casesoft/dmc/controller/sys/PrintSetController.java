@@ -76,7 +76,7 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
                 entity.setOwnerId(currentUser.getOwnerId());
             }
             this.printSetService.savePrintSetMessage(entity);
-            return new MessageBox(true, "保存成功");
+            return new MessageBox(true, "保存成功",entity);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(false, "保存失败");

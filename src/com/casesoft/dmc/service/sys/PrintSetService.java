@@ -172,7 +172,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.load(billno);
             mapcont.put("storeName","Ancient Stone");
-            mapcont.put("billType","销售退货单");
+            mapcont.put("billType","销售退货");
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(saleOrderReturnBill.getOprId());
             mapcont.put("makeBill",user.getName());
@@ -183,6 +183,44 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             User user1 = this.userService.getUser(saleOrderReturnBill.getBusnissId());
             mapcont.put("businessId",user1.getName());
             List<SaleOrderReturnBillDtl> billDtlByBillNo = this.saleOrderReturnBillService.findBillDtlByBillNo(billno);
+            map.put("print",printSet);
+            map.put("cont",mapcont);
+            map.put("contDel",billDtlByBillNo);
+        }
+        if(billno.indexOf(BillConstant.BillPrefix.purchaseReturn)!=-1){
+            Map<String,Object> mapcont=new HashMap<String,Object>();
+            String hql="from PrintSet t where t.id=?";
+            PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+            PurchaseReturnBill purchaseReturnBill = this.purchaseReturnBillService.load(billno);
+            mapcont.put("storeName","Ancient Stone");
+            mapcont.put("billType","采购退货");
+            mapcont.put("billNo",billno);
+            User user = CacheManager.getUserById(purchaseReturnBill.getOprId());
+            mapcont.put("makeBill",user.getName());
+            mapcont.put("coustmer",purchaseReturnBill.getOrigUnitName());
+            mapcont.put("billDate", CommonUtil.getDateString(purchaseReturnBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("remark",purchaseReturnBill.getRemark());
+            mapcont.put("printTime",CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            List<PurchaseReturnBillDtl> billDtlByBillNo = this.purchaseReturnBillService.findBillDtlByBillNo(billno);
+            map.put("print",printSet);
+            map.put("cont",mapcont);
+            map.put("contDel",billDtlByBillNo);
+        }
+        if(billno.indexOf(BillConstant.BillPrefix.Transfer)!=-1){
+            Map<String,Object> mapcont=new HashMap<String,Object>();
+            String hql="from PrintSet t where t.id=?";
+            PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+            TransferOrderBill transferOrderBill = this.transferOrderBillService.load(billno);
+            mapcont.put("storeName","Ancient Stone");
+            mapcont.put("billType","调拨");
+            mapcont.put("billNo",billno);
+            User user = CacheManager.getUserById(transferOrderBill.getOprId());
+            mapcont.put("makeBill",user.getName());
+            mapcont.put("coustmer",transferOrderBill.getOrigUnitName());
+            mapcont.put("billDate", CommonUtil.getDateString(transferOrderBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("remark",transferOrderBill.getRemark());
+            mapcont.put("printTime",CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            List<TransferOrderBillDtl> billDtlByBillNo= this.transferOrderBillService.findBillDtlByBillNo(billno);
             map.put("print",printSet);
             map.put("cont",mapcont);
             map.put("contDel",billDtlByBillNo);
