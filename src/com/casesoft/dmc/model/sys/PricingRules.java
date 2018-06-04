@@ -27,9 +27,9 @@ public class PricingRules implements java.io.Serializable {
 	@Column()
 	private double rule1;//规则1 表示吊牌价与采购价之间关系（double 保留两位小数）
 	@Column()
-	private double rule2;//规则2 代理商价与吊牌价直接关系（double 保留两位小数）
+	private double rule2;//规则2 门店与吊牌价直接关系（double 保留两位小数）
 	@Column()
-	private double rule3;//规则3 门店价与吊牌价之间关系 （double 保留两位小数）
+	private double rule3;//规则3 代理商价与吊牌价之间关系 （double 保留两位小数）
 	@Column(length = 20)
 	private String userId;//更新人
 	@Column(length = 50,unique = true)

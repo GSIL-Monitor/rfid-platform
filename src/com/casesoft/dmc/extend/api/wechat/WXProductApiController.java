@@ -15,10 +15,12 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
+import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,11 +56,15 @@ public class WXProductApiController extends ApiBaseController {
 
     @Autowired
     private PhotoService photoService;
+
     @Autowired
     private CustomerPhotoService customerPhotoService;
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private PricingRulesService pricingRulesService;
 
     @Override
     public String index() {
@@ -310,6 +316,20 @@ public class WXProductApiController extends ApiBaseController {
         this.logAllRequestParams();
         List<List<PropertyKey>> pkList = this.propertyService.getPropertyKeyByTypes(typeList);
         return pkList;
+    }
+
+    /**
+     * add by Anna
+     * 小程序定价规则列表
+     */
+    @RequestMapping(value="/searchPricingRules")
+    @ResponseBody
+    public List<PricingRules> searchPricingRules() throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        List<PricingRules> pricingRules = this.pricingRulesService.find(filters);
+        return pricingRules;
     }
 
     /**

@@ -911,8 +911,8 @@
                     var json=date;
                     for (var i=0;i<json.length;i++){
                         checkNum = json[i].rule1;/*规则1 表示吊牌价与采购价之间关系*/
-                        purPrice = Math.round(price*(json[i].rule3)*10)/10.0;/*规则3 门店价与吊牌价之间关系*/
-                        wsPrice = Math.round(price*(json[i].rule2)*10)/10.0;/*规则2 代理商价与吊牌价直接关系*/
+                        purPrice = Math.round(price*(json[i].rule3)*10)/10.0;/*规则3 代理商价与吊牌价之间关系*/
+                        wsPrice = Math.round(price*(json[i].rule2)*10)/10.0;/*规则2 门店价与吊牌价直接关系*/
                     }
                     $("#form_puPrice").val(purPrice);
                     $("#form_wsPrice").val(wsPrice);
