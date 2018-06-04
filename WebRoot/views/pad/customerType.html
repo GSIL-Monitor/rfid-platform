@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <title>自助收银</title>
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="css/padBase.css">
+
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <!--grid.locale-en.js这个文件必须在jquery.jqGrid.min.js之前加载，否则会出问题-->
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+    <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+    <script src="../../jslib2/constant.js"></script>
+    <script src="../../Olive/plugin/dateFormatUtil.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+    <style>
+        .vip {
+            width:80%;
+            height:90%;
+            background:url('/images/pad/vip.png')  no-repeat left top;
+            background-size:contain;
+            border:none;
+            color:#0a0a0a;
+        }
+        .ordinary {
+            width:80%;
+            height:90%;
+            background:url('/images/pad/ordinary.png')  no-repeat left top;
+            background-size:contain;
+            border:none;
+            color:#0a0a0a;
+        }
+    </style>
+</head>
+<body style="height: 100%">
+<div class="col-lg-12 col-md-12 col-sm-12 " style="height: 15%">
+    <h1 align="center">
+        自助收银
+    </h1>
+</div>
+<div class=" col-lg-12 col-md-12 col-sm-12" style="height: 70%">
+    <div class=" col-lg-12 col-md-12 col-sm-12 " style="height: 100%">
+        <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
+            <button class="vip  center-vertical  " type="button" onclick="vip()" ></button>
+        </div>
+        <div class="row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
+            <button class="ordinary  center-vertical " type="button" onclick="ordinary()"></button>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12" style="height: 7.5%">
+    <h4 class="widget-title lighter">会员用户会有更大的优惠哦！</h4>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12" style="height: 7.5%">
+    <div class="col-lg-12 col-md-12 col-sm-12 center"  style="height: 100%">
+        <button class="btn btn-primary " onclick="back() "  type="button">上一步</button>
+    </div>
+</div>
+</body>
+<script>
+    var basePath;//路径
+    var defalutCustomerId;//默认客户
+    var owingValue;//默认客户售前余额
+    var ownerId;
+    basePath=localStorage.getItem("basePath");
+    defalutCustomerId=localStorage.getItem("defalutCustomerId");
+    owingValue=localStorage.getItem("owingValue");
+    ownerId = localStorage.getItem("ownerId");
+    function vip() {
+        window.location.href=basePath+'views/pad/customer.html'
+    }
+    function ordinary() {
+        $.ajax({
+            url: basePath+"pad/customer/addWS.do",
+            data:{
+                defalutCustomerId:defalutCustomerId
+            },
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (msg) {
+                var origUnitName = msg.result.name;
+                var discount = msg.result.discount;
+                var origUnitId = msg.result.id;
+                $("#search_origUnitName").val(origUnitName);
+                $("#search_discount").val(discount);
+                localStorage.setItem("customerType",msg.result.unitType);
+                localStorage.setItem("origUnitId",origUnitId);
+                localStorage.setItem("origUnitName",origUnitName);
+                localStorage.setItem("discount",discount);
+            }
+        });
+        if (localStorage.getItem("type")==2){
+            window.location.href=basePath+'views/pad/SRscanning.html';
+        }else {
+            window.location.href=basePath+'views/pad/scanning.html';
+        }
+    }
+    function back() {
+        window.location.href=basePath+'views/pad/addUniqCode.html';
+    }
+</script>
+</html>

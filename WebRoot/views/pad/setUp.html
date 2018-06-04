@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../Olive/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 
 
+
     <style>
         body {
             background-color: #ffffff;
@@ -24,11 +25,7 @@
             color: #393939;
             line-height: 1.5;
         }
-
-
     </style>
-
-
 </head>
 <body>
 <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -49,7 +46,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 50%;">
                 <div class="divlevel">
                     <span >服务器地址：</span>
-                    <input class="col-lg-6 col-md-6 col-sm-6 col-xs-6" type="text"/>
+                    <input class="col-lg-6 col-md-6 col-sm-6 col-xs-6" type="text" id="basePath"/>
                 </div>
             </div>
 
@@ -128,8 +125,26 @@
             </div>
         </div>
     </div>
-
+</div>
+<div  style="margin-top: 5%" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-6 col-md-6 col-sm-6 center"  style="height: 100%">
+        <button class="btn btn-primary " onclick="back() "  type="button">上一步</button>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 center" style="height: 100%">
+        <button class="btn btn-primary "  type="button" onclick="save()">保存</button>
+    </div>
 </div>
 
 </body>
+<script>
+    var basePath = localStorage.getItem("basePath");
+/*    var setPath=basePathAll.split("/padLogin")[0];
+    $("#BasePath").val(setPath);*/
+
+    function back() {
+        localStorage.setItem("back",1);
+        window.location.href=basePath+'views/pad/padUser.html';
+    }
+
+</script>
 </html>

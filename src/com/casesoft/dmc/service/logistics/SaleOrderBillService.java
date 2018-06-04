@@ -30,7 +30,6 @@ import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.task.TaskService;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +97,16 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     @Override
     public void update(SaleOrderBill entity) {
         this.saleOrderBillDao.saveOrUpdate(entity);
+    }
+
+    //更新支付方式
+    public void update(String payType,String billNo){
+        this.saleOrderBillDao.batchExecute("update SaleOrderBill set payType = '" +payType+"' where billNo = ?",billNo);
+    }
+
+    //更新关联单号
+    public void updateNo(String billNo,String rbillNo){
+        this.saleOrderBillDao.batchExecute("update SaleOrderBill set srcBillNo = '"+rbillNo+"' where billNo = ?",billNo);
     }
 
     @Override

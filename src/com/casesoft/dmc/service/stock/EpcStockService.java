@@ -1,22 +1,21 @@
 package com.casesoft.dmc.service.stock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.casesoft.dmc.controller.task.TaskUtil;
+import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.service.AbstractBaseService;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.model.erp.BillDtl;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.tag.Epc;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.service.AbstractBaseService;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.dao.stock.EpcStockDao;
-import com.casesoft.dmc.model.stock.EpcStock;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by WingLi on 2015-06-02.
@@ -198,6 +197,10 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
     }
 
+    public List<EpcStock> findEpcCodes(String codes){
+        return this.epcStockDao.find("from EpcStock epcstock where" + codes);
+    }
+
     public List<EpcStock> findEpcNotInCodes(String warehId, String codes) {
         return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=0  and " + codes + " and (epcstock.warehouse2Id=? or epcstock.warehouseId=?)", new Object[]{warehId, warehId});
     }
@@ -299,7 +302,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
      *
      * @param code 唯一码
      */
-    public void updateEpcStockOut(String code) {
+    public void updateEpcStockOut(String code){
         this.epcStockDao.batchExecute("update EpcStock set inStock=0 where code=?", code);
     }
 

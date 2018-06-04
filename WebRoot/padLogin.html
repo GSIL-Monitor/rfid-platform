@@ -10,43 +10,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CaseSoft RFID">
     <meta name="author" content="CaseSoft Software">
-    <!-- END META -->
-
-    <!-- BEGIN SHORTCUT ICON -->
     <link rel="shortcut icon" href="favicon.ico">
-    <!-- END SHORTCUT ICON -->
     <title>CaseSoft RFID-SMART大数据平台</title>
-
     <meta name="description" content="User login page" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
-    <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="Olive/assets/css/bootstrap.css" />
     <link rel="stylesheet" href="Olive/assets/css/font-awesome.css" />
-
-    <!-- text fonts -->
     <link rel="stylesheet" href="Olive/assets/css/ace-fonts.css" />
-
-    <!-- ace styles -->
     <link rel="stylesheet" href="Olive/assets/css/ace.css" />
-
-    <!--[if lte IE 9]>
     <link rel="stylesheet" href="Olive/assets/css/ace-part2.css" />
-    <![endif]-->
     <link rel="stylesheet" href="Olive/assets/css/ace-rtl.css" />
-
-    <!--[if lte IE 9]>
     <link rel="stylesheet" href="Olive/assets/css/ace-ie.css" />
-    <![endif]-->
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-
-    <!--[if lt IE 9]>
+    <script src="Olive/assets/js/jquery.js"></script>
+    <script src="Olive/assets/js/bootstrap.js"></script>
+    <script src="Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="jslib2/constant.js"></script>
+    <script src="Olive/plugin/dateFormatUtil.js"></script>
+    <script src="Olive/assets/js/jquery.gritter.js"></script>
+    <script src="Olive/assets/js/bootbox.js"></script>
     <script src="Olive/assets/js/html5shiv.js"></script>
     <script src="Olive/assets/js/respond.js"></script>
     <script src="Olive/plugin/bootstrap3-dialog/js/bootstrap-dialog.js"></script>
-    <script src="Olive/assets/js/bootbox.js"></script>
-    <![endif]-->
     <style>
         body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6 { font-family: Microsoft YaHei,'宋体' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
         .center-vertical {
@@ -199,12 +184,15 @@
             type: "POST",
             success: function (msg) {
                 if(msg.success){
+                    localStorage.clear();
                     userId=msg.result.id;
                     ownerId=msg.result.ownerId;
-                    window.location.href=basePath+'views/pad/padUser.html?userId='+userId+'&basePath='+basePath+'&ownerId='+ownerId;
+                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("basePath", basePath);
+                    localStorage.setItem("ownerId", ownerId);
+                    window.location.href=basePath+'views/pad/padUser.html';
                 }else{
-                    window.location.href=basePath+'padLogin.html';
-                    bootbox.alert(msg.msg);
+                    bootbox.alert("请核对用户名密码！");
                 }
             }
         });
