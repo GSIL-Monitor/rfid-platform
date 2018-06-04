@@ -304,7 +304,7 @@ public class StyleUtil {
         sty.setClass8(style.getClass8());
         sty.setClass9(style.getClass9());
         sty.setClass10(style.getClass10());
-        sty.setRules(style.getRules());
+//        sty.setRules(style.getRules());
         sty.setIspush(style.getIspush());
         List<Product> saveList = new ArrayList<>();
         int index = CacheManager.getMaxProductId();

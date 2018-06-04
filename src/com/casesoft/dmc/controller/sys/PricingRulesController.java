@@ -28,8 +28,9 @@ import java.util.List;
 
 /**
  * 定价规则
+ *
  * @author liutianci 修改时间2018.3.28
- *修改内容定价规则 验证add、edit方法的传送
+ * 修改内容定价规则 验证add、edit方法的传送
  */
 
 @Controller
@@ -46,16 +47,19 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         page.setPageProperty();
-        page = this.pricingRulesService.findPage(page,filters);
-        for(PricingRules p :page.getRows()){
-            PropertyKey propertyKey =CacheManager.getPropertyKey("C9-"+p.getSeries());
+        page = this.pricingRulesService.findPage(page, filters);
+        for (PricingRules p : page.getRows()) {
+            PropertyKey propertyKey = CacheManager.getPropertyKey("C9-" + p.getSeries());
             p.setSeriesName(propertyKey.getName());
         }
         return page;
     }
 
 
-    @RequestMapping("/list")
+    /**
+     * 小程序商品款式查listWS
+     */
+    @RequestMapping(value = {"/list", "/listWS"})
     @ResponseBody
     @Override
     public List<PricingRules> list() throws Exception {
@@ -73,8 +77,8 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
     public MessageBox save(PricingRules pricingRules) throws Exception {
         this.logAllRequestParams();
         String pageType = this.getReqParam("pageType");
-        PricingRules pr = this.pricingRulesService.get("series",pricingRules.getSeries());
-        if ("add".equals(pageType)){
+        PricingRules pr = this.pricingRulesService.get("series", pricingRules.getSeries());
+        if ("add".equals(pageType)) {
             if (CommonUtil.isNotBlank(pr)) {
                 return this.returnFailInfo("保存失败");
             } else {
@@ -100,7 +104,7 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
         try {
             this.pricingRulesService.save(pr);
             return returnSuccessInfo("保存成功");
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return returnFailInfo("保存失败");
         }
@@ -115,38 +119,41 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
     public MessageBox delete(String taskId) throws Exception {
         return null;
     }
+
     @Override
     public void exportExcel() throws Exception {
 
     }
+
     @Override
     public MessageBox importExcel(MultipartFile file) throws Exception {
         return null;
     }
+
     @Override
     public String index() {
         return null;
     }
 
     @RequestMapping("/index")
-    public ModelAndView indexMV(){
+    public ModelAndView indexMV() {
         ModelAndView mv = new ModelAndView("/views/sys/pricingRules");
         List<PropertyType> propertyTypeList = this.pricingRulesService.findPricingRulesPropertyType();
-        mv.addObject("classTypes",propertyTypeList);
+        mv.addObject("classTypes", propertyTypeList);
         return mv;
     }
 
     /*状态判断*/
     @RequestMapping(value = "/changePricingRulesStatus")
     @ResponseBody
-    public MessageBox changePricingRulesStatus(String id,String state){
+    public MessageBox changePricingRulesStatus(String id, String state) {
         this.logAllRequestParams();
-        try{
+        try {
             PricingRules pr = this.pricingRulesService.load(id);
             pr.setState(state);
             this.pricingRulesService.save(pr);
             return returnSuccessInfo("更改成功");
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return returnFailInfo("更改失败");
         }

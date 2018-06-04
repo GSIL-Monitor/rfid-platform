@@ -1515,7 +1515,7 @@ public class ProductUtil {
                                         String styleName, String styleEname, Double price, Double preCast,
                                         Double wsPrice, Double purPrice, String brandCode, String brand, String rules, HSSFRow row) {
         Style s = new Style(styleId, styleNo, isDeton, sizeSort, styleName,
-                styleEname, price, preCast, wsPrice, purPrice, brandCode, brand, rules,
+                styleEname, price, preCast, wsPrice, purPrice, brandCode, brand,
                 getStringFormCell(row.getCell(22)),
                 getStringFormCell(row.getCell(24)),
                 getStringFormCell(row.getCell(26)),
