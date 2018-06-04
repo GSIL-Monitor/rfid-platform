@@ -72,7 +72,7 @@ function initGrid() {
                     html += "<a style='margin-left: 20px' href='" + basePath + "/logistics/transferOrder/edit.do?billNo=" + billNo + "'><i class='ace-icon fa fa-edit' title='编辑'></i></a>";
                     html += "<a style='margin-left: 20px' href='#' onclick=check('" + billNo + "')><i class='ace-icon fa fa-check-square-o' title='审核'></i></a>";
                     html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
-                    html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";
+                  /*  html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*/
                     html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
 
 
@@ -377,30 +377,32 @@ function openSearchDestDialog() {
 }
 
 function doPrint() {
-    debugger;
+     debugger
     /*$("#editForm").resetForm();*/
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");
-    var billNo=$("#search_billNo").val();
+    var billNo = $("#search_billNo").val();
     $("#billno").val(billNo);
     $("#edit-dialog-print").show();
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/findAll.do",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
+        data: {
+            type:"TR"
+        },
         success: function (msg) {
+
             if (msg.success) {
-                debugger;
                 var addcont = "";
+                //var ishave = false;
                 for (var i = 0; i < msg.result.length; i++) {
-                    if (billNo.indexOf(msg.result[i].type) >= 0) {
-                        addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                            "<button class='btn btn-info'>" +
-                            "<i class='cae-icon fa fa-refresh'></i>" +
-                            "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                            "</button>" +
-                            "</div>"
-                    }
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
                 }
                 $("#addbutton").html(addcont);
 
@@ -415,7 +417,7 @@ function set(id) {
     debugger;
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/printMessage.do",
+        url: basePath + "/sys/printset/printMessage.do",
         data: {"id": id, "billno": $("#billno").val()},
         type: "POST",
         success: function (msg) {
@@ -469,8 +471,8 @@ function set(id) {
 
                 $("#loadtab").html(recordmessage);
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
-                //LODOP.PREVIEW();
-                LODOP.PRINT();
+                LODOP.PREVIEW();
+                //LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 

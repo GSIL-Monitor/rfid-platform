@@ -1850,8 +1850,8 @@ function doPrintA4() {
                 $("#loadtabA4").html(recordmessage);
                 //alert($("#edit-dialogA4").html());
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
-                //LODOP.PREVIEW();
-                LODOP.PRINT();
+                LODOP.PREVIEW();
+                //LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 
@@ -1936,8 +1936,8 @@ function doPrintA41() {
                 $("#loadtabA41").html(recordmessage);
                 //alert($("#edit-dialogA4").html());
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA41").html());
-                //LODOP.PREVIEW();
-                LODOP.PRINT();
+                LODOP.PREVIEW();
+                //LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 

@@ -262,7 +262,8 @@ function saveAjax(printSet) {
                     text: msg.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
-
+                $("#id").val(msg.result.id);
+                $("#ownerId").val(msg.result.ownerId);
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -299,6 +300,9 @@ function findPrintSet(sum) {
                         if(!(result.printCode.indexOf(name)!= -1)){
                             $(this).attr("class","stecs");
                             $("#"+name).hide();
+                        }else{
+                            $(this).attr("class","stecs on");
+                            $("#"+name).show();
                         }
                     });
                     $("#footerPrint").find("div").each(function (index,element) {
@@ -307,6 +311,9 @@ function findPrintSet(sum) {
                         if(!(result.printCode.indexOf(name)!= -1)){
                             $(this).attr("class","stecs");
                             $("#"+name).hide();
+                        }else{
+                            $(this).attr("class","stecs on");
+                            $("#"+name).show();
                         }
                     });
                 }else{
