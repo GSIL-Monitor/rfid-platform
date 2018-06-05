@@ -15,7 +15,7 @@
 
     <table style="text-align:center;font-size:10px;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
         <thead >
-        <tr >
+        <tr id="loadtabthA4">
             <th align="left"  nowrap="nowrap" style="border:0px;font-size:17px;width:16%;">款号</th>
             <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">款名</th>
             <th align="left" nowrap="nowrap"style="border:0px;font-size:17px;width: 10%;">颜色</th>

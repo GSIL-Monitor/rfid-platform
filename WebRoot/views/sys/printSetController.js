@@ -2,14 +2,18 @@ var printParameter={
     fontSize58mm:9,//58mm小票字体的大小
     fontSize80mm:9,//80mm小票字体的大小
     fontSize110mm:9,//110mm小票字体的大小
+    fontSizeA4:9,//A4字体的大小
     receiptWidth58mm:220,//58mm小票的宽度
     receiptWidth80mm:260,//80mm小票的宽度
     receiptWidth110mm:500,//110mm小票的宽度
+    receiptWidthA4:700,//A4的宽度
     receiptheight58mm:693,//58mm小票的高度
     receiptheight80mm:741,//80mm小票的高度
     receiptheight110mm:610,//100mm小票的高度
+    receiptheightA4:639,//A4的宽度
     aRowheight:25,//每行的高度
     intervalHeight:10//行之间的间隔
+
 
 
 };
@@ -29,20 +33,78 @@ function selectfoorerPrint() {
     $("#headPrint").hide();
 }
 function selectRuleReceipt(sum) {
-    $("#ruleReceipt").find("ul").each(function(index,element){
-        var b=$("#ruleReceipt").find("ul")[index].getAttribute('data-name');
-        if(b==sum){
-            if($(this).attr("class")=="stecs"){
-                $(this).attr("class","stecs on") ;
-                findPrintSet(sum);
+    if(sum=="A4"){
+        $("#A4Print").show();
+        $("#receiptPrint").hide();
+        $("#ruleReceiptA4").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+               /* if($(this).attr("class")=="stecs"){*/
+                    $(this).attr("class","stecs on") ;
+                    findPrintSetA4(sum);
+                /*}else{
+                    $(this).attr("class","stecs") ;
+                }*/
             }else{
                 $(this).attr("class","stecs") ;
             }
-        }else{
-            $(this).attr("class","stecs") ;
-        }
 
-    });
+        });
+    }else{
+        $("#ruleReceipt").find("ul").each(function(index,element){
+            var b=$("#ruleReceipt").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                if($(this).attr("class")=="stecs"){
+                    $(this).attr("class","stecs on") ;
+                    findPrintSet(sum);
+                }else{
+                    $(this).attr("class","stecs") ;
+                }
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }
+
+
+}
+function selectRuleReceiptA4(sum) {
+    if(sum=="A4"){
+
+        $("#ruleReceiptA4").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                if($(this).attr("class")=="stecs"){
+                    $(this).attr("class","stecs on") ;
+                    findPrintSetA4(sum);
+                }else{
+                    $(this).attr("class","stecs") ;
+                }
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }else{
+        $("#A4Print").hide();
+        $("#receiptPrint").show();
+        $("#ruleReceipt").find("ul").each(function(index,element){
+            var b=$("#ruleReceipt").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+              /*  if($(this).attr("class")=="stecs"){*/
+                    $(this).attr("class","stecs on") ;
+                    findPrintSet(sum);
+               /* }else{
+                    $(this).attr("class","stecs") ;
+                }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }
+
 
 }
 function selectThis(t,selectId) {
@@ -344,6 +406,74 @@ function findPrintSet(sum) {
         }
     });
 }
+function findPrintSetA4(sum) {
+    $.ajax({
+        dataType: "json",
+        async: true,
+        url: basePath + "/sys/printset/findPrintSet.do",
+        data: {
+            ruleReceipt: sum,
+            type:$("#receiptTypeA4").val()
+        },
+        type: "POST",
+        success: function (msg) {
+            debugger;
+            if (msg.success) {
+                var result=msg.result;
+                if(result!=undefined){
+                    $("#idA4").val(result.id);
+                    $("#ownerIdA4").val(result.ownerId);
+                    $("#receiptNameA4").val(result.name);
+                    $("#receiptTypeA4").val(result.type);
+                    $("#commonTypeA4").val(result.commonType);
+                    $("#headPrintA4").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+
+                        if(!(result.printCode.indexOf(name)!= -1)){
+                            $(this).attr("class","stecs");
+                            $("#"+name+"A4").hide();
+                        }else{
+                            $(this).attr("class","stecs on");
+                            $("#"+name+"A4").show();
+                        }
+                    });
+                    $("#footerPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+
+                        if(!(result.printCode.indexOf(name)!= -1)){
+                            $(this).attr("class","stecs");
+                            $("#"+name+"A4").hide();
+                        }else{
+                            $(this).attr("class","stecs on");
+                            $("#"+name+"A4").show();
+                        }
+                    });
+                }else{
+                    $("#id").val("");
+                    $("#ownerId").val("");
+                    $("#receiptName").val("");
+                    //$("#receiptType").val("SO");
+                    $("#commonType").val("1");
+                    $("#headPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+                        $(this).attr("class","stecs on");
+                        $("#"+name+"A4").show();
+
+                    });
+                    $("#footerPrint").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+                        $(this).attr("class","stecs on");
+                        $("#"+name+"A4").show();
+
+                    });
+                }
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
 function receiptTypeSelect() {
     var sum;
 
@@ -372,4 +502,147 @@ function selectFootPrintA4() {
     $("#headPrintA4").hide();
     $("#tablePrintA4").hide();
     $("#footPrintA4").show();
+}
+function selectThisA4(t,selectId) {
+    if($(t).attr("class")=="stecs"){
+        $(t).attr("class","stecs on");
+        $("#"+selectId).show();
+    }else{
+        $(t).attr("class","stecs");
+        $("#"+selectId).hide();
+    }
+}
+function selectThisA4class(t,selectId) {
+    if($(t).attr("class")=="stecs"){
+        $(t).attr("class","stecs on");
+        $("."+selectId).show();
+    }else{
+        $(t).attr("class","stecs");
+        $("."+selectId).hide();
+    }
+}
+function saveA4() {
+    var recordRule="";//记录选择的规格
+    var isSavePrint=false;//是否保存
+    var printCode="";
+    var printTableCode="";
+    $("#ruleReceiptA4").find("ul").each(function(index,element){
+        if($(this).attr("class")!="stecs"){
+            recordRule=$(this).data("name");
+            isSavePrint=true;
+        }
+    });
+    if($("#receiptNameA4").val()==""||$("#receiptName").val()==undefined){
+        $.gritter.add({
+            text: "请填写小票名称",
+            class_name: 'gritter-success  gritter-light'
+        });
+        return;
+    }
+
+    if(isSavePrint){
+        //规定的小票的宽度的高度字体的大小
+        var receiptWith;
+        var receiptHight;
+        var receiptFontSize;
+        if(recordRule=="A4"){
+            receiptWith=printParameter.receiptWidthA4;
+            receiptHight=printParameter.receiptheightA4;
+            receiptFontSize=printParameter.fontSizeA4;
+        }
+        var sum=0;
+        LODOP=getLodop();
+        var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
+        $("#printTopA4").find("div").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var id="\""+$(this).data("name")+"\"";
+                var message="\""+$(this).find("span").text()+"\"";
+                console.log(id);
+                console.log(message);
+                if(sum==0){
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+",0,"+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                    printCode+=$(this).data("name");
+                }else{
+                    var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                    printCode+=","+$(this).data("name");
+                }
+
+                sum++;
+            }
+        });
+        var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
+        var tabbleth="";
+        var html="\"<body><table style='text-align: center;font-size:12px;width: "+receiptWith+"px'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr>"
+        $("#edit-A4-dialog").find("th").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var message=$(this).html();
+                var classname=$(this).attr("class");
+                console.log(message);
+                html+="<th align='left' nowrap='nowrap' style='border:0px;font-size:10px;'>"+message+"</th>";
+                tabbleth+="<th align='left' nowrap='nowrap' style='border:0px;font-size:10px;'>"+message+"</th>";
+                if(printTableCode==""){
+                    printTableCode+=classname.substring(0,classname.length-2);
+                }else{
+                    printTableCode+=","+classname.substring(0,classname.length-2);
+                }
+            }
+        });
+        html+="</tr></thead><tbody id='loadtabA4'><tr style='border-top:1px ;padding-top:5px;'>"
+        $("#edit-A4-dialog").find("td").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var message=$(this).html();
+                console.log(message);
+                html+="<td align='left' style='border-top:1px ;padding-top:5px;'>"+message+"</td>"
+            }
+        });
+        html+="</tr></tbody></table>\"";
+        str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
+        str+="LODOP.SET_PRINT_STYLEA(0,\"ItemName\",\"baseHtml\");";
+        sum=0;
+        $("#printFootA4").find("div").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var id="\""+$(this).data("name")+"\"";
+                var message="\""+$(this).find("span").text()+"\"";
+                var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
+                console.log(id);
+                console.log(message);
+                str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+",10,"+receiptWith+","+printParameter.aRowheight+","+message+");";
+                str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
+                str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                printCode+=","+$(this).data("name");
+
+                sum++;
+            }
+        });
+        console.log(str);
+        console.log(printTableCode);
+        //得到需要保存的数据
+        var printSet={
+            id:$("#idA4").val(),
+            ownerId:$("#ownerIdA4").val(),
+            printCont:str,
+            printCode:printCode,
+            name:$("#receiptNameA4").val(),
+            type:$("#receiptTypeA4").val(),
+            printTableCode:printTableCode,
+            printTableTh:tabbleth,
+            //printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
+            ruleReceipt:recordRule,
+            commonType:$("#commonTypeA4").val()
+        }
+        saveAjax(printSet);
+        //eval(str);
+        //LODOP.PREVIEW();
+    }else{
+        $.gritter.add({
+            text: "请选择小票的规格",
+            class_name: 'gritter-success  gritter-light'
+        });
+    }
 }

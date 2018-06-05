@@ -108,7 +108,7 @@
 <body class="no-skin">
 <div class="main-container" id="main-container">
     <div class="row">
-        <div id="receiptPrint" style="display: none">
+        <div id="receiptPrint">
             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="margin-top: 20px;margin-left: 50px">
                 <div class="col-xs-3 col-sm-3 col-md-3	col-lg-3">
                     <div class="Print-Bg-Center">
@@ -286,6 +286,12 @@
                                 <span>110mm</span>
                             </ul>
                         </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="A4" onclick="selectRuleReceipt('A4');">
+                                <i></i>
+                                <span>A4</span>
+                            </ul>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                         <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
@@ -444,98 +450,127 @@
                 </div>
             </div>
         </div>
-        <div id="A4Print">
+        <div id="A4Print" style="display: none">
             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="margin-top: 20px;margin-left: 50px">
                 <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
 
                     <div class="headTitle">
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="storeNameA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="coustmerA4">
-                          <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="billNoA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="billDateA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="makeBillA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="remarkA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                        <div id="printTopA4">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="coustmer" id="coustmerA4">
+                              <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billNo" id="billNoA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billDate" id="billDateA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="makeBill" id="makeBillA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="remark" id="remarkA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                            </div>
                         </div>
                         <div id="edit-A4-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
 
                             <table style="text-align: center;font-size:12px;"class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <thead >
                                 <tr >
-                                    <th align="left"  nowrap="nowrap" style="border:0px;font-size:10px;width:10%;">款号</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">款名</th>
-                                    <th align="left" nowrap="nowrap"style="border:0px;font-size:10px;width: 10%;">颜色</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">尺码</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">数量</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">吊牌价</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">金额</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">折扣</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">折后价</th>
-                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">折后金额</th>
+                                    <th align="left" class="styleIdA4" nowrap="nowrap" style="border:0px;font-size:10px;">款号</th>
+                                    <th align="left" class="styleNameA4"nowrap="nowrap" style="border:0px;font-size:10px;">款名</th>
+                                    <th align="left" class="colorIdA4" nowrap="nowrap"style="border:0px;font-size:10px;">颜色</th>
+                                    <th align="left" class="sizeIdA4" nowrap="nowrap" style="border:0px;font-size:10px;">尺码</th>
+                                    <th align="left" class="qtyA4" nowrap="nowrap" style="border:0px;font-size:10px;">数量</th>
+                                    <th align="left" class="priceA4" nowrap="nowrap" style="border:0px;font-size:10px;">吊牌价</th>
+                                    <th align="left" class="totPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;">金额</th>
+                                    <th align="left" class="discountA4" nowrap="nowrap" style="border:0px;font-size:10px;">折扣</th>
+                                    <th align="left" class="actPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;">折后价</th>
+                                    <th align="left" class="totActPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;">折后金额</th>
                                 </tr>
                                 </thead>
                                 <tbody id="loadtabA4">
                                 <tr style="border-top:1px ;padding-top:5px;">
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
+                                    <td align="left" class="styleIdA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="styleNameA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="colorIdA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="sizeIdA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="qtyA4" style="border-top:1px ;padding-top:5px;">0</td>
+                                    <td align="left" class="priceA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="totPriceA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="discountA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="actPriceA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
+                                    <td align="left" class="totActPriceA4" style="border-top:1px ;padding-top:5px;">0</td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="shopBeforeA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售前余额:xxxxxxxxxxxx</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="shopAfterA4">
-                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售后余额:xxxxxxxxxxxx</span>
+                        <div id="printFootA4">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="shopBefore" id="shopBeforeA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售前余额:xxxxxxxxxxxx</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="shopAfter" id="shopAfterA4">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售后余额:xxxxxxxxxxxx</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="ruleReceiptA4">
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
                             <span style="text-align:center;display: block">小票规格:</span>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                            <ul class="stecs" data-name="58" onclick="selectRuleReceipt(58);">
+                            <ul class="stecs" data-name="58" onclick="selectRuleReceiptA4(58);">
                                 <i></i>
                                 <span>58mm</span>
                             </ul>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                            <ul class="stecs" data-name="80" onclick="selectRuleReceipt(80);">
+                            <ul class="stecs" data-name="80" onclick="selectRuleReceiptA4(80);">
                                 <i></i>
                                 <span>80mm</span>
                             </ul>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                            <ul class="stecs" data-name="110" onclick="selectRuleReceipt(110);">
+                            <ul class="stecs" data-name="110" onclick="selectRuleReceiptA4(110);">
                                 <i></i>
                                 <span>110mm</span>
                             </ul>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                            <ul class="stecs" data-name="A4" onclick="selectRuleReceipt(A4);">
+                            <ul class="stecs" data-name="A4" onclick="selectRuleReceiptA4('A4');">
                                 <i></i>
                                 <span>A4</span>
                             </ul>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <input type="text" id="idA4" style="display: none"/>
+                                    <input type="text" id="ownerIdA4" style="display: none"/>
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>小票名称:</span>
+                                        <input type="text" id="receiptNameA4"/>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>小票类型:</span>
+                                        <select id="receiptTypeA4" onchange="receiptTypeSelect()">
+                                            <option value="SO">销售单据</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>公共类型:</span>
+                                        <select id="commonTypeA4">
+                                            <option value="1">否</option>
+                                            <option value="0">是</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                             <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
@@ -597,63 +632,63 @@
                                     <div class="headTitleDiv" id="tablePrintA4" style="display: none">
                                         <ul>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'storeName')">
+                                                <div class="stecs on" data-name="styleId" onclick="selectThisA4class(this,'styleIdA4')">
                                                     <i></i>
                                                     <span>款号</span>
                                                 </div>
                                             </li>
 
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'billNo')">
+                                                <div class="stecs on" data-name="styleName" onclick="selectThisA4class(this,'styleNameA4')">
                                                     <i></i>
                                                     <span>款名</span>
                                                 </div>
                                             </li>
 
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="makeBill" onclick="selectThisA4(this,'makeBill')">
+                                                <div class="stecs on" data-name="colorId" onclick="selectThisA4class(this,'colorIdA4')">
                                                     <i></i>
                                                     <span>颜色</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'billDate')">
+                                                <div class="stecs on" data-name="sizeId" onclick="selectThisA4class(this,'sizeIdA4')">
                                                     <i></i>
                                                     <span>尺码</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'coustmer')">
+                                                <div class="stecs on" data-name="qty" onclick="selectThisA4class(this,'qtyA4')">
                                                     <i></i>
                                                     <span>数量</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                <div class="stecs on" data-name="price" onclick="selectThisA4class(this,'priceA4')">
                                                     <i></i>
                                                     <span>吊牌价</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                <div class="stecs on" data-name="totPriceA4" onclick="selectThisA4class(this,'totPriceA4')">
                                                     <i></i>
                                                     <span>金额</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                <div class="stecs on" data-name="discountA4" onclick="selectThisA4class(this,'discountA4')">
                                                     <i></i>
                                                     <span>折扣</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                <div class="stecs on" data-name="actPriceA4" onclick="selectThisA4class(this,'actPriceA4')">
                                                     <i></i>
                                                     <span>折后价</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                <div class="stecs on" data-name="totActPriceA4" onclick="selectThisA4class(this,'totActPriceA4')">
                                                     <i></i>
                                                     <span>折后金额</span>
                                                 </div>
@@ -686,6 +721,16 @@
                                             </li>
                                         </ul>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <button id='save_guest_buttonA4' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saveA4()'>
+                                        <i class='ace-icon fa fa-save'></i>
+                                        <span class='bigger-110'>保存</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
