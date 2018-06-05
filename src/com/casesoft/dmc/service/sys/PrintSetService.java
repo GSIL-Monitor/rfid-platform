@@ -109,9 +109,22 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
         return printSet;
     }
 
-    public List<PrintSet> findPrintSetListByOwnerId(String ownerId,String type){
+    public List<PrintSet> findPrintSetListByOwnerId(String ownerId,String type,String ruleReceipt){
+        List<PrintSet> printSets;
         String hql="from PrintSet t where t.ownerId=? and type=?";
-        List<PrintSet> printSets = this.printSetDao.find(hql, new Object[]{ownerId,type});
+        if(CommonUtil.isNotBlank(ruleReceipt)){
+            if(ruleReceipt.equals("A4")){
+                hql+=" and ruleReceipt=?";
+                printSets = this.printSetDao.find(hql, new Object[]{ownerId,type,ruleReceipt});
+            }else{
+                hql+=" and ruleReceipt<>'A4'";
+                printSets = this.printSetDao.find(hql, new Object[]{ownerId,type});
+            }
+
+        }else{
+            printSets = this.printSetDao.find(hql, new Object[]{ownerId,type});
+        }
+
         return printSets;
     }
 
@@ -221,6 +234,42 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             mapcont.put("remark",transferOrderBill.getRemark());
             mapcont.put("printTime",CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
             List<TransferOrderBillDtl> billDtlByBillNo= this.transferOrderBillService.findBillDtlByBillNo(billno);
+            map.put("print",printSet);
+            map.put("cont",mapcont);
+            map.put("contDel",billDtlByBillNo);
+        }
+        return map;
+    }
+
+    public Map<String,Object> printMessageA4(String id,String billno){
+        Map<String,Object> map=new HashMap<String,Object>();
+        if(billno.indexOf(BillConstant.BillPrefix.saleOrder)!=-1){
+            Map<String,Object> mapcont=new HashMap<String,Object>();
+            String hql="from PrintSet t where t.id=?";
+            PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+            SaleOrderBill saleOrderBill = this.saleOrderBillService.load(billno);
+            mapcont.put("storeName","Ancient Stone");
+
+            mapcont.put("billNo",billno);
+            User user = CacheManager.getUserById(saleOrderBill.getOprId());
+            mapcont.put("makeBill",user.getName());
+            mapcont.put("billDate", CommonUtil.getDateString(saleOrderBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("coustmer",saleOrderBill.getDestUnitName());
+            mapcont.put("remark",saleOrderBill.getRemark());
+            if(CommonUtil.isNotBlank(saleOrderBill.getAfterBalance())){
+                mapcont.put("shopAfter",saleOrderBill.getAfterBalance());
+            }else{
+                mapcont.put("shopAfter","");
+            }
+            if(CommonUtil.isNotBlank(saleOrderBill.getPreBalance())){
+                mapcont.put("shopBefore",saleOrderBill.getPreBalance());
+            }else{
+                mapcont.put("shopBefore","");
+            }
+            List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billno);
+            for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
+                saleOrderBillDtl.setStyleName(CacheManager.getStyleNameById(saleOrderBillDtl.getStyleId()));
+            }
             map.put("print",printSet);
             map.put("cont",mapcont);
             map.put("contDel",billDtlByBillNo);

@@ -96,10 +96,10 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     }
     @RequestMapping(value="/findPrintSetListByOwnerId")
     @ResponseBody
-    public MessageBox findPrintSetListByOwnerId(String type){
+    public MessageBox findPrintSetListByOwnerId(String type, String ruleReceipt){
         try {
             User currentUser = this.getCurrentUser();
-            List<PrintSet> printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type);
+            List<PrintSet> printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type,ruleReceipt);
             return new MessageBox(true, "查询成功",printSets);
         }catch (Exception e){
             return new MessageBox(false, "查询失败");
@@ -116,5 +116,17 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
         }
 
     }
+    @RequestMapping(value="/printMessageA4")
+    @ResponseBody
+    public MessageBox printMessageA4(String id,String billno){
+        try {
+            Map<String, Object> map = this.printSetService.printMessageA4(id, billno);
+            return new MessageBox(true, "查询成功",map);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
+        }
+
+    }
+
 
 }

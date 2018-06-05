@@ -25,6 +25,10 @@ public class PrintSet {
 
     @Column( columnDefinition="CLOB")
     private String  printFootExtend;//记录扩展打印的内容
+    @Column( columnDefinition="CLOB")
+    private String printTableCode;//存储要显示表的字段
+    @Column( columnDefinition="CLOB")
+    private String printTableTh;//存储要显示表的表头
     @Column()
     private String ruleReceipt;//小票规格
     @Column()
@@ -100,5 +104,21 @@ public class PrintSet {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getPrintTableCode() {
+        return printTableCode;
+    }
+
+    public void setPrintTableCode(String printTableCode) {
+        this.printTableCode = printTableCode;
+    }
+
+    public String getPrintTableTh() {
+        return printTableTh;
+    }
+
+    public void setPrintTableTh(String printTableTh) {
+        this.printTableTh = printTableTh;
     }
 }
