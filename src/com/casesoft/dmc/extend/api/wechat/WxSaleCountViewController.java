@@ -129,14 +129,25 @@ public class WxSaleCountViewController extends ApiBaseController {
                 } else {
                     String[] split = key.split("_");
                     if (split[1].equals("contains")) {
-                        hqlsqty += " and " + split[2] + " like '%" + value + "%'";
+                        if(split[2].equals("styleid")){
+                            hqlsqty += "and (" + split[2] + " like '%" + value + "%'";
+                            hqlrqty += "and (" + split[2] + " like '%" + value + "%'";
+                            hqlsqty +="or "+ split[4] + " like '%" + value + "%')";
+                            hqlrqty +="or "+ split[4] + " like '%" + value + "%')";
+                        }else{
+                            hqlsqty += " and " + split[2] + " like '%" + value + "%'";
+                            hqlrqty += " and " + split[2] + " like '%" + value + "%'";
+                        }
+                        //hqlsqty += " and " + split[2] + " like '%" + value + "%'";
                         // hqlstotactprice+=" and "+split[2]+" like'%"+value+"%'";
-                        hqlrqty += " and " + split[2] + " like '%" + value + "%'";
+                        //hqlrqty += " and " + split[2] + " like '%" + value + "%'";
                         //hqlrtotactprice+=" and "+split[2]+" like '%"+value+"%'";
                         //hqlrtogross+=" and "+split[2]+" like '%"+value+"%'";
                         //hqlrtogrossall+=" and "+split[2]+" like '%"+value+"%'";
                         //hqlstogrossall+=" and "+split[2]+" like '%"+value+"%'";
                         //hqlstogross+=" and "+split[2]+" like '%"+value+"%'";
+
+
                     } else {
                         hqlsqty += " and " + split[2] + "='" + value + "'";
                         //hqlstotactprice+=" and "+split[2]+"='"+value+"'";
