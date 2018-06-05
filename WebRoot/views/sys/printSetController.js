@@ -357,3 +357,19 @@ function receiptTypeSelect() {
     });
 
 }
+
+function selectheadPrintA4() {
+    $("#headPrintA4").show();
+    $("#tablePrintA4").hide();
+    $("#footPrintA4").hide();
+}
+function selectTablePrintA4() {
+    $("#headPrintA4").hide();
+    $("#tablePrintA4").show();
+    $("#footPrintA4").hide();
+}
+function selectFootPrintA4() {
+    $("#headPrintA4").hide();
+    $("#tablePrintA4").hide();
+    $("#footPrintA4").show();
+}

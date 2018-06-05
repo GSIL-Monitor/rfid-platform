@@ -108,343 +108,591 @@
 <body class="no-skin">
 <div class="main-container" id="main-container">
     <div class="row">
+        <div id="receiptPrint" style="display: none">
+            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="margin-top: 20px;margin-left: 50px">
+                <div class="col-xs-3 col-sm-3 col-md-3	col-lg-3">
+                    <div class="Print-Bg-Center">
+                        <div class="Print-Bg-Top">
+                            <div id="printTop">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="storeName">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                    </div>
+                                   <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                        <span >销售单</span>
+                                    </div>--%>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
+                                    </div>
+                                    <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                         <span >销售单</span>
+                                     </div>--%>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billNo" >
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>单号:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="weChat" >
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>微信:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBill">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>制单人:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDate">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>日期:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>客户:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="VIPNumber">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>会员卡号:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remark">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>备注:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                            </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="margin-top: 20px;margin-left: 50px">
-        <div class="col-xs-3 col-sm-3 col-md-3	col-lg-3">
-            <div class="Print-Bg-Center">
-                <div class="Print-Bg-Top">
-                    <div id="printTop">
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="storeName">
-                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                            <div id="edit-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+
+                                <table style="text-align: center;font-size:12px;"class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                    <thead style="text-align:center" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+                                          <tr >
+                                                <th align="left"  nowrap="nowrap" style="border:0px;height: 20px;width: 20%">商品</th>
+                                                <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">数量</th>
+                                                <th align="right" nowrap="nowrap"style="border:0px;height: 20px;width: 20%">原价</th>
+                                                <th  align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">折后价</th>
+                                                <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">金额</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="border-top:1px dashed black;padding-top:5px;">
+                                                <td align="left" style="border-top:1px dashed black;padding-top:5px;">合计:</td>
+                                                <td align="right"style="border-top:1px dashed black;padding-top:5px;">0</td>
+                                                <td style="border-top:1px dashed black;padding-top:5px;">&nbsp;</td>
+                                                <td style="border-top:1px dashed black;padding-top:5px;">&nbsp;</td>
+                                                <td align="right" style="border-top:1px dashed black;padding-top:5px;">0</td>
+                                            </tr>
+                                        </tbody>
+                                </table>
                             </div>
-                           <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
-                                <span >销售单</span>
-                            </div>--%>
+                            <div id="printFoot">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="businessId">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>销售员:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="printTime">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>打印时间:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopBefore">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>售前余额:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopAfter">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>售后余额:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="integral">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>积分(本次/剩余):</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>100/2000</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtend">
+                                    <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                        <span >欢迎来到Ancient Stone</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
-                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
-                            </div>
-                            <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
-                                 <span >销售单</span>
-                             </div>--%>
+                        <div class="Print-Bg"></div>
+                    </div>
+
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="ruleReceipt">
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <span style="text-align:center;display: block">小票规格:</span>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billNo" >
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>单号:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="58" onclick="selectRuleReceipt(58);">
+                                <i></i>
+                                <span>58mm</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="weChat" >
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>微信:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="80" onclick="selectRuleReceipt(80);">
+                                <i></i>
+                                <span>80mm</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBill">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>制单人:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="110" onclick="selectRuleReceipt(110);">
+                                <i></i>
+                                <span>110mm</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDate">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>日期:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>客户:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="VIPNumber">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>会员卡号:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remark">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>备注:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                        <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                            <div class="headTitle">
+                                <input type="text" id="id" style="display: none"/>
+                                <input type="text" id="ownerId" style="display: none"/>
+                                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                    <span>小票名称:</span>
+                                    <input type="text" id="receiptName"/>
+                                </div>
+                                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                    <span>小票类型:</span>
+                                    <select id="receiptType" onchange="receiptTypeSelect()">
+                                        <option value="SO">销售单据</option>
+                                        <option value="PI">采购单据</option>
+                                        <option value="PR">采购退货</option>
+                                        <option value="SR">销售退货</option>
+                                        <option value="TR">调拨单</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                    <span>公共类型:</span>
+                                    <select id="commonType">
+                                        <option value="1">否</option>
+                                        <option value="0">是</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                        <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                            <div class="headTitle">
+                                <h3 onclick="selectheadPrint()">
+                                    <span style="font-size: 14px;">头部打印</span>
+                                </h3>
+                                <div class="headTitleDiv" id="headPrint">
+                                    <ul>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="storeName" onclick="selectThis(this,'storeName')">
+                                                <i></i>
+                                                <span>门店名称</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billType" onclick="selectThis(this,'billType')">
+                                                <i></i>
+                                                <span>小票类型</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billNo" onclick="selectThis(this,'billNo')">
+                                                <i></i>
+                                                <span>单号</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="weChat" onclick="selectThis(this,'weChat')">
+                                                <i></i>
+                                                <span>微信</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="makeBill" onclick="selectThis(this,'makeBill')">
+                                                <i></i>
+                                                <span>制单人</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billDate" onclick="selectThis(this,'billDate')">
+                                                <i></i>
+                                                <span>日期</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmer')">
+                                                <i></i>
+                                                <span>客户</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="VIPNumber" onclick="selectThis(this,'VIPNumber')">
+                                                <i></i>
+                                                <span>会员卡号</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="remark" onclick="selectThis(this,'remark')">
+                                                <i></i>
+                                                <span>备注</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                        <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                            <div class="headTitle">
+                                <h3  onclick="selectfoorerPrint()">
+                                    <span style="font-size: 14px;">页脚打印</span>
+                                </h3>
+                                <div class="headTitleDiv" id="footerPrint" style="display: none">
+                                    <ul>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="businessId" onclick="selectThis(this,'businessId')">
+                                                <i></i>
+                                                <span>销售员</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="printTime" onclick="selectThis(this,'printTime')">
+                                                <i></i>
+                                                <span>打印时间</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="shopBefore" onclick="selectThis(this,'shopBefore')">
+                                                <i></i>
+                                                <span>售前余额</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="shopAfter" onclick="selectThis(this,'shopAfter')">
+                                                <i></i>
+                                                <span>售后余额</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="integral" onclick="selectThis(this,'integral')">
+                                                <i></i>
+                                                <span>积分(本次/剩余)</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <span>扩展打印(在页脚展示扩展信息,换行请输入&lt;br&gt;)：</span>
+                                            <br>
+                                            <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="footExtendWrite" onkeyup="writeFootExtend(this)">欢迎来到Ancient Stone</textarea>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                        <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                            <div class="headTitle">
+                                <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>
+                                    <i class='ace-icon fa fa-save'></i>
+                                    <span class='bigger-110'>保存</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="A4Print">
+            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="margin-top: 20px;margin-left: 50px">
+                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
 
-                    <div id="edit-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                    <div class="headTitle">
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="storeNameA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="coustmerA4">
+                          <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="billNoA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="billDateA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="makeBillA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="remarkA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                        </div>
+                        <div id="edit-A4-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
 
-                        <table style="text-align: center;font-size:12px;"class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                            <thead style="text-align:center" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
-                                  <tr >
-                                        <th align="left"  nowrap="nowrap" style="border:0px;height: 20px;width: 20%">商品</th>
-                                        <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">数量</th>
-                                        <th align="right" nowrap="nowrap"style="border:0px;height: 20px;width: 20%">原价</th>
-                                        <th  align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">折后价</th>
-                                        <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">金额</th>
-                                    </tr>
+                            <table style="text-align: center;font-size:12px;"class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <thead >
+                                <tr >
+                                    <th align="left"  nowrap="nowrap" style="border:0px;font-size:10px;width:10%;">款号</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">款名</th>
+                                    <th align="left" nowrap="nowrap"style="border:0px;font-size:10px;width: 10%;">颜色</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">尺码</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">数量</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">吊牌价</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">金额</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">折扣</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">折后价</th>
+                                    <th align="left" nowrap="nowrap" style="border:0px;font-size:10px;width: 10%;">折后金额</th>
+                                </tr>
                                 </thead>
-                                <tbody>
-                                    <tr style="border-top:1px dashed black;padding-top:5px;">
-                                        <td align="left" style="border-top:1px dashed black;padding-top:5px;">合计:</td>
-                                        <td align="right"style="border-top:1px dashed black;padding-top:5px;">0</td>
-                                        <td style="border-top:1px dashed black;padding-top:5px;">&nbsp;</td>
-                                        <td style="border-top:1px dashed black;padding-top:5px;">&nbsp;</td>
-                                        <td align="right" style="border-top:1px dashed black;padding-top:5px;">0</td>
-                                    </tr>
+                                <tbody id="loadtabA4">
+                                <tr style="border-top:1px ;padding-top:5px;">
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
+                                    <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
+                                </tr>
                                 </tbody>
-                        </table>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="shopBeforeA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售前余额:xxxxxxxxxxxx</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" id="shopAfterA4">
+                            <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售后余额:xxxxxxxxxxxx</span>
+                        </div>
                     </div>
-                    <div id="printFoot">
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="businessId">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>销售员:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <span style="text-align:center;display: block">小票规格:</span>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="printTime">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>打印时间:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="58" onclick="selectRuleReceipt(58);">
+                                <i></i>
+                                <span>58mm</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopBefore">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>售前余额:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="80" onclick="selectRuleReceipt(80);">
+                                <i></i>
+                                <span>80mm</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="shopAfter">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>售后余额:</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>xxxxxx</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="110" onclick="selectRuleReceipt(110);">
+                                <i></i>
+                                <span>110mm</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="integral">
-                            <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                <span>积分(本次/剩余):</span>
-                            </div>
-                            <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-                                <span>100/2000</span>
-                            </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="A4" onclick="selectRuleReceipt(A4);">
+                                <i></i>
+                                <span>A4</span>
+                            </ul>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtend">
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                             <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
-                                <span >欢迎来到Ancient Stone</span>
+                                <div class="headTitle">
+                                    <h3 onclick="selectheadPrintA4()">
+                                        <span style="font-size: 14px;">头部打印</span>
+                                    </h3>
+                                    <div class="headTitleDiv" id="headPrintA4">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'storeNameA4')">
+                                                    <i></i>
+                                                    <span>门店名称</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'billNoA4')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="makeBill" onclick="selectThisA4(this,'makeBillA4')">
+                                                    <i></i>
+                                                    <span>制单人</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'billDateA4')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'coustmerA4')">
+                                                    <i></i>
+                                                    <span>客户</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remarkA4')">
+                                                    <i></i>
+                                                    <span>备注</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <h3 onclick="selectTablePrintA4()">
+                                        <span style="font-size: 14px;">表头打印</span>
+                                    </h3>
+                                    <div class="headTitleDiv" id="tablePrintA4" style="display: none">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'storeName')">
+                                                    <i></i>
+                                                    <span>款号</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'billNo')">
+                                                    <i></i>
+                                                    <span>款名</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="makeBill" onclick="selectThisA4(this,'makeBill')">
+                                                    <i></i>
+                                                    <span>颜色</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'billDate')">
+                                                    <i></i>
+                                                    <span>尺码</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'coustmer')">
+                                                    <i></i>
+                                                    <span>数量</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                    <i></i>
+                                                    <span>吊牌价</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                    <i></i>
+                                                    <span>金额</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                    <i></i>
+                                                    <span>折扣</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                    <i></i>
+                                                    <span>折后价</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remark')">
+                                                    <i></i>
+                                                    <span>折后金额</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <h3 onclick="selectFootPrintA4()">
+                                        <span style="font-size: 14px;">页脚打印</span>
+                                    </h3>
+                                    <div class="headTitleDiv" id="footPrintA4" style="display: none">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'shopBeforeA4')">
+                                                    <i></i>
+                                                    <span>售前余额</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'shopAfterA4')">
+                                                    <i></i>
+                                                    <span>售后余额</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="Print-Bg"></div>
             </div>
-
         </div>
-        <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
-            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="ruleReceipt">
-                <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <span style="text-align:center;display: block">小票规格:</span>
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <ul class="stecs" data-name="58" onclick="selectRuleReceipt(58);">
-                        <i></i>
-                        <span>58mm</span>
-                    </ul>
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <ul class="stecs" data-name="80" onclick="selectRuleReceipt(80);">
-                        <i></i>
-                        <span>80mm</span>
-                    </ul>
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
-                    <ul class="stecs" data-name="110" onclick="selectRuleReceipt(110);">
-                        <i></i>
-                        <span>110mm</span>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
-                    <div class="headTitle">
-                        <input type="text" id="id" style="display: none"/>
-                        <input type="text" id="ownerId" style="display: none"/>
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>小票名称:</span>
-                            <input type="text" id="receiptName"/>
-                        </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>小票类型:</span>
-                            <select id="receiptType" onchange="receiptTypeSelect()">
-                                <option value="SO">销售单据</option>
-                                <option value="PI">采购单据</option>
-                                <option value="PR">采购退货</option>
-                                <option value="SR">销售退货</option>
-                                <option value="TR">调拨单</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                            <span>公共类型:</span>
-                            <select id="commonType">
-                                <option value="1">否</option>
-                                <option value="0">是</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
-                    <div class="headTitle">
-                        <h3 onclick="selectheadPrint()">
-                            <span style="font-size: 14px;">头部打印</span>
-                        </h3>
-                        <div class="headTitleDiv" id="headPrint">
-                            <ul>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="storeName" onclick="selectThis(this,'storeName')">
-                                        <i></i>
-                                        <span>门店名称</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="billType" onclick="selectThis(this,'billType')">
-                                        <i></i>
-                                        <span>小票类型</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="billNo" onclick="selectThis(this,'billNo')">
-                                        <i></i>
-                                        <span>单号</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="weChat" onclick="selectThis(this,'weChat')">
-                                        <i></i>
-                                        <span>微信</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="makeBill" onclick="selectThis(this,'makeBill')">
-                                        <i></i>
-                                        <span>制单人</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="billDate" onclick="selectThis(this,'billDate')">
-                                        <i></i>
-                                        <span>日期</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmer')">
-                                        <i></i>
-                                        <span>客户</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="VIPNumber" onclick="selectThis(this,'VIPNumber')">
-                                        <i></i>
-                                        <span>会员卡号</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="remark" onclick="selectThis(this,'remark')">
-                                        <i></i>
-                                        <span>备注</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
-                    <div class="headTitle">
-                        <h3  onclick="selectfoorerPrint()">
-                            <span style="font-size: 14px;">页脚打印</span>
-                        </h3>
-                        <div class="headTitleDiv" id="footerPrint" style="display: none">
-                            <ul>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="businessId" onclick="selectThis(this,'businessId')">
-                                        <i></i>
-                                        <span>销售员</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="printTime" onclick="selectThis(this,'printTime')">
-                                        <i></i>
-                                        <span>打印时间</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="shopBefore" onclick="selectThis(this,'shopBefore')">
-                                        <i></i>
-                                        <span>售前余额</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="shopAfter" onclick="selectThis(this,'shopAfter')">
-                                        <i></i>
-                                        <span>售后余额</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <div class="stecs on" data-name="integral" onclick="selectThis(this,'integral')">
-                                        <i></i>
-                                        <span>积分(本次/剩余)</span>
-                                    </div>
-                                </li>
-                                <li class="headTitleLi">
-                                    <span>扩展打印(在页脚展示扩展信息,换行请输入&lt;br&gt;)：</span>
-                                    <br>
-                                    <textarea class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="footExtendWrite" onkeyup="writeFootExtend(this)">欢迎来到Ancient Stone</textarea>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
-                    <div class="headTitle">
-                        <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>
-                            <i class='ace-icon fa fa-save'></i>
-                            <span class='bigger-110'>保存</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
 
     </div>
     <jsp:include page="../layout/footer.jsp"></jsp:include>
