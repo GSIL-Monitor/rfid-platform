@@ -181,6 +181,9 @@
         if (localStorage.getItem("back")==1){
             $("#search_busnissId").val(localStorage.getItem("busnissId"));
         }
+        if (localStorage.getItem("back")=="set"){
+            $("#search_busnissId").val(localStorage.getItem("defaultSaleStaffId"));
+        }
     });
 
     function sale() {

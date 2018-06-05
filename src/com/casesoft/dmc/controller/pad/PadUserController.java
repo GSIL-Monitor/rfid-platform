@@ -391,6 +391,11 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         }
     }
 
+    /**
+     * 移除支付成功后未出库成功的消息
+     * @param billNo 销售单号
+     * @throws Exception
+     */
     public void remove(String billNo) throws Exception {
         Timer timer= new Timer();
         TimerTask task  = new TimerTask(){    //创建一个新的计时器任务。
@@ -404,6 +409,24 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         //超时设定
         int overTime =Integer.parseInt(PropertyUtil.getValue("overTime"));
         timer.schedule(task, overTime);
+    }
+
+    /**
+     * 4天线功率设置
+     * @param deviceId 设备号
+     * @param outputPower 功率
+     * @return MessageBox
+     */
+    @ResponseBody
+    @RequestMapping("/padUser/setPower")
+    public MessageBox setPower(String deviceId, byte outputPower){
+        try {
+            this.rfidReaderService.setOutPutPower(deviceId,outputPower);
+            return new MessageBox(true,"设置成功");
+        } catch (RfidReaderException e) {
+            e.printStackTrace();
+            return new MessageBox(false,"设置失败");
+        }
     }
 
     /**
