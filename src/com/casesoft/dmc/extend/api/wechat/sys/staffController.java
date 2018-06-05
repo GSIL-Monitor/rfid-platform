@@ -29,7 +29,7 @@ public class staffController {
      */
     @RequestMapping(value = "/uploadStaffInfo.do")
     @ResponseBody
-    public MessageBox uploadStaffInfo(String phone, String openId) {
+    public MessageBox uploadStaffInfo(String phone, String openId,String appId,String unionId) {
         try {
             User user = this.userService.findUserByPhone(phone);
             if (CommonUtil.isNotBlank(user)) {
@@ -38,6 +38,8 @@ public class staffController {
                 StaffInfo staffInfo = new StaffInfo();
                 staffInfo.setOpenId(openId);
                 staffInfo.setPhone(phone);
+                staffInfo.setAppId(appId);
+                staffInfo.setUnionId(unionId);
                 this.userService.saveStaffInfo(staffInfo);
                 return new MessageBox(true, "Y", user);
             } else {

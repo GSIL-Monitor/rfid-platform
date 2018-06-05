@@ -18,6 +18,10 @@ public class StaffInfo {
     private String openId;
     @Column
     private String phone;
+    @Column
+    private String appId;
+    @Column
+    private String unionId;
 
     public String getOpenId() {
         return openId;
@@ -34,4 +38,12 @@ public class StaffInfo {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public String getAppId() { return appId; }
+
+    public void setAppId(String appId) { this.appId = appId; }
+
+    public String getUnionId() { return unionId; }
+
+    public void setUnionId(String unionId) { this.unionId = unionId; }
 }
