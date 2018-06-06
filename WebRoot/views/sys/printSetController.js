@@ -448,6 +448,18 @@ function findPrintSetA4(sum) {
                             $("#"+name+"A4").show();
                         }
                     });
+                    $("#edit-A4-dialog").find("th").each(function (index,element) {
+                        var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                        if(!(result.printTableCode.indexOf(name)!= -1)){
+                            $(this).hide();
+                        }
+                    });
+                    $("#edit-A4-dialog").find("td").each(function (index,element) {
+                        var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                        if(!(result.printTableCode.indexOf(name)!= -1)){
+                            $(this).hide();
+                        }
+                    });
                 }else{
                     $("#id").val("");
                     $("#ownerId").val("");
@@ -480,7 +492,6 @@ function receiptTypeSelect() {
     $("#ruleReceipt").find("ul").each(function(index,element){
 
         if(!($(this).attr("class")=="stecs")) {
-            debugger
             sum=$(this).data("name")
             findPrintSet(sum);
         }
@@ -553,10 +564,10 @@ function saveA4() {
         var sum=0;
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
-        $("#printTopA4").find("div").each(function (index,element) {
+        $("#printTopA4").find("span").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var id="\""+$(this).data("name")+"\"";
-                var message="\""+$(this).find("span").text()+"\"";
+                var message="\""+$(this).text()+"\"";
                 console.log(id);
                 console.log(message);
                 if(sum==0){
@@ -565,11 +576,22 @@ function saveA4() {
                     str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
                     printCode+=$(this).data("name");
                 }else{
-                    var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
-                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
-                    printCode+=","+$(this).data("name");
+                    if((sum+1)%2==0){
+                        var num=parseInt((sum+1)/2);
+                        var top=(num*printParameter.aRowheight+num*printParameter.intervalHeight);
+                        str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+10+","+parseInt(receiptWith/2)+","+printParameter.aRowheight+","+message+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                        printCode+=","+$(this).data("name");
+                    }else{
+                        var num=parseInt((sum+1)/2);
+                        var top=(num*printParameter.aRowheight+num*printParameter.intervalHeight);
+                        str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+(parseInt(receiptWith/2)+10)+","+parseInt(receiptWith/2)+","+printParameter.aRowheight+","+message+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                        printCode+=","+$(this).data("name");
+                    }
+
                 }
 
                 sum++;
@@ -577,14 +599,14 @@ function saveA4() {
         });
         var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
         var tabbleth="";
-        var html="\"<body><table style='text-align: center;font-size:12px;width: "+receiptWith+"px'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr>"
+        var html="\"<body><table style='text-align: center;font-size:17px;width: "+receiptWith+"px'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr>"
         $("#edit-A4-dialog").find("th").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var message=$(this).html();
                 var classname=$(this).attr("class");
                 console.log(message);
-                html+="<th align='left' nowrap='nowrap' style='border:0px;font-size:10px;'>"+message+"</th>";
-                tabbleth+="<th align='left' nowrap='nowrap' style='border:0px;font-size:10px;'>"+message+"</th>";
+                html+="<th align='left' nowrap='nowrap' style='border:0px;font-size:15px;'>"+message+"</th>";
+                tabbleth+="<th align='left' nowrap='nowrap' style='border:0px;font-size:15px;'>"+message+"</th>";
                 if(printTableCode==""){
                     printTableCode+=classname.substring(0,classname.length-2);
                 }else{
@@ -597,25 +619,39 @@ function saveA4() {
             if(!$(this).is(":hidden")){
                 var message=$(this).html();
                 console.log(message);
-                html+="<td align='left' style='border-top:1px ;padding-top:5px;'>"+message+"</td>"
+                html+="<td align='left' style='border-top:1px ;padding-top:5px;font-size:12px;'>"+message+"</td>"
             }
         });
         html+="</tr></tbody></table>\"";
         str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
         str+="LODOP.SET_PRINT_STYLEA(0,\"ItemName\",\"baseHtml\");";
         sum=0;
-        $("#printFootA4").find("div").each(function (index,element) {
+        $("#printFootA4").find("span").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var id="\""+$(this).data("name")+"\"";
-                var message="\""+$(this).find("span").text()+"\"";
-                var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
+                var message="\""+$(this).text()+"\"";
+
+                if((sum)%2==0){
+                    var num=parseInt((sum)/2);
+                    var top=(num*printParameter.aRowheight+num*printParameter.intervalHeight);
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+",10,"+parseInt(receiptWith/2)+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                    printCode+=","+$(this).data("name");
+                }else{
+                    var num=parseInt((sum)/2);
+                    var top=(num*printParameter.aRowheight+num*printParameter.intervalHeight);
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+(parseInt(receiptWith/2)+10)+","+parseInt(receiptWith/2)+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                    printCode+=","+$(this).data("name");
+                }
+              /*  var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
                 console.log(id);
-                console.log(message);
-                str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+",10,"+receiptWith+","+printParameter.aRowheight+","+message+");";
-                str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
-                str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
-                printCode+=","+$(this).data("name");
+                console.log(message);*/
+
 
                 sum++;
             }

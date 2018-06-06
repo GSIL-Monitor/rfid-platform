@@ -456,10 +456,17 @@
 
                     <div class="headTitle">
                         <div id="printTopA4">
-                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4">
-                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="coustmer" id="coustmerA4">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="storeName" id="coustmerA4" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billNo" id="billNoA4" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billDate" id="billDateA4" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="makeBill" id="makeBillA4" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="remark" id="remarkA4" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                            </div>
+                           <%-- <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="coustmer" id="coustmerA4">
                               <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billNo" id="billNoA4">
@@ -473,7 +480,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="remark" id="remarkA4">
                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
-                            </div>
+                            </div>--%>
                         </div>
                         <div id="edit-A4-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
 
@@ -509,11 +516,9 @@
                             </table>
                         </div>
                         <div id="printFootA4">
-                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="shopBefore" id="shopBeforeA4">
-                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售前余额:xxxxxxxxxxxx</span>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="shopAfter" id="shopAfterA4">
-                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">售后余额:xxxxxxxxxxxx</span>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="shopBefore" id="shopBeforeA4" style="display:table-cell;vertical-align:middle;text-align:center">售前余额:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="shopAfter" id="shopAfterA4" style="display:table-cell;vertical-align:middle;text-align:center">售后余额:xxxxxxxxxxxx</span>
                             </div>
                         </div>
                     </div>
