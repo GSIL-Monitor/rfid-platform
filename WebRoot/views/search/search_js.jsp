@@ -49,12 +49,16 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 <script src="<%=basePath%>Olive/assets/js/jquery.ui.touch-punch.js"></script>
 
 <script src="<%=basePath%>Olive/assets/js/bootbox.js"></script>
+<script src="<%=basePath%>Olive/assets/js/bootstrap-multiselect.js"></script>
+<script src="<%=basePath%>/Olive/assets/js/bootstrap-select.js"></script>
+
 <!-- page specific plugin scripts -->
 
 <script src="<%=basePath%>Olive/plugin/bootstrap-validator/js/bootstrapValidator.min.js"></script>
 <script src="<%=basePath%>Olive/plugin/jquery.form.js"></script>
-
 <!-- ace scripts -->
+
+
 <script src="<%=basePath%>Olive/assets/js/ace/elements.scroller.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/elements.colorpicker.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/elements.fileinput.js"></script>
@@ -68,26 +72,21 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 <script src="<%=basePath%>Olive/assets/js/ace/ace.ajax-content.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.touch-drag.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.sidebar.js"></script>
-<script src="<%=basePath%>Olive/assets/js/ace/ace.sidebar-scroll-1.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.submenu-hover.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.widget-box.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.settings.js"></script>
-<script src="<%=basePath%>Olive/assets/js/ace/ace.settings-rtl.js"></script>
-<script src="<%=basePath%>Olive/assets/js/ace/ace.settings-skin.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.widget-on-reload.js"></script>
 <script src="<%=basePath%>Olive/assets/js/ace/ace.searchbox-autocomplete.js"></script>
-<script src="<%=basePath%>/kendoUI/js/jszip.min.js"></script> 
-<script src="<%=basePath%>/kendoUI/js/jquery.min.js"></script> 
+<script src="<%=basePath%>/kendoUI/js/jszip.min.js"></script>
 <script src="<%=basePath%>/kendoUI/js/kendo.all.min.js"></script>    
 <script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
-<%--<script src="<%=basePath%>/kendoUI/shared/js/console.js"></script>
-<script src="<%=basePath%>/kendoUI/shared/js/prettify.js"></script>--%>
+
 <script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
 <script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
 <script src="<%=basePath%>Olive/assets/js/date-time/bootstrap-datepicker.js"></script>
 <script src="<%=basePath%>Olive/assets/js/date-time/moment.js"></script>
 
-<script src="<%=basePath%>Olive/assets/js/bootstrap.js"></script>
+
 <script src="<%=basePath%>Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
 <script src="<%=basePath%>Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
 
@@ -104,7 +103,6 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
     }
 
 $(function() {
-
     $('.input-daterange').datepicker({autoclose:true});
     //datepicker plugin
     //link
@@ -114,6 +112,7 @@ $(function() {
     }) .next().on(ace.click_event, function(){
                 $(this).prev().focus();
     });
+    $(".selectpicker").selectpicker({'noneResultsText': '没有匹配结果'});
 
 });
 
@@ -221,39 +220,6 @@ kendo.ui.FilterMenu.prototype.options.operators =
      }
 	 return filters;
  }
-/* function startChange() {
-     var startDate = start.value(),
-     endDate = end.value();
-
-     if (startDate) {
-         startDate = new Date(startDate);
-         startDate.setDate(startDate.getDate());
-         end.min(startDate);
-     } else if (endDate) {
-         start.max(new Date(endDate));
-     } else {
-         endDate = new Date();
-         start.max(endDate);
-         end.min(endDate);
-     }
- }
-
- function endChange() {
-     var endDate = end.value(),
-     startDate = start.value();
-
-     if (endDate) {
-         endDate = new Date(endDate);
-         endDate.setDate(endDate.getDate());
-         start.max(endDate);
-     } else if (startDate) {
-         end.min(new Date(startDate));
-     } else {
-         endDate = new Date();
-         start.max(endDate);
-         end.min(endDate);
-     }
- }*/
 
 
    var ExtGrid = kendo.ui.Grid.extend({
@@ -301,6 +267,11 @@ kendo.ui.FilterMenu.prototype.options.operators =
    });
 
    kendo.ui.plugin(ExtGrid);
+
+    function _reset(){
+        $(".selectpicker").selectpicker('val', '');
+        $(".selectpicker").selectpicker('refresh');
+    }
 </script>
 
 

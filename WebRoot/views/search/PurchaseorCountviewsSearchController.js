@@ -1,6 +1,5 @@
 $(function () {
     //获取当前转户
-    debugger;
     initMultiSelect();
     var myDate = new Date();
     var year = myDate.getFullYear();
@@ -26,26 +25,14 @@ $(function () {
     }
     onIntimeday();
     initKendoUIGrid();
-    /*if(Codes=="admin"){
-        initKendoUIGrid();
-        $("#isadmin").show();
-        $("#noadmin").hide();
-    }else{
-        initnoKendoUIGrid();
-        $("#isadmin").hide();
-        $("#noadmin").show();
-    }*/
-
     inttitledata();
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
 
 });
 function inttitledata() {
-    debugger;
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
-
     $.ajax({
         url: basePath + "/search/PurchaseorCountviews/findtitledate.do",
         cache: false,
@@ -53,43 +40,14 @@ function inttitledata() {
         data: {"dates": JSON.stringify(params)},
         type: "POST",
         success: function (data, textStatus) {
-            debugger;
             var result = data.result;
             $(".purchasesum").text(":" + result.purchasesum);
             $(".purchasonesum").text(":" + result.purchasonesum);
             $(".purchasmony").text(": ￥" + result.purchasmony.toFixed(2));
-            /*$(".pressAll").text(": ￥" + result.passall.toFixed(2));
-            if (result.grossprofits == "NaN%") {
-                $(".grossprofits").text(": 0%");
-            } else {
-                $(".grossprofits").text(": " + parseFloat(result.grossprofits).toFixed(2));
-            }*/
-
-
         }
     });
 }
 function initMultiSelect() {
-    /* $("#filter_in_deport").kendoMultiSelect({
-     dataTextField: "name",
-     dataValueField: "code",
-     height: 400,
-     suggest: true,
-     dataSource: {
-     async: false,
-     transport: {
-     read:  basePath + "/sys/warehouse/list.do?filter_INI_type=9&filter_EQS_ownerId="+curOwnerId,
-
-     }
-     },
-     value: [
-     { name: deportName, code: deportId }
-     ]
-
-
-
-     });*/
-    //url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9",
         cache: false,
@@ -98,100 +56,21 @@ function initMultiSelect() {
         success: function (data, textStatus) {
             $("#filter_in_destid").empty();
             $("#filter_in_orderwarehouseid").empty();
-            $("#filter_in_destid").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-            $("#filter_in_orderwarehouseid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
+            $("#filter_in_destid").append("<option value='' >--请选择入库仓库--</option>");
+            $("#filter_in_orderwarehouseid").append("<option value=''>--请选择接收仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#filter_in_destid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#filter_in_destid").trigger('chosen:updated');
-                $("#filter_in_orderwarehouseid").trigger('chosen:updated');
+                /*$("#filter_in_destid").trigger('chosen:updated');
+                $("#filter_in_orderwarehouseid").trigger('chosen:updated');*/
             }
-            //$("#filter_in_deport").val(deportId);
+            /*$("#filter_in_destid").selectpicker('refresh');
+            $("#filter_in_orderwarehouseid").selectpicker('refresh');*/
+            /*$('.selectpicker').selectpicker('refresh');*/
+            $('.selectpicker').selectpicker('refresh');
         }
     });
-    if(roleid=="JMSJS"){
-        $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId="+curOwnerId,
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (data, textStatus) {
-                $("#filter_in_deport").empty();
-                $("#filter_in_orderwarehouseid").empty();
-                //$("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-                var json = data;
-                for (var i = 0; i < json.length; i++) {
-                    $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_deport").trigger('chosen:updated');
-                    $("#filter_in_orderwarehouseid").trigger('chosen:updated');
-                }
-                $("#filter_in_deport").val(deportId);
-                $("#filter_in_orderwarehouseid").val(deportId);
-            }
-        });
-    }else{
-        $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9",
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (data, textStatus) {
-                $("#filter_in_deport").empty();
-                $("#filter_in_orderwarehouseid").empty();
-                $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-                $("#filter_in_orderwarehouseid").append("<option value='' style='background-color: #eeeeee'>--请选择接收仓库--</option>");
-                var json = data;
-                for (var i = 0; i < json.length; i++) {
-                    $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_orderwarehouseid").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_deport").trigger('chosen:updated');
-                    $("#filter_in_orderwarehouseid").trigger('chosen:updated');
-                }
-                //$("#filter_in_deport").val(deportId);
-            }
-        });
-    }
-    /* $.ajax({
-     url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
-     cache: false,
-     async: false,
-     type: "POST",
-     success: function (data, textStatus) {
-     $("#filter_in_deport").empty();
-     $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-     var json = data;
-     for (var i = 0; i < json.length; i++) {
-     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-     $("#filter_in_deport").trigger('chosen:updated');
-     }
-     }
-     });*/
-    /*$("#filter_in_deport").val(deportId);*/
-    $("#filter_in_origid").kendoMultiSelect({
-        dataTextField: "name",
-        dataValueField: "code",
-        height: 400,
-        suggest: true,
-        dataSource: {
-            transport: {
-                read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-            }
-        }
-    });
-    $("#filter_in_destUnitId").kendoMultiSelect({
-        dataTextField: "name",
-        dataValueField: "code",
-        height: 400,
-        suggest: true,
-        dataSource: {
-            transport: {
-                read: basePath + "/sys/warehouse/list.do?filter_INI_type=0,1,2"
-            }
-        }
-    });
-
 
 }
 function refresh() {
@@ -199,14 +78,7 @@ function refresh() {
 }
 function resetData() {
     var gridData = $("#searchGrid").data("kendoGrid");
-    /* $("#filter_in_deport").val(deportId);
-     var filters = serializeToFilter($("#searchForm"));*/
     gridData.dataSource.filter({});
-    /*  gridData.dataSource.filter({
-     logic: "and",
-     filters: filters
-     });*/
-
 }
 
 function showAdvSearchPanel() {
@@ -214,7 +86,6 @@ function showAdvSearchPanel() {
 }
 var exportExcelid = "";
 function search() {
-    debugger;
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var filters = serializeToFilter($("#searchForm"));
     console.log(filters);
@@ -248,7 +119,6 @@ function openSearchGuestDialog() {
 }
 var isoneinitKendoUIGrid = true;
 function initKendoUIGrid() {
-    debugger;
     exportExcelid = "searchGrid";
     if (isoneinitKendoUIGrid) {
         var filters = serializeToFilter($("#searchForm"));
@@ -262,7 +132,6 @@ function initKendoUIGrid() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -394,7 +263,6 @@ function initKendoUIGrid() {
                 {
                     field: "", title: "图片", width: 100,
                     template: function (data) {
-                        debugger;
                         var url = data.url;
                         if (url == null) {
                             return "无图片";
@@ -471,7 +339,6 @@ function initKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -509,7 +376,6 @@ function initKendoUIGrid() {
                     title: "单据类型",
                     width: "180px",
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -662,7 +528,6 @@ function initKendoUIGrid() {
 }
 var isoneinitKendoUIPurchaseGrid = true;
 function initKendoUIPurchaseGrid() {
-    debugger;
     exportExcelid = "searchpuchaseGrid";
     if (isoneinitKendoUIPurchaseGrid) {
         var filters = serializeToFilter($("#searchForm"));
@@ -676,7 +541,6 @@ function initKendoUIPurchaseGrid() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
 
 
 
@@ -808,7 +672,6 @@ function initKendoUIPurchaseGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.totqty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totinval.sum;
@@ -847,7 +710,6 @@ function initKendoUIPurchaseGrid() {
                     title: "单据类型",
                     width: "180px",
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.totqty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totinval.sum;
@@ -937,7 +799,6 @@ function initKendoUIPurchaseGrid() {
 }
 var isoneinitKendoUIPurchasestyeidGrid = true;
 function initKendoUIPurchasestyeidGrid() {
-    debugger;
     exportExcelid = "searchpuchaseBystyeidGrid";
     if (isoneinitKendoUIPurchasestyeidGrid) {
         var filters = serializeToFilter($("#searchForm"));
@@ -951,7 +812,6 @@ function initKendoUIPurchasestyeidGrid() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
 
 
 

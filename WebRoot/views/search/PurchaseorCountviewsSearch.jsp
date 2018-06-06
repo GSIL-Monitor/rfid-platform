@@ -34,12 +34,12 @@
             font-size: 14px;
             line-height: 31px;
         }
-        .text {
+/*        .text {
             font-size: 24px;
             color: #fe3800;
             margin: 10px;
             line-height: 31px;
-        }
+        }*/
     </style>
 
 
@@ -225,41 +225,26 @@
                                                     <input class="form-control" id="filter_eq_class1Name"
                                                            type="text" name="filter_eq_class1Name" readonly  placeholder="厂家"/>
                                                 </div>
-                                                <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"
-                                                        style="width: 100%;" >
-                                                </select>--%>
                                             </div>
                                          </div>
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destid">仓库</label>
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                            <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
-                                             </select>--%>
-                                            <select class="form-control" id="filter_in_destid" name="filter_in_destid"
-                                                    style="width: 100%;" >
+                                            <select class="form-control selectpicker show-tick" id="filter_in_destid" name="filter_in_destid" aria-expanded="true"
+                                                    style="width: 100%;" data-live-search="true">
                                             </select>
                                         </div>
                                         <div id="orderwarehouseidShow">
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_orderwarehouseid">订货仓库</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
-                                                 </select>--%>
-                                                <select class="form-control" id="filter_in_orderwarehouseid" name="filter_in_orderwarehouseid"
-                                                        style="width: 100%;" >
+                                                <select class="form-control selectpicker show-tick" id="filter_in_orderwarehouseid" name="filter_in_orderwarehouseid"
+                                                        style="width: 100%;" data-live-search="true">
                                                 </select>
                                             </div>
                                         </div>
-                                        <%--  <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_origid">收货仓店</label>
-                                          <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                              <select id="filter_in_origid"name="filter_in_destid" multiple="multiple" data-placeholder="编号列表">
-                                              </select>
-                                          </div>--%>
                                     </div>
                                     <div class="form-group" id="styleid">
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleid">款号</label>
-
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                            <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
-                                                   placeholder="模糊查询"/> -->
                                             <div class="input-group">
                                                 <input class="form-control" id="filter_eq_styleid"
                                                        type="text" name="filter_eq_styleid" readonly/>
@@ -306,7 +291,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                             <button id="clearMessage" style="display: none" type="reset" class="btn btn-sm btn-warning">
@@ -502,11 +487,6 @@
         exportExcelid="searchpuchaseBydestunitidGrid";
         initKendoUIPurchasedestunitidGrid();
     }
-
-
-
 </script>
-
-
 </body>
 </html>

@@ -1,6 +1,8 @@
 $(function () {
     //获取当前转户
-    debugger;
+    $(".selectpicker").selectpicker({
+        noneSelectedText : '请选择'//默认显示内容
+    });
     initMultiSelect();
     var myDate = new Date();
     var year = myDate.getFullYear();
@@ -43,7 +45,6 @@ $(function () {
 });
 
 function inttitledata() {
-    debugger;
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
 
@@ -72,44 +73,6 @@ function inttitledata() {
 }
 
 function initMultiSelect() {
-    /* $("#filter_in_deport").kendoMultiSelect({
-     dataTextField: "name",
-     dataValueField: "code",
-     height: 400,
-     suggest: true,
-     dataSource: {
-     async: false,
-     transport: {
-     read:  basePath + "/sys/warehouse/list.do?filter_INI_type=9&filter_EQS_ownerId="+curOwnerId,
-
-     }
-     },
-     value: [
-     { name: deportName, code: deportId }
-     ]
-
-
-
-     });*/
-    //url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
-    $.ajax({
-        url: basePath + "/unit/list.do?filter_EQI_type=9",
-        cache: false,
-        async: false,
-        type: "POST",
-        success: function (data, textStatus) {
-            $("#filter_in_deport").empty();
-            $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-            $("#filter_in_deport").append("<option value='allDG' style='background-color: #eeeeee'>所有门店仓库</option>");
-            $("#filter_in_deport").append("<option value='allJMS' style='background-color: #eeeeee'>所有加盟商仓库</option>");
-            var json = data;
-            for (var i = 0; i < json.length; i++) {
-                $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#filter_in_deport").trigger('chosen:updated');
-            }
-            //$("#filter_in_deport").val(deportId);
-        }
-    });
     if(roleid=="JMSJS"){
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId="+curOwnerId,
@@ -118,11 +81,9 @@ function initMultiSelect() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
-                //$("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_deport").trigger('chosen:updated');
                 }
                 $("#filter_in_deport").val(deportId);
             }
@@ -135,15 +96,14 @@ function initMultiSelect() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#filter_in_deport").empty();
-                $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-                $("#filter_in_deport").append("<option value='allDG' style='background-color: #eeeeee'>所有门店仓库</option>");
-                $("#filter_in_deport").append("<option value='allJMS' style='background-color: #eeeeee'>所有加盟商仓库</option>");
+                $("#filter_in_deport").append("<option value='' >请选择仓库</option>");
+                $("#filter_in_deport").append("<option value='allDG' >所有门店仓库</option>");
+                $("#filter_in_deport").append("<option value='allJMS' >所有加盟商仓库</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#filter_in_deport").trigger('chosen:updated');
                 }
-                //$("#filter_in_deport").val(deportId);
+                $(".selectpicker").selectpicker('refresh');
             }
         });
     }
@@ -163,6 +123,7 @@ function initMultiSelect() {
      }
      });*/
     /*$("#filter_in_deport").val(deportId);*/
+/*
     $("#filter_in_origid").kendoMultiSelect({
         dataTextField: "name",
         dataValueField: "code",
@@ -174,6 +135,10 @@ function initMultiSelect() {
             }
         }
     });
+*/
+
+
+/*
     $("#filter_in_destUnitId").kendoMultiSelect({
         dataTextField: "name",
         dataValueField: "code",
@@ -184,15 +149,28 @@ function initMultiSelect() {
                 read: basePath + "/sys/warehouse/list.do?filter_INI_type=0,1,2"
             }
         }
+    });*/
+
+    $.ajax({
+        url:basePath + "/sys/warehouse/list.do?filter_EQI_type=4",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#filter_in_destUnitId").empty();
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#filter_in_destUnitId").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
+            }
+            $(".selectpicker").selectpicker('refresh');
+        }
     });
-
-
+    $(".selectpicker").selectpicker('refresh');
 }
 function refresh() {
     resetData();
 }
 function resetData() {
-    debugger;
     var gridData = $("#searchGrid").data("kendoGrid");
     /* $("#filter_in_deport").val(deportId);
      var filters = serializeToFilter($("#searchForm"));*/
@@ -201,6 +179,7 @@ function resetData() {
      logic: "and",
      filters: filters
      });*/
+    _reset();
 
 }
 var exportExcelid = "";
@@ -346,7 +325,6 @@ function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast");
 }
 function search() {
-    debugger;
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var filters = serializeToFilter($("#searchForm"));
     console.log(filters);

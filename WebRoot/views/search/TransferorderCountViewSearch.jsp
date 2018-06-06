@@ -8,7 +8,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <jsp:include page="../baseView.jsp"></jsp:include>
     <jsp:include page="searchBaseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
@@ -32,7 +31,7 @@
             padding-top: 3px;
             padding-bottom: 3px;
         }
-        .data-container1 {
+/*        .data-container1 {
             display: inline-block;
             border: 1px solid #d7d7d7;
             border-right: 0px;
@@ -42,18 +41,18 @@
             text-align: center;
             padding-top: 3px;
             padding-bottom: 3px;
-        }
+        }*/
         .title {
             color: #53606b;
             font-size: 14px;
             line-height: 31px;
         }
-        .text {
+/*        .text {
             font-size: 24px;
             color: #fe3800;
             margin: 10px;
             line-height: 31px;
-        }
+        }*/
     </style>
 
 </head>
@@ -238,15 +237,15 @@
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
                                             <div class="col-xs-2">
-                                                <select class="form-control" id="search_origId" name="filter_eq_origId">
+                                                <select class="form-control  selectpicker show-tick" id="search_origId" name="filter_eq_origId">
                                                 </select>
 
                                             </div>
                                             <div id="outStatus">
                                                 <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
                                                 <div class="col-xs-2">
-                                                    <select class="form-control" id="select_outStatus"
-                                                            name="filter_eq_outStatus">
+                                                    <select class="form-control selectpicker show-tick" id="select_outStatus"
+                                                            name="filter_eq_outStatus" data-live-search="true">
                                                         <option value="">--请选择--</option>
                                                         <option value="0">订单状态</option>
                                                         <option value="2">已出库</option>
@@ -273,14 +272,15 @@
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
                                             <div class="col-xs-2">
-                                                <select class="form-control" id="search_destId" name="filter_eq_destId">
+                                                <select class="form-control  selectpicker show-tick" id="search_destId" name="filter_eq_destId"
+                                                        data-live-search="true">
                                                 </select>
                                             </div>
                                             <div id="inStatus">
                                                 <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
                                                 <div class="col-xs-2">
-                                                    <select class="form-control" id="select_instatus"
-                                                            name="filter_eq_inStatus">
+                                                    <select class="form-control  selectpicker show-tick" id="select_instatus"
+                                                            name="filter_eq_inStatus" data-live-search="true">
                                                         <option value="">--请选择--</option>
                                                         <option value="0">订单状态</option>
                                                         <option value="1">已入库</option>
@@ -377,7 +377,6 @@
 </div>
 
 <jsp:include page="search_js.jsp"></jsp:include>
-<jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
