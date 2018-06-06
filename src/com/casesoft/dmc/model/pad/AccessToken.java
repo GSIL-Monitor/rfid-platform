@@ -6,9 +6,17 @@ package com.casesoft.dmc.model.pad;
  * @desc 封装AccessToken的实体
  **/
 public class AccessToken {
+
     private String token;
     private int expireIn;
+    private Long time;
 
+    public Long getTime() {
+        return time;
+    }
+    public void setTime(Long time) {
+        this.time = time;
+    }
     public String getToken() {
         return token;
     }

@@ -16,6 +16,7 @@ import com.casesoft.dmc.model.hall.Employee;
 import com.casesoft.dmc.model.hall.HallFloor;
 import com.casesoft.dmc.model.mirror.Collocat;
 import com.casesoft.dmc.model.mirror.NewProduct;
+import com.casesoft.dmc.model.pad.AccessToken;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.*;
@@ -138,6 +139,32 @@ public class CacheManager {
 	}
 
 	//-------------------
+
+	public static void iniAccessToken(AccessToken accessToken){
+		Map<String,AccessToken> accessTokenMap  = new HashMap<>();
+		accessTokenMap.put("AccessToken",accessToken);
+		cache.put(new Element("AccessToken",accessTokenMap));
+	}
+
+	public static AccessToken getAccessToken(){
+		Element result = cache.get("AccessToken");
+		if (result==null){
+			AccessToken accessToken = new AccessToken();
+			iniAccessToken(accessToken);
+			Element element = cache.get("AccessToken");
+			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) element.getValue();
+			return accessTokenMap.get("AccessToken");
+		}else {
+			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) result.getValue();
+			return accessTokenMap.get("AccessToken");
+		}
+	}
+
+	public static void remove(){
+		cache.remove("AccessToken");
+	}
+
+
 	public static void iniDepartment(){
 		DepartmentService departmentService =(DepartmentService) SpringContextUtil.getBean("departmentService");
 		Map<String,Department> departmenyMap =new HashMap<String,Department>();

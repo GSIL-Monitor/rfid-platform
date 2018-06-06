@@ -47,21 +47,31 @@ public class WxPublicNumber extends BaseController implements IBaseInfoControlle
             //获取关注的微信公众号信息
             JSONObject weiXinJson = WeiXinUserInfoUtils.getUserInfo(fromUserName);
             System.out.println(weiXinJson);
-            WeiXinUser weiXinUser = new WeiXinUser();
-            weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
-            weiXinUser.setOpenId(weiXinJson.getString("openid"));
-            weiXinUser.setNickname(weiXinJson.getString("nickname"));
-            weiXinUser.setSex(weiXinJson.getInt("sex"));
-            weiXinUser.setLanguage(weiXinJson.getString("language"));
-            weiXinUser.setCity(weiXinJson.getString("city"));
-            weiXinUser.setProvince(weiXinJson.getString("province"));
-            weiXinUser.setCountry(weiXinJson.getString("country"));
-            weiXinUser.setHeadImgUrl(weiXinJson.getString("headimgurl"));
-            weiXinUser.setSubscribeTime(weiXinJson.getString("subscribe_time"));
-            weiXinUser.setUnionId(weiXinJson.getString("unionid"));
-            System.out.println(weiXinUser.toString());
-            this.weiXinUserService.save(weiXinUser);
+            Object errcode = weiXinJson.get("errcode");
+            if(errcode == null || "0".equals(errcode)) {
+                WeiXinUser weiXinUser = new WeiXinUser();
+                weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
+                weiXinUser.setOpenId(weiXinJson.getString("openid"));
+                weiXinUser.setNickname(weiXinJson.getString("nickname"));
+                weiXinUser.setSex(weiXinJson.getInt("sex"));
+                weiXinUser.setLanguage(weiXinJson.getString("language"));
+                weiXinUser.setCity(weiXinJson.getString("city"));
+                weiXinUser.setProvince(weiXinJson.getString("province"));
+                weiXinUser.setCountry(weiXinJson.getString("country"));
+                weiXinUser.setHeadImgUrl(weiXinJson.getString("headimgurl"));
+                weiXinUser.setSubscribeTime(weiXinJson.getString("subscribe_time"));
+//                weiXinUser.setUnionId(weiXinJson.getString("unionid"));
+                System.out.println(weiXinUser.toString());
+                this.weiXinUserService.save(weiXinUser);
+            }else {
+                System.out.println("当前获取weiXinUser失败，错误码为："+errcode + "错误原因为："+weiXinJson.getString("errmsg"));
+            }
         }
+        /*String echostr = req.getParameter("echostr");
+        PrintWriter pw = resp.getWriter();
+        pw.write(echostr);  //这里 echostr 的值必须返回，否则微信认为请求失败
+        pw.flush();
+        pw.close();*/
         return "";
     }
     /**
