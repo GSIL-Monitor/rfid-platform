@@ -120,7 +120,12 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     public MessageBox findPrintSetListByOwnerId(String type, String ruleReceipt){
         try {
             User currentUser = this.getCurrentUser();
-            List<PrintSet> printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type,ruleReceipt);
+            List<PrintSet> printSets;
+            if(ruleReceipt.equals("A4")&&currentUser.getOwnerId().equals("1")){
+                printSets = this.printSetService.findPrintSetListByOwnerIdA4(type,ruleReceipt);
+            }else{
+                printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type,ruleReceipt);
+            }
             return new MessageBox(true, "查询成功",printSets);
         }catch (Exception e){
             return new MessageBox(false, "查询失败");

@@ -127,6 +127,17 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
 
         return printSets;
     }
+    public List<PrintSet> findPrintSetListByOwnerIdA4(String type,String ruleReceipt){
+        List<PrintSet> printSets;
+        String hql="from PrintSet t where ruleReceipt=? and type=?";
+        printSets= this.printSetDao.find(hql, new Object[]{ruleReceipt,type});
+        for(int i=0;i<printSets.size();i++){
+            if(i>1){
+                printSets.remove(i);
+            }
+        }
+        return printSets;
+    }
 
     public Map<String,Object> printMessage(String id,String billno){
         Map<String,Object> map=new HashMap<String,Object>();
