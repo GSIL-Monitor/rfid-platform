@@ -250,21 +250,26 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             SaleOrderBill saleOrderBill = this.saleOrderBillService.load(billno);
             mapcont.put("storeName","Ancient Stone");
 
-            mapcont.put("billNo",billno);
+            mapcont.put("billNo","单号:"+billno);
             User user = CacheManager.getUserById(saleOrderBill.getOprId());
-            mapcont.put("makeBill",user.getName());
-            mapcont.put("billDate", CommonUtil.getDateString(saleOrderBill.getBillDate(),"yyyy-MM-dd"));
-            mapcont.put("coustmer",saleOrderBill.getDestUnitName());
-            mapcont.put("remark",saleOrderBill.getRemark());
-            if(CommonUtil.isNotBlank(saleOrderBill.getAfterBalance())){
-                mapcont.put("shopAfter",saleOrderBill.getAfterBalance());
+            mapcont.put("makeBill","制单人:"+user.getName());
+            mapcont.put("billDate", "日期:"+CommonUtil.getDateString(saleOrderBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("coustmer","客户:"+saleOrderBill.getDestUnitName());
+            if(CommonUtil.isNotBlank(saleOrderBill.getRemark())){
+                mapcont.put("remark","备注:"+saleOrderBill.getRemark());
             }else{
-                mapcont.put("shopAfter","");
+                mapcont.put("remark","备注:");
+            }
+
+            if(CommonUtil.isNotBlank(saleOrderBill.getAfterBalance())){
+                mapcont.put("shopAfter","售后余额:"+saleOrderBill.getAfterBalance());
+            }else{
+                mapcont.put("shopAfter","售后余额:");
             }
             if(CommonUtil.isNotBlank(saleOrderBill.getPreBalance())){
-                mapcont.put("shopBefore",saleOrderBill.getPreBalance());
+                mapcont.put("shopBefore","售前余额:"+saleOrderBill.getPreBalance());
             }else{
-                mapcont.put("shopBefore","");
+                mapcont.put("shopBefore","售前余额:");
             }
             List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billno);
             for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
