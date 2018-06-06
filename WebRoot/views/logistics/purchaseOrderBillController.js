@@ -2,8 +2,6 @@ var searchUrl = basePath + "/logistics/purchase/page.do";
 $(function () {
     initGrid();
     initForm();
-    initProgressDialog();
-    initNotification();
     if(billNo){
         bootbox.alert("单据"+billNo+"正在编辑中");
     }else{
@@ -13,6 +11,7 @@ $(function () {
 
 function initForm() {
     initSelectDestForm();
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function initSelectDestForm() {
@@ -20,15 +19,14 @@ function initSelectDestForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9",
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
-            $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_destId").trigger('chosen:updated');
             }
         }
     });
@@ -318,35 +316,7 @@ function showAdvSearchPanel() {
 
     $("#searchPanel").slideToggle("fast");
 }
-function initProgressDialog() {
-    $("#progressDialog").kendoDialog({
-        width: "400px",
-        height: "250px",
-        title: "提示",
-        closable: false,
-        animation: true,
-        modal: true,
-        content: '<center><h3>正在处理中...</h3></center>' +
-        '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">' +
-        '<span class="sr-only">100%</span></div></div>',
-        buttonLayout: "normal"
-    }).data("kendoDialog").close();
-}
-function openProgress() {
-    $("#progressDialog").data('kendoDialog').open();
-}
-function closeProgress() {
-    $("#progressDialog").data('kendoDialog').close();
-}
 
-function initNotification() {
-    $("#notification").kendoNotification({
-        position: {
-            top: 50
-        },
-        stacking: "left"
-    }).data("kendoNotification").hide();
-}
 
 function doPrint(billNo) {
     $("#editForm").resetForm();

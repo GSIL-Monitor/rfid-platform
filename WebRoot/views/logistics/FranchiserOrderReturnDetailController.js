@@ -18,8 +18,9 @@ function initForm() {
     $("#search_busnissId").attr('disabled', true);
     $("#search_customerType").val(saleOrderReturn_customerType);
     $("#search_origId").val(saleOrderReturn_origId);
-    $("#search_destId").val(saleOrderReturn_destId);false
+    $("#search_destId").val(saleOrderReturn_destId);
     $("#search_busnissId").val(saleOrderReturn_busnissId);
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function initCustomerTypeForm() {
@@ -34,7 +35,6 @@ function initCustomerTypeForm() {
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_customerType").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_customerType").trigger('chosen:updated');
             }
         }
     });
@@ -49,11 +49,10 @@ function initSelectOrigForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+                $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
                 }
             }
         });
@@ -65,11 +64,10 @@ function initSelectOrigForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+                $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
                 }
             }
         });
@@ -122,7 +120,7 @@ function initSelectBusinessIdForm() {
     $.ajax({
         url: url,
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_busnissId").empty();

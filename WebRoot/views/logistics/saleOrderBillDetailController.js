@@ -85,6 +85,8 @@ function initForm() {
         $("#search_busnissId").val(saleOrder_busnissId);
         $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     }
+    $(".selectpicker").selectpicker('refresh');
+    $('.selectpicker').selectpicker('render');
 
 }
 
@@ -108,7 +110,7 @@ function initCustomerTypeForm() {
         success: function (data, textStatus) {
 
             $("#search_customerType").empty();
-            $("#search_customerType").append("<option value='' style='background-color: #eeeeee'>--请选择客户类型--</option>");
+            $("#search_customerType").append("<option value=''>--请选择客户类型--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_customerType").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -136,11 +138,10 @@ function initSelectOrigForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+                $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
                 }
             }
         });
@@ -152,11 +153,11 @@ function initSelectOrigForm() {
             type: "POST",
             success: function (data, textStatus) {
                 $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+                $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
+
                 }
             }
         });
@@ -166,39 +167,21 @@ function initSelectOrigForm() {
 
 function initSelectDestForm() {
 
-    if (userId == "admin") {
-        $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9",
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (data, textStatus) {
-                $("#search_destId").empty();
-                $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-                var json = data;
-                for (var i = 0; i < json.length; i++) {
-                    $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_destId").trigger('chosen:updated');
-                }
+    $.ajax({
+        url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_destUnitId").val(),
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_destId").empty();
+            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
-        });
-    } else {
-        $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_destUnitId").val(),
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (data, textStatus) {
-                $("#search_destId").empty();
-                $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-                var json = data;
-                for (var i = 0; i < json.length; i++) {
-                    $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_destId").trigger('chosen:updated');
-                }
-            }
-        });
-    }
+        }
+    });
+
 
 }
 
@@ -220,7 +203,7 @@ function initSelectBusinessIdForm() {
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
-                // $("#search_busnissId").trigger('chosen:updated');
+                // $("#search_busnissId").selectpicker('refresh');
             }
 
             if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {

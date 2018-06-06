@@ -102,6 +102,7 @@ public class Style extends BaseStyle implements java.io.Serializable {
         super.setClass8(class8);
         super.setClass9(class9);
         super.setClass10(class10);
+//        super.setRules(rules);
     }
 
     /**

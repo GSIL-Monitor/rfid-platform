@@ -12,8 +12,9 @@
 
     <!-- ace styles -->
     <link rel="stylesheet" href="../../Olive/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-
-
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
 
     <style>
         body {
@@ -29,7 +30,7 @@
 </head>
 <body>
 <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <h1 align="center" class="center-vertical">
+    <h1 align="center" >
         自助收银
     </h1>
 </div>
@@ -40,15 +41,15 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 50%;">
                 <div class="divlevel">
                     <span >设备号：</span>
-                    <p >KG170802</p>
+                    <input class="col-lg-6 col-md-6 col-sm-6 col-xs-6" type="text" value="6252" id="deviceNumber">
                 </div>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 50%;">
+            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 50%;">
                 <div class="divlevel">
                     <span >服务器地址：</span>
                     <input class="col-lg-6 col-md-6 col-sm-6 col-xs-6" type="text" id="basePath"/>
                 </div>
-            </div>
+            </div>-->
 
         </div>
     </div>
@@ -61,22 +62,23 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 30%;">
                 <div class="divlevel">
                     <span >读写器地址：</span>
-                    <input class="col-lg-4 col-md-4 col-sm-4 col-xs-4" type="text"/>
+                    <input class="col-lg-6 col-md-6 col-sm-6 col-xs-6" type="text" value="http://114.215.186.211:8080/fsu/transparent/rfid/"/>
                 </div>
 
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 30%;">
                 <div class="divlevel">
-                    <span>功率：</span>
-                    <input class="col-lg-2 col-md-2 col-sm-2 col-xs-2" type="text"/>
+                    <span >功率：</span>
+                    <input class="col-lg-6 col-md-6 col-sm-6 col-xs-6" type="number" id="power" placeholder="功率的范围在0~33" />
+                    <span >单位（dbm）</span>
                 </div>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 30%;">
+            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 30%;">
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         <div class="divlevel">
                             <label >天线1:</label>
-                            <!--<input style="width: 30%" type="range" value="0">-->
+                            &lt;!&ndash;<input style="width: 30%" type="range" value="0">&ndash;&gt;
                             <div class='btn-group btn-group-sm pull-left'>
                                 <span class='col-sm-10'>
                                     <input style="width: 30%" type="checkbox" class="ace ace-switch ace-switch-5">
@@ -88,7 +90,7 @@
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         <div class="divlevel">
                             <label>天线2:</label>
-                            <!--<input style="width: 30%" type="range" value="0">-->
+                            &lt;!&ndash;<input style="width: 30%" type="range" value="0">&ndash;&gt;
                             <div class='btn-group btn-group-sm pull-left'>
                                 <span class='col-sm-10'>
                                     <input style="width: 30%" type="checkbox" class="ace ace-switch ace-switch-5">
@@ -100,7 +102,7 @@
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         <div class="divlevel">
                             <label >天线3:</label>
-                            <!--<input style="width: 30%" type="range" value="0">-->
+                            &lt;!&ndash;<input style="width: 30%" type="range" value="0">&ndash;&gt;
                             <div class='btn-group btn-group-sm pull-left'>
                                 <span class='col-sm-10'>
                                     <input style="width: 30%" type="checkbox" class="ace ace-switch ace-switch-5">
@@ -112,7 +114,7 @@
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         <div class="divlevel">
                             <label >天线4:</label>
-                            <!--<input style="width: 30%" type="range" value="0">-->
+                            &lt;!&ndash;<input style="width: 30%" type="range" value="0">&ndash;&gt;
                             <div class='btn-group btn-group-sm pull-left'>
                                 <span class='col-sm-10'>
                                     <input style="width: 30%" type="checkbox" checked class="ace ace-switch ace-switch-5">
@@ -122,7 +124,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
@@ -138,13 +140,42 @@
 </body>
 <script>
     var basePath = localStorage.getItem("basePath");
-/*    var setPath=basePathAll.split("/padLogin")[0];
-    $("#BasePath").val(setPath);*/
-
     function back() {
-        localStorage.setItem("back",1);
+        localStorage.setItem("back","set");
         window.location.href=basePath+'views/pad/padUser.html';
     }
-
+    function save() {
+        var deviceId = $("#deviceNumber").val();
+        var outputPower = $("#power").val();
+        if (outputPower<0||outputPower>33||outputPower==""){
+            bootbox.setDefaults("locale","zh_CN");
+            bootbox.alert("功率不在范围之内请按照提示输入！");
+        }else {
+            $.ajax({
+                dataType: "json",
+                url: basePath + "pad/padUser/setPower.do",
+                cache: false,
+                async: false,
+                data:{
+                    deviceId:deviceId,
+                    outputPower:outputPower
+                },
+                type: "POST",
+                success: function (msg) {
+                    if(msg.success){
+                        bootbox.setDefaults("locale","zh_CN");
+                        bootbox.confirm(msg.msg, function(result) {
+                            if (result) {
+                                window.location.href=basePath+'views/pad/padUser.html';
+                            }
+                        });
+                    }else {
+                        bootbox.setDefaults("locale","zh_CN");
+                        bootbox.alert(msg.msg);
+                    }
+                }
+            });
+        }
+    }
 </script>
 </html>

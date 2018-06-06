@@ -312,4 +312,6 @@ public abstract class BaseStyle {
     public void setBrandName(String brandName) {
         this.brandName = brandName;
     }
+
+
 }

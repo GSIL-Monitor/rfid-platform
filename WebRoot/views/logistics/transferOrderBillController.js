@@ -5,8 +5,6 @@ var searchUrl = basePath + "/logistics/transferOrder/page.do";
 $(function () {
     initGrid();
     initForm();
-    initProgressDialog();
-    initNotification();
     if(billNo){
         bootbox.alert("单据"+billNo+"正在编辑中");
     }else{
@@ -17,22 +15,23 @@ $(function () {
 function initForm() {
     initSelectOrigForm();
     initSelectDestForm();
+    $(".selectpicker").selectpicker('refresh');
 }
-
 function initSelectOrigForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_origUnitId").val(),
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
-            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+            $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
+
+
         }
     });
 }
@@ -40,16 +39,16 @@ function initSelectDestForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_destUnitId").val(),
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
-            $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_destId").trigger('chosen:updated');
             }
+
         }
     });
 }
@@ -72,7 +71,6 @@ function initGrid() {
                     html += "<a style='margin-left: 20px' href='" + basePath + "/logistics/transferOrder/edit.do?billNo=" + billNo + "'><i class='ace-icon fa fa-edit' title='编辑'></i></a>";
                     html += "<a style='margin-left: 20px' href='#' onclick=check('" + billNo + "')><i class='ace-icon fa fa-check-square-o' title='审核'></i></a>";
                     html += "<a style='margin-left: 20px' href='#' onclick=cancel('" + billNo + "')><i class='ace-icon fa fa-undo' title='撤销'></i></a>";
-                  /*  html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*/
                     html += "<a style='margin-left: 20px' href='#' onclick=quit('" + rowObject.billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
 
 
@@ -178,7 +176,6 @@ function initGrid() {
 }
 
 function setFooterData() {
-    debugger;
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
     var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
     var sum_totOutVal = $("#grid").getCol('totOutVal', false, 'sum');
@@ -244,30 +241,6 @@ function check(billNo) {
     });
 }
 
-/*function cancel(billNo) {
-    var row = $("#grid").getRowData(billNo);
-    if (row.status != 0) {
-        bootbox.alert("不是录入状态，无法撤销");
-        return;
-    }
-    $.ajax({
-        dataType: "json",
-        url: basePath + "/logistics/transferOrder/cancel.do",
-        data: {billNo: billNo},
-        type: "POST",
-        success: function (msg) {
-            if (msg.success) {
-                $.gritter.add({
-                    text: msg.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#grid").trigger("reloadGrid");
-            } else {
-                bootbox.alert(msg.msg);
-            }
-        }
-    });
-}*/
 
 function cancel(billNo) {
 
@@ -326,35 +299,9 @@ function showAdvSearchPanel() {
 
     $("#searchPanel").slideToggle("fast");
 }
-function initProgressDialog() {
-    $("#progressDialog").kendoDialog({
-        width: "400px",
-        height: "250px",
-        title: "提示",
-        closable: false,
-        animation: true,
-        modal: true,
-        content: '<center><h3>正在处理中...</h3></center>' +
-        '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">' +
-        '<span class="sr-only">100%</span></div></div>',
-        buttonLayout: "normal"
-    }).data("kendoDialog").close();
-}
-function openProgress() {
-    $("#progressDialog").data('kendoDialog').open();
-}
-function closeProgress() {
-    $("#progressDialog").data('kendoDialog').close();
-}
 
-function initNotification() {
-    $("#notification").kendoNotification({
-        position: {
-            top: 50
-        },
-        stacking: "left"
-    }).data("kendoNotification").hide();
-}
+
+
 
 var dialogOpenPage;
 function openSearchOrigDialog() {

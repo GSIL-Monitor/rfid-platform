@@ -13,21 +13,21 @@ $(function () {
 function initForm() {
     initSelectOrigForm();
     initSelectDestForm();
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function initSelectOrigForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_origUnitId").val(),
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
-            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+            $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
         }
     });
@@ -37,15 +37,14 @@ function initSelectDestForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
         cache: false,
-        async: true,
+        async: false,
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
-            $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_destId").trigger('chosen:updated');
             }
         }
     });
@@ -264,32 +263,7 @@ function quit(billNo) {
         }
     });
 }
-/*function cancel(billNo) {
 
-    row = $("#grid").jqGrid("getRowData", billNo);
-    if (row.status != "0") {
-        bootbox.alert("不是录入状态，不可取消!");
-        return
-    }
-    $.ajax({
-        url: basePath + "/logistics/saleOrderReturn/cancel.do?billNo=" + billNo,
-        type: "POST",
-        success: function (result) {
-            if (result.success) {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#grid").trigger("reloadGrid");
-            } else {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-            }
-        }
-    });
-}*/
 function cancel(billNo) {
 
     row = $("#grid").jqGrid("getRowData", billNo);
@@ -334,32 +308,7 @@ function refresh() {
     location.reload(true);
 }
 
-/*function check(billNo) {
-    row = $("#grid").jqGrid("getRowData", billNo);
-    if (row.status != "0") {
-        bootbox.alert("不是录入状态，不可审核!");
-        return
-    }
-    $.ajax({
-        url: basePath + "/logistics/saleOrderReturn/check.do?billNo=" + billNo,
-        type: "POST",
-        success: function (result) {
 
-            if (result.success) {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#grid").trigger("reloadGrid");
-            } else {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-            }
-        }
-    });
-}*/
 function check(billNo) {
     row = $("#grid").jqGrid("getRowData", billNo);
     if (row.status != "0") {

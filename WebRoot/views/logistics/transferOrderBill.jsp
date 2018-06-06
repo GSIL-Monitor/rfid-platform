@@ -74,17 +74,15 @@
                                                    type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                    placeholder="模糊查询"/>
                                         </div>
-                                        <label class="col-xs-1 control-label "
-                                               for="search_createTime">创建日期 </label>
-                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                        <label class="col-xs-1 control-label" for="search_billDate">创建日期</label>
+                                        <div class="col-xs-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="search_createTime"
+                                                <input class="form-control date-picker" id="search_billDate"
                                                        type="text" name="filter_GED_billDate"
                                                        data-date-format="yyyy-mm-dd"/>
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-exchange"></i>
                                                 </span>
-
                                                 <input class="form-control date-picker" type="text"
                                                        class="input-sm form-control" name="filter_LED_billDate"
                                                        data-date-format="yyyy-mm-dd"/>
@@ -107,16 +105,18 @@
                                                        name="origUnitName" readonly/>
                                             </div>
                                         </div>
-                                        <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control" id="search_origId" name="filter_LIKES_origId">
-                                            </select>
 
+
+                                        <label class="col-xs-1 control-label" for="search_origId"></span>出库仓库</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control selectpicker show-tick" id="search_origId" name="filter_LIKES_origId"
+                                                    style="width: 100%;" data-live-search="true">
+                                            </select>
                                         </div>
                                         <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
                                         <div class="col-xs-2">
-                                            <select class="form-control" id="select_outStatus"
-                                                    name="filter_EQI_outStatus">
+                                            <select class="form-control selectpicker show-tick" id="select_outStatus"
+                                                    name="filter_EQI_outStatus" data-live-search="true">
                                                 <option value="">--请选择--</option>
                                                 <option value="0">订单状态</option>
                                                 <option value="2">已出库</option>
@@ -142,13 +142,15 @@
                                         </div>
                                         <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
                                         <div class="col-xs-2">
-                                            <select class="form-control" id="search_destId" name="filter_LIKES_destId">
+                                            <select class="form-control selectpicker show-tick" id="search_destId" name="filter_LIKES_destId"
+                                                    style="width: 100%;" data-live-search="true">
                                             </select>
                                         </div>
+
                                         <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
                                         <div class="col-xs-2">
-                                            <select class="form-control" id="select_inStatus"
-                                                    name="filter_EQI_inStatus">
+                                            <select class="form-control selectpicker show-tick" id="select_inStatus"
+                                                    name="filter_EQI_inStatus" data-live-search="true">
                                                 <option value="">--请选择--</option>
                                                 <option value="0">订单状态</option>
                                                 <option value="1">已入库</option>
@@ -156,17 +158,20 @@
                                             </select>
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <div class="col-sm-offset-5 col-sm-10">
                                             <button type="button" class="btn btn-sm btn-primary" onclick="_search()">
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning">
+                                            <button type="reset" class="btn btn-sm btn-warning"  onclick="_reset()">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
                                     </div>
+
                                 </form>
                             </div>
                         </div>
@@ -182,26 +187,16 @@
         </div>
     </div>
 
-    <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+    <jsp:include page="../layout/footer.jsp"></jsp:include>
     <!--/.fluid-container#main-container-->
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <jsp:include page="transferOrderBillPrint.jsp"></jsp:include>
-<jsp:include page="../sys/print_two.jsp"></jsp:include>
-<link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
-<link href="<%=basePath%>/kendoUI/styles/kendo.material.min.css" rel="stylesheet">
-<script src="<%=basePath%>/kendoUI/js/kendo.all.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
-<script src="<%=basePath%>/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>
-<script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderBillController.js"></script>
-<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 
-<div id="dialog"></div>
-<div id="progressDialog"></div>
-<span id="notification"></span>
+<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderBillController.js"></script>
+
 </body>
 </html>

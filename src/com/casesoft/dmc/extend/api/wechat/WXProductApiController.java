@@ -15,10 +15,12 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
+import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,11 +56,15 @@ public class WXProductApiController extends ApiBaseController {
 
     @Autowired
     private PhotoService photoService;
+
     @Autowired
     private CustomerPhotoService customerPhotoService;
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private PricingRulesService pricingRulesService;
 
     @Override
     public String index() {
@@ -67,7 +73,7 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping("/getStyleListWS.do")
     @ResponseBody
-    public Page<Style> getStyleList(Page<Style> page)throws Exception{
+    public Page<Style> getStyleList(Page<Style> page) throws Exception {
         logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         page.setSort("updateTime");
@@ -75,15 +81,15 @@ public class WXProductApiController extends ApiBaseController {
         page.setPageProperty();
         page = this.styleService.findPage(page, filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
-        for(Style d : page.getRows()){
+        for (Style d : page.getRows()) {
             String imgUrl = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
             d.setUrl(imgUrl);
             //PropertyKey propertyKey = this.propertyService.findPropertyKeyBytypeAndCode(d.getClass1());
             //d.setClass1Name(propertyKey.getName());
             PropertyKey propertyKey = CacheManager.getPropertyKey("C1-" + d.getClass1());
-            if(CommonUtil.isNotBlank(propertyKey)){
+            if (CommonUtil.isNotBlank(propertyKey)) {
                 d.setClass1Name(propertyKey.getName());
-            }else{
+            } else {
                 d.setClass1Name("");
             }
         }
@@ -92,7 +98,7 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping(value = "/findStyleList.do")
     @ResponseBody
-    public MessageBox findStyleList(String pageSize,String pageNo,String sortName,String order){
+    public MessageBox findStyleList(String pageSize, String pageNo, String sortName, String order) {
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         Page<Style> page = new Page<Style>(Integer.parseInt(pageSize));
@@ -100,15 +106,15 @@ public class WXProductApiController extends ApiBaseController {
         page.setOrder("desc");
         page.setPage(Integer.parseInt(pageSize));
         page.setPageNo(Integer.parseInt(pageNo));
-        if(CommonUtil.isNotBlank(sortName)){
+        if (CommonUtil.isNotBlank(sortName)) {
             page.setOrderBy(sortName);
         }
-        if(CommonUtil.isNotBlank(order)){
+        if (CommonUtil.isNotBlank(order)) {
             page.setOrder(order);
         }
-        page = this.styleService.findPage(page,filters);
+        page = this.styleService.findPage(page, filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
-        for(Style d : page.getRows()){
+        for (Style d : page.getRows()) {
            /* File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
             if(file.exists()){
                 File[] files = file.listFiles();
@@ -122,7 +128,7 @@ public class WXProductApiController extends ApiBaseController {
             String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
             d.setUrl(url);
         }
-        return this.returnSuccessInfo("获取成功",page.getRows());
+        return this.returnSuccessInfo("获取成功", page.getRows());
     }
 
     @RequestMapping("/saveStyleWS.do")
@@ -130,10 +136,10 @@ public class WXProductApiController extends ApiBaseController {
     public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId) throws Exception {
         logAllRequestParams();
         try {
-            Style styleDTO=JSON.parseObject(styleStr,Style.class);
+            Style styleDTO = JSON.parseObject(styleStr, Style.class);
             Style sty = CacheManager.getStyleById(styleDTO.getStyleId());
-            if(CommonUtil.isBlank(sty)){
-                sty=new Style();
+            if (CommonUtil.isBlank(sty)) {
+                sty = new Style();
                 sty.setId(styleDTO.getStyleId());
                 sty.setStyleId(styleDTO.getStyleId());
                 sty.setIsUse("Y");
@@ -141,36 +147,36 @@ public class WXProductApiController extends ApiBaseController {
             List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
             List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
             List<Product> productList = new ArrayList<>();
-            for(ColorVo colorVo: colorVoList){
-                for(SizeVo sizeVo: sizeVoList){
+            for (ColorVo colorVo : colorVoList) {
+                for (SizeVo sizeVo : sizeVoList) {
                     Product product = new Product();
-                    product.setCode(styleDTO.getStyleId()+colorVo.getId()+sizeVo.getId());
+                    product.setCode(styleDTO.getStyleId() + colorVo.getId() + sizeVo.getId());
                     product.setColorId(colorVo.getId());
                     product.setSizeId(sizeVo.getId());
                     productList.add(product);
                 }
             }
             sty.setOprId(userId);
-            List<Product> saveList = StyleUtil.covertToProductInfo(sty,styleDTO,productList);
+            List<Product> saveList = StyleUtil.covertToProductInfo(sty, styleDTO, productList);
 
-            this.styleService.saveStyleAndProducts(sty,saveList);
-            long time1=System.currentTimeMillis();
+            this.styleService.saveStyleAndProducts(sty, saveList);
+            long time1 = System.currentTimeMillis();
             CacheManager.refreshStyleCache();
-            long time2=System.currentTimeMillis();
-            System.out.println("刷新款式缓存时间："+ (time2-time1) +"ms");
+            long time2 = System.currentTimeMillis();
+            System.out.println("刷新款式缓存时间：" + (time2 - time1) + "ms");
             CacheManager.refreshProductCache();
-            long time3=System.currentTimeMillis();
-            System.out.println("刷新商品缓存时间："+ (time3-time2) +"ms");
+            long time3 = System.currentTimeMillis();
+            System.out.println("刷新商品缓存时间：" + (time3 - time2) + "ms");
 
             return this.returnSuccessInfo("保存成功", styleStr);
-        }catch(Exception e ){
+        } catch (Exception e) {
             return this.returnFailInfo("保存失败");
         }
     }
 
     @RequestMapping("/getStyleByIdWS.do")
     @ResponseBody
-    public MessageBox getStyleByIdWS(String styleId) throws Exception{
+    public MessageBox getStyleByIdWS(String styleId) throws Exception {
         Style s = CacheManager.getStyleById(styleId);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         String imgUrl = StyleUtil.returnImageUrl(styleId, rootPath);
@@ -180,38 +186,38 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping("/findProductByUniqueCode.do")
     @ResponseBody
-    public MessageBox findProductByUniqueCode(String code) throws Exception{
+    public MessageBox findProductByUniqueCode(String code) throws Exception {
         this.logAllRequestParams();
         if (code.length() > 13) {
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
-        }else if(code.length() < 13){
-            return new MessageBox(false,"唯一码信息错误");
+        } else if (code.length() < 13) {
+            return new MessageBox(false, "唯一码信息错误");
         }
         Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
-        if(CommonUtil.isNotBlank(tagEpc)){
-            return new MessageBox(true,"",tagEpc.getStyleId());
-        }else{
-            return new MessageBox(false,"唯一码信息错误");
+        if (CommonUtil.isNotBlank(tagEpc)) {
+            return new MessageBox(true, "", tagEpc.getStyleId());
+        } else {
+            return new MessageBox(false, "唯一码信息错误");
         }
     }
 
     @RequestMapping(value = "/sizeSortPageWS.do")
     @ResponseBody
-    public Page<SizeSort> getSizeSortpageWS(Page<SizeSort> page){
+    public Page<SizeSort> getSizeSortpageWS(Page<SizeSort> page) {
         this.logAllRequestParams();
         page.setPageProperty();
-        List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
-        page=this.sizeService.find(page,filters);
-        return  page;
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        page = this.sizeService.find(page, filters);
+        return page;
 
     }
 
     @RequestMapping(value = "/findSizeSortListWS.do")
     @ResponseBody
-    public List<SizeSort> getSortList(){
+    public List<SizeSort> getSortList() {
         this.logAllRequestParams();
-        List<SizeSort> sizeSortList=this.sizeService.getAllSort();
+        List<SizeSort> sizeSortList = this.sizeService.getAllSort();
 
         return sizeSortList;
 
@@ -219,26 +225,26 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping(value = "/findSizeListWS.do")
     @ResponseBody
-    public Page<Size> findSizeListWS(Page<Size> page)throws Exception{
+    public Page<Size> findSizeListWS(Page<Size> page) throws Exception {
         this.logAllRequestParams();
         page.setPageProperty();
-        List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
-        return this.sizeService.findPage(page,filters);
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        return this.sizeService.findPage(page, filters);
     }
 
     @RequestMapping(value = "/getSizeInfoWS.do")
     @ResponseBody
-    public Size findSizeBySizeId(String sizeId){
+    public Size findSizeBySizeId(String sizeId) {
         this.logAllRequestParams();
-        Size size=this.sizeService.findSizeBySizeId(sizeId);
+        Size size = this.sizeService.findSizeBySizeId(sizeId);
         return size;
     }
 
     @RequestMapping(value = "/saveSizeWS.do")
     @ResponseBody
-    public MessageBox saveSizeWS(String sizeInfo){
+    public MessageBox saveSizeWS(String sizeInfo) {
         this.logAllRequestParams();
-        Size size=JSON.parseObject(sizeInfo,Size.class);
+        Size size = JSON.parseObject(sizeInfo, Size.class);
         Size s = CacheManager.getSizeById(size.getSizeId());
         if (CommonUtil.isBlank(s)) {
             s = new Size();
@@ -258,40 +264,40 @@ public class WXProductApiController extends ApiBaseController {
             return returnSuccessInfo("ok");
         } catch (Exception e) {
             e.printStackTrace();
-            return  returnFailInfo("fail");
+            return returnFailInfo("fail");
         }
     }
 
 
     @RequestMapping(value = "/findColorListWS.do")
     @ResponseBody
-    public  Page<Color> findColorListWS(Page<Color> page){
+    public Page<Color> findColorListWS(Page<Color> page) {
         this.logAllRequestParams();
         page.setSort("colorName");
         page.setOrder("asc");
         page.setPageProperty();
-        List<PropertyFilter> filters =PropertyFilter.buildFromHttpRequest(this.getRequest());
-        return this.colorService.findPage(page,filters);
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        return this.colorService.findPage(page, filters);
     }
 
 
     @RequestMapping(value = "/getColorInfo.do")
     @ResponseBody
-    public Color findColorByColorNo(String colorId){
+    public Color findColorByColorNo(String colorId) {
         this.logAllRequestParams();
-        Color color=this.colorService.findById(colorId);
+        Color color = this.colorService.findById(colorId);
         return color;
     }
 
 
     @RequestMapping(value = "/saveColorWS.do")
     @ResponseBody
-    public MessageBox saveColor(String colorInfo){
+    public MessageBox saveColor(String colorInfo) {
         this.logAllRequestParams();
-        Color color= JSON.parseObject(colorInfo,Color.class);
+        Color color = JSON.parseObject(colorInfo, Color.class);
         Color col = CacheManager.getColorById(color.getColorId());
         if (CommonUtil.isBlank(col)) {
-            col = new Color(color.getColorId(),color.getColorId(),color.getColorName());
+            col = new Color(color.getColorId(), color.getColorId(), color.getColorName());
             col.setIsUse("Y");
         }
 //        User u = getCurrentUser();
@@ -304,7 +310,7 @@ public class WXProductApiController extends ApiBaseController {
         return returnSuccessInfo("ok");
     }
 
-    @RequestMapping(value="/searchByTypeWS")
+    @RequestMapping(value = "/searchByTypeWS")
     @ResponseBody
     public List<List<PropertyKey>> searchByTypesWS(String[] typeList) throws Exception {
         this.logAllRequestParams();
@@ -316,33 +322,32 @@ public class WXProductApiController extends ApiBaseController {
      * add by Anna
      * 微信小程序－商品款式新增－品牌筛选
      */
-    @RequestMapping(value="/searchBrands")
+    @RequestMapping(value = "/searchBrands")
     @ResponseBody
-    public Page<PropertyKey> searchBrands(Page<PropertyKey> page){
+    public Page<PropertyKey> searchBrands(Page<PropertyKey> page) {
         this.logAllRequestParams();
         page.setSort("registerDate");
         page.setOrder("desc");
         page.setPageProperty();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
-        return this.propertyService.findPageForKey(page,filters);
+        return this.propertyService.findPageForKey(page, filters);
 
     }
 
 
-
-
     /**
-     * 微信小程序上传图片测试*/
+     * 微信小程序上传图片测试
+     */
 
     @RequestMapping("/picture")
-    public void uploadPicture(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void uploadPicture(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("utf-8");  //设置编码
         String rootPath = request.getSession().getServletContext().getRealPath("");
         String styleId = getReqParam("styleId");
         String userId = getReqParam("userId");
         String path = rootPath + "product\\template\\";
-        System.out.println("上传的图片路径:"+path);
-        Integer seqNo=this.photoService.getMaxSeq();
+        System.out.println("上传的图片路径:" + path);
+        Integer seqNo = this.photoService.getMaxSeq();
         PrintWriter printWriter = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
@@ -351,14 +356,14 @@ public class WXProductApiController extends ApiBaseController {
             //可以上传多个文件
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
             List<MultipartFile> fileList = multipartRequest.getFiles("file");
-            for(MultipartFile file : fileList){
+            for (MultipartFile file : fileList) {
                 String fileName = file.getOriginalFilename();
-                String picprefix=fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
+                String picprefix = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
                 String fileType = file.getContentType().split("/")[0];
                 if (!"image".equals(fileType)) {
-                   /* return new MessageBox(false,"文件格式错误,请传图片");*/
+                    /* return new MessageBox(false,"文件格式错误,请传图片");*/
                     res.put("success", false);
-                    res.put("msg","文件格式错误,请传图片");
+                    res.put("msg", "文件格式错误,请传图片");
 
 
                 }
@@ -375,35 +380,37 @@ public class WXProductApiController extends ApiBaseController {
                 if (!folder.exists()) {
                     folder.mkdirs();
                 }
-                File f = new File(folder, photo.getId()+ "." + picprefix);
+                File f = new File(folder, photo.getId() + "." + picprefix);
                 file.transferTo(f);
-                String url = "/" + styleId + "/-/" +  photo.getId()+ "." + picprefix;
+                String url = "/" + styleId + "/-/" + photo.getId() + "." + picprefix;
                 photo.setSrc(url);
-                ImgUtil.img_change(filePath,photo.getId()+ "." + picprefix);
+                ImgUtil.img_change(filePath, photo.getId() + "." + picprefix);
                 this.photoService.save(photo);
                 res.put("success", true);
-                res.put("msg",url);
+                res.put("msg", url);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             res.put("success", false);
-            res.put("msg","保存失败");
+            res.put("msg", "保存失败");
         }
         printWriter.write(JSON.toJSONString(res));
         printWriter.flush();
     }
+
     /**
-     * 微信小程序客户图像上传图片测试*/
+     * 微信小程序客户图像上传图片测试
+     */
 
     @RequestMapping("/customerPicture")
-    public void uploadCustomerPicture(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void uploadCustomerPicture(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("utf-8");  //设置编码
         String rootPath = request.getSession().getServletContext().getRealPath("");
         String unionid = getReqParam("unionid");
         //String userId = getReqParam("userId");
         String path = rootPath + "product\\template\\";
-        System.out.println("上传的图片路径:"+path);
-        Integer seqNo=this.photoService.getMaxSeq();
+        System.out.println("上传的图片路径:" + path);
+        Integer seqNo = this.photoService.getMaxSeq();
         PrintWriter printWriter = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
@@ -412,14 +419,14 @@ public class WXProductApiController extends ApiBaseController {
             //可以上传多个文件
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
             List<MultipartFile> fileList = multipartRequest.getFiles("file");
-            for(MultipartFile file : fileList){
+            for (MultipartFile file : fileList) {
                 String fileName = file.getOriginalFilename();
-                String picprefix=fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
+                String picprefix = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
                 String fileType = file.getContentType().split("/")[0];
                 if (!"image".equals(fileType)) {
-                   /* return new MessageBox(false,"文件格式错误,请传图片");*/
+                    /* return new MessageBox(false,"文件格式错误,请传图片");*/
                     res.put("success", false);
-                    res.put("msg","文件格式错误,请传图片");
+                    res.put("msg", "文件格式错误,请传图片");
 
 
                 }
@@ -436,19 +443,19 @@ public class WXProductApiController extends ApiBaseController {
                 if (!folder.exists()) {
                     folder.mkdirs();
                 }
-                File f = new File(folder, photo.getId()+ "." + picprefix);
+                File f = new File(folder, photo.getId() + "." + picprefix);
                 file.transferTo(f);
-                String url = "/" + unionid + "/-/" +  photo.getId()+ "." + picprefix;
+                String url = "/" + unionid + "/-/" + photo.getId() + "." + picprefix;
                 photo.setSrc(url);
-                ImgUtil.img_change(filePath,photo.getId()+ "." + picprefix);
+                ImgUtil.img_change(filePath, photo.getId() + "." + picprefix);
                 this.customerPhotoService.save(photo);
                 res.put("success", true);
-                res.put("msg",url);
+                res.put("msg", url);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             res.put("success", false);
-            res.put("msg","保存失败");
+            res.put("msg", "保存失败");
         }
         printWriter.write(JSON.toJSONString(res));
         printWriter.flush();
@@ -516,15 +523,15 @@ public class WXProductApiController extends ApiBaseController {
      * 上传或重传款式图片，上传图片时，如果本来已经存在图片，把原来的图片删掉
      */
     @RequestMapping("/uploadStylePicture")
-    public void uploadStylePicture(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void uploadStylePicture(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //删除文件
         String rootPath = request.getSession().getServletContext().getRealPath("");
         String styleId = getReqParam("styleId");
         String filePath = rootPath + "/product/photo/" + styleId + "/-/";
         File dir = new File(filePath);
-        if(dir.exists()){
+        if (dir.exists()) {
             File[] tmpFiles = dir.listFiles();
-            for (File file: tmpFiles) {
+            for (File file : tmpFiles) {
                 file.delete();
             }
         }

@@ -28,6 +28,7 @@ $(function () {
         }
 
     }
+    $(".selectpicker").selectpicker('refresh');
 });
 // var editDtailRowId = null;
 // var editDtailColumn = null;

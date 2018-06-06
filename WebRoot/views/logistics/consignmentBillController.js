@@ -11,6 +11,7 @@ function initForm() {
     }else{
         sessionStorage.removeItem("billNoConsignment");
     }
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function initSelectOrigForm() {
@@ -21,11 +22,10 @@ function initSelectOrigForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
-            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+            $("#search_origId").append("<option value='' >--请选择出库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
         }
     });
@@ -39,11 +39,10 @@ function initSelectDestForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
-            $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_destId").trigger('chosen:updated');
             }
         }
     });
