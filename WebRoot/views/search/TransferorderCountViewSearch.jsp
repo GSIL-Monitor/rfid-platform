@@ -237,7 +237,8 @@
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
                                             <div class="col-xs-2">
-                                                <select class="form-control  selectpicker show-tick" id="search_origId" name="filter_eq_origId">
+                                                <select class="form-control  selectpicker show-tick" id="search_origId" name="filter_eq_origId"
+                                                        data-live-search="true">
                                                 </select>
 
                                             </div>
@@ -248,8 +249,8 @@
                                                             name="filter_eq_outStatus" data-live-search="true">
                                                         <option value="">--请选择--</option>
                                                         <option value="0">订单状态</option>
-                                                        <option value="2">已出库</option>
-                                                        <option value="3">出库中</option>
+                                                        <option value="1">已出库</option>
+                                                        <option value="2">出库中</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -280,11 +281,11 @@
                                                 <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
                                                 <div class="col-xs-2">
                                                     <select class="form-control  selectpicker show-tick" id="select_instatus"
-                                                            name="filter_eq_inStatus" data-live-search="true">
+                                                            name="filter_eq_status" data-live-search="true">
                                                         <option value="">--请选择--</option>
                                                         <option value="0">订单状态</option>
                                                         <option value="1">已入库</option>
-                                                        <option value="4">入库中</option>
+                                                        <option value="2">入库中</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -300,7 +301,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick=" _reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                             <button type="reset" class="btn btn-sm btn-warning" id="clean" style="display: none">

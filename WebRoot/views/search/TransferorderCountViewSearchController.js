@@ -29,7 +29,6 @@ $(function () {
     $('.selectpicker').selectpicker('refresh');
 });
 function inttitledata() {
-    debugger;
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
 
@@ -90,7 +89,6 @@ function initSelectOrigForm() {
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
-
         }
     });
 }
@@ -268,7 +266,6 @@ function initKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -524,7 +521,6 @@ function initTranKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -1189,7 +1185,6 @@ function search() {
 function resetData() {
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     gridData.dataSource.filter({});
-    _reset();
 }
 function exportExcelPOI() {
     var filters = serializeToFilter($("#searchForm"));

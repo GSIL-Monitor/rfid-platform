@@ -37,7 +37,7 @@ function initMultiSelect(){
                 $("#search_warehId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
                 // $("#search_busnissId").trigger('chosen:updated');
             }
-
+            $('.selectpicker').selectpicker('refresh');
         }
     });
 }

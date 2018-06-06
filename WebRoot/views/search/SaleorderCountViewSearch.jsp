@@ -211,7 +211,7 @@
                                         <div id="destUnitId">
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destunitid">发货方</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select  class="form-control selectpicker show-tick" id="filter_in_destUnitId" name="filter_in_origunitid" multiple="multiple"
+                                                <select  class="form-control selectpicker show-tick" id="filter_in_destUnitId" name="filter_in_ownerid" multiple="multiple"
                                                          style="width: 100%;" data-live-search="true">
                                                 </select>
                                             </div>

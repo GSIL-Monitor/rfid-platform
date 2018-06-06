@@ -1,5 +1,8 @@
   
    $(function(){
+       $(".selectpicker").selectpicker({
+           noneSelectedText : '编码列表'//默认显示内容
+       });
        initMultiSelect();
        initKendoUIGrid();
        $(".k-dropdown").css("width", "6em");
@@ -8,7 +11,7 @@
 
     });
    function initMultiSelect(){
-       $("#filter_in_warehId").kendoMultiSelect({
+       /*$("#filter_in_warehId").kendoMultiSelect({
            dataTextField: "name",
            dataValueField: "code",
            height: 400,
@@ -18,7 +21,21 @@
                    read:  basePath + "/sys/warehouse/list.do?filter_INI_type=4,9"
                }
            }
-       })
+       });*/
+       $.ajax({
+           url:basePath + "/sys/warehouse/list.do?filter_INI_type=4,9",
+           cache: false,
+           async: false,
+           type: "POST",
+           success: function (data, textStatus) {
+               $("#filter_in_warehId").empty();
+               var json = data;
+               for (var i = 0; i < json.length; i++) {
+                   $("#filter_in_warehId").append("<option value='" + json[i].code + "'>"  + json[i].name + "</option>");
+               }
+           }
+       });
+       $('.selectpicker').selectpicker('refresh');
    }
     function refresh(){
     	resetData();

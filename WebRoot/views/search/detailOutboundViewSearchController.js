@@ -1,5 +1,8 @@
 
    $(function(){
+       $(".selectpicker").selectpicker({
+           noneSelectedText : '编码列表'//默认显示内容
+       });
         initMultiSelect();
     	initKendoUIGrid();
     	$(".k-dropdown").css("width", "6em");
@@ -7,40 +10,79 @@
 
     });
    function initMultiSelect(){
-       $("#filter_in_destid").kendoMultiSelect({
-           dataTextField: "name",
-           dataValueField: "code",
-           height: 400,
-           suggest: true,
-           dataSource: {
-               transport: {
-                   read:  basePath + "/sys/warehouse/list.do?filter_INI_type=4,9"
+       /*$("#filter_in_destid").kendoMultiSelect({
+        dataTextField: "name",
+        dataValueField: "code",
+        height: 400,
+        suggest: true,
+        dataSource: {
+        transport: {
+        read:  basePath + "/sys/warehouse/list.do?filter_INI_type=4,9"
+        }
+        }
+        });*/
+       $.ajax({
+           url:basePath + "/sys/warehouse/list.do?filter_INI_type=4,9",
+           cache: false,
+           async: false,
+           type: "POST",
+           success: function (data, textStatus) {
+               $("#filter_in_destid").empty();
+               var json = data;
+               for (var i = 0; i < json.length; i++) {
+                   $("#filter_in_destid").append("<option value='" + json[i].code + "'>"  + json[i].name + "</option>");
                }
            }
        });
-       $("#filter_in_origid").kendoMultiSelect({
-           dataTextField: "name",
-           dataValueField: "code",
-           height: 400,
-           suggest: true,
-           dataSource: {
-               transport: {
-                   read:  basePath + "/sys/warehouse/list.do?filter_INI_type=4,9"
+       /*$("#filter_in_origid").kendoMultiSelect({
+        dataTextField: "name",
+        dataValueField: "code",
+        height: 400,
+        suggest: true,
+        dataSource: {
+        transport: {
+        read:  basePath + "/sys/warehouse/list.do?filter_INI_type=4,9"
+        }
+        }
+        });*/
+       $.ajax({
+           url:basePath + "/sys/warehouse/list.do?filter_INI_type=4,9",
+           cache: false,
+           async: false,
+           type: "POST",
+           success: function (data, textStatus) {
+               $("#filter_in_origid").empty();
+               var json = data;
+               for (var i = 0; i < json.length; i++) {
+                   $("#filter_in_origid").append("<option value='" + json[i].code + "'>"  + json[i].name + "</option>");
                }
            }
        });
-
-       $("#filter_in_destUnitId").kendoMultiSelect({
-           dataTextField: "name",
-           dataValueField: "code",
-           height: 400,
-           suggest: true,
-           dataSource: {
-               transport: {
-                   read:  basePath + "/sys/warehouse/list.do?filter_INI_type=0,1,2"
+       /*$("#filter_in_destUnitId").kendoMultiSelect({
+        dataTextField: "name",
+        dataValueField: "code",
+        height: 400,
+        suggest: true,
+        dataSource: {
+        transport: {
+        read:  basePath + "/sys/warehouse/list.do?filter_INI_type=0,1,2"
+        }
+        }
+        });*/
+       $.ajax({
+           url:basePath + "/sys/warehouse/list.do?filter_INI_type=0,1,2",
+           cache: false,
+           async: false,
+           type: "POST",
+           success: function (data, textStatus) {
+               $("#filter_in_destUnitId").empty();
+               var json = data;
+               for (var i = 0; i < json.length; i++) {
+                   $("#filter_in_destUnitId").append("<option value='" + json[i].code + "'>"  + json[i].name + "</option>");
                }
            }
-       })
+       });
+       $('.selectpicker').selectpicker('refresh');
    }
     function refresh(){
     	resetData();

@@ -66,22 +66,17 @@
 
                                 <form class="form-horizontal" role="form" id="searchForm">
                                     <div class="form-group">
-
-
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_warehId">仓店</label>
-
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                            <select id="search_warehId"name="filter_EQS_warehId"style="width: 100%;">
+                                            <select class="form-control selectpicker show-tick" id="search_warehId"
+                                                    name="filter_EQS_warehId" data-live-search="true" style="width: 100%;">
                                             </select>
                                         </div>
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_sku">SKU</label>
-
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                             <input class="form-control" id="search_sku" name="filter_LIKES_sku" type="text"
                                                    placeholder="模糊查询"/>
                                         </div>
-
-
                                     </div>
                                     <!-- #section:elements.form -->
 
@@ -91,7 +86,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
@@ -119,7 +114,6 @@
     <!--/.fluid-container#main-container-->
 </div>
 
-<jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="search_js.jsp"></jsp:include>
 
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
