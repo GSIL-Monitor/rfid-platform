@@ -16,6 +16,7 @@ import com.casesoft.dmc.extend.api.wechat.wxpay.pay.WXPayConfigImpl;
 import com.casesoft.dmc.model.pad.MobilePayment;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.GuestView;
+import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
@@ -120,6 +121,20 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(false,"");
         }
     }
+
+    /**
+     * 小程序自助收银通过OwnerId获取默认客户
+     * add by Anna on 2018-06-06
+     */
+    @RequestMapping("/customer/findDefaultCustomerIdWS")
+    @ResponseBody
+    public MessageBox findDefaultCustomerId(String ownerId){
+        this.logAllRequestParams();
+        Unit unit = CacheManager.getUnitByCode(ownerId);
+        String defalutCustomerId = unit.getDefalutCustomerId();
+        return new MessageBox(true,"",defalutCustomerId);
+    }
+
 
     /**
      * 客户查询
