@@ -28,6 +28,7 @@
         var slaeOrder_status = "${saleOrderBill.status}";
         var roleid = "${roleid}";
         var Codes = "${Codes}";
+        var groupid="${groupid}";
     </script>
 </head>
 <body class="no-skin">

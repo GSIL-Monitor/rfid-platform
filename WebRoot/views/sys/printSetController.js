@@ -23,9 +23,9 @@ var LODOP; //声明为全局变量
 
 $(function () {
     debugger
-   if(groupid==="JMS"){
+   if(groupid==="JMS") {
        $("#isshowA4").hide();
-       $("#receiptType").html(" <option value='SO'>销售单据</option>");
+       $("#receiptType").html(" <option value='SO'>销售单据</option><option value='SR'>销售退货</option>");
    }
 
    if(address!==""&&address!==undefined&&address.length>7){
@@ -394,8 +394,14 @@ function findPrintSet(sum) {
                     $("#receiptName").val("");
                     //$("#receiptType").val("SO");
                     $("#commonType").val("1");
-                    $("#footExtendWrite").val("欢迎来到Ancient Stone");
-                    $("#footExtend").find("span").html("欢迎来到Ancient Stone");
+                    if(address!==""&&address!==undefined&&address.length>7){
+                        $("#footExtendWrite").val("欢迎来到Ancient Stone<br>地址："+address);
+                        $("#footExtend").find("span").html("欢迎来到Ancient Stone<br>地址："+address);
+                    }else{
+                        $("#footExtendWrite").val("欢迎来到Ancient Stone");
+                        $("#footExtend").find("span").html("欢迎来到Ancient Stone");
+                    }
+
                     $("#headPrint").find("div").each(function (index,element) {
                         var name=$(this).data("name");
                         $(this).attr("class","stecs on");

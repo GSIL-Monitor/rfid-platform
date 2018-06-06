@@ -332,6 +332,9 @@ function initButtonGroup() {
         if (roleid != "0" && roleid != "SHOPUSER") {
             $("#SODtl_doPrintA4").hide();
         }
+        if(groupid=="JMS"){
+            $("#SODtl_doPrintA4").hide();
+        }
     }
     $("#addDetail").show();
 }
@@ -1753,8 +1756,8 @@ function set(id) {
 
                 $("#loadtab").html(recordmessage);
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
-                //LODOP.PREVIEW();
-                LODOP.PRINT();
+                LODOP.PREVIEW();
+                //LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 
