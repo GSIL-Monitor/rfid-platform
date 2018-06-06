@@ -172,7 +172,7 @@
 
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_gte_billDate">日期</label>
 
-                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                        <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
                                             <div class="input-group">
                                                 <input  id="filter_gte_billDate" class="form-control date-picker" name="filter_gte_billDate"
                                                         data-date-format="yyyy-mm-dd"/>
@@ -189,7 +189,7 @@
                                         <div id="billno">
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_billNo">单号</label>
 
-                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
                                                 <input class="form-control" id="filter_contains_billno" name="filter_contains_billNo" type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                        placeholder="模糊查询"/>
 
@@ -198,7 +198,7 @@
                                         <div id="styleid">
                                             <label  class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleId">款号</label>
 
-                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3" id="styleidname">
+                                            <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2" id="styleidname">
                                                 <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
                                                        placeholder="模糊查询"/> -->
                                                 <div class="input-group">

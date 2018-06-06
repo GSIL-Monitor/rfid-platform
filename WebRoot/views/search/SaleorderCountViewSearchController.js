@@ -1,7 +1,7 @@
 $(function () {
     //获取当前转户
     $(".selectpicker").selectpicker({
-        noneSelectedText : '请选择'//默认显示内容
+        noneSelectedText : '--请选择--'//默认显示内容
     });
     initMultiSelect();
     var myDate = new Date();

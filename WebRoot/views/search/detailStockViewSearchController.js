@@ -1,7 +1,7 @@
   
    $(function(){
        $(".selectpicker").selectpicker({
-           noneSelectedText : '编码列表'//默认显示内容
+           noneSelectedText : '--请选择--'//默认显示内容
        });
        initMultiSelect();
        initKendoUIGrid();
