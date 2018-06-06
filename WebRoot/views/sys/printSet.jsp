@@ -15,6 +15,8 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script>
         var basePath = "<%=basePath%>";
+        var groupid="${groupid}";
+        var address="${address}";
     </script>
     <style>
         body {
@@ -286,7 +288,7 @@
                                 <span>110mm</span>
                             </ul>
                         </div>
-                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2" id="isshowA4">
                             <ul class="stecs" data-name="A4" onclick="selectRuleReceipt('A4');">
                                 <i></i>
                                 <span>A4</span>

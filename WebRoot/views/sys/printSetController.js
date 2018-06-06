@@ -22,6 +22,16 @@ var LODOP; //声明为全局变量
 
 
 $(function () {
+    debugger
+   if(groupid==="JMS"){
+       $("#isshowA4").hide();
+       $("#receiptType").html(" <option value='SO'>销售单据</option>");
+   }
+
+   if(address!==""&&address!==undefined&&address.length>7){
+       $("#footExtendWrite").val("欢迎来到Ancient Stone<br>地址："+address);
+       $("#footExtend").find("span").html("欢迎来到Ancient Stone<br>地址："+address);
+   }
 
 });
 function selectheadPrint() {
