@@ -1,19 +1,24 @@
 package com.casesoft.dmc.controller.sys;
 
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.PrintSet;
+import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.PrintSetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +31,8 @@ import java.util.Map;
 public class PrintSetController extends BaseController implements IBaseInfoController<PrintSet> {
     @Autowired
     private PrintSetService  printSetService;
+    @Autowired
+    private GuestViewService guestViewService;
 
     @Override
     public Page<PrintSet> findPage(Page<PrintSet> page) throws Exception {
@@ -61,10 +68,24 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     public MessageBox importExcel(MultipartFile file) throws Exception {
         return null;
     }
-    @RequestMapping(value = "/index")
+
     @Override
     public String index() {
         return "views/sys/printSet";
+    }
+    @RequestMapping(value = "/index")
+    public ModelAndView indexMV() throws Exception {
+        ModelAndView mv = new ModelAndView("/views/sys/printSet");
+        mv.addObject("ownerId", getCurrentUser().getOwnerId());
+        User currentUser = getCurrentUser();
+        Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+        mv.addObject("deportId", unit.getDefaultWarehId());
+        mv.addObject("groupid", unit.getGroupId());
+        if(CommonUtil.isNotBlank(unit.getGroupId())&&unit.getGroupId().equals("JMS")){
+            GuestView guestView = this.guestViewService.findByid(currentUser.getOwnerId());
+            mv.addObject("address", guestView.getAddress());
+        }
+        return mv;
     }
     @RequestMapping(value="/savePrintSetMessage")
     @ResponseBody
