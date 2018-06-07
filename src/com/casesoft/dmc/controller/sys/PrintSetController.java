@@ -121,7 +121,7 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
         try {
             User currentUser = this.getCurrentUser();
             List<PrintSet> printSets;
-            if(ruleReceipt.equals("A4")&&currentUser.getOwnerId().equals("1")){
+            if(CommonUtil.isNotBlank(ruleReceipt)&&ruleReceipt.equals("A4")&&currentUser.getOwnerId().equals("1")){
                 printSets = this.printSetService.findPrintSetListByOwnerIdA4(type,ruleReceipt);
             }else{
                 printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type,ruleReceipt);
