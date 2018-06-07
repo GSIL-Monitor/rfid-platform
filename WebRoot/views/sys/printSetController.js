@@ -2,7 +2,7 @@ var printParameter={
     fontSize58mm:9,//58mm小票字体的大小
     fontSize80mm:9,//80mm小票字体的大小
     fontSize110mm:9,//110mm小票字体的大小
-    fontSizeA4:9,//A4字体的大小
+    fontSizeA4:12,//A4字体的大小
     receiptWidth58mm:220,//58mm小票的宽度
     receiptWidth80mm:260,//80mm小票的宽度
     receiptWidth110mm:500,//110mm小票的宽度
@@ -580,6 +580,7 @@ function saveA4() {
             receiptFontSize=printParameter.fontSizeA4;
         }
         var sum=0;
+        var recordsum=0;//记录前两次打印的次数
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
         $("#printTopA4").find("span").each(function (index,element) {
@@ -588,26 +589,79 @@ function saveA4() {
                 var message="\""+$(this).text()+"\"";
                 console.log(id);
                 console.log(message);
-                if(sum==0){
+                if(index==0){
                     str+="LODOP.ADD_PRINT_TEXTA("+id+",0,"+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\",15);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Bold\",1);";
                     str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
-                    printCode+=$(this).data("name");
-                }else{
-                    if((sum+1)%2==0){
-                        var num=parseInt((sum+1)/2);
-                        var top=(num*printParameter.aRowheight+num*printParameter.intervalHeight);
-                        str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+10+","+parseInt(receiptWith/2)+","+printParameter.aRowheight+","+message+");";
-                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                        str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
-                        printCode+=","+$(this).data("name");
+                    if(printCode==""){
+                        printCode+=$(this).data("name");
                     }else{
-                        var num=parseInt((sum+1)/2);
-                        var top=(num*printParameter.aRowheight+num*printParameter.intervalHeight);
-                        str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+(parseInt(receiptWith/2)+10)+","+parseInt(receiptWith/2)+","+printParameter.aRowheight+","+message+");";
-                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                        str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
                         printCode+=","+$(this).data("name");
+                    }
+
+                    recordsum=sum+1;
+                }else if(index==1) {
+                    var top=(sum*printParameter.aRowheight+sum*printParameter.intervalHeight);
+                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+10+","+receiptWith+","+printParameter.aRowheight+","+message+");";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\",15);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Bold\",1);";
+                    str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                    if(printCode==""){
+                        printCode+=$(this).data("name");
+                    }else{
+                        printCode+=","+$(this).data("name");
+                    }
+                    recordsum=sum+1;
+                }else{
+                    if(recordsum%2!=0) {
+                        if ((sum + 1) % 2 == 0) {
+                            var num = parseInt((sum + 1) / 2);
+                            var top = (num * printParameter.aRowheight + num * printParameter.intervalHeight);
+                            str += "LODOP.ADD_PRINT_TEXTA(" + id + "," + top + "," + 10 + "," + parseInt(receiptWith / 2) + "," + printParameter.aRowheight + "," + message + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"FontSize\"," + receiptFontSize + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                            if(printCode==""){
+                                printCode+=$(this).data("name");
+                            }else{
+                                printCode+=","+$(this).data("name");
+                            }
+                        } else {
+                            var num = parseInt((sum + 1) / 2);
+                            var top = (num * printParameter.aRowheight + num * printParameter.intervalHeight);
+                            str += "LODOP.ADD_PRINT_TEXTA(" + id + "," + top + "," + (parseInt(receiptWith / 2) + 10) + "," + parseInt(receiptWith / 2) + "," + printParameter.aRowheight + "," + message + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"FontSize\"," + receiptFontSize + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                            if(printCode==""){
+                                printCode+=$(this).data("name");
+                            }else{
+                                printCode+=","+$(this).data("name");
+                            }
+                        }
+                    }else{
+                        if ((sum) % 2 == 0) {
+                            var num = parseInt((sum) / 2)+1;
+                            var top = (num * printParameter.aRowheight + num * printParameter.intervalHeight);
+                            str += "LODOP.ADD_PRINT_TEXTA(" + id + "," + top + "," + 10 + "," + parseInt(receiptWith / 2) + "," + printParameter.aRowheight + "," + message + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"FontSize\"," + receiptFontSize + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                            if(printCode==""){
+                                printCode+=$(this).data("name");
+                            }else{
+                                printCode+=","+$(this).data("name");
+                            }
+                        } else {
+                            var num = parseInt((sum) / 2)+1;
+                            var top = (num * printParameter.aRowheight + num * printParameter.intervalHeight);
+                            str += "LODOP.ADD_PRINT_TEXTA(" + id + "," + top + "," + (parseInt(receiptWith / 2) + 10) + "," + parseInt(receiptWith / 2) + "," + printParameter.aRowheight + "," + message + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"FontSize\"," + receiptFontSize + ");";
+                            str += "LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
+                            if(printCode==""){
+                                printCode+=$(this).data("name");
+                            }else{
+                                printCode+=","+$(this).data("name");
+                            }
+                        }
                     }
 
                 }
