@@ -7,18 +7,18 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PrintSetDao;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.PrintSet;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.*;
 import com.casesoft.dmc.service.sys.impl.UserService;
+import org.codehaus.jackson.mrbean.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/5/31.
@@ -260,7 +260,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             SaleOrderBill saleOrderBill = this.saleOrderBillService.load(billno);
             mapcont.put("storeName","Ancient Stone");
-
+            mapcont.put("billType","销售单");
             mapcont.put("billNo","单号:"+billno);
             User user = CacheManager.getUserById(saleOrderBill.getOprId());
             mapcont.put("makeBill","制单人:"+user.getName());
@@ -283,12 +283,19 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
                 mapcont.put("shopBefore","售前余额:");
             }
             List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billno);
+            List<SaleOrderBillDtl> sendbillDtlByBillNo=new ArrayList<SaleOrderBillDtl>();
             for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
-                saleOrderBillDtl.setStyleName(CacheManager.getStyleNameById(saleOrderBillDtl.getStyleId()));
+                SaleOrderBillDtl newSaleOrderBillDtl=new SaleOrderBillDtl();
+                BeanUtils.copyProperties(saleOrderBillDtl,newSaleOrderBillDtl);
+                newSaleOrderBillDtl.setStyleName(CacheManager.getStyleNameById(saleOrderBillDtl.getStyleId()));
+                Style style = CacheManager.getStyleById(saleOrderBillDtl.getStyleId());
+                newSaleOrderBillDtl.setPrice(style.getPrice());
+                newSaleOrderBillDtl.setTotPrice(CommonUtil.doubleChange(style.getPrice()*saleOrderBillDtl.getQty(),2));
+                sendbillDtlByBillNo.add(newSaleOrderBillDtl);
             }
             map.put("print",printSet);
             map.put("cont",mapcont);
-            map.put("contDel",billDtlByBillNo);
+            map.put("contDel",sendbillDtlByBillNo);
         }
         return map;
     }
