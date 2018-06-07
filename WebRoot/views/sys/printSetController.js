@@ -343,6 +343,7 @@ function saveAjax(printSet) {
     });
 }
 function findPrintSet(sum) {
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         async: true,
@@ -353,7 +354,7 @@ function findPrintSet(sum) {
         },
         type: "POST",
         success: function (msg) {
-
+            cs.closeProgressBar();
             if (msg.success) {
                 var result=msg.result;
                 if(result!=undefined){
@@ -423,6 +424,7 @@ function findPrintSet(sum) {
     });
 }
 function findPrintSetA4(sum) {
+    cs.showProgressBar();
     $.ajax({
         dataType: "json",
         async: true,
@@ -433,7 +435,7 @@ function findPrintSetA4(sum) {
         },
         type: "POST",
         success: function (msg) {
-            debugger;
+            cs.closeProgressBar();
             if (msg.success) {
                 var result=msg.result;
                 if(result!=undefined){
