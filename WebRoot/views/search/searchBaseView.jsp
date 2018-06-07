@@ -20,13 +20,16 @@
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/font-awesome.css" />
 
     <!-- page specific plugin styles -->
+    <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/chosen.css" />
+    <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/datepicker.css" />
+    <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="<%=basePath%>/Olive/assets/css/bootstrap-select.css"/>
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/jquery-ui.css" />
 
     <!--
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/ui.jqgrid.css" />
     -->
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/js/jqGrid/css/ui.jqgrid.css" />
-
     <!-- text fonts -->
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/ace-fonts.css" />
 
@@ -53,22 +56,12 @@
     <![endif]-->
 
     <link rel="stylesheet" href="<%=basePath%>css/main.css" />
-     <link rel="stylesheet" href="<%=basePath%>css/main.css" />
+    <link rel="stylesheet" href="<%=basePath%>css/main.css" />
     <link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
     <link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
     <link href="<%=basePath%>/kendoUI/styles/kendo.material.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/datepicker.css" />
-<%--
-    <script src="<%=basePath%>/kendoUI/js/kendo.timezones.min.js"></script>
---%>
-   <%-- <link href="<%=basePath%>/kendoUI/styles/kendo.common-bootstrap.min.css" rel="stylesheet">
-    <link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">
-    <link href="<%=basePath%>/kendoUI/styles/kendo.bootstrap.min.css" rel="stylesheet">--%>
-<%--
-    <link href="<%=basePath%>/kendoUI/styles/kendo.dataviz.bootstrap.min.css" rel="stylesheet">
---%>
 
-  
     <script>
     
     </script>

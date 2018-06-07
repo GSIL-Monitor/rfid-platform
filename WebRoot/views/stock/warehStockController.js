@@ -1,6 +1,8 @@
 var start, end;
 $(function () {
-
+    $(".selectpicker").selectpicker({
+        noneSelectedText : '请选择'//默认显示内容
+    });
     initKendoUIGrid();
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
@@ -158,7 +160,7 @@ function initMultiSelect() {
     console.log(JMSCODE);
     console.log(JMSNAME);
     if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
-        $("#filter_in_warehId").kendoMultiSelect({
+        /*$("#filter_in_warehId").kendoMultiSelect({
             dataTextField: "name",
             dataValueField: "code",
             height: 400,
@@ -170,9 +172,23 @@ function initMultiSelect() {
             },
             value:JMSCODE,
             text:JMSNAME
+        });*/
+        $.ajax({
+            url: basePath +  "/sys/warehouse/list.do?filter_INI_type=9",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#filter_in_warehId").empty();
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#filter_in_warehId").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
+                }
+                $('.selectpicker').selectpicker('refresh');
+            }
         });
     }else{
-        $("#filter_in_warehId").kendoMultiSelect({
+        /*$("#filter_in_warehId").kendoMultiSelect({
             dataTextField: "name",
             dataValueField: "code",
             height: 400,
@@ -181,8 +197,25 @@ function initMultiSelect() {
                 transport: {
                     read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
                 }
-            },
+            }
+        });*/
+        $.ajax({
+            url: basePath +  "/sys/warehouse/list.do?filter_INI_type=9",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#filter_in_warehId").empty();
+                $("#filter_in_warehId").append("<option value='DG'>所有店柜</option>");
+                $("#filter_in_warehId").append("<option value='JMS'>所有加盟商</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#filter_in_warehId").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
+                }
+                $('.selectpicker').selectpicker('refresh');
+            }
         });
+        $('.selectpicker').selectpicker('refresh');
     }
 
 

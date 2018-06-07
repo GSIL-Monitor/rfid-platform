@@ -8,7 +8,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <jsp:include page="../baseView.jsp"></jsp:include>
     <jsp:include page="searchBaseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
@@ -48,12 +47,12 @@
             font-size: 14px;
             line-height: 31px;
         }
-        .text {
+/*        .text {
             font-size: 24px;
             color: #fe3800;
             margin: 10px;
             line-height: 31px;
-        }
+        }*/
     </style>
 
 </head>
@@ -212,7 +211,8 @@
                                         <div id="destUnitId">
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destunitid">发货方</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select id="filter_in_destUnitId"name="filter_in_origunitid" multiple="multiple" data-placeholder="编号列表">
+                                                <select  class="form-control selectpicker show-tick" id="filter_in_destUnitId" name="filter_in_ownerid" multiple="multiple"
+                                                         style="width: 100%;" data-live-search="true">
                                                 </select>
                                             </div>
                                         </div>
@@ -220,8 +220,8 @@
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                            <%--<select id="filter_in_deport"name="filter_in_deport" multiple="multiple" data-placeholder="编号列表">
                                             </select>--%>
-                                            <select class="form-control" id="filter_in_deport" name="filter_in_deport"
-                                                       style="width: 100%;" onchange="changedeport()">
+                                            <select class="form-control selectpicker show-tick" id="filter_in_deport" name="filter_in_deport"
+                                                       style="width: 100%;" onchange="changedeport()" data-live-search="true">
                                             </select>
                                         </div>
                                       <%-- <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_origid">收货仓店</label>--%>
@@ -233,7 +233,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group" id="styleid">
-                                        <label id="styleids"class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleid">款号</label>
+                                        <label id="styleids" class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleid">款号</label>
 
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3" id="styleidname">
                                             <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
@@ -298,7 +298,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
@@ -384,7 +384,6 @@
 </div>
 
 <jsp:include page="search_js.jsp"></jsp:include>
-<jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/search/SaleorderCountViewSearchController.js"></script>

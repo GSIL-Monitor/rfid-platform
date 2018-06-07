@@ -1,25 +1,23 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.*;
-
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.sys.impl.UnitService;
+import com.casesoft.dmc.service.sys.impl.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.sys.Unit;
-
-import com.casesoft.dmc.service.sys.impl.WarehouseService;
+import java.util.*;
 
 
 
@@ -86,25 +84,9 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 				filters.add(filter);
 				warehouse.addAll(this.warehouseService.find(filters));
 			}else{
-				Unit unit = new Unit();
-				Unit unit1 = new Unit();
-				unit.setCode("DG");
-				unit.setName("所有店柜");
-				unit1.setCode("JMS");
-				unit1.setName("所有加盟商");
-				warehouse.add(unit);
-				warehouse.add(unit1);
 				warehouse.addAll(this.warehouseService.find(filters));
 			}
 		}else{
-			Unit unit = new Unit();
-			Unit unit1 = new Unit();
-			unit.setCode("DG");
-			unit.setName("所有店柜");
-			unit1.setCode("JMS");
-			unit1.setName("所有加盟商");
-			warehouse.add(unit);
-			warehouse.add(unit1);
 			warehouse.addAll(this.warehouseService.find(filters));
 		}
 
