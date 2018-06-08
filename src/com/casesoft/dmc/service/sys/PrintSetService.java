@@ -4,6 +4,7 @@ import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PrintSetDao;
 import com.casesoft.dmc.model.logistics.*;
@@ -252,7 +253,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
         return map;
     }
 
-    public Map<String,Object> printMessageA4(String id,String billno){
+    public Map<String,Object> printMessageA4(String id,String billno)throws Exception{
         Map<String,Object> map=new HashMap<String,Object>();
         if(billno.indexOf(BillConstant.BillPrefix.saleOrder)!=-1){
             Map<String,Object> mapcont=new HashMap<String,Object>();
@@ -283,19 +284,68 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
                 mapcont.put("shopBefore","售前余额:");
             }
             List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billno);
-            List<SaleOrderBillDtl> sendbillDtlByBillNo=new ArrayList<SaleOrderBillDtl>();
+            String sizeArray = PropertyUtil.getValue("sizeArray");
+            Map<String,Object> sendDel=new HashMap<String,Object>();//存储根据款号和颜色封装的map
+            List<Object> sendDelList=new ArrayList<Object>();//存储发送前台的list
+            String[] sizeArrays = sizeArray.split(",");
             for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
-                SaleOrderBillDtl newSaleOrderBillDtl=new SaleOrderBillDtl();
-                BeanUtils.copyProperties(saleOrderBillDtl,newSaleOrderBillDtl);
-                newSaleOrderBillDtl.setStyleName(CacheManager.getStyleNameById(saleOrderBillDtl.getStyleId()));
+                Map alreadyMap =( Map<String,Object>)sendDel.get(saleOrderBillDtl.getStyleId() + saleOrderBillDtl.getColorId());
                 Style style = CacheManager.getStyleById(saleOrderBillDtl.getStyleId());
-                newSaleOrderBillDtl.setPrice(style.getPrice());
-                newSaleOrderBillDtl.setTotPrice(CommonUtil.doubleChange(style.getPrice()*saleOrderBillDtl.getQty(),2));
-                sendbillDtlByBillNo.add(newSaleOrderBillDtl);
+                if(CommonUtil.isBlank(alreadyMap)){
+                    Map<String,Object> saveSaleOrderDtl=new HashMap<String,Object>();
+                    boolean isNoOther=false;//判断是否是其他
+                    for(int i=0;i<sizeArrays.length;i++){
+                        if(CommonUtil.isNotBlank(saleOrderBillDtl.getSizeId())&&saleOrderBillDtl.getSizeId().equals(sizeArrays[i])){
+                            saveSaleOrderDtl.put(sizeArrays[i],saleOrderBillDtl.getQty());
+                            isNoOther=true;
+                        }else {
+                            saveSaleOrderDtl.put(sizeArrays[i],0);
+                        }
+                    }
+                    if(!isNoOther){
+                        saveSaleOrderDtl.put("other",saleOrderBillDtl.getQty());
+                    }else{
+                        saveSaleOrderDtl.put("other",0);
+                    }
+                    saveSaleOrderDtl.put("styleId",saleOrderBillDtl.getStyleId());
+
+                    saveSaleOrderDtl.put("styleName",style.getStyleName());
+                    saveSaleOrderDtl.put("colorId",saleOrderBillDtl.getColorId());
+                    saveSaleOrderDtl.put("qty",saleOrderBillDtl.getQty());
+                    saveSaleOrderDtl.put("price",style.getPrice());
+                    saveSaleOrderDtl.put("totPrice",Integer.parseInt(saveSaleOrderDtl.get("qty")+"")*style.getPrice());
+                    sendDel.put(saleOrderBillDtl.getStyleId() + saleOrderBillDtl.getColorId(),saveSaleOrderDtl);
+                }else{
+                    boolean isNoOther=false;//判断是否是其他
+                    for(int i=0;i<sizeArrays.length;i++){
+                        if(CommonUtil.isNotBlank(saleOrderBillDtl.getSizeId())&&saleOrderBillDtl.getSizeId().equals(sizeArrays[i])){
+                           Long sizeQty = Long.parseLong(alreadyMap.get(sizeArrays[i])+"");
+                            alreadyMap.put(sizeArrays[i],sizeQty+saleOrderBillDtl.getQty());
+                            Long qty = Long.parseLong(alreadyMap.get("qty")+"");
+                            alreadyMap.put("qty",qty+saleOrderBillDtl.getQty());
+                            alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
+                            isNoOther=true;
+                        }
+                    }
+                    if(!isNoOther){
+                        Long sizeQty = Long.parseLong(alreadyMap.get("other")+"");
+                        alreadyMap.put("other",sizeQty+saleOrderBillDtl.getQty());
+                        Long qty = Long.parseLong(alreadyMap.get("qty")+"");
+                        alreadyMap.put("qty",qty+saleOrderBillDtl.getQty());
+                        alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
+                    }
+                }
+            }
+            Iterator it = sendDel.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                Object value = entry.getValue();
+                sendDelList.add(value);
             }
             map.put("print",printSet);
             map.put("cont",mapcont);
-            map.put("contDel",sendbillDtlByBillNo);
+            map.put("contDel",sendDelList);
         }
         return map;
     }
