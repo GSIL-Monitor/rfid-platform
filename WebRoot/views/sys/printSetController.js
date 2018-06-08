@@ -6,14 +6,14 @@ var printParameter={
     receiptWidth58mm:220,//58mm小票的宽度
     receiptWidth80mm:260,//80mm小票的宽度
     receiptWidth110mm:500,//110mm小票的宽度
-    receiptWidthA4:700,//A4的宽度
+    receiptWidthA4:780,//A4的宽度
     receiptheight58mm:693,//58mm小票的高度
     receiptheight80mm:741,//80mm小票的高度
     receiptheight110mm:610,//100mm小票的高度
     receiptheightA4:639,//A4的宽度
     aRowheight:25,//每行的高度
-    intervalHeight:10//行之间的间隔
-
+    intervalHeight:10,//行之间的间隔
+    sizeArry:"S,XS,M,L,XL,XXL,XXXL,F,其他"
 
 
 };
@@ -44,6 +44,9 @@ function selectfoorerPrint() {
 }
 function selectRuleReceipt(sum) {
     if(sum=="A4"){
+        var html=lodingTableA4();
+        $("#edit-A4-dialog").html(html);
+        loadingTablecheck();
         $("#A4Print").show();
         $("#receiptPrint").hide();
         $("#ruleReceiptA4").find("ul").each(function(index,element){
@@ -467,16 +470,16 @@ function findPrintSetA4(sum) {
                         }
                     });
                     $("#edit-A4-dialog").find("th").each(function (index,element) {
-                        var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                       /* var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
                         if(!(result.printTableCode.indexOf(name)!= -1)){
                             $(this).hide();
-                        }
+                        }*/
                     });
                     $("#edit-A4-dialog").find("td").each(function (index,element) {
-                        var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                       /* var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
                         if(!(result.printTableCode.indexOf(name)!= -1)){
                             $(this).hide();
-                        }
+                        }*/
                     });
                 }else{
                     $("#id").val("");
@@ -544,10 +547,30 @@ function selectThisA4(t,selectId) {
 function selectThisA4class(t,selectId) {
     if($(t).attr("class")=="stecs"){
         $(t).attr("class","stecs on");
-        $("."+selectId).show();
+        //$("."+selectId).show();
+        $("#edit-A4-dialog").find("th").each(function (index,element) {
+            if($(this).data("name")==selectId){
+                $(this).show();
+            }
+        });
+        $("#edit-A4-dialog").find("td").each(function (index,element) {
+            if($(this).data("name")==selectId){
+                $(this).show();
+            }
+        });
     }else{
         $(t).attr("class","stecs");
-        $("."+selectId).hide();
+        //$("."+selectId).hide();
+        $("#edit-A4-dialog").find("th").each(function (index,element) {
+            if($(this).data("name")==selectId){
+                $(this).hide();
+            }
+        });
+        $("#edit-A4-dialog").find("td").each(function (index,element) {
+            if($(this).data("name")==selectId){
+                $(this).hide();
+            }
+        });
     }
 }
 function saveA4() {
@@ -671,30 +694,43 @@ function saveA4() {
         });
         var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
         var tabbleth="";
-        var html="\"<body><table style='text-align: center;font-size:17px;width: "+receiptWith+"px'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr>"
+        var html="\"<body><table style='text-align:center;font-size:12px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead ><tr>"
         $("#edit-A4-dialog").find("th").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var message=$(this).html();
-                var classname=$(this).attr("class");
+                var classname=$(this).data("name");
                 console.log(message);
-                html+="<th align='left' nowrap='nowrap' style='border:0px;font-size:15px;'>"+message+"</th>";
-                tabbleth+="<th align='left' nowrap='nowrap' style='border:0px;font-size:15px;'>"+message+"</th>";
-                if(printTableCode==""){
-                    printTableCode+=classname.substring(0,classname.length-2);
+                if(printParameter.sizeArry.indexOf(classname)!=-1) {
+                    debugger
+                    html += "<th align='middle' nowrap='nowrap' style='border:0px;font-size:12px;border:1px solid #000;width: 6%'>" + message + "</th>";
+                    tabbleth += "<th align='middle'nowrap='nowrap' style='border:0px;font-size:12px;border:1px solid #000;width: 6%'>" + message + "</th>";
                 }else{
-                    printTableCode+=","+classname.substring(0,classname.length-2);
+                    html += "<th align='middle' nowrap='nowrap' style='border:0px;font-size:12px;border:1px solid #000;'>" + message + "</th>";
+                    tabbleth += "<th align='middle'nowrap='nowrap' style='border:0px;font-size:12px;border:1px solid #000;'>" + message + "</th>";
+                }
+
+                if(printTableCode==""){
+                    printTableCode+=classname;
+                }else{
+                    printTableCode+=","+classname;
                 }
             }
         });
-        html+="</tr></thead><tbody id='loadtabA4'><tr style='border-top:1px ;padding-top:5px;'>"
+        html+="</tr></thead><tbody id='loadtabA4'><tr style='border-top:1px dashed black;padding-top:5px;border:1px solid #000;'>"
         $("#edit-A4-dialog").find("td").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var message=$(this).html();
                 console.log(message);
-                html+="<td align='left' style='border-top:1px ;padding-top:5px;font-size:12px;'>"+message+"</td>"
+                if(printParameter.sizeArry.indexOf($(this).data("name"))!=-1){
+                    html+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;width: 7%'>"+message+"</td>"
+                }else {
+                    html+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>"+message+"</td>"
+                }
+
             }
         });
         html+="</tr></tbody></table>\"";
+        console.log(html);
         str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
         str+="LODOP.SET_PRINT_STYLEA(0,\"ItemName\",\"baseHtml\");";
         sum=0;
@@ -753,4 +789,59 @@ function saveA4() {
             class_name: 'gritter-success  gritter-light'
         });
     }
+}
+
+function lodingTableA4() {
+    var tableHtml="<table style='text-align: center;font-size:12px;border-collapse:collapse;border:1px solid #000;'class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>";
+    var tableHtmlcont="<tbody id='loadtabA4'><tr style='border-top:1px ;padding-top:5px;border:1px solid #000;'>";
+    tableHtml+="<thead >";
+    tableHtml+="<tr style='border:1px solid #000;'>";
+    tableHtml+="<th align='left' data-name='styleId' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>款号</th>";
+    tableHtml+="<th align='left' data-name='styleName' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>款名</th>";
+    tableHtml+="<th align='left' data-name='colorId' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>颜色</th>";
+    tableHtmlcont+="<td align='left' data-name='styleId' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;'>&nbsp;</td>";
+    tableHtmlcont+="<td align='left' data-name='styleName' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;'>&nbsp;</td>";
+    tableHtmlcont+="<td align='left' data-name='colorId' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;'>&nbsp;</td>";
+        for(var i=0;i<printParameter.sizeArry.split(",").length;i++){
+            var classname=printParameter.sizeArry.split(",")[i]
+            if(classname=="其他"){
+                tableHtml+="<th align='left'  data-name='other' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;width: 7%'>"+printParameter.sizeArry.split(",")[i]+"</th>";
+                tableHtmlcont+="<td align='left' data-name='other' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;width: 7%'>0</td>";
+            }else{
+                tableHtml+="<th align='left'  data-name='"+classname+"' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;width: 7%'>"+printParameter.sizeArry.split(",")[i]+"</th>";
+                tableHtmlcont+="<td align='left' data-name='"+classname+"' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;width: 7%'>0</td>";
+            }
+
+        }
+    tableHtml+="<th align='left' data-name='qty' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>小计</th>";
+    tableHtml+="<th align='left' data-name='price'  style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>吊牌价</th>";
+    tableHtml+="<th align='left' data-name='totPrice'  style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>金额</th></tr></thead>";
+    tableHtmlcont+="<td align='left' data-name='qty' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;'>&nbsp;</td>";
+    tableHtmlcont+="<td align='left' data-name='price' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;'>0</td>";
+    tableHtmlcont+=" <td align='left' data-name='totPrice' style='border-top:1px ;padding-top:5px;border:1px solid #000;'>&nbsp;</td></tr></tbody></table>";
+    var html=tableHtml+tableHtmlcont;
+    console.log(tableHtml);
+    console.log(tableHtmlcont);
+    console.log(html);
+    return html;
+}
+function loadingTablecheck() {
+    var tableHtmlCheck="<ul>";
+    tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='styleId' onclick=selectThisA4class(this,\"styleId\")><i></i><span>款号</span></div></li>";
+    tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='styleName' onclick=selectThisA4class(this,\"styleName\")><i></i><span>款名</span></div></li>";
+    tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='colorId' onclick=selectThisA4class(this,\"colorId\")><i></i><span>颜色</span></div></li>";
+    for(var i=0;i<printParameter.sizeArry.split(",").length;i++){
+        var classname=printParameter.sizeArry.split(",")[i]
+        if(classname=="其他"){
+            tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='other' onclick=selectThisA4class(this,'other')><i></i><span>"+classname+"</span></div></li>";
+        }else{
+            tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='"+classname+"' onclick=selectThisA4class(this,'"+classname+"')><i></i><span>"+classname+"</span></div></li>";
+        }
+
+
+    }
+    tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='qty' onclick=selectThisA4class(this,\"qty\")><i></i><span>小计</span></div></li>";
+    tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='price' onclick=selectThisA4class(this,\"price\")><i></i><span>吊牌价</span></div></li>";
+    tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='totPrice' onclick=selectThisA4class(this,\"totPrice\")><i></i><span>金额</span></div></li>";
+    $("#tablePrintA4").html(tableHtmlCheck)
 }
