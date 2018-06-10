@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
     <link rel="shortcut icon" href="<%=basePath%>favicon.ico">
-    <title>CaseSoft SMARTRFID大数据平台</title>
+    <title>CaseSoft SMARTRFID智慧平台</title>
 
     <meta name="description" content="overview &amp; stats"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -60,7 +60,7 @@
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/jquery-ui.custom.css"/>
 </head>
 
-<body class="skin-1" style="overflow:hidden ">
+<body class="skin-1">
 <!-- #section:basics/navbar.layout -->
 <div id="navbar" class="navbar navbar-default">
     <script type="text/javascript">
@@ -88,8 +88,9 @@
             <!-- #section:basics/navbar.layout.brand -->
             <a href="#" class="navbar-brand">
                 <small>
-                    <img src="<%=basePath%>/images/icon/casesoft-white.png" style="width:25px;height:25px;margin-top:-3px;"/>
-                    RFID-SMART大数据平台 HUB 4.0
+                    <img src="<%=basePath%>/images/icon/casesoft-white.png"
+                         style="width:25px;height:25px;margin-top:-3px;"/>
+                    RFID-SMART 智慧平台
                 </small>
             </a>
 
@@ -149,6 +150,7 @@
 
         <!-- /section:basics/navbar.dropdown -->
     </div>
+
     <!-- /.navbar-container -->
 </div>
 
@@ -161,69 +163,63 @@
         }
     </script>
 
-    <!-- #section:basics/sidebar -->
-    <!--左侧手风琴/抽屉式布局-->
-    <div id="sidebar" class="sidebar responsive">
-        <div id="scroll">
-            <script type="text/javascript">
-                try {
-                    ace.settings.check('sidebar', 'fixed')
-                } catch (e) {
-                }
-            </script>
+    <div id="sidebar" class="sidebar h-sidebar navbar-collapse collapse">
 
-            <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-                <!--左侧上方四个图标按钮-->
-                <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-                    <button class="btn btn-success" onclick="showOrHiddenSettingDialog()">
-                        <i class="ace-icon fa fa-wrench bigger-110"></i>
-                    </button>
+        <script type="text/javascript">
+            try {
+                ace.settings.check('sidebar', 'fixed')
+            } catch (e) {
+            }
+        </script>
 
-                    <button class="btn btn-warning" onclick="openEditPasswordDialog()">
-                        <i class="ace-icon fa fa-lock bigger-110"></i>
-                    </button>
+        <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+            <!--左侧上方四个图标按钮-->
+            <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+                <button class="btn btn-success" onclick="showOrHiddenSettingDialog()">
+                    <i class="ace-icon fa fa-wrench bigger-110"></i>
+                </button>
 
-                    <!-- #section:basics/sidebar.layout.shortcuts -->
-                    <button class="btn btn-info" onclick="openUserInfoDialog()">
-                        <i class="ace-icon fa fa-user bigger-110"></i>
-                    </button>
+                <button class="btn btn-warning" onclick="openEditPasswordDialog()">
+                    <i class="ace-icon fa fa-lock bigger-110"></i>
+                </button>
 
-                    <button class="btn btn-danger" onclick="logoutSys()">
-                        <i class="ace-icon fa fa-power-off bigger-110"></i>
-                    </button>
+                <!-- #section:basics/sidebar.layout.shortcuts -->
+                <button class="btn btn-info" onclick="openUserInfoDialog()">
+                    <i class="ace-icon fa fa-user bigger-110"></i>
+                </button>
 
-                    <!-- /section:basics/sidebar.layout.shortcuts -->
-                </div>
+                <button class="btn btn-danger" onclick="logoutSys()">
+                    <i class="ace-icon fa fa-power-off bigger-110"></i>
+                </button>
 
-                <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-                    <span class="btn btn-success"></span>
-
-                    <span class="btn btn-info"></span>
-
-                    <span class="btn btn-warning"></span>
-
-                    <span class="btn btn-danger"></span>
-                </div>
-            </div>
-            <!-- /.sidebar-shortcuts -->
-
-            <ul class="nav nav-list" id="menu"></ul>
-            <!-- /.nav-list -->
-
-            <!-- #section:basics/sidebar.layout.minimize -->
-            <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
-                <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left"
-                   data-icon2="ace-icon fa fa-angle-double-right"></i>
+                <!-- /section:basics/sidebar.layout.shortcuts -->
             </div>
 
-            <!-- /section:basics/sidebar.layout.minimize -->
-            <script type="text/javascript">
-                try {
-                    ace.settings.check('sidebar', 'collapsed')
-                } catch (e) {
-                }
-            </script>
+            <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+                <span class="btn btn-success"></span>
+
+                <span class="btn btn-info"></span>
+
+                <span class="btn btn-warning"></span>
+
+                <span class="btn btn-danger"></span>
+            </div>
         </div>
+        <!-- /.sidebar-shortcuts -->
+
+        <ul class="nav nav-list" id="menu"></ul>
+        <!-- /.nav-list -->
+
+        <!-- #section:basics/sidebar.layout.minimize -->
+
+        <!-- /section:basics/sidebar.layout.minimize -->
+        <script type="text/javascript">
+            try {
+                ace.settings.check('sidebar', 'collapsed')
+            } catch (e) {
+            }
+        </script>
+
     </div>
 
     <div class="main-content">
@@ -317,7 +313,11 @@
 
 
     </div>
+    </div>
     <!-- /.main-container -->
+
+
+   <jsp:include page="/views/layout/footer.jsp"></jsp:include>
 
     <!-- 修改密码 -->
     <div id="editPassword-dialog" class="modal fade" tabindex="-1" role="dialog">>
@@ -489,35 +489,35 @@
 
     <!-- inline scripts related to this page -->
     <script type="text/javascript">
-        window.onbeforeunload = function(){
-            debugger;
+        window.onbeforeunload = function () {
+
             var billNosale = sessionStorage.getItem("billNosale");
-            if(billNosale!=""&&billNosale!=null){
+            if (billNosale != "" && billNosale != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/saleOrder/quit.do?billNo=" +billNosale,
+                    url: "<%=basePath%>logistics/saleOrder/quit.do?billNo=" + billNosale,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNosale");
                         }
 
                     }
                 });
-             }
+            }
             var billNosaleReturn = sessionStorage.getItem("billNosaleReturn");
-            if(billNosaleReturn!=""&&billNosaleReturn!=null){
+            if (billNosaleReturn != "" && billNosaleReturn != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/saleOrderReturn/quit.do?billNo=" +billNosaleReturn,
+                    url: "<%=basePath%>logistics/saleOrderReturn/quit.do?billNo=" + billNosaleReturn,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNosaleReturn");
                         }
@@ -526,15 +526,15 @@
                 });
             }
             var billNoConsignment = sessionStorage.getItem("billNoConsignment");
-            if(billNoConsignment!=""&&billNoConsignment!=null){
+            if (billNoConsignment != "" && billNoConsignment != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/Consignment/quit.do?billNo=" +billNoConsignment,
+                    url: "<%=basePath%>logistics/Consignment/quit.do?billNo=" + billNoConsignment,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNoConsignment");
                         }
@@ -543,15 +543,15 @@
                 });
             }
             var billNotransfer = sessionStorage.getItem("billNotransfer");
-            if(billNotransfer!=""&&billNotransfer!=null){
+            if (billNotransfer != "" && billNotransfer != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/transferOrder/quit.do?billNo=" +billNotransfer,
+                    url: "<%=basePath%>logistics/transferOrder/quit.do?billNo=" + billNotransfer,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNotransfer");
                         }
@@ -560,15 +560,15 @@
                 });
             }
             var billNoPurchaseReturn = sessionStorage.getItem("billNoPurchaseReturn");
-            if(billNopurchase!=""&&billNopurchase!=null){
+            if (billNopurchase != "" && billNopurchase != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/purchaseReturn/quit.do?billNo=" +billNoPurchaseReturn,
+                    url: "<%=basePath%>logistics/purchaseReturn/quit.do?billNo=" + billNoPurchaseReturn,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNoPurchaseReturn");
                         }
@@ -577,15 +577,15 @@
                 });
             }
             var billNopurchase = sessionStorage.getItem("billNopurchase");
-            if(billNopurchase!=""&&billNopurchase!=null){
+            if (billNopurchase != "" && billNopurchase != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/purchase/quit.do?billNo=" +billNopurchase,
+                    url: "<%=basePath%>logistics/purchase/quit.do?billNo=" + billNopurchase,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNopurchase");
                         }
@@ -612,18 +612,18 @@
             if (!$("#" + id)[0]) {
 
                 var mainHeight = $(window).height();
-                var title = '<li role="presentation" id="tab_' + id + '"><a href="#' + id + '" aria-controls="' + id + '" role="tab" data-toggle="tab">' + options.title;
+                var title = '<li class="hover" role="presentation" id="tab_' + id + '"><a href="#' + id + '" aria-controls="' + id + '" role="tab" data-toggle="tab">' + options.title;
                 if (options.close) {
                     title += ' <i class="glyphicon glyphicon-remove" tabclose="' + id + '"></i>';
                 }
                 title += '</a></li>';
                 var content;
-                var innerHeight=mainHeight-110;
+                var innerHeight = mainHeight - 110;
                 if (options.content) {
                     content = '<div role="tabpanel" class="tab-pane" id="' + id + '">' + options.content + '</div>';
                 } else { //没有内容，使用IFRAME打开链接
                     content = '<div role="tabpanel" class="tab-pane" id="' + id + '"><iframe id="iframe_' + options.id + '" name="iframe_' + options.id + '"  src="' + options.url + '/index.do" width="100%" height="' + innerHeight +
-                    '" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes"></iframe></div>';
+                            '" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes"></iframe></div>';
                 }
                 //加入TABS
                 $(".nav-tabs").append(title);
@@ -652,32 +652,32 @@
             $("#" + id).remove();
             debugger;
             var billNosale = sessionStorage.getItem("billNosale");
-            if(billNosale!=""&&billNosale!=null){
+            if (billNosale != "" && billNosale != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/saleOrder/quit.do?billNo=" +billNosale,
+                    url: "<%=basePath%>logistics/saleOrder/quit.do?billNo=" + billNosale,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                       if(textStatus=="success"){
+                        if (textStatus == "success") {
 
-                           sessionStorage.removeItem("billNosale");
-                       }
+                            sessionStorage.removeItem("billNosale");
+                        }
 
                     }
                 });
             }
             var billNosaleReturn = sessionStorage.getItem("billNosaleReturn");
-            if(billNosaleReturn!=""&&billNosaleReturn!=null){
+            if (billNosaleReturn != "" && billNosaleReturn != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/saleOrderReturn/quit.do?billNo=" +billNosaleReturn,
+                    url: "<%=basePath%>logistics/saleOrderReturn/quit.do?billNo=" + billNosaleReturn,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNosale");
                         }
@@ -686,15 +686,15 @@
                 });
             }
             var billNoConsignment = sessionStorage.getItem("billNoConsignment");
-            if(billNoConsignment!=""&&billNoConsignment!=null){
+            if (billNoConsignment != "" && billNoConsignment != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/Consignment/quit.do?billNo=" +billNoConsignment,
+                    url: "<%=basePath%>logistics/Consignment/quit.do?billNo=" + billNoConsignment,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNosale");
                         }
@@ -703,15 +703,15 @@
                 });
             }
             var billNotransfer = sessionStorage.getItem("billNotransfer");
-            if(billNotransfer!=""&&billNotransfer!=null){
+            if (billNotransfer != "" && billNotransfer != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/transferOrder/quit.do?billNo=" +billNotransfer,
+                    url: "<%=basePath%>logistics/transferOrder/quit.do?billNo=" + billNotransfer,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNosale");
                         }
@@ -720,15 +720,15 @@
                 });
             }
             var billNopurchase = sessionStorage.getItem("billNopurchase");
-            if(billNopurchase!=""&&billNopurchase!=null){
+            if (billNopurchase != "" && billNopurchase != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/purchase/quit.do?billNo=" +billNopurchase,
+                    url: "<%=basePath%>logistics/purchase/quit.do?billNo=" + billNopurchase,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNosale");
                         }
@@ -737,15 +737,15 @@
                 });
             }
             var billNoPurchaseReturn = sessionStorage.getItem("billNoPurchaseReturn");
-            if(billNopurchase!=""&&billNopurchase!=null){
+            if (billNopurchase != "" && billNopurchase != null) {
                 $.ajax({
-                    url:"<%=basePath%>logistics/purchaseReturn/quit.do?billNo=" +billNoPurchaseReturn,
+                    url: "<%=basePath%>logistics/purchaseReturn/quit.do?billNo=" + billNoPurchaseReturn,
                     cache: false,
                     async: false,
                     type: "POST",
                     success: function (data, textStatus) {
 
-                        if(textStatus=="success"){
+                        if (textStatus == "success") {
 
                             sessionStorage.removeItem("billNoPurchaseReturn");
                         }
@@ -772,7 +772,6 @@
             $("#ace-settings-container").hide();
 
         });
-
 
 
         /**
@@ -913,16 +912,16 @@
 
     </script>
     <script type="text/javascript">
-        
-        function setScroll(){
-            var winHeight = window.innerHeight-45;
+
+        function setScroll() {
+            var winHeight = window.innerHeight - 45;
             $("#scroll").slimScroll({
                 height: winHeight,
                 alwaysVisible: true,
             });
         }
         setScroll();
-        $(window).on("resize",setScroll);
+        $(window).on("resize", setScroll);
     </script>
     <script type="text/javascript"> ace.vars['base'] = '..'; </script>
 </body>

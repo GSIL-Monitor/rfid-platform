@@ -19,7 +19,7 @@
         //menu.parent().parentsUntil('.nav-list', 'li').addClass('active').addClass('open');
         function init(target, data) {
             $.each(data, function (i, item) {
-                var li = $('<li id="'+'menu_'+item.id+'"></li>');
+                var li = $('<li id="'+'menu_'+item.id+'" class="hover"></li>');
                 var a = $('<a></a>');
                 var icon = $('<i></i>');
                 //icon.addClass('glyphicon');
@@ -43,7 +43,7 @@
                     li.append(menus);
                 }
                 else {
-                    icon.addClass("menu-icon").addClass("fa fa-caret-right");
+                    icon.addClass('menu-icon fa '+item.icon);
                     a.append(icon);
                     var text = $('<span></span>');
                     text.addClass('menu-text').text(item.text);
@@ -59,6 +59,7 @@
                     //    a.attr('target', '_blank')
                     //}
                     li.append(a);
+                    li.addClass('hover');
                 }
                 target.append(li);
             });
