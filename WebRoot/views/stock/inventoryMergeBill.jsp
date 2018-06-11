@@ -68,8 +68,8 @@
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
                                                for="search_warehouseId">仓库</label>
                                         <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
-                                            <select class="form-control" id="search_warehouseId"
-                                                    name="filter_EQS_warehouseId">
+                                            <select class="form-control selectpicker show-tick" id="search_warehouseId"
+                                                    name="filter_EQS_warehouseId" data-live-search="true">
                                             </select>
                                         </div>
 
@@ -111,7 +111,7 @@
                                                 <span class="bigger-110">查询</span>
                                             </button>
                                             <button type="reset" class="btn btn-sm btn-warning"
-                                                    onclick="_clearSearch()">
+                                                    onclick="_reset()">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span>
                                             </button>
@@ -159,17 +159,17 @@
             url: basePath + '/unit/list.do?filter_EQI_type=9',
             cache: false,
             async: false,
-            type: 'POST',
-            suceess: function (data) {
+            type: "POST",
+            success: function (data, textStatus) {
                 $("#search_warehouseId").empty();
-                $("#search_warehouseId").append("<option value='' style='background-color: #eeeeee'>--请选择仓库--</option>");
+                $("#search_warehouseId").append("<option value=''>--请选择仓库--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
                     $("#search_warehouseId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_warehouseId").trigger('chosen:updated');
                 }
             }
-        })
+        });
+        $('.selectpicker').selectpicker('refresh');
     }
     var url = "";
     function initUrl() {

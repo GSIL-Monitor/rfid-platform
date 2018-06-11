@@ -355,8 +355,8 @@ function set(id) {
 
                 $("#loadtab").html(recordmessage);
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 

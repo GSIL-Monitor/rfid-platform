@@ -6,13 +6,17 @@ function getLodop(oOBJECT, oEMBED) {
      * 其它浏览器(Firefox系列、Chrome系列、Opera系列、Safari系列等)采用oEMBED,
      * 如果页面没有相关对象元素，则新建一个或使用上次那个,避免重复生成。 64位浏览器指向64位的安装程序install_lodop64.exe。
      **************************************************************************/
-    var webContext = window.base || "/is";
+    /*var webContext = window.base || "/is";
 
     var lodopUrl32 = webContext
         + '/template/nadmin/js/libs/lodop/install_lodop32.exe';
     var lodopUrl64 = webContext
         + '/template/nadmin/js/libs/lodop/install_lodop64.exe';
-
+*/
+    var lodopUrl32 = basePath
+        + '/Olive/plugin/print/install_lodop32.exe';
+    var lodopUrl64 = basePath
+        + '/Olive/plugin/print/install_lodop64.exe';
     var strHtmInstall = "<div autofocus>打印控件未安装!点击这里<a style='text-decoration: underline;color:rgb(0, 0, 238);' href='" + lodopUrl32 + "' target='_self'>执行安装</a>,安装后请刷新页面或重新进入。</div>";
     var strHtmUpdate = "<div autofocus>打印控件需要升级!点击这里<a href='" + lodopUrl32 + "' target='_self'>执行升级</a>,升级后请重新进入。</div>";
     var strHtm64_Install = "<div autofocus >打印控件未安装!点击这里<a href='" + lodopUrl64 + "' target='_self'>执行安装</a>,安装后请刷新页面或重新进入。</div>";

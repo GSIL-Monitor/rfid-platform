@@ -1,5 +1,8 @@
 
    $(function(){
+       $(".selectpicker").selectpicker({
+           noneSelectedText : '--请选择--'//默认显示内容
+       });
         initMutiSelect();
     	initKendoUIGrid();
     	$(".k-dropdown").css("width", "6em");
@@ -7,7 +10,21 @@
 
     });
    function initMutiSelect(){
-       $("#filter_in_warehId").kendoMultiSelect({
+       $.ajax({
+           url:basePath + "/sys/warehouse/list.do?filter_EQI_type=4",
+           cache: false,
+           async: false,
+           type: "POST",
+           success: function (data, textStatus) {
+               $("#filter_in_warehId").empty();
+               var json = data;
+               for (var i = 0; i < json.length; i++) {
+                   $("#filter_in_warehId").append("<option value='" + json[i].code + "'>"  + json[i].name + "</option>");
+               }
+           }
+       });
+       $('.selectpicker').selectpicker('refresh');
+/*       $("#filter_in_warehId").kendoMultiSelect({
            dataTextField: "name",
            dataValueField: "code",
            height: 400,
@@ -17,7 +34,7 @@
                    read:  basePath + "/sys/warehouse/list.do?filter_EQI_type=4"
                }
            }
-       })
+       })*/
    }
     function refresh(){
     	resetData();

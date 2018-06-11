@@ -108,7 +108,7 @@
                                         <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
                                         <div class="col-xs-2">
                                             <select class="form-control selectpicker show-tick" id="search_origId" name="filter_LIKES_origId"
-                                                    style="width: 100%;"data-live-search="true">
+                                                    style="width: 100%;" data-live-search="true">
                                             </select>
                                         </div>
                                         <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
@@ -154,7 +154,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning", onclick="_reset()">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset()">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
