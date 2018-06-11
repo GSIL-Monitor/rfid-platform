@@ -1860,8 +1860,8 @@ function setA4(id) {
                 $("#loadtabthA4").html(print.printTableTh);
                 $("#loadtabA4").html(recordmessage);
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 
