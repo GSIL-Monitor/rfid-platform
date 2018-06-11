@@ -489,33 +489,33 @@
                         </div>
                         <div id="edit-A4-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
 
-                            <table style="text-align: center;font-size:12px;"class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <table style="text-align: center;font-size:12px;border-collapse:collapse;border:1px solid #000;"class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <thead >
-                                <tr >
-                                    <th align="left" class="styleIdA4" nowrap="nowrap" style="border:0px;font-size:10px;">款号</th>
-                                    <th align="left" class="styleNameA4"nowrap="nowrap" style="border:0px;font-size:10px;">款名</th>
-                                    <th align="left" class="colorIdA4" nowrap="nowrap"style="border:0px;font-size:10px;">颜色</th>
-                                    <th align="left" class="sizeIdA4" nowrap="nowrap" style="border:0px;font-size:10px;">尺码</th>
-                                    <th align="left" class="qtyA4" nowrap="nowrap" style="border:0px;font-size:10px;">数量</th>
-                                    <th align="left" class="priceA4" nowrap="nowrap" style="border:0px;font-size:10px;">吊牌价</th>
-                                    <th align="left" class="totPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;">金额</th>
-                                    <th align="left" class="discountA4" nowrap="nowrap" style="border:0px;font-size:10px;">折扣</th>
-                                    <th align="left" class="actPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;">折后价</th>
-                                    <th align="left" class="totActPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;">折后金额</th>
+                                <tr style="border:1px solid #000;">
+                                    <th align="left" class="styleIdA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款号</th>
+                                    <th align="left" class="styleNameA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款名</th>
+                                    <th align="left" class="colorIdA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">颜色</th>
+                                    <th align="left" class="sizeIdA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">尺码</th>
+                                    <th align="left" class="qtyA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">数量</th>
+                                    <th align="left" class="priceA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">吊牌价</th>
+                                    <th align="left" class="totPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">金额</th>
+                                    <th align="left" class="discountA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">折扣</th>
+                                    <th align="left" class="actPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">折后价</th>
+                                    <th align="left" class="totActPriceA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">折后金额</th>
                                 </tr>
                                 </thead>
                                 <tbody id="loadtabA4">
-                                <tr style="border-top:1px ;padding-top:5px;">
-                                    <td align="left" class="styleIdA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="styleNameA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="colorIdA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="sizeIdA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="qtyA4" style="border-top:1px ;padding-top:5px;">0</td>
-                                    <td align="left" class="priceA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="totPriceA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="discountA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="actPriceA4" style="border-top:1px ;padding-top:5px;">&nbsp;</td>
-                                    <td align="left" class="totActPriceA4" style="border-top:1px ;padding-top:5px;">0</td>
+                                <tr style="border-top:1px ;padding-top:5px;border:1px solid #000;">
+                                    <td align="left" class="styleIdA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="styleNameA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="colorIdA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="sizeIdA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="qtyA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">0</td>
+                                    <td align="left" class="priceA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="totPriceA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="discountA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="actPriceA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">&nbsp;</td>
+                                    <td align="left" class="totActPriceA4" style="border-top:1px ;padding-top:5px;border:1px solid #000;">0</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -648,63 +648,63 @@
                                     <div class="headTitleDiv" id="tablePrintA4" style="display: none">
                                         <ul>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="styleId" onclick="selectThisA4class(this,'styleIdA4')">
+                                                <div class="stecs on" data-name="styleId" onclick="selectThisA4class(this,'styleId')">
                                                     <i></i>
                                                     <span>款号</span>
                                                 </div>
                                             </li>
 
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="styleName" onclick="selectThisA4class(this,'styleNameA4')">
+                                                <div class="stecs on" data-name="styleName" onclick="selectThisA4class(this,'styleName')">
                                                     <i></i>
                                                     <span>款名</span>
                                                 </div>
                                             </li>
 
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="colorId" onclick="selectThisA4class(this,'colorIdA4')">
+                                                <div class="stecs on" data-name="colorId" onclick="selectThisA4class(this,'colorId')">
                                                     <i></i>
                                                     <span>颜色</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="sizeId" onclick="selectThisA4class(this,'sizeIdA4')">
+                                                <div class="stecs on" data-name="sizeId" onclick="selectThisA4class(this,'sizeId')">
                                                     <i></i>
                                                     <span>尺码</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="qty" onclick="selectThisA4class(this,'qtyA4')">
+                                                <div class="stecs on" data-name="qty" onclick="selectThisA4class(this,'qty')">
                                                     <i></i>
                                                     <span>数量</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="price" onclick="selectThisA4class(this,'priceA4')">
+                                                <div class="stecs on" data-name="price" onclick="selectThisA4class(this,'price')">
                                                     <i></i>
                                                     <span>吊牌价</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="totPriceA4" onclick="selectThisA4class(this,'totPriceA4')">
+                                                <div class="stecs on" data-name="totPrice" onclick="selectThisA4class(this,'totPrice')">
                                                     <i></i>
                                                     <span>金额</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="discountA4" onclick="selectThisA4class(this,'discountA4')">
+                                                <div class="stecs on" data-name="discount" onclick="selectThisA4class(this,'discountA4')">
                                                     <i></i>
                                                     <span>折扣</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="actPriceA4" onclick="selectThisA4class(this,'actPriceA4')">
+                                                <div class="stecs on" data-name="actPrice" onclick="selectThisA4class(this,'actPrice')">
                                                     <i></i>
                                                     <span>折后价</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="totActPriceA4" onclick="selectThisA4class(this,'totActPriceA4')">
+                                                <div class="stecs on" data-name="totActPrice" onclick="selectThisA4class(this,'totActPrice')">
                                                     <i></i>
                                                     <span>折后金额</span>
                                                 </div>

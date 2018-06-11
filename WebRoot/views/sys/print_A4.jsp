@@ -13,7 +13,7 @@
 
 <div id="edit-dialogA4" style="text-align: center;font-size:12px;display: none">
 
-    <table style="text-align:center;font-size:10px;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+    <table style="text-align:center;font-size:10px;table-layout:fixed;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
         <thead >
         <tr id="loadtabthA4">
             <th align="left"  nowrap="nowrap" style="border:0px;font-size:17px;width:16%;">款号</th>

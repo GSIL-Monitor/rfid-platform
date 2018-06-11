@@ -361,8 +361,8 @@
                                                        for="form_ispush">是否推送</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <select class="form-control" id="form_ispush" name="ispush" value="${style.ispush}"/>
-                                                    <option value="Y" style="background-color: #eeeeee">是</option>
                                                     <option value="N" style="background-color: #eeeeee">否</option>
+                                                    <option value="Y" style="background-color: #eeeeee">是</option>
                                                     </select>
                                                 </div>
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
