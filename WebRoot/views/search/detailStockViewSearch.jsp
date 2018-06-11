@@ -60,22 +60,18 @@
                                 <div class="widget-main" id="searchPanel" style="display:none;">
                                     <form class="form-horizontal" role="form" id="searchForm">
                                         <div class="form-group">
-                                        
-                                           
-                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_warehId">仓店</label>
-
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_warehId">仓店</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select id="filter_in_warehId"name="filter_in_warehId" multiple="multiple" data-placeholder="编号列表">
+                                                <select id="filter_in_warehId" class="form-control selectpicker show-tick" name="filter_in_warehId"
+                                                        multiple="multiple" data-live-search="true" >
                                                 </select>
                                             </div>
-                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_sku">SKU</label>
-
+                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_sku">SKU</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                 <input class="form-control" id="filter_contains_sku" name="filter_contains_sku" type="text"
                                                        placeholder="模糊查询"/>
                                             </div>
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleId">款号</label>
-
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                 <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
                                                        placeholder="模糊查询"/> -->
@@ -92,28 +88,22 @@
                                                 </div>
                                             </div>
                                         </div>
-                                       
                                         <div class="form-group">
-                                           
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_colorId">色号</label>
-
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                 <input class="form-control" id="filter_contains_colorId" name="filter_contains_colorId" type="text"
                                                        placeholder="模糊查询"/>
                                             </div>
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_sizeId">尺号</label>
-
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                 <input class="form-control" id="filter_contains_sizeId" name="filter_contains_sizeId" type="text"
                                                        placeholder="模糊查询"/>
                                             </div>
-                                            
                                         </div>
                                     <!-- #section:elements.form -->
-                                    
                                     <div class="form-group">
                                         <div class="col-sm-offset-5 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="search();">
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="_reset();">
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
@@ -122,16 +112,10 @@
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
                                     </div>
-
                                 </form>
-
                                 </div>
-						   </div>
-                       
-                           <div id="stockGrid" style="height:500px"></div>
-                             
-
-
+						    </div>
+                        <div id="stockGrid" style="height:500px"></div>
                         <!-- PAGE CONTENT ENDS -->
                     </div>
                     <!-- /.col -->

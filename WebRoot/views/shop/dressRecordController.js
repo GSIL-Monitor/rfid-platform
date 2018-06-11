@@ -6,7 +6,6 @@ $(function () {
     initGrid();
     dressCode_keyDown();
     initSelectBusinessIdForm();
-    $(".selectpicker").selectpicker({'noneResultsText': ''});
 });
 
 function initSelectBusinessIdForm() {
@@ -23,6 +22,7 @@ function initSelectBusinessIdForm() {
                 $("#form_businessId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
                 // $("#search_busnissId").trigger('chosen:updated');
             }
+            $('.selectpicker').selectpicker('refresh');
         }
     });
 }

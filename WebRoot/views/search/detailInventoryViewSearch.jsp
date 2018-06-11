@@ -97,9 +97,9 @@
                                                        placeholder="模糊查询"/>
                                             </div>
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_warehId">仓店</label>
-
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select id="filter_in_warehId"name="filter_in_warehId" multiple="multiple" data-placeholder="编号列表">
+                                                <select id="filter_in_warehId" class="form-control selectpicker show-tick" name="filter_in_warehId"
+                                                        multiple="multiple" data-live-search="true" >
                                                 </select>
                                             </div>
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleId">款号</label>
@@ -144,7 +144,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>

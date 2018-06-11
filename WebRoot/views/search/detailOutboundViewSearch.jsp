@@ -91,17 +91,20 @@
                                         <div class="form-group">
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destUnitId">收货方</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select id="filter_in_destUnitId"name="filter_in_destUnitId" multiple="multiple" data-placeholder="编号列表">
+                                                <select class="form-control selectpicker show-tick" id="filter_in_destUnitId" name="filter_in_destUnitId"
+                                                        data-live-search="true" multiple="multiple" >
                                                 </select>
                                             </div>
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_destid">收货仓店</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select id="filter_in_destid"name="filter_in_destid" multiple="multiple" data-placeholder="编号列表">
+                                                <select id="filter_in_destid" class="form-control selectpicker show-tick"
+                                                        name="filter_in_destid" multiple="multiple" data-live-search="true">
                                                 </select>
                                             </div>
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_in_origid">发货仓店</label>
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select id="filter_in_origid"name="filter_in_origid" multiple="multiple" data-placeholder="编号列表">
+                                                <select id="filter_in_origid" name="filter_in_origid" multiple="multiple" class="form-control selectpicker show-tick"
+                                                        data-live-search="true">
                                                 </select>
                                             </div>
                                         </div>
@@ -132,7 +135,8 @@
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_token">出库方式</label>
 
                                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <select class="chosen-select form-control" id="filter_eq_token" name="filter_eq_token">
+                                                <select class="chosen-select form-control selectpicker show-tick"
+                                                        id="filter_eq_token" name="filter_eq_token" data-live-search="true">
                                                     <option value="">-请选择-</option>
                                                     <option value="10">仓库出库</option>
                                                     <option value="24">仓库调拨出库</option>
@@ -157,7 +161,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>

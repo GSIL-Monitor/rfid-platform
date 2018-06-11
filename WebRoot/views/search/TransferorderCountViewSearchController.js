@@ -1,5 +1,4 @@
 $(function () {
-
     initForm();
     var myDate = new Date();
     var year = myDate.getFullYear();
@@ -27,10 +26,9 @@ $(function () {
     /*inttitledata();*/
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
-
+    $('.selectpicker').selectpicker('refresh');
 });
 function inttitledata() {
-    debugger;
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
 
@@ -58,6 +56,7 @@ function showAdvSearchPanel() {
 function initForm() {
     initSelectOrigForm();
     initSelectDestForm();
+    $(".selectpicker").selectpicker('refresh');
 }
 function openSearchOrigDialog() {
     dialogOpenPage = "transferOrderOrig";
@@ -85,11 +84,10 @@ function initSelectOrigForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
-            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择出库仓库--</option>");
+            $("#search_origId").append("<option value=''>--请选择出库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
         }
     });
@@ -102,7 +100,7 @@ function initSelectDestForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_destId").empty();
-            $("#search_destId").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
+            $("#search_destId").append("<option value='' >--请选择入库仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -268,7 +266,6 @@ function initKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -524,7 +521,6 @@ function initTranKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -1177,7 +1173,6 @@ function initTransByStyleIdandSizeIdKendoUIGrid() {
     inttitledata();
 }
 function search() {
-    debugger;
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var filters = serializeToFilter($("#searchForm"));
     console.log(filters);
@@ -1188,7 +1183,6 @@ function search() {
     inttitledata();
 }
 function resetData() {
-    debugger;
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     gridData.dataSource.filter({});
 }
