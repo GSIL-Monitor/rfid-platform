@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
     <link rel="shortcut icon" href="<%=basePath%>favicon.ico">
-    <title>CaseSoft SMARTRFID大数据平台</title>
+    <title>CaseSoft SMARTRFID智慧平台</title>
 
     <meta name="description" content="overview &amp; stats"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -60,7 +60,7 @@
     <link rel="stylesheet" href="<%=basePath%>Olive/assets/css/jquery-ui.custom.css"/>
 </head>
 
-<body class="skin-1" style="overflow:hidden ">
+<body class="skin-1">
 <!-- #section:basics/navbar.layout -->
 <div id="navbar" class="navbar navbar-default">
     <script type="text/javascript">
@@ -90,7 +90,7 @@
                 <small>
                     <img src="<%=basePath%>/images/icon/casesoft-white.png"
                          style="width:25px;height:25px;margin-top:-3px;"/>
-                    RFID-SMART大数据平台 HUB 4.0
+                    RFID-SMART 智慧平台
                 </small>
             </a>
 
@@ -150,6 +150,7 @@
 
         <!-- /section:basics/navbar.dropdown -->
     </div>
+
     <!-- /.navbar-container -->
 </div>
 
@@ -206,7 +207,7 @@
         </div>
         <!-- /.sidebar-shortcuts -->
 
-        <ul class="nav nav-list" id="menu" style="height:20%"></ul>
+        <ul class="nav nav-list" id="menu"></ul>
         <!-- /.nav-list -->
 
         <!-- #section:basics/sidebar.layout.minimize -->
@@ -312,7 +313,11 @@
 
 
     </div>
+    </div>
     <!-- /.main-container -->
+
+
+   <jsp:include page="/views/layout/footer.jsp"></jsp:include>
 
     <!-- 修改密码 -->
     <div id="editPassword-dialog" class="modal fade" tabindex="-1" role="dialog">>

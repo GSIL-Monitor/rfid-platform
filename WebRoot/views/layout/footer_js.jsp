@@ -96,6 +96,43 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
         return params[0];
     }
 
+    /*
+    重写适应selectpicker下拉框的form数据加载方法
+    * */
+    $.fn.setFromData = function(jsonStr){
+        var obj = jsonStr;
+        var key,value,tagName,type,arr;
+        for(var x in obj){
+            key = x;
+            value = obj[x];
+
+            $("[name='"+key+"'],[name='"+key+"[]']").each(function(){
+                tagName = $(this)[0].tagName;
+                console.log(key+'-'+tagName);
+                type = $(this).attr('type');
+                if(tagName=='INPUT'){
+                    if(type=='radio'){
+                        $(this).attr('checked',$(this).val()==value);
+                    }else if(type=='checkbox'){
+                        arr = value.split(',');
+                        for(var i =0;i<arr.length;i++){
+                            if($(this).val()==arr[i]){
+                                $(this).attr('checked',true);
+                                break;
+                            }
+                        }
+                    }else{
+                        $(this).val(value);
+                    }
+                }else if(tagName=='SELECT'){
+                    $(this).selectpicker('val', value);
+                }else if(tagName=='TEXTAREA'){
+                    $(this).val(value);
+                }
+
+            });
+        }
+    };
     function initLayout() {
         $("table[rel=jqgridForm]").each(function() {
             var rel = $(this).attr("rel");
@@ -162,7 +199,7 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 
 
     function _reset(){
-        $(".selectpicker").selectpicker('val', '')
+        $(".selectpicker").selectpicker('val', '');
         $(".selectpicker").selectpicker('refresh');
     }
 
