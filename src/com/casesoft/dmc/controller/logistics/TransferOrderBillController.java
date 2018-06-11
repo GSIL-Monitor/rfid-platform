@@ -17,6 +17,7 @@ import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Print;
+import com.casesoft.dmc.model.sys.PrintSet;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -24,6 +25,7 @@ import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.sys.PrintService;
+import com.casesoft.dmc.service.sys.PrintSetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +50,8 @@ public class TransferOrderBillController extends BaseController implements ILogi
 
     @Autowired
     private PrintService printService;
+    @Autowired
+    private PrintSetService printSetService;
 
     @Override
     public String index() {
@@ -338,9 +342,11 @@ public class TransferOrderBillController extends BaseController implements ILogi
      * */
     @RequestMapping(value = "/printA4Info")
     @ResponseBody
-    public MessageBox printA4Info(String billNo){
+    public MessageBox printA4Info(String billNo,String ruleReceipt,String type){
         try {
-            Print print = this.printService.findPrint(Long.parseLong("42"));//打印Id需要优化不能些定值
+            //Print print = this.printService.findPrint(Long.parseLong("42"));//打印Id需要优化不能些定值
+            User currentUser = this.getCurrentUser();
+            PrintSet printSet = this.printSetService.findPrintSet(ruleReceipt, type, currentUser.getOwnerId());
             TransferOrderBill bill = this.transferOrderBillService.load(billNo);
             List<TransferOrderBillDtl> dtlList = this.transferOrderBillService.findBillDtlByBillNo(billNo);
             Map<String, TransferOrderBillDtl> map = new HashMap<>();
@@ -373,7 +379,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
                     map.put(dtl.getStyleId(), billDtl);
                 }
             }
-            resultMap.put("print", print);
+            resultMap.put("print", printSet);
             resultMap.put("bill", bill);
             resultMap.put("dtl", new ArrayList(map.values()));
             return new MessageBox(true, "ok", resultMap);

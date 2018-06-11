@@ -8,7 +8,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <jsp:include page="../baseView.jsp"></jsp:include>
     <jsp:include page="searchBaseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
@@ -32,7 +31,7 @@
             padding-top: 3px;
             padding-bottom: 3px;
         }
-        .data-container1 {
+/*        .data-container1 {
             display: inline-block;
             border: 1px solid #d7d7d7;
             border-right: 0px;
@@ -42,18 +41,18 @@
             text-align: center;
             padding-top: 3px;
             padding-bottom: 3px;
-        }
+        }*/
         .title {
             color: #53606b;
             font-size: 14px;
             line-height: 31px;
         }
-        .text {
+/*        .text {
             font-size: 24px;
             color: #fe3800;
             margin: 10px;
             line-height: 31px;
-        }
+        }*/
     </style>
 
 </head>
@@ -173,7 +172,7 @@
 
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_gte_billDate">日期</label>
 
-                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                        <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
                                             <div class="input-group">
                                                 <input  id="filter_gte_billDate" class="form-control date-picker" name="filter_gte_billDate"
                                                         data-date-format="yyyy-mm-dd"/>
@@ -190,7 +189,7 @@
                                         <div id="billno">
                                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_billNo">单号</label>
 
-                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
                                                 <input class="form-control" id="filter_contains_billno" name="filter_contains_billNo" type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                        placeholder="模糊查询"/>
 
@@ -199,7 +198,7 @@
                                         <div id="styleid">
                                             <label  class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleId">款号</label>
 
-                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3" id="styleidname">
+                                            <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2" id="styleidname">
                                                 <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
                                                        placeholder="模糊查询"/> -->
                                                 <div class="input-group">
@@ -238,19 +237,20 @@
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
                                             <div class="col-xs-2">
-                                                <select class="form-control" id="search_origId" name="filter_eq_origId">
+                                                <select class="form-control  selectpicker show-tick" id="search_origId" name="filter_eq_origId"
+                                                        data-live-search="true">
                                                 </select>
 
                                             </div>
                                             <div id="outStatus">
                                                 <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>
                                                 <div class="col-xs-2">
-                                                    <select class="form-control" id="select_outStatus"
-                                                            name="filter_eq_outStatus">
+                                                    <select class="form-control selectpicker show-tick" id="select_outStatus"
+                                                            name="filter_eq_outStatus" data-live-search="true">
                                                         <option value="">--请选择--</option>
                                                         <option value="0">订单状态</option>
-                                                        <option value="2">已出库</option>
-                                                        <option value="3">出库中</option>
+                                                        <option value="1">已出库</option>
+                                                        <option value="2">出库中</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -273,18 +273,19 @@
                                             </div>
                                             <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
                                             <div class="col-xs-2">
-                                                <select class="form-control" id="search_destId" name="filter_eq_destId">
+                                                <select class="form-control  selectpicker show-tick" id="search_destId" name="filter_eq_destId"
+                                                        data-live-search="true">
                                                 </select>
                                             </div>
                                             <div id="inStatus">
                                                 <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
                                                 <div class="col-xs-2">
-                                                    <select class="form-control" id="select_instatus"
-                                                            name="filter_eq_inStatus">
+                                                    <select class="form-control  selectpicker show-tick" id="select_instatus"
+                                                            name="filter_eq_status" data-live-search="true">
                                                         <option value="">--请选择--</option>
                                                         <option value="0">订单状态</option>
                                                         <option value="1">已入库</option>
-                                                        <option value="4">入库中</option>
+                                                        <option value="2">入库中</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -300,7 +301,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning" onclick="resetData();">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick=" _reset();">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                             <button type="reset" class="btn btn-sm btn-warning" id="clean" style="display: none">
@@ -377,7 +378,6 @@
 </div>
 
 <jsp:include page="search_js.jsp"></jsp:include>
-<jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>

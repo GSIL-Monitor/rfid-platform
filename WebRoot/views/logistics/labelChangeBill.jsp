@@ -100,7 +100,8 @@
 
                                         <label class="col-xs-1 control-label" for="search_origId">仓库</label>
                                         <div class="col-xs-2">
-                                            <select class="form-control" id="search_origId" name="filter_EQS_t.origId" style="width: 100%;">
+                                            <select class="form-control selectpicker show-tick" id="search_origId"
+                                                    name="filter_EQS_t.origId" style="width: 100%;" data-live-search="true">
                                             </select>
                                         </div>
                                         <%--<input id="search_unitId" type="text" value="${OwnerId}" name="filter_EQS_unitId" style="display: none">--%>
@@ -142,7 +143,7 @@
                                                 <i class="ace-icon fa fa-search"></i>
                                                 <span class="bigger-110">查询</span>
                                             </button>
-                                            <button type="reset" class="btn btn-sm btn-warning">
+                                            <button type="reset" class="btn btn-sm btn-warning" onclick="_reset()">
                                                 <i class="ace-icon fa fa-undo"></i>
                                                 <span class="bigger-110">清空</span></button>
                                         </div>

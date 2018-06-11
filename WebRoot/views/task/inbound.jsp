@@ -76,8 +76,8 @@
 												for="search_token">入库方式</label>
 
 											<div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-												<select class="chosen-select form-control" id="search_token"
-													name="filter_EQI_token">
+												<select class="chosen-select form-control selectpicker show-tick" id="search_token"
+													name="filter_EQI_token" data-live-search="true">
 													<option value="">--请选择--</option>
 													<option value="8">采购入库</option>
 													<option value="23">退货入库</option>

@@ -103,8 +103,6 @@ function _search() {
     $("#grid").trigger("reloadGrid");
 }
 function initSelectOrigForm() {
-
-
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9",
         cache: false,
@@ -112,12 +110,12 @@ function initSelectOrigForm() {
         type: "POST",
         success: function (data, textStatus) {
             $("#search_origId").empty();
-            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择仓库--</option>");
+            $("#search_origId").append("<option value=''>--请选择仓库--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                $("#search_origId").trigger('chosen:updated');
             }
+            $('.selectpicker').selectpicker('refresh');
         }
     });
 }

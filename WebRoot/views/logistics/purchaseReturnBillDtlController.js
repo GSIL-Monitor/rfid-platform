@@ -780,30 +780,29 @@ function openSearchVendorDialog() {
     );
 }
 function doPrint() {
-    debugger;
     /*$("#editForm").resetForm();*/
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");
-    var billNo=$("#search_billNo").val();
+    var billNo = $("#search_billNo").val();
     $("#billno").val(billNo);
     $("#edit-dialog-print").show();
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/findAll.do",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
+        data: {
+            type:"PR"
+        },
         success: function (msg) {
             if (msg.success) {
-                debugger;
                 var addcont = "";
                 for (var i = 0; i < msg.result.length; i++) {
-                    if (billNo.indexOf(msg.result[i].type) >= 0) {
-                        addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                            "<button class='btn btn-info'>" +
-                            "<i class='cae-icon fa fa-refresh'></i>" +
-                            "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                            "</button>" +
-                            "</div>"
-                    }
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
                 }
                 $("#addbutton").html(addcont);
 
@@ -815,10 +814,9 @@ function doPrint() {
 }
 
 function set(id) {
-    debugger;
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/printMessage.do",
+        url: basePath + "/sys/printset/printMessage.do",
         data: {"id": id, "billno": $("#billno").val()},
         type: "POST",
         success: function (msg) {

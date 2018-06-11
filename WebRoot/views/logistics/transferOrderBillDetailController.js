@@ -734,7 +734,12 @@ function doPrintA4() {
     $.ajax({
         dataType: "json",
         url: basePath + "/logistics/transferOrder/printA4Info.do",
-        data: {"billNo": billno},
+        data: {
+            "billNo": billno,
+            "ruleReceipt":"A4",
+            "type":"TR"
+
+        },
         type: "POST",
         success: function (msg) {
             if (msg.success) {

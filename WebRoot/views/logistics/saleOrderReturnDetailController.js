@@ -863,29 +863,31 @@ function addProductsOnCode() {
         var ct = $("#search_customerType").val();
         $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
             var productInfo = $("#uniqueCodeGrid").getRowData(value);
-            productInfo.qty = 1;
-            if (ct == "CT-AT") {//省代价格
-                productInfo.price = productInfo.puPrice;
-            } else if (ct == "CT-ST") {//门店价格
-                productInfo.price = productInfo.wsPrice;
-            } else if (ct == "CT-LS") {//吊牌价格
-                productInfo.price = productInfo.price;
+            if(productInfo.code!=""&&productInfo.code!=undefined){
+                productInfo.qty = 1;
+                if (ct == "CT-AT") {//省代价格
+                    productInfo.price = productInfo.puPrice;
+                } else if (ct == "CT-ST") {//门店价格
+                    productInfo.price = productInfo.wsPrice;
+                } else if (ct == "CT-LS") {//吊牌价格
+                    productInfo.price = productInfo.price;
+                }
+                productInfo.outQty = 0;
+                productInfo.inQty = 0;
+                productInfo.status = 0;
+                productInfo.inStatus = 0;
+                productInfo.outStatus = 0;
+                if ($("#search_discount").val() && $("#search_discount").val() !== null) {
+                    productInfo.discount = $("#search_discount").val();
+                } else {
+                    productInfo.discount = 100;
+                }
+                productInfo.uniqueCodes = productInfo.code;
+                productInfo.totPrice = -Math.abs(productInfo.price);
+                productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                productInfo.totActPrice = -Math.abs(productInfo.actPrice);
+                productListInfo.push(productInfo);
             }
-            productInfo.outQty = 0;
-            productInfo.inQty = 0;
-            productInfo.status = 0;
-            productInfo.inStatus = 0;
-            productInfo.outStatus = 0;
-            if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                productInfo.discount = $("#search_discount").val();
-            } else {
-                productInfo.discount = 100;
-            }
-            productInfo.uniqueCodes = productInfo.code;
-            productInfo.totPrice = -Math.abs(productInfo.price);
-            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
-            productInfo.totActPrice = -Math.abs(productInfo.actPrice);
-            productListInfo.push(productInfo);
         });
         if (productListInfo.length == 0) {
             bootbox.alert("请添加唯一码");
@@ -1433,140 +1435,24 @@ function doPrint() {
     $("#edit-dialog-print").show();
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/findAll.do",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
+        data: {
+          type:"SR"
+        },
         success: function (msg) {
-            /* /!* if (msg.success) {
 
-             var addcont = "";
-             for (var i = 0; i < msg.result.length; i++) {
-             if (billNo.indexOf(msg.result[i].type) >= 0) {
-             addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-             "<button class='btn btn-info'>" +
-             "<i class='cae-icon fa fa-refresh'></i>" +
-             "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-             "</button>" +
-             "</div>"
-             }
-             }
-             $("#addbutton").html(addcont);
-
-             } else {*!/
-             if (msg.success) {
-             /!*
-             var addcont = "";
-             var ishave=false;
-             for (var i = 0; i < msg.result.length; i++) {
-             if(msg.result[i].saveownerid==curOwnerId){
-             /!* addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-             "<button class='btn btn-info'>" +
-             "<i class='cae-icon fa fa-refresh'></i>" +
-             "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-             "</button>" +
-             "</div>"*!/
-             ishave=true;
-             break;
-             }
-             }
-
-             if(ishave==true){
-             for (var i = 0; i < msg.result.length; i++) {
-             if(msg.result[i].saveownerid==curOwnerId&&billNo.indexOf(msg.result[i].type) >= 0){
-             addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-             "<button class='btn btn-info'>" +
-             "<i class='cae-icon fa fa-refresh'></i>" +
-             "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-             "</button>" +
-             "</div>"
-
-             }
-             }
-             }
-             if(ishave==false){
-             for (var i = 0; i < msg.result.length; i++) {
-             if(msg.result[i].saveownerid==undefined&&billNo.indexOf(msg.result[i].type) >= 0){
-             addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-             "<button class='btn btn-info'>" +
-             "<i class='cae-icon fa fa-refresh'></i>" +
-             "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-             "</button>" +
-             "</div>"
-
-             }
-             }
-             }*!/
-
-
-             $("#addbutton").html(addcont);
-
-             } else {
-             bootbox.alert(msg.msg);
-             }*/
             if (msg.success) {
                 var addcont = "";
                 //var ishave = false;
                 for (var i = 0; i < msg.result.length; i++) {
-
-                    if (billNo.indexOf(msg.result[i].type) >= 0) {
-                        if (roleid == "JMSJS" && msg.result[i].isFranchisee == "is") {
-                            addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
                                 "<button class='btn btn-info'>" +
                                 "<i class='cae-icon fa fa-refresh'></i>" +
                                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
                                 "</button>" +
                                 "</div>"
-                        }
-                        if (roleid != "JMSJS" && msg.result[i].isFranchisee != "is") {
-                            addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                                "<button class='btn btn-info'>" +
-                                "<i class='cae-icon fa fa-refresh'></i>" +
-                                "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                                "</button>" +
-                                "</div>"
-                        }
-
-                    }
                 }
-
-                /* for (var i = 0; i < msg.result.length; i++) {
-                 if (msg.result[i].saveownerid == curOwnerId) {
-                 /!* addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                 "<button class='btn btn-info'>" +
-                 "<i class='cae-icon fa fa-refresh'></i>" +
-                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                 "</button>" +
-                 "</div>"*!/
-                 ishave = true;
-                 break;
-                 }
-                 }
-                 if (ishave == true) {
-                 for (var i = 0; i < msg.result.length; i++) {
-                 if (msg.result[i].saveownerid == curOwnerId && billNo.indexOf(msg.result[i].type) >= 0) {
-                 addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                 "<button class='btn btn-info'>" +
-                 "<i class='cae-icon fa fa-refresh'></i>" +
-                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                 "</button>" +
-                 "</div>"
-
-                 }
-                 }
-                 }
-                 if (ishave == false) {
-                 for (var i = 0; i < msg.result.length; i++) {
-                 if (msg.result[i].saveownerid == undefined && billNo.indexOf(msg.result[i].type) >= 0) {
-                 addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
-                 "<button class='btn btn-info'>" +
-                 "<i class='cae-icon fa fa-refresh'></i>" +
-                 "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
-                 "</button>" +
-                 "</div>"
-
-                 }
-                 }
-                 }*/
-
                 $("#addbutton").html(addcont);
 
             } else {
@@ -1580,7 +1466,7 @@ function set(id) {
 
     $.ajax({
         dataType: "json",
-        url: basePath + "/sys/print/printMessage.do",
+        url: basePath + "/sys/printset/printMessage.do",
         data: {"id": id, "billno": $("#billno").val()},
         type: "POST",
         success: function (msg) {

@@ -304,13 +304,16 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
             mv.addObject("ownersId", unit.getOwnerids());
             mv.addObject("roleid", getCurrentUser().getRoleId());
+            mv.addObject("groupid", unit.getGroupId());
             mv.addObject("Codes", getCurrentUser().getCode());
             mv.addObject("mainUrl", "/logistics/saleOrder/back.do?billNo="+billNo);
             return mv;
         }else{
+            Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
             ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBill");
             mv.addObject("billNo",billNo);
             mv.addObject("ownerId", getCurrentUser().getOwnerId());
+            mv.addObject("groupid", unit.getGroupId());
             mv.addObject("userId", getCurrentUser().getId());
             return  mv;
         }

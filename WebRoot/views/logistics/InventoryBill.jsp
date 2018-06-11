@@ -194,7 +194,8 @@
                                        <div class="form-group">
                                            <label class="col-xs-1 control-label" for="search_origId">出库仓库</label>
                                            <div class="col-xs-2">
-                                               <select class="form-control" id="search_origId" name="filter_LIKES_origId" style="width: 100%;">
+                                               <select class="form-control selectpicker show-tick" id="search_origId" name="filter_LIKES_origId"
+                                                       style="width: 100%;" data-live-search="true">
                                                </select>
                                            </div>
                                           <%-- <label class="col-xs-1 control-label" for="select_outStatus">出库状态</label>--%>
@@ -209,7 +210,7 @@
                                            </div>--%>
                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_styleId">款号</label>
 
-                                           <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                           <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
                                                <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
                                                       placeholder="模糊查询"/> -->
                                                <div class="input-group">
@@ -229,7 +230,8 @@
                                        <div class="form-group">
                                            <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
                                            <div class="col-xs-2">
-                                               <select class="form-control" id="search_destId" name="filter_LIKES_destId" style="width: 100%;">
+                                               <select class="form-control selectpicker show-tick" id="search_destId" name="filter_LIKES_destId"
+                                                       style="width: 100%;" data-live-search="true">
                                                </select>
                                            </div>
                                            <label class="col-xs-1 control-label" for="search_destId">code</label>
@@ -272,7 +274,7 @@
                                                    <i class="ace-icon fa fa-search"></i>
                                                    <span class="bigger-110">查询</span>
                                                </button>
-                                               <button type="reset" class="btn btn-sm btn-warning">
+                                               <button type="reset" class="btn btn-sm btn-warning" onclick="_reset()">
                                                    <i class="ace-icon fa fa-undo"></i>
                                                    <span class="bigger-110">清空</span></button>
                                            </div>
