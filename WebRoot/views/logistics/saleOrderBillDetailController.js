@@ -1007,29 +1007,31 @@ function addProductsOnCode() {
         var ct = $("#search_customerType").val();
         $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
             var productInfo = $("#uniqueCodeGrid").getRowData(value);
-            productInfo.qty = 1;
-            if (ct == "CT-AT") {//省代价格
-                productInfo.price = productInfo.puPrice;
-            } else if (ct == "CT-ST") {//门店价格
-                productInfo.price = productInfo.wsPrice;
-            } else if (ct == "CT-LS") {//吊牌价格
-                productInfo.price = productInfo.price;
+            if(productInfo.code!=""&&productInfo.code!=undefined){
+                productInfo.qty = 1;
+                if (ct == "CT-AT") {//省代价格
+                    productInfo.price = productInfo.puPrice;
+                } else if (ct == "CT-ST") {//门店价格
+                    productInfo.price = productInfo.wsPrice;
+                } else if (ct == "CT-LS") {//吊牌价格
+                    productInfo.price = productInfo.price;
+                }
+                productInfo.outQty = 0;
+                productInfo.inQty = 0;
+                productInfo.status = 0;
+                productInfo.inStatus = 0;
+                productInfo.outStatus = 0;
+                productInfo.uniqueCodes = productInfo.code;
+                if ($("#search_discount").val() && $("#search_discount").val() !== null) {
+                    productInfo.discount = $("#search_discount").val();
+                } else {
+                    productInfo.discount = 100;
+                }
+                productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                productInfo.totPrice = productInfo.price;
+                productInfo.totActPrice = productInfo.actPrice;
+                productListInfo.push(productInfo);
             }
-            productInfo.outQty = 0;
-            productInfo.inQty = 0;
-            productInfo.status = 0;
-            productInfo.inStatus = 0;
-            productInfo.outStatus = 0;
-            productInfo.uniqueCodes = productInfo.code;
-            if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                productInfo.discount = $("#search_discount").val();
-            } else {
-                productInfo.discount = 100;
-            }
-            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
-            productInfo.totPrice = productInfo.price;
-            productInfo.totActPrice = productInfo.actPrice;
-            productListInfo.push(productInfo);
         });
         if (productListInfo.length == 0) {
             bootbox.alert("请添加唯一码");
