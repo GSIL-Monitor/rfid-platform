@@ -688,11 +688,10 @@ function saveA4() {
                     }
 
                 }
-
                 sum++;
             }
         });
-        var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
+        var top=((recordsum+(sum-recordsum)/2+1)*printParameter.aRowheight+(recordsum+(sum-recordsum)/2+1)*printParameter.intervalHeight);
         var tabbleth="";
         var html="\"<body><table style='text-align:center;font-size:12px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead ><tr>"
         $("#edit-A4-dialog").find("th").each(function (index,element) {
