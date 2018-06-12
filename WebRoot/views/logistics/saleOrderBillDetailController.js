@@ -7,6 +7,7 @@ var inOntWareHouseValid; //用于判断在编辑BillDtl时出入库操作是否�
 var skuQty = {};//保存每个SKU对应的出入库数量。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var billNo;
+var sizeArry="S,XS,M,L,XL,XXL,XXXL,F,other";
 $(function () {
 
 
@@ -1006,29 +1007,31 @@ function addProductsOnCode() {
         var ct = $("#search_customerType").val();
         $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
             var productInfo = $("#uniqueCodeGrid").getRowData(value);
-            productInfo.qty = 1;
-            if (ct == "CT-AT") {//省代价格
-                productInfo.price = productInfo.puPrice;
-            } else if (ct == "CT-ST") {//门店价格
-                productInfo.price = productInfo.wsPrice;
-            } else if (ct == "CT-LS") {//吊牌价格
-                productInfo.price = productInfo.price;
+            if(productInfo.code!=""&&productInfo.code!=undefined){
+                productInfo.qty = 1;
+                if (ct == "CT-AT") {//省代价格
+                    productInfo.price = productInfo.puPrice;
+                } else if (ct == "CT-ST") {//门店价格
+                    productInfo.price = productInfo.wsPrice;
+                } else if (ct == "CT-LS") {//吊牌价格
+                    productInfo.price = productInfo.price;
+                }
+                productInfo.outQty = 0;
+                productInfo.inQty = 0;
+                productInfo.status = 0;
+                productInfo.inStatus = 0;
+                productInfo.outStatus = 0;
+                productInfo.uniqueCodes = productInfo.code;
+                if ($("#search_discount").val() && $("#search_discount").val() !== null) {
+                    productInfo.discount = $("#search_discount").val();
+                } else {
+                    productInfo.discount = 100;
+                }
+                productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                productInfo.totPrice = productInfo.price;
+                productInfo.totActPrice = productInfo.actPrice;
+                productListInfo.push(productInfo);
             }
-            productInfo.outQty = 0;
-            productInfo.inQty = 0;
-            productInfo.status = 0;
-            productInfo.inStatus = 0;
-            productInfo.outStatus = 0;
-            productInfo.uniqueCodes = productInfo.code;
-            if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                productInfo.discount = $("#search_discount").val();
-            } else {
-                productInfo.discount = 100;
-            }
-            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
-            productInfo.totPrice = productInfo.price;
-            productInfo.totActPrice = productInfo.actPrice;
-            productListInfo.push(productInfo);
         });
         if (productListInfo.length == 0) {
             bootbox.alert("请添加唯一码");
@@ -1816,31 +1819,42 @@ function setA4(id) {
 
                 var recordmessage = "";
                 var sum = 0;
-                var allprice = 0;
-                var alldiscount = 0;
+                var alltotPrice = 0;
+                var size={};
+                for(var m=0;m<sizeArry.split(",").length;m++){
+                   size[sizeArry.split(",")[m]]=0;
+                }
                 var printTableCode=print.printTableCode.split(",");
-                debugger
                 for (var a = 0; a < contDel.length; a++) {
                     var conts = contDel[a];
-                    recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>"
+                    recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;border:1px solid #000;'>"
                     for(var b = 0; b <printTableCode.length; b++){
                         var name=printTableCode[b];
-                        recordmessage+="<td align='left' style='border-top:1px ;padding-top:5px;'>" + conts[name] + "</td>"
+                        if(sizeArry.indexOf(name)!=-1){
+                            size[name]=size[name]+conts[name];
+                        }
+                        recordmessage+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + conts[name] + "</td>"
                     }
                     recordmessage+="</tr>";
                     sum = sum + parseInt(conts.qty);
-                    alldiscount = alldiscount + parseFloat((conts.actPrice * conts.qty).toFixed(2));
+                    alltotPrice=sum+parseFloat(conts.totPrice).toFixed(2);
+
                 }
-                alldiscount = alldiscount.toFixed(0);
-                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>"
+
+                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;border:1px solid #000;'>"
                 //recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;>合计:</td>" +
+                debugger
                 for(var b = 0; b < printTableCode.length; b++){
                     if(printTableCode[b]=="qty"){
-                        recordmessage+="<td align='left' style='border-top:1px ;padding-top:5px;'>" + sum  + "</td>"
-                    }else if(printTableCode[b]=="totActPrice"){
-                        recordmessage+="<td align='left' style='border-top:1px ;padding-top:5px;'>" + alldiscount  + "</td>"
+                        recordmessage+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + sum  + "</td>"
+                    }else if(printTableCode[b]=="totPrice"){
+                        recordmessage+="<td align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + alltotPrice  + "</td>"
+                    }else if(sizeArry.indexOf(printTableCode[b])!=-1){
+                        recordmessage+="<td align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + size[printTableCode[b]]  + "</td>"
+                    }else if(b==0) {
+                        recordmessage+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>合计</td>"
                     }else{
-                        recordmessage+="<td align='left' style='border-top:1px ;padding-top:5px;'>&nbsp;</td>"
+                        recordmessage+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>&nbsp;</td>"
                     }
 
                 }

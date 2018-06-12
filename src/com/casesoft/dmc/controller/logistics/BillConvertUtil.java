@@ -3857,7 +3857,7 @@ public class BillConvertUtil {
         }
         bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
         bus.setId(taksId);
-        bus.setToken(Constant.Token.Storage_Refund_Inbound);
+        bus.setToken(Constant.Token.Storage_Adjust_Inbound);
         bus.setBeginTime(new Date());
         bus.setEndTime(new Date());
         bus.setBillId(labelChangeBill.getBillNo());
