@@ -83,7 +83,7 @@
         $("#guestSelect_Grid").trigger("reloadGrid");
     }
 
-    function initGuestSelect_Grid() {
+    function initGuestSelect_Grid(prefixId) {
 
         if (dialogOpenPage === "transferOrderOrig" || dialogOpenPage === "transferOrderUnit") {
 
@@ -311,7 +311,7 @@
                 ondblClickRow: function (rowid) {
 
                     if (dialogOpenPage === "saleOrder"){
-                        confirm_selected_GuestId_sale();
+                        confirm_selected_GuestId_sale(prefixId);
                     }else if(dialogOpenPage ==="saleOrderReturn"){
                         confirm_selected_GuestId_saleReturn();
                     }else if(dialogOpenPage === "transferOrderOrig"){
@@ -336,22 +336,29 @@
     function confirm_selected_GuestId_sale() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
+        if(prefixId =="search") {
+            $("#search_destUnitId").val(rowData.id);
+            $("#search_destUnitName").val(rowData.name);
+            $("#search_destId").selectpicker('val', rowData.defaultWarehId);
+        }else if(prefixId =="edit"){
+            $("#edit_destUnitId").val(rowData.id);
+            $("#edit_destUnitName").val(rowData.name);
+            $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_discount").val(rowData.discount);
+            $("#edit_customerType").val(rowData.unitType);
+            $("#edit_discount").val(rowData.discount);
+            $("#edit_pre_Balance").val(0-rowData.owingValue);
+            setDiscount();
+            if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
+                $("#SODtl_wareHouseIn").removeAttr("disabled");
+            } else {
+                $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+            }
+        }
         initSelectDestForm();
-        $("#search_customerType").val(rowData.unitType);
-        $("#search_destId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_destId").selectpicker('refresh');
-        $("#search_discount").val(rowData.discount);
-        $("#pre_Balance").val(0-rowData.owingValue);
+        $(".selectpicker").selectpicker('refresh');
         $("#modal_guest_search_table").modal('hide');
 
-        if ($("#search_destId").val() && $("#search_destId").val() != null) {
-            $("#SODtl_wareHouseIn").removeAttr("disabled");
-        } else {
-            $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
-        }
-        setDiscount();
     }
 
     function confirm_selected_GuestId_Consignment() {

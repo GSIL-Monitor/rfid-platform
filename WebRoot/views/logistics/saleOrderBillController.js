@@ -1,7 +1,7 @@
 var searchUrl = basePath + "/logistics/saleOrder/page.do?filter_GTI_status=-1&userId="+userId;
 $(function () {
-    initGrid();
-    initForm();
+    initSearchGrid();
+    initSearchForm();
     if(billNo){
         bootbox.alert("单据"+billNo+"正在编辑中");
     }else{
@@ -9,13 +9,13 @@ $(function () {
     }
 
 });
-function initForm() {
-    initSelectOrigForm();
-    initSelectDestForm();
-    initSelectBusinessIdForm();
+function initSearchForm() {
+    initSearchOrigForm();
+    initSearchDestForm();
+    initSearchBusinessIdForm();
     $(".selectpicker").selectpicker('refresh');
 }
-function initSelectBusinessIdForm() {
+function initSearchBusinessIdForm() {
     var url;
     if (curOwnerId == "1") {
         url = basePath + "/sys/user/list.do?filter_EQI_type=4";
@@ -35,12 +35,11 @@ function initSelectBusinessIdForm() {
                 $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
                 // $("#search_busnissId").selectpicker('refresh');
             }
-            $("#search_busnissId").selectpicker('refresh');
         }
     });
 }
 //发货仓库
-function initSelectOrigForm() {
+function initSearchOrigForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
         cache: false,
@@ -58,7 +57,7 @@ function initSelectOrigForm() {
     });
 }
 //收货仓库，客户仓库
-function initSelectDestForm() {
+function initSearchDestForm() {
     $.ajax({
         url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_destUnitId").val(),
         cache: false,
@@ -76,7 +75,7 @@ function initSelectDestForm() {
     });
 }
 
-function initGrid() {
+function initSearchGrid() {
     $("#grid").jqGrid({
         height: "auto",
         url: basePath + "/logistics/saleOrder/page.do?filter_GTI_status=-1&userId=" + userId,
@@ -84,7 +83,7 @@ function initGrid() {
         mtype: 'POST',
         colModel: [
             {name: 'billNo', label: '单据编号', sortable: true, width: 45},
-            {
+            /*{
                 name: "", label: "操作", width: 55, editable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
                     var billNo = rowObject.billNo;
@@ -96,14 +95,14 @@ function initGrid() {
                     html += "<a style='margin-left: 20px' href='#' onclick=quit('" + billNo + "')><i class='ace-icon fa fa-check-circle-o' title='修改'></i></a>";
 
 
-                    /*html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*/
+                    /!*html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*!/
                     return html;
                 }
-            },
+            },*/
             {name: 'status', hidden: true},
             {name: 'destUnitId', label: '客户ID', hidden: true},
             {name: 'destUnitName', label: '客户', width: 40},
-            {name: 'outStatus', label: '出库状态', hidden: true,sortable: false},
+            /*{name: 'outStatus', label: '出库状态', hidden: true,sortable: false},
             {name: 'inStatus', label: '入库状态', hidden: true,sortable: false},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
@@ -167,10 +166,10 @@ function initGrid() {
                         return '';
                     }
                 }
-            },
+            },*/
             {name: 'billDate', label: '单据日期', sortable: true, width: 35},
             {name: 'customerTypeId', label: '客户类型', hidden: true},
-            {
+           /* {
                 label: '客户类型', sortable: false, width: 30,
                 formatter: function (cellValue, options, rowObjec) {
                     if (rowObjec.customerTypeId == "CT-AT") {
@@ -181,8 +180,8 @@ function initGrid() {
                         return "零售客户";
                     }
                 }
-            },
-            {name: 'origUnitId', label: '发货方ID', hidden: true},
+            },*/
+            /*{name: 'origUnitId', label: '发货方ID', hidden: true},
             {name: 'origUnitName', label: '发货方', width: 30},
             {name: 'origId', label: '发货仓库ID', hidden: true},
             {name: 'origName', label: '发货仓库', width: 30},
@@ -190,13 +189,13 @@ function initGrid() {
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 30},
             {name: 'busnissId', label: '业务员Id', hidden: true},
-            {name: 'busnissName', label: '业务员', width: 30},
+            {name: 'busnissName', label: '业务员', width: 30},*/
             {name: 'totQty', label: '单据数量', width: 30},
-            {name: 'totOutQty', label: '已出库数量', width: 30},
+            /*{name: 'totOutQty', label: '已出库数量', width: 30},
             // {name: 'totOutVal', label: '总出库金额', width: 30},
             {name: 'totInQty', label: '已入库数量', width: 30},
-            // {name: 'totInVal', label: '总入库金额', width: 30},
-            {name: 'actPrice', label: '应付付金额', width: 30,
+            // {name: 'totInVal', label: '总入库金额', width: 30},*/
+            /*{name: 'actPrice', label: '应付付金额', width: 30,
                 formatter: function (cellValue, options, rowObject) {
                     if(cellValue){
                         var actPrice=cellValue.toFixed(2);
@@ -217,8 +216,8 @@ function initGrid() {
                     }
 
                 }
-            },
-            {name: 'remark', label: '备注', width: 50}
+            }*//*,
+            {name: 'remark', label: '备注', width: 50}*/
         ],
         viewrecords: true,
         autowidth: true,
@@ -522,22 +521,22 @@ function set(id) {
 function setFooterData() {
 
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
-    var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
-    var sum_totOutVal = $("#grid").getCol('totOutVal', false, 'sum');
-    var sum_totInQty = $("#grid").getCol('totInQty',false,'sum');
+   /* var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
+    var sum_totOutVal = $("#grid").getCol('totOutVal', false, 'sum');*/
+   /* var sum_totInQty = $("#grid").getCol('totInQty',false,'sum');
     var sum_totInVal = $("#grid").getCol('totInVal', false, 'sum');
     var sum_totActPrice = $("#grid").getCol('actPrice', false, 'sum');
-    var sum_payPrice = $("#grid").getCol('payPrice', false, 'sum');
+    var sum_payPrice = $("#grid").getCol('payPrice', false, 'sum');*/
     /*$("#search_actPrice").val(sum_totActPrice);*/
     $("#grid").footerData('set', {
         billNo: "合计",
-        totQty: sum_totQty,
-        totOutQty: sum_totOutQty,
+        totQty: sum_totQty
+       /* totOutQty: sum_totOutQty,
         totOutVal: sum_totOutVal,
         totInQty: sum_totInQty,
         totInVal: sum_totInVal,
         actPrice:sum_totActPrice,
-        payPrice: sum_payPrice
+        payPrice: sum_payPrice*/
     });
 }
 function addUniqCode() {
