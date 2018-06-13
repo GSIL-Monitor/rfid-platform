@@ -891,7 +891,7 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='opnenSearchOrderDialog()'>" +
+            "<button id='SODtl_search' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='opnenSearchOrderDialog()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>查询订单</span>" +
             "</button>" +
@@ -911,7 +911,7 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出售</span>" +
             "</button>" +
-            "<button id='SODtl_adddoPrint1' type='button' style='margin: 8px;display: none;' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
+            "<button id='SODtl_doPrint' type='button' style='margin: 8px;display: none;' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>打印</span>" +
             "</button>"
@@ -925,7 +925,7 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='opnenSearchOrderDialog()'>" +
+            "<button id='SODtl_search' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='opnenSearchOrderDialog()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>查询订单</span>" +
             "</button>" +
@@ -994,9 +994,9 @@ function initButtonGroup(type){
             $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
         }
         //判断是否是admin
-        if (roleid != "0" && roleid != "SHOPUSER") {
+       /* if (roleid != "0" && roleid != "SHOPUSER") {
             $("#SODtl_doPrintA4").hide();
-        }
+        }*/
         if(groupid=="JMS"){
             $("#SODtl_doPrintA4").hide();
         }
@@ -1018,12 +1018,11 @@ function loadingButton() {
                 var result=msg.result;
                 for(var i=0;i<result.length;i++){
                     if(result[i].ishow===0){
-                        if( $("#"+result[i].buttonId)>0){
+                        if( $("#"+result[i].buttonId).length>0){
                             $("#"+result[i].buttonId).show();
                         }
-
                     }else {
-                        if( $("#"+result[i].buttonId)>0){
+                        if( $("#"+result[i].buttonId).length>0){
                             $("#"+result[i].buttonId).hide();
                         }
 
