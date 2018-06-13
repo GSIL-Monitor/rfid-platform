@@ -10,6 +10,7 @@ import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import groovy.ui.Console;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -318,6 +319,52 @@ public class RoleController extends BaseController implements IBaseInfoControlle
         }
 
     }
+    @RequestMapping(value = "/checkButtonId")
+    @ResponseBody
+    public MessageBox checkButtonId(String code,String buttonId){
+        try {
+            List<PropertyFilter> filters  =new ArrayList<PropertyFilter>();
+            PropertyFilter filtercode = new PropertyFilter("EQS_code", code);
+            PropertyFilter filterbuttonId = new PropertyFilter("EQS_buttonId", buttonId);
+            filters.add(filtercode);
+            filters.add(filterbuttonId);
+            List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
+            if(allResourceButton.size()>0){
+                return this.returnFailInfo("有相同的buttonId");
+            }else{
+                return this.returnSuccessInfo("检测成功");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnFailInfo("检测失败");
+        }
+    }
+    @RequestMapping(value = "/saveResourceButton")
+    @ResponseBody
+    public MessageBox saveResourceButton(String roleStr){
+        try {
+            ResourceButton resourceButton = JSON.parseObject(roleStr,ResourceButton.class);
+            List<Role> allRoles = this.roleService.getAllRoles();
+            ArrayList<ResourceButton> saveLists=new ArrayList<>();
+            for(Role role:allRoles){
+                ResourceButton saveresourceButton=new ResourceButton();
+                BeanUtils.copyProperties(resourceButton,saveresourceButton);
+                saveresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId());
+                saveresourceButton.setIshow(1);
+                saveresourceButton.setRoleId(role.getId());
+                saveLists.add(saveresourceButton);
+            }
+            this.resourceButtonService.saveAll(saveLists);
+            return this.returnFailInfo("保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnFailInfo("保存失败");
+        }
+
+
+    }
+
 
 
 }

@@ -317,7 +317,7 @@ function initButtonGroup() {
        /* if (roleid != "0" && roleid != "SHOPUSER") {
             $("#SODtl_doPrintA4").hide();
         }*/
-        loadingButton();
+
         if(groupid=="JMS"){
             $("#SODtl_doPrintA4").hide();
         }
@@ -327,6 +327,7 @@ function initButtonGroup() {
 
     }
     $("#addDetail").show();
+    loadingButton();
 }
 function loadingButton() {
     $.ajax({
@@ -337,6 +338,7 @@ function loadingButton() {
         success: function (msg) {
 
             if (msg.success) {
+
                 var result=msg.result;
                 for(var i=0;i<result.length;i++){
                     if(result[i].ishow===0){

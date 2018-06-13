@@ -28,6 +28,9 @@ public class ResourceButtonService implements IBaseService<ResourceButton,String
     public void save(ResourceButton entity) {
 
     }
+    public void saveAll(List<ResourceButton> saveLists){
+        this.resourceButtonDao.doBatchInsert(saveLists);
+    }
 
     @Override
     public ResourceButton load(String id) {

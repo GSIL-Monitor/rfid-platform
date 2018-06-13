@@ -923,18 +923,19 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>A4打印</span>" +
             "</button>" +
-            "<button id='CMDtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findRetrunno()'>" +
+            "<button id='SODtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findRetrunno()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找退单</span>" +
             "</button>" +
-            "<button id='CMDtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findshopMessage()'>" +
+            "<button id='SODtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findshopMessage()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找商城信息</span>" +
             "</button>" +
-            "<button id='CMDtl_StreamNO' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='sendStreamNO()'>" +
+            "<button id='SODtl_StreamNO' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='sendStreamNO()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>推送物流号</span>" +
             "</button>"
+
         );
         /* $("#buttonGroupfindWxshop").html("" +
          "<button id='CMDtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findshopMessage()'>" +
@@ -963,7 +964,40 @@ function initButtonGroup(type){
         }
     }
     $("#addDetail").show();
+    loadingButton();
 
+}
+function loadingButton() {
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/saleOrder/findResourceButton.do",
+        type: "POST",
+        success: function (msg) {
+
+            if (msg.success) {
+
+                var result=msg.result;
+                for(var i=0;i<result.length;i++){
+                    if(result[i].ishow===0){
+                        if( $("#"+result[i].buttonId)>0){
+                            $("#"+result[i].buttonId).show();
+                        }
+
+                    }else {
+                        if( $("#"+result[i].buttonId)>0){
+                            $("#"+result[i].buttonId).hide();
+                        }
+
+                    }
+
+                }
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 var dialogOpenPage;
 var prefixId;
