@@ -20,6 +20,12 @@ import java.util.List;
 public class WeiXinUserService extends BaseService<WeiXinUser, String> {
     @Autowired
     private WeiXinUserDao weiXinUserDao;
+
+    public WeiXinUser getByPhone(String phone){
+        String hql ="from WeiXinUser where phone =?";
+        return this.weiXinUserDao.findUnique(hql,new Object[]{phone});
+    }
+
     @Override
     public Page<WeiXinUser> findPage(Page<WeiXinUser> page, List<PropertyFilter> filters) {
         return null;
@@ -68,5 +74,8 @@ public class WeiXinUserService extends BaseService<WeiXinUser, String> {
     @Override
     public void delete(String id) {
 
+    }
+    public void updatePhoneByopenId(String openId,String phone){
+        this.weiXinUserDao.batchExecute("update WeiXinUser set phone='" +phone+"' where openId = ?",openId);
     }
 }

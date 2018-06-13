@@ -3,6 +3,7 @@ package com.casesoft.dmc.controller.logistics;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -21,6 +22,7 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
@@ -49,6 +51,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private UnitService unitService;
     @Autowired
     private  CustomerService customerService;
+    @Autowired
+    private WeiXinUserService weiXinUserService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -375,9 +379,20 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
         //saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
         Business business = BillConvertUtil.covertToSaleOrderBusinessOut(saleOrderBill, saleOrderBillDtlList, epcList, currentUser);
-
         MessageBox messageBox = this.saleOrderBillService.saveBusinessout(saleOrderBill, saleOrderBillDtlList, business, epcList);
         if(messageBox.getSuccess()){
+            String actPrice = saleOrderBill.getActPrice().toString();
+            String totQty = saleOrderBill.getTotQty().toString();
+            String sbillNo = saleOrderBill.getBillNo();
+            String name = currentUser.getName();
+            try {
+                String phone = (this.customerService.getById(saleOrderBill.getDestUnitId()).getTel());
+                String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
+                WechatTemplate.senMsg(openId,actPrice,totQty,sbillNo,name);
+            }catch (Exception e){
+                this.logger.error(e.getMessage());
+                return new MessageBox(true, "出库成功");
+            }
             return new MessageBox(true, "出库成功");
         }else{
             return messageBox;
@@ -394,7 +409,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = {"/convertIn","/convertInWS"})
+    @RequestMapping(value = "/convertIn")
     @ResponseBody
     public MessageBox convertIn(String billNo, String strEpcList, String userId) throws Exception {
         List<SaleOrderBillDtl> saleOrderBillDtlList = this.saleOrderBillService.findBillDtlByBillNo(billNo);

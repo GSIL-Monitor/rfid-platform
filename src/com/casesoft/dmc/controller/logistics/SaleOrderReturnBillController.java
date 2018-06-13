@@ -2,6 +2,7 @@ package com.casesoft.dmc.controller.logistics;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
@@ -9,8 +10,10 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
+import com.casesoft.dmc.model.logistics.SaleOrderReturnBillDtl;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
@@ -18,6 +21,8 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
+import com.casesoft.dmc.service.pad.WeiXinUserService;
+import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +48,10 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private SaleOrderReturnBillService saleOrderReturnBillService;
     @Autowired
     private EpcStockService epcStockService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private WeiXinUserService weiXinUserService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -429,6 +438,17 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             Business business = BillConvertUtil.covertToSaleReturnOrderBusinessIn(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
             MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
             if(messageBox.getSuccess()){
+                String rBillNo = saleOrderReturnBill.getBillNo();
+                String totQty = saleOrderReturnBill.getTotQty().toString();
+                String actPrice = saleOrderReturnBill.getActPrice().toString();
+                try {
+                    String phone =  this.customerService.getById(saleOrderReturnBill.getOrigUnitId()).getTel();
+                    String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
+                    WechatTemplate.returnMsg(openId,rBillNo,totQty,actPrice);
+                }catch (Exception e){
+                    this.logger.error(e.getMessage());
+                    return new MessageBox(true, "入库成功");
+                }
                 return new MessageBox(true, "入库成功");
             }else{
                 return messageBox ;
