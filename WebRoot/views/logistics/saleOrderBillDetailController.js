@@ -265,11 +265,11 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='Returngoods()'>" +
+            "<button id='SODtl_Return' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='Returngoods()'>" +
             "    <i class='ace-icon fa fa-reply'></i>" +
             "    <span class='bigger-110'>退货</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='exchangeGoods()'>" +
+            "<button id='SODtl_exchange' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='exchangeGoods()'>" +
             "    <i class='ace-icon fa fa-exchange'></i>" +
             "    <span class='bigger-110'>换货</span>" +
             "</button>" +
@@ -281,15 +281,15 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>A4打印</span>" +
             "</button>" +
-            "<button id='CMDtl_findRetrunno' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findRetrunno()'>" +
+            "<button id='SODtl_findRetrunno' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findRetrunno()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找退单</span>" +
             "</button>" +
-            "<button id='CMDtl_findshopMessage' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findshopMessage()'>" +
+            "<button id='SODtl_findshopMessage' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findshopMessage()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找商城信息</span>" +
             "</button>" +
-            "<button id='CMDtl_StreamNO' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='sendStreamNO()'>" +
+            "<button id='SODtl_StreamNO' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='sendStreamNO()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>推送物流号</span>" +
             "</button>"
@@ -312,15 +312,46 @@ function initButtonGroup() {
         } else {
             $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
         }
+
         //判断是否是admin
-        if (roleid != "0" && roleid != "SHOPUSER") {
+       /* if (roleid != "0" && roleid != "SHOPUSER") {
             $("#SODtl_doPrintA4").hide();
-        }
+        }*/
+        loadingButton();
         if(groupid=="JMS"){
             $("#SODtl_doPrintA4").hide();
         }
+
+
+
+
     }
     $("#addDetail").show();
+}
+function loadingButton() {
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/saleOrder/findResourceButton.do",
+        type: "POST",
+        success: function (msg) {
+
+            if (msg.success) {
+                var result=msg.result;
+                for(var i=0;i<result.length;i++){
+                    if(result[i].ishow===0){
+                        $("#"+result[i].buttonId).show();
+                    }else {
+                        $("#"+result[i].buttonId).hide();
+                    }
+
+                }
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 
 function initGrid() {
