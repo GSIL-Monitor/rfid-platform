@@ -119,7 +119,7 @@ public class WxShopBaseService implements pushBaseInfo {
                 if(CommonUtil.isNotBlank(stringResult)) {
                     Map<String, Object> map = JSONUtil.getMap4Json(stringResult);
                     Integer errorCode = Integer.parseInt(map.get("errorCode") + "");
-
+                    String Message=map.get("moreInfo")+"";
                     if (errorCode == 200) {
                         String floorHql = "update Product f set f.push = 'Y' where f.id in (" + idmap + ")";
                         this.productDao.batchExecute(floorHql);
@@ -163,6 +163,7 @@ public class WxShopBaseService implements pushBaseInfo {
                         noPushStyle.setThumb(style.getThumb());
                         noPushStyle.setUpdateTime(style.getUpdateTime());
                         noPushStyle.setWsPrice(style.getWsPrice());
+                        noPushStyle.setErroMessage(Message);
                         List<NoPushProduct> list = new ArrayList<NoPushProduct>();
                         for (Product product : saveList) {
                             NoPushProduct noPushProduct = new NoPushProduct();
