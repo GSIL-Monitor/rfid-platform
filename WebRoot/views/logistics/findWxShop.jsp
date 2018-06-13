@@ -33,7 +33,7 @@
         debugger;
         $("#findWxShopListGrid").jqGrid({
             height: 400,
-            url: basePath + "/product/SendInventory/findPaymentMessage.do?billno=" + $("#search_billNo").val(),
+            url: basePath + "/product/SendInventory/findPaymentMessage.do?billno=" + $("#edit_billNo").val(),
             datatype: "json",
             mtype: "POST",
             colModel: [

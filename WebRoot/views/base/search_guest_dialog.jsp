@@ -83,7 +83,7 @@
         $("#guestSelect_Grid").trigger("reloadGrid");
     }
 
-    function initGuestSelect_Grid(prefixId) {
+    function initGuestSelect_Grid() {
 
         if (dialogOpenPage === "transferOrderOrig" || dialogOpenPage === "transferOrderUnit") {
 
@@ -339,10 +339,12 @@
         if(prefixId =="search") {
             $("#search_destUnitId").val(rowData.id);
             $("#search_destUnitName").val(rowData.name);
+            initSelectDestForm();
             $("#search_destId").selectpicker('val', rowData.defaultWarehId);
         }else if(prefixId =="edit"){
             $("#edit_destUnitId").val(rowData.id);
             $("#edit_destUnitName").val(rowData.name);
+            initSelectDestForm();
             $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_discount").val(rowData.discount);
             $("#edit_customerType").val(rowData.unitType);
@@ -355,7 +357,6 @@
                 $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
             }
         }
-        initSelectDestForm();
         $(".selectpicker").selectpicker('refresh');
         $("#modal_guest_search_table").modal('hide');
 

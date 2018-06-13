@@ -108,7 +108,6 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 
             $("[name='"+key+"'],[name='"+key+"[]']").each(function(){
                 tagName = $(this)[0].tagName;
-                console.log(key+'-'+tagName);
                 type = $(this).attr('type');
                 if(tagName=='INPUT'){
                     if(type=='radio'){

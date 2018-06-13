@@ -27,6 +27,8 @@
         var slaeOrder_status = "${saleOrderBill.status}";
         var roleid = "${roleid}";
         var Codes = "${Codes}";
+        var groupid="${groupid}";
+        var pageType = "${pageType}";
     </script>
 
 </head>
@@ -197,7 +199,7 @@
                                                         <span class="bigger-110">查询</span>
                                                     </button>
                                                     <button type="reset" class="btn btn-sm btn-warning" ,
-                                                            onclick="_reset()">
+                                                            onclick="_resetForm()">
                                                         <i class="ace-icon fa fa-undo"></i>
                                                         <span class="bigger-110">清空</span></button>
                                                 </div>
@@ -338,7 +340,7 @@
                                                         <input class="form-control" id="edit_discount"
                                                                name="discount"
                                                                value="${saleOrderBill.discount}"
-                                                               onblur="search_discount_onblur()">
+                                                               onblur="edit_discount_onblur()">
                                                         </input>
                                                     </div>
                                                 </div>
@@ -382,10 +384,18 @@
                                                 </div>
                                                 <div>
                                                     <input id="edit_status" name="status"
-                                                           value="${saleOrderBill.status}"
+                                                                   value="${saleOrderBill.status}"
+                                                                   type="hidden">
+                                                    </input>
+                                                    <input id="edit_outStatus" name="outStatus"
+                                                           value="${saleOrderBill.outStatus}"
                                                            type="hidden">
                                                     </input>
-                                                    <input id="_ownerId" name="ownerId"
+                                                    <input id="edit_inStatus" name="inStatus"
+                                                           value="${saleOrderBill.inStatus}"
+                                                           type="hidden">
+                                                    </input>
+                                                    <input id="edit_ownerId" name="ownerId"
                                                            value="${saleOrderBill.ownerId}"
                                                            type="hidden">
                                                     </input>
@@ -427,9 +437,9 @@
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
-<jsp:include page="add_saleOrder_code_dialog.jsp"></jsp:include>
-<jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
+<jsp:include page="search_saleOrder_code_dialog.jsp"></jsp:include>
+<jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="exchageGood_dialog.jsp"></jsp:include>
 <jsp:include page="findRetrunNo.jsp"></jsp:include>
 <jsp:include page="findWxShop.jsp"></jsp:include>

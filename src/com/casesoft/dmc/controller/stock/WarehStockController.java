@@ -382,6 +382,7 @@ public class WarehStockController extends BaseController {
     /**
      * @param code 唯一码
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     * 通过唯一吗查销售订单接口
      */
     @RequestMapping("checksaleEpcStock")
     @ResponseBody

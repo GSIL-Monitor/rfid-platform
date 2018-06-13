@@ -58,7 +58,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBillNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
@@ -227,7 +227,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             saleOrderBill.setId(saleOrderBill.getBillNo());
             BillConvertUtil.covertToSaleOrderBill(saleOrderBill, saleOrderBillDtlList, curUser);
             this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
-            return new MessageBox(true, "保存成功", saleOrderBill.getBillNo());
+            return new MessageBox(true, "保存成功", saleOrderBill);
         } catch (Exception e) {
             e.printStackTrace();
             return new MessageBox(false, e.getMessage());
