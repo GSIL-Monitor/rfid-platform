@@ -11,6 +11,7 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var pageType="${pageType}"
     </script>
 
 </head>
@@ -163,6 +164,8 @@
                         });
                         $("#editForm-id").val(result.result.id);
                         $("#editForm-code").attr("readonly",true);
+                        pageType="edit";
+                        initAuthGrid();
                     } else {
                         cs.showAlertMsgBox(result.msg);
                     }
@@ -258,7 +261,7 @@
         function initAuthGrid() {
             $("#authGrid").jqGrid({
                 treeGrid: true,
-                url: basePath + "/sys/role/findResource.do?roleId=${role.code}",
+                url: basePath + "/sys/role/findResource.do?roleId=${role.code}&pageType="+pageType,
                 datatype: "json",
                 autowidth: true,
                 height: 300,
@@ -292,13 +295,20 @@
                            var html="";
                            if(rowObject.resourceButtonList!=""&&rowObject.resourceButtonList!=undefined){
                                for(var i=0;i<rowObject.resourceButtonList.length;i++){
-                                   if(rowObject.resourceButtonList[i].ishow===0){
-                                       html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
-                                   }else{
+                                   if(pageType=="add"){
                                        html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
-                                   }
-                                   if((i%4)==0){
-                                       html+="<br>"
+                                       if((i%4)==0){
+                                           html+="<br>"
+                                       }
+                                   }else{
+                                       if(rowObject.resourceButtonList[i].ishow===0){
+                                           html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                       }else{
+                                           html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                       }
+                                       if((i%4)==0){
+                                           html+="<br>"
+                                       }
                                    }
 
                                }
@@ -382,6 +392,10 @@
                 state=0;
             }else{
                 state=1;
+            }
+            if(cs.isBlank($("#editForm-id").val() )) {
+                cs.showAlertMsgBox("角色信息未保存，不能编辑权限");
+                return;
             }
             cs.showProgressBar();
             $.post(basePath+"/sys/role/updateResourceButtonIsshow.do",
