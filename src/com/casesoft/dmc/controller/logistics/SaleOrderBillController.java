@@ -394,7 +394,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/convertIn")
+    @RequestMapping(value = {"/convertIn","/convertInWS"})
     @ResponseBody
     public MessageBox convertIn(String billNo, String strEpcList, String userId) throws Exception {
         List<SaleOrderBillDtl> saleOrderBillDtlList = this.saleOrderBillService.findBillDtlByBillNo(billNo);
