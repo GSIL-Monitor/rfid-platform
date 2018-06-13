@@ -61,25 +61,30 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 
 	@RequestMapping(value="/findResource")
     @ResponseBody
-	public List<Resource> findResource(String roleId) throws Exception {
+	public List<Resource> findResource(String roleId,String pageType) throws Exception {
 		this.logAllRequestParams();
-
-		List<Resource> resourceList  = this.resourceService.getSelectedResourceList();
-        List<PropertyFilter> filters  =new ArrayList<PropertyFilter>();
-        PropertyFilter filter = new PropertyFilter("EQS_roleId", roleId);
-        filters.add(filter);
+        List<Resource> resourceList = this.resourceService.getSelectedResourceList();
+        List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
+        if (CommonUtil.isNotBlank(pageType) && pageType.equals("add")) {
+            PropertyFilter filter = new PropertyFilter("EQS_roleId", "0");
+            filters.add(filter);
+        }
+        if (CommonUtil.isNotBlank(pageType) && pageType.equals("edit")) {
+            PropertyFilter filter = new PropertyFilter("EQS_roleId", roleId);
+            filters.add(filter);
+        }
         List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
-        //根据code分组Button
-        if(CommonUtil.isNotBlank(allResourceButton)&&allResourceButton.size()!=0){
-            for(Resource resource:resourceList){
-                for(ResourceButton resourceButton:allResourceButton){
-                    if(resource.getCode().equals(resourceButton.getCode())){
-                        if(CommonUtil.isNotBlank(resource.getResourceButtonList())&&resource.getResourceButtonList().size()!=0){
+            //根据code分组Button
+        if (CommonUtil.isNotBlank(allResourceButton) && allResourceButton.size() != 0) {
+            for (Resource resource : resourceList) {
+                for (ResourceButton resourceButton : allResourceButton) {
+                    if (resource.getCode().equals(resourceButton.getCode())) {
+                        if (CommonUtil.isNotBlank(resource.getResourceButtonList()) && resource.getResourceButtonList().size() != 0) {
                             List<ResourceButton> resourceButtonList = resource.getResourceButtonList();
                             resourceButtonList.add(resourceButton);
                             resource.setResourceButtonList(resourceButtonList);
-                        }else{
-                            List<ResourceButton> resourceButtonList=new ArrayList<ResourceButton>();
+                        } else {
+                            List<ResourceButton> resourceButtonList = new ArrayList<ResourceButton>();
                             resourceButtonList.add(resourceButton);
                             resource.setResourceButtonList(resourceButtonList);
                         }
@@ -87,6 +92,7 @@ public class RoleController extends BaseController implements IBaseInfoControlle
                 }
             }
         }
+
 
         if(CommonUtil.isBlank(roleId)) {
             RoleUtil.convertToTreeGrid(resourceList);
@@ -125,20 +131,34 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 	@Override
 	public MessageBox save(Role role) throws Exception {
 		this.logAllRequestParams();
+		ArrayList<ResourceButton> saveList=new ArrayList<ResourceButton>();
         if(CommonUtil.isBlank(role.getId())) {
             role.setId(role.getCode());
             role.setCreatorId(this.getCurrentUser().getId());
             role.setCreateTime(new Date());
             role.setOwnerId(this.getCurrentUser().getOwnerId());
+            //添加按钮
+            List<PropertyFilter> filters  =new ArrayList<PropertyFilter>();
+            PropertyFilter filter = new PropertyFilter("EQS_roleId", "0");
+            filters.add(filter);
+            List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
+            for(ResourceButton resourceButton:allResourceButton){
+                ResourceButton newresourceButton=new ResourceButton();
+                BeanUtils.copyProperties(resourceButton,newresourceButton);
+                newresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId());
+                newresourceButton.setRoleId(role.getId());
+                newresourceButton.setIshow(1);
+                saveList.add(newresourceButton);
+            }
         } else {
             Role dto = this.roleService.getRole(role.getId());
             dto.setName(role.getName());
             dto.setRemark(role.getRemark());
             role = dto;
         }
-        this.roleService.saveOrUpdate(role);
 
-		return this.returnSuccessInfo("保存成功", role);
+        this.roleService.saveOrUpdateAndList(role,saveList);
+        return this.returnSuccessInfo("保存成功", role);
 	}
 
 	@Override
