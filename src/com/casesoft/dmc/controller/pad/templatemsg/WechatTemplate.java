@@ -37,12 +37,14 @@ public class WechatTemplate{
         String regTempId ="zVkFopoR67ytP7IAR62gORaKM5ohlf43UaEiQS58fXo";
         //调用发送微信消息给用户的接口
         String state = WX_TemplateMsgUtil.sendWechatMsgToUser(openId , regTempId, "", "#000000", packJsonmsg(param));
-        System.out.println(state);
     }
 
     /**
      * 退货模板消息
-     * @popenIdaram
+     * @param openId 用户id
+     * @param rBillNo 退货单号
+     * @param totQty 退货数量
+     * @param actPrice 退货金额
      */
     public static void returnMsg(String openId ,String rBillNo,String totQty,String actPrice){
         Date date = new Date();

@@ -26,6 +26,10 @@ public class CustomerService extends AbstractBaseService<Customer, String> {
   @Autowired
   private MonthAccountStatementDao monthAccountStatementDao;
 
+ //根据手机号码查询客户
+  public List<String> findId(String tel){
+    return this.customerDao.find("select id from Customer where tel = ?",new Object[]{tel});
+  }
   @Override
   @Transactional(readOnly = true)
   public Page<Customer> findPage(Page<Customer> page, List<PropertyFilter> filters) {
