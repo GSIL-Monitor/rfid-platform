@@ -627,7 +627,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
                 this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
             }
-            this.taskService.save(business);
+            this.taskService.webSave(business);
             if (styleList.size() > 0) {
                 this.saleOrderBillDao.doBatchInsert(styleList);
             }
@@ -696,7 +696,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     }
 
     public List<SaleOrderBillDtl> findSaleOrderBillDtlListBysku(String sku) {
-        List<SaleOrderBillDtl> list = this.saleOrderBillDao.find("select new SaleOrderBillDtl(t.billId,s.billDate,s.busnissName,t.styleId,t.colorId,t.sizeId,t.sku) from SaleOrderBillDtl t , SaleOrderBill s where  t.billId=s.id and s.status<>-1 and  s.status<>2  and t.sku = ? ", new Object[]{sku});
+        List<SaleOrderBillDtl> list = this.saleOrderBillDao.find("select new SaleOrderBillDtl(t.billId,s.billDate,s.busnissName,t.styleId,t.colorId,t.sizeId,t.sku) from SaleOrderBillDtl t , SaleOrderBill s where  t.billId=s.id and s.status<>-1 and  s.status<>2 and t.status<>0 and t.sku = ? ", new Object[]{sku});
         return list;
     }
 

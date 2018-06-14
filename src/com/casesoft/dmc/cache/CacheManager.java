@@ -2,6 +2,7 @@ package com.casesoft.dmc.cache;
 
 import com.alibaba.fastjson.JSONObject;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.extend.third.model.pl.PlWmsShopBindingRelation;
 import com.casesoft.dmc.extend.third.service.pl.PlWmsShopBindingRelationService;
 import com.casesoft.dmc.model.cfg.Device;
@@ -411,6 +412,18 @@ public class CacheManager {
         initWorkCalendar();
         initFactoryWorkTime();
 		initFactoryCategory();
+		initCheckWarehouse();
+	}
+
+	public static void initCheckWarehouse() throws Exception {
+		boolean checkWarehouse = Boolean.parseBoolean(PropertyUtil
+				.getValue("checkWarehouse"));
+		cache.put(new Element("checkWarehouse", checkWarehouse));
+	}
+
+	public static boolean getCheckWarehhouse(){
+		Element result = cache.get("checkWarehouse");
+		return Boolean.parseBoolean(result.getValue().toString());
 	}
 
 	public static void initFactoryCategory() {
@@ -456,11 +469,7 @@ public class CacheManager {
 	public static boolean isHaveFactoryCategory(String name){
 		Element result = cache.get("category");
 		Map<String, FactoryCategory> map = (HashMap<String, FactoryCategory>) result.getValue();
-		if(map.containsKey(name)){
-			return true;
-		}else{
-			return false;
-		}
+		return map.containsKey(name);
 	}
 
     private static void initFactoryWorkTime() {

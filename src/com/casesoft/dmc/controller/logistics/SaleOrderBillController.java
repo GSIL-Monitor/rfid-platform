@@ -16,6 +16,8 @@ import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.sys.Resource;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -23,6 +25,8 @@ import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,6 +53,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private UnitService unitService;
     @Autowired
     private  CustomerService customerService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -61,6 +69,25 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+        String defalutCustomerId = unit.getDefalutCustomerId();
+        if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+            Customer customer = this.customerService.load(defalutCustomerId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+        mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("roleid", getCurrentUser().getRoleId());
+        mv.addObject("defaultWarehId", defaultWarehId);
+
+
+        mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType", "add");
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());
         return mv;
@@ -208,7 +235,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             saleOrderBill.setId(saleOrderBill.getBillNo());
             BillConvertUtil.covertToSaleOrderBill(saleOrderBill, saleOrderBillDtlList, curUser);
             this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
-            return new MessageBox(true, "保存成功", saleOrderBill.getBillNo());
+            return new MessageBox(true, "保存成功", saleOrderBill);
         } catch (Exception e) {
             e.printStackTrace();
             return new MessageBox(false, e.getMessage());
@@ -471,6 +498,18 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(false, "替换失败");
+        }
+    }
+    @RequestMapping(value = "/findResourceButton")
+    @ResponseBody
+    public MessageBox findResourceButton(){
+        try {
+            Resource resource = this.resourceService.get("url", "logistics/saleOrder");
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId());
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
         }
     }
 }

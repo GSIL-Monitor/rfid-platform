@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.sys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,6 @@ import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.ResourceDao;
 import com.casesoft.dmc.dao.sys.RoleDao;
-import com.casesoft.dmc.model.sys.Resource;
-import com.casesoft.dmc.model.sys.Role;
-import com.casesoft.dmc.model.sys.RoleRes;
-import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.sys.IRoleService;
 
 @Service
@@ -90,6 +87,26 @@ public class RoleService implements IRoleService {
       }
     return role.getCode();
   }
+  public String saveOrUpdateAndList(Role role, List<ResourceButton> saveList) {
+    this.roleDao.saveOrUpdate(role);
+    if(CommonUtil.isNotBlank(role.getAuthIds())) {
+      List<RoleRes> rrList = new ArrayList<RoleRes>();
+      String[] authIds = role.getAuthIds().split(",");
+      for (String str : authIds) {
+        RoleRes rr = new RoleRes(role.getId(), str);
+        rr.setId(role.getId() + "-" + str);//rr.setId(new GuidCreator().toString());
+        rrList.add(rr);
+      }
+      // wing 2014-04-04
+      this.roleDao.batchExecute("delete RoleRes rr where rr.roleId=?", role.getId());
+      this.roleDao.doBatchInsert(rrList);
+    }
+    if(saveList.size()!=0){
+      this.roleDao.doBatchInsert(saveList);
+    }
+    return role.getCode();
+  }
+
 
   public void update(Role entity) {
     this.roleDao.saveOrUpdate(entity);

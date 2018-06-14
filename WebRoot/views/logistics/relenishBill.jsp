@@ -183,7 +183,7 @@
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>
-<jsp:include page="add_saleOrder_code_dialog.jsp"></jsp:include>
+<jsp:include page="search_saleOrder_code_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_class1_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">

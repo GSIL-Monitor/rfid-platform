@@ -6,10 +6,11 @@ import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.SidebarMenu;
-import com.casesoft.dmc.model.sys.RoleRes;
-import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.sys.*;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import groovy.ui.Console;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,6 @@ import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.sys.Resource;
-import com.casesoft.dmc.model.sys.Role;
 import com.casesoft.dmc.service.sys.impl.RoleService;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,6 +40,8 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 	private RoleService roleService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
 	
 	
 	
@@ -60,10 +61,39 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 
 	@RequestMapping(value="/findResource")
     @ResponseBody
-	public List<Resource> findResource(String roleId) throws Exception {
+	public List<Resource> findResource(String roleId,String pageType) throws Exception {
 		this.logAllRequestParams();
+        List<Resource> resourceList = this.resourceService.getSelectedResourceList();
+        List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
+        if (CommonUtil.isNotBlank(pageType) && pageType.equals("add")) {
+            PropertyFilter filter = new PropertyFilter("EQS_roleId", "0");
+            filters.add(filter);
+        }
+        if (CommonUtil.isNotBlank(pageType) && pageType.equals("edit")) {
+            PropertyFilter filter = new PropertyFilter("EQS_roleId", roleId);
+            filters.add(filter);
+        }
+        List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
+            //根据code分组Button
+        if (CommonUtil.isNotBlank(allResourceButton) && allResourceButton.size() != 0) {
+            for (Resource resource : resourceList) {
+                for (ResourceButton resourceButton : allResourceButton) {
+                    if (resource.getCode().equals(resourceButton.getCode())) {
+                        if (CommonUtil.isNotBlank(resource.getResourceButtonList()) && resource.getResourceButtonList().size() != 0) {
+                            List<ResourceButton> resourceButtonList = resource.getResourceButtonList();
+                            resourceButtonList.add(resourceButton);
+                            resource.setResourceButtonList(resourceButtonList);
+                        } else {
+                            List<ResourceButton> resourceButtonList = new ArrayList<ResourceButton>();
+                            resourceButtonList.add(resourceButton);
+                            resource.setResourceButtonList(resourceButtonList);
+                        }
+                    }
+                }
+            }
+        }
 
-		List<Resource> resourceList  = this.resourceService.getSelectedResourceList();
+
         if(CommonUtil.isBlank(roleId)) {
             RoleUtil.convertToTreeGrid(resourceList);
         } else {
@@ -101,20 +131,34 @@ public class RoleController extends BaseController implements IBaseInfoControlle
 	@Override
 	public MessageBox save(Role role) throws Exception {
 		this.logAllRequestParams();
+		ArrayList<ResourceButton> saveList=new ArrayList<ResourceButton>();
         if(CommonUtil.isBlank(role.getId())) {
             role.setId(role.getCode());
             role.setCreatorId(this.getCurrentUser().getId());
             role.setCreateTime(new Date());
             role.setOwnerId(this.getCurrentUser().getOwnerId());
+            //添加按钮
+            List<PropertyFilter> filters  =new ArrayList<PropertyFilter>();
+            PropertyFilter filter = new PropertyFilter("EQS_roleId", "0");
+            filters.add(filter);
+            List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
+            for(ResourceButton resourceButton:allResourceButton){
+                ResourceButton newresourceButton=new ResourceButton();
+                BeanUtils.copyProperties(resourceButton,newresourceButton);
+                newresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId());
+                newresourceButton.setRoleId(role.getId());
+                newresourceButton.setIshow(1);
+                saveList.add(newresourceButton);
+            }
         } else {
             Role dto = this.roleService.getRole(role.getId());
             dto.setName(role.getName());
             dto.setRemark(role.getRemark());
             role = dto;
         }
-        this.roleService.saveOrUpdate(role);
 
-		return this.returnSuccessInfo("保存成功", role);
+        this.roleService.saveOrUpdateAndList(role,saveList);
+        return this.returnSuccessInfo("保存成功", role);
 	}
 
 	@Override
@@ -281,5 +325,66 @@ public class RoleController extends BaseController implements IBaseInfoControlle
         List<Resource> resourceList = this.resourceService.getResourceKeyByOwnerId(ownerId);
         return resourceList;
     }
+    @RequestMapping(value = "/updateResourceButtonIsshow")
+    @ResponseBody
+    public MessageBox updateResourceButtonIsshow(String id,Integer ishow){
+        try {
+            ResourceButton resourceButton = this.resourceButtonService.load(id);
+            resourceButton.setIshow(ishow);
+            this.resourceButtonService.update(resourceButton);
+            return this.returnSuccessInfo("更新成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnSuccessInfo("更新失败");
+        }
+
+    }
+    @RequestMapping(value = "/checkButtonId")
+    @ResponseBody
+    public MessageBox checkButtonId(String code,String buttonId){
+        try {
+            List<PropertyFilter> filters  =new ArrayList<PropertyFilter>();
+            PropertyFilter filtercode = new PropertyFilter("EQS_code", code);
+            PropertyFilter filterbuttonId = new PropertyFilter("EQS_buttonId", buttonId);
+            filters.add(filtercode);
+            filters.add(filterbuttonId);
+            List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
+            if(allResourceButton.size()>0){
+                return this.returnFailInfo("有相同的buttonId");
+            }else{
+                return this.returnSuccessInfo("检测成功");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnFailInfo("检测失败");
+        }
+    }
+    @RequestMapping(value = "/saveResourceButton")
+    @ResponseBody
+    public MessageBox saveResourceButton(String roleStr){
+        try {
+            ResourceButton resourceButton = JSON.parseObject(roleStr,ResourceButton.class);
+            List<Role> allRoles = this.roleService.getAllRoles();
+            ArrayList<ResourceButton> saveLists=new ArrayList<>();
+            for(Role role:allRoles){
+                ResourceButton saveresourceButton=new ResourceButton();
+                BeanUtils.copyProperties(resourceButton,saveresourceButton);
+                saveresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId());
+                saveresourceButton.setIshow(1);
+                saveresourceButton.setRoleId(role.getId());
+                saveLists.add(saveresourceButton);
+            }
+            this.resourceButtonService.saveAll(saveLists);
+            return this.returnFailInfo("保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnFailInfo("保存失败");
+        }
+
+
+    }
+
+
 
 }

@@ -63,6 +63,10 @@
                                             <i class="ace-icon fa fa-edit"></i>
                                             <span class="bigger-110">编辑权限</span>
                                         </button>
+                                        <button type="button" class="btn btn-primary" onclick="addButton()">
+                                            <i class="ace-icon fa fa-edit"></i>
+                                            <span class="bigger-110">增添按钮</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -159,6 +163,7 @@
     </div>
     <jsp:include page="../layout/footer.jsp"></jsp:include>
     <jsp:include page="rolePower_edit.jsp"></jsp:include>
+    <jsp:include page="roleButton_add.jsp"></jsp:include>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/sys/roleController.js"></script>

@@ -99,7 +99,10 @@ public class TaskService extends AbstractBaseService<Business, String> {
         }
         // 持久化Bill数据
         try {
-            saveWebBill(bus);
+           // saveWebBill(bus);
+            if(!CacheManager.getCheckWarehhouse()){
+                updateTaskRecordInfo(bus);
+            }
             saveBus(bus);
 
         } catch (Exception e) {
@@ -110,7 +113,24 @@ public class TaskService extends AbstractBaseService<Business, String> {
         long time2 = System.currentTimeMillis();
         logger.error("存储数据消耗时间：" + (time2 - time1));
     }
+    public void updateTaskRecordInfo(Business bus){
+        if (CommonUtil.isNotBlank(bus.getRecordList())) {
+            if(bus.getType() == Constant.TaskType.Outbound) {
+                List<String> codeList = TaskUtil.getRecordCodes(bus.getRecordList());
+                String codes = TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code");
+                // 未入库的
+                List<EpcStock> list = epcStockService.findEpcCodes(codes);
+                Map<String, EpcStock> stockMap = new HashMap<>();
+                for (EpcStock e : list) {
+                    stockMap.put(e.getCode(), e);
+                }
+                for(Record r: bus.getRecordList()){
+                    r.setOrigId(stockMap.get(r.getCode()).getWarehouseId());
+                }
+            }
 
+        }
+    }
     private void saveWebBill(Business bus) {
         Bill bill = bus.getBill();
         if (CommonUtil.isNotBlank(bill)) {
