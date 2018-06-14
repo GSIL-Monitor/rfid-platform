@@ -627,7 +627,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
                 this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
             }
-            this.taskService.save(business);
+            this.taskService.webSave(business);
             if (styleList.size() > 0) {
                 this.saleOrderBillDao.doBatchInsert(styleList);
             }

@@ -738,8 +738,10 @@ public class ParisService implements IBillWSService {
 
         String hql = "from EpcStock epcstock where  epcstock.inStock=1 and ("
                 + codes + ")";
-        if (CommonUtil.isNotBlank(origId)) {
-            hql += " and epcstock.warehouseId='" + origId + "'";
+        if(CacheManager.getCheckWarehhouse()) {
+            if (CommonUtil.isNotBlank(origId)) {
+                hql += " and epcstock.warehouseId='" + origId + "'";
+            }
         }
         return this.taskDao.find(hql, new Object[]{});
     }

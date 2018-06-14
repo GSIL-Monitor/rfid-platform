@@ -193,13 +193,13 @@ function addNew(){
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
-    pageType="add";
-    initButtonGroup(pageType);
     $("#editForm").clearForm();
     setEditFormVal();
     initCustomerTypeForm();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
+    pageType="add";
+    initButtonGroup(pageType);
 
 }
 function setFooterData() {
@@ -394,6 +394,7 @@ function setEditFormVal(){
     $("#edit_inStatus").val(0);
     $("#edit_status").val(0);
     $("#edit_pre_Balance").val(0 - defalutCustomerowingValue);
+    $("#edit_busnissId").val(defaultSaleStaffId);
     $("#edit_busnissId").removeAttr("disabled");
     $("#edit_origId").removeAttr("disabled");
     $("#edit_destId").removeAttr("disabled");
@@ -918,6 +919,9 @@ function initButtonGroup(type){
         );
 
         $("#search_guest_button").removeAttr("disabled");
+        if (defalutCustomerId != "" && defalutCustomerId != undefined) {
+            addUniqCode();
+        }
     }
     if (type === "edit") {
         $("#buttonGroup").html("" +
