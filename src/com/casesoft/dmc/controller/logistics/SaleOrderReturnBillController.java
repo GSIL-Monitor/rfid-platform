@@ -14,6 +14,7 @@ import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBillDtl;
+import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
@@ -21,6 +22,7 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
+import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
@@ -32,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +55,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private CustomerService customerService;
     @Autowired
     private WeiXinUserService weiXinUserService;
+    @Autowired
+    private TemplateMsgService templateMsgService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -441,10 +446,24 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
                 String rBillNo = saleOrderReturnBill.getBillNo();
                 String totQty = saleOrderReturnBill.getTotQty().toString();
                 String actPrice = saleOrderReturnBill.getActPrice().toString();
+                String name = currentUser.getName();
                 try {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
                     String phone =  this.customerService.getById(saleOrderReturnBill.getOrigUnitId()).getTel();
                     String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
-                    WechatTemplate.returnMsg(openId,rBillNo,totQty,actPrice);
+                    String state = WechatTemplate.returnMsg(openId,rBillNo,totQty,actPrice);
+                    if (state.equals("success")){
+                        TemplateMsg templateMsg = new TemplateMsg();
+                        templateMsg.setBillNo(rBillNo);
+                        templateMsg.setOpenId(openId);
+                        templateMsg.setActPrice(actPrice);
+                        templateMsg.setTotQty(totQty);
+                        templateMsg.setTime(simpleDateFormat.format(date));
+                        templateMsg.setType(1);
+                        templateMsg.setName(name);
+                        templateMsgService.save(templateMsg);
+                    }
                 }catch (Exception e){
                     this.logger.error(e.getMessage());
                     return new MessageBox(true, "入库成功");

@@ -16,12 +16,14 @@ import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
@@ -34,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -53,6 +56,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private  CustomerService customerService;
     @Autowired
     private WeiXinUserService weiXinUserService;
+    @Autowired
+    private TemplateMsgService templateMsgService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -386,9 +391,22 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             String sbillNo = saleOrderBill.getBillNo();
             String name = currentUser.getName();
             try {
+                Date date = new Date();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
                 String phone = (this.customerService.getById(saleOrderBill.getDestUnitId()).getTel());
                 String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
-                WechatTemplate.senMsg(openId,actPrice,totQty,sbillNo,name);
+                String state = WechatTemplate.senMsg(openId,actPrice,totQty,sbillNo,name);
+                if (state.equals("success")){
+                    TemplateMsg templateMsg = new TemplateMsg();
+                    templateMsg.setBillNo(billNo);
+                    templateMsg.setOpenId(openId);
+                    templateMsg.setActPrice(actPrice);
+                    templateMsg.setTotQty(totQty);
+                    templateMsg.setName(name);
+                    templateMsg.setTime(simpleDateFormat.format(date));
+                    templateMsg.setType(0);
+                    templateMsgService.save(templateMsg);
+                }
             }catch (Exception e){
                 this.logger.error(e.getMessage());
                 return new MessageBox(true, "出库成功");
