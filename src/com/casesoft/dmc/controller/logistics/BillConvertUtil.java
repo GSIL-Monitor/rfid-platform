@@ -1884,6 +1884,9 @@ public class BillConvertUtil {
         bill.setTotInQty(inQty);
         bill.setTotInVal(totInVal);
         bill.setTotOutVal(totOutVal);
+        if (CommonUtil.isNotBlank(bill.getBusnissId())) {
+            bill.setBusnissName(CacheManager.getUserById(bill.getBusnissId()).getName());
+        }
     }
 
     /**

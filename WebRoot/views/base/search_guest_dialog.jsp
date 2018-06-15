@@ -392,6 +392,7 @@
             $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_origId").selectpicker('refresh');
             $("#edit_discount").val(rowData.discount);
+            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
             $("#modal_guest_search_table").modal('hide');
            /* if (pageType === "add"){
                 if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== ""){

@@ -134,7 +134,7 @@ function initSearchGrid() {
 
             },
             {
-                name: 'outStatusImg', label: '出库状态', width: 15, align: 'center', sortable: false,
+                name: 'outStatusImg', label: '出库状态', width: 15, align: 'center', sortable: false, hidden: true,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.outStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -148,7 +148,7 @@ function initSearchGrid() {
                 }
             },
             {
-                name: 'inStatusImg', label: '入库状态', width: 15, align: 'center', sortable: false,
+                name: 'inStatusImg', label: '入库状态', width: 15, align: 'center', sortable: false, hidden: true,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -210,7 +210,9 @@ function initSearchGrid() {
             {name: 'srcBillNo', label: '原始单号', hidden: true},
             {name: 'discount', label: '折扣', hidden: true},
             {name: 'busnissId', label: '销售员', hidden: true},
-            {name: 'remark', label: '备注', hidden: true}
+            {name: 'remark', label: '备注', hidden: true},
+            {name: 'busnissName', label: '销售员',width: 30},
+
 
         ],
         viewrecords: true,
@@ -510,10 +512,10 @@ function initSelectBusinessIdForm() {
                 $("#edit_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
             }
 
-            /*if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
+            if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
                 $("#edit_busnissId").val(defaultSaleStaffId);
             }
-*/
+
 
         }
     });
@@ -534,9 +536,9 @@ function initCustomerTypeForm() {
                 $("#edit_customerType").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
 
-           /* if (defalutCustomerId != "" && defalutCustomerId != undefined) {
+           if (defalutCustomerId != "" && defalutCustomerId != undefined) {
                 $("#edit_customerType").selectpicker('val',"CT-LS");
-            }*/
+            }
 
 
 
@@ -622,10 +624,10 @@ function initButtonGroup(type){
             $("#SRDtl_wareHouseIn_noOutHouse").show();
         }
         if ($("#edit_srcBillNo").val()!= "") {
-            $("#SRDtl_addUniqCode").hide();
+            $("#SRDtl_addUniqCode").hide();/*
             $("#SRDtl_wareHouseIn_noOutHouse").hide();
             $("#SRDtl_wareHouseOut").hide();
-            $("#SRDtl_wareHouseIn").hide();
+            $("#SRDtl_wareHouseIn").hide();*/
         }
     }
 }
@@ -1091,7 +1093,7 @@ function setAddFooterData() {
     var sum_inQty = $("#addDetailgrid").getCol('inQty', false, 'sum');
     var sum_totPrice = $("#addDetailgrid").getCol('totPrice', false, 'sum');
     var sum_totActPrice = Math.round($("#addDetailgrid").getCol('totActPrice', false, 'sum'));
-    $("#search_actPrice").val(sum_totActPrice);
+    $("#edit_actPrice").val(sum_totActPrice);
     $("#addDetailgrid").footerData('set', {
         styleId: "合计",
         qty: sum_qty,
@@ -1103,12 +1105,16 @@ function setAddFooterData() {
 }
 function setEditFormVal(){
     $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
+    $("#edit_origUnitId").val(defalutCustomerId);
+    $("#edit_origUnitName").val(defalutCustomerName);
+    $("#edit_discount").val(defalutCustomerdiscount);
     $("#edit_outStatus").val(0);
     $("#edit_inStatus").val(0);
     $("#edit_status").val(0);
     $("#edit_payPrice").val(0);
     $("#edit_actPrice").val(0);
     $("#edit_destId").selectpicker('val',defaultWarehId);
+    $("#edit_pre_Balance").val((0 - defalutCustomerowingValue).toFixed(2));
 
 
 }
@@ -1232,6 +1238,7 @@ function input_keydown() {
     })
 }
 function saveother(totActPrice) {
+
     cs.showProgressBar();
     $("#edit_customerType").removeAttr('disabled');
     $("#edit_origId").removeAttr('disabled');
@@ -1271,6 +1278,11 @@ function saveother(totActPrice) {
             $("#edit_payPrice").val(summun.toFixed(2));
         }
     }
+    var actPrice = parseFloat($("#edit_actPrice").val());
+    var payPrice = parseFloat($("#edit_payPrice").val());
+    var preBalance = parseFloat($("#edit_pre_Balance").val());
+    var afterBalance = parseFloat(preBalance + payPrice - actPrice).toFixed(2);
+    $("#edit_after_Balance").val(afterBalance);
     var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
@@ -1655,5 +1667,9 @@ function addNew(){
     $(".selectpicker").selectpicker('refresh');
     pageType="add";
     initButtonGroup(pageType);
+    if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
+        $("#edit_busnissId").selectpicker('val',defaultSaleStaffId);
+    }
+    addUniqCode();
 
 }

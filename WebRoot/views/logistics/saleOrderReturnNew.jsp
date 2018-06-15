@@ -12,9 +12,22 @@
         var ownersId = "${ownersId}";
         var userId = "${userId}";
         var billNo = "${billNo}";
-
+        var saleOrder_customerTypeId = "${saleOrderBill.customerTypeId}";
+        var saleOrder_origId = "${saleOrderBill.origId}";
+        var saleOrder_destId = "${saleOrderBill.destId}";
         var defaultWarehId = "${defaultWarehId}";
+        var defaultSaleStaffId = "${defaultSaleStaffId}";
+        var defalutCustomerId = "${defalutCustomerId}";
+        var defalutCustomerName = "${defalutCustomerName}";
+        var defalutCustomerdiscount = "${defalutCustomerdiscount}";
+        var defalutCustomercustomerType = "${defalutCustomercustomerType}";
+        var defalutCustomerowingValue = "${defalutCustomerowingValue}";
 
+        var saleOrder_busnissId = "${saleOrderBill.busnissId}";
+        var slaeOrder_status = "${saleOrderBill.status}";
+        var roleid = "${roleid}";
+        var Codes = "${Codes}";
+        var groupid="${groupid}";
         var pageType = "${pageType}";
     </script>
 
@@ -237,7 +250,7 @@
 
                                                 <div class="form-group">
                                                     <label class="col-md-1 control-label"
-                                                           for="edit_origId">入库仓库</label>
+                                                           for="edit_destId">入库仓库</label>
                                                     <div class="col-md-3">
                                                         <select class="form-control selectpicker show-tick"
                                                                 id="edit_destId" name="destId"
@@ -297,6 +310,25 @@
                                                                name="discount"
                                                                value="${SaleOrderReturnBill.discount}"
                                                                onblur="edit_discount_onblur()">
+                                                        </input>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_pre_Balance">售前余额</label>
+                                                    <div class="col-md-3">
+                                                        <input class="form-control" id="edit_pre_Balance"
+                                                               name="preBalance"
+                                                               value="${SaleOrderReturnBill.preBalance}" readonly>
+                                                        </input>
+                                                    </div>
+
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_after_Balance">售后余额</label>
+                                                    <div class="col-md-3">
+                                                        <input class="form-control" id="edit_after_Balance"
+                                                               name="afterBalance"
+                                                               value="${SaleOrderReturnBill.afterBalance}" readonly>
                                                         </input>
                                                     </div>
                                                 </div>
