@@ -551,23 +551,23 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
-            "<button id='SRDtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
+            "<button id='SRDtl_save' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-            "<button id='SRDtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
+            "<button id='SRDtl_addUniqCode' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SRDtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
+            "<button id='SRDtl_wareHouseOut' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>" +
-            "<button id='SRDtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
+            "<button id='SRDtl_wareHouseIn' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button id='SRDtl_doPrint' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrint()'>" +
+            "<button id='SRDtl_doPrint' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='doPrint()'>" +
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>打印</span>" +
             "</button>"
@@ -582,27 +582,27 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
-            "<button id='SRDtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
+            "<button id='SRDtl_save' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-            "<button id='SRDtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
+            "<button id='SRDtl_addUniqCode' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SRDtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
+            "<button id='SRDtl_wareHouseOut' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>" +
-            "<button id='SRDtl_wareHouseIn_noOutHouse' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
+            "<button id='SRDtl_wareHouseIn_noOutHouse' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button id='SRDtl_wareHouseIn' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='edit_wareHouseIn()'>" +
+            "<button id='SRDtl_wareHouseIn' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='edit_wareHouseIn()'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button id='SRDtl_doPrint' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrint()'>" +
+            "<button id='SRDtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>打印</span>" +
             "</button>"
@@ -781,7 +781,7 @@ function initAddGrid() {
                 $('#addDetailgrid').setCell(rowid, "totPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100));
                 $('#addDetailgrid').setCell(rowid, "totActPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100));
             }
-            setFooterData();
+            setAddFooterData();
         },
         gridComplete: function () {
             setAddFooterData();
@@ -791,24 +791,20 @@ function initAddGrid() {
         }
     });
 
-    if (pageType === "edit" &&  $("#edit_status").val()!== "0" || $("#edit_srcBillNo").val() !== "") {
-        $("#addDetailgrid").setGridParam().hideCol("operation");
-    } else {
-        $("#addDetailgrid").setGridParam().showCol("operation");
-        $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
-            {
-                edit: false,
-                add: true,
-                addicon: "ace-icon fa fa-plus",
-                addfunc: function () {
-                    addDetail();
-                },
-                del: false,
-                search: false,
-                refresh: false,
-                view: false
-            });
-    }
+    $("#addDetailgrid").setGridParam().showCol("operation");
+    $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
+        {
+            edit: false,
+            add: true,
+            addicon: "ace-icon fa fa-plus",
+            addfunc: function () {
+                addDetail();
+            },
+            del: false,
+            search: false,
+            refresh: false,
+            view: false
+        });
     $("#addDetailgrid-pager_center").html("");
 }
 function edit_discount_onblur() {

@@ -380,14 +380,8 @@
         if(prefixId =="search"){
             $("#search_origUnitId").val(rowData.id);
             $("#search_origUnitName").val(rowData.name);;
-            $("#edit_origUnitId").val(rowData.id);
-            $("#edit_origUnitName").val(rowData.name);;
             initSelectOrigForm();
             //$("#edit_customerType").val(rowData.unitType);
-            $("#edit_customerType").selectpicker('val', rowData.unitType);
-            $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
-            $("#edit_origId").selectpicker('refresh');
-            $("#edit_discount").val(rowData.discount);
             $("#modal_guest_search_table").modal('hide');
         }else if(prefixId =="edit"){
             $("#edit_origUnitId").val(rowData.id);
