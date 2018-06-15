@@ -52,11 +52,13 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturn");
+        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturnNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId",getCurrentUser().getId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType", "add");
+        mv.addObject("defaultWarehId", unit.getDefaultWarehId());
         return mv;
     }
 

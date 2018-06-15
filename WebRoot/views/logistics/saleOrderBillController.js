@@ -2024,3 +2024,110 @@ function _resetForm(){
     $("#filter_INI_inStatus").val();
     $(".selectpicker").selectpicker('refresh');
 }
+function doPrint() {
+
+    /*$("#editForm").resetForm();*/
+    debugger
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#edit_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"SO"
+        },
+        success: function (msg) {
+
+            if (msg.success) {
+                var addcont = "";
+                //var ishave = false;
+                for (var i = 0; i < msg.result.length; i++) {
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
+                }
+                $("#addbutton").html(addcont);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+
+function set(id) {
+
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessage.do",
+        data: {"id": id, "billno": $("#billno").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                var LODOP = getLodop();
+                //var LODOP=getLodop(document.getElementById('LODOP2'),document.getElementById('LODOP_EM2'));
+                eval(print.printCont);
+                var printCode = print.printCode;
+                var printCodes = printCode.split(",");
+                for (var i = 0; i < printCodes.length; i++) {
+                    var plp = printCodes[i];
+                    var message = cont[plp];
+                    if (message != "" && message != null && message != undefined) {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', message);
+                    } else {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', "");
+                    }
+
+                }
+
+                var recordmessage = "";
+                var sum = 0;
+                var allprice = 0;
+                var alldiscount = 0;
+                for (var a = 0; a < contDel.length; a++) {
+                    var conts = contDel[a];
+                    recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                        "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
+                        "<td align='left'style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.qty + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.price.toFixed(1) + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.actPrice.toFixed(1) + "</td>" +
+                        "<td align='right' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + (conts.actPrice * conts.qty).toFixed(2) + "</td>" +
+                        "</tr>";
+
+                    sum = sum + parseInt(conts.qty);
+                    //allprice = allprice + parseFloat(conts.actPrice*conts.qty.toFixed(2));
+                    alldiscount = alldiscount + parseFloat((conts.actPrice * conts.qty).toFixed(2));
+                }
+                alldiscount = alldiscount.toFixed(0);
+                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                    "<td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td>" +
+                    "<td align='left'style='border-top:1px dashed black;padding-top:5px;'>" + sum + "</td>" +
+                    "<td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    " <td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    "<td align='right' style='border-top:1px dashed black;padding-top:5px;'>" + alldiscount + "</td>" +
+                    " </tr>";
+
+                $("#loadtab").html(recordmessage);
+                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
