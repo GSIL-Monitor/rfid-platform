@@ -349,7 +349,7 @@
             $("#edit_discount").val(rowData.discount);
             $("#edit_customerType").val(rowData.unitType);
             $("#edit_discount").val(rowData.discount);
-            $("#edit_pre_Balance").val(0-rowData.owingValue);
+            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
             setDiscount();
             if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
                 $("#SODtl_wareHouseIn").removeAttr("disabled");
@@ -379,9 +379,9 @@
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
         if(prefixId =="search"){
             $("#search_origUnitId").val(rowData.id);
-            $("#search_origUnitName").val(rowData.name)
+            $("#search_origUnitName").val(rowData.name);;
             $("#edit_origUnitId").val(rowData.id);
-            $("#edit_origUnitName").val(rowData.name)
+            $("#edit_origUnitName").val(rowData.name);;
             initSelectOrigForm();
             //$("#edit_customerType").val(rowData.unitType);
             $("#edit_customerType").selectpicker('val', rowData.unitType);
@@ -391,7 +391,7 @@
             $("#modal_guest_search_table").modal('hide');
         }else if(prefixId =="edit"){
             $("#edit_origUnitId").val(rowData.id);
-            $("#edit_origUnitName").val(rowData.name)
+            $("#edit_origUnitName").val(rowData.name);;
             initSelectOrigForm();
             //$("#edit_customerType").val(rowData.unitType);
             $("#edit_customerType").selectpicker('val', rowData.unitType);

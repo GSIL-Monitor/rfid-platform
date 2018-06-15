@@ -393,7 +393,7 @@ function setEditFormVal(){
     $("#edit_outStatus").val(0);
     $("#edit_inStatus").val(0);
     $("#edit_status").val(0);
-    $("#edit_pre_Balance").val(0 - defalutCustomerowingValue);
+    $("#edit_pre_Balance").val((0 - defalutCustomerowingValue).toFixed(2));
     $("#edit_busnissId").val(defaultSaleStaffId);
     $("#edit_busnissId").removeAttr("disabled");
     $("#edit_origId").removeAttr("disabled");
@@ -2027,7 +2027,7 @@ function _resetForm(){
 function doPrint() {
 
     /*$("#editForm").resetForm();*/
-    debugger
+    debugger;;
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");
     var billNo = $("#edit_billNo").val();
