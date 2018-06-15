@@ -211,6 +211,9 @@ function initSearchGrid() {
             {name: 'discount', label: '折扣', hidden: true},
             {name: 'busnissId', label: '销售员', hidden: true},
             {name: 'remark', label: '备注', hidden: true},
+            {name: 'remark', label: '备注', hidden: true},
+            {name: 'preBalance', label: '售前余额', hidden: true},
+            {name: 'afterBalance', label: '售后余额', hidden: true},
             {name: 'busnissName', label: '销售员',width: 30},
 
 
@@ -553,6 +556,10 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
+            "<button id='SRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
             "<button id='SRDtl_save' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
@@ -584,6 +591,10 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
+            "<button id='SRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
             "<button id='SRDtl_save' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
@@ -613,6 +624,7 @@ function initButtonGroup(type){
             $("#search_guest_button").attr({"disabled": "disabled"});
             $("#SRDtl_save").attr({"disabled": "disabled"});
             $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
+            $("#SRDtl_cancel").attr({"disabled": "disabled"});
         }
         if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== "") {
             $("#SRDtl_wareHouseOut").removeAttr("disabled");
@@ -1672,4 +1684,50 @@ function addNew(){
     }
     addUniqCode();
 
+}
+function cancel() {
+
+    var billId= $("#edit_billNo").val();
+    var status = $("#edit_status").val();
+    if (status != "0") {
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    if(billId == "" || billId == undefined){
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    bootbox.confirm({
+        /*title: "余额确认",*/
+        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+        message: "撤销确定",
+        callback: function (result) {
+            /* $("#SODtl_save").removeAttr("disabled");*/
+            if (result) {
+                cancelAjax(billId);
+
+            } else {
+            }
+        }
+    });
+}
+function cancelAjax(billId) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/saleOrderReturn/cancel.do",
+        data: {billNo: billId},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
