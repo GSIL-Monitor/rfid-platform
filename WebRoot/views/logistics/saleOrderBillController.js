@@ -10,7 +10,7 @@ var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var billNo;
 var sizeArry="S,XS,M,L,XL,XXL,XXXL,F,other";
 var autoSelect =false;//是否自动选中
-
+var showScanDialog = false;
 $(function () {
 
     /*初始化左侧grig*/
@@ -84,7 +84,7 @@ function initSearchGrid() {
                 }
             },
             {name: 'outStatus', hidden: true},
-            {
+         /*   {
                 name: 'outStatusImg', label: '出库状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.outStatus == 0) {
@@ -97,9 +97,9 @@ function initSearchGrid() {
                         return '';
                     }
                 }
-            },
+            },*/
             {name: 'inStatus', hidden: true},
-            {
+            /*{
                 name: 'inStatusImg', label: '入库状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
@@ -112,7 +112,7 @@ function initSearchGrid() {
                         return '';
                     }
                 }
-            },
+            },*/
             {name: 'destUnitId', label: '客户ID', hidden: true},
             {name: 'destUnitName', label: '客户', hidden: true},
 
@@ -128,6 +128,7 @@ function initSearchGrid() {
             {name: 'destName', label: '收货仓库', hidden: true},
             {name: 'busnissId', hidden: true},
             {name: 'totQty', label: '单据数量', width: 20},
+            {name: 'busnissName', label: '业务员', width: 20},
             {name: 'preBalance', label: '售前余额', width: 20, hidden: true},
             {name: 'afterBalance', label: '售后余额', width: 20, hidden: true},
             {name: 'actPrice',label: '应付金额', hidden: true},
@@ -188,8 +189,10 @@ function initDetailData(rowid){
 }
 /**
  * 新增单据调用
+ * isScan 是否调用扫码框
  * */
-function addNew(){
+function addNew(isScan){
+    showScanDialog = isScan;
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
@@ -888,7 +891,7 @@ function initButtonGroup(type){
 
     if (type === "add") {
         $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
@@ -900,10 +903,11 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-                /*   "<button id='SODtl_saveAndAdd' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='saveAndAdd()'>" +
-                 "    <i class='ace-icon fa fa-save'></i>" +
-                 "    <span class='bigger-110'>保存并新增</span>" +
-                 "</button>" +*/
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
+
             "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
@@ -919,13 +923,13 @@ function initButtonGroup(type){
         );
 
         $("#search_guest_button").removeAttr("disabled");
-        if (defalutCustomerId != "" && defalutCustomerId != undefined) {
+        if (defalutCustomerId != "" && defalutCustomerId != undefined && showScanDialog) {
             addUniqCode();
         }
     }
     if (type === "edit") {
         $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
@@ -936,6 +940,10 @@ function initButtonGroup(type){
             "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
+            "</button>" +
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
             "</button>" +
             "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
@@ -990,6 +998,7 @@ function initButtonGroup(type){
             $("#search_guest_button").attr({"disabled": "disabled"});
             $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
             $("#SODtl_save").attr({"disabled": "disabled"});
+            $("#SODtl_cancel").attr({"disabled": "disabled"});
         }
         //如果入库仓库为空，禁止入库按钮
         if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
@@ -1296,6 +1305,55 @@ function addUniqCode() {
         bootbox.alert("请选择客户！");
     }
     allCodes = "";
+}
+
+
+
+function cancel() {
+
+    var billId= $("#edit_billNo").val();
+    var status = $("#edit_status").val();
+    if (status != "0") {
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    if(billId == "" || billId == undefined){
+        bootbox.alert("没有单据，无法撤销");
+        return;
+    }
+    bootbox.confirm({
+        /*title: "余额确认",*/
+        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+        message: "撤销确定",
+        callback: function (result) {
+            /* $("#SODtl_save").removeAttr("disabled");*/
+            if (result) {
+                cancelAjax(billId);
+                addNew(false)
+            } else {
+            }
+        }
+    });
+}
+function cancelAjax(billId) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/saleOrder/cancel.do",
+        data: {billNo: billId},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 
 
