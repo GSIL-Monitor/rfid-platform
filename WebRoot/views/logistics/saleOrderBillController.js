@@ -128,7 +128,7 @@ function initSearchGrid() {
             {name: 'destName', label: '收货仓库', hidden: true},
             {name: 'busnissId', hidden: true},
             {name: 'totQty', label: '单据数量', width: 20},
-            {name: 'busnissName', label: '业务员', width: 20},
+            {name: 'busnissName', label: '销售员', width: 20},
             {name: 'preBalance', label: '售前余额', width: 20, hidden: true},
             {name: 'afterBalance', label: '售后余额', width: 20, hidden: true},
             {name: 'actPrice',label: '应付金额', hidden: true},
@@ -1318,7 +1318,7 @@ function cancel() {
         return;
     }
     if(billId == "" || billId == undefined){
-        bootbox.alert("没有单据，无法撤销");
+        bootbox.alert("不是录入状态，无法撤销");
         return;
     }
     bootbox.confirm({
