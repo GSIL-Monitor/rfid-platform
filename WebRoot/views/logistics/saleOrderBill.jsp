@@ -447,6 +447,7 @@
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
+<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 
 <div id="dialog"></div>
 <div id="progressDialog"></div>

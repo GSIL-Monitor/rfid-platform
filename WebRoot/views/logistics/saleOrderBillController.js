@@ -10,7 +10,7 @@ var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var billNo;
 var sizeArry="S,XS,M,L,XL,XXL,XXXL,F,other";
 var autoSelect =false;//是否自动选中
-
+var showScanDialog = false;
 $(function () {
 
     /*初始化左侧grig*/
@@ -84,7 +84,7 @@ function initSearchGrid() {
                 }
             },
             {name: 'outStatus', hidden: true},
-            {
+         /*   {
                 name: 'outStatusImg', label: '出库状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.outStatus == 0) {
@@ -97,9 +97,9 @@ function initSearchGrid() {
                         return '';
                     }
                 }
-            },
+            },*/
             {name: 'inStatus', hidden: true},
-            {
+            /*{
                 name: 'inStatusImg', label: '入库状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
@@ -112,7 +112,7 @@ function initSearchGrid() {
                         return '';
                     }
                 }
-            },
+            },*/
             {name: 'destUnitId', label: '客户ID', hidden: true},
             {name: 'destUnitName', label: '客户', hidden: true},
 
@@ -128,6 +128,7 @@ function initSearchGrid() {
             {name: 'destName', label: '收货仓库', hidden: true},
             {name: 'busnissId', hidden: true},
             {name: 'totQty', label: '单据数量', width: 20},
+            {name: 'busnissName', label: '销售员', width: 20},
             {name: 'preBalance', label: '售前余额', width: 20, hidden: true},
             {name: 'afterBalance', label: '售后余额', width: 20, hidden: true},
             {name: 'actPrice',label: '应付金额', hidden: true},
@@ -188,8 +189,10 @@ function initDetailData(rowid){
 }
 /**
  * 新增单据调用
+ * isScan 是否调用扫码框
  * */
-function addNew(){
+function addNew(isScan){
+    showScanDialog = isScan;
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
@@ -393,7 +396,7 @@ function setEditFormVal(){
     $("#edit_outStatus").val(0);
     $("#edit_inStatus").val(0);
     $("#edit_status").val(0);
-    $("#edit_pre_Balance").val(0 - defalutCustomerowingValue);
+    $("#edit_pre_Balance").val((0 - defalutCustomerowingValue).toFixed(2));
     $("#edit_busnissId").val(defaultSaleStaffId);
     $("#edit_busnissId").removeAttr("disabled");
     $("#edit_origId").removeAttr("disabled");
@@ -888,7 +891,7 @@ function initButtonGroup(type){
 
     if (type === "add") {
         $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
@@ -900,10 +903,11 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-                /*   "<button id='SODtl_saveAndAdd' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='saveAndAdd()'>" +
-                 "    <i class='ace-icon fa fa-save'></i>" +
-                 "    <span class='bigger-110'>保存并新增</span>" +
-                 "</button>" +*/
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
+
             "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
@@ -919,13 +923,13 @@ function initButtonGroup(type){
         );
 
         $("#search_guest_button").removeAttr("disabled");
-        if (defalutCustomerId != "" && defalutCustomerId != undefined) {
+        if (defalutCustomerId != "" && defalutCustomerId != undefined && showScanDialog) {
             addUniqCode();
         }
     }
     if (type === "edit") {
         $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
@@ -936,6 +940,10 @@ function initButtonGroup(type){
             "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
+            "</button>" +
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
             "</button>" +
             "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
@@ -990,6 +998,7 @@ function initButtonGroup(type){
             $("#search_guest_button").attr({"disabled": "disabled"});
             $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
             $("#SODtl_save").attr({"disabled": "disabled"});
+            $("#SODtl_cancel").attr({"disabled": "disabled"});
         }
         //如果入库仓库为空，禁止入库按钮
         if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
@@ -1296,6 +1305,55 @@ function addUniqCode() {
         bootbox.alert("请选择客户！");
     }
     allCodes = "";
+}
+
+
+
+function cancel() {
+
+    var billId= $("#edit_billNo").val();
+    var status = $("#edit_status").val();
+    if (status != "0") {
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    if(billId == "" || billId == undefined){
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    bootbox.confirm({
+        /*title: "余额确认",*/
+        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+        message: "撤销确定",
+        callback: function (result) {
+            /* $("#SODtl_save").removeAttr("disabled");*/
+            if (result) {
+                cancelAjax(billId);
+                addNew(false)
+            } else {
+            }
+        }
+    });
+}
+function cancelAjax(billId) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/saleOrder/cancel.do",
+        data: {billNo: billId},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 
 
@@ -2023,4 +2081,111 @@ function _resetForm(){
     $("#filter_INI_outStatus").val();
     $("#filter_INI_inStatus").val();
     $(".selectpicker").selectpicker('refresh');
+}
+function doPrint() {
+
+    /*$("#editForm").resetForm();*/
+    debugger;;
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#edit_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"SO"
+        },
+        success: function (msg) {
+
+            if (msg.success) {
+                var addcont = "";
+                //var ishave = false;
+                for (var i = 0; i < msg.result.length; i++) {
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
+                }
+                $("#addbutton").html(addcont);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+
+function set(id) {
+
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessage.do",
+        data: {"id": id, "billno": $("#billno").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                var LODOP = getLodop();
+                //var LODOP=getLodop(document.getElementById('LODOP2'),document.getElementById('LODOP_EM2'));
+                eval(print.printCont);
+                var printCode = print.printCode;
+                var printCodes = printCode.split(",");
+                for (var i = 0; i < printCodes.length; i++) {
+                    var plp = printCodes[i];
+                    var message = cont[plp];
+                    if (message != "" && message != null && message != undefined) {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', message);
+                    } else {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', "");
+                    }
+
+                }
+
+                var recordmessage = "";
+                var sum = 0;
+                var allprice = 0;
+                var alldiscount = 0;
+                for (var a = 0; a < contDel.length; a++) {
+                    var conts = contDel[a];
+                    recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                        "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
+                        "<td align='left'style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.qty + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.price.toFixed(1) + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.actPrice.toFixed(1) + "</td>" +
+                        "<td align='right' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + (conts.actPrice * conts.qty).toFixed(2) + "</td>" +
+                        "</tr>";
+
+                    sum = sum + parseInt(conts.qty);
+                    //allprice = allprice + parseFloat(conts.actPrice*conts.qty.toFixed(2));
+                    alldiscount = alldiscount + parseFloat((conts.actPrice * conts.qty).toFixed(2));
+                }
+                alldiscount = alldiscount.toFixed(0);
+                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                    "<td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td>" +
+                    "<td align='left'style='border-top:1px dashed black;padding-top:5px;'>" + sum + "</td>" +
+                    "<td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    " <td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    "<td align='right' style='border-top:1px dashed black;padding-top:5px;'>" + alldiscount + "</td>" +
+                    " </tr>";
+
+                $("#loadtab").html(recordmessage);
+                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }

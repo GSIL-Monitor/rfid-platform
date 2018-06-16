@@ -18,7 +18,9 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
+import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +45,10 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private SaleOrderReturnBillService saleOrderReturnBillService;
     @Autowired
     private EpcStockService epcStockService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private UnitService unitService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -52,11 +58,30 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturn");
+        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturnNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
-        mv.addObject("userId",getCurrentUser().getId());
-        Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+        Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+        String defalutCustomerId = unit.getDefalutCustomerId();
+        if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+            Customer customer = this.customerService.load(defalutCustomerId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+        mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("roleid", getCurrentUser().getRoleId());
+        mv.addObject("defaultWarehId", defaultWarehId);
+
+
+        mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType", "add");
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId", getCurrentUser().getId());
         return mv;
     }
 

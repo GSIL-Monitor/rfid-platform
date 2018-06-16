@@ -349,7 +349,7 @@
             $("#edit_discount").val(rowData.discount);
             $("#edit_customerType").val(rowData.unitType);
             $("#edit_discount").val(rowData.discount);
-            $("#edit_pre_Balance").val(0-rowData.owingValue);
+            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
             setDiscount();
             if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
                 $("#SODtl_wareHouseIn").removeAttr("disabled");
@@ -377,7 +377,47 @@
     function confirm_selected_GuestId_saleReturn() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_origUnitId").val(rowData.id);
+        if(prefixId =="search"){
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);;
+            initSelectOrigForm();
+            //$("#edit_customerType").val(rowData.unitType);
+            $("#modal_guest_search_table").modal('hide');
+        }else if(prefixId =="edit"){
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);;
+            initSelectOrigForm();
+            //$("#edit_customerType").val(rowData.unitType);
+            $("#edit_customerType").selectpicker('val', rowData.unitType);
+            $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_origId").selectpicker('refresh');
+            $("#edit_discount").val(rowData.discount);
+            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
+            $("#modal_guest_search_table").modal('hide');
+           /* if (pageType === "add"){
+                if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== ""){
+                    $("#SODtl_wareHouseOut").removeAttr("disabled");
+                    $("#SODtl_wareHouseIn").attr({"disabled": "disabled"});
+                }else{
+                    $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
+                    $("#SODtl_wareHouseIn").removeAttr("disabled");
+                }
+
+            }else if (pageType === "edit"){
+                if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== ""){
+                    $("#SODtl_wareHouseOut").removeAttr("disabled");
+                    $("#SODtl_wareHouseIn").show();
+                    $("#SODtl_wareHouseIn_noOutHouse").hide();
+
+                }else {//发货仓库为空，例如零售客户
+                    $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
+                    $("#SODtl_wareHouseIn").hide();
+                    $("#SODtl_wareHouseIn_noOutHouse").show();
+
+                }
+            }*/
+        }
+        /*$("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
         $("#search_customerType").val(rowData.unitType);
@@ -412,7 +452,7 @@
 //                $("#addDetailgrid-pager_left").hide();
 //                $("#addDetailgrid").setColProp('qty',{editoptions:{value:"False"}});
             }
-        }
+        }*/
     }
 
     function confirm_selected_OrigUnit() {
