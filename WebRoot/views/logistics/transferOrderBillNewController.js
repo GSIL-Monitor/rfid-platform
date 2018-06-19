@@ -575,6 +575,37 @@ function initButtonGroup() {
 
     }
     $("#addDetail").show();
+    loadingButton();
+}
+function loadingButton() {
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/transferOrder/findResourceButton.do",
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var result=msg.result;
+                for(var i=0;i<result.length;i++){
+                    if(result[i].ishow===0){
+                        if( $("#"+result[i].buttonId).length>0){
+                            $("#"+result[i].buttonId).show();
+                        }
+                    }else {
+                        if( $("#"+result[i].buttonId).length>0){
+                            $("#"+result[i].buttonId).hide();
+                        }
+
+                    }
+
+                }
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 /**
  * 新增单据调用
