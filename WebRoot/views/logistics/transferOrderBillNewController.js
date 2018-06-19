@@ -516,6 +516,10 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
+            "<button id='TRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
             "<button id='TRDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
@@ -535,6 +539,10 @@ function initButtonGroup() {
             "<button id='TRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='TRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
             "</button>" +
             "<button id='TRDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
@@ -562,6 +570,7 @@ function initButtonGroup() {
             $("#edit_dest_button").attr({"disabled": "disabled"});
             $("#TRDtl_addUniqCode").attr({"disabled": "disabled"});
             $("#TRDtl_save").attr({"disabled": "disabled"});
+            $("#TRDtl_cancel").attr({"disabled": "disabled"});
         }
 
     }
@@ -582,7 +591,6 @@ function addNew(isScan){
     $("#form_printSelect").val(0);
     pageType="add";
     initButtonGroup(pageType);
-
 }
 function setEditFormVal(){
     $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
@@ -1039,4 +1047,50 @@ function doPrintA4() {
     });
 
 
+}
+function cancel() {
+
+    var billId= $("#edit_billNo").val();
+    var status = $("#edit_status").val();
+    if (status != "0") {
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    if(billId == "" || billId == undefined){
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    bootbox.confirm({
+        /*title: "余额确认",*/
+        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+        message: "撤销确定",
+        callback: function (result) {
+            /* $("#SODtl_save").removeAttr("disabled");*/
+            if (result) {
+                cancelAjax(billId);
+                addNew()
+            } else {
+            }
+        }
+    });
+}
+function cancelAjax(billId) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/transferOrder/cancel.do",
+        data: {billNo: billId},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
