@@ -60,11 +60,12 @@ public class TransferOrderBillController extends BaseController implements ILogi
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("pageType", "add");
         return mv;
     }
 
