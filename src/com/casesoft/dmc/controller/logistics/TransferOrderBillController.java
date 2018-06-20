@@ -69,6 +69,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("pageType", "add");
+        mv.addObject("ownersId", unit.getOwnerids());
         return mv;
     }
 

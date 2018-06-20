@@ -11,6 +11,7 @@
         var curOwnerId = "${ownerId}";
         var pageType = "${pageType}";
         var userId = "${userId}";
+        var ownersId="${ownersId}";
     </script>
 
 </head>

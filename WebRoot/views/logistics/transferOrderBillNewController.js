@@ -565,6 +565,7 @@ function initButtonGroup() {
             "    <span class='bigger-110'>A4打印</span>" +
             "</button>"
         );
+        loadingButton();
         if (transferOrder_status !== "0") {
             $("#edit_orig_button").attr({"disabled": "disabled"});
             $("#edit_dest_button").attr({"disabled": "disabled"});
@@ -575,7 +576,7 @@ function initButtonGroup() {
 
     }
     $("#addDetail").show();
-    loadingButton();
+
 }
 function loadingButton() {
     $.ajax({
