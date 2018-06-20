@@ -210,9 +210,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         //保存积分变动记录
         String vipInfo;
         if (CommonUtil.isBlank(unit)) {
-            vipInfo = customer.getVipMessage();
+            vipInfo = customer.getVipId();
         } else {
-            vipInfo = unit.getVipMessage();
+            vipInfo = unit.getVipId();
         }
 
         if (CommonUtil.isNotBlank(vipInfo)) {
@@ -303,9 +303,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         //保存积分变动记录
         String vipInfo;
         if (CommonUtil.isBlank(unit)) {
-            vipInfo = customer.getVipMessage();
+            vipInfo = customer.getVipId();
         } else {
-            vipInfo = unit.getVipMessage();
+            vipInfo = unit.getVipId();
         }
 
         if (CommonUtil.isNotBlank(vipInfo)) {
@@ -396,7 +396,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
         Unit units = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
         if(CommonUtil.isNotBlank(customer)){
-            if(CommonUtil.isNotBlank(customer.getVipMessage())){
+            if(CommonUtil.isNotBlank(customer.getVipId())){
                 //根据code查询
                 ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
                 for(SaleOrderBillDtl saleOrderBillDtl:saleOrderBillDtlList) {
@@ -439,7 +439,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         }
         if(CommonUtil.isNotBlank(units)){
             if(CommonUtil.isNotBlank(units)){
-                if(CommonUtil.isNotBlank(units.getVipMessage())){
+                if(CommonUtil.isNotBlank(units.getVipId())){
                     //根据code查询
                     ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
                     for(SaleOrderBillDtl saleOrderBillDtl:saleOrderBillDtlList) {

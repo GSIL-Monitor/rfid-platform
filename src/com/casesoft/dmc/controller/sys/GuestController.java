@@ -8,8 +8,6 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.Unit;
@@ -250,7 +248,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
             guest.setFax(entity.getFax());
             guest.setDiscount(entity.getDiscount());
             guest.setAddress(entity.getAddress());
-            guest.setVipMessage(entity.getVipMessage());
+            guest.setVipId(entity.getVipId());
             guest.setProvince(entity.getProvince());
             guest.setCity(entity.getCity());
             guest.setAreaId(entity.getAreaId());//原为County
@@ -280,7 +278,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setOwingValue(0.0);
             }
             guest.setName(entity.getName());
-            guest.setVipMessage(entity.getVipMessage());
+            guest.setVipId(entity.getVipId());
             guest.setStatus(entity.getStatus());
             guest.setSex(entity.getSex());
             guest.setType(entity.getType());
@@ -369,7 +367,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());
-                guest.setVipMessage(entity.getVipMessage());
+                guest.setVipId(entity.getVipId());
                 guest.setProvince(entity.getProvince());
                 guest.setCity(entity.getCity());
                 guest.setAreaId(entity.getAreaId());//原为County
@@ -413,7 +411,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
 
                 }
                 guest.setName(entity.getName());
-                guest.setVipMessage(entity.getVipMessage());
+                guest.setVipId(entity.getVipId());
                 guest.setStatus(entity.getStatus());
                 guest.setSex(entity.getSex());
                 guest.setType(entity.getType());

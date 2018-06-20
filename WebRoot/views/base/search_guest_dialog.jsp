@@ -27,7 +27,7 @@
                                 <label class="col-xs-2 control-label text-right" for="search_guest">客户</label>
                                 <div class="col-xs-8">
                                     <input class="col-xs-4 form-control" id="search_guest"
-                                           name="filter_LIKES_name_OR_tel_OR_vipMessage"
+                                           name="filter_LIKES_name_OR_tel_OR_vipId"
                                            type="text" placeholder="输入名称或电话或VIP"/>
                                 </div>
                             </div>

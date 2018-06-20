@@ -159,7 +159,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
         Unit units = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{bill.getOrigUnitId()});
         if (CommonUtil.isNotBlank(customer)) {
-            if (CommonUtil.isNotBlank(customer.getVipMessage())) {
+            if (CommonUtil.isNotBlank(customer.getVipId())) {
                 //根据code查询
                 ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
                 for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
@@ -201,7 +201,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
             }
         }
         if (CommonUtil.isNotBlank(units)) {
-            if (CommonUtil.isNotBlank(units.getVipMessage())) {
+            if (CommonUtil.isNotBlank(units.getVipId())) {
                 //根据code查询
                 ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
                 for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
@@ -265,7 +265,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         //退算积分
         Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
         if (CommonUtil.isNotBlank(customer)) {
-            if (CommonUtil.isNotBlank(customer.getVipMessage())) {
+            if (CommonUtil.isNotBlank(customer.getVipId())) {
                 //根据code查询
                 ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
                 List<SaleOrderReturnBillDtl> details = this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo = ? ", new Object[]{saleOrderReturnBill.getBillNo()});

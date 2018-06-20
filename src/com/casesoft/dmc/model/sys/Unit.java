@@ -1,8 +1,9 @@
 package com.casesoft.dmc.model.sys;
 
-import java.util.Date;
-import javax.persistence.*;
 import com.alibaba.fastjson.annotation.JSONField;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Unit entity.
@@ -69,7 +70,7 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 	@Column( length = 50)
 	private String defalutCustomerId;//默认客户Id
 	private String defaultSaleStaffId;//默认销售员Id
-	private String vipMessage;
+	private String vipId;
 	private String areasId;//区域ID
 	@Column( length = 50)
 	private String ownerids;//加盟商或供应商id
@@ -111,12 +112,12 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 	}
 
 	@Column( length = 50)
-	public String getVipMessage() {
-		return vipMessage;
+	public String getVipId() {
+		return vipId;
 	}
 
-	public void setVipMessage(String vipMessage) {
-		this.vipMessage = vipMessage;
+	public void setVipId(String vipId) {
+		this.vipId = vipId;
 	}
 	// Constructors
 
