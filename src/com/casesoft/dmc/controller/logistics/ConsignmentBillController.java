@@ -46,7 +46,7 @@ public class ConsignmentBillController extends BaseController implements ILogist
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/consignmentBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/consignmentBillNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());

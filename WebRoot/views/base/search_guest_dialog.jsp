@@ -386,7 +386,7 @@
         }else if(prefixId =="edit"){
             $("#edit_origUnitId").val(rowData.id);
             $("#edit_origUnitName").val(rowData.name);;
-            initSelectOrigForm();
+            initSelectOrigEditForm();
             //$("#edit_customerType").val(rowData.unitType);
             $("#edit_customerType").selectpicker('val', rowData.unitType);
             $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
