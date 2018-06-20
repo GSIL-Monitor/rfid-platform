@@ -14,19 +14,31 @@ public class Style extends BaseStyle implements java.io.Serializable {
     private String id;
 
     private String styleEname;
+
     private Integer seqNo;
 
     private String remark;
+
     private String isUse;
+
     @Column()
     private String ispush;
+
     @Column()
     private String pushsuccess;
 
+    @Column
+    private Integer styleCycle; //款销售退货周期，默认20天
+
     @Transient
     private String url;
+
     @Transient
     private String class1Name;
+
+    public Integer getStyleCycle() { return styleCycle; }
+
+    public void setStyleCycle(Integer styleCycle) { this.styleCycle = styleCycle; }
 
     public String getClass1Name() {
         return class1Name;

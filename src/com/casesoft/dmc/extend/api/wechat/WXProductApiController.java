@@ -12,6 +12,7 @@ import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
+import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
@@ -316,6 +317,15 @@ public class WXProductApiController extends ApiBaseController {
         this.logAllRequestParams();
         List<List<PropertyKey>> pkList = this.propertyService.getPropertyKeyByTypes(typeList);
         return pkList;
+    }
+
+    @RequestMapping(value = "/searchCycle")
+    @ResponseBody
+    public Style searchCycle(String styleId) throws Exception {
+        this.logAllRequestParams();
+        List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+        Style s = CacheManager.getStyleById(styleId);
+        return s;
     }
 
     /**
