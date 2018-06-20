@@ -75,7 +75,7 @@ public class GuestView {
 	@Column()
 	private String updaterId;
 
-	private String vipMessage;
+	private String vipId;
 	@Column()
 	private String unionid;
 	@Column()
@@ -119,12 +119,12 @@ public class GuestView {
 	}
 
 	@Column( length = 50)
-	public String getVipMessage() {
-		return vipMessage;
+	public String getVipId() {
+		return vipId;
 	}
 
-	public void setVipMessage(String vipMessage) {
-		this.vipMessage = vipMessage;
+	public void setVipId(String vipId) {
+		this.vipId = vipId;
 	}
 
 	public String getId() {

@@ -31,7 +31,7 @@ public class Customer implements java.io.Serializable {
     private String epay;
 
     private Date birth;
-    // john 添加属性
+    // 会员等级
     private String idCard;
     private Integer sex;
     private String rank;//等级
@@ -76,7 +76,8 @@ public class Customer implements java.io.Serializable {
     private String updaterId;
     private String linkman;
     private Date updateTime;
-    private String vipMessage;
+    //会员id
+    private String vipId;
     private Double vippoints;
     @Column( length = 100)
     private String unionid;
@@ -130,12 +131,12 @@ public class Customer implements java.io.Serializable {
     }
 
     @Column( length = 50)
-    public String getVipMessage() {
-        return vipMessage;
+    public String getVipId() {
+        return vipId;
     }
 
-    public void setVipMessage(String vipMessage) {
-        this.vipMessage = vipMessage;
+    public void setVipId(String vipId) {
+        this.vipId = vipId;
     }
 
     private Integer zk;

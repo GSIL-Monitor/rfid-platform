@@ -235,8 +235,8 @@
                                 <label class="col-xs-4 col-sm-4 col-md-3 col-lg-3 control-label text-right"
                                        for="edit_storeDate">VIP信息</label>
                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                    <input class="form-control" id="edit_vipMessage" name="vipMessage"
-                                           value="${guest.vipMessage}"/>
+                                    <input class="form-control" id="edit_vipId" name="vipId"
+                                           value="${guest.vipId}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -310,12 +310,12 @@
     }
     function keydowns() {
         //监听回车键
-        $("#edit_vipMessage").keydown(function (event) {
+        $("#edit_vipId").keydown(function (event) {
 
             if (event.keyCode == 13) {
-                var vipMessage=$("#edit_vipMessage").val();
-                if(vipMessage!=""&&vipMessage!=undefined){
-                    $("#edit_vipMessage").attr("readonly", "true");
+                var vipId=$("#edit_vipId").val();
+                if(vipId!=""&&vipId!=undefined){
+                    $("#edit_vipId").attr("readonly", "true");
                 }
 
             }

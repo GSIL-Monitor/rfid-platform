@@ -250,7 +250,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
             guest.setFax(entity.getFax());
             guest.setDiscount(entity.getDiscount());
             guest.setAddress(entity.getAddress());
-            guest.setVipMessage(entity.getVipMessage());
+            guest.setVipId(entity.getVipId());
             guest.setProvince(entity.getProvince());
             guest.setCity(entity.getCity());
             guest.setAreaId(entity.getAreaId());//原为County
@@ -284,7 +284,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     guest.setOwingValue(0.0);
                 }
                 guest.setName(entity.getName());
-                guest.setVipMessage(entity.getVipMessage());
+                guest.setVipId(entity.getVipId());
                 guest.setStatus(entity.getStatus());
                 guest.setSex(entity.getSex());
                 guest.setType(entity.getType());
@@ -374,7 +374,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());
-                guest.setVipMessage(entity.getVipMessage());
+                guest.setVipId(entity.getVipId());
                 guest.setProvince(entity.getProvince());
                 guest.setCity(entity.getCity());
                 guest.setAreaId(entity.getAreaId());//原为County
@@ -418,7 +418,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
 
                 }
                 guest.setName(entity.getName());
-                guest.setVipMessage(entity.getVipMessage());
+                guest.setVipId(entity.getVipId());
                 guest.setStatus(entity.getStatus());
                 guest.setSex(entity.getSex());
                 guest.setType(entity.getType());
