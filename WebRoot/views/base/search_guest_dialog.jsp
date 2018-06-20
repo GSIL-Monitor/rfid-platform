@@ -456,25 +456,51 @@
     }
 
     function confirm_selected_OrigUnit() {
-        var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
-        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_origUnitId").val(rowData.id);
-        $("#search_origUnitName").val(rowData.name);
-        initSelectOrigForm();
-        $("#search_origId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_origId").selectpicker('refresh');
-        $("#modal_guest_search_table").modal('hide');
+        if(prefixId =="search"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+            initSelectOrigForm();
+            $("#search_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_origId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+        if(prefixId =="edit"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+            initSelectOrigEditForm();
+            $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_origId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+
     }
 
     function confirm_selected_DestUnit() {
-        var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
-        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        initSelectDestForm();
-        $("#search_destId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_destId").selectpicker('refresh');
-        $("#modal_guest_search_table").modal('hide');
+        if(prefixId =="search"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#search_destUnitId").val(rowData.id);
+            $("#search_destUnitName").val(rowData.name);
+            initSelectDestForm();
+            $("#search_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_destId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+        if(prefixId =="edit"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#edit_destUnitId").val(rowData.id);
+            $("#edit_destUnitName").val(rowData.name);
+            initSelectDestEditForm();
+            $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_destId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+
     }
 </script>
 
