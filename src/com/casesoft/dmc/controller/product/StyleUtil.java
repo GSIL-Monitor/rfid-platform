@@ -306,6 +306,7 @@ public class StyleUtil {
         sty.setClass10(style.getClass10());
 //        sty.setRules(style.getRules());
         sty.setIspush(style.getIspush());
+        sty.setStyleCycle(style.getStyleCycle());
         List<Product> saveList = new ArrayList<>();
         int index = CacheManager.getMaxProductId();
         for(int i =0 ; i < productList.size(); i++){
@@ -323,6 +324,7 @@ public class StyleUtil {
             p.setSizeName(CacheManager.getSizeNameById(p.getSizeId()));
             p.setCode(p.getStyleId()+p.getColorId()+p.getSizeId());
             p.setBrandCode(style.getBrandCode());
+            p.setStyleCycle(style.getStyleCycle());
             if(CommonUtil.isNotBlank(sty.getRemark())){
                 p.setRemark(sty.getRemark());
             }
