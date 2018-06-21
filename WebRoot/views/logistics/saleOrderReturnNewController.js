@@ -2,6 +2,9 @@ var searchUrl =  basePath + "/logistics/saleOrderReturn/page.do?filter_GTI_statu
 var autoSelect =false;//是否自动选中
 var addDetailgridiRow;//存储iRow
 var addDetailgridiCol;//存储iCol
+var taskType; //用于判断出入库类型 1入库 0 出库
+var wareHouse;
+var isCheckWareHouse=false;//是否检测出库仓库
 $(function () {
     /*初始化左侧grig*/
     initSearchGrid();
@@ -1246,6 +1249,7 @@ function addUniqCode() {
         if ($("#edit_origId").val() && $("#edit_origId").val() !== null) {
             taskType = 0; //出库
             wareHouse = $("#edit_origId").val();
+            isCheckWareHouse=true;
         } else if (($("#edit_destId").val() && $("#edit_destId").val() !== null)) {
             taskType = -1; //没有出库仓库时，直接入库。入库类型等于 -1 表明校验时不需要该参数
             wareHouse = $("#edit_destId").val();

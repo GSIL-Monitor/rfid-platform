@@ -209,12 +209,13 @@
 
                 var ajax_url;
                 var ajax_data;
+
                 if (taskType === -1) {
                     ajax_url = basePath + "/stock/warehStock/inCheckEpcStockAndFindDate.do";
                     ajax_data = {warehId: wareHouse, code: code, billNo: billNo};
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStockAndFindDate.do";
-                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo};
+                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo,isCheckWareHouse:isCheckWareHouse};
                 }
                 $.ajax({
                     async: false,
