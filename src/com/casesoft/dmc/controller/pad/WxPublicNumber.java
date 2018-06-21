@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,66 +48,71 @@ public class WxPublicNumber extends BaseController implements IBaseInfoControlle
      */
     @RequestMapping("/indexWS")
     public String login(HttpServletRequest req, HttpServletResponse resp)throws IOException {
-        Map<String ,String> map  = xmlToMap(req);
-        if (map.get("Event").equals("subscribe")){
-            //获取openid
-            String fromUserName = map.get("FromUserName");
-            //获取关注的微信公众号信息
-            net.sf.json.JSONObject weiXinJson = WeiXinUserInfoUtils.getUserInfo(fromUserName);
-            System.out.println(weiXinJson);
-            Object errcode = weiXinJson.get("errcode");
-            if(errcode == null || "0".equals(errcode)) {
-                WeiXinUser weiXinUser = new WeiXinUser();
-                weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
-                weiXinUser.setOpenId(weiXinJson.getString("openid"));
-                weiXinUser.setNickname(weiXinJson.getString("nickname"));
-                weiXinUser.setSex(weiXinJson.getInt("sex"));
-                weiXinUser.setLanguage(weiXinJson.getString("language"));
-                weiXinUser.setCity(weiXinJson.getString("city"));
-                weiXinUser.setProvince(weiXinJson.getString("province"));
-                weiXinUser.setCountry(weiXinJson.getString("country"));
-                weiXinUser.setSubscribeTime(weiXinJson.getString("subscribe_time"));
-                weiXinUser.setUnionId(weiXinJson.getString("unionid"));
-                System.out.println(weiXinUser.toString());
-                this.weiXinUserService.save(weiXinUser);
-            }else {
-                System.out.println("当前获取weiXinUser失败，错误码为："+errcode + "错误原因为："+weiXinJson.getString("errmsg"));
-            }
-        }else if (map.get("Event").equals("submit_membercard_user_info")){
-            //发送者id
-            String fromUserName = map.get("FromUserName");
-            //卡券id
-            String cardId = map.get("CardId");
-            //卡券code码
-            String userCardCode = map.get("UserCardCode");
-            String url = "https://api.weixin.qq.com/card/membercard/userinfo/get?access_token="+WeiXinUtils.getAccessToken().getToken();
-            JSONObject json = new JSONObject();
-            json.put("card_id",cardId);
-            json.put("code",userCardCode);
-            try{
-                JSONObject result = WX_HttpsUtil.httpsRequest(url,"POST",json.toString());
-                JSONObject resultJson = new JSONObject(result);
-                log.info("发送微信消息返回信息：" + resultJson.get("errcode"));
-                String errmsg = (String) resultJson.get("errmsg");
-                if(!"ok".equals(errmsg)){
-                    System.out.println("拉取用户信息失败");
-                    return "";
+        String echostr = req.getParameter("echostr");
+        if (echostr==null){
+            Map<String ,String> map  = xmlToMap(req);
+            if (map.get("Event").equals("subscribe")){
+                //获取openid
+                String fromUserName = map.get("FromUserName");
+                //获取关注的微信公众号信息
+                net.sf.json.JSONObject weiXinJson = WeiXinUserInfoUtils.getUserInfo(fromUserName);
+                System.out.println(weiXinJson);
+                Object errcode = weiXinJson.get("errcode");
+                if(errcode == null || "0".equals(errcode)) {
+                    WeiXinUser weiXinUser = new WeiXinUser();
+                    weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
+                    weiXinUser.setOpenId(weiXinJson.getString("openid"));
+                    weiXinUser.setNickname(weiXinJson.getString("nickname"));
+                    weiXinUser.setSex(weiXinJson.getInt("sex"));
+                    weiXinUser.setLanguage(weiXinJson.getString("language"));
+                    weiXinUser.setCity(weiXinJson.getString("city"));
+                    weiXinUser.setProvince(weiXinJson.getString("province"));
+                    weiXinUser.setCountry(weiXinJson.getString("country"));
+                    weiXinUser.setSubscribeTime(weiXinJson.getString("subscribe_time"));
+                    weiXinUser.setUnionId(weiXinJson.getString("unionid"));
+                    System.out.println(weiXinUser.toString());
+                    this.weiXinUserService.save(weiXinUser);
                 }else {
-                    JSONObject user_info = (JSONObject) resultJson.get("user_info");
-                    List<Map<String,String>> common_field_list = (List<Map<String, String>>) user_info.get("common_field_list");
-                    String phone = common_field_list.get(0).get("value");
-                    this.weiXinUserService.updatePhoneByopenId(fromUserName,phone);
+                    System.out.println("当前获取weiXinUser失败，错误码为："+errcode + "错误原因为："+weiXinJson.getString("errmsg"));
                 }
-            }catch(Exception e){
-                e.printStackTrace();
-                return "";
+            }else if (map.get("Event").equals("submit_membercard_user_info")){
+                //发送者id
+                String fromUserName = map.get("FromUserName");
+                //卡券id
+                String cardId = map.get("CardId");
+                //卡券code码
+                String userCardCode = map.get("UserCardCode");
+                String url = "https://api.weixin.qq.com/card/membercard/userinfo/get?access_token="+WeiXinUtils.getAccessToken().getToken();
+                JSONObject json = new JSONObject();
+                json.put("card_id",cardId);
+                json.put("code",userCardCode);
+                try{
+                    JSONObject result = WX_HttpsUtil.httpsRequest(url,"POST",json.toString());
+                    JSONObject resultJson = new JSONObject(result);
+                    log.info("发送微信消息返回信息：" + resultJson.get("errcode"));
+                    String errmsg = (String) resultJson.get("errmsg");
+                    if(!"ok".equals(errmsg)){
+                        System.out.println("拉取用户信息失败");
+                        return "";
+                    }else {
+                        JSONObject user_info = (JSONObject) resultJson.get("user_info");
+                        List<Map<String,String>> common_field_list = (List<Map<String, String>>) user_info.get("common_field_list");
+                        String phone = common_field_list.get(0).get("value");
+                        this.weiXinUserService.updatePhoneByopenId(fromUserName,phone);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                    return "";
+                }
             }
+        }else {
+            System.out.println(echostr);
+            PrintWriter pw = resp.getWriter();
+            pw.write(echostr);  //这里 echostr 的值必须返回，否则微信认为请求失败
+            pw.flush();
+            pw.close();
+            return "";
         }
-        /*String echostr = req.getParameter("echostr");
-        PrintWriter pw = resp.getWriter();
-        pw.write(echostr);  //这里 echostr 的值必须返回，否则微信认为请求失败
-        pw.flush();
-        pw.close();*/
         return "";
     }
     /**
