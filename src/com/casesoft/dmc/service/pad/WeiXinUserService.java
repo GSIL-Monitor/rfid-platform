@@ -43,7 +43,7 @@ public class WeiXinUserService extends BaseService<WeiXinUser, String> {
 
     @Override
     public WeiXinUser get(String propertyName, Object value) {
-        return null;
+        return this.weiXinUserDao.findUniqueBy(propertyName,value);
     }
 
     @Override
