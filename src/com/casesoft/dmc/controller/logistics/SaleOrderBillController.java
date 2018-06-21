@@ -27,6 +27,7 @@ import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
+import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private WeiXinUserService weiXinUserService;
     @Autowired
     private TemplateMsgService templateMsgService;
+    @Autowired
+    private GuestViewService guestViewService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -389,11 +392,11 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             String actPrice = saleOrderBill.getActPrice().toString();
             String totQty = saleOrderBill.getTotQty().toString();
             String sbillNo = saleOrderBill.getBillNo();
-            String name = currentUser.getName();
+            String name = saleOrderBill.getOrigUnitName();
             try {
                 Date date = new Date();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
-                String phone = (this.customerService.getById(saleOrderBill.getDestUnitId()).getTel());
+                String phone = this.guestViewService.get("id",saleOrderBill.getDestUnitId()).getTel();
                 String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
                 String state = WechatTemplate.senMsg(openId,actPrice,totQty,sbillNo,name);
                 if (state.equals("success")){
@@ -408,6 +411,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
                     templateMsgService.save(templateMsg);
                 }
             }catch (Exception e){
+                e.printStackTrace();
                 this.logger.error(e.getMessage());
                 return new MessageBox(true, "出库成功");
             }
