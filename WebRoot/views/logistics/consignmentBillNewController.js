@@ -1,8 +1,11 @@
 var comsigment_status;
+var billNo;
 $(function () {
     /*初始化左侧grig*/
     initSearchGrid();
     initForm();
+    /*初始化右侧grig*/
+    initAddGrid();
 });
 function initForm() {
     initSelectOrigForm();
@@ -10,6 +13,7 @@ function initForm() {
     initSelectBusinessIdForm();
     initSelectDestEditForm();
     initCustomerTypeForm();
+    initButtonGroup(pageType);
     if(billNo){
         bootbox.alert("单据"+billNo+"正在编辑中");
     }else{
@@ -232,10 +236,299 @@ function initDetailData(rowid) {
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     comsigment_status=rowData.status;
+    $('#addDetailgrid').jqGrid("clearGridData");
+    $('#addDetailgrid').jqGrid('GridUnload');
+    initeditGrid(rowData.billNo);
+    pageType="edit";
+    initButtonGroup(pageType);
+    $("#addDetailgrid").trigger("reloadGrid");
+
+
+}
+function initeditGrid(billId) {
+    billNo = billId;
+    $("#addDetailgrid").jqGrid({
+        height: "auto",
+        datatype: "json",
+        url: basePath + "/logistics/Consignment/returnDetails.do?billNo=" + billNo,
+        colModel: [
+            {name: 'id', label: 'id', hidden: true},
+            {name: 'billId', label: 'billId', hidden: true},
+            {name: 'billNo', label: 'billNo', hidden: true},
+            {name: 'status', hidden: true},
+            {name: 'inStatus', hidden: true},
+            {name: 'outStatus', hidden: true},
+            {
+                name: "operation", label: '操作', width: 30, align: 'center', sortable: false,
+                formatter: function (cellValue, options, rowObject) {
+                    if (rowObject.inStatus != 4 || rowObject.inStatus != 1) {
+                        return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px' onclick=deleteRow('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    } else {
+                        return "";
+                    }
+                    /*var html = '<a href="#" title="保存该行" onclick="saveItem(' + options.rowId + ')"><i class="ace-icon fa fa-save"></i></a>';
+                     html += '&nbsp;&nbsp;&nbsp;<a href="#"  title="删除一行" onclick="deleteRow(' + options.rowId + ')"><i class="ace-icon fa fa-trash"></i></a>';*/
+                }
+            },
+            {
+                label: '状态', width: 20, hidden: true, sortable: false,
+                formatter: function (cellValue, options, rowObject) {
+                    return '<i class="ace-icon fa fa-tasks blue"></i>'
+                }
+            },
+            {
+                name: 'inStatusImg', label: '入库状态', width: 30, align: 'center', sortable: false,
+                formatter: function (cellValue, options, rowObject) {
+                    if (rowObject.inStatus == 0) {
+                        return '<i class="fa fa-tasks blue" title="订单状态"></i>';
+                    } else if (rowObject.inStatus == 1) {
+                        return '<i class="fa fa-sign-in blue" title="已入库"></i>';
+                    } else if (rowObject.inStatus == 4) {
+                        return '<i class="fa fa-sign-out blue" title="入库中"></i>';
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            /*{
+             name: 'outStatusImg', label: '出库状态', width: 30, align: 'center',
+             formatter: function (cellValue, options, rowObject) {
+             if (rowObject.outStatus == 0) {
+             return '<i class="fa fa-tasks blue" title="订单状态"></i>';
+             } else if (rowObject.outStatus == 2) {
+             return '<i class="fa fa-sign-in blue" title="已出库"></i>';
+             } else if (rowObject.outStatus == 3) {
+             return '<i class="fa fa-sign-out blue" title="出库中"></i>';
+             } else {
+             return '';
+             }
+             }
+             },*/
+            {name: 'rType', label: '退货类型', hidden: true},
+            {
+                name: '',
+                label: '退货类型',
+                width: 40,
+                hidden: true,
+                editable: true,
+                formatter: function (cellValue, options, rowObject) {
+                    switch (cellValue) {
+                        case "0":
+                            return "缺损退货";
+                        default:
+                            return "报损退货";
+                    }
+                },
+                editoptions: {
+                    dataInit: function (e) {
+                        $(e).kendoComboBox({
+                            dataTextField: "name",
+                            dataValueField: "id",
+                            height: 200,
+                            suggest: true,
+                            change: function (e) {
+                                if (this._initial != this._prev) {
+                                    $('#addDetailgrid').saveRow(editDtailRowId);
+                                    var value = $('#addDetailgrid').getRowData(editDtailRowId);
+                                    value.inStockType = this.value();
+                                    $("#addDetailgrid").setRowData(editDtailRowId, value);
+                                }
+
+                            },
+                            dataSource: {
+                                type: "jsonp",
+                                transport: {
+                                    read: basePath + "/sys/property/searchByType.do?type=C6"
+                                }
+                            }
+                        });
+                    }
+                }
+            },
+            {name: 'styleId', label: '款号', width: 40},
+            {name: 'styleName', label: '款式', width: 40},
+            {name: 'colorId', label: '色号', width: 40},
+            {name: 'colorName', label: '颜色', width: 30},
+            {name: 'sizeId', label: '尺码', width: 30},
+            {name: 'sizeName', label: '尺寸', width: 40},
+            {
+                name: 'qty', label: '数量', editable: true, width: 40,
+                editrules: {
+                    number: true,
+                    minValue: 1
+                }
+            },
+            {name: 'sale', label: '已销售数量', width: 40},
+            {name: 'outMonyQty', label: '退款数量', editable: true, width: 40},
+            {name: 'outQty', label: '退货数量', width: 40},
+            {name: 'inQty', label: '已入库数量', width: 40},
+            {name: 'sku', label: 'sku', width: 50},
+            {
+                name: 'price', label: '寄售价格', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var price = parseFloat(cellValue).toFixed(2);
+                    return price;
+                }
+            },
+            {
+                name: 'totPrice', label: '寄售金额', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var totPrice = parseFloat(cellValue).toFixed(2);
+                    return totPrice;
+                }
+            },
+            {name: 'discount', label: '折扣', width: 40, editable: true},
+            {
+                name: 'actPrice', label: '实际价格', editable: true, width: 40,
+                editrules: {
+                    number: true
+                },
+                formatter: function (cellValue, options, rowObject) {
+                    var actPrice = parseFloat(cellValue).toFixed(2);
+                    return actPrice;
+                }
+            },
+            {
+                name: 'totActPrice', label: '实际金额', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var totActPrice = parseFloat(cellValue).toFixed(2);
+                    return totActPrice;
+                }
+            },
+            {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {
+                name: '', label: '唯一码明细', width: 40, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                }
+            },
+            {name: 'beforeoutQty', hidden: true},
+            {name: 'savehaveuniqueCodes', label: '唯一码', hidden: true},
+            {name: 'savenohanveuniqueCodes', label: '唯一码', hidden: true},
+            {name: 'readysale', label: '准备销售', hidden: true}
+        ],
+        autowidth: true,
+        rownumbers: true,
+        altRows: true,
+        rowNum: -1,
+        multiselect: false,
+        shrinkToFit: true,
+        pager: '#addDetailgrid-pager',
+        sortname: 'id',
+        sortorder: "desc",
+        footerrow: true,
+        cellEdit: true,
+        cellsubmit: 'clientArray',
+        beforeEditCell: function (rowid, celname, value, iRow, iCol) {
+            if (isfrist) {
+                beforsale = $('#addDetailgrid').getCell(rowid, "outMonyQty");
+                readysale = $('#addDetailgrid').getCell(rowid, "readysale");
+            }
+            isfrist = false;
+
+        },
+        afterEditCell: function (rowid, celname, value, iRow, iCol) {
+
+            editDtailiRow = iRow;
+            editDtailiCol = iCol;
+            issaleretrun = false;
+        },
+        afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+            if (cellname === "discount") {
+                var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                var var_totActPrice = -Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
+                $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+            } else if (cellname === "actPrice") {
+                var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
+                var var_totActPrice = -Math.abs(Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
+                $('#addDetailgrid').setCell(rowid, "discount", var_discount);
+                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+            } else if (cellname === "qty") {
+                $('#addDetailgrid').setCell(rowid, "totPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100));
+                $('#addDetailgrid').setCell(rowid, "totActPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100));
+            } else if (cellname === "outMonyQty") {
+                debugger;
+                var isok = true;
+                var outQty = $('#addDetailgrid').getCell(rowid, "outQty");
+                /* var sale=$('#addDetailgrid').getCell(rowid, "sale");*/
+                var inQty = $('#addDetailgrid').getCell(rowid, "inQty");
+                if ((parseInt(outQty) + parseInt(value)) > parseInt(inQty)) {
+                    isok = false;
+                    $.gritter.add({
+                        text: "已超过入库数量",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $('#addDetailgrid').setCell(rowid, "outMonyQty", beforsale);
+                    $('#addDetailgrid').setCell(rowid, "readysale", readysale);
+                }
+                if (parseInt(value) < beforsale) {
+                    isok = false;
+                    $.gritter.add({
+                        text: "少于退款数量",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $('#addDetailgrid').setCell(rowid, "outMonyQty", beforsale);
+                    $('#addDetailgrid').setCell(rowid, "readysale", readysale);
+                }
+                //var sale=$('#addDetailgrid').getCell(rowid, "sale");
+                if (isok) {
+                    /*  alert(beforsale);*/
+                    /* var readysale=$('#addDetailgrid').getCell(rowid, "readysale");*/
+                    var sum = parseInt(readysale) + (value - beforsale);
+                    $('#addDetailgrid').setCell(rowid, "readysale", sum);
+                }
+
+
+            }
+            setAddFooterData();
+        },
+
+        gridComplete: function () {
+            setAddFooterData();
+        },
+        loadComplete: function () {
+            initAllCodesList();
+
+        }
+    });
+
+    $("#addDetailgrid-pager_center").html("");
+}
+var allCodeStrInDtl = "";  //入库时，所有在单的唯一码
+function initAllCodesList() {
+    allCodeStrInDtl = "";
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        allCodeStrInDtl = allCodeStrInDtl + "," + rowData.uniqueCodes;
+    });
+    if (allCodeStrInDtl.substr(0, 1) == ",") {
+        allCodeStrInDtl = allCodeStrInDtl.substr(1);
+    }
+}
+function setAddFooterData() {
+    var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
+    var sum_sale = $("#addDetailgrid").getCol('sale', false, 'sum');
+    var sum_outMonyQty = $("#addDetailgrid").getCol('outMonyQty', false, 'sum');
+    var sum_outQty = $("#addDetailgrid").getCol('outQty', false, 'sum');
+    var sum_inQty = $("#addDetailgrid").getCol('inQty', false, 'sum');
+    var sum_totPrice = $("#addDetailgrid").getCol('totPrice', false, 'sum');
+    var sum_totActPrice = Math.round($("#addDetailgrid").getCol('totActPrice', false, 'sum'));
+    $("#addDetailgrid").footerData('set', {
+        styleId: "合计",
+        qty: sum_qty,
+        sale: sum_sale,
+        outMonyQty: sum_outMonyQty,
+        outQty: sum_outQty,
+        inQty: sum_inQty,
+        totPrice: -Math.abs(sum_totPrice),
+        totActPrice: -Math.abs(sum_totActPrice)
+    });
+    $("#edit_actPrice").val(-Math.abs(sum_totActPrice));
 
 }
 function setFooterData() {
-    debugger;
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
     var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
     var sum_totOutVal = $("#grid").getCol('totOutVal', false, 'sum');
@@ -324,4 +617,98 @@ function initCustomerTypeForm() {
             }*/
         }
     });
+}
+function initButtonGroup(pageType) {
+    var html = "";
+    if (pageType === "add") {
+        html +=
+            "<button id='CMDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "    <i class='ace-icon fa fa-plus'></i>" +
+            "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='CMDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>保存</span>" +
+            "</button>"+
+            "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>扫码</span>" +
+            "</button>" +
+            "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>入库</span>" +
+            "</button>";
+        $("#edit_guest_button").removeAttr("disabled");
+    }
+    if (pageType === "edit") {
+        html +=
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "    <i class='ace-icon fa fa-plus'></i>" +
+            "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='CMDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>保存</span>" +
+            "</button>"+
+            "<button id='CMDtl_wareHouseSale' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='saleRetrunNo()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>扫描退货</span>" +
+            "</button>" +
+            "<button id='CMDtl_wareHouseokSale' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='saleRetrunNook()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>退货</span>" +
+            "</button>" +
+            "<button id='CMDtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findRetrunno()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>查找退单</span>" +
+            "</button>";
+        if ($("#edit_status").val() != "2" && $("#edit_status").val() != "3") {
+            html += "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
+                "    <i class='ace-icon fa fa-search'></i>" +
+                "    <span class='bigger-110'>入库</span>" +
+                "</button>" +
+                "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+                "    <i class='ace-icon fa fa-undo'></i>" +
+                "    <span class='bigger-110'>扫码</span>" +
+                "</button>";
+        }
+        if (userId != "admin") {
+            $("#edit_guest_button").attr({"disabled": "disabled"});
+        }
+
+    }
+    $("#buttonGroup").html("" + html);
+}
+/**
+ * 新增单据调用
+ *
+ * */
+/*function addNew(){
+    $('#addDetailgrid').jqGrid("clearGridData");
+    $('#addDetailgrid').jqGrid('GridUnload');
+    initAddGrid();
+    $("#editForm").clearForm();
+    setEditFormVal();
+    initCustomerTypeForm();
+    $("#addDetailgrid").trigger("reloadGrid");
+    $(".selectpicker").selectpicker('refresh');
+    pageType="add";
+    initButtonGroup(pageType);
+
+}*/
+var dialogOpenPage;
+var prefixId;
+/*
+ *@param preId id前缀 search/edit 区分回调框id
+ **/
+function openSearchGuestDialog(preId) {
+    dialogOpenPage = "transferOrderconsignmentBill";
+    prefixId =preId;
+    $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
+        initGuestSelect_Grid();
+    });
+    console.log(prefixId);
+    $("#searchGuestDialog_buttonGroup").html("" +
+        "<button type='button'  class='btn btn-primary' onclick='confirm_selected_GuestId_Consignment()'>确认</button>"
+    );
 }

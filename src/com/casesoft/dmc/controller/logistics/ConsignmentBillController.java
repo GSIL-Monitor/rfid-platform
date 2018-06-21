@@ -51,6 +51,7 @@ public class ConsignmentBillController extends BaseController implements ILogist
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType","add");
         return mv;
     }
 

@@ -365,6 +365,20 @@
     function confirm_selected_GuestId_Consignment() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+        if(prefixId =="search") {
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+            initSelectOrigForm();
+            $("#modal_guest_search_table").modal('hide');
+        }else if(prefixId =="edit"){
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+            initSelectOrigForm();
+            $("#modal_guest_search_table").modal('hide');
+        }
+
+      /*  var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
         $("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
@@ -372,7 +386,7 @@
         $("#search_origId").selectpicker('val', rowData.defaultWarehId);
         $("#search_origId").selectpicker('refresh');
         $("#search_discount").val(rowData.discount);
-        $("#modal_guest_search_table").modal('hide');
+        $("#modal_guest_search_table").modal('hide');*/
     }
     function confirm_selected_GuestId_saleReturn() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");

@@ -19,6 +19,7 @@
         var ownersId="${ownersId}";
         var billNo = "${billNo}";
         var userId = "${userId}";
+        var pageType="${pageType}";
     </script>
 </head>
 <body class="no-skin">
@@ -251,6 +252,9 @@
 
                                                     </div>
                                                 </div>
+                                                <input class="form-control" id="edit_status" name="status"
+                                                       value="${consignmentBill.status}"style="display: none">
+                                                </input>
                                             </form>
                                         </div>
                                     </div>
@@ -276,6 +280,7 @@
     </div>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/consignmentBillNewController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <div id="dialog"></div>
