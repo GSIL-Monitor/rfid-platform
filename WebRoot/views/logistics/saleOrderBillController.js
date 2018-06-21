@@ -11,6 +11,7 @@ var billNo;
 var sizeArry="S,XS,M,L,XL,XXL,XXXL,F,other";
 var autoSelect =false;//是否自动选中
 var showScanDialog = false;
+var isCheckWareHouse=false;//是否检测出库仓库
 $(function () {
 
     /*初始化左侧grig*/
