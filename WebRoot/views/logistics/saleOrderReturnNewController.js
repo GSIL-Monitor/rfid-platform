@@ -1840,3 +1840,83 @@ function cancelAjax(billId) {
         }
     });
 }
+function edit_wareHouseIn() {
+    skuQty = {};
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        skuQty[rowData.sku] = rowData.inQty;
+    });
+
+    inOntWareHouseValid = 'wareHouseIn_valid';
+    taskType = 1;
+    var destId = $("#edit_destId").val();
+    wareHouse = destId;
+    var ct = $("#edit_customerType").val();
+    if (destId && destId !== null) {
+        $("#dialog_buttonGroup").html("" +
+            "<button type='button' id='WareHouseIn_dialog_buttonGroup' class='btn btn-primary' onclick='confirmWareHouseIn()'>确认入库</button>"
+        );
+        $("#add-uniqCode-dialog").modal('show').on('hidden.bs.modal', function () {
+            $("#uniqueCodeGrid").clearGridData();
+        });
+        initUniqeCodeGridColumn(ct);
+        $("#codeQty").text(0);
+    } else {
+        bootbox.alert("客户仓库不能为空！");
+    }
+    allCodes = "";
+}
+function confirmWareHouseIn() {
+    cs.showProgressBar();
+    var billNo = $("#edit_billNo").val();
+
+    $("#WareHouseIn_dialog_buttonGroup").attr({"disabled": "disabled"});
+
+
+    var epcArray = [];
+    $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
+        var rowData = $("#uniqueCodeGrid").getRowData(value);
+        epcArray.push(rowData);
+    });
+    if (epcArray.length === 0) {
+        bootbox.alert("请添加唯一码!");
+        cs.closeProgressBar();
+        $("#WareHouseIn_dialog_buttonGroup").removeAttr("disabled");
+        return;
+    }
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+
+    $.ajax({
+        dataType: "json",
+        // async: false,
+        url: basePath + "/logistics/saleOrderReturn/convertIn.do",
+        data: {
+            billNo: billNo,
+            strEpcList: JSON.stringify(epcArray),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            $("#WareHouseIn_dialog_buttonGroup").removeAttr("disabled");
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#modal-addEpc-table").modal('hide');
+                $("#addDetailgrid").trigger("reloadGrid");
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+
+
+    $("#add-uniqCode-dialog").modal('hide');
+}
