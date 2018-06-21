@@ -5,6 +5,7 @@ import com.casesoft.dmc.controller.pad.templatemsg.WX_HttpsUtil;
 import com.casesoft.dmc.controller.pad.templatemsg.WX_TemplateMsgUtil;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.pad.WeiXinUser;
@@ -60,18 +61,24 @@ public class WxPublicNumber extends BaseController implements IBaseInfoControlle
                 Object errcode = weiXinJson.get("errcode");
                 if(errcode == null || "0".equals(errcode)) {
                     WeiXinUser weiXinUser = new WeiXinUser();
-                    weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
-                    weiXinUser.setOpenId(weiXinJson.getString("openid"));
-                    weiXinUser.setNickname(weiXinJson.getString("nickname"));
-                    weiXinUser.setSex(weiXinJson.getInt("sex"));
-                    weiXinUser.setLanguage(weiXinJson.getString("language"));
-                    weiXinUser.setCity(weiXinJson.getString("city"));
-                    weiXinUser.setProvince(weiXinJson.getString("province"));
-                    weiXinUser.setCountry(weiXinJson.getString("country"));
-                    weiXinUser.setSubscribeTime(weiXinJson.getString("subscribe_time"));
-                    weiXinUser.setUnionId(weiXinJson.getString("unionid"));
-                    System.out.println(weiXinUser.toString());
-                    this.weiXinUserService.save(weiXinUser);
+                    weiXinUser = this.weiXinUserService.get("openId",weiXinJson.getString("openid"));
+                    if (CommonUtil.isBlank(weiXinUser)){
+                        weiXinUser = new WeiXinUser();
+                        weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
+                        weiXinUser.setOpenId(weiXinJson.getString("openid"));
+                        weiXinUser.setNickname(weiXinJson.getString("nickname"));
+                        weiXinUser.setSex(weiXinJson.getInt("sex"));
+                        weiXinUser.setLanguage(weiXinJson.getString("language"));
+                        weiXinUser.setCity(weiXinJson.getString("city"));
+                        weiXinUser.setProvince(weiXinJson.getString("province"));
+                        weiXinUser.setCountry(weiXinJson.getString("country"));
+                        weiXinUser.setSubscribeTime(weiXinJson.getString("subscribe_time"));
+                        weiXinUser.setUnionId(weiXinJson.getString("unionid"));
+                        System.out.println(weiXinUser.toString());
+                        this.weiXinUserService.save(weiXinUser);
+                    }else {
+                        System.out.println("该微信号已关注过公众号");
+                    }
                 }else {
                     System.out.println("当前获取weiXinUser失败，错误码为："+errcode + "错误原因为："+weiXinJson.getString("errmsg"));
                 }

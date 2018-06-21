@@ -26,6 +26,7 @@ import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.GuestViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +58,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private WeiXinUserService weiXinUserService;
     @Autowired
     private TemplateMsgService templateMsgService;
+    @Autowired
+    private GuestViewService guestViewService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -450,7 +453,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
                 try {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
-                    String phone =  this.customerService.getById(saleOrderReturnBill.getOrigUnitId()).getTel();
+                    String phone = this.guestViewService.get("id",saleOrderReturnBill.getOrigUnitId()).getTel();
                     String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
                     String state = WechatTemplate.returnMsg(openId,rBillNo,totQty,actPrice);
                     if (state.equals("success")){
