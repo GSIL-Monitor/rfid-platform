@@ -52,6 +52,19 @@ public class ConsignmentBillController extends BaseController implements ILogist
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType","add");
+        String defaultWarehId = unit.getDefaultWarehId();
+        String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+        String defalutCustomerId = unit.getDefalutCustomerId();
+        if (CommonUtil.isNotBlank(defalutCustomerId)) {
+            Customer customer = CacheManager.getCustomerById(defalutCustomerId);
+            mv.addObject("defaultWarehId", defaultWarehId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+        mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         return mv;
     }
 
