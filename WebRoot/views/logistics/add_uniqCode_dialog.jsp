@@ -205,7 +205,7 @@
 
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStock.do";
-                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo};
+                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo,isCheckWareHouse:isCheckWareHouse};
                 }
                 $.ajax({
                     async: false,

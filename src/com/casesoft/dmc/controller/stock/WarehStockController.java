@@ -272,7 +272,7 @@ public class WarehStockController extends BaseController {
             } else {
                 epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code,isCheckWareHouse);
                 }else{
                     epcStock = epcStockList.get(0);
                     Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
@@ -354,7 +354,7 @@ public class WarehStockController extends BaseController {
             } else {
                 epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code,false);
                 }else{
                     epcStock = epcStockList.get(0);
                     Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
@@ -561,7 +561,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("checkEpcStock")
     @ResponseBody
-    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo) {
+    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo,boolean isCheckWareHouse) {
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -593,9 +593,9 @@ public class WarehStockController extends BaseController {
 
             EpcStock epcStock;
             if (Constant.TaskType.Outbound == type) {
-                epcStock = this.epcStockService.findEpcInCode(warehId, code,false);
+                epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
             } else {
-                epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                epcStock = this.epcStockService.findEpcNotInCode(warehId, code,isCheckWareHouse);
             }
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);

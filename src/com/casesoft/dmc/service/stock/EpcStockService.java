@@ -183,6 +183,9 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     /**
      * 检查在库唯一吗信息
+     * warehId:仓库
+     * code：唯一码
+     * isCheckWareHouse：是否检验仓库
      * */
     public EpcStock findEpcInCode(String warehId, String code,boolean isCheckWareHouse) {
         if(CacheManager.getCheckWarehhouse()) {
@@ -198,12 +201,19 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     }
     /**
      * 检查不在库唯一吗信息
+     * warehId:仓库
+     * code：唯一码
+     * isCheckWareHouse：是否检验仓库
      * */
-    public EpcStock findEpcNotInCode(String warehId, String code) {
+    public EpcStock findEpcNotInCode(String warehId, String code,boolean isCheckWareHouse) {
         if(CacheManager.getCheckWarehhouse()) {
             return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
         }else{
-            return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=?", new Object[]{code});
+            if(isCheckWareHouse){
+                return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
+            }else{
+                return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=?", new Object[]{code});
+            }
         }
     }
 
