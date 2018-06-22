@@ -15,6 +15,7 @@ import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.Resource;
 import com.casesoft.dmc.model.sys.ResourceButton;
@@ -198,10 +199,16 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         }
         for (int i = 0; i < saleOrderBillDtls.size(); i++) {
             SaleOrderBillDtl dtl = saleOrderBillDtls.get(i);
-            dtl.setStyleName(CacheManager.getStyleNameById(dtl.getStyleId()));
+            Style style = CacheManager.getStyleById(dtl.getStyleId());
+            dtl.setStyleName(style.getStyleName());
             dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
-            dtl.setTagPrice(CacheManager.getStyleById(dtl.getStyleId()).getPrice());
+            dtl.setTagPrice(style.getPrice());
+            Map<String,Double> stylePriceMap = new HashMap<>();
+            stylePriceMap.put("price",style.getPrice());
+            stylePriceMap.put("wsPrice",style.getWsPrice());
+            stylePriceMap.put("puPrice",style.getPuPrice());
+            dtl.setStylePriceMap(JSON.toJSONString(stylePriceMap));
             if (codeMap.containsKey(dtl.getSku())) {
                 dtl.setUniqueCodes(codeMap.get(dtl.getSku()));
             }
