@@ -20,6 +20,13 @@
         var billNo = "${billNo}";
         var userId = "${userId}";
         var pageType="${pageType}";
+        var defaultWarehId = "${defaultWarehId}";
+        var defaultSaleStaffId="${defaultSaleStaffId}";
+        var defalutCustomerId="${defalutCustomerId}";
+        var defalutCustomerName="${defalutCustomerName}";
+        var defalutCustomerdiscount="${defalutCustomerdiscount}";
+        var defalutCustomercustomerType="${defalutCustomercustomerType}";
+        var defalutCustomerowingValue="${defalutCustomerowingValue}";
     </script>
 </head>
 <body class="no-skin">
@@ -154,7 +161,7 @@
                                                         <div class="input-group">
                                                             <input class="form-control" id="edit_origUnitId"
                                                                    type="text"
-                                                                   name="destUnitId"
+                                                                   name="origUnitId"
                                                                    value="${consignmentBill.origUnitId}" readonly/>
                                                             <span class="input-group-btn">
 												                <button class="btn btn-sm btn-default"
@@ -278,8 +285,15 @@
             </div>
         </div>
     </div>
+    <jsp:include page="../layout/footer.jsp"></jsp:include>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="add_inventoryCode_dialog.jsp"></jsp:include>
+<jsp:include page="add_detail_dialog.jsp"></jsp:include>
+<jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
+<jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
+<jsp:include page="findRetrunNo.jsp"></jsp:include>
+<jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/consignmentBillNewController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
