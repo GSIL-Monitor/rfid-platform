@@ -246,7 +246,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setAreasId(unit.getAreasId());
                 guest.setOwnerids(unit.getOwnerids());
             }
-
+            guest.setIdCard(entity.getIdCard());
             guest.setFax(entity.getFax());
             guest.setDiscount(entity.getDiscount());
             guest.setAddress(entity.getAddress());
@@ -302,6 +302,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     guest.setAreasId(unit.getAreasId());
                     guest.setOwnerids(unit.getOwnerids());
                 }
+                guest.setIdCard(entity.getIdCard());
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());
@@ -371,6 +372,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     guest.setAreasId(unit.getAreasId());
                     guest.setOwnerids(unit.getOwnerids());
                 }
+                guest.setIdCard(entity.getIdCard());
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());
@@ -436,6 +438,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     guest.setAreasId(unit.getAreasId());
                     guest.setOwnerids(unit.getOwnerids());
                 }
+                guest.setIdCard(entity.getIdCard());
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());

@@ -90,7 +90,7 @@ function edit() {
     if (rowId) {
         var row = $("#grid").jqGrid('getRowData', rowId);
         $("#edit_pricingRules_dialog").modal("show");
-        $("#editForm").loadData(row);
+        $("#editPricingRulesForm").loadData(row);
     } else {
         bootbox.alert("请选择一项进行修改！");
     }

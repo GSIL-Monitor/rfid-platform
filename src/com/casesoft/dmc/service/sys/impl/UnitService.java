@@ -10,7 +10,6 @@ import com.casesoft.dmc.model.location.Area;
 import com.casesoft.dmc.model.location.City;
 import com.casesoft.dmc.model.location.Province;
 import com.casesoft.dmc.model.sys.Unit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +25,11 @@ public class UnitService extends AbstractBaseService<Unit, String> {
 
     @Autowired
     private UnitDao unitDao;
+
+
+    public void updateIdCard(String id,int idCard){
+        this.unitDao.batchExecute("update Unit set idCard = '" +idCard+"' where id = ?",id);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -143,9 +147,9 @@ public class UnitService extends AbstractBaseService<Unit, String> {
     }
 
     @Override
-    public <X> List<X> findAll() {
-        // TODO Auto-generated method stub
-        return null;
+    public <Unit> List<Unit> findAll() {
+        String hql = "from Unit u";
+        return this.unitDao.find(hql, new Object[] {});
     }
 
     public Unit getCompanyHeader() {
