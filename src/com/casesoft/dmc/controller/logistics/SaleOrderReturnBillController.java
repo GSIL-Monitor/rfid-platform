@@ -280,6 +280,12 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
                 s.setSizeName(CacheManager.getSizeNameById(s.getSizeId()));
             }
             s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
+            Style style = CacheManager.getStyleById(s.getStyleId());
+            Map<String,Double> stylePriceMap = new HashMap<>();
+            stylePriceMap.put("price",style.getPrice());
+            stylePriceMap.put("wsPrice",style.getWsPrice());
+            stylePriceMap.put("puPrice",style.getPuPrice());
+            s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
         }
         return saleOrderReturnBillDtls;
     }
