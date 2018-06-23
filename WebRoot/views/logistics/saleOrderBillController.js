@@ -1131,7 +1131,7 @@ function updateBillDetailData(){
             dtlRow.price = stylePriceMap['price'];
         }
         dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-        dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+        dtlRow.totActPrice = (dtlRow.qty * dtlRow.actPrice).toFixed(2);
         if(dtlRow.id){
             $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
         }else{
