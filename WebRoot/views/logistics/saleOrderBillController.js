@@ -578,7 +578,7 @@ function initeditGrid(billId) {
                 $('#addDetailgrid').setCell(rowid, "totPrice", Math.round($('#addDetailgrid').getCell(rowid, "price") * value) * 100) / 100;
                 $('#addDetailgrid').setCell(rowid, "totActPrice", Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value) * 100) / 100;
             }
-            setFooterData();
+            setAddFooterData();
         },
         afterEditCell: function (rowid, celname, value, iRow, iCol) {
             var value = $('#addDetailgrid').getRowData(rowid);
@@ -1237,7 +1237,7 @@ function saveItem(rowId) {
 function deleteItem(rowId) {
     var value = $('#addDetailgrid').getRowData(rowId);
     $("#addDetailgrid").jqGrid("delRowData", rowId);
-    setFooterData();
+    setAddFooterData();
 
     var totActPrice = value.totActPrice;
 
