@@ -863,6 +863,8 @@
                 }
                 if ("${pageType}" == "edit") {
                     $("#form_sizeSortId").find("option[value='${style.sizeSortId}']").attr("selected", true);
+                }else{
+                    $("#form_sizeSortId").find("option[value='01']").attr("selected", true);
                 }
             }
         });

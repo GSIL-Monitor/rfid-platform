@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.util.List;
+import java.util.Map;
 
 @MappedSuperclass
 public abstract class BaseBillDtl {
@@ -66,6 +67,9 @@ public abstract class BaseBillDtl {
     protected Double discount;
     @Transient
     protected String imgUrl;
+
+    @Transient
+    protected String stylePriceMap;
 
     public String getBillId() {
         return billId;
@@ -265,5 +269,13 @@ public abstract class BaseBillDtl {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getStylePriceMap() {
+        return stylePriceMap;
+    }
+
+    public void setStylePriceMap(String stylePriceMap) {
+        this.stylePriceMap = stylePriceMap;
     }
 }

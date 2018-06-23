@@ -327,7 +327,8 @@ function initAddGrid() {
                 }
             },
             {name: 'totActPrice', label: '实际金额', width: 40},
-            {name: 'uniqueCodes', label: '唯一码', hidden: true}
+            {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -534,7 +535,8 @@ function initeditGrid(billId) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
             },
-            {name: 'returnbillNo', label: '退货单号', hidden: true}
+            {name: 'returnbillNo', label: '退货单号', hidden: true},
+            {name:'stylePriceMap',label:'价格表',hidden:true}
 
         ],
         autowidth: true,
@@ -1116,6 +1118,28 @@ function addDetail() {
         bootbox.alert("请选择客户！");
     }
 }
+function updateBillDetailData(){
+    var ct = $("#edit_customerType").val();
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var dtlRow = $("#addDetailgrid").getRowData(value);
+        var stylePriceMap = JSON.parse(dtlRow.stylePriceMap);
+        if (ct == "CT-AT") {//省代价格
+            dtlRow.price = stylePriceMap['puPrice'];
+        } else if (ct == "CT-ST") {//门店价格
+            dtlRow.price = stylePriceMap['wsPrice'];
+        } else if (ct == "CT-LS") {//吊牌价格
+            dtlRow.price = stylePriceMap['price'];
+        }
+        dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+        dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+        if(dtlRow.id){
+            $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+        }else{
+            $("#addDetailgrid").setRowData(value, dtlRow);
+        }
+    });
+
+}
 /*选中订货商品添加*/
 function addProductInfo(status) {
 
@@ -1159,6 +1183,11 @@ function addProductInfo(status) {
             productInfo.totActPrice = productInfo.qty * productInfo.actPrice;
             productInfo.sku = productInfo.code;
             productInfo.inStockType = styleRow.class6;
+            var stylePriceMap={};
+            stylePriceMap['price']=styleRow.price;
+            stylePriceMap['wsPrice']=styleRow.wsPrice;
+            stylePriceMap['puPrice']=styleRow.puPrice;
+            productInfo.stylePriceMap=JSON.stringify(stylePriceMap);
             addProductInfo.push(productInfo);
         }
     });
@@ -1362,7 +1391,7 @@ function addProductsOnCode() {
     var productListInfo = [];
     if (!$('#so_savecode_button').prop('disabled')) {
         $("#so_savecode_button").attr({"disabled": "disabled"});
-        var ct = $("#search_customerType").val();
+        var ct = $("#edit_customerType").val();
         $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
             var productInfo = $("#uniqueCodeGrid").getRowData(value);
             if(productInfo.code!=""&&productInfo.code!=undefined){
@@ -1388,6 +1417,11 @@ function addProductsOnCode() {
                 productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                 productInfo.totPrice = productInfo.price;
                 productInfo.totActPrice = productInfo.actPrice;
+                var stylePriceMap={};
+                stylePriceMap['price']=productInfo.price;
+                stylePriceMap['wsPrice']=productInfo.wsPrice;
+                stylePriceMap['puPrice']=productInfo.puPrice;
+                productInfo.stylePriceMap=JSON.stringify(stylePriceMap);
                 productListInfo.push(productInfo);
             }
         });
@@ -2086,7 +2120,7 @@ function _resetForm(){
 function doPrint() {
 
     /*$("#editForm").resetForm();*/
-    debugger;;
+    debugger;
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");
     var billNo = $("#edit_billNo").val();
