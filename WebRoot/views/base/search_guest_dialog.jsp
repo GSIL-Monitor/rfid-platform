@@ -351,29 +351,7 @@
         $("#search_customerType").val(rowData.unitType);
         $("#search_destId").selectpicker('val', rowData.defaultWarehId);
         $("#search_destId").selectpicker('refresh');
-        var idCard = rowData.idCard;
-        $.ajax({
-            dataType: "json",
-            url: basePath+"/shop/vipCard/findCardDiscount.do?",
-            data:{
-                idCard:idCard
-            },
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (msg) {
-                if (msg.success) {
-                    var discount = msg.result;
-                    if (rowData.discount>discount){
-                        $("#search_discount").val(discount);
-                    }else {
-                        $("#search_discount").val(rowData.discount);
-                    }
-                } else {
-                    bootbox.alert(msg.msg);
-                }
-            }
-        });
+        $("#search_discount").val(rowData.discount);
         $("#pre_Balance").val(0-rowData.owingValue);
         $("#modal_guest_search_table").modal('hide');
 
@@ -405,28 +383,7 @@
         $("#search_customerType").val(rowData.unitType);
         $("#search_origId").selectpicker('val', rowData.defaultWarehId);
         $("#search_origId").selectpicker('refresh');
-        var idCard = rowData.idCard;
-        $.ajax({
-            dataType: "json",
-            async: false,
-            url: basePath+"/shop/vipCard/findCardDiscount.do?",
-            data:{
-                idCard:idCard
-            },
-            type: "POST",
-            success: function (msg) {
-                if (msg.success) {
-                    var discount = msg.result;
-                    if (rowData.discount>discount){
-                        $("#search_discount").val(discount);
-                    }else {
-                        $("#search_discount").val(rowData.discount);
-                    }
-                } else {
-                    bootbox.alert(msg.msg);
-                }
-            }
-        });
+        $("#search_discount").val(rowData.discount);
         $("#modal_guest_search_table").modal('hide');
 
         if (pageType === "add"){

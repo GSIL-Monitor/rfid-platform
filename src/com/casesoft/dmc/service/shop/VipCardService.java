@@ -44,7 +44,7 @@ public class VipCardService extends AbstractBaseService<VipCard, String> {
 
     @Override
     public VipCard load(String id) {
-        return null;
+        return this.vipCardDao.load(id);
     }
 
     @Override
@@ -94,9 +94,13 @@ public class VipCardService extends AbstractBaseService<VipCard, String> {
             if (unit.getIdCard()!=null&&!unit.getIdCard().equals("")&&Integer.parseInt(unit.getIdCard())<=Integer.parseInt(VipCardIdMax)){
                 Double actPriceSum = this.saleOrderBillService.findSumActPrice(unit.getId());
                 if (actPriceSum!=0){
-                    Double upgradeConsumeNo = upgradeConsumeNo(unit.getId());
+                    VipCard vipCard =get("id",unit.getIdCard());
+                    Double upgradeConsumeNo = vipCard.getUpgradeConsumeNo();
                     if (actPriceSum>=upgradeConsumeNo){
                         unit.setIdCard(Integer.parseInt(unit.getIdCard())+1+"");
+                        if (unit.getDiscount()>=vipCard.getDiscount()) {
+                            unit.setDiscount(vipCard.getDiscount());
+                        }
                         this.unitService.saveOrUpdate(unit);
                     }
                 }
@@ -107,10 +111,14 @@ public class VipCardService extends AbstractBaseService<VipCard, String> {
         for (Customer customer : customerList){
             if (customer.getIdCard()!=null&&!customer.getIdCard().equals("")&&Integer.parseInt(customer.getIdCard())<=Integer.parseInt(VipCardIdMax)){
                 Double actPriceSum = this.saleOrderBillService.findSumActPrice(customer.getId());
-                Double upgradeConsumeNo = upgradeConsumeNo(customer.getIdCard());
                 if (actPriceSum != 0){
+                    VipCard vipCard =get("id",customer.getIdCard());
+                    Double upgradeConsumeNo = vipCard.getUpgradeConsumeNo();
                     if (actPriceSum>=upgradeConsumeNo){
                         customer.setIdCard(Integer.parseInt(customer.getIdCard())+1+"");
+                        if (customer.getDiscount()>=vipCard.getDiscount()){
+                            customer.setDiscount(vipCard.getDiscount());
+                        }
                         this.customerService.save(customer);
                     }
                 }

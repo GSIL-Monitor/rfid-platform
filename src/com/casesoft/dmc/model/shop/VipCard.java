@@ -20,7 +20,7 @@ public class VipCard {
     @Column(length = 1)
     private String rank; //会员卡等级 1 2 3 4
     @Column(length = 5)
-    private Double discount; //折扣
+    private Integer discount; //折扣
     @Column(length = 1)
     private int freeShipping; //是否包邮 1包邮 0不包邮
     @Column(length = 1)
@@ -62,11 +62,11 @@ public class VipCard {
         this.name = name;
     }
 
-    public Double getDiscount() {
+    public Integer getDiscount() {
         return discount;
     }
 
-    public void setDiscount(Double discount) {
+    public void setDiscount(Integer discount) {
         this.discount = discount;
     }
 
