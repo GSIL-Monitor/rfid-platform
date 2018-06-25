@@ -33,6 +33,8 @@ public class PrintSet {
     private String ruleReceipt;//小票规格
     @Column()
     private Integer commonType;//公共类型(0 公共  1 非公共)
+    @Column()
+    private String storeName;//门店名称
 
     public Integer getCommonType() {
         return commonType;
@@ -120,5 +122,13 @@ public class PrintSet {
 
     public void setPrintTableTh(String printTableTh) {
         this.printTableTh = printTableTh;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }

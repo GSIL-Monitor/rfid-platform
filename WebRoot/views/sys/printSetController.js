@@ -307,6 +307,7 @@ function save() {
             type:$("#receiptType").val(),
             printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
+            storeName:$("#editStoreName").val(),
             commonType:$("#commonType").val()
         }
         saveAjax(printSet);
@@ -366,6 +367,8 @@ function findPrintSet(sum) {
                     $("#receiptName").val(result.name);
                     $("#receiptType").val(result.type);
                     $("#commonType").val(result.commonType);
+                    $("#editStoreName").val(result.storeName);
+                    $("#storeName").find("span").text(result.storeName);
                     var printFootExtend=""+result.printFootExtend;
                     printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
                     $("#footExtendWrite").val(printFootExtend);
@@ -775,6 +778,7 @@ function saveA4() {
             type:$("#receiptTypeA4").val(),
             printTableCode:printTableCode,
             printTableTh:tabbleth,
+            storeName:$("#editStoreName").val(),
             //printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
             commonType:$("#commonTypeA4").val()
@@ -843,4 +847,9 @@ function loadingTablecheck() {
     tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='price' onclick=selectThisA4class(this,\"price\")><i></i><span>吊牌价</span></div></li>";
     tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='totPrice' onclick=selectThisA4class(this,\"totPrice\")><i></i><span>金额</span></div></li>";
     $("#tablePrintA4").html(tableHtmlCheck)
+}
+
+function writeStoreName(t) {
+    console.log($(t).val());
+    $("#storeName").find("span").html($(t).val());
 }
