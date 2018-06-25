@@ -239,6 +239,7 @@ function initSearchGrid() {
             },
             {name: 'billDate', label: '单据日期', width: 30},
             {name: 'customerType', label: "客户类型", width: 30, hidden: true},
+            {name: 'customerTypeName', label: "客户类型", width: 30, hidden: true},
             {
                 label: "客户类型", width: 40, hidden: true,
                 formatter: function (cellValue, options, rowObject) {
@@ -1391,6 +1392,13 @@ function saveother(totActPrice) {
     if (!$('#editForm').data('bootstrapValidator').isValid()) {
         cs.closeProgressBar();
         return;
+    }
+    if(pageType=="edit"){
+        if(slaeOrderReturn_customerType!=$("#edit_customerType").val()){
+            bootbox.alert("客户类型不相同");
+            cs.closeProgressBar();
+            return;
+        }
     }
 
     /*if ($("#addDetailgrid").getDataIDs().length == 0) {

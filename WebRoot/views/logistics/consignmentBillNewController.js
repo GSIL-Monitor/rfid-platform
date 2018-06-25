@@ -10,6 +10,7 @@ var editDtailiRow = null;
 var editDtailiCol = null;
 var billNo;
 var comsigment_status;
+var comsigment_customerType;
 $(function () {
     /*初始化左侧grig*/
     initSearchGrid();
@@ -191,6 +192,7 @@ function initSearchGrid() {
             },
             {name: 'billDate', label: '单据日期', width: 35},
             {name: 'customerType', label: "客户类型", hidden: true},
+            {name: 'customerTypeName', label: "客户类型", hidden: true},
             {
                 label: "客户类型", width: 40,
                 formatter: function (cellValue, options, rowObject) {
@@ -264,6 +266,7 @@ function initDetailData(rowid) {
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     comsigment_status=rowData.status;
+    comsigment_customerType=rowData.customerType;
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
@@ -1116,6 +1119,13 @@ function saveother(totActPrice) {
         cs.closeProgressBar();
         return;
     }
+    if(pageType=="edit"){
+        if(comsigment_customerType!=$("#edit_customerType").val()){
+            bootbox.alert("客户类型不相同");
+            cs.closeProgressBar();
+            return;
+        }
+    }
     //实收金额的计算
     var payPrice = $("#edit_payPrice").val();
     if (parseFloat(payPrice) < 0) {
@@ -1285,6 +1295,14 @@ function save() {
         cs.closeProgressBar();
         return;
     }
+    if(pageType=="edit"){
+        if(comsigment_customerType!=$("#edit_customerType").val()){
+            bootbox.alert("客户类型不相同");
+            cs.closeProgressBar();
+            return;
+        }
+    }
+
     var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
