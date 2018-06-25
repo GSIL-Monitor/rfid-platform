@@ -93,7 +93,7 @@
             ondblClickRow: function (rowid) {
                 debugger;
                 if (dialogOpenPage === "purchaseOrder") {
-                    confirm_selected_VendorId_purchaseOrder();
+                    confirm_selected_VendorId_purchaseOrder(prefixId);
                 } else if (dialogOpenPage === "purchaseReturn") {
                     confirm_selected_VendorId_purchaseReturn();
                 }else if(dialogOpenPage==="purchaseOrderSearch"){
@@ -110,11 +110,16 @@
         $("#vendorSelect_Page_left").css("width","2px");
         $("#vendorSelect_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
     }
-    function confirm_selected_VendorId_purchaseOrder() {
+    function confirm_selected_VendorId_purchaseOrder(prefixId) {
         var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_origUnitId").val(rowData.id);
-        $("#search_origUnitName").val(rowData.name);
+        if (prefixId=="edit"){
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+        }else {
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+        }
         $("#modal_vendor_search_table").modal('hide');
     }
     function confirm_selected_VendorId_purchaseReturn() {

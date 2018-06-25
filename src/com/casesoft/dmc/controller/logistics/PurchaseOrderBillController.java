@@ -11,6 +11,8 @@ import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.sys.Resource;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -18,6 +20,8 @@ import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.tag.InitService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +48,15 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
     private InitService initService;
     @Autowired
     private ReplenishBillService replenishBillService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
    /* @Override
     @RequestMapping(value = "/index")
     public String index() {
         return "/views/logistics/purchaseOrderBill";
     }*/
-
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
@@ -355,5 +362,18 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
     @Override
     public String index() {
         return "/views/logistics/purchaseOrderBillNew";
+    }
+
+    @RequestMapping(value = "/findResourceButton")
+    @ResponseBody
+    public MessageBox findResourceButton(){
+        try {
+            Resource resource = this.resourceService.get("url", "logistics/purchase");
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId());
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
+        }
     }
 }
