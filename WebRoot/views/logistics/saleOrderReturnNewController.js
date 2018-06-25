@@ -5,6 +5,7 @@ var addDetailgridiCol;//存储iCol
 var taskType; //用于判断出入库类型 1入库 0 出库
 var wareHouse;
 var isCheckWareHouse=false;//是否检测出库仓库
+var slaeOrderReturn_customerType;
 $(function () {
     /*初始化左侧grig*/
     initSearchGrid();
@@ -323,6 +324,7 @@ function initDetailData(rowid){
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     slaeOrderReturn_status = rowData.status;
+    slaeOrderReturn_customerType=rowData.customerType;
     if (slaeOrderReturn_status != "0" && userId != "admin") {
         $("#edit_origId").attr('disabled', true);
         $("#edit_destId").attr('disabled', true);
@@ -498,7 +500,7 @@ function initeditGrid(billId) {
                 $('#addDetailgrid').setCell(rowid, "totPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100));
                 $('#addDetailgrid').setCell(rowid, "totActPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100));
             }
-            setFooterData();
+            setAddFooterData();
         },
         gridComplete: function () {
             setAddFooterData();
@@ -966,6 +968,14 @@ function save() {
         bootbox.alert("不能在相同的单位之间做销售退货");
         cs.closeProgressBar();
         return;
+    }
+
+    if(pageType=="edit"){
+        if(slaeOrderReturn_customerType!=$("#edit_customerType").val()){
+            bootbox.alert("客户类型不相同");
+            cs.closeProgressBar();
+            return;
+        }
     }
 
     $("#editForm").data('bootstrapValidator').destroy();
