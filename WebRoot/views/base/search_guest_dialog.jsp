@@ -410,8 +410,15 @@
             $("#edit_customerType").selectpicker('val', rowData.unitType);
             $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_origId").selectpicker('refresh');
-            $("#edit_discount").val(rowData.discount);
+            if(rowData.discount){
+                $("#edit_discount").val(rowData.discount);
+            }else{
+                $("#edit_discount").val(100);
+            }
             $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
+            updateBillDetailData();
+            setDiscount();
+            $(".selectpicker").selectpicker('refresh');
             $("#modal_guest_search_table").modal('hide');
            /* if (pageType === "add"){
                 if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== ""){

@@ -453,7 +453,8 @@ function initeditGrid(billId) {
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
-            }
+            },
+            {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -859,7 +860,8 @@ function initAddGrid() {
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
-            }
+            },
+            {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -941,7 +943,7 @@ function setDiscount() {
         addDetailgridiRow = null;
         addDetailgridiCol = null;
     }
-    var discount = $("#search_discount").val();
+    var discount = $("#edit_discount").val();
     if (discount && discount != null && discount != "") {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             $('#addDetailgrid').setCell(value, "discount", discount);
@@ -951,7 +953,7 @@ function setDiscount() {
             $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
         });
     }
-    setFooterData();
+    setAddFooterData();
 }
 function save() {
     cs.showProgressBar();
@@ -1919,4 +1921,26 @@ function confirmWareHouseIn() {
 
 
     $("#add-uniqCode-dialog").modal('hide');
+}
+function updateBillDetailData(){
+    var ct = $("#edit_customerType").val();
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var dtlRow = $("#addDetailgrid").getRowData(value);
+        var stylePriceMap = JSON.parse(dtlRow.stylePriceMap);
+        if (ct == "CT-AT") {//省代价格
+            dtlRow.price = stylePriceMap['puPrice'];
+        } else if (ct == "CT-ST") {//门店价格
+            dtlRow.price = stylePriceMap['wsPrice'];
+        } else if (ct == "CT-LS") {//吊牌价格
+            dtlRow.price = stylePriceMap['price'];
+        }
+        dtlRow.totPrice =  -Math.abs(dtlRow.qty * dtlRow.price).toFixed(2);
+        dtlRow.totActPrice = -Math.abs(dtlRow.qty * dtlRow.actPrice).toFixed(2);
+        if(dtlRow.id){
+            $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+        }else{
+            $("#addDetailgrid").setRowData(value, dtlRow);
+        }
+    });
+
 }
