@@ -118,11 +118,19 @@
         $("#modal_vendor_search_table").modal('hide');
     }
     function confirm_selected_VendorId_purchaseReturn() {
-        var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
-        var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        $("#modal_vendor_search_table").modal('hide');
+        if(prefixId=="search"){
+            var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+            $("#search_destUnitId").val(rowData.id);
+            $("#search_destUnitName").val(rowData.name);
+            $("#modal_vendor_search_table").modal('hide');
+        }else if(prefixId =="edit"){
+            var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+            $("#edit_destUnitId").val(rowData.id);
+            $("#edit_destUnitName").val(rowData.name);
+            $("#modal_vendor_search_table").modal('hide');
+        }
     }
     function closeSearchGuestDialog() {
         $("#modal_vendor_search_table").modal('hide');

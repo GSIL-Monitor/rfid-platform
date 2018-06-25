@@ -15,6 +15,10 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var pageType="${pageType}";
+        var OwnerId="${OwnerId}";
+        var userId="${userId}";
+        var defaultWarehId="${defaultWarehId}";
     </script>
 </head>
 <body class="no-skin">
@@ -130,11 +134,132 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-8 order-panel-right">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="text-align: right">
+                                <div id="buttonGroup">
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="widget-body">
+                                    <div class="widget-main padding-12">
+                                        <form id="editForm" class="form-horizontal" role="form"
+                                              onkeydown="if(event.keyCode==13)return false;">
+                                            <div class="form-group">
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_destUnitId">供应商</label>
+                                                <div class="col-md-5">
+                                                    <div class="input-group">
+                                                        <input class="form-control" id="edit_destUnitId"
+                                                               type="text"
+                                                               name="destUnitId"
+                                                               value="${purchaseReturnBill.destUnitId}" readonly/>
+                                                        <span class="input-group-btn">
+                                                                    <button class="btn btn-sm btn-default"
+                                                                            id="edit_guest_button"
+                                                                            type="button"
+                                                                            onclick="openSearchVendorDialog('edit')">
+                                                                        <i class="ace-icon fa fa-list"></i>
+                                                                    </button>
+                                                                </span>
+                                                        <input class="form-control" id="edit_destUnitName"
+                                                               type="text"
+                                                               name="destUnitName"
+                                                               value="${purchaseReturnBill.destUnitName}" readonly/>
+                                                    </div>
+                                                </div>
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_billType">退货类型</label>
+                                                <div class="col-md-5">
+                                                    <input class="form-control" id="edit_billType" name="billType"
+                                                           type="text" readOnly
+                                                           value="${purchaseReturnBill.billNo}"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_billNo">单据编号</label>
+                                                <div class="col-md-5">
+                                                    <input class="form-control" id="edit_billNo" name="billNo"
+                                                           type="text" readOnly
+                                                           value="${purchaseReturnBill.billNo}"/>
+                                                </div>
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_billDate">单据日期</label>
+                                                <div class="col-md-5">
+                                                    <input class="form-control date-picker" id="edit_billDate"
+                                                           name="billDate"
+                                                           type="text" value="${purchaseReturnBill.billDate}"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_origId">出库仓库</label>
+                                                <div class="col-md-3">
+                                                    <select class="form-control selectpicker show-tick"
+                                                            id="edit_origId"
+                                                            name="origId"
+                                                            style="width: 100%;" data-live-search="true" value="${purchaseReturnBill.origId}">
+                                                    </select>
+                                                </div>
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_actPrice">应退货金额</label>
+                                                <div class="col-md-3">
+                                                    <input class="form-control date-picker" id="edit_actPrice"
+                                                           name="actPrice"
+                                                           type="text" value="${purchaseReturnBill.actPrice}"/>
+                                                </div>
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_payPrice">实退货金额</label>
+                                                <div class="col-md-3">
+                                                    <input class="form-control" id="edit_payPrice" name="payPrice"
+                                                           type="text" value="${purchaseReturnBill.payPrice}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_remark">备注</label>
+
+                                                <div class="col-md-11 col-sm-11">
+                                                <textarea maxlength="400" class="form-control" id="edit_remark"
+                                                          name="remark">${purchaseReturnBill.remark}</textarea>
+                                                </div>
+                                            </div>
+                                            <input id="edit_status" name="status"
+                                                   value="${purchaseReturnBill.status}"
+                                                   type="hidden">
+                                            </input>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="widget-main padding-12 no-padding-left no-padding-right">
+                                        <div class="tab-content padding-4">
+                                            <div id="addDetail" class="tab-pane in active">
+                                                <table id="addDetailgrid"></table>
+                                                <div id="addDetailgrid-pager"></div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="../sys/print_two.jsp"></jsp:include>
+<jsp:include page="purchaseReturnBillPrint.jsp"></jsp:include>
+<jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseReturnBillNewController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
+<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 
 </body>
 </html>

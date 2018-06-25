@@ -49,9 +49,14 @@ public class PurchaseReturnBillController extends BaseController implements ILog
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBillNew");
         User user = this.getCurrentUser();
         mv.addObject("OwnerId", user.getOwnerId());
+        mv.addObject("userId", getCurrentUser().getId());
+        Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        mv.addObject("defaultWarehId", defaultWarehId);
+        mv.addObject("pageType", "add");
         return mv;
     }
 
