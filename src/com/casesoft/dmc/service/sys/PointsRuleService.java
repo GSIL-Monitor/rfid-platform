@@ -83,12 +83,12 @@ public class PointsRuleService extends BaseService<PointsRule, String> {
     }
 
     public PointsRule findDefaultRule() {
-        return this.pointsRuleDao.findUniqueBy("defaultRule", true);
+        return this.pointsRuleDao.findUnique("from PointsRule where defaultRule=1 and status=1");
     }
 
-    public List<PointsRule> findRulesByDate(Date startDate, Date endDate, String unitId) {
-        String hql = "from PointsRule where (startDate <= ? and endDate >= ?) or (startDate <= ? and endDate >= ?) or (startDate >= ? and endDate <= ?) and unitId = ? and defaultRule = 0";
-        return this.pointsRuleDao.find(hql, startDate, startDate, endDate, endDate, startDate, endDate, unitId);
+    public List<PointsRule> findRulesByDate(Date startDate, Date endDate, String unitId, String id) {
+        String hql = "from PointsRule where ((startDate <= ? and endDate >= ?) or (startDate <= ? and endDate >= ?) or (startDate >= ? and endDate <= ?)) and unitId = ? and defaultRule=0 and status=1 and id!=?";
+        return this.pointsRuleDao.find(hql, startDate, startDate, endDate, endDate, startDate, endDate, unitId, id);
     }
 
     public void updateRules(List<PointsRule> pointsRules) {
@@ -102,5 +102,9 @@ public class PointsRuleService extends BaseService<PointsRule, String> {
     public PointsRule findRuleByUnitAndDate(String unitId, Date date){
 
         return this.pointsRuleDao.findUnique("from PointsRule where unitId=? and startDate <= ? and endDate >= ?", unitId, date, date);
+    }
+
+    public PointsRule findRuleById(String id) {
+        return this.pointsRuleDao.get(id);
     }
 }

@@ -29,6 +29,7 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,11 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     @Autowired
     private MonthAccountStatementDao monthAccountStatementDao;
-
+    @Autowired
+    private MonthAccountStatementService monthAccountStatementService;
+    @Autowired
+    private GuestService guestService;
+    private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
     @Override
     public Page<SaleOrderBill> findPage(Page<SaleOrderBill> page, List<PropertyFilter> filters) {
@@ -136,89 +141,36 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         //客户月结表数据Id
         String curYearMonth = CommonUtil.getDateString(new Date(),"yyyy-MM");
         //数据库中查询是否已经存在该订单
-        Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
+
         Double diffPrice = saleOrderBill.getActPrice() - saleOrderBill.getPayPrice();
         String preDestUnitId = this.saleOrderBillDao.findUnique("select destUnitId from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
         //是否更新客户欠款月结表
-        Boolean isUpdateMonthAccount = false;
-        isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(saleOrderBill.getBillDate(), "yyyy-MM"));
+        Boolean isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(saleOrderBill.getBillDate(), "yyyy-MM"));
 
-
-        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", new Object[]{saleOrderBill.getDestUnitId()});
-        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ? and status=1", new Object[]{saleOrderBill.getDestUnitId()});
         Double preDiffPrice = this.saleOrderBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
-        //更新客户月结表数据
+        //modify by yushen 更新客户月结表数据
         if(isUpdateMonthAccount){
-            Map<String,MonthAccountStatement> preMonthAccountMap = new HashMap<>();
-            List<MonthAccountStatement> preMonthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc",preDestUnitId);
-            for(MonthAccountStatement m : preMonthAcountList){
-                preMonthAccountMap.put(m.getId(),m);
-            }
-            List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
-            MonthAccountUtil.updateMonthAcoutData(saleOrderBill.getBillDate(),preMonthAccountMap,updateMonthAccountList,preDestUnitId,preDiffPrice,false);
-            this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
+            this.monthAccountStatementService.updateMonthAccountData(saleOrderBill.getBillDate(), preDestUnitId, preDiffPrice, false);
 
+            this.monthAccountStatementService.updateMonthAccountData(saleOrderBill.getBillDate(), saleOrderBill.getDestUnitId(), diffPrice, true);
         }
+
+        //modify by yushen更新之前的客户欠款和积分
         if (CommonUtil.isNotBlank(preDestUnitId)) {
-            Unit preUnit = CacheManager.getUnitByCode(preDestUnitId);
-            if (CommonUtil.isNotBlank(preUnit)) {
-                this.saleOrderBillDao.batchExecute("update Unit set owingValue = owingValue - ? where id=?", preDiffPrice, preDestUnitId);
-                logger.error("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单本单差额"+preDiffPrice);
-            } else {
-                this.saleOrderBillDao.batchExecute("update Customer set owingValue = owingValue - ? where id=?", preDiffPrice, preDestUnitId);
-                logger.error("Customer原来客户编号"+preDestUnitId+"原单本单差额"+preDiffPrice);
-            }
+            guestService.resetPreGust(saleOrderBill.getBillNo(), preDestUnitId, preDiffPrice);
         }
-        if (CommonUtil.isBlank(unit)) {
-            if(CommonUtil.isBlank(customer.getOwingValue())){
-                customer.setOwingValue(0.0);
-            }
-            logger.error("销售单"+saleOrderBill.getBillNo()+"本单差额"+diffPrice+"unit客户"+customer.getName()+"unit客户编号"+customer.getId()+"欠款金额"+(customer.getOwingValue()+diffPrice)+"原欠款金额"+(customer.getOwingValue()));
-            if(CommonUtil.isNotBlank(preDestUnitId) && preDestUnitId.equals(customer.getCode())){
-                this.saleOrderBillDao.batchExecute("update Customer set owingValue = ? where id=?", customer.getOwingValue() - preDiffPrice+diffPrice, preDestUnitId);
-            }else{
-                customer.setOwingValue(customer.getOwingValue() + diffPrice);
-            }
-            this.saleOrderBillDao.saveOrUpdateX(customer);
-        } else {
-            if(CommonUtil.isBlank(unit.getOwingValue())){
-                unit.setOwingValue(0.0);
-            }
-            logger.error("销售单"+saleOrderBill.getBillNo()+"本单差额"+diffPrice+"unit客户"+unit.getName()+"unit客户编号"+unit.getId()+"欠款金额"+(unit.getOwingValue()+diffPrice)+"原欠款金额"+(unit.getOwingValue()));
-            if(CommonUtil.isNotBlank(preDestUnitId) && preDestUnitId.equals(unit.getCode())){
-                this.saleOrderBillDao.batchExecute("update Unit set owingValue =  ? where id=?", unit.getOwingValue() -preDiffPrice + diffPrice, preDestUnitId);
-            }else {
-                unit.setOwingValue(unit.getOwingValue() + diffPrice);
-            }
-            this.saleOrderBillDao.saveOrUpdateX(unit);
-        }
-        if(isUpdateMonthAccount){
-            Map<String,MonthAccountStatement> monthAccountMap = new HashMap<>();
-            List<MonthAccountStatement> monthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc",saleOrderBill.getDestUnitId());
-            for(MonthAccountStatement m : monthAcountList){
-                monthAccountMap.put(m.getId(),m);
-            }
-            List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
-            MonthAccountUtil.updateMonthAcoutData(saleOrderBill.getBillDate(),monthAccountMap,updateMonthAccountList,saleOrderBill.getDestUnitId(),diffPrice,true);
-            this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
-        }
+        //add by yushen 计算销售单积分并保存积分变动记录
+        Long points = this.pointsChangeService.savePointsChange(saleOrderBill);
+        //add by yushen 更新客户欠款金额和积分
+        guestService.updateCurrentGuest(saleOrderBill.getBillNo(), diffPrice, saleOrderBill.getDestUnitId(), points);
+        //保存订单
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
         this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
         if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
             this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
         }
-        //保存积分变动记录
-        String vipInfo;
-        if (CommonUtil.isBlank(unit)) {
-            vipInfo = customer.getVipId();
-        } else {
-            vipInfo = unit.getVipId();
-        }
-
-        if (CommonUtil.isNotBlank(vipInfo)) {
-            this.pointsChangeService.savePointsChange(saleOrderBill, unit, customer);
-        }
     }
+
     /**
      * 客户端加盟商收货
      * */
@@ -266,50 +218,20 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         //数据库中查询是否已经存在该订单
         Double diffPrice = saleOrderBill.getActPrice() - saleOrderBill.getPayPrice();
         String preDestUnitId = this.saleOrderBillDao.findUnique("select destUnitId from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
-        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
-        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
+        Double preDiffPrice = this.saleOrderBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
+        //modify by yushen更新之前的客户欠款和积分
         if (CommonUtil.isNotBlank(preDestUnitId)) {
-            Double preDiffPrice = this.saleOrderBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
-            Unit preUnit = CacheManager.getUnitByCode(preDestUnitId);
-            if (CommonUtil.isNotBlank(preUnit)) {
-                this.saleOrderBillDao.batchExecute("update Unit set owingValue = owingValue - ? where id=?", preDiffPrice, preDestUnitId);
-                logger.error("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单本单差额"+preDiffPrice);
-
-            } else {
-                this.saleOrderBillDao.batchExecute("update Customer set owingValue = owingValue - ? where id=?", preDiffPrice, preDestUnitId);
-                logger.error("Customer原来客户编号"+preDestUnitId+"原单本单差额"+preDiffPrice);
-            }
+            guestService.resetPreGust(saleOrderBill.getBillNo(), preDestUnitId, preDiffPrice);
         }
-        if (CommonUtil.isBlank(unit)) {
-            if(CommonUtil.isBlank(customer.getOwingValue())){
-                customer.setOwingValue(0.0);
-            }
-            logger.error("销售单"+saleOrderBill.getBillNo()+"本单差额"+diffPrice+"unit客户"+customer.getName()+"unit客户编号"+customer.getId()+"欠款金额"+(customer.getOwingValue()+diffPrice)+"原欠款金额"+(customer.getOwingValue()));
-            customer.setOwingValue(customer.getOwingValue() + diffPrice);
-            this.saleOrderBillDao.saveOrUpdateX(customer);
-        } else {
-            if(CommonUtil.isBlank(unit.getOwingValue())){
-                unit.setOwingValue(0.0);
-            }
-            logger.error("销售单"+saleOrderBill.getBillNo()+"本单差额"+diffPrice+"unit客户"+unit.getName()+"unit客户编号"+unit.getId()+"欠款金额"+(unit.getOwingValue()+diffPrice)+"原欠款金额"+(unit.getOwingValue()));
-            unit.setOwingValue(unit.getOwingValue() + diffPrice);
-            this.saleOrderBillDao.saveOrUpdateX(unit);
-        }
+        //add by yushen 计算销售单积分并保存积分变动记录
+        Long points = this.pointsChangeService.savePointsChange(saleOrderBill);
+        //add by yushen 更新客户欠款金额和积分
+        guestService.updateCurrentGuest(saleOrderBill.getBillNo(), diffPrice, saleOrderBill.getDestUnitId(), points);
+        //保存订单
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
         this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
         if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
             this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
-        }
-        //保存积分变动记录
-        String vipInfo;
-        if (CommonUtil.isBlank(unit)) {
-            vipInfo = customer.getVipId();
-        } else {
-            vipInfo = unit.getVipId();
-        }
-
-        if (CommonUtil.isNotBlank(vipInfo)) {
-            this.pointsChangeService.savePointsChange(saleOrderBill, unit, customer);
         }
         //出库
         List<Style> styleList = new ArrayList<>();
@@ -529,21 +451,10 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
         Double diffPrice = saleOrderBill.getActPrice() - saleOrderBill.getPayPrice();
 
-        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
-        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
-        if (CommonUtil.isBlank(unit)) {
-            customer.setOwingValue(customer.getOwingValue() - diffPrice);
-            logger.error("销售单"+saleOrderBill.getBillNo()+"撤销金额"+diffPrice+"客户"+customer.getName()+"欠款金额"+(customer.getOwingValue()-diffPrice));
+        guestService.resetPreGust(saleOrderBill.getBillNo(), saleOrderBill.getDestUnitId(), diffPrice);
 
-            this.saleOrderBillDao.saveOrUpdateX(customer);
-        } else {
-            unit.setOwingValue(unit.getOwingValue() - diffPrice);
-            logger.error("销售单"+saleOrderBill.getBillNo()+"撤销金额"+diffPrice+"客户"+unit.getName()+"欠款金额"+(unit.getOwingValue()-diffPrice));
-
-            this.saleOrderBillDao.saveOrUpdateX(unit);
-        }
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
-        this.pointsChangeService.cancelPointsChange(saleOrderBill, unit, customer);
+        this.pointsChangeService.cancelPointsChange(saleOrderBill);
     }
 
     public Epc findProductBycode(String code) {

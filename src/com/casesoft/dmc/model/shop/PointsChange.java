@@ -4,6 +4,7 @@ package com.casesoft.dmc.model.shop;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -43,6 +44,9 @@ public class PointsChange implements java.io.Serializable{
 
     @Column()
     private Integer status = 0; //0 默认 ; -1 已撤销
+
+    @Column
+    private Double ratio; //销售单对应积分规则的比例，退货单比例设置为 -1
 
     public String getId() {
         return id;
@@ -114,5 +118,13 @@ public class PointsChange implements java.io.Serializable{
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Double getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(Double ratio) {
+        this.ratio = ratio;
     }
 }
