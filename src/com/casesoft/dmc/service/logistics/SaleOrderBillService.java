@@ -55,7 +55,6 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private PropertyService propertyService;
     @Autowired
     private PointsChangeService pointsChangeService;
-
     @Autowired
     private MonthAccountStatementDao monthAccountStatementDao;
     @Autowired
@@ -63,6 +62,10 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     @Autowired
     private GuestService guestService;
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
+
+    public Double findSumActPrice(String destUnitId){
+        return this.saleOrderBillDao.findUnique("select sum(actPrice) from SaleOrderBill where destUnitId =?",destUnitId);
+    }
 
     @Override
     public Page<SaleOrderBill> findPage(Page<SaleOrderBill> page, List<PropertyFilter> filters) {

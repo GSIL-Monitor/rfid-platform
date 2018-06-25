@@ -1,5 +1,21 @@
+var costomerId;
 $(function () {
     iniGrid();
+    $.ajax({
+        url: basePath + "/shop/vipCard/list.do?",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_rank").empty();
+            $("#search_rank").append("<option value=''>--请选择等级--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_rank").append("<option value='" + json[i].id + "'>" + "[" + json[i].rank + "]" + json[i].name + "</option>");
+            }
+            $(".selectpicker").selectpicker('refresh');
+        }
+    });
 
 });
 
@@ -7,10 +23,14 @@ function refresh() {
     location.reload(true);
 }
 
+function empty() {
+    $("#search_rank").val("");
+    $(".selectpicker").selectpicker('refresh');
+}
+
 function _search() {
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
-
     $("#grid").jqGrid('setGridParam', {
         url: basePath + "/sys/guest/page.do",
         page: 1,
@@ -105,7 +125,7 @@ function iniGrid() {
         datatype: "json",
         colModel: [
             {name: 'id', label: '客户编号', width: 100, editable: true},
-            {name: 'name', label: '姓名', editable: true, width: 100},
+            {name: 'name', label: '姓名', editable: true, width: 80},
             {
                 name: 'sex', label: '性别', editable: true, width: 50,
                 formatter: function (cellValue, options, rowObject) {
@@ -158,7 +178,7 @@ function iniGrid() {
             {name:'unitType',hidden:true}
             ,
             {
-                name: 'tel', label: '电话', editable: true, width: 150
+                name: 'tel', label: '电话', editable: true, width: 130
             }
             ,
             {
@@ -182,7 +202,7 @@ function iniGrid() {
             }
             ,
             {
-                name: 'storedValue', label: '储值金额', editable: true, width: 100,
+                name: 'storedValue', label: '储值金额', editable: true, width: 80,
                 formatter: function (cellValue, options, rowObject) {
                     if (cellValue == undefined) {
                         return "";
@@ -234,7 +254,18 @@ function iniGrid() {
             ,
             {
                 name: 'remark', label: '备注', editable: true, width: 200
+            },
+            {
+                name:'idCard' , label : '等级',width : 100
             }
+            /*{
+                name :'' , label : '管理', width :120,
+                formatter: function (cellvalue, options, rowObject) {
+                    var id = rowObject.id;
+                    var html = "<a onclick=setRank('" + id + "')>设置等级</a>";
+                    return html;
+                }
+            }*/
         ],
         viewrecords: true,
         autowidth: true,
@@ -249,6 +280,8 @@ function iniGrid() {
         sortorder: "desc",
         autoScroll: false
     });
-
-
+}
+function setRank(id) {
+    $("#edit_setRank_dialog").modal('show');
+    costomerId = id;
 }

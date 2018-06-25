@@ -115,7 +115,10 @@
                         }
                     },
                     {name: 'defaultWarehId', label: '默认仓库', width: 30},
-                    {name: 'tel', label: '电话', width: 50}
+                    {name: 'tel', label: '电话', width: 50},
+                    {
+                        name :"idCard",label:"等级",hidden:true
+                    }
                 ],
                 viewrecords: true,
                 autowidth: true,
@@ -193,7 +196,10 @@
                     },
                     {name: 'unitName', label: '所属门店', width: 30},
                     {name: 'defaultWarehId', hidden: true},
-                    {name: 'tel', label: '电话', width: 50}
+                    {name: 'tel', label: '电话', width: 50},
+                    {
+                        name :"idCard",label:"等级",hidden:true
+                    }
                 ],
                 viewrecords: true,
                 autowidth: true,
@@ -276,7 +282,10 @@
                     },
                     {name: 'unitName', label: '所属门店', width: 30},
                     {name: 'defaultWarehId', hidden: true},
-                    {name: 'tel', label: '电话', width: 50}
+                    {name: 'tel', label: '电话', width: 50},
+                    {
+                        name :"idCard",label:"等级",hidden:true
+                    }
                 ],
                 viewrecords: true,
                 autowidth: true,
@@ -363,7 +372,6 @@
         $("#search_customerType").val(rowData.unitType);
         $("#search_origId").selectpicker('val', rowData.defaultWarehId);
         $("#search_origId").selectpicker('refresh');
-        $("#search_discount").val(rowData.discount);
         $("#modal_guest_search_table").modal('hide');
     }
     function confirm_selected_GuestId_saleReturn() {
