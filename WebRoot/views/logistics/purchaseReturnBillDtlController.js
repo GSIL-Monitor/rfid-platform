@@ -170,7 +170,13 @@ function iniGrid() {
                 }
             },
             {name: 'totActPrice', label: '退货实际金额', width: 40},
-            {name: 'uniqueCodes', label: 'code', hidden: true}
+            {name: 'uniqueCodes', label: 'code', hidden: true},
+            {
+                name: '', label: '唯一码明细', width: 40, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                }
+            }
         ],
         autowidth: true,
         rownumbers: true,
@@ -880,4 +886,10 @@ function set(id) {
             }
         }
     });
+}
+
+function showCodesDetail(uniqueCodes) {
+    $("#show-uniqueCode-list").modal('show');
+    initUniqueCodeList(uniqueCodes);
+    codeListReload(uniqueCodes);
 }
