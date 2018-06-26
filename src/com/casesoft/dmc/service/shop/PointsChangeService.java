@@ -143,8 +143,8 @@ public class PointsChangeService extends BaseService<PointsChange, String> {
             if (CommonUtil.isNotBlank(uniqueCodes)) {
                 String[] codes = uniqueCodes.split(",");
                 for (String code : codes) {
-                    List<BillRecord> BillRecords = this.pointsChangeDao.find("from BillRecord where code = ? order by billNo desc", code);
-                    PointsChange pointsChange = this.pointsChangeDao.findUnique("from PointsChange where id = ?", BillRecords.get(0).getBillNo());
+                    List<BillRecord> BillRecords = this.pointsChangeDao.find("from BillRecord where code = ? and billNo like 'SO%' order by billNo desc", code);
+                    PointsChange pointsChange = this.pointsChangeDao.findUnique("from PointsChange where id = ? and id like 'SO%' and status = 0", BillRecords.get(0).getBillNo());
                     if (CommonUtil.isNotBlank(pointsChange)) {
                         Double actPrice = saleOrderReturnBillDtl.getActPrice();
                         Long points = (long) Math.floor(actPrice * pointsChange.getRatio());
