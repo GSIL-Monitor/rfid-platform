@@ -48,9 +48,7 @@ public class VipCardController  extends BaseController implements IBaseInfoContr
     @ResponseBody()
     @Override
     public List<VipCard> list() throws Exception {
-        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
-                .getRequest());
-        List<VipCard> vipCards = this.vipCardService.find(filters);
+        List<VipCard> vipCards = this.vipCardService.getAll();
         return vipCards;
     }
     /*保存*/

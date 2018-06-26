@@ -59,7 +59,7 @@ public class VipCardService extends AbstractBaseService<VipCard, String> {
 
     @Override
     public List<VipCard> getAll() {
-        return null;
+        return this.vipCardDao.getAll();
     }
 
     @Override

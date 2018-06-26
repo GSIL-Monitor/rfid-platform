@@ -1,6 +1,7 @@
 var costomerId;
 $(function () {
     iniGrid();
+    $(".selectpicker").selectpicker('refresh');
     $.ajax({
         url: basePath + "/shop/vipCard/list.do?",
         cache: false,
@@ -16,7 +17,6 @@ $(function () {
             $(".selectpicker").selectpicker('refresh');
         }
     });
-
 });
 
 function refresh() {
