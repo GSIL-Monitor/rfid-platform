@@ -202,9 +202,9 @@ public class GuestService implements IBaseService<Unit,String>{
 				if(CommonUtil.isBlank(unit.getVippoints())){
 					unit.setVippoints(0D);
 				}
+				logger.info("销售单"+billNo+"本单新增积分"+points+"unit客户"+"原欠积分"+(unit.getOwingValue()));
+				unit.setVippoints(unit.getVippoints() + points);
 			}
-			logger.info("销售单"+billNo+"本单新增积分"+points+"unit客户"+"原欠积分"+(unit.getOwingValue()));
-			unit.setVippoints(unit.getVippoints() + points);
 			this.guestDao.saveOrUpdateX(unit);
 		} else {
 			if(CommonUtil.isBlank(customer.getOwingValue())){
@@ -216,9 +216,9 @@ public class GuestService implements IBaseService<Unit,String>{
 				if(CommonUtil.isBlank(customer.getVippoints())){
 					customer.setVippoints(0D);
 				}
+				logger.info("销售单"+billNo+"本单新增积分"+points+"customer客户"+"原欠积分"+(customer.getOwingValue()));
+				customer.setVippoints(customer.getVippoints() + points);
 			}
-			logger.info("销售单"+billNo+"本单新增积分"+points+"customer客户"+"原欠积分"+(customer.getOwingValue()));
-			customer.setVippoints(customer.getVippoints() + points);
 			this.guestDao.saveOrUpdateX(customer);
 		}
 	}

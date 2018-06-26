@@ -126,9 +126,9 @@ public class PointsChangeService extends BaseService<PointsChange, String> {
             return pointsChange.getPointsChange();
     }
 
-    public void cancelPointsChange(SaleOrderBill saleOrderBill) {
+    public void cancelPointsChange(String billNo) {
 
-        PointsChange pointsChange = this.get("id", saleOrderBill.getBillNo());
+        PointsChange pointsChange = this.get("id", billNo);
         if(CommonUtil.isNotBlank(pointsChange)){
             pointsChange.setStatus(-1);
             this.pointsChangeDao.saveOrUpdate(pointsChange);
@@ -165,5 +165,32 @@ public class PointsChangeService extends BaseService<PointsChange, String> {
         pointsChange.setRatio(-1D);
         this.pointsChangeDao.saveOrUpdate(pointsChange);
         return pointsChange.getPointsChange();
+    }
+
+    //销售单直接关联生成退货单时，保存积分变动
+    public Long saveReturnPoints(SaleOrderReturnBill bill) {
+        PointsChange saleOrderPoints = this.get("id", bill.getRemark());
+        Double ratio = saleOrderPoints.getRatio();
+        if(CommonUtil.isBlank(ratio)){
+           ratio = 1D;
+        }
+        PointsChange pointsChange = new PointsChange();
+        pointsChange.setId(bill.getBillNo());
+        pointsChange.setCustomerId(bill.getOrigUnitId());
+        pointsChange.setRecordDate(new Date());
+        pointsChange.setTransactionVal(bill.getActPrice());
+        pointsChange.setPointsChange((long) Math.floor(pointsChange.getTransactionVal() * ratio));
+        if (CommonUtil.isBlank(saleOrderPoints)) {
+            pointsChange.setPointsRuleId("");
+        } else {
+            pointsChange.setPointsRuleId(saleOrderPoints.getPointsRuleId());
+        }
+        pointsChange.setStatus(0);
+        pointsChange.setOwnerId(bill.getOwnerId());
+        pointsChange.setRatio(ratio);
+        this.pointsChangeDao.saveOrUpdate(pointsChange);
+        return pointsChange.getPointsChange();
+
+
     }
 }

@@ -316,98 +316,6 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         }
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
         this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
-        //退算积分
-        //查询库户
-        Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
-        Unit units = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{saleOrderBill.getDestUnitId()});
-        if(CommonUtil.isNotBlank(customer)){
-            if(CommonUtil.isNotBlank(customer.getVipId())){
-                //根据code查询
-                ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
-                for(SaleOrderBillDtl saleOrderBillDtl:saleOrderBillDtlList) {
-                    String uniqueCodes = saleOrderBillDtl.getUniqueCodes();
-                    if (CommonUtil.isNotBlank(uniqueCodes)) {
-                        String[] split = uniqueCodes.split(",");
-                        for (int i = 0; i < split.length; i++) {
-                            //List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
-                            PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{saleOrderBill.getBillNo()});
-                            if(CommonUtil.isNotBlank(pointsChange)){
-                                PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                if(CommonUtil.isNotBlank(pointsRule)){
-                                    Double actPrice = saleOrderBillDtl.getActPrice();
-                                    double points = pointsRule.getUnitPoints() / 100 * actPrice;
-                                    //Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
-                                    Double v = customer.getVippoints();
-                                    if (CommonUtil.isBlank(v)) {
-                                        v = 0D;
-                                    }
-                                    customer.setVippoints(v - points);
-                                    this.saleOrderReturnBillDao.saveOrUpdateX(customer);
-                                    RecordReturnScore recordReturnScore = new RecordReturnScore();
-                                    recordReturnScore.setId(saleOrderBillDtl.getId() + "-" + split[i]);
-                                    recordReturnScore.setBillno(saleOrderBill.getBillNo());
-                                    recordReturnScore.setCode(split[i]);
-                                    recordReturnScore.setRetrunDetailid(saleOrderBillDtl.getId());
-                                    list.add(recordReturnScore);
-                                }
-
-                            }
-
-                        }
-                    }
-                    if(list.size()!=0){
-                        this.saleOrderReturnBillDao.doBatchInsert(list);
-                    }
-
-                }
-            }
-        }
-        if(CommonUtil.isNotBlank(units)){
-            if(CommonUtil.isNotBlank(units)){
-                if(CommonUtil.isNotBlank(units.getVipId())){
-                    //根据code查询
-                    ArrayList<RecordReturnScore> list=new  ArrayList<RecordReturnScore>();
-                    for(SaleOrderBillDtl saleOrderBillDtl:saleOrderBillDtlList) {
-                        String uniqueCodes = saleOrderBillDtl.getUniqueCodes();
-                        if (CommonUtil.isNotBlank(uniqueCodes)) {
-                            String[] split = uniqueCodes.split(",");
-                            for (int i = 0; i < split.length; i++) {
-                                //List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
-                                PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{saleOrderBill.getBillNo()});
-                                if(CommonUtil.isNotBlank(pointsChange)){
-                                    PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                    if(CommonUtil.isNotBlank(pointsRule)){
-                                        Double actPrice = saleOrderBillDtl.getActPrice();
-                                        double points = pointsRule.getUnitPoints() / 100 * actPrice;
-                                        //Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
-                                        Double v = units.getVippoints();
-                                        if (CommonUtil.isBlank(v)) {
-                                            v = 0D;
-                                        }
-                                        units.setVippoints(v - points);
-                                        this.saleOrderReturnBillDao.saveOrUpdateX(units);
-                                        RecordReturnScore recordReturnScore = new RecordReturnScore();
-                                        recordReturnScore.setId(saleOrderBillDtl.getId() + "-" + split[i]);
-                                        recordReturnScore.setBillno(saleOrderBill.getBillNo());
-                                        recordReturnScore.setCode(split[i]);
-                                        recordReturnScore.setRetrunDetailid(saleOrderBillDtl.getId());
-                                        list.add(recordReturnScore);
-                                    }
-
-                                }
-
-                            }
-                        }
-                        if(list.size()!=0){
-                            this.saleOrderReturnBillDao.doBatchInsert(list);
-                        }
-
-                    }
-                }
-            }
-        }
-
-
     }
 
     public String findMaxBillNO(String prefix) {
@@ -425,17 +333,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     public void saveReturnBatch(SaleOrderReturnBill bill, List<SaleOrderReturnBillDtl> details) {
 
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
-        Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{bill.getOrigUnitId()});
-        if (CommonUtil.isBlank(unit)) {
-            Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
-            customer.setOwingValue(customer.getOwingValue() + diffPrice);
-            this.saleOrderReturnBillDao.saveOrUpdateX(customer);
-        } else {
-            if (CommonUtil.isBlank(unit.getOwingValue()))
-                unit.setOwingValue(0.0);
-            unit.setOwingValue(unit.getOwingValue() + diffPrice);
-            this.saleOrderReturnBillDao.saveOrUpdateX(unit);
-        }
+
+        Long points = this.pointsChangeService.saveReturnPoints(bill);
+        this.guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, bill.getOrigUnitId(), points);
         this.saleOrderReturnBillDao.saveOrUpdate(bill);
         this.saleOrderReturnBillDao.doBatchInsert(details);
     }
@@ -451,13 +351,12 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
      * @param saleOrderBill 当前撤销的销售订单
      */
     public void cancelUpdate(SaleOrderBill saleOrderBill) {
-        Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
         Double diffPrice = saleOrderBill.getActPrice() - saleOrderBill.getPayPrice();
 
         guestService.resetPreGust(saleOrderBill.getBillNo(), saleOrderBill.getDestUnitId(), diffPrice);
 
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
-        this.pointsChangeService.cancelPointsChange(saleOrderBill);
+        this.pointsChangeService.cancelPointsChange(saleOrderBill.getBillNo());
     }
 
     public Epc findProductBycode(String code) {
