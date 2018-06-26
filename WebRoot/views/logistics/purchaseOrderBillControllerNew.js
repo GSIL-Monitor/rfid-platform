@@ -93,7 +93,7 @@ function initSearchGrid() {
                 }
             },
             {
-                name: 'inStatusImg', label: '入库状态', width: 20, align: 'center',hidden:true,
+                name: 'inStatusImg', label: '入态', width: 20, align: 'center',hidden:true,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -109,14 +109,14 @@ function initSearchGrid() {
             {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {name: 'origUnitId', label: '供应商ID', hidden: true},
             {name: 'origUnitName', label: '供应商', width: 40,hidden:true},
-            {name: 'origId', label: '出库仓库ID', hidden: true},
-            {name: 'origName', label: '出库仓库', hidden: true, width: 40},
+            {name: 'origId', label: '出库仓ID', hidden: true},
+            {name: 'origName', label: '出库仓', hidden: true, width: 40},
             {name: 'destUnitId', label: '收货方ID', hidden: true},
             {name: 'destUnitName', label: '收货方', hidden: true, width: 40},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 35},
             {name: 'totQty', label: '单据数量', sortable: false, width: 20},
-            {name: 'totInQty', label: '已入库数量', width: 30,hidden:true},
+            {name: 'totInQty', label: '已入库数', width: 30,hidden:true},
             {name: 'totInVal', label: '总入库金额', width: 30,hidden:true,
                 formatter: function (cellValue, options, rowObject) {
                     var totInVal=parseFloat(cellValue).toFixed(2);
@@ -190,10 +190,11 @@ function initDetailData(rowid) {
 function initAddGrid() {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
-        datatype: "json",
+        datatype: "local",
+        mtype: 'POST',
         colModel: [
-            {name: 'id', label: 'id', hidden: true, width: 40},
-            {name: 'sku', label: 'sku', hidden: true, width: 40},
+            {name: 'id', label: 'id', hidden: true},
+            {name: 'sku', label: 'sku', hidden: true},
             {
                 name: 'status', hidden: true,
                 formatter: function (cellValue, options, rowObject) {
@@ -208,20 +209,13 @@ function initAddGrid() {
                 }
             },
             {
-                name: "operation", label: "操作", width: 40, editable: false, align: "center",hidden:true,
-                formatter: function (cellvalue, options, rowObject) {
-                    return "<a style='margin-left: 20px' a  href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a style='margin-left: 20px' a  href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
-                }
-            },
-            {
-                name: 'statusImg', label: '状态', width: 20, align: 'center',
+                name: 'statusImg', label: '状态', width: 13, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     return '<i class="fa fa-tasks blue" title="订单状态"></i>';
                 }
             },
             {
-                name: 'inStatusImg', label: '入态', width: 20, align: 'center',
+                name: 'inStatusImg', label: '入态', width: 13, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -235,7 +229,7 @@ function initAddGrid() {
                 }
             },
             {
-                name: 'printStatusImg', label: '打印状态', width: 20,
+                name: 'printStatusImg', label: '打印状态', width: 13,
                 formatter: function (cellValue, options, rowObject) {
                     return '<i class="fa fa-times blue" title="未打印"></i>';
                 }
@@ -283,14 +277,14 @@ function initAddGrid() {
                 }
             }
             },
-            {name: 'styleId', label: '款号', width: 30},
-            {name: 'colorId', label: '色码', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
-            {name: 'styleName', label: '款名', width: 30},
-            {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeName', label: '尺码', width: 30},
+            {name: 'styleId', label: '款号', width: 16},
+            {name: 'colorId', label: '色码', width: 16},
+            {name: 'sizeId', label: '尺码', width: 16},
+            {name: 'styleName', label: '款名', width: 16},
+            {name: 'colorName', label: '颜色', width: 16},
+            {name: 'sizeName', label: '尺码', width: 16},
             {
-                name: 'qty', label: '数量', editable: true, width: 30,
+                name: 'qty', label: '数量', editable: true, width: 16,
                 editrules: {
                     number: true,
                     minValue: 1
@@ -301,29 +295,29 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'actPrintQty', label: '已打印数量', width: 30},
-            {name: 'inQty', label: '已入库数量', width: 30},
-            {name: 'sku', label: 'SKU', width: 30},
+            {name: 'actPrintQty', label: '已打数', width: 16},
+            {name: 'inQty', label: '已入数', width: 16},
+            {name: 'sku', label: 'SKU', width: 20},
 
             {
-                name: 'price', label: '采购价格', editable: true, width: 30,
+                name: 'price', label: '采购价格', editable: true, width: 20,
                 editrules: {
                     number: true
                 }
             },
             {
-                name: 'discount', label: "折扣", width: 30, editable: true,
+                name: 'discount', label: "折扣", width: 20, editable: true,
                 editrules: {
                     number: true,
                     minValue: 0,
                     maxValue: 100
                 }
             },
-            {name: 'totPrice', label: '采购金额', width: 30},
-            {name: 'actPrice', label: '实际价格', editable: true, width: 30},
-            {name: 'totActPrice', label: '实际金额', width: 30},
+            {name: 'totPrice', label: '采购金额', width: 20},
+            {name: 'actPrice', label: '实际价格', editable: true, width: 20},
+            {name: 'totActPrice', label: '实际金额', width: 20},
             {
-                name: '', label: '唯一码明细', width: 30, align: "center",
+                name: '', label: '唯一码明细', width: 20, align: "center",
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.sku + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
@@ -372,25 +366,22 @@ function initAddGrid() {
         }
     });
     var parent_column = $("#main-container");
-    if (pageType == "edit") {
-        $("#addDetailgrid").setGridParam().hideCol("operation");
-    } else {
-        $("#addDetailgrid").setGridParam().showCol("operation");
-        $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
-            {
-                edit: false,
-                add: true,
-                addicon: "ace-icon fa fa-plus",
-                addfunc: function () {
-                    addDetail();
-                },
-                del: false,
-                search: false,
-                refresh: false,
-                view: false
-            }
-        );
-    }
+    $("#addDetailgrid").setGridParam().showCol("operation");
+    $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
+        {
+            edit: false,
+            add: true,
+            addicon: "ace-icon fa fa-plus",
+            addfunc: function () {
+                addDetail();
+            },
+            del: false,
+            search: false,
+            refresh: false,
+            view: false
+        }
+    );
+    $("#addDetailgrid-pager_center").html("");
 }
 function initeditGrid(billNo) {
     $("#addDetailgrid").jqGrid({
@@ -398,14 +389,15 @@ function initeditGrid(billNo) {
         datatype: "json",
         url: basePath + "/logistics/purchase/findBillDtl.do?billNo=" + billNo,
         colModel: [
-            {name: 'id', label: 'id', hidden: true, width: 40},
-            {name: 'sku', label: 'sku', hidden: true, width: 40},
+            {name: 'id', label: 'id', hidden: true},
+            {name: 'sku', label: 'sku', hidden: true},
             {name: 'status', hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'printStatus', hidden: true},
-
+            {name:'payType', hidden:true},
+            {name:'remark',hidden:true},
             {
-                name: 'statusImg', label: '状态', width: 20, align: 'center',
+                name: 'statusImg', label: '状态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.status == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -419,7 +411,7 @@ function initeditGrid(billNo) {
                 }
             },
             {
-                name: 'inStatusImg', label: '入库状态', width: 30, align: 'center',
+                name: 'inStatusImg', label: '入态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -433,7 +425,7 @@ function initeditGrid(billNo) {
                 }
             },
             {
-                name: 'printStatusImg', label: '打印状态', width: 40, align: 'center',
+                name: 'printStatusImg', label: '打印态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.printStatus == 0) {
                         return '<i class="fa fa-times blue" title="未打印"></i>';
@@ -447,7 +439,7 @@ function initeditGrid(billNo) {
                 }
             },
             {
-                name: 'inStockTypeName', label: '入库类型', width: 40,
+                name: 'inStockTypeName', label: '入型', width: 10,
                 formatter: function (cellValue, options, rowObject) {
                     switch (rowObject.inStockType) {
                         case 'XK':
@@ -464,16 +456,16 @@ function initeditGrid(billNo) {
                 }
             },
 
-            {name: 'styleId', label: '款号', width: 40},
-            {name: 'colorId', label: '色码', width: 40},
-            {name: 'sizeId', label: '尺码', width: 40},
-            {name: 'styleName', label: '款名', width: 40},
-            {name: 'colorName', label: '颜色', width: 40},
-            {name: 'sizeName', label: '尺码', width: 40},
-            {name: 'qty', label: '数量', width: 40},
-            {name: 'actPrintQty', label: '已打印数量', width: 40},
+            {name: 'styleId', label: '款号', width: 20},
+            {name: 'colorId', label: '色码', width: 20},
+            {name: 'sizeId', label: '尺码', width: 20},
+            {name: 'styleName', label: '款名', width: 20},
+            {name: 'colorName', label: '颜色', width: 20},
+            {name: 'sizeName', label: '尺码', width: 20},
+            {name: 'qty', label: '数量', width: 20},
+            {name: 'actPrintQty', label: '已打印数量', width: 20},
             {
-                name: 'printQty', label: '待打印数量', width: 40,
+                name: 'printQty', label: '待打印数量', width: 20,
                 editable: true,
                 editoptions: {
                     dataInit: function (e) {
@@ -487,39 +479,40 @@ function initeditGrid(billNo) {
                     }
                 }
             },
-            {name: 'inQty', label: '已入库数量', width: 40},
-            {name: 'sku', label: 'SKU', width: 40},
-            {name: 'price', label: '采购价格', width: 40,
+            {name: 'inQty', label: '已入库数量', width: 20},
+            {name: 'sku', label: 'SKU', width: 20},
+            {name: 'price', label: '采购价格', width: 20,
                 formatter: function (cellValue, options, rowObject) {
                     var price=parseFloat(cellValue).toFixed(2);
                     return price;
                 }},
-            {name: 'totPrice', label: '采购金额', width: 40,
+            {name: 'totPrice', label: '采购金额', width: 20,
                 formatter: function (cellValue, options, rowObject) {
                     var totPrice=parseFloat(cellValue).toFixed(2);
                     return totPrice;
                 }},
-            {name: 'actPrice', label: '实际价格', width: 40,
+            {name: 'actPrice', label: '实际价格', width: 20,
                 formatter: function (cellValue, options, rowObject) {
                     var actPrice=parseFloat(cellValue).toFixed(2);
                     return actPrice;
                 }},
-            {name: 'totActPrice', label: '实际金额', width: 40,
+            {name: 'totActPrice', label: '实际金额', width: 20,
                 formatter: function (cellValue, options, rowObject) {
                     var actPrice=parseFloat(cellValue).toFixed(2);
                     return actPrice;
                 }},
 
-            {name: 'actQty', hidden: true},
-            {name: "billId", hidden: true},
-            {name: "billNo", hidden: true},
+            {name:'actQty', hidden: true},
+            {name:"billId", hidden: true},
+            {name:"billNo", hidden: true},
             {name: "inStockType", hidden: true},
             {
-                name: '', label: '唯一码明细', width: 40, align: "center",
+                name: '', label: '唯一码明细', width: 20, align: "center",
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.sku + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
-            },
+            }
+
         ],
         autowidth: true,
         rownumbers: true,
@@ -569,6 +562,7 @@ function setAddFooterData() {
     });
 }
 var prefixId;
+var dialogOpenPage;
 function openSearchVendorDialog(preId) {
     dialogOpenPage = "purchaseOrder";
     prefixId =preId;
@@ -577,7 +571,7 @@ function openSearchVendorDialog(preId) {
     });
     console.log(prefixId);
     $("#searchVendorDialog_buttonGroup").html("" +
-        "<button type='button'  class='btn btn-primary' onclick='confirm_selected_VendorId_purchaseOrder()'>确认</button>"
+        "<button type='button'  class='btn btn-primary' onclick='confirm_selected_VendorId_purchaseOrder(prefixId)'>确认</button>"
     );
 }
 function initEditFormValid() {
@@ -655,60 +649,12 @@ function initEditFormValid() {
         }
     });
 }
-function initButtonGroup(type){
-    if (type === "add") {
-        $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>"
-        );
-        $("#edit_vendor_button").removeAttr("disabled");
-        if (defalutCustomerId != "" && defalutCustomerId != undefined && showScanDialog) {
-            addUniqCode();
-        }
-    }
-    if (type === "edit") {
-        $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='add(true)'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='SODtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>打印</span>" +
-            "</button>" +
-            "<button id='SODtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='convertToTagBirth()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>标签初始化</span>" +
-            "</button>" +
-            "<button id='SODtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='openAddEpcDialog()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>采购入库单</span>" +
-            "</button>"
-        );
-    }
-    $("#addDetail").show();
-    loadingButton();
-}
 
 function loadingButton() {
     $.ajax({
         dataType: "json",
         async: false,
-        url: basePath + "/logistics/saleOrder/findResourceButton.do",
+        url: basePath + "/logistics/purchase/findResourceButton.do",
         type: "POST",
         success: function (msg) {
             if (msg.success) {
@@ -739,7 +685,6 @@ function addDetail() {
     });
 }
 function showCodesDetail(sku) {
-
     var billNo = $("#edit_billNo").val();
     var uniqueCodes = "";
     $.ajax({
@@ -762,7 +707,6 @@ function showCodesDetail(sku) {
             }
         }
     });
-
     $("#show-uniqueCode-list").modal('show');
     initUniqueCodeList(uniqueCodes);
     codeListReload(uniqueCodes);
@@ -801,6 +745,8 @@ function initSelectDestForm() {
                 for (var i = 0; i < json.length; i++) {
                     $("#edit_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 }
+                $(".selectpicker").selectpicker('refresh');
+                $("#edit_destId").val(defaultWarehId);
             }
         });
     }else{
@@ -817,6 +763,7 @@ function initSelectDestForm() {
                     $("#edit_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 }
                 $(".selectpicker").selectpicker('refresh');
+                $("#edit_destId").val(defaultWarehId);
             }
         });
     }
@@ -835,7 +782,6 @@ function initSelectDestForm() {
             $(".selectpicker").selectpicker('refresh');
         }
     });
-    $("#edit_destId").val($("#defaultWarehId").val());
 }
 
 /**
@@ -947,4 +893,361 @@ function saveItem(rowId) {
 function deleteItem(rowId) {
     $("#addDetailgrid").jqGrid("delRowData", rowId);
     setEditFooterData();
+}
+
+function addNew() {
+    $('#addDetailgrid').jqGrid("clearGridData");
+    $('#addDetailgrid').jqGrid('GridUnload');
+    initAddGrid();
+    $("#editForm").clearForm();
+    $("#search_payPrice").val(0);
+    initSelectDestForm();
+    pageType="add";
+    initButtonGroup(pageType);
+}
+
+function save() {
+    cs.showProgressBar();
+    $("#search_destId").removeAttr('disabled');
+    $("#editForm").data('bootstrapValidator').destroy();
+    $('#editForm').data('bootstrapValidator', null);
+    initEditFormValid();
+    $('#editForm').data('bootstrapValidator').validate();
+    if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        cs.closeProgressBar();
+        return;
+    }
+    if (editDtailRowId != null) {
+        $("#addDetailgrid").saveRow(editDtailRowId);
+        editDtailRowId = null;
+    }
+    if ($("#addDetailgrid").getDataIDs().length == 0) {
+        bootbox.alert("请添加采购商品");
+        cs.closeProgressBar();
+        return;
+    }
+    if (addDetailgridiRow != null && addDetailgridiCol != null) {
+        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+        addDetailgridiRow = null;
+        addDetailgridiCol = null;
+    }
+
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    $.ajax({
+        dataType: "json",
+        async:true,
+        url: basePath + "/logistics/purchase/save.do",
+        data: {
+            purchaseBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#edit_billNo").val(msg.result);
+                quitback();
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function quitback() {
+    $.ajax({
+        url: basePath +"/logistics/purchase/quit.do?billNo=" +$("#edit_billNo").val(),
+        cache: false,
+        async: true,
+        type: "POST",
+        success: function (data, textStatus) {
+            if(textStatus=="success"){
+                $.gritter.add({
+                    text: billNo+"可以编辑",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+        }
+    });
+}
+function convertToTagBirth() {
+    if (editDtailRowId != null) {
+        $("#addDetailgrid").saveRow(editDtailRowId);
+        editDtailRowId = null;
+    }
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    cs.showProgressBar();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/purchase/covertToTagBirth.do",
+        data: {strDtlList: JSON.stringify(dtlArray)},
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#addDetailgrid").trigger("reloadGrid");
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function openAddEpcDialog() {
+    var billNo  = $("#edit_billNo").val();
+    $("#modal-addEpc-table").modal('show').on('hidden.bs.modal', function () {
+        $("#epcgrid").clearGridData();
+    });
+    $("#epcgrid").jqGrid('setGridParam', {
+        page: 1,
+        url: basePath + '/logistics/purchase/findNotInEpc.do',
+        postData: {billNo: billNo}
+    }).trigger("reloadGrid");
+}
+
+function saveCovert() {
+    cs.showProgressBar();
+    var ids = $("#epcgrid").jqGrid("getGridParam", "selarrrow");
+    if (ids.length == 0) {
+        cs.closeProgressBar();
+        bootbox.alert("请选择要入库的唯一码信息");
+    } else {
+        var epcArray = [];
+        $.each(ids, function (index, value) {
+            var rowData = $("#epcgrid").getRowData(value);
+            epcArray.push(rowData);
+        });
+        var dtlArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            dtlArray.push(rowData);
+        });
+
+        $.ajax({
+            dataType: "json",
+            url: basePath + "/logistics/purchase/convert.do",
+            data: {strDtlList: JSON.stringify(dtlArray), recordList: JSON.stringify(epcArray)},
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#modal-addEpc-table").modal('hide');
+                    $("#addDetailgrid").trigger("reloadGrid");
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }
+}
+
+function doPrint() {
+    /*$("#editForm").resetForm();*/
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#edit_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"PI"
+        },
+        success: function (msg) {
+            if (msg.success) {
+                var addcont = "";
+                for (var i = 0; i < msg.result.length; i++) {
+                    if (billNo.indexOf(msg.result[i].type) >= 0) {
+                        addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                            "<button class='btn btn-info'>" +
+                            "<i class='cae-icon fa fa-refresh'></i>" +
+                            "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                            "</button>" +
+                            "</div>"
+                    }
+                }
+                $("#addbutton").html(addcont);
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+
+function set(id) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessage.do",
+        data: {"id": id, "billno": $("#billno").val()},
+        type: "POST",
+        success: function (msg) {
+
+            if (msg.success) {
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                var LODOP = getLodop();
+                //var LODOP=getLodop(document.getElementById('LODOP2'),document.getElementById('LODOP_EM2'));
+                eval(print.printCont);
+                var printCode = print.printCode;
+                var printCodes = printCode.split(",");
+                for (var i = 0; i < printCodes.length; i++) {
+                    var plp = printCodes[i];
+                    var message = cont[plp];
+                    if (message != "" && message != null && message != undefined) {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', message);
+                    } else {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', "");
+                    }
+
+                }
+
+                var recordmessage = "";
+                var sum = 0;
+                var allprice = 0;
+                var alldiscount = 0;
+                for (var a = 0; a < contDel.length; a++) {
+                    var conts = contDel[a];
+                    recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                        "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
+                        "<td align='left'style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.qty + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.price.toFixed(1) + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.actPrice.toFixed(1) + "</td>" +
+                        "<td align='right' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + (conts.actPrice * conts.qty).toFixed(2) + "</td>" +
+                        "</tr>";
+
+                    sum = sum + parseInt(conts.qty);
+                    //allprice = allprice + parseFloat(conts.actPrice*conts.qty.toFixed(2));
+                    alldiscount = alldiscount + parseFloat((conts.actPrice * conts.qty).toFixed(2));
+                }
+                alldiscount = alldiscount.toFixed(0);
+                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                    "<td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td>" +
+                    "<td align='left'style='border-top:1px dashed black;padding-top:5px;'>" + sum + "</td>" +
+                    "<td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    " <td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    "<td align='right' style='border-top:1px dashed black;padding-top:5px;'>" + alldiscount + "</td>" +
+                    " </tr>";
+
+                $("#loadtab").html(recordmessage);
+                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+
+}
+
+function cancel() {
+
+    var billId= $("#edit_billNo").val();
+    if(billId == "" || billId == undefined){
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    bootbox.confirm({
+        /*title: "余额确认",*/
+        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+        message: "撤销确定",
+        callback: function (result) {
+            /* $("#SODtl_save").removeAttr("disabled");*/
+            if (result) {
+                cancelAjax(billId);
+                addNew(false)
+            } else {
+            }
+        }
+    });
+}
+function cancelAjax(billId) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/purchase/cancel.do",
+        data: {billNo: billId},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+
+function initButtonGroup(type){
+    if (type === "add") {
+        $("#buttonGroup").html("" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "    <i class='ace-icon fa fa-plus'></i>" +
+            "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "    <i class='ace-icon fa fa-save'></i>" +
+            "    <span class='bigger-110'>保存</span>" +
+            "</button>"
+        );
+    }
+    if (type === "edit") {
+        $("#buttonGroup").html("" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "    <i class='ace-icon fa fa-plus'></i>" +
+            "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "    <i class='ace-icon fa fa-save'></i>" +
+            "    <span class='bigger-110'>保存</span>" +
+            "</button>" +
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
+            "<button id='SODtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
+            "    <i class='ace-icon fa fa-print'></i>" +
+            "    <span class='bigger-110'>打印</span>" +
+            "</button>" +
+            "<button id='SODtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='convertToTagBirth()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>标签初始化</span>" +
+            "</button>" +
+            "<button id='SODtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='openAddEpcDialog()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>采购入库单</span>" +
+            "</button>"
+        );
+    }
+    $("#addDetail").show();
+    loadingButton();
 }

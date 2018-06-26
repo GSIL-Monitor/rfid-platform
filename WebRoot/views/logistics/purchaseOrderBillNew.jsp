@@ -22,6 +22,7 @@
         var saleOrder_buyahandId = "${purchaseOrderBill.buyahandId}";
         var curOwnerId = "${ownerId}";
         var userId = "${userId}";
+        var defaultWarehId = "${defaultWarehId}";
     </script>
 </head>
 <body>
@@ -229,11 +230,14 @@
                                                                 type="text" value="${OwnerId}" style="display: none"/>
                                                         <input  id="defaultWarehId"
                                                                 type="text" value="${defaultWarehId}" style="display: none"/>
-                                                        <input id="search_status" name="status" value="${purchaseOrderBill.status}" type="hidden">
+                                                        <input id="search_status" name="status" value="${purchaseOrderBill.status}"
+                                                               type="hidden">
                                                         </input>
-                                                        <input id="search_ownerId" name="ownerId" value="${purchaseOrderBill.ownerId}" type="hidden">
+                                                        <input id="search_ownerId" name="ownerId" value="${purchaseOrderBill.ownerId}"
+                                                               type="hidden">
                                                         </input>
-                                                        <input id="search_id" name="id" value="${purchaseOrderBill.id}" type="hidden">
+                                                        <input id="search_id" name="id" value="${purchaseOrderBill.id}"
+                                                               type="hidden">
                                                         </input>
                                                     </div>
                                                 </form>
