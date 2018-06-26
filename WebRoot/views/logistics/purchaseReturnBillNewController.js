@@ -204,7 +204,13 @@ function initeditGrid(billId) {
                 }
             },
             {name: 'totActPrice', label: '退货实际金额', width: 40},
-            {name: 'uniqueCodes', label: 'code', hidden: true}
+            {name: 'uniqueCodes', label: 'code', hidden: true},
+            {
+                name: '', label: '唯一码明细', width: 40, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                }
+            },
         ],
         autowidth: true,
         rownumbers: true,
@@ -231,7 +237,7 @@ function initeditGrid(billId) {
         }
 
     });
-    if (pageType == "edit" && returnStatus !== "0") {
+    if (pageType == "edit" && purchaseReturn_status !== "0") {
         $("#addDetailgrid").setGridParam().hideCol("operation");
     } else {
         $("#addDetailgrid").setGridParam().showCol("operation");
@@ -504,6 +510,7 @@ function initAddGrid() {
             },
             {name: 'totActPrice', label: '退货实际金额', width: 40},
             {name: 'uniqueCodes', label: 'code', hidden: true}
+
         ],
         autowidth: true,
         rownumbers: true,
@@ -760,4 +767,221 @@ function addProductsOnCode() {
     });
     $("#add-uniqCode-dialog").modal('hide');
     setAddFooterData();
+}
+function doPrint() {
+    /*$("#editForm").resetForm();*/
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#search_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"PR"
+        },
+        success: function (msg) {
+            if (msg.success) {
+                var addcont = "";
+                for (var i = 0; i < msg.result.length; i++) {
+                    addcont += "<div class='form-group' onclick=set('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
+                }
+                $("#addbutton").html(addcont);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+
+function set(id) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessage.do",
+        data: {"id": id, "billno": $("#billno").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                debugger;
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                var LODOP = getLodop();
+                //var LODOP=getLodop(document.getElementById('LODOP2'),document.getElementById('LODOP_EM2'));
+                eval(print.printCont);
+                var printCode = print.printCode;
+                var printCodes = printCode.split(",");
+                for (var i = 0; i < printCodes.length; i++) {
+                    var plp = printCodes[i];
+                    var message = cont[plp];
+                    if (message != "" && message != null && message != undefined) {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', message);
+                    } else {
+                        LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', "");
+                    }
+
+                }
+
+                var recordmessage = "";
+                var sum = 0;
+                var allprice = 0;
+                var alldiscount=0;
+                for (var a = 0; a < contDel.length; a++) {
+                    var conts = contDel[a];
+                    recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                        "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
+                        "<td align='left'style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.qty + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.price.toFixed(1) + "</td>" +
+                        "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.actPrice.toFixed(1) + "</td>" +
+                        "<td align='right' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + (conts.actPrice*conts.qty).toFixed(2) + "</td>" +
+                        "</tr>";
+
+                    sum = sum + parseInt(conts.qty);
+                    //allprice = allprice + parseFloat(conts.actPrice*conts.qty.toFixed(2));
+                    alldiscount = alldiscount+parseFloat((conts.actPrice*conts.qty).toFixed(2));
+                }
+                alldiscount=alldiscount.toFixed(0);
+                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                    "<td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td>" +
+                    "<td align='left'style='border-top:1px dashed black;padding-top:5px;'>" + sum + "</td>" +
+                    "<td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    " <td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                    "<td align='right' style='border-top:1px dashed black;padding-top:5px;'>" + alldiscount + "</td>" +
+                    " </tr>";
+
+                $("#loadtab").html(recordmessage);
+                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function wareHouseOut() {
+    var billNo = $("#edit_billNo").val();
+    if (billNo && billNo !== null) {
+
+        var epcArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            var codes = rowData.uniqueCodes.split(",");
+            if (codes && codes != null && codes != "") {
+                $.each((codes), function (index, value) {
+                    var epc = {};
+                    epc.code = value;
+                    epc.styleId = rowData.styleId;
+                    epc.sizeId = rowData.sizeId;
+                    epc.colorId = rowData.colorId;
+                    epc.qty = 1;
+                    epc.sku = rowData.sku;
+                    epcArray.push(epc)
+                })
+            }
+        });
+        if (epcArray.length === 0) {
+            $.gritter.add({
+                text: "请扫码出库",
+                class_name: 'gritter-success  gritter-light'
+            });
+            return;
+        }
+        var dtlArray = [];
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            dtlArray.push(rowData);
+        });
+
+        var returnValue = "";
+        cs.showProgressBar();
+        $.ajax({
+            async: true,
+            dataType: "json",
+            url: basePath + "/logistics/purchaseReturn/convertOut.do",
+            data: {
+                billNo: billNo,
+                strEpcList: JSON.stringify(epcArray),
+                strDtlList: JSON.stringify(dtlArray),
+                userId: userId
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#modal-addEpc-table").modal('hide');
+
+                    var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);        //reload前总数量
+                    var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);  //reload前总出库数量
+                    $("#addDetailgrid").jqGrid('setGridParam', {
+                        page: 1,
+                        url: basePath + '/logistics/purchaseReturn/findDtls.do?billNo=' + billNo,
+                    });
+                    $("#addDetailgrid").trigger("reloadGrid");
+
+                    var all_outQty = sum_outQty + epcArray.length;
+                    var diff_qty = sum_qty - all_outQty;
+                    if (pageType === "edit") {
+                        $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
+                        $("#SODtl_save").attr({"disabled": "disabled"});
+                        $("#edit_origId").attr('disabled', true);
+                        $("#edit_billDate").attr('readOnly', true);
+                        if (sum_qty > all_outQty) {
+                            $.gritter.add({
+                                text: "已出库数量为：" + all_outQty + "；剩余数量为：" + diff_qty + "，其余商品请扫码出库",
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                        }else if(sum_qty === all_outQty){
+                            $.gritter.add({
+                                text: "共" + all_outQty + "件商品，已全部出库",
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                            returnValue = "done";
+                        }
+                    } else if (pageType === "add") {
+                        var alertMessage;
+                        if (sum_qty > all_outQty) {
+                            alertMessage = "已出库数量为：" + all_outQty + "；剩余数量为：" + diff_qty + "，其余商品请扫码出库"
+                        } else if (sum_qty === all_outQty) {
+                            alertMessage = "共" + all_outQty + "件商品，已全部出库";
+                        }
+                        bootbox.alert({
+                            buttons: {ok: {label: '确定'}},
+                            message: alertMessage,
+                            callback: function () {
+                                quitback();
+
+                            }
+                        });
+                    }
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+        return returnValue;
+    } else {
+        bootbox.alert("请先保存当前单据");
+    }
+}
+/*查看唯一吗明细*/
+function showCodesDetail(uniqueCodes) {
+
+    $("#show-uniqueCode-list").modal('show');
+    codeListReload(uniqueCodes,billNo);
 }
