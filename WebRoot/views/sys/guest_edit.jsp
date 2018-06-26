@@ -331,6 +331,7 @@
                     for (var i = 0; i < json.length; i++) {
                         $("#edit_idCard").append("<option value='" + json[i].id + "'>" + "[" + json[i].rank + "]" + json[i].name + "</option>");
                     }
+                    $("#edit_idCard").val("${guest.idCard}");
                 }
             });
         }
@@ -341,7 +342,6 @@
         else
             $("#edit_sex input:radio[value=${guest.sex}]").attr("checked", "checked");
         $("#edit_type").find("option[value=${guest.type}]").attr("selected", true);
-        $("#edit_idCard").find("option[value=${guest.idCard}]").attr("selected", true);
         $("#edit_status").find("option[value=${guest.status}]").attr("selected", true);
         if (linkman!=""){
             $("#edit_linkman").find("option[value="+linkman+"]").attr("selected", true);
