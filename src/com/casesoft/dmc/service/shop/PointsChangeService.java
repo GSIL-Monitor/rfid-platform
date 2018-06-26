@@ -169,7 +169,7 @@ public class PointsChangeService extends BaseService<PointsChange, String> {
 
     //销售单直接关联生成退货单时，保存积分变动
     public Long saveReturnPoints(SaleOrderReturnBill bill) {
-        PointsChange saleOrderPoints = this.get("id", bill.getRemark());
+        PointsChange saleOrderPoints = this.get("id", bill.getSrcBillNo());
         Double ratio = saleOrderPoints.getRatio();
         if(CommonUtil.isBlank(ratio)){
            ratio = 1D;
