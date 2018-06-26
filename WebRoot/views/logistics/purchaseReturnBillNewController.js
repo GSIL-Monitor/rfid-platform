@@ -4,6 +4,7 @@ var editDtailRowId = null;
 var loadComplete = true, loadStatus = true;
 var isPassed = true;
 var allCodeStrInDtl = "";
+var isCheckWareHouse=true;
 $(function () {
     /*初始化左侧grig*/
     initSearchGrid();
@@ -11,7 +12,10 @@ $(function () {
     initAddGrid();
     /*初始化from表单*/
     initSearchAndEditForm();
+    setEditFormVal();
     initEditFormValid();
+    /*回车事件*/
+    keydown();
 });
 function initSearchGrid() {
     $("#grid").jqGrid({
@@ -91,6 +95,7 @@ function initSearchGrid() {
         multiselect: false,
         shrinkToFit: true,
         sortname: 'billNo',
+        sortorder: 'desc',
         autoScroll: false,
         footerrow: true,
         gridComplete: function () {
@@ -278,6 +283,10 @@ function initSearchAndEditForm() {
     initButtonGroup(pageType);
     $(".selectpicker").selectpicker('refresh');
 }
+function setEditFormVal(){
+    $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
+    $("#edit_actPrice").val(0);
+}
 function initSelectOrigForm() {
     //"/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_unitId").val()
     $.ajax({
@@ -309,6 +318,7 @@ function initSelectOrigEditForm() {
             for (var i = 0; i < json.length; i++) {
                 $("#edit_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
+            $("#edit_origId").val(defaultWarehId);
         }
     });
 }
@@ -639,4 +649,115 @@ function initEditFormValid() {
             },
         }
     });
+}
+function addUniqCode() {
+    inOntWareHouseValid = 'addPage_scanUniqueCode';
+    taskType = 0;
+    var origId = $("#edit_origId").val();
+    wareHouse = origId;
+    if (origId && origId != null) {
+        $("#dialog_buttonGroup").html("" +
+            "<button type='button'  class='btn btn-primary' onclick='addProductsOnCode()'>保存</button>"
+        );
+        $("#add-uniqCode-dialog").modal('show').on('hidden.bs.modal', function () {
+            $("#uniqueCodeGrid").clearGridData();
+        });
+        initUniqeCodeGridColumn('showPrecast');
+        $("#codeQty").text(0);
+    } else {
+        bootbox.alert("发货仓库不能为空！")
+    }
+    allCodes = "";
+}
+function edit_wareHouseOut() {
+    var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
+    var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
+    if (sum_qty === sum_outQty) {
+        $.gritter.add({
+            text: '已全部出库',
+            class_name: 'gritter-success  gritter-light'
+        });
+    }else if (sum_qty > sum_outQty) {
+        skuQty = {};
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            skuQty[rowData.sku] = rowData.outQty;
+        });
+        inOntWareHouseValid = 'wareHouseOut_valid';
+
+        var origId = $("#edit_origId").val();
+        taskType = 0;
+        wareHouse = origId;
+
+        var inOutState = wareHouseOut();
+
+        if(inOutState !== "done"){
+            if (origId && origId !== null) {
+                $("#dialog_buttonGroup").html("" +
+                    "<button type='button'  class='btn btn-primary' onclick='confirmWareHouseOut()'>确认出库</button>"
+                );
+                $("#add-uniqCode-dialog").modal('show').on('hidden.bs.modal', function () {
+                    $("#uniqueCodeGrid").clearGridData();
+                });
+                initUniqeCodeGridColumn('showPrecast');
+                $("#codeQty").text(0);
+            } else {
+                bootbox.alert("发货仓库不能为空！");
+            }
+        }
+        allCodes = "";
+    }
+}
+function addProductsOnCode() {
+    var productListInfo = [];
+    $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
+        var productInfo = $("#uniqueCodeGrid").getRowData(value);
+        productInfo.qty = 1;
+        productInfo.price = productInfo.preCast;
+        productInfo.outQty = 0;
+        productInfo.status = 0;
+        productInfo.outStatus = 0;
+        productInfo.uniqueCodes = productInfo.code;
+        productInfo.totPrice = -Math.abs(productInfo.price);
+        productInfo.actPrice = productInfo.price;
+        productInfo.totActPrice = -Math.abs(productInfo.actPrice);
+        productListInfo.push(productInfo);
+    });
+    if (productListInfo.length == 0) {
+        bootbox.alert("请添加唯一码");
+        return;
+    }
+    var isAdd = true;
+    $.each(productListInfo, function (index, value) {
+        isAdd = true;
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.sku === dtlRow.sku) {
+                if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+                    isAdd = false;
+                    $.gritter.add({
+                        text: value.code + "不能重复添加",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    return true;
+                }
+                dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                dtlRow.totPrice = -Math.abs(dtlRow.qty * dtlRow.price);
+                dtlRow.actPrice = dtlRow.price;
+                dtlRow.totActPrice = -Math.abs(dtlRow.qty * dtlRow.actPrice);
+                dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                if (dtlRow.id) {
+                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                } else {
+                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                }
+                isAdd = false;
+            }
+        });
+        if (isAdd) {
+            $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+        }
+    });
+    $("#add-uniqCode-dialog").modal('hide');
+    setAddFooterData();
 }

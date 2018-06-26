@@ -173,7 +173,7 @@
                                                 <div class="col-md-5">
                                                     <input class="form-control" id="edit_billType" name="billType"
                                                            type="text" readOnly
-                                                           value="${purchaseReturnBill.billNo}"/>
+                                                           value="${purchaseReturnBill.billType}"/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -256,6 +256,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="purchaseReturnBillPrint.jsp"></jsp:include>
+<jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseReturnBillNewController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
