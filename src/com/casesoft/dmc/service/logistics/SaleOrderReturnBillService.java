@@ -58,6 +58,11 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     private PointsChangeService pointsChangeService;
     @Autowired
     private GuestService guestService;
+
+    public Double findSumActPrice(String origUnitId){
+        return this.saleOrderReturnBillDao.findUnique("select sum(actPrice) from SaleOrderReturnBill where status = 2 and origUnitId =?",origUnitId);
+    }
+
     @Override
     public Page<SaleOrderReturnBill> findPage(Page<SaleOrderReturnBill> page, List<PropertyFilter> filters) {
         return saleOrderReturnBillDao.findPage(page, filters);

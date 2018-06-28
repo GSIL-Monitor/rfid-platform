@@ -64,7 +64,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
     public Double findSumActPrice(String destUnitId){
-        return this.saleOrderBillDao.findUnique("select sum(actPrice) from SaleOrderBill where destUnitId =?",destUnitId);
+        return this.saleOrderBillDao.findUnique("select sum(actPrice) from SaleOrderBill where status = 2 and destUnitId =?",destUnitId);
     }
 
     @Override
