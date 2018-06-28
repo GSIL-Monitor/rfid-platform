@@ -75,6 +75,9 @@ public abstract class BaseBill {
     protected Long actQty;//实际数量
     @Column()
     protected Long actSkuQty;//实际sku数
+    //到貨數量
+    @Column()
+    protected Long arrival;
 
     @Column()
     protected Double totPrice;//总价格
@@ -326,6 +329,14 @@ public abstract class BaseBill {
 
     @Transient
     private List<BillRecord> billRecordList;
+
+    public Long getArrival() {
+        return arrival;
+    }
+
+    public void setArrival(Long arrival) {
+        this.arrival = arrival;
+    }
 
     public List<BillRecord> getBillRecordList() {
         return billRecordList;

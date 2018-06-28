@@ -130,6 +130,7 @@ function initSearchGrid() {
             {name:'orderWarehouseId',hidden:true},
             {name:'discount',hidden:true},
             {name:'srcBillNo',hidden:true},
+            {name: 'arrival',hidden:true },
             {name:'remark',hidden:true}
         ],
         viewrecords: true,
@@ -394,8 +395,6 @@ function initeditGrid(billNo) {
             {name: 'status', hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'printStatus', hidden: true},
-            {name:'payType', hidden:true},
-            {name:'remark',hidden:true},
             {
                 name: 'statusImg', label: '状态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
@@ -463,6 +462,19 @@ function initeditGrid(billNo) {
             {name: 'colorName', label: '颜色', width: 20},
             {name: 'sizeName', label: '尺码', width: 20},
             {name: 'qty', label: '数量', width: 20},
+            {name: 'arrival', label: '到货数', width: 20,
+                editable: true,
+                editoptions: {
+                    dataInit: function (e) {
+                        var maxValue = $(e).val();
+                        $(e).spinner({
+                            value: maxValue,
+                            min: 0, //最小值
+                            max: maxValue, //最大值
+                            step: 1
+                        });
+                    }
+                }},
             {name: 'actPrintQty', label: '已打印数量', width: 20},
             {
                 name: 'printQty', label: '待打印数量', width: 20,
@@ -1166,9 +1178,7 @@ function set(id) {
 }
 
 function cancel() {
-
-    var billId= $("#edit_billNo").val();
-    if(billId == "" || billId == undefined){
+    if($("#search_status").val()!=0){
         bootbox.alert("不是录入状态，无法撤销");
         return;
     }
@@ -1180,7 +1190,7 @@ function cancel() {
             /* $("#SODtl_save").removeAttr("disabled");*/
             if (result) {
                 cancelAjax(billId);
-                addNew(false)
+                addNew()
             } else {
             }
         }

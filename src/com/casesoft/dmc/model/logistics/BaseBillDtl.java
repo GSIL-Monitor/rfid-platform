@@ -67,9 +67,20 @@ public abstract class BaseBillDtl {
     protected Double discount;
     @Transient
     protected String imgUrl;
+    //到貨數量
+    @Column()
+    protected Long arrival;
 
     @Transient
     protected String stylePriceMap;
+
+    public Long getArrival() {
+        return arrival;
+    }
+
+    public void setArrival(Long arrival) {
+        this.arrival = arrival;
+    }
 
     public String getBillId() {
         return billId;

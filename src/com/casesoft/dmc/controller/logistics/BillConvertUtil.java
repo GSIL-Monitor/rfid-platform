@@ -498,7 +498,7 @@ public class BillConvertUtil {
                 detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
                 detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
                         + dtl.getPrintQty());
-                detail.setQty(dtl.getPrintQty());
+                detail.setQty(dtl.getArrival());
                 detail.setOwnerId(currentUser.getOwnerId());
                 detail.setStatus(1);
                 totQty += dtl.getPrintQty();
