@@ -64,7 +64,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
         String constructorParameter="id,beforeclass9,nowclass9,changeType,billDate,origId,remark,billNo,status";
         page = this.labelChangeBillService.findNewPage(page, filters,LabelChangeBill.class,LabelChangeBillDel.class,constructorParameter);
         for(int i=0;i<page.getRows().size();i++){
-            LabelChangeBill labelChangeBill = page.getRows().get(i);
+            LabelChangeBill labelChangeBill=page.getRows().get(i);
             String origId = labelChangeBill.getOrigId();
             Unit unit = CacheManager.getUnitById(origId);
             labelChangeBill.setOrigName(unit.getName());

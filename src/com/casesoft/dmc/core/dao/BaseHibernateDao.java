@@ -12,10 +12,7 @@ import javassist.expr.NewArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.AggregateProjection;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
@@ -88,6 +85,23 @@ public BaseHibernateDao() {
       page.setTotal(totalCount);
     }
 
+    setPageParameterToQuery(q, page);
+
+    List result = q.list();
+    page.setRows(result);
+    return page;
+  }
+
+  public Page<T> findSqlPage(final Page<T> page, final String hql, final Object... values) {
+    Assert.notNull(page, "page不能为空");
+
+    Query q = createQuery(hql, values);
+
+    if (page.isAutoCount()) {
+      //long totalCount = countSqlResult(hql, values);
+      page.setTotal(q.list().size());
+    }
+    page.setTotPage(page.getTotal()/page.getPageSize()+1);
     setPageParameterToQuery(q, page);
 
     List result = q.list();
@@ -341,6 +355,21 @@ public BaseHibernateDao() {
       throw new RuntimeException("hql can't be auto count, hql is:" + countHql, e);
     }
   }
+  /**
+   * 执行count查询获得本次SQL查询所能获得的对象总数.
+   *
+   * 本函数只能自动处理简单的SQL语句,复杂的hql查询请另行编写count语句查询.
+   */
+  protected long countSqlResult(final String hql, final Object... values) {
+    String countHql = prepareCountSql(hql);
+
+    try {
+      Long count = findSqlUnique(countHql, null);
+      return count;
+    } catch (Exception e) {
+      throw new RuntimeException("sql can't be auto count, sql is:" + countHql, e);
+    }
+  }
 
   protected long countHqlResult(final String hql, final Map<String, ?> values) {
     String countHql = prepareCountHql(hql);
@@ -360,6 +389,15 @@ public BaseHibernateDao() {
     fromHql = StringUtils.substringBefore(fromHql, "order by");
 
     String countHql = "select count(*) " + fromHql;
+    return countHql;
+  }
+  private String prepareCountSql(String orgHql) {
+    String fromHql = orgHql;
+    // select子句与order by子句会影响count查询,进行简单的排除.
+    fromHql = "from " + StringUtils.substringAfter(fromHql, "from");
+    fromHql = StringUtils.substringBefore(fromHql, "order by");
+
+    String countHql = "select count(*) from (select count(*) " + fromHql+")";
     return countHql;
   }
 

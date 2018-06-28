@@ -198,7 +198,7 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
 
     public  Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page, List<PropertyFilter> filters, Class<?> billClass, Class<?> billDtlClass,String constructorParameter){
         String hql= CommonUtil.hqlbyBillandBillDel(billClass, billDtlClass, filters, constructorParameter);
-         page = this.labelChangeBillDao.findPage(page, hql);
+         page = this.labelChangeBillDao.findSqlPage(page, hql);
 
         return page;
     }
