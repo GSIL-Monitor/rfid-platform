@@ -528,6 +528,7 @@ public class BillConvertUtil {
         master.setBillNo(taskId);
         Long totQty = 0L;
         List<InitDtl> initDtlList = new ArrayList<>();
+        org.slf4j.Logger  logger = LoggerFactory.getLogger(LabelChangeBill.class);
         boolean isUseOldStyle=false;
         for (LabelChangeBillDel dtl : labelChangeBillDels) {
             InitDtl detail = new InitDtl();
@@ -540,10 +541,15 @@ public class BillConvertUtil {
                     styleId=styleId.substring(0,styleIdLength-2);
                     Style style= CacheManager.getStyleById(styleId);
                     if(CommonUtil.isBlank(style)){
+                        logger.error(dtl.getBillNo()+":BillConvertUtil没有"+styleId);
                         isUseOldStyle=false;
                     }else{
+                        logger.error(dtl.getBillNo()+":BillConvertUtil有"+styleId);
                         isUseOldStyle=true;
                     }
+                }else{
+                    logger.error(dtl.getBillNo()+":BillConvertUtil"+styleId+"后缀没有AA和AS");
+                    isUseOldStyle=false;
                 }
                 String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
                 if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){

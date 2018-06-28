@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.vo.TagFactory;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.ConsignmentBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
 import com.casesoft.dmc.model.product.Color;
@@ -27,6 +28,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static javax.swing.plaf.basic.BasicHTML.propertyKey;
@@ -458,6 +461,7 @@ public class StyleUtil {
      */
     public static Map<String,Object> newstyleidonlabelChangeBillDel(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,PricingRulesService pricingRulesService, ProductService productService){
         //系列的转换
+        org.slf4j.Logger  logger = LoggerFactory.getLogger(LabelChangeBill.class);
         /* PricingRulesService pricingRulesService = ( PricingRulesService) SpringContextUtil.getBean(" pricingRulesService");
          ProductService productService = ( ProductService) SpringContextUtil.getBean(" productService");*/
         Map<String,Object> map=new HashMap<String,Object>();
@@ -477,10 +481,15 @@ public class StyleUtil {
                     styleId=styleId.substring(0,styleIdLength-2);
                     Style style= CacheManager.getStyleById(styleId);
                     if(CommonUtil.isBlank(style)){
+                        logger.error(labelChangeBill.getBillNo()+":StyleUtil没有"+styleId);
                         isUseOldStyle=false;
                     }else{
+                        logger.error(labelChangeBill.getBillNo()+":StyleUtil有"+styleId);
                         isUseOldStyle=true;
                     }
+                }else {
+                    logger.error(labelChangeBill.getBillNo()+":StyleUtil"+styleId+"后缀没有AA和AS");
+                    isUseOldStyle=false;
                 }
                 String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
                 if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
