@@ -406,15 +406,23 @@ function initAllCodesList() {
 function initButtonGroup(type) {
     if(type === "add"){
         $("#buttonGroup").html("" +
-            "<button id='SODtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "    <i class='ace-icon fa fa-plus'></i>" +
+            "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
+            "<button id='SODtl_save' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-            "<button id='SODtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
+            "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOut()'>" +
+            "<button id='SODtl_wareHouseOut' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>"
@@ -422,19 +430,27 @@ function initButtonGroup(type) {
     }
     if (type === "edit") {
         $("#buttonGroup").html("" +
-            "<button id='SODtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
+            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "    <i class='ace-icon fa fa-plus'></i>" +
+            "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>撤销</span>" +
+            "</button>" +
+            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-            "<button id='SODtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
+            "<button id='SODtl_addUniqCode' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='edit_wareHouseOut()'>" +
+            "<button id='SODtl_wareHouseOut' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>"+
-            "<button  type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='doPrint(billNo)'>" +
+            "<button  type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint(billNo)'>" +
             "    <i class='ace-icon fa fa-reply'></i>" +
             "    <span class='bigger-110'>打印</span>" +
             "</button>"
@@ -537,7 +553,7 @@ function initAddGrid() {
         }
 
     });
-    if (pageType == "edit" && returnStatus !== "0") {
+    if (pageType == "edit" && purchaseReturn_status !== "0") {
         $("#addDetailgrid").setGridParam().hideCol("operation");
     } else {
         $("#addDetailgrid").setGridParam().showCol("operation");
@@ -806,7 +822,7 @@ function set(id) {
     $.ajax({
         dataType: "json",
         url: basePath + "/sys/printset/printMessage.do",
-        data: {"id": id, "billno": $("#billno").val()},
+        data: {"id": id, "billno": $("#edit_billNo").val()},
         type: "POST",
         success: function (msg) {
             if (msg.success) {
@@ -984,4 +1000,66 @@ function showCodesDetail(uniqueCodes) {
 
     $("#show-uniqueCode-list").modal('show');
     codeListReload(uniqueCodes,billNo);
+}
+/**
+ * 新增单据调用
+ * isScan 是否调用扫码框
+ * */
+function addNew(){
+    $('#addDetailgrid').jqGrid("clearGridData");
+    $('#addDetailgrid').jqGrid('GridUnload');
+    initAddGrid();
+    $("#editForm").clearForm();
+    setEditFormVal();
+    initSelectOrigEditForm();
+    $("#addDetailgrid").trigger("reloadGrid");
+    $(".selectpicker").selectpicker('refresh');
+    pageType="add";
+    initButtonGroup(pageType);
+
+}
+function cancel() {
+
+    var billId= $("#edit_billNo").val();
+    var status = $("#edit_status").val();
+    if (status != "0") {
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    if(billId == "" || billId == undefined){
+        bootbox.alert("不是录入状态，无法撤销");
+        return;
+    }
+    bootbox.confirm({
+        /*title: "余额确认",*/
+        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+        message: "撤销确定",
+        callback: function (result) {
+            /* $("#SODtl_save").removeAttr("disabled");*/
+            if (result) {
+                cancelAjax(billId);
+            } else {
+            }
+        }
+    });
+}
+function cancelAjax(billId) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/purchaseReturn/cancel.do",
+        data: {billNo: billId},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
