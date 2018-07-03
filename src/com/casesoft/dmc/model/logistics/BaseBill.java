@@ -28,6 +28,17 @@ public abstract class BaseBill {
     @Column(length = 50)
     protected String srcBillNo;//原始单号（入库单关联的出库单单号）可以为空
     @Column(length = 50)
+    protected String returnBillNo;//未完成订单结束时关联的退货单号
+
+    public String getReturnBillNo() {
+        return returnBillNo;
+    }
+
+    public void setReturnBillNo(String returnBillNo) {
+        this.returnBillNo = returnBillNo;
+    }
+
+    @Column(length = 50)
     protected String destUnitId;// 收货方组织ID
     @Column()
     protected String billType;// "E":表示正在编辑 "S" 表示已经保存

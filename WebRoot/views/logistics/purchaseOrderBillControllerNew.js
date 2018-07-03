@@ -85,6 +85,9 @@ function initSearchGrid() {
                         case 2 :
                             html = "<i class='fa fa-tasks blue' title='结束'></i>";
                             break;
+                        case 3 :
+                            html = "<i class='fa fa-sign-out blue' title='未结束'></i>";
+                            break;
                         default:
                             break;
 
@@ -131,7 +134,8 @@ function initSearchGrid() {
             {name:'discount',hidden:true},
             {name:'srcBillNo',hidden:true},
             {name: 'arrival',hidden:true },
-            {name:'remark',hidden:true}
+            {name:'remark',hidden:true},
+            {name:'returnBillNo',hidden:true}
         ],
         viewrecords: true,
         autowidth: true,
@@ -170,6 +174,7 @@ function setFooterData() {
     });
 }
 function initDetailData(rowid) {
+    $("#SODtl_save").attr('disabled',false);
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     slaeOrder_status = rowData.status;
@@ -187,6 +192,12 @@ function initDetailData(rowid) {
     pageType="edit";
     initButtonGroup(pageType);
     $("#addDetailgrid").trigger("reloadGrid");
+    if (slaeOrder_status == "3"){
+        $("#SODtl_save").attr('disabled',true);
+        $("#SODtl_end").attr('disabled',false);
+    }else {
+        $("#SODtl_end").attr('disabled',true);
+    }
 }
 function initAddGrid() {
     $("#addDetailgrid").jqGrid({
@@ -396,7 +407,7 @@ function initeditGrid(billNo) {
             {name: 'inStatus', hidden: true},
             {name: 'printStatus', hidden: true},
             {
-                name: 'statusImg', label: '状态', width: 10, align: 'center',
+                name: '', label: '状态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.status == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -410,7 +421,7 @@ function initeditGrid(billNo) {
                 }
             },
             {
-                name: 'inStatusImg', label: '入态', width: 10, align: 'center',
+                name: '', label: '入态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -424,7 +435,7 @@ function initeditGrid(billNo) {
                 }
             },
             {
-                name: 'printStatusImg', label: '打印态', width: 10, align: 'center',
+                name: '', label: '打印态', width: 10, align: 'center',
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.printStatus == 0) {
                         return '<i class="fa fa-times blue" title="未打印"></i>';
@@ -438,7 +449,7 @@ function initeditGrid(billNo) {
                 }
             },
             {
-                name: 'inStockTypeName', label: '入型', width: 10,
+                name: '', label: '入型', width: 10,
                 formatter: function (cellValue, options, rowObject) {
                     switch (rowObject.inStockType) {
                         case 'XK':
@@ -463,8 +474,8 @@ function initeditGrid(billNo) {
             {name: 'sizeName', label: '尺码', width: 20},
             {name: 'qty', label: '数量', width: 20},
             {name: 'arrival', label: '到货数', width: 20,
-                editable: true,
-                editoptions: {
+                editable: true
+                /*editoptions: {
                     dataInit: function (e) {
                         var maxValue = $(e).val();
                         $(e).spinner({
@@ -474,7 +485,7 @@ function initeditGrid(billNo) {
                             step: 1
                         });
                     }
-                }},
+                }*/},
             {name: 'actPrintQty', label: '已打印数量', width: 20},
             {
                 name: 'printQty', label: '待打印数量', width: 20,
@@ -866,16 +877,12 @@ function addProductInfo(status) {
                 dtlRow.qty = parseInt(dtlRow.qty) + parseInt(value.qty);
                 dtlRow.totPrice = dtlRow.qty * dtlRow.price;
                 $("#addDetailgrid").setRowData(dtlndex, dtlRow);
-
                 isAdd = false;
-
             }
         });
         if (isAdd) {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
-
-
     });
     if(status){
         $("#modal-addDetail-table").modal('hide');
@@ -908,11 +915,13 @@ function deleteItem(rowId) {
 }
 
 function addNew() {
+    $("#editForm").clearForm();
+    $("#search_status").val("");
+    $("#search_billDate").val(getToDay("yyyy-MM-dd"));
+    $("#search_payPrice").val(0);
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
-    $("#editForm").clearForm();
-    $("#search_payPrice").val(0);
     initSelectDestForm();
     pageType="add";
     initButtonGroup(pageType);
@@ -968,6 +977,8 @@ function save() {
                 });
                 $("#edit_billNo").val(msg.result);
                 quitback();
+                addNew();
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -983,7 +994,7 @@ function quitback() {
         success: function (data, textStatus) {
             if(textStatus=="success"){
                 $.gritter.add({
-                    text: billNo+"可以编辑",
+                    text: billNo+"可以修改",
                     class_name: 'gritter-success  gritter-light'
                 });
             }
@@ -1178,6 +1189,7 @@ function set(id) {
 }
 
 function cancel() {
+    var billId = $("#edit_billNo").val();
     if($("#search_status").val()!=0){
         bootbox.alert("不是录入状态，无法撤销");
         return;
@@ -1209,7 +1221,51 @@ function cancelAjax(billId) {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#grid").trigger("reloadGrid");
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
 
+function end() {
+    $("#return_origId").val($("#edit_destId").val());
+    $("#return_destUnitId").val($("#edit_origUnitId").val());
+    $("#return_destUnitName").val($("#edit_origUnitName").val());
+    $("#return_billDate").val($("#search_billDate").val());
+    $("#search_remark").val("该单由采购单据转换而来，具体请查看采购单据。");
+    var PbillNo = $("#edit_billNo").val();
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        if (rowData.printStatus !== 2){
+            rowData.qty = rowData.printQty;
+            rowData.actPrice = rowData.price;
+            rowData.totPrice = -rowData.price * rowData.qty;
+            rowData.totactprice = -rowData.actPrice * rowData.qty;
+            dtlArray.push(rowData);
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        async:true,
+        url: basePath + "/logistics/purchase/endNb.do",
+        data: {
+            purchaseBillStr: JSON.stringify(array2obj($("#ReturnEditForm").serializeArray())),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId,
+            PbillNo:PbillNo
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                addNew();
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1255,6 +1311,10 @@ function initButtonGroup(type){
             "<button id='SODtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='openAddEpcDialog()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>采购入库单</span>" +
+            "</button>"+
+            "<button id='SODtl_end' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='end()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>结束订单</span>" +
             "</button>"
         );
     }

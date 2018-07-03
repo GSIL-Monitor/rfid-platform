@@ -69,16 +69,16 @@ public abstract class BaseBillDtl {
     protected String imgUrl;
     //到貨數量
     @Column()
-    protected Long arrival;
+    protected Integer arrival;
 
     @Transient
     protected String stylePriceMap;
 
-    public Long getArrival() {
+    public Integer getArrival() {
         return arrival;
     }
 
-    public void setArrival(Long arrival) {
+    public void setArrival(Integer arrival) {
         this.arrival = arrival;
     }
 

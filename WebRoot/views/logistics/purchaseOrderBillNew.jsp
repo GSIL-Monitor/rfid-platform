@@ -55,6 +55,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label class="col-md-2 control-label" for="search_returnBillNo">退货单号</label>
+                                                    <div class="col-md-10">
+                                                        <input class="form-control" id="search_returnBillNo" name="filter_LIKES_returnBillNo"
+                                                               type="text" onkeyup="this.value=this.value.toUpperCase()"
+                                                               placeholder="模糊查询"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
                                                     <label class="col-md-2 control-label" for="search_createTime">创建日期</label>
                                                     <div class="col-md-10">
                                                         <div class="input-group">
@@ -142,7 +150,7 @@
                                                         <div class="col-md-5">
                                                             <div class="input-group">
                                                                 <input class="form-control" id="edit_origUnitId" type="text"
-                                                                       name="origUnitId" value="${purchaseOrderBill.origUnitId}" readonly/>
+                                                                       name="origUnitId"  readonly/>
                                                                 <span class="input-group-btn">
                                                                     <button class="btn btn-sm btn-default" id="edit_vendor_button"
                                                                             type="button" onclick="openSearchVendorDialog('edit')">
@@ -150,14 +158,14 @@
                                                                     </button>
 											                    </span>
                                                                 <input class="form-control" id="edit_origUnitName" type="text"
-                                                                       name="origUnitName" value="${purchaseOrderBill.origUnitName}"
+                                                                       name="origUnitName"
                                                                        readonly/>
                                                             </div>
                                                         </div>
                                                         <label class="col-md-3 control-label" for="edit_billNo">单据编号</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control" id="edit_billNo" name="billNo"
-                                                                   type="text" readonly value="${purchaseOrderBill.billNo}"/>
+                                                                   type="text" readonly />
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -171,14 +179,14 @@
                                                         <label class="col-md-1 control-label" for="edit_destId"><span class="text-danger">* </span>入库仓库</label>
                                                         <div class="col-md-3">
                                                             <select class="form-control selectpicker show-tick" id="edit_destId" name="destId"
-                                                                    style="width: 100%;" value="${purchaseOrderBill.destId}" data-live-search="true">
+                                                                    style="width: 100%;"  data-live-search="true">
                                                             </select>
                                                         </div>
                                                         <label class="col-md-1 control-label" for="search_billDate"
                                                         ><span class="text-danger">* </span>单据日期</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control date-picker" id="search_billDate" name="billDate"
-                                                                   type="text" value="${purchaseOrderBill.billDate}"/>
+                                                                   type="text" />
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -188,18 +196,18 @@
                                                             <div class="input-group">
                                                                 <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
                                                                 <input class="form-control" id="search_payPrice" name="payPrice"
-                                                                       type="number" value="${purchaseOrderBill.payPrice}"/>
+                                                                       type="number"/>
                                                             </div>
                                                         </div>
                                                         <label class="col-md-1 control-label" for="search_payType">支付方式</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control" id="search_payType" name="payType"
-                                                                   type="text" value="${purchaseOrderBill.payType}"/>
+                                                                   type="text"/>
                                                         </div>
                                                         <label class="col-md-1 control-label" for="search_orderWarehouseId"></span>订货仓库</label>
                                                         <div class="col-md-3">
                                                             <select class="form-control selectpicker show-tick" id="search_orderWarehouseId" name="orderWarehouseId"
-                                                                    style="width: 100%;" value="${purchaseOrderBill.orderWarehouseId}" data-live-search="true">>
+                                                                    style="width: 100%;"  data-live-search="true">>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -213,7 +221,12 @@
                                                         <label class="col-md-1 control-label" for="search_srcBillNo">补货单编号</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control" id="search_srcBillNo" name="srcBillNo"
-                                                                   type="text" readonly value="${purchaseOrderBill.srcBillNo}"/>
+                                                                   type="text" readonly/>
+                                                        </div>
+                                                        <label class="col-md-1 control-label" for="search_retBillNo">退货单编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="search_retBillNo" name="returnBillNo"
+                                                                   type="text" readonly/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -221,25 +234,25 @@
                                                                for="form_remark">备注</label>
                                                         <div class="col-md-11 col-sm-11">
                                                         <textarea maxlength="400" class="form-control" id="form_remark"
-                                                            name="remark" >${purchaseOrderBill.remark}
+                                                            name="remark" >
                                                         </textarea>
                                                         </div>
                                                     </div>
-                                                    <div>
-                                                        <input  id="findOwnerId"
-                                                                type="text" value="${OwnerId}" style="display: none"/>
-                                                        <input  id="defaultWarehId"
-                                                                type="text" value="${defaultWarehId}" style="display: none"/>
-                                                        <input id="search_status" name="status" value="${purchaseOrderBill.status}"
-                                                               type="hidden">
-                                                        </input>
-                                                        <input id="search_ownerId" name="ownerId" value="${purchaseOrderBill.ownerId}"
-                                                               type="hidden">
-                                                        </input>
-                                                        <input id="search_id" name="id" value="${purchaseOrderBill.id}"
-                                                               type="hidden">
-                                                        </input>
-                                                    </div>
+                                                    <input id="search_status" name="status" type="hidden">
+                                                    </input>
+                                                    <input id="search_ownerId" name="ownerId"  type="hidden">
+                                                    </input>
+                                                    <input id="search_id" name="id" type="hidden">
+                                                    </input>
+                                                </form>
+                                                <form id="ReturnEditForm" >
+                                                    <input id="return_origId" name="origId" type="hidden"/>
+                                                    <input id="return_destUnitId" type="hidden" name="destUnitId"/>
+                                                    <input id="return_destUnitName" type="hidden" name="destUnitName"/>
+                                                    <input id="return_actPrice" name="actPrice" type="hidden"/>
+                                                    <input id="return_billDate" name="billDate" type="hidden"/>
+                                                    <input id="return_payPrice" name="payPrice" type="hidden"/>
+                                                    <input  name="remark" id="search_remark" type="hidden"/>
                                                 </form>
                                             </div>
                                         </div>

@@ -483,12 +483,12 @@ public class BillConvertUtil {
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
             if (dtl.getPrintQty() > 0 && dtl.getQty() > dtl.getActPrintQty()) {
 
-                if (dtl.getPrintQty().intValue() == (dtl.getQty().intValue() - dtl.getActPrintQty().intValue())) {
+                if (dtl.getPrintQty().intValue() == (dtl.getQty().intValue() - dtl.getActPrintQty().intValue())&&dtl.getQty().intValue()==dtl.getArrival()) {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Print);
                 } else {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Printting);
                 }
-                dtl.setActPrintQty(dtl.getActPrintQty() + dtl.getPrintQty());
+                dtl.setActPrintQty(dtl.getActPrintQty() + dtl.getArrival());
                 InitDtl detail = new InitDtl();
                 detail.setId(taskId + "-" + dtl.getSku());
                 detail.setStyleId(dtl.getStyleId());
@@ -498,7 +498,7 @@ public class BillConvertUtil {
                 detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
                 detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
                         + dtl.getPrintQty());
-                detail.setQty(dtl.getArrival());
+                detail.setQty(dtl.getArrival()-dtl.getInQty());
                 detail.setOwnerId(currentUser.getOwnerId());
                 detail.setStatus(1);
                 totQty += dtl.getPrintQty();

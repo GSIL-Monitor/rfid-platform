@@ -19,6 +19,7 @@ import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
+import com.casesoft.dmc.service.logistics.PurchaseReturnBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
@@ -32,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +54,8 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
+    @Autowired
+    private PurchaseReturnBillService purchaseReturnBillService;
    /* @Override
     @RequestMapping(value = "/index")
     public String index() {
@@ -111,6 +115,34 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
         }
         return purchaseOrderBillDtls;
+    }
+
+    @RequestMapping("/endNb")
+    @ResponseBody
+    public MessageBox endNb(String purchaseBillStr ,String strDtlList,String userId,String PbillNo)throws Exception{
+        this.logAllRequestParams();
+        try {
+            PurchaseReturnBill purchaseReturnBill = JSON.parseObject(purchaseBillStr, PurchaseReturnBill.class);
+            List<PurchaseReturnBillDtl> purchaseReturnBillDtlList = JSON.parseArray(strDtlList, PurchaseReturnBillDtl.class);
+            String prefix = BillConstant.BillPrefix.purchaseReturn
+                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+            String billNo = this.purchaseReturnBillService.findMaxBillNo(prefix);
+            purchaseReturnBill.setBillNo(billNo);
+            purchaseReturnBill.setId(billNo);
+            User currentUser = CacheManager.getUserById(userId);
+            double actPriceSum = 0;
+            for (PurchaseReturnBillDtl returnBill :purchaseReturnBillDtlList){
+                actPriceSum +=returnBill.getTotActPrice();
+            }
+            purchaseReturnBill.setActPrice(actPriceSum);
+            purchaseReturnBill.setPayPrice(actPriceSum);
+            BillConvertUtil.convertToPurchaseReturnBill(purchaseReturnBill, purchaseReturnBillDtlList,currentUser);
+            this.purchaseReturnBillService.saveBatch(purchaseReturnBill, purchaseReturnBillDtlList,PbillNo,billNo);
+            return returnSuccessInfo("保存成功", purchaseReturnBill.getBillNo());
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
     }
 
     @RequestMapping(value = {"/save","/saveWS"})
@@ -323,6 +355,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         this.purchaseOrderBillService.update(purchaseOrderBill);
         return new MessageBox(true, "申请成功");
     }
+
 
     @RequestMapping(value = "/convert")
     @ResponseBody
