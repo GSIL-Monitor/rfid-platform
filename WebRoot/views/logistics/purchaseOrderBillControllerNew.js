@@ -192,6 +192,7 @@ function initDetailData(rowid) {
     pageType="edit";
     initButtonGroup(pageType);
     $("#addDetailgrid").trigger("reloadGrid");
+    $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     if (slaeOrder_status == "3"){
         $("#SODtl_save").attr('disabled',true);
         $("#SODtl_end").attr('disabled',false);
@@ -307,6 +308,7 @@ function initAddGrid() {
                     }
                 }
             },
+            {name:'arrival',hidden:true},
             {name: 'actPrintQty', label: '已打数', width: 16},
             {name: 'inQty', label: '已入数', width: 16},
             {name: 'sku', label: 'SKU', width: 20},
@@ -1238,7 +1240,7 @@ function end() {
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
-        if (rowData.printStatus !== 2){
+        if (rowData.qty != rowData.printQty){
             rowData.qty = rowData.printQty;
             rowData.actPrice = rowData.price;
             rowData.totPrice = -rowData.price * rowData.qty;

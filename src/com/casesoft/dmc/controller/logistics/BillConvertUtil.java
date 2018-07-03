@@ -47,10 +47,14 @@ public class BillConvertUtil {
         Long totQty = 0L;
         Long actQty = 0L;
         Long rcvQty = 0L;
+        Long arrival = 0L;
         Double totPrice = 0D;
         Double actPrice = 0D;
         Double rcvVal = 0D;
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
+            if (dtl.getArrival()==null){
+                dtl.setArrival(0);
+            }
             dtl.setId(new GuidCreator().toString());
             dtl.setBillId(purchaseOrderBill.getId());
             dtl.setBillNo(purchaseOrderBill.getBillNo());
@@ -58,6 +62,7 @@ public class BillConvertUtil {
             dtl.setActQty(dtl.getQty());
             dtl.setInQty(0);
             dtl.setPrintQty(dtl.getQty().intValue());
+            arrival+= dtl.getArrival();
             totQty += dtl.getQty();
             actQty += dtl.getQty();
             totPrice += dtl.getPrice() * dtl.getQty();
@@ -90,7 +95,7 @@ public class BillConvertUtil {
         purchaseOrderBill.setActPrice(actPrice);
         purchaseOrderBill.setTotInQty(rcvQty);
         purchaseOrderBill.setTotInVal(rcvVal);
-
+        purchaseOrderBill.setArrival(arrival);
 
     }
 
