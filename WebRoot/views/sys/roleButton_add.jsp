@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a href="#" class="btn" onclick="closeEditDialog()">关闭</a>
+            <a href="#" class="btn" onclick="closeEditButtonDialog()">关闭</a>
             <button type="button"  class="btn btn-primary" onclick="pSave()">保存</button>
         </div>
     </div>
@@ -66,11 +66,11 @@
 
     }
 
-    function closeEditDialog() {
-        closeDialog();
+    function closeEditButtonDialog() {
+        closeButtonDialog();
     }
 
-    function closeDialog() {
+    function closeButtonDialog() {
         $("#edit_roleButton_dialog").modal('hide');
         $("#editRoleButtonForm").resetForm();
     }
