@@ -29,7 +29,7 @@
     //        initUniqueCodeList();
     //    });
 
-    function initUniqueretrunList() {
+    function initUniquePurchaseList() {
         debugger;
         $("#findPurchaseListGrid").jqGrid({
             height: 400,

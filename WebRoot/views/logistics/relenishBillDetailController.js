@@ -589,6 +589,6 @@ function changePurchase() {
 }
 function findPurcahse() {
     $("#show-findPurchase-list").modal('show');
-    initUniqueretrunList();
+    initUniquePurchaseList();
 }
 

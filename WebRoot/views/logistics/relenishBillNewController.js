@@ -745,7 +745,7 @@ function changePurchase() {
 }
 function findPurcahse() {
     $("#show-findPurchase-list").modal('show');
-    initUniqueretrunList();
+    initUniquePurchaseList();
 }
 function addDetail() {
     if ($("#edit_busnissId").val() == "") {
