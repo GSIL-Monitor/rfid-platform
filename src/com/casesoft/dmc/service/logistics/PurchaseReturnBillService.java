@@ -113,6 +113,7 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 		unit.setOwingValue(owingValue+diffPrice);
 		this.unitDao.update(unit);
 		prb.setStatus(2);
+		prb.setReturnBillNo(PbillNo);
 		this.purchaseReturnBillDao.saveOrUpdate(prb);
 		this.purchaseReturnBillDao.doBatchInsert(prblst);
 		if(CommonUtil.isNotBlank(prb.getBillRecordList())){
