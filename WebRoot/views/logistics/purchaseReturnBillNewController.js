@@ -83,7 +83,8 @@ function initSearchGrid() {
             {name: 'totOutQty', label: '已出库数量', width: 40,hidden: true},
             {name: "payPrice", label: '退货金额', width: 40,hidden: true},
             {name: 'totQty', label: '单据数量', editable: true, width: 40},
-            {name: 'remark', label: '备注', editable: true, width: 40,hidden: true}
+            {name: 'remark', label: '备注', editable: true, width: 40,hidden: true},
+            {name:'returnBillNo',hidden:true}
         ],
         viewrecords: true,
         autowidth: true,

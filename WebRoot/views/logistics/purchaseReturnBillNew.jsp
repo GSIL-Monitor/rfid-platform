@@ -179,17 +179,24 @@
                                             <div class="form-group">
                                                 <label class="col-md-1 control-label"
                                                        for="edit_billNo">单据编号</label>
-                                                <div class="col-md-5">
+                                                <div class="col-md-3">
                                                     <input class="form-control" id="edit_billNo" name="billNo"
                                                            type="text" readOnly
                                                            value="${purchaseReturnBill.billNo}"/>
                                                 </div>
                                                 <label class="col-md-1 control-label"
                                                        for="edit_billDate">单据日期</label>
-                                                <div class="col-md-5">
+                                                <div class="col-md-3">
                                                     <input class="form-control date-picker" id="edit_billDate"
                                                            name="billDate"
                                                            type="text" value="${purchaseReturnBill.billDate}"/>
+                                                </div>
+                                                <label class="col-md-1 control-label"
+                                                       for="edit_returnBillNo">采购单关联</label>
+                                                <div class="col-md-3">
+                                                    <input class="form-control date-picker" id="edit_returnBillNo"
+                                                           name="returnBillNo"
+                                                           type="text" readonly/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
