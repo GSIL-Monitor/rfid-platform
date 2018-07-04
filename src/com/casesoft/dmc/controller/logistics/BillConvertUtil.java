@@ -493,7 +493,7 @@ public class BillConvertUtil {
                 } else {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Printting);
                 }
-                dtl.setActPrintQty(dtl.getActPrintQty() + dtl.getArrival());
+                dtl.setActPrintQty(dtl.getArrival());
                 InitDtl detail = new InitDtl();
                 detail.setId(taskId + "-" + dtl.getSku());
                 detail.setStyleId(dtl.getStyleId());
