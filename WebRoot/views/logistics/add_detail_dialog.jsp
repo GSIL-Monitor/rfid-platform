@@ -81,7 +81,7 @@
         $("#modal-addDetail-table").on('show.bs.modal', function () {
             initStyleGrid();
             initColorSizeGrid();
-            searchStyle();
+            searcheditStyle();
         });
 
     });
@@ -140,7 +140,7 @@
 
 
     }
-    function searchStyle(){
+    function searcheditStyle(){
         var serializeArray = $("#StyleSearchForm").serializeArray();
         var params = array2obj(serializeArray);
 

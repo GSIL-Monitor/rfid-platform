@@ -46,7 +46,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());*/
-        ModelAndView mv = new ModelAndView("/views/logistics/relenishBillDetail");
+        ModelAndView mv = new ModelAndView("/views/logistics/relenishBillNew");
 
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
@@ -141,7 +141,7 @@ public class ReplenishBillController extends BaseController implements ILogistic
     @ResponseBody
     @Override
     public ModelAndView add() throws Exception {
-       ModelAndView mv = new ModelAndView("/views/logistics/relenishBillDetail");
+        ModelAndView mv = new ModelAndView("/views/logistics/relenishBillDetail");
 
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
@@ -325,6 +325,12 @@ public class ReplenishBillController extends BaseController implements ILogistic
         String defaultWarehId = unit.getDefaultWarehId();
         mv.addObject("defaultWarehId", defaultWarehId);
         return mv;
+    }
+    @RequestMapping(value = "/findPurchases")
+    @ResponseBody
+    public MessageBox findPurchases(String billNo){
+        ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
+        return new MessageBox(true, "查询成功",replenishBill);
     }
 
 
