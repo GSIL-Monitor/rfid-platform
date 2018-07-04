@@ -1819,7 +1819,7 @@ function setA4(id) {
 
                 var recordmessage = "";
                 var sum = 0;
-                var alltotPrice = 0;
+                var alltotPrice=0;
                 var size={};
                 for(var m=0;m<sizeArry.split(",").length;m++){
                    size[sizeArry.split(",")[m]]=0;
@@ -1837,13 +1837,14 @@ function setA4(id) {
                     }
                     recordmessage+="</tr>";
                     sum = sum + parseInt(conts.qty);
-                    alltotPrice=sum+parseFloat(conts.totPrice).toFixed(2);
+                    debugger
+                    var totPrice=conts.totPrice;
+                    alltotPrice+=totPrice;
 
                 }
-
+                alltotPrice=parseFloat(alltotPrice).toFixed(2)
                 recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;border:1px solid #000;'>"
                 //recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;>合计:</td>" +
-                debugger
                 for(var b = 0; b < printTableCode.length; b++){
                     if(printTableCode[b]=="qty"){
                         recordmessage+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + sum  + "</td>"
