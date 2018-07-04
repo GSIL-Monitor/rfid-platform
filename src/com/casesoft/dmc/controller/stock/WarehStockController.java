@@ -99,7 +99,6 @@ public class WarehStockController extends BaseController {
             }
         }
         this.getRequest().setAttribute("ownerId", ownerId);
-        this.getRequest().setAttribute("roleId", currentUser.getRoleId());
         return "/views/stock/warehStock";
     }
 

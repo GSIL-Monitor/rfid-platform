@@ -11,7 +11,6 @@
         var ownerId = "${ownerId}";
         var JMSCODE = "${JMSCODE}";
         var JMSNAME = "${JMSNAME}";
-        var roleId="${roleId}"
     </script>
 
 </head>
@@ -155,26 +154,25 @@
                                             <input class="form-control" id="filter_contains_sizeId" name="filter_contains_sizeId" type="text" onkeyup="this.value=this.value.toUpperCase()"
                                                    placeholder="模糊查询"/>
                                         </div>
-                                        <div id="class1Name">
-                                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_class1">厂家</label>
-                                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
-                                                       placeholder="模糊查询"/> -->
-                                                <div class="input-group">
-                                                    <input class="form-control" id="filter_eq_class1"
-                                                           type="text" name="filter_eq_class1" readonly/>
-                                                    <span class="input-group-btn">
-                                                             <button class="btn btn-sm btn-default" type="button" onclick="initClass1Select_Grid('#filter_eq_class1','#filter_eq_class1Name')">
-                                                                 <i class="ace-icon fa fa-list"></i>
-                                                             </button>
-                                                          </span>
-                                                    <input class="form-control" id="filter_eq_class1Name"
-                                                           type="text" name="filter_eq_class1Name" readonly  placeholder="厂家"/>
-                                                </div>
-                                                <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"
-                                                        style="width: 100%;" >
-                                                </select>--%>
+
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_class1">厂家</label>
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
+                                                   placeholder="模糊查询"/> -->
+                                            <div class="input-group">
+                                                <input class="form-control" id="filter_eq_class1"
+                                                       type="text" name="filter_eq_class1" readonly/>
+                                                <span class="input-group-btn">
+                                                         <button class="btn btn-sm btn-default" type="button" onclick="initClass1Select_Grid('#filter_eq_class1','#filter_eq_class1Name')">
+                                                             <i class="ace-icon fa fa-list"></i>
+                                                         </button>
+								                      </span>
+                                                <input class="form-control" id="filter_eq_class1Name"
+                                                       type="text" name="filter_eq_class1Name" readonly  placeholder="厂家"/>
                                             </div>
+                                            <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"
+                                                    style="width: 100%;" >
+                                            </select>--%>
                                         </div>
 
 

@@ -8,7 +8,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.task.TaskDao;
 import com.casesoft.dmc.dao.trace.RecordDao;
-import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,28 +56,22 @@ public class CargoTrackingService implements IBaseService<Business, String> {
         List<Business> businessRows = businessPage.getRows();
         for (Business business : businessRows) {
             if (CommonUtil.isNotBlank(business.getDestId())) {
-                Unit destUnit = CacheManager.getUnitById(business.getDestId());
-                if(CommonUtil.isNotBlank(destUnit)){
-                    business.setDestName(destUnit.getName());
-                }
+                business.setDestName(CacheManager.getUnitById(business.getDestId()).getName());
             }
             if (CommonUtil.isNotBlank(business.getDestUnitId())) {
                 if (CommonUtil.isNotBlank(CacheManager.getUnitById(business.getDestUnitId()))) {
                     business.setDestUnitName(CacheManager.getUnitById(business.getDestUnitId()).getName());
-                } else if(CommonUtil.isNotBlank(CacheManager.getCustomerById(business.getDestUnitId()))){
+                } else {
                     business.setDestUnitName(CacheManager.getCustomerById(business.getDestUnitId()).getName());
                 }
             }
             if (CommonUtil.isNotBlank(business.getOrigId())) {
-                Unit origUnit = CacheManager.getUnitById(business.getOrigId());
-                if(CommonUtil.isNotBlank(origUnit)){
-                    business.setOrigName(origUnit.getName());
-                }
+                business.setOrigName(CacheManager.getUnitById(business.getOrigId()).getName());
             }
             if (CommonUtil.isNotBlank(business.getOrigUnitId())) {
                 if (CommonUtil.isNotBlank(CacheManager.getUnitById(business.getOrigUnitId()))) {
                     business.setOrigUnitName(CacheManager.getUnitById(business.getOrigUnitId()).getName());
-                } else if(CommonUtil.isNotBlank(CacheManager.getCustomerById(business.getOrigUnitId()))){
+                } else {
                     business.setOrigUnitName(CacheManager.getCustomerById(business.getOrigUnitId()).getName());
                 }
             }

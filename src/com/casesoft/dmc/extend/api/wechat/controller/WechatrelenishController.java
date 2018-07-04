@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
@@ -279,9 +278,6 @@ public class WechatrelenishController extends ApiBaseController {
             }
             Unit warehouse = CacheManager.getUnitByCode(replenishBill.getOwnerId());
             if (CommonUtil.isNotBlank(warehouse)) {
-                if(warehouse.getType() != Constant.UnitType.Warehouse){
-                    warehouse = CacheManager.getUnitById(warehouse.getDefaultWarehId());
-                }
                 purchaseOrderBill.setOrderWarehouseId(warehouse.getId());
                 purchaseOrderBill.setOrderWarehouseName(warehouse.getName());
             }

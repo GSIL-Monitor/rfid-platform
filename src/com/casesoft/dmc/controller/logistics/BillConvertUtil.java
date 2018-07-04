@@ -440,8 +440,6 @@ public class BillConvertUtil {
             dtl.setId(new GuidCreator().toString());
             dtl.setBillId(purchaseReturnBill.getId());
             dtl.setBillNo(purchaseReturnBill.getBillNo());
-            dtl.setTotPrice(-1 * Math.abs(dtl.getPrice() * dtl.getQty()));
-            dtl.setTotActPrice(-1 * Math.abs(dtl.getActPrice() * dtl.getQty()));
             totQty += dtl.getQty();
             totPrice += -1 * Math.abs(dtl.getPrice() * dtl.getQty());
             actPrice += -1 * Math.abs(dtl.getActPrice() * dtl.getQty());

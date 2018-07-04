@@ -65,24 +65,18 @@ public class OnlineListener implements ServletContextListener, ServletContextAtt
 	 * 向session里增加属性时调用(用户成功登陆后会调用)
 	 */
 	public void attributeAdded(HttpSessionBindingEvent evt) {
-		try{
-			String name = evt.getName();
-			logger.debug("向session存入属性：" + name);
-			HttpSession session = evt.getSession();
-			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ResourceUtil.getSessionInfoName());
-			if (sessionInfo != null) {
-				OnlineServiceI onlineService = (OnlineServiceI) ctx.getBean("onlineService");
-				Tonline online = new Tonline();
-				online.setCip(sessionInfo.getIp());
-				online.setCdatetime(new Date());
-				online.setCname(sessionInfo.getLoginName());
-				onlineService.updateOnline(online);
-			}
-		}catch (Exception e){
-			//e.printStackTrace();
-			logger.error("getAttribute：" + e.getMessage());
+		String name = evt.getName();
+		logger.debug("向session存入属性：" + name);
+		HttpSession session = evt.getSession();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ResourceUtil.getSessionInfoName());
+		if (sessionInfo != null) {
+			OnlineServiceI onlineService = (OnlineServiceI) ctx.getBean("onlineService");
+			Tonline online = new Tonline();
+			online.setCip(sessionInfo.getIp());
+			online.setCdatetime(new Date());
+			online.setCname(sessionInfo.getLoginName());
+			onlineService.updateOnline(online);
 		}
-
 	}
 
 	/**
@@ -114,17 +108,17 @@ public class OnlineListener implements ServletContextListener, ServletContextAtt
 			logger.debug("session销毁：" + session.getId());
 			//修改单据
 			String billNosale=(String)session.getAttribute("billNosale");
-			//System.out.println("saleOrder:"+ OnlineListener.saleOrderBill);
-			//System.out.println("saleOrder:"+billNosale);
+			System.out.println("saleOrder:"+ OnlineListener.saleOrderBill);
+			System.out.println("saleOrder:"+billNosale);
 			if(CommonUtil.isNotBlank(billNosale)){
 				try {
 					SaleOrderBill saleOrderBill = OnlineListener.saleOrderBill.get("billNo", billNosale);
 					if(CommonUtil.isNotBlank(saleOrderBill)){
-						//System.out.println("saleOrder34:"+saleOrderBill.getId());
+						System.out.println("saleOrder34:"+saleOrderBill.getId());
 						saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
 						OnlineListener.saleOrderBill.save(saleOrderBill);
 					}else{
-						//System.out.println("saleOrder12:null");
+						System.out.println("saleOrder12:null");
 					}
 				}catch (Exception e){
 					e.printStackTrace();
@@ -133,42 +127,42 @@ public class OnlineListener implements ServletContextListener, ServletContextAtt
 
 			}
 			String billNosaleReturn=(String)session.getAttribute("billNosaleReturn");
-			//System.out.println("saleOrder:"+ OnlineListener.saleOrderReturnBill);
-			//System.out.println("saleOrder:"+billNosaleReturn);
+			System.out.println("saleOrder:"+ OnlineListener.saleOrderReturnBill);
+			System.out.println("saleOrder:"+billNosaleReturn);
 			if(CommonUtil.isNotBlank(billNosaleReturn)){
 				try {
 					SaleOrderReturnBill saleOrderReturnBill = OnlineListener.saleOrderReturnBill.findBillByBillNo(billNosaleReturn);
 					if(CommonUtil.isNotBlank(saleOrderReturnBill)){
-						//System.out.println("saleOrder34:"+saleOrderReturnBill.getId());
+						System.out.println("saleOrder34:"+saleOrderReturnBill.getId());
 						saleOrderReturnBill.setBillType(Constant.ScmConstant.BillType.Save);
 						OnlineListener.saleOrderReturnBill.save(saleOrderReturnBill);
 					}else{
-						//System.out.println("saleOrder12:null");
+						System.out.println("saleOrder12:null");
 					}
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
 			String billNoConsignment=(String)session.getAttribute("billNoConsignment");
-			//System.out.println("saleOrder:"+ OnlineListener.consignmentBill);
-			//System.out.println("saleOrder:"+billNoConsignment);
+			System.out.println("saleOrder:"+ OnlineListener.consignmentBill);
+			System.out.println("saleOrder:"+billNoConsignment);
 			if(CommonUtil.isNotBlank(billNoConsignment)){
 				try {
 					ConsignmentBill consignmentBill = OnlineListener.consignmentBill.findBillByBillNo(billNoConsignment);
 					if(CommonUtil.isNotBlank(consignmentBill)){
-						//System.out.println("saleOrder34:"+consignmentBill.getId());
+						System.out.println("saleOrder34:"+consignmentBill.getId());
 						consignmentBill.setBillType(Constant.ScmConstant.BillType.Save);
 						OnlineListener.consignmentBill.update(consignmentBill);
 					}else{
-						//System.out.println("saleOrder12:null");
+						System.out.println("saleOrder12:null");
 					}
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
 			String billNotransfer=(String)session.getAttribute("billNotransfer");
-			//System.out.println("saleOrder:"+ OnlineListener.transferOrderBill);
-			//System.out.println("saleOrder:"+billNoConsignment);
+			System.out.println("saleOrder:"+ OnlineListener.transferOrderBill);
+			System.out.println("saleOrder:"+billNoConsignment);
 			if(CommonUtil.isNotBlank(billNoConsignment)){
 				try {
 					TransferOrderBill transferOrderBill = OnlineListener.transferOrderBill.get("billNo", billNotransfer);
@@ -177,41 +171,41 @@ public class OnlineListener implements ServletContextListener, ServletContextAtt
 						transferOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
 						OnlineListener.transferOrderBill.update(transferOrderBill);
 					}else{
-						//System.out.println("saleOrder12:null");
+						System.out.println("saleOrder12:null");
 					}
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
 			String billNopurchase=(String)session.getAttribute("billNopurchase");
-			//System.out.println("saleOrder:"+ OnlineListener.purchaseOrderBill);
-			//System.out.println("saleOrder:"+billNoConsignment);
+			System.out.println("saleOrder:"+ OnlineListener.purchaseOrderBill);
+			System.out.println("saleOrder:"+billNoConsignment);
 			if(CommonUtil.isNotBlank(billNoConsignment)){
 				try {
 					PurchaseOrderBill purchaseOrderBill = OnlineListener.purchaseOrderBill.get("billNo",billNopurchase);
 					if(CommonUtil.isNotBlank(consignmentBill)){
-						//System.out.println("saleOrder34:"+purchaseOrderBill.getId());
+						System.out.println("saleOrder34:"+purchaseOrderBill.getId());
 						purchaseOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
 						OnlineListener.purchaseOrderBill.save(purchaseOrderBill);
 					}else{
-						//System.out.println("saleOrder12:null");
+						System.out.println("saleOrder12:null");
 					}
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
 			String billNoPurchaseReturn=(String)session.getAttribute("billNoPurchaseReturn");
-			//System.out.println("saleOrder:"+ OnlineListener.purchaseReturnBill);
-			//System.out.println("saleOrder:"+billNoPurchaseReturn);
+			System.out.println("saleOrder:"+ OnlineListener.purchaseReturnBill);
+			System.out.println("saleOrder:"+billNoPurchaseReturn);
 			if(CommonUtil.isNotBlank(billNoConsignment)){
 				try {
 					PurchaseReturnBill purchaseReturnBill = OnlineListener.purchaseReturnBill.findUniqueByBillNo(billNoPurchaseReturn);
 					if(CommonUtil.isNotBlank(consignmentBill)){
-						//System.out.println("saleOrder34:"+purchaseReturnBill.getId());
+						System.out.println("saleOrder34:"+purchaseReturnBill.getId());
 						purchaseReturnBill.setBillType(Constant.ScmConstant.BillType.Save);
 						OnlineListener.purchaseReturnBill.save(purchaseReturnBill);
 					}else{
-						//System.out.println("saleOrder12:null");
+						System.out.println("saleOrder12:null");
 					}
 				}catch (Exception e){
 					e.printStackTrace();
