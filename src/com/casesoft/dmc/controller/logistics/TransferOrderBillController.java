@@ -397,7 +397,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/transferOrder");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId());
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
             return new MessageBox(true, "查询成功",resourceButton);
         }catch (Exception e){
             e.printStackTrace();

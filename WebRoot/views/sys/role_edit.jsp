@@ -287,7 +287,7 @@
                     },
                     {
                         name: '',
-                        label: '权限配置细则',
+                        label: '按钮配置细则',
                         width: 60,
                         align: 'center',
                         formatter: function (cellvalue, options, rowObject) {
@@ -297,7 +297,7 @@
                                for(var i=0;i<rowObject.resourceButtonList.length;i++){
                                    if(pageType=="add"){
                                        html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
-                                       if((i%4)==0){
+                                       if((i%3)==0){
                                            html+="<br>"
                                        }
                                    }else{
@@ -306,7 +306,7 @@
                                        }else{
                                            html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
                                        }
-                                       if((i%4)==0){
+                                       if((i%3)==0){
                                            html+="<br>"
                                        }
                                    }
@@ -316,6 +316,40 @@
                            }else{
                                return html;
                            }
+
+                        }
+                    },
+                    {
+                        name: '',
+                        label: '表格配置细则',
+                        width: 60,
+                        align: 'center',
+                        formatter: function (cellvalue, options, rowObject) {
+                            console.log(rowObject.resourcetableList);
+                            var html="";
+                            if(rowObject.resourcetableList!=""&&rowObject.resourcetableList!=undefined){
+                                for(var i=0;i<rowObject.resourcetableList.length;i++){
+                                    if(pageType=="add"){
+                                        html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        if((i%3)==0){
+                                            html+="<br>"
+                                        }
+                                    }else{
+                                        if(rowObject.resourcetableList[i].ishow===0){
+                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        }else{
+                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        }
+                                        if((i%3)==0){
+                                            html+="<br>"
+                                        }
+                                    }
+
+                                }
+                                return html;
+                            }else{
+                                return html;
+                            }
 
                         }
                     }

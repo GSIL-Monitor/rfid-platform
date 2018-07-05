@@ -386,6 +386,8 @@ function initAddGrid() {
             view: false
         });
     $("#addDetailgrid-pager_center").html("");
+    //$("#addDetailgrid").setGridParam().hideCol("styleName");
+    loadingTableName();
 }
 
 function setEditFormVal(){
@@ -618,7 +620,9 @@ function initeditGrid(billId) {
                 view: false
             });
     }
-    $("#addDetailgrid-pager_center").html("");
+
+    //$("#addDetailgrid").setGridParam().hideCol("styleName");
+    loadingTableName();
 }
 function setAddFooterData() {
     var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
@@ -2219,6 +2223,30 @@ function set(id) {
                 LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function loadingTableName() {
+    $.ajax({
+        dataType: "json",
+        async: false,
+        url: basePath + "/logistics/saleOrder/findResourceTable.do",
+        type: "POST",
+        success: function (msg) {
+
+            if (msg.success) {
+
+                var result=msg.result;
+                for(var i=0;i<result.length;i++){
+                    if(result[i].ishow===1){
+                        $("#addDetailgrid").setGridParam().hideCol(result[i].buttonId);
+                    }
+
+                }
 
             } else {
                 bootbox.alert(msg.msg);

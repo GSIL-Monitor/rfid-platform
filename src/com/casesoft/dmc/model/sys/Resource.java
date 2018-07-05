@@ -82,6 +82,8 @@ public class Resource implements java.io.Serializable {
   private List<Resource> children;
   private String ename;//英文名
   private List<ResourceButton> resourceButtonList;
+  private List<ResourceButton> resourcetableList;
+
   public static long getSerialVersionUID() {
     return serialVersionUID;
   }
@@ -286,6 +288,14 @@ public class Resource implements java.io.Serializable {
 
   public void setResourceButtonList(List<ResourceButton> resourceButtonList) {
     this.resourceButtonList = resourceButtonList;
+  }
+  @Transient
+  public List<ResourceButton> getResourcetableList() {
+    return resourcetableList;
+  }
+
+  public void setResourcetableList(List<ResourceButton> resourcetableList) {
+    this.resourcetableList = resourcetableList;
   }
 
   @Override

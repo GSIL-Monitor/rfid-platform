@@ -24,6 +24,8 @@ public class ResourceButton {
     private Integer ishow;//0:显示，1：不显示
     @Column()
     private String roleId;
+    @Column()
+    private String type;
 
     public String getId() {
         return id;
@@ -71,5 +73,13 @@ public class ResourceButton {
 
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

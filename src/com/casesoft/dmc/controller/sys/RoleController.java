@@ -78,15 +78,29 @@ public class RoleController extends BaseController implements IBaseInfoControlle
         if (CommonUtil.isNotBlank(allResourceButton) && allResourceButton.size() != 0) {
             for (Resource resource : resourceList) {
                 for (ResourceButton resourceButton : allResourceButton) {
-                    if (resource.getCode().equals(resourceButton.getCode())) {
-                        if (CommonUtil.isNotBlank(resource.getResourceButtonList()) && resource.getResourceButtonList().size() != 0) {
-                            List<ResourceButton> resourceButtonList = resource.getResourceButtonList();
-                            resourceButtonList.add(resourceButton);
-                            resource.setResourceButtonList(resourceButtonList);
-                        } else {
-                            List<ResourceButton> resourceButtonList = new ArrayList<ResourceButton>();
-                            resourceButtonList.add(resourceButton);
-                            resource.setResourceButtonList(resourceButtonList);
+                    if(resourceButton.getType().equals("button")) {
+                        if (resource.getCode().equals(resourceButton.getCode())) {
+                            if (CommonUtil.isNotBlank(resource.getResourceButtonList()) && resource.getResourceButtonList().size() != 0) {
+                                List<ResourceButton> resourceButtonList = resource.getResourceButtonList();
+                                resourceButtonList.add(resourceButton);
+                                resource.setResourceButtonList(resourceButtonList);
+                            } else {
+                                List<ResourceButton> resourceButtonList = new ArrayList<ResourceButton>();
+                                resourceButtonList.add(resourceButton);
+                                resource.setResourceButtonList(resourceButtonList);
+                            }
+                        }
+                    }else if(resourceButton.getType().equals("table")){
+                        if (resource.getCode().equals(resourceButton.getCode())) {
+                            if (CommonUtil.isNotBlank(resource.getResourcetableList()) && resource.getResourcetableList().size() != 0) {
+                                List<ResourceButton> resourcetableList = resource.getResourcetableList();
+                                resourcetableList.add(resourceButton);
+                                resource.setResourcetableList(resourcetableList);
+                            } else {
+                                List<ResourceButton> resourcetableList = new ArrayList<ResourceButton>();
+                                resourcetableList.add(resourceButton);
+                                resource.setResourcetableList(resourcetableList);
+                            }
                         }
                     }
                 }
@@ -144,11 +158,18 @@ public class RoleController extends BaseController implements IBaseInfoControlle
             List<ResourceButton> allResourceButton = this.resourceButtonService.find(filters);
             for(ResourceButton resourceButton:allResourceButton){
                 ResourceButton newresourceButton=new ResourceButton();
+                ResourceButton newresourceTable=new ResourceButton();
                 BeanUtils.copyProperties(resourceButton,newresourceButton);
-                newresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId());
+                newresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId()+"-button");
                 newresourceButton.setRoleId(role.getId());
                 newresourceButton.setIshow(1);
-                saveList.add(newresourceButton);
+                newresourceButton.setType("button");
+                BeanUtils.copyProperties(resourceButton,newresourceTable);
+                newresourceTable.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId()+"-table");
+                newresourceTable.setRoleId(role.getId());
+                newresourceTable.setIshow(1);
+                newresourceTable.setType("table");
+                saveList.add(newresourceTable);
             }
         } else {
             Role dto = this.roleService.getRole(role.getId());
@@ -370,13 +391,39 @@ public class RoleController extends BaseController implements IBaseInfoControlle
             for(Role role:allRoles){
                 ResourceButton saveresourceButton=new ResourceButton();
                 BeanUtils.copyProperties(resourceButton,saveresourceButton);
-                saveresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId());
+                saveresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId()+"-button");
                 saveresourceButton.setIshow(1);
                 saveresourceButton.setRoleId(role.getId());
+                saveresourceButton.setType("button");
                 saveLists.add(saveresourceButton);
             }
             this.resourceButtonService.saveAll(saveLists);
-            return this.returnFailInfo("保存成功");
+            return this.returnSuccessInfo("保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnFailInfo("保存失败");
+        }
+
+
+    }
+    @RequestMapping(value = "/saveResourceTable")
+    @ResponseBody
+    public MessageBox saveResourceTable(String roleStr){
+        try {
+            ResourceButton resourceButton = JSON.parseObject(roleStr,ResourceButton.class);
+            List<Role> allRoles = this.roleService.getAllRoles();
+            ArrayList<ResourceButton> saveLists=new ArrayList<>();
+            for(Role role:allRoles){
+                ResourceButton saveresourceButton=new ResourceButton();
+                BeanUtils.copyProperties(resourceButton,saveresourceButton);
+                saveresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId()+"-table");
+                saveresourceButton.setIshow(1);
+                saveresourceButton.setRoleId(role.getId());
+                saveresourceButton.setType("table");
+                saveLists.add(saveresourceButton);
+            }
+            this.resourceButtonService.saveAll(saveLists);
+            return this.returnSuccessInfo("保存成功");
         }catch (Exception e){
             e.printStackTrace();
             return this.returnFailInfo("保存失败");

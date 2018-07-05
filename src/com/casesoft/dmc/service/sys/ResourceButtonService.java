@@ -72,9 +72,9 @@ public class ResourceButtonService implements IBaseService<ResourceButton,String
 
     }
 
-    public List<ResourceButton> findResourceButtonByCodeAndRoleId(String code,String roleId){
-        String hql="from ResourceButton t where t.code=? and t.roleId=?";
-        List<ResourceButton> list = this.resourceButtonDao.find(hql, new Object[]{code, roleId});
+    public List<ResourceButton> findResourceButtonByCodeAndRoleId(String code,String roleId,String type){
+        String hql="from ResourceButton t where t.code=? and t.roleId=? and t.type=?";
+        List<ResourceButton> list = this.resourceButtonDao.find(hql, new Object[]{code, roleId,type});
         return list;
     }
 }

@@ -512,7 +512,19 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/saleOrder");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId());
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
+        }
+    }
+    @RequestMapping(value = "/findResourceTable")
+    @ResponseBody
+    public MessageBox findResourceTable(){
+        try {
+            Resource resource = this.resourceService.get("url", "logistics/saleOrder");
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"table");
             return new MessageBox(true, "查询成功",resourceButton);
         }catch (Exception e){
             e.printStackTrace();
