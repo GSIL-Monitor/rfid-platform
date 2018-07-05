@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.sys.impl.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,8 @@ public class PropertyController extends BaseController implements IBaseInfoContr
     private PropertyKeyService propertyKeyService;
     @Autowired
     private PropertyService propertyService;
+    @Autowired
+    private VendorService vendorService;
 
 
     @Override
@@ -106,12 +110,10 @@ public class PropertyController extends BaseController implements IBaseInfoContr
     @ResponseBody
     public MessageBox saveproperty(PropertyKey entity, String userId) throws Exception {
         try {
-
             PropertyKey propertyKey = this.propertyService.findPropertyKeyByNameAndType(entity.getName(), entity.getType());
             if (CommonUtil.isBlank(propertyKey)) {
                 Integer num = this.propertyService.findtkeyNum(entity.getType());
                 entity.setSeqNo((num + 1));
-
                 if (getCurrentUser() == null) {     //小程序增加商品，userId传值
                     User CurrentUser = CacheManager.getUserById(userId);
                     entity.setOwnerId(CurrentUser.getCreatorId());
@@ -127,11 +129,44 @@ public class PropertyController extends BaseController implements IBaseInfoContr
                 entity.setLocked(0);
                 entity.setRegisterDate(new Date());
                 entity.setYnuse("Y");
-                this.propertyService.saveKey(entity);
+                Unit unit = new Unit();
+                unit.setId(entity.getId());
+                unit.setCode(entity.getId());
+                unit.setName(entity.getName());
+                Unit ut = this.vendorService.findById(unit.getId());
+                if (CommonUtil.isBlank(ut)) {
+                    ut = new Unit();
+                    if (CommonUtil.isBlank(unit.getCode())) {
+                        String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
+                        ut.setCode(code);
+                    } else {
+                        ut.setCode(unit.getCode());
+                    }
+                    ut.setId(ut.getCode());
+                    if (this.getCurrentUser() == null) {  //小程序增加供应商，userId传值
+                        User CurrentUser = CacheManager.getUserById(userId);
+                        ut.setCreatorId(CurrentUser.getCode());
+                    }else {   //web增加供应商,session传值
+                        ut.setCreatorId(this.getCurrentUser().getCode());
+                    }
+                    ut.setCreateTime(new Date());
+                }
+                ut.setType(Constant.UnitType.Vender);
+                ut.setUpdateTime(new Date());
+                if (this.getCurrentUser() == null) {
+                    User CurrentUser = CacheManager.getUserById(userId);
+                    ut.setUpdaterId(CurrentUser.getCode());
+                }else {
+                    ut.setUpdaterId(this.getCurrentUser().getCode());
+                }
+                ut.setOwnerId("1");
+                ut.setSrc(Constant.DataSrc.SYS);
+                ut.setName(unit.getName());
+                this.propertyService.saveKey(entity,ut);
             } else {
                 return returnFailInfo("保存失败,名称已存在不能重复添加");
             }
-
+            CacheManager.refreshUnitCache();
             CacheManager.refreshPropertyCache();
             return returnSuccessInfo("保存成功", entity);
         } catch (Exception e) {
