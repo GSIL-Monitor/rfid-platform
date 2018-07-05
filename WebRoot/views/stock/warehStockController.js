@@ -20,6 +20,10 @@ $(function () {
         change: "endChange"
     }).data("kendoDatePicker");
     initMultiSelect();
+    if(roleId!="0"){
+        $("#class1Name").hide();
+    }
+
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");
     $(".k-datepicker input").prop("readonly", true);
@@ -68,24 +72,24 @@ function exportExcelPOI() {
     }
 
     /*$.ajax({
-        url: exportUrl,
-        type: 'POST',
-        data: {
-            request: JSON.stringify(request)
-        },
-        success: function (data) {
-            $.gritter.add({
-                text: data.msg,
-                class_name: 'gritter-success  gritter-light'
-            });
-        }
+     url: exportUrl,
+     type: 'POST',
+     data: {
+     request: JSON.stringify(request)
+     },
+     success: function (data) {
+     $.gritter.add({
+     text: data.msg,
+     class_name: 'gritter-success  gritter-light'
+     });
+     }
 
-    })*/
+     })*/
     //window.location.href=exportUrl+"request="+JSON.stringify(request);
 
 
 
-   /* document.write("<form action="+exportUrl+" method=post name=form1 style='display:none'>");
+    /* document.write("<form action="+exportUrl+" method=post name=form1 style='display:none'>");
      document.write("<input type=hidden  name='request' value='"+JSON.stringify(request)+"'>");
      document.write("</form>");
      document.form1.submit();*/
@@ -161,18 +165,18 @@ function initMultiSelect() {
     console.log(JMSNAME);
     if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
         /*$("#filter_in_warehId").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "code",
-            height: 400,
-            suggest: true,
-            dataSource: {
-                transport: {
-                    read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-                }
-            },
-            value:JMSCODE,
-            text:JMSNAME
-        });*/
+         dataTextField: "name",
+         dataValueField: "code",
+         height: 400,
+         suggest: true,
+         dataSource: {
+         transport: {
+         read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
+         }
+         },
+         value:JMSCODE,
+         text:JMSNAME
+         });*/
         $.ajax({
             url: basePath +  "/sys/warehouse/list.do?filter_INI_type=9",
             cache: false,
@@ -189,16 +193,16 @@ function initMultiSelect() {
         });
     }else{
         /*$("#filter_in_warehId").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "code",
-            height: 400,
-            suggest: true,
-            dataSource: {
-                transport: {
-                    read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-                }
-            }
-        });*/
+         dataTextField: "name",
+         dataValueField: "code",
+         height: 400,
+         suggest: true,
+         dataSource: {
+         transport: {
+         read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
+         }
+         }
+         });*/
         $.ajax({
             url: basePath +  "/sys/warehouse/list.do?filter_INI_type=9",
             cache: false,
@@ -236,176 +240,347 @@ var isFristSkuGrid = true;
 function initKendoUIGrid() {
     exportExcelid = "stockGrid";
     if (isFristSkuGrid) {
-        $("#stockGrid").kendoGrid({
-            toolbar: ["excel"],
-            excel: {
-                fileName: "仓库库存查询.xlsx",
-                proxyURL: basePath + "/search/detailStockViewSearch/export.do",
-                allPages: true,
-                filterable: true
-            },
-            dataSource: {
-                schema: {
-                    total: "total",
-                    model: {
+        if(roleId=="0"){
+            $("#stockGrid").kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "仓库库存查询.xlsx",
+                    proxyURL: basePath + "/search/detailStockViewSearch/export.do",
+                    allPages: true,
+                    filterable: true
+                },
+                dataSource: {
+                    schema: {
+                        total: "total",
+                        model: {
 
-                        fields: {
+                            fields: {
 
-                            warehName: {type: "string"},
-                            sku: {type: "string"},
-                            styleId: {type: "string"},
-                            styleName: {type: "string"},
-                            colorId: {type: "string"},
-                            sizeId: {type: "string"},
-                            qty: {type: "number"},
-                            price: {type: "number"}
+                                warehName: {type: "string"},
+                                sku: {type: "string"},
+                                styleId: {type: "string"},
+                                styleName: {type: "string"},
+                                colorId: {type: "string"},
+                                sizeId: {type: "string"},
+                                qty: {type: "number"},
+                                price: {type: "number"}
+                            }
+                        },
+                        data: "data",
+                        groups: "data"
+                    },
+                    filter: {
+                        logic: "and",
+                        filters: [{
+                            field: "warehType",
+                            operator: "eq",
+                            value: 9
+                        }, {
+                            field: "ownerId",
+                            operator: "eq",
+                            value: ownerId
+                        }]
+                    },
+                    transport: {
+                        read: {
+                            url: basePath + "/stock/warehStock/page.do",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json'
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
                         }
                     },
-                    data: "data",
-                    groups: "data"
+                    sort: [{field: "styleId", dir: "desc"}],
+                    pageSize: 500.0,
+                    serverSorting: true,
+                    serverPaging: true,
+                    serverGrouping: false,
+                    serverFiltering: true,
+                    aggregate: [
+
+                        {field: "qty", aggregate: "sum"},
+                        {field: "styleId", aggregate: "count"},
+                        {field: "price", aggregate: "average"}
+
+                    ]
+
+
                 },
-                filter: {
-                    logic: "and",
-                    filters: [{
-                        field: "warehType",
-                        operator: "eq",
-                        value: 9
-                    }, {
-                        field: "ownerId",
-                        operator: "eq",
-                        value: ownerId
-                    }]
+
+                sortable: {
+                    mode: "multiple",
+                    allowUnsort: true
                 },
-                transport: {
-                    read: {
-                        url: basePath + "/stock/warehStock/page.do",
-                        type: "POST",
-                        dataType: "json",
-                        contentType: 'application/json'
+                rowNumber: true,
+                pageable: {
+                    input: true,
+                    buttonCount: 5,
+                    pageSize: 500.0,
+                    pageSizes: [100, 500, 1000, 2000]
+                },
+                height: 680,
+                groupable: true,
+                group: onGrouping,
+                columnMenu: true,
+                filterable: {
+                    extra: false
+                },
+                selectable: "multiple row",
+                reorderable: true,
+                resizable: true,
+                scrollable: true,
+                columns: [
+                    {
+                        field: "", title: "图片", width: 100,
+                        template: function (data) {
+                            debugger;
+                            var url = data.url;
+                            if (url == null) {
+                                return "无图片";
+                            } else {
+                                return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            }
+                        }
+
                     },
-                    parameterMap: function (options) {
-                        return JSON.stringify(options);
+
+                    {
+                        field: "warehName", title: "仓库", width: 150,
+                        template: function (data) {
+                            if (data.warehName) {
+                                return "[" + data.warehId + "]" + data.warehName;
+                            } else {
+                                return "[" + data.warehId + "]";
+                            }
+                        },
+                        groupHeaderTemplate: function (data) {
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "sku", title: "SKU", width: 150},
+                    {
+                        field: "styleId", title: "款号", width: 80,
+                        aggregates: ["count"],
+                        groupHeaderTemplate: function (data) {
+
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "styleName", title: "款名", width: 100},
+                    {field: "colorId", title: "色号", width: 80},
+                    {field: "sizeId", title: "尺号", width: 80},
+                    {field: "class1Name", title: "厂家", width: 80},
+
+                    {
+                        field: "qty", title: "库存数量", width: 80,
+                        groupable: false,
+                        aggregates: ["sum"],
+                        footerTemplate: "#=sum#"
+                    },
+
+
+                    {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
+                        template: function (data) {
+                            var price=data.price.toFixed(2);
+                            return price;
+                        }
+                    },
+
+                    {field: "inStockPrice", title: "库存金额", width: 80,
+                        template: function (data) {
+                            var inStockPrice=data.inStockPrice.toFixed(2);
+                            return inStockPrice;
+                        }
+                    },
+                    {
+                        command: [{name: "唯一码明细", click: showDetails}], title: " ", groupable: false, width: 80,
+                        attributes: {
+                            // "class": "table-cell",
+                            style: "text-align: center; font-size: 8px"
+                        }
                     }
-                },
-                sort: [{field: "styleId", dir: "desc"}],
-                pageSize: 500.0,
-                serverSorting: true,
-                serverPaging: true,
-                serverGrouping: false,
-                serverFiltering: true,
-                aggregate: [
-
-                    {field: "qty", aggregate: "sum"},
-                    {field: "styleId", aggregate: "count"},
-                    {field: "price", aggregate: "average"}
-
                 ]
-
-
-            },
-
-            sortable: {
-                mode: "multiple",
-                allowUnsort: true
-            },
-            rowNumber: true,
-            pageable: {
-                input: true,
-                buttonCount: 5,
-                pageSize: 500.0,
-                pageSizes: [100, 500, 1000, 2000]
-            },
-            height: 680,
-            groupable: true,
-            group: onGrouping,
-            columnMenu: true,
-            filterable: {
-                extra: false
-            },
-            selectable: "multiple row",
-            reorderable: true,
-            resizable: true,
-            scrollable: true,
-            columns: [
-                {
-                    field: "", title: "图片", width: 100,
-                    template: function (data) {
-                        debugger;
-                        var url = data.url;
-                        if (url == null) {
-                            return "无图片";
-                        } else {
-                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
-                        }
-                    }
-
+            });
+            isFristSkuGrid = false;
+            $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+        }else{
+            $("#stockGrid").kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "仓库库存查询.xlsx",
+                    proxyURL: basePath + "/search/detailStockViewSearch/export.do",
+                    allPages: true,
+                    filterable: true
                 },
+                dataSource: {
+                    schema: {
+                        total: "total",
+                        model: {
 
-                {
-                    field: "warehName", title: "仓库", width: 150,
-                    template: function (data) {
-                        if (data.warehName) {
-                            return "[" + data.warehId + "]" + data.warehName;
-                        } else {
-                            return "[" + data.warehId + "]";
+                            fields: {
+
+                                warehName: {type: "string"},
+                                sku: {type: "string"},
+                                styleId: {type: "string"},
+                                styleName: {type: "string"},
+                                colorId: {type: "string"},
+                                sizeId: {type: "string"},
+                                qty: {type: "number"},
+                                price: {type: "number"}
+                            }
+                        },
+                        data: "data",
+                        groups: "data"
+                    },
+                    filter: {
+                        logic: "and",
+                        filters: [{
+                            field: "warehType",
+                            operator: "eq",
+                            value: 9
+                        }, {
+                            field: "ownerId",
+                            operator: "eq",
+                            value: ownerId
+                        }]
+                    },
+                    transport: {
+                        read: {
+                            url: basePath + "/stock/warehStock/page.do",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json'
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
                         }
                     },
-                    groupHeaderTemplate: function (data) {
-                        var totQty = data.aggregates.qty.sum;
-                        var value = data.value;
-                        var avgPrice = data.aggregates.price.average;
-                        return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
-                    }
-                },
-                {field: "sku", title: "SKU", width: 150},
-                {
-                    field: "styleId", title: "款号", width: 80,
-                    aggregates: ["count"],
-                    groupHeaderTemplate: function (data) {
+                    sort: [{field: "styleId", dir: "desc"}],
+                    pageSize: 500.0,
+                    serverSorting: true,
+                    serverPaging: true,
+                    serverGrouping: false,
+                    serverFiltering: true,
+                    aggregate: [
 
-                        var totQty = data.aggregates.qty.sum;
-                        var value = data.value;
-                        var avgPrice = data.aggregates.price.average;
-                        return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
-                    }
-                },
-                {field: "styleName", title: "款名", width: 100},
-                {field: "colorId", title: "色号", width: 80},
-                {field: "sizeId", title: "尺号", width: 80},
-                {field: "class1Name", title: "厂家", width: 80},
+                        {field: "qty", aggregate: "sum"},
+                        {field: "styleId", aggregate: "count"},
+                        {field: "price", aggregate: "average"}
 
-                {
-                    field: "qty", title: "库存数量", width: 80,
-                    groupable: false,
-                    aggregates: ["sum"],
-                    footerTemplate: "#=sum#"
-                },
+                    ]
 
 
-                {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
-                    template: function (data) {
-                        var price=data.price.toFixed(2);
-                        return price;
-                    }
                 },
 
-                {field: "inStockPrice", title: "库存金额", width: 80,
-                    template: function (data) {
-                        var inStockPrice=data.inStockPrice.toFixed(2);
-                        return inStockPrice;
-                    }
+                sortable: {
+                    mode: "multiple",
+                    allowUnsort: true
                 },
-                {
-                    command: [{name: "唯一码明细", click: showDetails}], title: " ", groupable: false, width: 80,
-                    attributes: {
-                        // "class": "table-cell",
-                        style: "text-align: center; font-size: 8px"
+                rowNumber: true,
+                pageable: {
+                    input: true,
+                    buttonCount: 5,
+                    pageSize: 500.0,
+                    pageSizes: [100, 500, 1000, 2000]
+                },
+                height: 680,
+                groupable: true,
+                group: onGrouping,
+                columnMenu: true,
+                filterable: {
+                    extra: false
+                },
+                selectable: "multiple row",
+                reorderable: true,
+                resizable: true,
+                scrollable: true,
+                columns: [
+                    {
+                        field: "", title: "图片", width: 100,
+                        template: function (data) {
+                            debugger;
+                            var url = data.url;
+                            if (url == null) {
+                                return "无图片";
+                            } else {
+                                return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            }
+                        }
+
+                    },
+
+                    {
+                        field: "warehName", title: "仓库", width: 150,
+                        template: function (data) {
+                            if (data.warehName) {
+                                return "[" + data.warehId + "]" + data.warehName;
+                            } else {
+                                return "[" + data.warehId + "]";
+                            }
+                        },
+                        groupHeaderTemplate: function (data) {
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "sku", title: "SKU", width: 150},
+                    {
+                        field: "styleId", title: "款号", width: 80,
+                        aggregates: ["count"],
+                        groupHeaderTemplate: function (data) {
+
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "styleName", title: "款名", width: 100},
+                    {field: "colorId", title: "色号", width: 80},
+                    {field: "sizeId", title: "尺号", width: 80},
+                    {
+                        field: "qty", title: "库存数量", width: 80,
+                        groupable: false,
+                        aggregates: ["sum"],
+                        footerTemplate: "#=sum#"
+                    },
+
+
+                    {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
+                        template: function (data) {
+                            var price=data.price.toFixed(2);
+                            return price;
+                        }
+                    },
+
+                    {field: "inStockPrice", title: "库存金额", width: 80,
+                        template: function (data) {
+                            var inStockPrice=data.inStockPrice.toFixed(2);
+                            return inStockPrice;
+                        }
+                    },
+                    {
+                        command: [{name: "唯一码明细", click: showDetails}], title: " ", groupable: false, width: 80,
+                        attributes: {
+                            // "class": "table-cell",
+                            style: "text-align: center; font-size: 8px"
+                        }
                     }
-                }
-            ]
-        });
-        isFristSkuGrid = false;
-        $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+                ]
+            });
+            isFristSkuGrid = false;
+            $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+        }
     } else {
         search();
     }
@@ -416,169 +591,335 @@ var isFristCodeGrid = true;
 function initCodeKendoUIGrid() {
     exportExcelid = "stockCodeeGrid";
     if (isFristCodeGrid) {
-        $("#stockCodeeGrid").kendoGrid({
-            toolbar: ["excel"],
-            excel: {
-                fileName: "仓库库存Code查询.xlsx",
-                proxyURL: basePath + "/search/detailStockViewSearch/export.do",
-                allPages: true,
-                filterable: true
-            },
-            dataSource: {
-                schema: {
-                    total: "total",
-                    model: {
+        if(roleId=="0"){
+            $("#stockCodeeGrid").kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "仓库库存Code查询.xlsx",
+                    proxyURL: basePath + "/search/detailStockViewSearch/export.do",
+                    allPages: true,
+                    filterable: true
+                },
+                dataSource: {
+                    schema: {
+                        total: "total",
+                        model: {
 
-                        fields: {
+                            fields: {
 
-                            warehName: {type: "string"},
-                            sku: {type: "string"},
-                            styleId: {type: "string"},
-                            styleName: {type: "string"},
-                            colorId: {type: "string"},
-                            sizeId: {type: "string"},
-                            qty: {type: "number"},
-                            price: {type: "number"}
+                                warehName: {type: "string"},
+                                sku: {type: "string"},
+                                styleId: {type: "string"},
+                                styleName: {type: "string"},
+                                colorId: {type: "string"},
+                                sizeId: {type: "string"},
+                                qty: {type: "number"},
+                                price: {type: "number"}
+                            }
+                        },
+                        data: "data",
+                        groups: "data"
+                    },
+                    filter: {
+                        logic: "and",
+                        filters: [{
+                            field: "warehType",
+                            operator: "eq",
+                            value: 9
+                        }, {
+                            field: "ownerId",
+                            operator: "eq",
+                            value: ownerId
+                        }]
+                    },
+                    transport: {
+                        read: {
+                            url: basePath + "/stock/warehStock/pageCode.do",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json'
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
                         }
                     },
-                    data: "data",
-                    groups: "data"
-                },
-                filter: {
-                    logic: "and",
-                    filters: [{
-                        field: "warehType",
-                        operator: "eq",
-                        value: 9
-                    }, {
-                        field: "ownerId",
-                        operator: "eq",
-                        value: ownerId
-                    }]
-                },
-                transport: {
-                    read: {
-                        url: basePath + "/stock/warehStock/pageCode.do",
-                        type: "POST",
-                        dataType: "json",
-                        contentType: 'application/json'
-                    },
-                    parameterMap: function (options) {
-                        return JSON.stringify(options);
-                    }
-                },
-                sort: [{field: "styleId", dir: "desc"}],
-                pageSize: 500.0,
-                serverSorting: true,
-                serverPaging: true,
-                serverGrouping: false,
-                serverFiltering: true,
-                aggregate: [
+                    sort: [{field: "styleId", dir: "desc"}],
+                    pageSize: 500.0,
+                    serverSorting: true,
+                    serverPaging: true,
+                    serverGrouping: false,
+                    serverFiltering: true,
+                    aggregate: [
 
-                    {field: "qty", aggregate: "sum"},
-                    {field: "styleId", aggregate: "count"},
-                    {field: "price", aggregate: "average"}
+                        {field: "qty", aggregate: "sum"},
+                        {field: "styleId", aggregate: "count"},
+                        {field: "price", aggregate: "average"}
+
+                    ]
+
+
+                },
+
+                sortable: {
+                    mode: "multiple",
+                    allowUnsort: true
+                },
+                rowNumber: true,
+                pageable: {
+                    input: true,
+                    buttonCount: 5,
+                    pageSize: 500.0,
+                    pageSizes: [100, 500, 1000, 2000]
+                },
+                height: 680,
+                groupable: true,
+                group: onGrouping,
+                columnMenu: true,
+                filterable: {
+                    extra: false
+                },
+                selectable: "multiple row",
+                reorderable: true,
+                resizable: true,
+                scrollable: true,
+                columns: [
+                    {
+                        field: "", title: "图片", width: 100,
+                        template: function (data) {
+                            debugger;
+                            var url = data.url;
+                            if (url == null) {
+                                return "无图片";
+                            } else {
+                                return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            }
+                        }
+
+                    },
+
+                    {
+                        field: "warehName", title: "仓库", width: 100,
+                        template: function (data) {
+                            if (data.warehName) {
+                                return "[" + data.warehId + "]" + data.warehName;
+                            } else {
+                                return "[" + data.warehId + "]";
+                            }
+                        },
+                        groupHeaderTemplate: function (data) {
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "sku", title: "SKU", width: 100},
+                    {
+                        field: "styleId", title: "款号", width: 80,
+                        aggregates: ["count"],
+                        groupHeaderTemplate: function (data) {
+
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "styleName", title: "款名", width: 80},
+                    {field: "colorId", title: "色号", width: 60},
+                    {field: "sizeId", title: "尺号", width: 60},
+                    {field: "class1Name", title: "厂家", width: 80},
+                    {field: "code", title: "Code", width: 100},
+
+                    {
+                        field: "qty", title: "库存数量", width: 80,
+                        groupable: false,
+                        aggregates: ["sum"],
+                        footerTemplate: "#=sum#"
+                    },
+
+
+                    {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
+                        template: function (data) {
+                            var price=data.price.toFixed(2);
+                            return price;
+                        }
+                    },
+                    {
+                        field: "firstInStockTime", title: "初次入库时间", width: 100,
+                        format: "{0: yyyy-MM-dd}",
+                    },
+                    {field: "inStockDays", title: "入库时长(天)", width: 100}
 
                 ]
-
-
-            },
-
-            sortable: {
-                mode: "multiple",
-                allowUnsort: true
-            },
-            rowNumber: true,
-            pageable: {
-                input: true,
-                buttonCount: 5,
-                pageSize: 500.0,
-                pageSizes: [100, 500, 1000, 2000]
-            },
-            height: 680,
-            groupable: true,
-            group: onGrouping,
-            columnMenu: true,
-            filterable: {
-                extra: false
-            },
-            selectable: "multiple row",
-            reorderable: true,
-            resizable: true,
-            scrollable: true,
-            columns: [
-                {
-                    field: "", title: "图片", width: 100,
-                    template: function (data) {
-                        debugger;
-                        var url = data.url;
-                        if (url == null) {
-                            return "无图片";
-                        } else {
-                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
-                        }
-                    }
-
+            });
+            isFristCodeGrid = false;
+            $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+        }else {
+            $("#stockCodeeGrid").kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "仓库库存Code查询.xlsx",
+                    proxyURL: basePath + "/search/detailStockViewSearch/export.do",
+                    allPages: true,
+                    filterable: true
                 },
+                dataSource: {
+                    schema: {
+                        total: "total",
+                        model: {
 
-                {
-                    field: "warehName", title: "仓库", width: 100,
-                    template: function (data) {
-                        if (data.warehName) {
-                            return "[" + data.warehId + "]" + data.warehName;
-                        } else {
-                            return "[" + data.warehId + "]";
+                            fields: {
+
+                                warehName: {type: "string"},
+                                sku: {type: "string"},
+                                styleId: {type: "string"},
+                                styleName: {type: "string"},
+                                colorId: {type: "string"},
+                                sizeId: {type: "string"},
+                                qty: {type: "number"},
+                                price: {type: "number"}
+                            }
+                        },
+                        data: "data",
+                        groups: "data"
+                    },
+                    filter: {
+                        logic: "and",
+                        filters: [{
+                            field: "warehType",
+                            operator: "eq",
+                            value: 9
+                        }, {
+                            field: "ownerId",
+                            operator: "eq",
+                            value: ownerId
+                        }]
+                    },
+                    transport: {
+                        read: {
+                            url: basePath + "/stock/warehStock/pageCode.do",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json'
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
                         }
                     },
-                    groupHeaderTemplate: function (data) {
-                        var totQty = data.aggregates.qty.sum;
-                        var value = data.value;
-                        var avgPrice = data.aggregates.price.average;
-                        return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
-                    }
-                },
-                {field: "sku", title: "SKU", width: 100},
-                {
-                    field: "styleId", title: "款号", width: 80,
-                    aggregates: ["count"],
-                    groupHeaderTemplate: function (data) {
+                    sort: [{field: "styleId", dir: "desc"}],
+                    pageSize: 500.0,
+                    serverSorting: true,
+                    serverPaging: true,
+                    serverGrouping: false,
+                    serverFiltering: true,
+                    aggregate: [
 
-                        var totQty = data.aggregates.qty.sum;
-                        var value = data.value;
-                        var avgPrice = data.aggregates.price.average;
-                        return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
-                    }
-                },
-                {field: "styleName", title: "款名", width: 80},
-                {field: "colorId", title: "色号", width: 60},
-                {field: "sizeId", title: "尺号", width: 60},
-                {field: "class1Name", title: "厂家", width: 80},
-                {field: "code", title: "Code", width: 100},
+                        {field: "qty", aggregate: "sum"},
+                        {field: "styleId", aggregate: "count"},
+                        {field: "price", aggregate: "average"}
 
-                {
-                    field: "qty", title: "库存数量", width: 80,
-                    groupable: false,
-                    aggregates: ["sum"],
-                    footerTemplate: "#=sum#"
-                },
+                    ]
 
 
-                {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
-                    template: function (data) {
-                        var price=data.price.toFixed(2);
-                        return price;
-                    }
                 },
-                {
-                    field: "firstInStockTime", title: "初次入库时间", width: 100,
-                    format: "{0: yyyy-MM-dd}",
-                },
-                {field: "inStockDays", title: "入库时长(天)", width: 100}
 
-            ]
-        });
-        isFristCodeGrid = false;
-        $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+                sortable: {
+                    mode: "multiple",
+                    allowUnsort: true
+                },
+                rowNumber: true,
+                pageable: {
+                    input: true,
+                    buttonCount: 5,
+                    pageSize: 500.0,
+                    pageSizes: [100, 500, 1000, 2000]
+                },
+                height: 680,
+                groupable: true,
+                group: onGrouping,
+                columnMenu: true,
+                filterable: {
+                    extra: false
+                },
+                selectable: "multiple row",
+                reorderable: true,
+                resizable: true,
+                scrollable: true,
+                columns: [
+                    {
+                        field: "", title: "图片", width: 100,
+                        template: function (data) {
+                            debugger;
+                            var url = data.url;
+                            if (url == null) {
+                                return "无图片";
+                            } else {
+                                return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            }
+                        }
+
+                    },
+
+                    {
+                        field: "warehName", title: "仓库", width: 100,
+                        template: function (data) {
+                            if (data.warehName) {
+                                return "[" + data.warehId + "]" + data.warehName;
+                            } else {
+                                return "[" + data.warehId + "]";
+                            }
+                        },
+                        groupHeaderTemplate: function (data) {
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "sku", title: "SKU", width: 100},
+                    {
+                        field: "styleId", title: "款号", width: 80,
+                        aggregates: ["count"],
+                        groupHeaderTemplate: function (data) {
+
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {field: "styleName", title: "款名", width: 80},
+                    {field: "colorId", title: "色号", width: 60},
+                    {field: "sizeId", title: "尺号", width: 60},
+                    {field: "code", title: "Code", width: 100},
+
+                    {
+                        field: "qty", title: "库存数量", width: 80,
+                        groupable: false,
+                        aggregates: ["sum"],
+                        footerTemplate: "#=sum#"
+                    },
+
+
+                    {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
+                        template: function (data) {
+                            var price=data.price.toFixed(2);
+                            return price;
+                        }
+                    },
+                    {
+                        field: "firstInStockTime", title: "初次入库时间", width: 100,
+                        format: "{0: yyyy-MM-dd}",
+                    },
+                    {field: "inStockDays", title: "入库时长(天)", width: 100}
+
+                ]
+            });
+            isFristCodeGrid = false;
+            $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+        }
+
     } else {
         search();
     }
@@ -589,159 +930,315 @@ var isFriststyleGrid = true;
 function initstyleKendoUIGrid() {
     exportExcelid = "stockstyleGrid";
     if (isFriststyleGrid) {
-        $("#stockstyleGrid").kendoGrid({
-            toolbar: ["excel"],
-            excel: {
-                fileName: "仓库库按款查询.xlsx",
-                proxyURL: basePath + "/search/detailStockViewSearch/export.do",
-                allPages: true,
-                filterable: true
-            },
-            dataSource: {
-                schema: {
-                    total: "total",
-                    model: {
+        if(roleId=="0"){
+            $("#stockstyleGrid").kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "仓库库按款查询.xlsx",
+                    proxyURL: basePath + "/search/detailStockViewSearch/export.do",
+                    allPages: true,
+                    filterable: true
+                },
+                dataSource: {
+                    schema: {
+                        total: "total",
+                        model: {
 
-                        fields: {
+                            fields: {
 
-                            warehName: {type: "string"},
-                            sku: {type: "string"},
-                            styleId: {type: "string"},
-                            styleName: {type: "string"},
-                            colorId: {type: "string"},
-                            sizeId: {type: "string"},
-                            qty: {type: "number"},
-                            price: {type: "number"}
+                                warehName: {type: "string"},
+                                sku: {type: "string"},
+                                styleId: {type: "string"},
+                                styleName: {type: "string"},
+                                colorId: {type: "string"},
+                                sizeId: {type: "string"},
+                                qty: {type: "number"},
+                                price: {type: "number"}
+                            }
+                        },
+                        data: "data",
+                        groups: "data"
+                    },
+                    filter: {
+                        logic: "and",
+                        filters: [{
+                            field: "warehType",
+                            operator: "eq",
+                            value: 9
+                        }, {
+                            field: "ownerId",
+                            operator: "eq",
+                            value: ownerId
+                        }]
+                    },
+                    transport: {
+                        read: {
+                            url: basePath + "/stock/warehStock/pageStyle.do",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json'
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
                         }
                     },
-                    data: "data",
-                    groups: "data"
-                },
-                filter: {
-                    logic: "and",
-                    filters: [{
-                        field: "warehType",
-                        operator: "eq",
-                        value: 9
-                    }, {
-                        field: "ownerId",
-                        operator: "eq",
-                        value: ownerId
-                    }]
-                },
-                transport: {
-                    read: {
-                        url: basePath + "/stock/warehStock/pageStyle.do",
-                        type: "POST",
-                        dataType: "json",
-                        contentType: 'application/json'
-                    },
-                    parameterMap: function (options) {
-                        return JSON.stringify(options);
-                    }
-                },
-                sort: [{field: "styleId", dir: "desc"}],
-                pageSize: 500.0,
-                serverSorting: true,
-                serverPaging: true,
-                serverGrouping: false,
-                serverFiltering: true,
-                aggregate: [
+                    sort: [{field: "styleId", dir: "desc"}],
+                    pageSize: 500.0,
+                    serverSorting: true,
+                    serverPaging: true,
+                    serverGrouping: false,
+                    serverFiltering: true,
+                    aggregate: [
 
-                    {field: "qty", aggregate: "sum"},
-                    {field: "styleId", aggregate: "count"},
-                    {field: "price", aggregate: "average"}
+                        {field: "qty", aggregate: "sum"},
+                        {field: "styleId", aggregate: "count"},
+                        {field: "price", aggregate: "average"}
+
+                    ]
+
+
+                },
+                sortable: {
+                    mode: "multiple",
+                    allowUnsort: true
+                },
+                rowNumber: true,
+                pageable: {
+                    input: true,
+                    buttonCount: 5,
+                    pageSize: 500.0,
+                    pageSizes: [100, 500, 1000, 2000]
+                },
+                height: 680,
+                groupable: true,
+                group: onGrouping,
+                columnMenu: true,
+                filterable: {
+                    extra: false
+                },
+                selectable: "multiple row",
+                reorderable: true,
+                resizable: true,
+                scrollable: true,
+                columns: [
+                    {
+                        field: "", title: "图片", width: 100,
+                        template: function (data) {
+                            debugger;
+                            var url = data.url;
+                            if (url == null) {
+                                return "无图片";
+                            } else {
+                                return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            }
+                        }
+
+                    },
+                    {
+                        field: "styleId", title: "款号", width: 80,
+                        aggregates: ["count"],
+                        groupHeaderTemplate: function (data) {
+
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {
+                        field: "warehName", title: "仓库", width: 100,
+                        template: function (data) {
+                            if (data.warehName) {
+                                return "[" + data.warehId + "]" + data.warehName;
+                            } else {
+                                return "[" + data.warehId + "]";
+                            }
+                        },
+                        groupHeaderTemplate: function (data) {
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+
+                    {field: "styleName", title: "款名", width: 80},
+                    {field: "class1Name", title: "厂家", width: 80},
+                    {
+                        field: "qty", title: "库存数量", width: 80,
+                        groupable: false,
+                        aggregates: ["sum"],
+                        footerTemplate: "#=sum#"
+                    },
+
+
+                    {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
+                        template: function (data) {
+                            var price=data.price.toFixed(2);
+                            return price;
+                        }
+                    }
+
 
                 ]
-
-
-            },
-            sortable: {
-                mode: "multiple",
-                allowUnsort: true
-            },
-            rowNumber: true,
-            pageable: {
-                input: true,
-                buttonCount: 5,
-                pageSize: 500.0,
-                pageSizes: [100, 500, 1000, 2000]
-            },
-            height: 680,
-            groupable: true,
-            group: onGrouping,
-            columnMenu: true,
-            filterable: {
-                extra: false
-            },
-            selectable: "multiple row",
-            reorderable: true,
-            resizable: true,
-            scrollable: true,
-            columns: [
-                {
-                    field: "", title: "图片", width: 100,
-                    template: function (data) {
-                        debugger;
-                        var url = data.url;
-                        if (url == null) {
-                            return "无图片";
-                        } else {
-                            return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
-                        }
-                    }
-
+            });
+            isFriststyleGrid = false;
+            $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+        }else{
+            $("#stockstyleGrid").kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "仓库库按款查询.xlsx",
+                    proxyURL: basePath + "/search/detailStockViewSearch/export.do",
+                    allPages: true,
+                    filterable: true
                 },
-                {
-                    field: "styleId", title: "款号", width: 80,
-                    aggregates: ["count"],
-                    groupHeaderTemplate: function (data) {
+                dataSource: {
+                    schema: {
+                        total: "total",
+                        model: {
 
-                        var totQty = data.aggregates.qty.sum;
-                        var value = data.value;
-                        var avgPrice = data.aggregates.price.average;
-                        return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
-                    }
-                },
-                {
-                    field: "warehName", title: "仓库", width: 100,
-                    template: function (data) {
-                        if (data.warehName) {
-                            return "[" + data.warehId + "]" + data.warehName;
-                        } else {
-                            return "[" + data.warehId + "]";
+                            fields: {
+
+                                warehName: {type: "string"},
+                                sku: {type: "string"},
+                                styleId: {type: "string"},
+                                styleName: {type: "string"},
+                                colorId: {type: "string"},
+                                sizeId: {type: "string"},
+                                qty: {type: "number"},
+                                price: {type: "number"}
+                            }
+                        },
+                        data: "data",
+                        groups: "data"
+                    },
+                    filter: {
+                        logic: "and",
+                        filters: [{
+                            field: "warehType",
+                            operator: "eq",
+                            value: 9
+                        }, {
+                            field: "ownerId",
+                            operator: "eq",
+                            value: ownerId
+                        }]
+                    },
+                    transport: {
+                        read: {
+                            url: basePath + "/stock/warehStock/pageStyle.do",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json'
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
                         }
                     },
-                    groupHeaderTemplate: function (data) {
-                        var totQty = data.aggregates.qty.sum;
-                        var value = data.value;
-                        var avgPrice = data.aggregates.price.average;
-                        return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
-                    }
+                    sort: [{field: "styleId", dir: "desc"}],
+                    pageSize: 500.0,
+                    serverSorting: true,
+                    serverPaging: true,
+                    serverGrouping: false,
+                    serverFiltering: true,
+                    aggregate: [
+
+                        {field: "qty", aggregate: "sum"},
+                        {field: "styleId", aggregate: "count"},
+                        {field: "price", aggregate: "average"}
+
+                    ]
+
+
                 },
-
-                {field: "styleName", title: "款名", width: 80},
-                {field: "class1Name", title: "厂家", width: 80},
-                {
-                    field: "qty", title: "库存数量", width: 80,
-                    groupable: false,
-                    aggregates: ["sum"],
-                    footerTemplate: "#=sum#"
+                sortable: {
+                    mode: "multiple",
+                    allowUnsort: true
                 },
+                rowNumber: true,
+                pageable: {
+                    input: true,
+                    buttonCount: 5,
+                    pageSize: 500.0,
+                    pageSizes: [100, 500, 1000, 2000]
+                },
+                height: 680,
+                groupable: true,
+                group: onGrouping,
+                columnMenu: true,
+                filterable: {
+                    extra: false
+                },
+                selectable: "multiple row",
+                reorderable: true,
+                resizable: true,
+                scrollable: true,
+                columns: [
+                    {
+                        field: "", title: "图片", width: 100,
+                        template: function (data) {
+                            debugger;
+                            var url = data.url;
+                            if (url == null) {
+                                return "无图片";
+                            } else {
+                                return "<img width=80 height=100  onclick=showImagesUrl('" +basePath + data.url + "') src='" +basePath + data.url + "' alt='" + data.styleid + "'/>";
+                            }
+                        }
+
+                    },
+                    {
+                        field: "styleId", title: "款号", width: 80,
+                        aggregates: ["count"],
+                        groupHeaderTemplate: function (data) {
+
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "款号:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+                    {
+                        field: "warehName", title: "仓库", width: 100,
+                        template: function (data) {
+                            if (data.warehName) {
+                                return "[" + data.warehId + "]" + data.warehName;
+                            } else {
+                                return "[" + data.warehId + "]";
+                            }
+                        },
+                        groupHeaderTemplate: function (data) {
+                            var totQty = data.aggregates.qty.sum;
+                            var value = data.value;
+                            var avgPrice = data.aggregates.price.average;
+                            return "仓库:" + value + " 总数量:" + totQty + "; 平均价 :" + kendo.toString(avgPrice, '0.00');
+                        }
+                    },
+
+                    {field: "styleName", title: "款名", width: 80},
+                    {
+                        field: "qty", title: "库存数量", width: 80,
+                        groupable: false,
+                        aggregates: ["sum"],
+                        footerTemplate: "#=sum#"
+                    },
 
 
-                {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
-                    template: function (data) {
-                        var price=data.price.toFixed(2);
-                        return price;
+                    {field: "price", title: "吊牌价", width: 80, groupable: false, aggregates: ["average"],
+                        template: function (data) {
+                            var price=data.price.toFixed(2);
+                            return price;
+                        }
                     }
-                }
 
 
-            ]
-        });
-        isFriststyleGrid = false;
-        $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+                ]
+            });
+            isFriststyleGrid = false;
+            $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+        }
+
     } else {
         search();
     }
