@@ -130,7 +130,7 @@
                                             <div class="input-group">
                                                 <input class="form-control" id="filter_eq_styleId"
                                                        type="text" name="filter_eq_styleId" readonly/>
-                                                     <span class="input-group-btn">
+                                                <span class="input-group-btn">
                                                          <button class="btn btn-sm btn-default" type="button" onclick="openstyleDialog('#filter_eq_styleId','#filter_eq_styleName')">
                                                              <i class="ace-icon fa fa-list"></i>
                                                          </button>
@@ -146,7 +146,7 @@
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_colorId">色号</label>
 
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                            <input class="form-control" id="filter_contains_colorId" name="filter_contains_colorId" type="text" 
+                                            <input class="form-control" id="filter_contains_colorId" name="filter_contains_colorId" type="text"
                                                    placeholder="模糊查询"/>
                                         </div>
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_contains_sizeId">尺号</label>
@@ -218,7 +218,7 @@
         </div>
     </div>
     <jsp:include page="../search/search_js.jsp"></jsp:include>
-	<jsp:include page="../layout/footer.jsp"></jsp:include>
+    <jsp:include page="../layout/footer.jsp"></jsp:include>
 
     <!--/.fluid-container#main-container-->
 </div>

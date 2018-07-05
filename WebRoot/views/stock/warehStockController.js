@@ -72,24 +72,24 @@ function exportExcelPOI() {
     }
 
     /*$.ajax({
-        url: exportUrl,
-        type: 'POST',
-        data: {
-            request: JSON.stringify(request)
-        },
-        success: function (data) {
-            $.gritter.add({
-                text: data.msg,
-                class_name: 'gritter-success  gritter-light'
-            });
-        }
+     url: exportUrl,
+     type: 'POST',
+     data: {
+     request: JSON.stringify(request)
+     },
+     success: function (data) {
+     $.gritter.add({
+     text: data.msg,
+     class_name: 'gritter-success  gritter-light'
+     });
+     }
 
-    })*/
+     })*/
     //window.location.href=exportUrl+"request="+JSON.stringify(request);
 
 
 
-   /* document.write("<form action="+exportUrl+" method=post name=form1 style='display:none'>");
+    /* document.write("<form action="+exportUrl+" method=post name=form1 style='display:none'>");
      document.write("<input type=hidden  name='request' value='"+JSON.stringify(request)+"'>");
      document.write("</form>");
      document.form1.submit();*/
@@ -165,18 +165,18 @@ function initMultiSelect() {
     console.log(JMSNAME);
     if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
         /*$("#filter_in_warehId").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "code",
-            height: 400,
-            suggest: true,
-            dataSource: {
-                transport: {
-                    read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-                }
-            },
-            value:JMSCODE,
-            text:JMSNAME
-        });*/
+         dataTextField: "name",
+         dataValueField: "code",
+         height: 400,
+         suggest: true,
+         dataSource: {
+         transport: {
+         read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
+         }
+         },
+         value:JMSCODE,
+         text:JMSNAME
+         });*/
         $.ajax({
             url: basePath +  "/sys/warehouse/list.do?filter_INI_type=9",
             cache: false,
@@ -193,16 +193,16 @@ function initMultiSelect() {
         });
     }else{
         /*$("#filter_in_warehId").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "code",
-            height: 400,
-            suggest: true,
-            dataSource: {
-                transport: {
-                    read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-                }
-            }
-        });*/
+         dataTextField: "name",
+         dataValueField: "code",
+         height: 400,
+         suggest: true,
+         dataSource: {
+         transport: {
+         read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
+         }
+         }
+         });*/
         $.ajax({
             url: basePath +  "/sys/warehouse/list.do?filter_INI_type=9",
             cache: false,

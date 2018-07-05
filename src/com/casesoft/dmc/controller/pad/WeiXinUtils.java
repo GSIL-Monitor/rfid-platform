@@ -1,6 +1,7 @@
 package com.casesoft.dmc.controller.pad;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.model.pad.AccessToken;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
@@ -21,8 +22,8 @@ import static com.casesoft.dmc.controller.pad.ProjectConst.ACCESS_TOKEN_URL;
  * @desc 用户获取access_token,众号调用各接口时都需使用access_token
  **/
 public class WeiXinUtils {
-    public static String APPID = "wx22237cc4fab99714";
-    public static String APPSECRET = "a17e22c9496208a36d12dce6acd0fab5";
+    public static String APPID;
+    public static String APPSECRET;
     /**
      * Get请求，方便到一个url接口来获取结果
      *
@@ -51,6 +52,12 @@ public class WeiXinUtils {
      * @return accessToken
      */
     public static AccessToken getAccessToken(){
+        try {
+            APPID = PropertyUtil.getValue("APPID");
+            APPSECRET = PropertyUtil.getValue("APPSECRET");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         AccessToken accessToken = new AccessToken();
         Long nowDate = new Date().getTime();
         accessToken = CacheManager.getAccessToken();
