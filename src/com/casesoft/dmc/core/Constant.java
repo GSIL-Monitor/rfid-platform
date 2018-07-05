@@ -1,6 +1,7 @@
 package com.casesoft.dmc.core;
 
 import com.casesoft.dmc.core.util.file.PropertyUtil;
+import io.swagger.models.auth.In;
 
 public class Constant {
     public static Boolean isWindows;
@@ -356,5 +357,12 @@ public class Constant {
         public final static String Color = "COLOR";
         public final static String Size = "SIZE";
         public final static String Product = "PRODUCT";
+    }
+
+    //客户欠款变动，积分变动记录的状态设置
+    public final static class ChangeRecordStatus{
+        public final static Integer normal = 0; //正常开单
+        public final static Integer cancel = -1; //单据撤销
+        public final static Integer changeUnit = -2; //改变客户
     }
 }

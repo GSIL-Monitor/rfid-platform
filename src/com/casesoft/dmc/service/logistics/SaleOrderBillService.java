@@ -27,6 +27,7 @@ import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.cfg.PropertyService;
+import com.casesoft.dmc.service.shop.GuestValueChangeService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.GuestService;
@@ -61,6 +62,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private MonthAccountStatementService monthAccountStatementService;
     @Autowired
     private GuestService guestService;
+    @Autowired
+    private GuestValueChangeService guestValueChangeService;
+
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
     public Double findSumActPrice(String destUnitId){
@@ -162,10 +166,15 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         if (CommonUtil.isNotBlank(preDestUnitId)) {
             guestService.resetPreGust(saleOrderBill.getBillNo(), preDestUnitId, preDiffPrice);
         }
+
+            Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", saleOrderBill.getDestUnitId());
+        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ? and status=1", saleOrderBill.getDestUnitId());
         //add by yushen 计算销售单积分并保存积分变动记录
         Long points = this.pointsChangeService.savePointsChange(saleOrderBill);
+        //add by yushen 保存客户欠款变动记录
+        this.guestValueChangeService.saveValueChange(saleOrderBill, unit, customer);
         //add by yushen 更新客户欠款金额和积分
-        guestService.updateCurrentGuest(saleOrderBill.getBillNo(), diffPrice, saleOrderBill.getDestUnitId(), points);
+        guestService.updateCurrentGuest(saleOrderBill.getBillNo(), diffPrice, points, unit, customer);
         //保存订单
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
         this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
@@ -226,10 +235,13 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         if (CommonUtil.isNotBlank(preDestUnitId)) {
             guestService.resetPreGust(saleOrderBill.getBillNo(), preDestUnitId, preDiffPrice);
         }
+        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", saleOrderBill.getDestUnitId());
+        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ? and status=1", saleOrderBill.getDestUnitId());
+
         //add by yushen 计算销售单积分并保存积分变动记录
         Long points = this.pointsChangeService.savePointsChange(saleOrderBill);
         //add by yushen 更新客户欠款金额和积分
-        guestService.updateCurrentGuest(saleOrderBill.getBillNo(), diffPrice, saleOrderBill.getDestUnitId(), points);
+        guestService.updateCurrentGuest(saleOrderBill.getBillNo(), diffPrice, points, unit, customer);
         //保存订单
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
         this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
@@ -333,9 +345,11 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     public void saveReturnBatch(SaleOrderReturnBill bill, List<SaleOrderReturnBillDtl> details) {
 
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
+        Unit unit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", bill.getDestUnitId());
+        Customer customer = this.saleOrderBillDao.findUnique("from Customer where id = ? and status=1", bill.getDestUnitId());
 
         Long points = this.pointsChangeService.saveReturnPoints(bill);
-        this.guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, bill.getOrigUnitId(), points);
+        this.guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, points, unit, customer);
         this.saleOrderReturnBillDao.saveOrUpdate(bill);
         this.saleOrderReturnBillDao.doBatchInsert(details);
     }

@@ -104,10 +104,14 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         if (CommonUtil.isNotBlank(preOrigUnitId)) {
             guestService.resetPreGust(bill.getBillNo(), preOrigUnitId, preDiffPrice);
         }
+
+        Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1",  bill.getOrigUnitId());
+        Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1",  bill.getOrigUnitId());
+
         //add by yushen 计算销售单积分并保存积分变动记录
         Long points = this.pointsChangeService.savePointsFallback(bill, details);
         //add by yushen 更新客户欠款金额和积分
-        guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, bill.getOrigUnitId(), points);
+        guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, points, unit, customer);
         //保存订单
         this.saleOrderReturnBillDao.saveOrUpdate(bill);
         this.saleOrderReturnBillDao.doBatchInsert(details);
