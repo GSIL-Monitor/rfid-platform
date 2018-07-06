@@ -412,8 +412,10 @@ function showAdvSearchPanel() {
 
 
 var dialogOpenPage;
+var prefixId;
 function openSearchGuestDialog() {
     dialogOpenPage = "saleOrder";
+    prefixId="seach"
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
         initGuestSelect_Grid();
     });

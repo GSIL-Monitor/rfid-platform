@@ -339,19 +339,28 @@
         $("#search_destUnitId").val(rowData.id);
         $("#search_destUnitName").val(rowData.name);
         initSelectDestForm();
-        $("#search_customerType").val(rowData.unitType);
-        $("#search_destId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_destId").selectpicker('refresh');
-        $("#search_discount").val(rowData.discount);
-        $("#pre_Balance").val(0-rowData.owingValue);
-        $("#modal_guest_search_table").modal('hide');
+        if(prefixId=="edit"){
+            $("#search_customerType").val(rowData.unitType);
+            $("#search_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_destId").selectpicker('refresh');
+            if(rowData.discount){
+                $("#search_discount").val(rowData.discount);
+            }else{
+                $("#search_discount").val(100);
+            }
+            //$("#search_discount").val(rowData.discount);
+            $("#pre_Balance").val((0-rowData.owingValue).toFixed(2));
+           // $("#pre_Balance").val(0-rowData.owingValue);
+            updateBillDetailData();
+            $("#modal_guest_search_table").modal('hide');
 
-        if ($("#search_destId").val() && $("#search_destId").val() != null) {
-            $("#SODtl_wareHouseIn").removeAttr("disabled");
-        } else {
-            $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+            if ($("#search_destId").val() && $("#search_destId").val() != null) {
+                $("#SODtl_wareHouseIn").removeAttr("disabled");
+            } else {
+                $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+            }
+            setDiscount();
         }
-        setDiscount();
     }
 
     function confirm_selected_GuestId_Consignment() {

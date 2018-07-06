@@ -66,6 +66,16 @@ public abstract class BaseBillDtl {
     protected Double discount;
     @Transient
     protected String imgUrl;
+    @Transient
+    protected String stylePriceMap;
+
+    public String getStylePriceMap() {
+        return stylePriceMap;
+    }
+
+    public void setStylePriceMap(String stylePriceMap) {
+        this.stylePriceMap = stylePriceMap;
+    }
 
     public String getBillId() {
         return billId;
