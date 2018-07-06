@@ -351,7 +351,7 @@ public class CommonUtil {
    * @Author Alvin
    * */
   public static boolean isOctNumberRex(String str){
-    Pattern p = Pattern.compile("^[0][x][0-9]+$");
+    Pattern p = Pattern.compile("^[0-9]+$");
     Matcher matcher = p.matcher(str);
     return matcher.matches();
   }

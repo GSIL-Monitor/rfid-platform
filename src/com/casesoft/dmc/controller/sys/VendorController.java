@@ -90,42 +90,49 @@ public class VendorController extends BaseController implements IBaseInfoControl
     @ResponseBody
     public MessageBox save(Unit unit, String userId) throws Exception {
         this.logAllRequestParams();
-        Unit ut = this.vendorService.findById(unit.getId());
-        if (CommonUtil.isBlank(ut)) {
-            ut = new Unit();
-            if (CommonUtil.isBlank(unit.getCode())) {
-                String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
-                ut.setCode(code);
-            } else {
-                ut.setCode(unit.getCode());
+        try {
+            Unit ut = this.vendorService.findById(unit.getId());
+            if (CommonUtil.isBlank(ut)) {
+                ut = new Unit();
+                if (CommonUtil.isBlank(unit.getCode())) {
+                    String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
+                    ut.setCode(code);
+                } else {
+                    ut.setCode(unit.getCode());
+                }
+                ut.setId(ut.getCode());
+                if (this.getCurrentUser() == null) {  //小程序增加供应商，userId传值
+                    User CurrentUser = CacheManager.getUserById(userId);
+                    ut.setCreatorId(CurrentUser.getCode());
+                }else {   //web增加供应商,session传值
+                    ut.setCreatorId(this.getCurrentUser().getCode());
+                }
+                ut.setCreateTime(new Date());
             }
-            ut.setId(ut.getCode());
-            if (this.getCurrentUser() == null) {  //小程序增加供应商，userId传值
+            ut.setName(unit.getName());
+            ut.setType(Constant.UnitType.Vender);
+            ut.setUpdateTime(new Date());
+            ut.setTel(unit.getTel());
+            ut.setGroupId(unit.getGroupId());
+            ut.setRemark(unit.getRemark());
+            if (this.getCurrentUser() == null) {
                 User CurrentUser = CacheManager.getUserById(userId);
-                ut.setCreatorId(CurrentUser.getCode());
-            }else {   //web增加供应商,session传值
-                ut.setCreatorId(this.getCurrentUser().getCode());
+                ut.setUpdaterId(CurrentUser.getCode());
+            }else {
+                ut.setUpdaterId(this.getCurrentUser().getCode());
             }
-            ut.setCreateTime(new Date());
-        }
-        ut.setName(unit.getName());
-        ut.setType(Constant.UnitType.Vender);
-        ut.setUpdateTime(new Date());
-        ut.setTel(unit.getTel());
-        ut.setGroupId(unit.getGroupId());
-        ut.setRemark(unit.getRemark());
-        if (this.getCurrentUser() == null) {
-            User CurrentUser = CacheManager.getUserById(userId);
-            ut.setUpdaterId(CurrentUser.getCode());
-        }else {
-            ut.setUpdaterId(this.getCurrentUser().getCode());
-        }
-        ut.setOwnerId(unit.getOwnerId());
-        ut.setSrc(Constant.DataSrc.SYS);
+            ut.setOwnerId(unit.getOwnerId());
+            ut.setSrc(Constant.DataSrc.SYS);
 
-        this.vendorService.save(ut);
-        CacheManager.refreshUnitCache();
-        return this.returnSuccessInfo("保存成功");
+            this.vendorService.save(ut);
+            CacheManager.refreshUnitCache();
+            return this.returnSuccessInfo("保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            this.logger.error(e.getMessage());
+            return this.returnFailInfo("保存失败");
+        }
+
     }
 
     @Override
