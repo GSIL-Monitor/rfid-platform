@@ -314,7 +314,7 @@ function initKendoUIGrid() {
                         var d=new Date(data.value)
                         var value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
                         var totactprice = data.aggregates.totactprice.sum;
-                        return "入库时间:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "入库时间:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
                 },
                 {
@@ -341,7 +341,7 @@ function initKendoUIGrid() {
                         var d=new Date(data.value)
                         var value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
                         var totactprice = data.aggregates.totactprice.sum;
-                        return "日期:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "日期:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
                 },
                 {
@@ -353,7 +353,7 @@ function initKendoUIGrid() {
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
-                        return "单号:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "单号:" + value + " 总数量:" + totQty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
                 },
                 {
@@ -393,7 +393,7 @@ function initKendoUIGrid() {
                         if (value == undefined) {
                             value = "";
                         }
-                        return "单据类型:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "单据类型:" + value + " 总数量:" + totQty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
 
                 },
