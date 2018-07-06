@@ -369,10 +369,21 @@
         $("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
-        $("#search_customerType").val(rowData.unitType);
-        $("#search_origId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_origId").selectpicker('refresh');
-        $("#search_discount").val(rowData.discount);
+        if(prefixId=="edit"){
+            $("#search_customerType").val(rowData.unitType);
+            $('#search_origId').selectpicker();
+            $("#search_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_origId").selectpicker('refresh');
+            console.log($("#search_origId").val())
+            //$("#search_discount").val(rowData.discount);
+            if(rowData.discount){
+                $("#search_discount").val(rowData.discount);
+            }else{
+                $("#search_discount").val(100);
+            }
+            updateBillDetailData();
+            setDiscount();
+        }
         $("#modal_guest_search_table").modal('hide');
     }
     function confirm_selected_GuestId_saleReturn() {

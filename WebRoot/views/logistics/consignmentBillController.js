@@ -395,8 +395,9 @@ function checkAjax(billNo) {
     });
 }
 var dialogOpenPage;
+var prefixId;
 function openSearchGuestDialog() {
-    debugger;
+    prefixId="search";
     dialogOpenPage = "transferOrderconsignmentBill";
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
         initGuestSelect_Grid();
