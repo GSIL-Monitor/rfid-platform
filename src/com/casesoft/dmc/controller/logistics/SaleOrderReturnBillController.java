@@ -15,6 +15,7 @@ import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBillDtl;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
@@ -251,6 +252,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             }
         }
         for (SaleOrderReturnBillDtl s : saleOrderReturnBillDtls) {
+            Style style = CacheManager.getStyleById(s.getStyleId());
             if(codeMap.containsKey(s.getSku())){
                 s.setUniqueCodes(codeMap.get(s.getSku()));
             }
@@ -263,6 +265,11 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             if (CommonUtil.isNotBlank(CacheManager.getSizeById(s.getSizeId()))) {
                 s.setSizeName(CacheManager.getSizeNameById(s.getSizeId()));
             }
+            Map<String,Double> stylePriceMap = new HashMap<>();
+            stylePriceMap.put("price",style.getPrice());
+            stylePriceMap.put("wsPrice",style.getWsPrice());
+            stylePriceMap.put("puPrice",style.getPuPrice());
+            s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
             s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
         }
         return saleOrderReturnBillDtls;
