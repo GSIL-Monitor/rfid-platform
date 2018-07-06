@@ -41,6 +41,16 @@ public class PricingRules implements java.io.Serializable {
 	private String state;//标记是否使用/ Y/N
 	@Transient
 	private String seriesName;//系列名
+	@Column(length = 50)
+	private String class3;//大类
+
+	public String getClass3() {
+		return class3;
+	}
+
+	public void setClass3(String class3) {
+		this.class3 = class3;
+	}
 
 	public PricingRules() {
 		super();
