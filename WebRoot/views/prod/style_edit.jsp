@@ -1103,6 +1103,7 @@
                     class_name: 'gritter-success  gritter-light'
                 });
             } else {
+                $("#form_price").attr("disabled",false);
                 $('#editStyleForm').data('bootstrapValidator').validate();
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                     return;
@@ -1134,6 +1135,7 @@
                                 text: msg.msg,
                                 class_name: 'gritter-success  gritter-light'
                             });
+                            $("#form_price").attr("disabled",true);
                         } else {
                             bootbox.alert(msg.msg);
                         }
