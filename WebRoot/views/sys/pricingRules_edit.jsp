@@ -56,6 +56,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_class3">大类</label>
+                        <div class="col-xs-10 col-sm-5">
+                            <select class="chosen-select form-control" id="form_class3" name="class3">
+                                <option value="">请选择大类</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <input id="form_state" name="state" hidden="hidden"/>
                     </div>
                 </form>
@@ -81,15 +89,15 @@
             function(result) {
                 cs.closeProgressBar();
                 if(result.success == true || result.success == 'true') {
+                    $("#edit_pricingRules_dialog").modal('hide');
+                    refresh();
+                } else {
                     $.gritter.add({
                         text: result.msg,
                         class_name: 'gritter-success  gritter-light'
                     });
-                } else {
-                    cs.showAlertMsgBox(result.msg);
                 }
             }, 'json');
-        $("#edit_pricingRules_dialog").modal('hide');
     }
     function closeEditDialog() {
         $("#edit_pricingRules_dialog").modal('hide');
@@ -166,6 +174,13 @@
                     validators: {
                         notEmpty: {
                             message: '系列不能为空请选择'
+                        }
+                    }
+                },
+                class3:{
+                    validators: {
+                        notEmpty: {
+                            message: '大类不能为空请选择'
                         }
                     }
                 }

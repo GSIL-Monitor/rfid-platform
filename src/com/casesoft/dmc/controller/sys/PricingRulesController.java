@@ -76,32 +76,36 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
     @Override
     public MessageBox save(PricingRules pricingRules) throws Exception {
         this.logAllRequestParams();
-        String pageType = this.getReqParam("pageType");
-        PricingRules pr = this.pricingRulesService.get("series", pricingRules.getSeries());
-        if ("add".equals(pageType)) {
-            if (CommonUtil.isNotBlank(pr)) {
-                return this.returnFailInfo("保存失败");
+        try {
+            String pageType = this.getReqParam("pageType");
+            String series = pricingRules.getSeries();
+            String class3 = pricingRules.getClass3();
+            PricingRules pr = this.pricingRulesService.findBySC(series, class3);
+            if ("add".equals(pageType)) {
+                if (CommonUtil.isNotBlank(pr)) {
+                    return this.returnFailInfo("已存在，保存失败");
+                } else {
+                    pr = new PricingRules();
+                    User u = getCurrentUser();
+                    pr.setUserId(u.getCode());
+                    pr.setName(pricingRules.getName());
+                    pr.setRule1(pricingRules.getRule1());
+                    pr.setRule2(pricingRules.getRule2());
+                    pr.setRule3(pricingRules.getRule3());
+                    pr.setSeries(pricingRules.getSeries());
+                    pr.setUpdateTime(new Date());
+                    pr.setClass3(pricingRules.getClass3());
+                }
             } else {
-                pr = new PricingRules();
-                User u = getCurrentUser();
-                pr.setUserId(u.getCode());
                 pr.setName(pricingRules.getName());
                 pr.setRule1(pricingRules.getRule1());
                 pr.setRule2(pricingRules.getRule2());
                 pr.setRule3(pricingRules.getRule3());
-                pr.setSeries(pricingRules.getSeries());
                 pr.setUpdateTime(new Date());
+                User u = getCurrentUser();
+                pr.setUserId(u.getCode());
+                pr.setClass3(pricingRules.getClass3());
             }
-        } else {
-            pr.setName(pricingRules.getName());
-            pr.setRule1(pricingRules.getRule1());
-            pr.setRule2(pricingRules.getRule2());
-            pr.setRule3(pricingRules.getRule3());
-            pr.setUpdateTime(new Date());
-            User u = getCurrentUser();
-            pr.setUserId(u.getCode());
-        }
-        try {
             this.pricingRulesService.save(pr);
             return returnSuccessInfo("保存成功");
         } catch (Exception e) {
