@@ -95,6 +95,7 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
                     pr.setSeries(pricingRules.getSeries());
                     pr.setUpdateTime(new Date());
                     pr.setClass3(pricingRules.getClass3());
+                    pr.setClass3Name(pricingRules.getClass3Name());
                 }
             } else {
                 pr.setName(pricingRules.getName());
@@ -105,6 +106,7 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
                 User u = getCurrentUser();
                 pr.setUserId(u.getCode());
                 pr.setClass3(pricingRules.getClass3());
+                pr.setClass3Name(pricingRules.getClass3Name());
             }
             this.pricingRulesService.save(pr);
             return returnSuccessInfo("保存成功");

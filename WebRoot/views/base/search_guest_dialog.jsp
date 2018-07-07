@@ -361,6 +361,7 @@
             }
             setDiscount();
         }
+        $("#modal_guest_search_table").modal('hide');
     }
 
     function confirm_selected_GuestId_Consignment() {

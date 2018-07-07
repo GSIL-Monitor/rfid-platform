@@ -25,7 +25,8 @@ function initGrid() {
             {name: 'series', hidden:true},
             {name: 'seriesName', label: '系列', editable: true, width: 40},
             {name: 'updateTime', label: '更新时间', editable: true, width: 40},
-            {name: 'class3',label:'大类',editable: true, width: 40},
+            {name: 'class3',label:'大类',hidden:true},
+            {name: 'class3Name',label: '大类', editable: true, width: 40},
             {name: 'userId', label: '创建人', editable: true, width: 40},
             {
                 name: 'state', label: '操作', editable: true, width: 50, align: 'center',
@@ -135,6 +136,8 @@ function initadd() {
             for (var i = 0; i < json.length; i++) {
                 $("#form_series").append("<option value='"+json[i].code+"'>"+json[i].name+"</option>");
                 $("#form_series").trigger('chosen:updated');
+                $("#search_series").append("<option value='"+json[i].code+"'>"+json[i].name+"</option>");
+                $("#search_series").trigger('chosen:updated');
             }
         }
     });
@@ -151,6 +154,8 @@ function initClass3() {
             for (var i = 0; i < json.length; i++) {
                 $("#form_class3").append("<option value='" + json[i].code + "'>" + json[i].name+"</option>");
                 $("#form_class3").trigger('chosen:updated');
+                $("#search_class3").append("<option value='" + json[i].code + "'>" + json[i].name+"</option>");
+                $("#search_class3").trigger('chosen:updated');
             }
         }
     });

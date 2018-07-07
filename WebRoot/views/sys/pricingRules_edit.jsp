@@ -63,6 +63,7 @@
                             </select>
                         </div>
                     </div>
+                    <input id="form_class3Name" name="class3Name" type="hidden"/>
                     <div class="form-group">
                         <input id="form_state" name="state" hidden="hidden"/>
                     </div>
@@ -81,6 +82,7 @@
         if(!$('#editPricingRulesForm').data('bootstrapValidator').isValid()){
             return ;
         }
+        $("#form_class3Name").val($('#form_class3 option:selected').text());
         $("#form_series").removeAttr("disabled");
         cs.showProgressBar();
         var  formData = $("#editPricingRulesForm").serialize();

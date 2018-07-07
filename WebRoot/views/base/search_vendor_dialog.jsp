@@ -113,8 +113,8 @@
     function confirm_selected_VendorId_purchaseOrder() {
         var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_origUnitId").val(rowData.id);
-        $("#search_origUnitName").val(rowData.name);
+        $("#search_destUnitId").val(rowData.id);
+        $("#search_destUnitName").val(rowData.name);
         $("#modal_vendor_search_table").modal('hide');
     }
     function confirm_selected_VendorId_purchaseReturn() {
