@@ -378,7 +378,8 @@ function initGrid() {
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
-            }
+            },
+            {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -1381,9 +1382,10 @@ function confirmWareHouseIn() {
 }
 
 var dialogOpenPage;
-
+var prefixId;
 function openSearchGuestDialog() {
     dialogOpenPage = "saleOrderReturn";
+    prefixId="edit"
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
         initGuestSelect_Grid();
     });
@@ -1391,7 +1393,28 @@ function openSearchGuestDialog() {
         "<button type='button'  class='btn btn-primary' onclick='confirm_selected_GuestId_saleReturn()'>确认</button>"
     );
 }
+function updateBillDetailData(){
+    var ct = $("#search_customerType").val();
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var dtlRow = $("#addDetailgrid").getRowData(value);
+        var stylePriceMap = JSON.parse(dtlRow.stylePriceMap);
+        if (ct == "CT-AT") {//省代价格
+            dtlRow.price = stylePriceMap['puPrice'];
+        } else if (ct == "CT-ST") {//门店价格
+            dtlRow.price = stylePriceMap['wsPrice'];
+        } else if (ct == "CT-LS") {//吊牌价格
+            dtlRow.price = stylePriceMap['price'];
+        }
+        dtlRow.totPrice = -Math.round(dtlRow.qty * dtlRow.price);
+        dtlRow.totActPrice = -Math.round((dtlRow.qty * dtlRow.actPrice).toFixed(2));
+        if(dtlRow.id){
+            $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+        }else{
+            $("#addDetailgrid").setRowData(value, dtlRow);
+        }
+    });
 
+}
 function input_keydown() {
     $("#search_discount").keydown(function (event) {
         if (event.keyCode == 13) {
