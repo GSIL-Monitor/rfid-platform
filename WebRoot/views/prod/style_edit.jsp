@@ -1059,51 +1059,11 @@
 
     function saveStyleAndProduct(str) {
         var isSeries = $("#form_isSeries").val();
-        if (isSeries == "N") {
-            $('#editStyleForm').data('bootstrapValidator').validate();
-            if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
-                return;
-            }
-            if (editDtailRowId != null) {
-                saveItem(editDtailRowId)
-            }
-            $("#form_sizeSortId").removeAttr("disabled");
-            cs.showProgressBar();
-            var dtlArray = [];
-            $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
-                var dtlRow = $("#CSGrid").getRowData(dtlValue);
-                dtlArray.push(dtlRow);
-            });
-            $.ajax({
-                dataType: "json",
-                url: basePath + "/prod/style/saveStyleAndProduct.do",
-                data: {
-                    styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
-                    productStr: JSON.stringify(dtlArray),
-                    userId: userId,
-                    pageType: str
-                },
-                type: "POST",
-                success: function (msg) {
-                    cs.closeProgressBar();
-                    if (msg.success) {
-                        $.gritter.add({
-                            text: msg.msg,
-                            class_name: 'gritter-success  gritter-light'
-                        });
-                    } else {
-                        bootbox.alert(msg.msg);
-                    }
-                }
-            });
-        } else {
-            if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
-                $.gritter.add({
-                    text: "采购价和吊牌价不符合定价规则，请核对对应价格",
-                    class_name: 'gritter-success  gritter-light'
-                });
-            } else {
-                $("#form_price").attr("disabled",false);
+        var remark = $("#form_remark").val();
+        if ((remark.indexOf(",") >= 0)||(remark.indexOf("，") >= 0)){
+            bootbox.alert("成分中不允许含有回车及逗号字符");
+        }else {
+            if (isSeries == "N") {
                 $('#editStyleForm').data('bootstrapValidator').validate();
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                     return;
@@ -1135,12 +1095,57 @@
                                 text: msg.msg,
                                 class_name: 'gritter-success  gritter-light'
                             });
-                            $("#form_price").attr("disabled",true);
                         } else {
                             bootbox.alert(msg.msg);
                         }
                     }
                 });
+            } else {
+                if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
+                    $.gritter.add({
+                        text: "采购价和吊牌价不符合定价规则，请核对对应价格",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                } else {
+                    $("#form_price").attr("disabled",false);
+                    $('#editStyleForm').data('bootstrapValidator').validate();
+                    if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
+                        return;
+                    }
+                    if (editDtailRowId != null) {
+                        saveItem(editDtailRowId)
+                    }
+                    $("#form_sizeSortId").removeAttr("disabled");
+                    cs.showProgressBar();
+                    var dtlArray = [];
+                    $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                        var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                        dtlArray.push(dtlRow);
+                    });
+                    $.ajax({
+                        dataType: "json",
+                        url: basePath + "/prod/style/saveStyleAndProduct.do",
+                        data: {
+                            styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                            productStr: JSON.stringify(dtlArray),
+                            userId: userId,
+                            pageType: str
+                        },
+                        type: "POST",
+                        success: function (msg) {
+                            cs.closeProgressBar();
+                            if (msg.success) {
+                                $.gritter.add({
+                                    text: msg.msg,
+                                    class_name: 'gritter-success  gritter-light'
+                                });
+                                $("#form_price").attr("disabled",true);
+                            } else {
+                                bootbox.alert(msg.msg);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -1309,6 +1314,10 @@
                     validators: {
                         notEmpty: {
                             message: '款名不能为空'
+                        },
+                        regexp: {
+                            regexp: /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/,
+                            message: '款名由数字字母下划线汉字组成'
                         }
                     }
                 },
@@ -1326,7 +1335,6 @@
                         }
                     }
                 }
-
             }
         });
     }
