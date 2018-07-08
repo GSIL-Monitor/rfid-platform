@@ -729,14 +729,17 @@ public class CacheManager {
 	}
 	public static Style getStyleById(String styleId) {
 		Element result = cache.get("Style");
-		Map<String, Style> styleMap = (Map<String, Style>) result.getValue();
+		/*Map<String, Style> styleMap = (Map<String, Style>) result.getValue();
 		Style s = styleMap.get(styleId);
 		if(CommonUtil.isBlank(s)){
 
 			StyleService styleService = (StyleService) SpringContextUtil
 					.getBean("styleService");
 			s= styleService.get("styleId",styleId);
-		}
+		}*/
+		StyleService styleService = (StyleService) SpringContextUtil
+				.getBean("styleService");
+		Style s= styleService.get("styleId",styleId);
 
 		return s;
 	}
