@@ -469,6 +469,7 @@ function initGrid() {
         },
         gridComplete: function () {
             setFooterData();
+            cs.closeProgressBar();
         },
         loadComplete: function () {
             initAllCodesList();
@@ -680,6 +681,7 @@ function initeditGrid() {
 
         gridComplete: function () {
             setFooterData();
+            cs.closeProgressBar();
         },
         loadComplete: function () {
             initAllCodesList();
@@ -951,7 +953,6 @@ function saveAjax() {
         },
         type: "POST",
         success: function (msg) {
-            cs.closeProgressBar();
             $("#SODtl_wareHouseIn").removeAttr("disabled");
             if (msg.success) {
                 $.gritter.add({
@@ -968,6 +969,7 @@ function saveAjax() {
                 $("#addDetailgrid").trigger("reloadGrid");
                 $("#SODtl_adddoPrint1").show();
             } else {
+                cs.closeProgressBar();
                 bootbox.alert(msg.msg);
             }
         }

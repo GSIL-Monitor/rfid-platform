@@ -427,6 +427,7 @@ function initGrid() {
         },
         gridComplete: function () {
             setFooterData();
+            cs.closeProgressBar();
         },
         loadComplete: function () {
             initAllCodesList();
@@ -709,7 +710,6 @@ function saveother(totActPrice) {
         },
         type: "POST",
         success: function (msg) {
-             cs.closeProgressBar();
             if (msg.success) {
                 $.gritter.add({
                     text: msg.msg,
@@ -725,6 +725,7 @@ function saveother(totActPrice) {
                 $("#addDetailgrid").trigger("reloadGrid");
             } else {
                 bootbox.alert(msg.msg);
+                cs.closeProgressBar();
             }
         }
     });
