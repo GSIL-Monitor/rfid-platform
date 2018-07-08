@@ -311,8 +311,13 @@ function initKendoUIGrid() {
                     groupHeaderTemplate: function (data) {
                         var yetInitQty = data.aggregates.yetInitQty.sum;
                         var qty = data.aggregates.qty.sum;
-                        var d=new Date(data.value)
-                        var value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+                        var value;
+                        if(data.value!=undefined){
+                            var d=new Date(data.value)
+                            value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+                        }else{
+                            value="";
+                        }
                         var totactprice = data.aggregates.totactprice.sum;
                         return "入库时间:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
