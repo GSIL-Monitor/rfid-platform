@@ -1170,7 +1170,7 @@ function exportExcelPOI() {
 
 var dialogOpenPage;
 function openSearchVendorDialog() {
-    dialogOpenPage = "purchaseOrder";
+    dialogOpenPage = "purchaseOrderCount";
     $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
         initVendorSelect_Grid();
     });

@@ -91,7 +91,6 @@
             sortname: 'id',
             sortorder: "desc",
             ondblClickRow: function (rowid) {
-                debugger;
                 if (dialogOpenPage === "purchaseOrder") {
                     confirm_selected_VendorId_purchaseOrder(prefixId);
                 } else if (dialogOpenPage === "purchaseReturn") {
@@ -100,6 +99,8 @@
                     confirm_selected_VendorId_purchaseOrder_search();
                 }else if(dialogOpenPage==="meregegridDialog"){
                     confirm_selected_VendorId_purchaseOrders(saveid);
+                }else if(dialogOpenPage === "purchaseOrderCount"){
+                    selected_VendorId_purchaseOrder();
                 }
 
                 closeSearchGuestDialog();
