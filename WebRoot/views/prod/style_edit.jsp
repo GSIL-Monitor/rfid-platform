@@ -1019,7 +1019,7 @@
                     var json = date;
                     for (var i = 0; i < json.length; i++) {
                         checkNum = date.rule1;
-                        price = Math.floor(preCast * 4.95 /10) * 10 +9;
+                        price = Math.floor(preCast * (json[i].rule1) /10) * 10 +9;
                         /*规则1 表示吊牌价与采购价之间关系*/
                         purPrice = Math.round(price * (json[i].rule3) * 10) / 10.0;
                         /*规则3 代理商价与吊牌价之间关系*/
