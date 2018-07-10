@@ -18,7 +18,7 @@ function initGrid() {
         colModel: [
 
             {name: 'id', label: 'id', hidden: true, width: 20},
-            {name: 'name', label: ' ', editable: true, width: 40},
+            {name: 'name', label: '定价规则名', editable: true, width: 40},
             {name: 'rule1', label: '吊牌价与采购价的关系', editable: true, width: 40},
             {name: 'rule2', label: '吊牌价与门店价的关系', editable: true, width: 40},
             {name: 'rule3', label: '吊牌价与代理价的关系', editable: true, width: 40},
