@@ -357,4 +357,11 @@ public class Constant {
         public final static String Size = "SIZE";
         public final static String Product = "PRODUCT";
     }
+    public final static class RepositoryType{
+        public final static String root = "0";
+        public final static String rack = "1";
+        public final static String level = "2";
+        public final static String allocation = "3";
+        public final static String Company = "REPOSITORY";
+    }
 }

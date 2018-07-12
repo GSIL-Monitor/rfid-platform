@@ -1,8 +1,11 @@
 package com.casesoft.dmc.service.sys.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.model.cfg.VO.State;
+import com.casesoft.dmc.model.rem.VO.TreeChildVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,10 +73,28 @@ public class WarehouseService implements IBaseService<Unit, String> {
 	@Override
 	public List<Unit> find(List<PropertyFilter> filters) {
 
-		return this.warehouseDao.find(filters);
+		return null;
 	}
 
-
+	/**
+	 * 把查询的全部仓库信息转成jstree格式，使用懒加载
+	 * @param filters
+	 * @return
+	 */
+	public List<TreeChildVO> unitTreeList(List<PropertyFilter> filters){
+		List<TreeChildVO> result =new ArrayList<>();
+		List<Unit> unitList = this.warehouseDao.find(filters);
+		for(Unit unit:unitList){
+			TreeChildVO treeChildVO =new TreeChildVO();
+			treeChildVO.setId(unit.getId());
+			treeChildVO.setChildren(true);
+			treeChildVO.setState(new State(false));
+			treeChildVO.setText(unit.getName());
+			treeChildVO.setDeep(Constant.RepositoryType.root);
+			result.add(treeChildVO);
+		}
+		return result;
+	}
 
 	@Override
 	public List<Unit> getAll() {
