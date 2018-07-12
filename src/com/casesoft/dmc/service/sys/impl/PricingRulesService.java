@@ -19,6 +19,10 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
   @Autowired
   private PricingRulesDao pricingRulesDao;
 
+  public PricingRules findBySC(String series,String class3){
+    return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+  }
+
   @Transactional(readOnly = true)
   @Override
   public Page<PricingRules> findPage(Page<PricingRules> page, List<PropertyFilter> filters) {
@@ -33,8 +37,8 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
 
   @Transactional(readOnly = true)
   public PricingRules findById(String name){
-      String hql = "from PricingRules p where p.name = ?";
-      return this.pricingRulesDao.findUnique(hql,new Object[]{name});
+    String hql = "from PricingRules p where p.name = ?";
+    return this.pricingRulesDao.findUnique(hql,new Object[]{name});
   }
 
   @Override
@@ -66,22 +70,22 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
     return null;
   }
 
-    @Override
-    public void update(PricingRules pricingRules) {
-        this.pricingRulesDao.update(pricingRules);
-    }
+  @Override
+  public void update(PricingRules pricingRules) {
+    this.pricingRulesDao.update(pricingRules);
+  }
 
-    @Override
-    public void delete(PricingRules pricingRules) {
-        this.pricingRulesDao.delete(pricingRules);
-    }
+  @Override
+  public void delete(PricingRules pricingRules) {
+    this.pricingRulesDao.delete(pricingRules);
+  }
 
-    @Override
-    public void delete(String id) {
-        this.pricingRulesDao.delete(id);
-    }
+  @Override
+  public void delete(String id) {
+    this.pricingRulesDao.delete(id);
+  }
 
-    public List<PropertyType> findPricingRulesPropertyType() {
-      return this.pricingRulesDao.find("from PropertyType where type=?",new Object[]{"商品代码分类"});
+  public List<PropertyType> findPricingRulesPropertyType() {
+    return this.pricingRulesDao.find("from PropertyType where type=?",new Object[]{"商品代码分类"});
   }
 }
