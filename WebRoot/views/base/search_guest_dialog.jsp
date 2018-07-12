@@ -143,6 +143,8 @@
                             confirm_selected_DestUnit();
                         }else if(dialogOpenPage==="transferOrderconsignmentBill"){
                             confirm_selected_GuestId_Consignment();
+                        }else if(dialogOpenPage=="businessAccountDialog"){
+                            confirm_selected_businessAccount();
                         }
                         closeSearchGuestDialog();
                     }
@@ -158,6 +160,8 @@
                         confirm_selected_OrigUnit();
                     }else if(dialogOpenPage === "transferOrderUnit"){
                         confirm_selected_DestUnit();
+                    }else if(dialogOpenPage=="businessAccountDialog"){
+                        confirm_selected_businessAccount();
                     }
                     closeSearchGuestDialog();
                 }
@@ -221,6 +225,8 @@
                               confirm_selected_DestUnit();
                           }else if(dialogOpenPage==="transferOrderconsignmentBill"){
                               confirm_selected_GuestId_Consignment();
+                          }else if(dialogOpenPage=="businessAccountDialog"){
+                              confirm_selected_businessAccount();
                           }
                           closeSearchGuestDialog();
                       }
@@ -237,12 +243,90 @@
                         confirm_selected_DestUnit();
                     }else if(dialogOpenPage==="transferOrderconsignmentBill"){
                         confirm_selected_GuestId_Consignment();
+                    }else if(dialogOpenPage=="businessAccountDialog"){
+                        confirm_selected_businessAccount();
                     }
                     closeSearchGuestDialog();
                 }
             });
-        }
-        else {
+        }else if(dialogOpenPage==="businessAccountDialog"){
+            url= basePath + "/unit/page.do?filter_EQI_status=1&filter_EQS_groupId=JMS";
+            $("#guestSelect_Grid").jqGrid({
+                height: 350,
+                url: url,
+                mtype: "POST",
+                datatype: "json",
+                colModel: [
+                    {name: 'id', label: 'id', width: 40},
+                    {name: 'name', label: '名称', editable: true, width: 30},
+                    {name: 'unitType', hidden: true},
+                    {name: 'discount', hidden: true},
+                    {name: 'owingValue', hidden: true},
+                    {
+                        label: '客户类型', editable: true, width: 30,
+                        formatter: function (cellvalue, options, rowObject) {
+                            if (rowObject.unitType == "CT-AT") {
+                                return "省代客户";
+                            } else if (rowObject.unitType == "CT-ST") {
+                                return "门店客户";
+                            } else {
+                                return "零售客户";
+                            }
+                        }
+                    },
+                    {name: 'unitName', label: '所属门店', width: 30},
+                    {name: 'defaultWarehId', hidden: true},
+                    {name: 'tel', label: '电话', width: 50}
+                ],
+                viewrecords: true,
+                autowidth: true,
+                rownumbers: true,
+                altRows: true,
+                rowNum: 50,
+                rowList: [10, 20, 50],
+                pager: "#guestSelect_Page",
+                multiselect: false,
+                shrinkToFit: true,
+                sortname: 'id',
+                sortorder: "desc",
+                loadComplete: function(data) {
+                    debugger;
+                    var length=data.rows.length;
+                    if(length==1){
+                        $("#guestSelect_Grid").setSelection(data.rows[0].id, true);
+                        if (dialogOpenPage === "saleOrder"){
+                            confirm_selected_GuestId_sale();
+                        }else if(dialogOpenPage ==="saleOrderReturn"){
+                            confirm_selected_GuestId_saleReturn();
+                        }else if(dialogOpenPage === "transferOrderOrig"){
+                            confirm_selected_OrigUnit();
+                        }else if(dialogOpenPage === "transferOrderUnit"){
+                            confirm_selected_DestUnit();
+                        }else if(dialogOpenPage==="transferOrderconsignmentBill"){
+                            confirm_selected_GuestId_Consignment();
+                        }else if(dialogOpenPage=="businessAccountDialog"){
+                            confirm_selected_businessAccount();
+                        }
+                        closeSearchGuestDialog();
+                    }
+                },
+                ondblClickRow: function (rowid) {
+
+                    if (dialogOpenPage === "saleOrder"){
+                        confirm_selected_GuestId_sale();
+                    }else if(dialogOpenPage ==="saleOrderReturn"){
+                        confirm_selected_GuestId_saleReturn();
+                    }else if(dialogOpenPage === "transferOrderOrig"){
+                        confirm_selected_OrigUnit();
+                    }else if(dialogOpenPage === "transferOrderUnit"){
+                        confirm_selected_DestUnit();
+                    }else if(dialogOpenPage=="businessAccountDialog"){
+                        confirm_selected_businessAccount();
+                    }
+                    closeSearchGuestDialog();
+                }
+            });
+        }else {
             url ="";
             if(curOwnerId=="1"){
                 url= basePath + "/sys/guest/page.do?filter_EQI_status=1";
@@ -304,6 +388,8 @@
                             confirm_selected_DestUnit();
                         }else if(dialogOpenPage==="transferOrderconsignmentBill"){
                             confirm_selected_GuestId_Consignment();
+                        }else if(dialogOpenPage=="businessAccountDialog"){
+                            confirm_selected_businessAccount();
                         }
                         closeSearchGuestDialog();
                     }
@@ -318,6 +404,8 @@
                         confirm_selected_OrigUnit();
                     }else if(dialogOpenPage === "transferOrderUnit"){
                         confirm_selected_DestUnit();
+                    }else if(dialogOpenPage=="businessAccountDialog"){
+                        confirm_selected_businessAccount();
                     }
                     closeSearchGuestDialog();
                 }
@@ -457,6 +545,13 @@
         $("#search_destId").selectpicker('val', rowData.defaultWarehId);
         $("#search_destId").selectpicker('refresh');
         $("#modal_guest_search_table").modal('hide');
+    }
+    function confirm_selected_businessAccount() {
+        debugger
+        var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+        $("#search_destunitid").val(rowData.id);
+        $("#search_destunitname").val(rowData.name);
     }
 </script>
 
