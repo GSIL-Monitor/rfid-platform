@@ -336,6 +336,7 @@
     function confirm_selected_GuestId_sale() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+<<<<<<< HEAD
         if(prefixId =="search") {
             $("#search_destUnitId").val(rowData.id);
             $("#search_destUnitName").val(rowData.name);
@@ -365,6 +366,34 @@
         $(".selectpicker").selectpicker('refresh');
         $("#modal_guest_search_table").modal('hide');
 
+=======
+        $("#search_destUnitId").val(rowData.id);
+        $("#search_destUnitName").val(rowData.name);
+        initSelectDestForm();
+        if(prefixId=="edit"){
+            $("#search_customerType").val(rowData.unitType);
+            $("#search_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_destId").selectpicker('refresh');
+            if(rowData.discount){
+                $("#search_discount").val(rowData.discount);
+            }else{
+                $("#search_discount").val(100);
+            }
+            //$("#search_discount").val(rowData.discount);
+            $("#pre_Balance").val((0-rowData.owingValue).toFixed(2));
+           // $("#pre_Balance").val(0-rowData.owingValue);
+            updateBillDetailData();
+            $("#modal_guest_search_table").modal('hide');
+
+            if ($("#search_destId").val() && $("#search_destId").val() != null) {
+                $("#SODtl_wareHouseIn").removeAttr("disabled");
+            } else {
+                $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+            }
+            setDiscount();
+        }
+        $("#modal_guest_search_table").modal('hide');
+>>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
     }
 
     function confirm_selected_GuestId_Consignment() {
@@ -387,11 +416,30 @@
         $("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
+<<<<<<< HEAD
         $("#search_customerType").val(rowData.unitType);
         $("#search_origId").selectpicker('val', rowData.defaultWarehId);
         $("#search_origId").selectpicker('refresh');
         $("#search_discount").val(rowData.discount);
         $("#modal_guest_search_table").modal('hide');*/
+=======
+        if(prefixId=="edit"){
+            $("#search_customerType").val(rowData.unitType);
+            $('#search_origId').selectpicker();
+            $("#search_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_origId").selectpicker('refresh');
+            console.log($("#search_origId").val())
+            //$("#search_discount").val(rowData.discount);
+            if(rowData.discount){
+                $("#search_discount").val(rowData.discount);
+            }else{
+                $("#search_discount").val(100);
+            }
+            updateBillDetailData();
+            setDiscount();
+        }
+        $("#modal_guest_search_table").modal('hide');
+>>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
     }
     function confirm_selected_GuestId_saleReturn() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
@@ -446,10 +494,19 @@
         /*$("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
-        $("#search_customerType").val(rowData.unitType);
-        $("#search_origId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_origId").selectpicker('refresh');
-        $("#search_discount").val(rowData.discount);
+        if(prefixId=="edit") {
+            $("#search_customerType").val(rowData.unitType);
+            $("#search_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_origId").selectpicker('refresh');
+            if(rowData.discount){
+                $("#search_discount").val(rowData.discount);
+            }else{
+                $("#search_discount").val(100);
+            }
+
+            updateBillDetailData();
+            setDiscount();
+        }
         $("#modal_guest_search_table").modal('hide');
 
         if (pageType === "add"){

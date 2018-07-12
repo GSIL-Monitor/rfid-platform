@@ -41,12 +41,12 @@ public class WeiXinUser {
     // 用户的语言，简体中文为zh_CN
     @Column(length = 50)
     private String language;
-    // 用户头像
-    @Column(length = 200)
-    private String headImgUrl;
     //微信用户id
     @Column(length = 50)
     private String unionId;
+    //微信绑定手机号
+    @Column(length = 11)
+    private String phone;
 
     public String getUnionId() {
         return unionId;
@@ -108,10 +108,10 @@ public class WeiXinUser {
     public void setLanguage(String language) {
         this.language = language;
     }
-    public String getHeadImgUrl() {
-        return headImgUrl;
+    public String getPhone() {
+        return phone;
     }
-    public void setHeadImgUrl(String headImgUrl) {
-        this.headImgUrl = headImgUrl;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

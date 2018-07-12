@@ -306,7 +306,21 @@ function initKendoUIGrid() {
                 {
                     field: "intimeDate",
                     title: "入库时间",
-                    width: "150px"
+                    width: "150px",
+                    aggregates: ["count"],
+                    groupHeaderTemplate: function (data) {
+                        var yetInitQty = data.aggregates.yetInitQty.sum;
+                        var qty = data.aggregates.qty.sum;
+                        var value;
+                        if(data.value!=undefined){
+                            var d=new Date(data.value)
+                            value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+                        }else{
+                            value="";
+                        }
+                        var totactprice = data.aggregates.totactprice.sum;
+                        return "入库时间:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
+                    }
                 },
                 {
                     title: "日期",
@@ -325,12 +339,14 @@ function initKendoUIGrid() {
                     },
 
                     format: "{0:yyyy-MM-dd}",
+                    aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-
-                        var totQty = data.aggregates.qty.sum;
-                        var value = kendo.toString(data.value, 'yyyy-MM-dd HH:mm:ss');
+                        var yetInitQty = data.aggregates.yetInitQty.sum;
+                        var qty = data.aggregates.qty.sum;
+                        var d=new Date(data.value)
+                        var value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
                         var totactprice = data.aggregates.totactprice.sum;
-                        return "日期:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "日期:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
                 },
                 {
@@ -342,7 +358,7 @@ function initKendoUIGrid() {
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
-                        return "单号:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "单号:" + value + " 总数量:" + totQty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
                 },
                 {
@@ -382,7 +398,7 @@ function initKendoUIGrid() {
                         if (value == undefined) {
                             value = "";
                         }
-                        return "单据类型:" + value + " 总数量:" + totQty + "; 总价 :" + kendo.toString(totactprice, '0.00');
+                        return "单据类型:" + value + " 总数量:" + totQty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
 
                 },

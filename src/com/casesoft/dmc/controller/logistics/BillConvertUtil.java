@@ -445,6 +445,8 @@ public class BillConvertUtil {
             dtl.setId(new GuidCreator().toString());
             dtl.setBillId(purchaseReturnBill.getId());
             dtl.setBillNo(purchaseReturnBill.getBillNo());
+            dtl.setTotPrice(-1 * Math.abs(dtl.getPrice() * dtl.getQty()));
+            dtl.setTotActPrice(-1 * Math.abs(dtl.getActPrice() * dtl.getQty()));
             totQty += dtl.getQty();
             totPrice += -1 * Math.abs(dtl.getPrice() * dtl.getQty());
             actPrice += -1 * Math.abs(dtl.getActPrice() * dtl.getQty());
@@ -533,6 +535,7 @@ public class BillConvertUtil {
         master.setBillNo(taskId);
         Long totQty = 0L;
         List<InitDtl> initDtlList = new ArrayList<>();
+        org.slf4j.Logger  logger = LoggerFactory.getLogger(LabelChangeBill.class);
         boolean isUseOldStyle=false;
         for (LabelChangeBillDel dtl : labelChangeBillDels) {
             InitDtl detail = new InitDtl();
@@ -545,10 +548,15 @@ public class BillConvertUtil {
                     styleId=styleId.substring(0,styleIdLength-2);
                     Style style= CacheManager.getStyleById(styleId);
                     if(CommonUtil.isBlank(style)){
+                        logger.error(dtl.getBillNo()+":BillConvertUtil没有"+styleId);
                         isUseOldStyle=false;
                     }else{
+                        logger.error(dtl.getBillNo()+":BillConvertUtil有"+styleId);
                         isUseOldStyle=true;
                     }
+                }else{
+                    logger.error(dtl.getBillNo()+":BillConvertUtil"+styleId+"后缀没有AA和AS");
+                    isUseOldStyle=false;
                 }
                 String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
                 if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
@@ -3865,7 +3873,7 @@ public class BillConvertUtil {
         }
         bus.setDtlList(new ArrayList<>(businessDtlMap.values()));
         bus.setId(taksId);
-        bus.setToken(Constant.Token.Storage_Refund_Inbound);
+        bus.setToken(Constant.Token.Storage_Adjust_Inbound);
         bus.setBeginTime(new Date());
         bus.setEndTime(new Date());
         bus.setBillId(labelChangeBill.getBillNo());

@@ -113,6 +113,7 @@
     function confirm_selected_VendorId_purchaseOrder(prefixId) {
         var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+<<<<<<< HEAD
         if (prefixId=="edit"){
             $("#edit_origUnitId").val(rowData.id);
             $("#edit_origUnitName").val(rowData.name);
@@ -120,6 +121,12 @@
             $("#search_origUnitId").val(rowData.id);
             $("#search_origUnitName").val(rowData.name);
         }
+=======
+        $("#search_destUnitId").val(rowData.id);
+        $("#search_destUnitName").val(rowData.name);
+        $("#search_origUnitId").val(rowData.id);
+        $("#search_origUnitName").val(rowData.name);
+>>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
         $("#modal_vendor_search_table").modal('hide');
     }
     function confirm_selected_VendorId_purchaseReturn() {

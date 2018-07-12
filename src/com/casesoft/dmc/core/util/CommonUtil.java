@@ -351,7 +351,7 @@ public class CommonUtil {
    * @Author Alvin
    * */
   public static boolean isOctNumberRex(String str){
-    Pattern p = Pattern.compile("^[0][x][0-9]+$");
+    Pattern p = Pattern.compile("^[0-9]+$");
     Matcher matcher = p.matcher(str);
     return matcher.matches();
   }
@@ -689,8 +689,11 @@ public class CommonUtil {
     constructorParameter="t."+constructorParameter;
     constructorParameter=constructorParameter.replaceAll(",",",t.");
     String hql="select new "+tablePath+"("+constructorParameter+") from "+tablePath+" t,"+billDtlTable+" dtl where t.id=dtl.billId";
+    //String hql="select "+constructorParameter+" from "+tablePath+" t,"+billDtlTable+" dtl where t.id=dtl.billId";
+    //String hql="select "+constructorParameter+" from LOGISTICS_LabelChangeBill t,LOGISTICS_LabelChangeBill_DTL dtl where t.id=dtl.billId";
+    //String hql="select t.* from LOGISTICS_LabelChangeBill t,LOGISTICS_LabelChangeBill_DTL dtl where t.id=dtl.billId";
     String hqlQuery = hqlQueryCondition(filters);
-    hql=hql+hqlQuery+" group by "+constructorParameter;
+    hql=hql+hqlQuery+" group by "+constructorParameter+" order by billDate desc";
     return hql;
   }
 
@@ -725,7 +728,7 @@ public class CommonUtil {
         hql+=" and "+propertyName+" like '%"+value+"%'";
       }
     }
-    hql+=" and t.status <> -1 order by t.billDate desc";
+    hql+=" and t.status <> -1";
     return hql;
   }
 

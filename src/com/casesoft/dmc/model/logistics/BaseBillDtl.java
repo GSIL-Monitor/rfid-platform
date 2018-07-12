@@ -67,6 +67,7 @@ public abstract class BaseBillDtl {
     protected Double discount;
     @Transient
     protected String imgUrl;
+<<<<<<< HEAD
     //到貨數量
     @Column()
     protected Integer arrival;
@@ -80,6 +81,17 @@ public abstract class BaseBillDtl {
 
     public void setArrival(Integer arrival) {
         this.arrival = arrival;
+=======
+    @Transient
+    protected String stylePriceMap;
+
+    public String getStylePriceMap() {
+        return stylePriceMap;
+    }
+
+    public void setStylePriceMap(String stylePriceMap) {
+        this.stylePriceMap = stylePriceMap;
+>>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
     }
 
     public String getBillId() {

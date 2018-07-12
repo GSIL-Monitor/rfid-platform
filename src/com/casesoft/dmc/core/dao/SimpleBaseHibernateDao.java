@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -257,6 +258,9 @@ public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimp
   public <X> X findUnique(final String hql, final Map<String, ?> values) {
     return (X) createQuery(hql, values).uniqueResult();
   }
+  public <X> X findSqlUnique(final String hql, final Map<String, ?> values) {
+    return (X) createSqlQuery(hql, values).uniqueResult();
+  }
 
   /*
    * (non-Javadoc)
@@ -292,6 +296,18 @@ public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimp
         query.setParameter(i, values[i]);
       }
     }
+    return query;
+  }
+
+  public SQLQuery createSqlQuery(final String queryString, final Object... values){
+    Assert.hasText(queryString, "queryString不能为空");
+    SQLQuery query = getSession().createSQLQuery(queryString);
+    if (values != null) {
+      for (int i = 0; i < values.length; i++) {
+        query.setParameter(i, values[i]);
+      }
+    }
+    //query.addEntity(LabelChangeBill.class);
     return query;
   }
 

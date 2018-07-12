@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.vo.TagFactory;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.ConsignmentBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
 import com.casesoft.dmc.model.product.Color;
@@ -27,6 +28,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static javax.swing.plaf.basic.BasicHTML.propertyKey;
@@ -306,6 +309,7 @@ public class StyleUtil {
         sty.setClass10(style.getClass10());
 //        sty.setRules(style.getRules());
         sty.setIspush(style.getIspush());
+        sty.setStyleCycle(style.getStyleCycle());
         List<Product> saveList = new ArrayList<>();
         int index = CacheManager.getMaxProductId();
         for(int i =0 ; i < productList.size(); i++){
@@ -323,6 +327,7 @@ public class StyleUtil {
             p.setSizeName(CacheManager.getSizeNameById(p.getSizeId()));
             p.setCode(p.getStyleId()+p.getColorId()+p.getSizeId());
             p.setBrandCode(style.getBrandCode());
+            p.setStyleCycle(style.getStyleCycle());
             if(CommonUtil.isNotBlank(sty.getRemark())){
                 p.setRemark(sty.getRemark());
             }
@@ -456,6 +461,7 @@ public class StyleUtil {
      */
     public static Map<String,Object> newstyleidonlabelChangeBillDel(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,PricingRulesService pricingRulesService, ProductService productService){
         //系列的转换
+        org.slf4j.Logger  logger = LoggerFactory.getLogger(LabelChangeBill.class);
         /* PricingRulesService pricingRulesService = ( PricingRulesService) SpringContextUtil.getBean(" pricingRulesService");
          ProductService productService = ( ProductService) SpringContextUtil.getBean(" productService");*/
         Map<String,Object> map=new HashMap<String,Object>();
@@ -464,6 +470,8 @@ public class StyleUtil {
         Map<String,Style> mapStyle=new HashMap<String,Style>();
         boolean isUseOldStyle=false;
         int sum=1;//有保存几次product
+        boolean ishavePricingRules=true;//是否有相应的对应定价规则
+        String message="";
         if(labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Series)){
             String seriesid=labelChangeBill.getNowclass9().split("-")[1];
             for(int i=0;i<labelChangeBillDels.size();i++){
@@ -475,10 +483,15 @@ public class StyleUtil {
                     styleId=styleId.substring(0,styleIdLength-2);
                     Style style= CacheManager.getStyleById(styleId);
                     if(CommonUtil.isBlank(style)){
+                        logger.error(labelChangeBill.getBillNo()+":StyleUtil没有"+styleId);
                         isUseOldStyle=false;
                     }else{
+                        logger.error(labelChangeBill.getBillNo()+":StyleUtil有"+styleId);
                         isUseOldStyle=true;
                     }
+                }else {
+                    logger.error(labelChangeBill.getBillNo()+":StyleUtil"+styleId+"后缀没有AA和AS");
+                    isUseOldStyle=false;
                 }
                 String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
                 if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
@@ -493,14 +506,22 @@ public class StyleUtil {
                         BeanUtils.copyProperties(oldStyle,styleNew);
                         styleNew.setId(styleId + seriesid);
                         styleNew.setStyleId(styleId + seriesid);
-
-                        PricingRules series = pricingRulesService.get("series", seriesid);
-                        styleNew.setPrice(CommonUtil.getInt(CommonUtil.doubleChange(oldStyle.getPreCast()*series.getRule1(),1)/10)*10+9);
-                        styleNew.setPuPrice(CommonUtil.doubleChange(styleNew.getPrice()*series.getRule3(),1));
-                        styleNew.setWsPrice(CommonUtil.doubleChange(styleNew.getPrice()*series.getRule2(),1));
-                        styleNew.setClass9(seriesid);
-                        mapStyle.put((styleId + seriesid),styleNew);
-                        list.add(styleNew);
+                        PricingRules series = pricingRulesService.findBySC(seriesid,styleNew.getClass3());
+                        if(CommonUtil.isBlank(series)){
+                            ishavePricingRules=false;
+                            if(CommonUtil.isBlank(message)){
+                                message+=seriesid+"-"+styleNew.getClass3();
+                            }else{
+                                message+=seriesid+"-"+styleNew.getClass3()+",";
+                            }
+                        }else {
+                            styleNew.setPrice(CommonUtil.getInt(CommonUtil.doubleChange(oldStyle.getPreCast() * series.getRule1(), 1) / 10) * 10 + 9);
+                            styleNew.setPuPrice(CommonUtil.doubleChange(styleNew.getPrice() * series.getRule3(), 1));
+                            styleNew.setWsPrice(CommonUtil.doubleChange(styleNew.getPrice() * series.getRule2(), 1));
+                            styleNew.setClass9(seriesid);
+                            mapStyle.put((styleId + seriesid), styleNew);
+                            list.add(styleNew);
+                        }
                     }
                     String code=styleId +labelChangeBill.getNowclass9().split("-")[1]+labelChangeBillDels.get(i).getColorId()+labelChangeBillDels.get(i).getSizeId();
                     Product productByCode = CacheManager.getProductByCode(code);
@@ -591,6 +612,8 @@ public class StyleUtil {
             }
             map.put("newStylesuffix",BillConstant.styleNew.PriceDiscount);
         }
+        map.put("message",message);
+        map.put("ishavePricingRules",ishavePricingRules);
         map.put("style",list);
         map.put("product",listproduct);
         return map;

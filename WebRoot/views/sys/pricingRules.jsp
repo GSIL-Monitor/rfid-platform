@@ -62,10 +62,22 @@
                                 <form class="form-horizontal" role="form" id="searchForm">
                                     <div class="form-group">
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_code">定价规则名</label>
-
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                             <input class="form-control" id="search_code" name="filter_LIKES_name" type="text">
                                         </div>
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_class3">大类</label>
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <select class="form-control" id="search_class3" name="filter_EQS_class3">
+                                                <option value="">请选择大类</option>
+                                            </select>
+                                        </div>
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_series">系列</label>
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <select class="form-control" id="search_series" name="filter_EQS_series">
+                                                <option value="">请选择系列</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-11 btnPosition">
                                             <button type="button" class="btn btn-sm btn-primary" onclick="_search()">
@@ -77,7 +89,6 @@
                                                 <span class="bigger-110">清空</span></button>
                                         </div>
                                     </div>
-                                  </div>
                                 </form>
                             </div>
                         </div>
