@@ -25,19 +25,16 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
-<<<<<<< HEAD
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
-=======
 import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.GuestViewService;
->>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,19 +63,16 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @Autowired
     private CustomerService customerService;
     @Autowired
-<<<<<<< HEAD
     private UnitService unitService;
     @Autowired
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
-=======
     private WeiXinUserService weiXinUserService;
     @Autowired
     private TemplateMsgService templateMsgService;
     @Autowired
     private GuestViewService guestViewService;
->>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -308,12 +302,6 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             stylePriceMap.put("puPrice",style.getPuPrice());
             s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
             s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
-            Style style = CacheManager.getStyleById(s.getStyleId());
-            Map<String,Double> stylePriceMap = new HashMap<>();
-            stylePriceMap.put("price",style.getPrice());
-            stylePriceMap.put("wsPrice",style.getWsPrice());
-            stylePriceMap.put("puPrice",style.getPuPrice());
-            s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
         }
         return saleOrderReturnBillDtls;
     }

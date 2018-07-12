@@ -16,10 +16,7 @@ import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
-<<<<<<< HEAD
-=======
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
->>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.Resource;
@@ -33,12 +30,9 @@ import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
-<<<<<<< HEAD
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
-=======
 import com.casesoft.dmc.service.sys.GuestViewService;
->>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,17 +61,14 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Autowired
     private  CustomerService customerService;
     @Autowired
-<<<<<<< HEAD
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
-=======
     private WeiXinUserService weiXinUserService;
     @Autowired
     private TemplateMsgService templateMsgService;
     @Autowired
     private GuestViewService guestViewService;
->>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -220,17 +211,14 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         for (int i = 0; i < saleOrderBillDtls.size(); i++) {
             SaleOrderBillDtl dtl = saleOrderBillDtls.get(i);
             Style style = CacheManager.getStyleById(dtl.getStyleId());
-<<<<<<< HEAD
             dtl.setStyleName(style.getStyleName());
             dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
             dtl.setTagPrice(style.getPrice());
-=======
             dtl.setStyleName(CacheManager.getStyleNameById(dtl.getStyleId()));
             dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
             dtl.setTagPrice(CacheManager.getStyleById(dtl.getStyleId()).getPrice());
->>>>>>> eadc22ec1af9b5fb66cbfc685e640054d71ec947
             Map<String,Double> stylePriceMap = new HashMap<>();
             stylePriceMap.put("price",style.getPrice());
             stylePriceMap.put("wsPrice",style.getWsPrice());
