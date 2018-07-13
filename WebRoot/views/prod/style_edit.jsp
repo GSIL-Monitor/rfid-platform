@@ -13,6 +13,7 @@
         var userId = "${userId}";
         var styleId = "${styleId}";
         var pageType = "${pageType}";
+        var remark  = "${style.remark}";
     </script>
     <style>
         a#focusColor:hover {
@@ -51,7 +52,6 @@
 
                 <ul class="breadcrumb">
                     <li>
-
                         <a href="#" onclick="toIndex()">商品款式</a>
                     </li>
                     <li class="active">
@@ -87,8 +87,6 @@
                                         <br/>
                                         <form class="form-horizontal" role="form" id="editStyleForm"
                                               onkeydown="if(event.keyCode==13)return false;">
-
-
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_styleId"><span class="text-danger">* </span>款号</label>
@@ -161,16 +159,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label no-padding-right"
-                                                       for="form_remark">成分</label>
-
-                                                <div class="col-xs-9 col-sm-9">
-                                            <textarea maxlength="400" class="form-control" id="form_remark"
-                                                      name="remark">${style.remark}</textarea>
-                                                </div>
-                                            </div>
+                                            <input id="form_remark" name ="remark" type="hidden"/>
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_class1">品牌</label>
@@ -185,9 +174,9 @@
                                                         <%--  <select id="form_brandCode" class="selectpicker" data-live-search="true">
                                                           </select>--%>
                                                         <span class="input-group-addon"
-                                                              title="添加${classTypes[0].value}">
+                                                              title="添加${classTypes[10].value}">
                                                             <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[0].id}')">
+                                                               onclick="addStyleProperty('${classTypes[10].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -438,28 +427,49 @@
                                                 <%--</div>--%>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group">
-                                                        <c:if test="${pageType == 'edit'}"><input class="form-control"
-                                                                                                  id="form_styleCycle"
-                                                                                                  name="styleCycle"
-                                                                                                  required="required"
-                                                                                                  type="number"
-                                                                                                  placeholder=""
-                                                                                                  value="${style.styleCycle}"
-                                                                                                  step="1"/>
+                                                        <c:if test="${pageType == 'edit'}">
+                                                            <input class="form-control"
+                                                              id="form_styleCycle"
+                                                              name="styleCycle"
+                                                              required="required"
+                                                              type="number"
+                                                              placeholder=""
+                                                              value=""
+                                                              step="1"/>
                                                         </c:if>
-                                                        <c:if test="${pageType == 'add'}"><input class="form-control"
-                                                                                                 id="form_styleCycle"
-                                                                                                 name="styleCycle"
-                                                                                                 required="required"
-                                                                                                 type="number"
-                                                                                                 placeholder=""
-                                                                                                 value="20" step="1"/>
+                                                        <c:if test="${pageType == 'add'}">
+                                                            <input class="form-control"
+                                                             id="form_styleCycle"
+                                                             name="styleCycle"
+                                                             required="required"
+                                                             type="number"
+                                                             placeholder=""
+                                                             value="20" step="1"/>
                                                         </c:if>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </form>
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="tags_3">成分</label>
+                                                <div class="col-xs-7 col-sm-7">
+                                                    <div class="input-group ">
+                                                    <textarea maxlength="400" class="form-control" id="tags_3"
+                                                              name="remark">
+                                                    </textarea>
+                                                    <span class="input-group-addon"
+                                                          title="添加${classTypes[0].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[0].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -512,18 +522,27 @@
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+
 <link rel="stylesheet" href="<%=basePath%>/Olive/assets/css/bootstrap-colorpicker.min.css"/>
 <script type="text/javascript" src="<%=basePath%>/Olive/assets/js/bootstrap-colorpicker.min.js"></script>
-
+<link rel="stylesheet" href="<%=basePath%>/Olive/assets/JSON/jquery.tagsinput.css"/>
+<script src="<%=basePath%>/Olive/assets/JSON/jquery.tagsinput.js"></script>
 <jsp:include page="style_colorAndSize_dialog.jsp"></jsp:include>
 <jsp:include page="style_color_edit.jsp"></jsp:include>
 <jsp:include page="style_size_edit.jsp"></jsp:include>
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
+
+
 <script type="text/javascript">
     var checkNum;
     $(function () {
-//        initLoadStyle();
+        $("#tags_3").val(remark);
+        $('#tags_3').tagsInput({
+            width: '540',
+            height:'70',
+            autocomplete_url:'remark.do'
+        });
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
@@ -1059,8 +1078,9 @@
 
     function saveStyleAndProduct(str) {
         var isSeries = $("#form_isSeries").val();
-        var remark = $("#form_remark").val();
-        if ((remark.indexOf(",") >= 0)||(remark.indexOf("，") >= 0)){
+        var re = $("#tags_3").val();
+        $("#form_remark").val(re);
+        if ((re.indexOf(",") >= 0)||(re.indexOf("，") >= 0)){
             bootbox.alert("成分中不允许含有回车及逗号字符");
         }else {
             if (isSeries == "N") {
