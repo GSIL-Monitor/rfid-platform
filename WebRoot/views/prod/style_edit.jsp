@@ -434,7 +434,7 @@
                                                               required="required"
                                                               type="number"
                                                               placeholder=""
-                                                              value=""
+                                                              value="${style.styleCycle}"
                                                               step="1"/>
                                                         </c:if>
                                                         <c:if test="${pageType == 'add'}">
