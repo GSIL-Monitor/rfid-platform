@@ -1894,8 +1894,8 @@ function setA4(id) {
                         recordfoorNow+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='SubSum' format='#,##0.00'>###</font></th>"
                         recordfoorAll+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='AllSum' format='#,##0.00'>###</font></th>"
                     }else if(sizeArry.indexOf(printTableCode[b])!=-1){
-                        recordfoorNow+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='SubSum' format='#,##0.00'>###</font></th>"
-                        recordfoorAll+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='AllSum' format='#,##0.00'>###</font></th>"
+                        recordfoorNow+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='SubSum' format='#'>###</font></th>"
+                        recordfoorAll+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='AllSum' format='#'>###</font></th>"
                     }else if(b==0) {
                         recordfoorNow+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>单页合计</th>"
                         recordfoorAll+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>合计</th>"
