@@ -4,7 +4,6 @@ package com.casesoft.dmc.model.shop;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -19,6 +18,9 @@ public class PointsChange implements java.io.Serializable{
     @Id
     @Column()
     private String id;
+
+    @Column()
+    private String orderId;
 
     @Column()
     private String customerId;
@@ -37,6 +39,12 @@ public class PointsChange implements java.io.Serializable{
     private Double transactionVal;  //交易金额
 
     @Column()
+    private Long prePoints;
+
+    @Column()
+    private Long afterPoints;
+
+    @Column()
     private String ownerId;
 
     @Column()
@@ -50,6 +58,14 @@ public class PointsChange implements java.io.Serializable{
 
     public String getId() {
         return id;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public void setId(String id) {
@@ -94,6 +110,22 @@ public class PointsChange implements java.io.Serializable{
 
     public void setTransactionVal(Double transactionVal) {
         this.transactionVal = transactionVal;
+    }
+
+    public Long getPrePoints() {
+        return prePoints;
+    }
+
+    public void setPrePoints(Long prePoints) {
+        this.prePoints = prePoints;
+    }
+
+    public Long getAfterPoints() {
+        return afterPoints;
+    }
+
+    public void setAfterPoints(Long afterPoints) {
+        this.afterPoints = afterPoints;
     }
 
     public String getOwnerId() {

@@ -1,19 +1,14 @@
 package com.casesoft.dmc.service.sys;
 
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
-import com.casesoft.dmc.dao.logistics.SaleOrderBillDao;
 import com.casesoft.dmc.dao.sys.GuestDao;
 import com.casesoft.dmc.model.logistics.MonthAccountStatement;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.shop.Customer;
-import com.casesoft.dmc.model.shop.GuestValueChange;
-import com.casesoft.dmc.model.shop.PointsChange;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.shop.GuestValueChangeService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
@@ -148,56 +143,38 @@ public class GuestService implements IBaseService<Unit,String>{
 	}
 
 	//add by yushen 重置之前客户的欠款金额和积分
-	public void resetPreGust(String billNo, String preUnitId, Double preDiffPrice){
-		if (CommonUtil.isNotBlank(preUnitId)) {
-			//之前客户的变动记录状态改为客户变动-2
-			GuestValueChange change = guestValueChangeService.load(billNo + "-" + preUnitId);
-			change.setStatus(Constant.ChangeRecordStatus.changeUnit);
-			change.setUpdateAt(new Date());
-			guestValueChangeService.save(change);
-
-			Unit preUnit = this.guestDao.findUnique("from Unit where id = ? and status=1", preUnitId);
-			Customer preCustomer = this.guestDao.findUnique("from Customer where id = ? and status=1", preUnitId);
-			if (CommonUtil.isNotBlank(preUnit)) {
-				//欠款恢复
-				preUnit.setOwingValue(preUnit.getOwingValue() - preDiffPrice);
-				logger.info("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单差额"+preDiffPrice);
-				if(CommonUtil.isNotBlank(preUnit.getVipId())){
-					//是会员则重置之前的积分
-					if(CommonUtil.isNotBlank(preUnit.getVippoints())){
-						//如果当前已有积分则根据单号查积分变动记录，减去对应的积分
-						Long points = pointsChangeService.getPointsById(billNo);
-						if(CommonUtil.isNotBlank(points)){
-							logger.info("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单积分"+points);
-							preUnit.setVippoints(preUnit.getVippoints() - points);
-						}
-					}else {
-						//如果当前积分字段为空则初始化积分为0
-						preUnit.setVippoints(0D);
-					}
-				}
-				this.guestDao.saveOrUpdateX(preUnit);
-			} else {
-				//欠款恢复
-				preCustomer.setOwingValue(preCustomer.getOwingValue() - preDiffPrice);
-				logger.info("Unit原来客户"+preCustomer.getName()+"Unit原来客户编号"+preCustomer.getId()+"原单差额"+preDiffPrice);
-				if(CommonUtil.isNotBlank(preCustomer.getVipId())){
-					//是会员则重置之前的积分
-					if(CommonUtil.isNotBlank(preCustomer.getVippoints())){
-						//如果当前已有积分则根据单号查积分变动记录，减去对应的积分
-						Long points = pointsChangeService.getPointsById(billNo);
-						if(CommonUtil.isNotBlank(points)){
-							logger.info("Customer原来客户"+preCustomer.getName()+"Customer原来客户编号"+preCustomer.getId()+"原单积分"+points);
-							preCustomer.setVippoints(preCustomer.getVippoints() - points);
-						}
-					}else {
-						//如果当前积分字段为空则初始化积分为0
-						preCustomer.setVippoints(0D);
-					}
-				}
-				this.guestDao.saveOrUpdateX(preCustomer);
-			}
-		}
+	public void resetPreGust(String billNo, Double preDiffPrice, Long points, Unit preUnit, Customer preCustomer){
+        if (CommonUtil.isNotBlank(preUnit)) {
+            //欠款恢复
+            preUnit.setOwingValue(preUnit.getOwingValue() - preDiffPrice);
+            logger.info("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单差额"+preDiffPrice);
+            if(CommonUtil.isNotBlank(preUnit.getVipId())){
+                //是会员则重置之前的积分
+                if(CommonUtil.isNotBlank(preUnit.getVippoints())){
+					logger.info("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单积分"+points);
+					preUnit.setVippoints(preUnit.getVippoints() + points);
+                }else {
+                    //如果当前积分字段为空则初始化积分为0
+                    preUnit.setVippoints(0D);
+                }
+            }
+            this.guestDao.saveOrUpdateX(preUnit);
+        } else {
+            //欠款恢复
+            preCustomer.setOwingValue(preCustomer.getOwingValue() - preDiffPrice);
+            logger.info("Unit原来客户"+preCustomer.getName()+"Unit原来客户编号"+preCustomer.getId()+"原单差额"+preDiffPrice);
+            if(CommonUtil.isNotBlank(preCustomer.getVipId())){
+                //是会员则重置之前的积分
+                if(CommonUtil.isNotBlank(preCustomer.getVippoints())){
+					logger.info("Customer原来客户"+preCustomer.getName()+"Customer原来客户编号"+preCustomer.getId()+"原单积分"+points);
+					preCustomer.setVippoints(preCustomer.getVippoints() + points);
+                }else {
+                    //如果当前积分字段为空则初始化积分为0
+                    preCustomer.setVippoints(0D);
+                }
+            }
+            this.guestDao.saveOrUpdateX(preCustomer);
+        }
 	}
 
 	//add by yushen 更新客户的欠款金额和积分
@@ -232,5 +209,25 @@ public class GuestService implements IBaseService<Unit,String>{
 			}
 			this.guestDao.saveOrUpdateX(customer);
 		}
+	}
+
+	public Long getVipPoints(Unit unit, Customer customer) {
+		Double prePoints = 0D;
+		if (CommonUtil.isNotBlank(unit) && CommonUtil.isNotBlank(unit.getVippoints())) {
+			prePoints = unit.getVippoints();
+		} else if (CommonUtil.isNotBlank(customer) && CommonUtil.isNotBlank(customer.getVippoints())) {
+			prePoints = customer.getVippoints();
+		}
+		return prePoints.longValue();
+	}
+
+	public Double getOwingValue( Unit unit, Customer customer) {
+		Double owingValue = 0D;
+		if(CommonUtil.isNotBlank(unit) && CommonUtil.isNotBlank(unit.getOwingValue())){
+			owingValue = unit.getOwingValue();
+		}else if(CommonUtil.isNotBlank(customer) && CommonUtil.isNotBlank(customer.getOwingValue())){
+			owingValue = customer.getOwingValue();
+		}
+		return owingValue;
 	}
 }

@@ -1,7 +1,6 @@
 package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.logistics.MonthAccountUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -16,9 +15,7 @@ import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
-import com.casesoft.dmc.model.shop.PointsChange;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
-import com.casesoft.dmc.model.sys.PointsRule;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.task.Business;
@@ -27,8 +24,6 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.shop.PointsChangeService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,8 +87,12 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.saleOrderReturnBillDao.batchExecute("delete from BillRecord where billNo=?", bill.getBillNo());
         String curYearMonth = CommonUtil.getDateString(new Date(), "yyyy-MM");
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
-        String preOrigUnitId = this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
         Double preDiffPrice = this.saleOrderReturnBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
+        if(CommonUtil.isBlank(preDiffPrice)){
+            preDiffPrice = 0D;
+        }
+        String origUnitId = bill.getOrigUnitId();
+        String preOrigUnitId = this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
         Boolean isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(bill.getBillDate(), "yyyy-MM"));
         if (isUpdateMonthAccount) {
             this.monthAccountStatementService.updateMonthAccountData(bill.getBillDate(), preOrigUnitId, preDiffPrice, false);
@@ -102,7 +101,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         }
         //modify by yushen更新之前的客户欠款和积分
         if (CommonUtil.isNotBlank(preOrigUnitId)) {
-            guestService.resetPreGust(bill.getBillNo(), preOrigUnitId, preDiffPrice);
+            Unit preUnit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", preOrigUnitId);
+            Customer preCustomer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", preOrigUnitId);
+//            this.guestService.resetPreGust(bill.getBillNo(), preDiffPrice, preUnit, preCustomer);
         }
 
         Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1",  bill.getOrigUnitId());
@@ -111,7 +112,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         //add by yushen 计算销售单积分并保存积分变动记录
         Long points = this.pointsChangeService.savePointsFallback(bill, details);
         //add by yushen 更新客户欠款金额和积分
-        guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, points, unit, customer);
+        this.guestService.updateCurrentGuest(bill.getBillNo(), diffPrice, points, unit, customer);
         //保存订单
         this.saleOrderReturnBillDao.saveOrUpdate(bill);
         this.saleOrderReturnBillDao.doBatchInsert(details);
@@ -122,8 +123,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
     public void cancelUpdate(SaleOrderReturnBill saleOrderReturnBill) {
         Double diffPrice = saleOrderReturnBill.getActPrice() - saleOrderReturnBill.getPayPrice();
-
-        guestService.resetPreGust(saleOrderReturnBill.getBillNo(), saleOrderReturnBill.getOrigUnitId(), diffPrice);
+        Unit preUnit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", saleOrderReturnBill.getOrigUnitId());
+        Customer preCustomer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", saleOrderReturnBill.getOrigUnitId());
+//        this.guestService.resetPreGust(saleOrderReturnBill.getBillNo(), diffPrice, preUnit, preCustomer);
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
         //退算积分
