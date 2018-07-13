@@ -28,7 +28,13 @@ public class SettingController extends BaseController {
     @Override
     @RequestMapping(value = "/index")
     public String index() {
+        //查询系统操作
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        PropertyFilter filter = new PropertyFilter("EQS_valueType", "sys");
+        filters.add(filter);
         List<Setting> settingList = this.settingService.getAll();
+        List<Setting> operateList = this.settingService.find(filters);
         Iterator sListIterator = settingList.iterator();
         int i=1;
         while(sListIterator.hasNext()){
@@ -39,6 +45,7 @@ public class SettingController extends BaseController {
             i++;
         }
         this.getRequest().setAttribute("settingList", settingList);
+        this.getRequest().setAttribute("operateList", operateList);
         return "/views/sys/setting";
     }
 
@@ -78,5 +85,24 @@ public class SettingController extends BaseController {
     public MessageBox refreshCache() throws Exception {
         CacheManager.refresh();
         return this.returnSuccessInfo("刷新成功");
+    }
+    @RequestMapping(value = "/setOperate")
+    @ResponseBody
+    public MessageBox setOperate() throws Exception {
+        try{
+            String opId = request.getParameter("id");
+            String opValue = request.getParameter("value");
+            Setting setting = settingService.get("id",opId);
+            if("false".equals(opValue)){
+                setting.setValue("true");
+            }
+            else{
+                setting.setValue("false");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnSuccessInfo("设置失败");
+        }
+        return this.returnSuccessInfo("设置成功");
     }
 }
