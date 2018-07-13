@@ -1913,8 +1913,8 @@ function setA4(id) {
                 $("#loadtabA4foot").html(recordfoorNow+recordfoorAll+recordfoorend);
                 $("#loadtableA4tad").attr("colspan",printTableCode.length)
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
                 $("#edit-dialog-print").hide();
 
 
