@@ -123,7 +123,7 @@ public class FranchiseeBillControll extends BaseController implements ILogistics
     }
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/franchiseeBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/franchiseeBillNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());

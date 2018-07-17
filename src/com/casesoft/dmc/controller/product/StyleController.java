@@ -1,17 +1,23 @@
 package com.casesoft.dmc.controller.product;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Term;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
+import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
 import com.casesoft.dmc.service.tag.InitService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +48,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ProductService productService;
 	@Autowired
 	public InitService initService;
+	@Autowired
+	private PropertyService propertyService;
 
 	@RequestMapping("/page")
 	@ResponseBody
@@ -264,6 +272,19 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		}
 
 	}
-
-
+	@RequestMapping("/remark")
+	@ResponseBody
+	public net.sf.json.JSON remark(){
+		String termString = request.getParameter("term");
+		List<PropertyKey> propertyTypeList = this.propertyService.findByRemark(termString);
+		List<Term> termList = new ArrayList<>();
+		for (PropertyKey propertyKey : propertyTypeList){
+			Term term = new Term();
+			term.setId(propertyKey.getId());
+			term.setLabel(propertyKey.getName());
+			term.setValue(propertyKey.getName());
+			termList.add(term);
+		}
+		return JSONArray.fromObject(termList);
+	}
 }

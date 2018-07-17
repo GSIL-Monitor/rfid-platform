@@ -34,6 +34,11 @@ public class PropertyService implements IBaseService<PropertyType, String> {
     private VendorDao vendorDao;
 
 
+    //模糊查詢成分
+    public List<PropertyKey> findByRemark(String term){
+        String hql = "from PropertyKey where type = 'C11' and name like '%"+term+"%'";
+        return this.propertyKeyDao.find(hql);
+    }
     @Override
     @Transactional(readOnly = true)
     public Page<PropertyType> findPage(Page<PropertyType> page,
