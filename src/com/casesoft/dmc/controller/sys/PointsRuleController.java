@@ -75,16 +75,26 @@ public class PointsRuleController extends BaseController implements IBaseInfoCon
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             PointsRule pointsRule = JSON.parseObject(pointsRuleStr, PointsRule.class);
             pointsRule.setOprId(userId);
-            if (pointsRule.isDefaultRule()) {
-                pointsRule.setUnitId("All");
-                pointsRule.setStartDate(new Date());
-                pointsRule.setEndDate(new Date());
-                pointsRule.setId("default-All-" + sdf.format(pointsRule.getStartDate()) + "-" + pointsRule.getUnitPoints());
-            } else {
-                pointsRule.setId(pointsRule.getUnitId() + "-" + sdf.format(pointsRule.getStartDate())
-                        + "-" + sdf.format(pointsRule.getEndDate()) + "-" + pointsRule.getUnitPoints());
+            if(CommonUtil.isBlank(pointsRule.getId())){
+                if (pointsRule.isDefaultRule()) {
+                    pointsRule.setUnitId("All");
+                    pointsRule.setStartDate(new Date());
+                    pointsRule.setEndDate(new Date());
+                    pointsRule.setId("default-All-" + sdf.format(pointsRule.getStartDate()) + "-" + pointsRule.getUnitPoints());
+                } else {
+                    pointsRule.setId(pointsRule.getUnitId() + "-" + sdf.format(pointsRule.getStartDate())
+                            + "-" + sdf.format(pointsRule.getEndDate()) + "-" + pointsRule.getUnitPoints());
+                }
+                this.pointsRuleService.save(pointsRule);
+            }else {
+                PointsRule ruleById = this.pointsRuleService.findRuleById(pointsRule.getId());
+                ruleById.setStatus(pointsRule.getStatus());
+                ruleById.setDefaultRule(pointsRule.isDefaultRule());
+                ruleById.setUnitPoints(pointsRule.getUnitPoints());
+                ruleById.setRemark(pointsRule.getRemark());
+                this.pointsRuleService.save(ruleById);
             }
-            this.pointsRuleService.save(pointsRule);
+
             return new MessageBox(true, "保存成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,12 +129,12 @@ public class PointsRuleController extends BaseController implements IBaseInfoCon
         if (pointsRule.isDefaultRule()) {
             PointsRule defaultRule = this.pointsRuleService.findDefaultRule();
             if (CommonUtil.isBlank(defaultRule)) {
-                return new MessageBox(true, "无其他默认规则");
+                return new MessageBox(true, "无其他开启的默认规则");
             } else {
-                return new MessageBox(false, "已有一个默认规则", defaultRule.getId());
+                return new MessageBox(false, "已有一个开启的默认规则", defaultRule.getId());
             }
         } else {
-            List<PointsRule> ruleList = this.pointsRuleService.findRulesByDate(pointsRule.getStartDate(), pointsRule.getEndDate(), pointsRule.getUnitId());
+            List<PointsRule> ruleList = this.pointsRuleService.findRulesByDate(pointsRule.getStartDate(), pointsRule.getEndDate(), pointsRule.getUnitId(), pointsRule.getId());
             if (CommonUtil.isBlank(ruleList)) {
                 return new MessageBox(true, "无冲突规则");
             } else {

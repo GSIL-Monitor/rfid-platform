@@ -115,7 +115,10 @@
                         }
                     },
                     {name: 'defaultWarehId', label: '默认仓库', width: 30},
-                    {name: 'tel', label: '电话', width: 50}
+                    {name: 'tel', label: '电话', width: 50},
+                    {
+                        name :"idCard",label:"等级",hidden:true
+                    }
                 ],
                 viewrecords: true,
                 autowidth: true,
@@ -197,7 +200,10 @@
                     },
                     {name: 'unitName', label: '所属门店', width: 30},
                     {name: 'defaultWarehId', hidden: true},
-                    {name: 'tel', label: '电话', width: 50}
+                    {name: 'tel', label: '电话', width: 50},
+                    {
+                        name :"idCard",label:"等级",hidden:true
+                    }
                 ],
                 viewrecords: true,
                 autowidth: true,
@@ -360,7 +366,10 @@
                     },
                     {name: 'unitName', label: '所属门店', width: 30},
                     {name: 'defaultWarehId', hidden: true},
-                    {name: 'tel', label: '电话', width: 50}
+                    {name: 'tel', label: '电话', width: 50},
+                    {
+                        name :"idCard",label:"等级",hidden:true
+                    }
                 ],
                 viewrecords: true,
                 autowidth: true,
