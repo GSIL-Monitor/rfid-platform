@@ -33,6 +33,9 @@ public class PointsChange implements java.io.Serializable{
     private Date recordDate;
 
     @Column()
+    private Long recordTime;
+
+    @Column()
     private Long pointsChange;
 
     @Column()
@@ -94,6 +97,14 @@ public class PointsChange implements java.io.Serializable{
 
     public void setRecordDate(Date recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public Long getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Long recordTime) {
+        this.recordTime = recordTime;
     }
 
     public Long getPointsChange() {

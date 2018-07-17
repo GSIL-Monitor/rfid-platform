@@ -148,7 +148,7 @@ public class GuestService implements IBaseService<Unit,String>{
             //欠款恢复
             preUnit.setOwingValue(preUnit.getOwingValue() - preDiffPrice);
             logger.info("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单差额"+preDiffPrice);
-            if(CommonUtil.isNotBlank(preUnit.getVipId())){
+//            if(CommonUtil.isNotBlank(preUnit.getVipId())){
                 //是会员则重置之前的积分
                 if(CommonUtil.isNotBlank(preUnit.getVippoints())){
 					logger.info("Unit原来客户"+preUnit.getName()+"Unit原来客户编号"+preUnit.getId()+"原单积分"+points);
@@ -157,13 +157,13 @@ public class GuestService implements IBaseService<Unit,String>{
                     //如果当前积分字段为空则初始化积分为0
                     preUnit.setVippoints(0D);
                 }
-            }
+//            }
             this.guestDao.saveOrUpdateX(preUnit);
         } else {
             //欠款恢复
             preCustomer.setOwingValue(preCustomer.getOwingValue() - preDiffPrice);
             logger.info("Unit原来客户"+preCustomer.getName()+"Unit原来客户编号"+preCustomer.getId()+"原单差额"+preDiffPrice);
-            if(CommonUtil.isNotBlank(preCustomer.getVipId())){
+//            if(CommonUtil.isNotBlank(preCustomer.getVipId())){
                 //是会员则重置之前的积分
                 if(CommonUtil.isNotBlank(preCustomer.getVippoints())){
 					logger.info("Customer原来客户"+preCustomer.getName()+"Customer原来客户编号"+preCustomer.getId()+"原单积分"+points);
@@ -172,7 +172,7 @@ public class GuestService implements IBaseService<Unit,String>{
                     //如果当前积分字段为空则初始化积分为0
                     preCustomer.setVippoints(0D);
                 }
-            }
+//            }
             this.guestDao.saveOrUpdateX(preCustomer);
         }
 	}
@@ -186,13 +186,13 @@ public class GuestService implements IBaseService<Unit,String>{
 			}
 			logger.info("销售单"+billNo+"本单差额"+diffPrice+"unit客户"+unit.getName()+"unit客户编号"+unit.getId()+"欠款金额"+(unit.getOwingValue()+diffPrice)+"原欠款金额"+(unit.getOwingValue()));
 			unit.setOwingValue(unit.getOwingValue() + diffPrice);
-			if(CommonUtil.isNotBlank(unit.getVipId())){
+//			if(CommonUtil.isNotBlank(unit.getVipId())){
 				if(CommonUtil.isBlank(unit.getVippoints())){
 					unit.setVippoints(0D);
 				}
 				logger.info("销售单"+billNo+"本单新增积分"+points+"unit客户"+"原欠积分"+(unit.getOwingValue()));
 				unit.setVippoints(unit.getVippoints() + points);
-			}
+//			}
 			this.guestDao.saveOrUpdateX(unit);
 		} else {
 			if(CommonUtil.isBlank(customer.getOwingValue())){
@@ -200,13 +200,13 @@ public class GuestService implements IBaseService<Unit,String>{
 			}
 			logger.info("销售单"+billNo+"本单差额"+diffPrice+"customer客户"+customer.getName()+"customer客户编号"+customer.getId()+"欠款金额"+(customer.getOwingValue()+diffPrice)+"原欠款金额"+(customer.getOwingValue()));
 			customer.setOwingValue(customer.getOwingValue() + diffPrice);
-			if(CommonUtil.isNotBlank(customer.getVipId())){
+//			if(CommonUtil.isNotBlank(customer.getVipId())){
 				if(CommonUtil.isBlank(customer.getVippoints())){
 					customer.setVippoints(0D);
 				}
 				logger.info("销售单"+billNo+"本单新增积分"+points+"customer客户"+"原欠积分"+(customer.getOwingValue()));
 				customer.setVippoints(customer.getVippoints() + points);
-			}
+//			}
 			this.guestDao.saveOrUpdateX(customer);
 		}
 	}

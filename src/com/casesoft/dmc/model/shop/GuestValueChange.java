@@ -3,10 +3,7 @@ package com.casesoft.dmc.model.shop;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -27,7 +24,7 @@ public class GuestValueChange implements java.io.Serializable{
     @Column()
     private String unitId;
 
-    @Column()
+    @Transient
     private String unitName;
 
     @Column()
@@ -51,6 +48,9 @@ public class GuestValueChange implements java.io.Serializable{
     @Column()
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date recordDate;
+
+    @Column()
+    private Long recordTime;
 
     @Column()
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
@@ -94,6 +94,14 @@ public class GuestValueChange implements java.io.Serializable{
 
     public void setRecordDate(Date recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public Long getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Long recordTime) {
+        this.recordTime = recordTime;
     }
 
     public Double getActPrice() {
