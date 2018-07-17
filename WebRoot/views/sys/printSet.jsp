@@ -321,6 +321,13 @@
                                         <option value="0">是</option>
                                     </select>
                                 </div>
+
+                            </div>
+                            <div class="headTitle">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                    <span>店铺名称(logo):</span>
+                                    <input type="text"  id="editStoreName"onkeyup="writeStoreName(this)"/>
+                                </div>
                             </div>
                         </div>
                     </div>

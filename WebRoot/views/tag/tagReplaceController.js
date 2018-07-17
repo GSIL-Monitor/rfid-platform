@@ -169,7 +169,7 @@ function confirmReplaceTag() {
     initNewTagFormValid();
     $('#tagOrigForm').data('bootstrapValidator').validate();
     $('#newTagForm').data('bootstrapValidator').validate();
-    if (!$('#tagOrigForm').data('bootstrapValidator').isValid() && !$('#newTagForm').data('bootstrapValidator').isValid()) {
+    if (!$('#tagOrigForm').data('bootstrapValidator').isValid() || !$('#newTagForm').data('bootstrapValidator').isValid()) {
         return;
     }
     if ($("#orig_styleId").val() !== $("#newTag_styleId").val()) {

@@ -264,14 +264,14 @@
                                                 <!-- <input class="form-control" id="filter_contains_styleName" name="filter_contains_styleName" type="text"
                                                        placeholder="模糊查询"/> -->
                                                 <div class="input-group">
-                                                    <input class="form-control" id="filter_eq_destunitid"
+                                                    <input class="form-control" id="search_destUnitId"
                                                            type="text" name="filter_eq_destunitid" readonly/>
                                                     <span class="input-group-btn">
                                                              <button class="btn btn-sm btn-default" type="button" onclick="openSearchVendorDialog()">
                                                                  <i class="ace-icon fa fa-list"></i>
                                                              </button>
                                                           </span>
-                                                    <input class="form-control" id="filter_eq_destunitname"
+                                                    <input class="form-control" id="search_destUnitName"
                                                            type="text" name="filter_eq_destunitname" readonly  placeholder="供应商"/>
                                                 </div>
                                                 <%--<select class="form-control" id="filter_eq_destunitid" name="filter_eq_destunitid"

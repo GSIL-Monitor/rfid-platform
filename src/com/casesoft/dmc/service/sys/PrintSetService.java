@@ -147,7 +147,11 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             String hql="from PrintSet t where t.id=?";
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             SaleOrderBill saleOrderBill = this.saleOrderBillService.load(billno);
-            mapcont.put("storeName","Ancient Stone");
+            if(CommonUtil.isNotBlank(printSet.getStoreName())){
+                mapcont.put("storeName",printSet.getStoreName());
+            }else{
+                mapcont.put("storeName","Ancient Stone");
+            }
             mapcont.put("billType","销售单");
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(saleOrderBill.getOprId());
@@ -177,7 +181,11 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             String hql="from PrintSet t where t.id=?";
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.load(billno);
-            mapcont.put("storeName","Ancient Stone");
+            if(CommonUtil.isNotBlank(printSet.getStoreName())){
+                mapcont.put("storeName",printSet.getStoreName());
+            }else{
+                mapcont.put("storeName","Ancient Stone");
+            }
             mapcont.put("billType","采购单");
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(purchaseOrderBill.getOprId());
@@ -196,7 +204,11 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             String hql="from PrintSet t where t.id=?";
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.load(billno);
-            mapcont.put("storeName","Ancient Stone");
+            if(CommonUtil.isNotBlank(printSet.getStoreName())){
+                mapcont.put("storeName",printSet.getStoreName());
+            }else{
+                mapcont.put("storeName","Ancient Stone");
+            }
             mapcont.put("billType","销售退货");
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(saleOrderReturnBill.getOprId());
@@ -217,7 +229,11 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             String hql="from PrintSet t where t.id=?";
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             PurchaseReturnBill purchaseReturnBill = this.purchaseReturnBillService.load(billno);
-            mapcont.put("storeName","Ancient Stone");
+            if(CommonUtil.isNotBlank(printSet.getStoreName())){
+                mapcont.put("storeName",printSet.getStoreName());
+            }else{
+                mapcont.put("storeName","Ancient Stone");
+            }
             mapcont.put("billType","采购退货");
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(purchaseReturnBill.getOprId());
@@ -236,7 +252,11 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             String hql="from PrintSet t where t.id=?";
             PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
             TransferOrderBill transferOrderBill = this.transferOrderBillService.load(billno);
-            mapcont.put("storeName","Ancient Stone");
+            if(CommonUtil.isNotBlank(printSet.getStoreName())){
+                mapcont.put("storeName",printSet.getStoreName());
+            }else{
+                mapcont.put("storeName","Ancient Stone");
+            }
             mapcont.put("billType","调拨");
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(transferOrderBill.getOprId());

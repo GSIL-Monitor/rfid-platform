@@ -2258,6 +2258,7 @@ var dialogOpenPage;
 function openSearchGuestDialog() {
     dialogOpenPage = "saleOrderReturn";
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
+        prefixId="add";
         initGuestSelect_Grid();
     });
     $("#searchGuestDialog_buttonGroup").html("" +

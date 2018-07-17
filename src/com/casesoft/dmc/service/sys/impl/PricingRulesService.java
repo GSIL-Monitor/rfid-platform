@@ -19,6 +19,10 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
   @Autowired
   private PricingRulesDao pricingRulesDao;
 
+  public PricingRules findBySC(String series,String class3){
+    return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+  }
+
   @Transactional(readOnly = true)
   @Override
   public Page<PricingRules> findPage(Page<PricingRules> page, List<PropertyFilter> filters) {

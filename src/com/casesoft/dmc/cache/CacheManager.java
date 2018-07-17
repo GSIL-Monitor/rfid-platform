@@ -746,6 +746,9 @@ public class CacheManager {
 					.getBean("styleService");
 			s= styleService.get("styleId",styleId);
 		}
+		/*StyleService styleService = (StyleService) SpringContextUtil
+				.getBean("styleService");
+		Style s= styleService.get("styleId",styleId);*/
 
 		return s;
 	}

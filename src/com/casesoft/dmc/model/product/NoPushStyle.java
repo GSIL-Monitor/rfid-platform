@@ -22,6 +22,8 @@ public class NoPushStyle extends BaseStyle{
     private String ispush;
     @Column()
     private String pushsuccess;
+    @Column()
+    private String erroMessage;
 
     public String getPushsuccess() {
         return pushsuccess;
@@ -93,5 +95,13 @@ public class NoPushStyle extends BaseStyle{
 
     public void setIsUse(String isUse) {
         this.isUse = isUse;
+    }
+
+    public String getErroMessage() {
+        return erroMessage;
+    }
+
+    public void setErroMessage(String erroMessage) {
+        this.erroMessage = erroMessage;
     }
 }
