@@ -1,5 +1,6 @@
 package com.casesoft.dmc.service.logistics;
 
+import com.casesoft.dmc.controller.logistics.MonthAccountUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yushen on 2017/7/8.
@@ -107,4 +108,15 @@ public class MonthAccountStatementService implements IBaseService<MonthAccountSt
         this.monthAccountStatementDao.saveOrUpdate(entity);
     }*/
 
+    //add by yushen 公共方法提取，更新月结表数据。
+    public void updateMonthAccountData(Date billDate, String unitId, Double diffPrice, Boolean isAdd){
+        Map<String, MonthAccountStatement> preMonthAccountMap = new HashMap<>();
+        List<MonthAccountStatement> preMonthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc", unitId);
+        for (MonthAccountStatement m : preMonthAcountList) {
+            preMonthAccountMap.put(m.getId(), m);
+        }
+        List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
+        MonthAccountUtil.updateMonthAcoutData(billDate, preMonthAccountMap, updateMonthAccountList, unitId, diffPrice, isAdd);
+        this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
+    }
 }

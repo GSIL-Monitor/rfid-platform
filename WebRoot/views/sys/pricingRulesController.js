@@ -32,7 +32,7 @@ function initGrid() {
                 name: 'state', label: '操作', editable: true, width: 50, align: 'center',
                 formatter: function (cellValue, option, rowObject) {
                     var html;
-                        if (rowObject.state == "Y") {
+                    if (rowObject.state == "Y") {
                         html = "<a href='#' onclick=changePricingRulesStatus('" + rowObject.id + "','N')><i class='ace-icon fa fa-check' title='启用'></i></a>";
                     } else {
                         html = "<a href='#' onclick=changePricingRulesStatus('" + rowObject.id + "','Y')><i class='ace-icon fa fa-lock' title='废除'></i></a>";
@@ -94,7 +94,7 @@ function edit() {
     if (rowId) {
         var row = $("#grid").jqGrid('getRowData', rowId);
         $("#edit_pricingRules_dialog").modal("show");
-        $("#editForm").loadData(row);
+        $("#editPricingRulesForm").loadData(row);
     } else {
         bootbox.alert("请选择一项进行修改！");
     }

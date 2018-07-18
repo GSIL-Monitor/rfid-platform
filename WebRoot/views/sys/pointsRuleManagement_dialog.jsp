@@ -19,6 +19,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="ruleManagementForm">
+                    <input id="id" name="id" hidden="hidden">
                     <div class="form-group">
                         <label class="col-sm-3 control-label no-padding-right" for="form_unitId">门店</label>
                         <div class="col-xs-10 col-sm-7">
@@ -125,7 +126,7 @@
     }
 
     function saveRule() {
-
+        changeDefault();
         $('#ruleManagementForm').data('bootstrapValidator').validate();
         if (!$('#ruleManagementForm').data('bootstrapValidator').isValid()) {
             return;

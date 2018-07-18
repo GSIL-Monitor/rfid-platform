@@ -731,5 +731,38 @@ public class CommonUtil {
     hql+=" and t.status <> -1";
     return hql;
   }
+  /**
+   * 根据filters拼接sql的查询条件
+   * @param filters
+   * @return
+   */
+  public static String sqlQueryCondition(List<PropertyFilter> filters){
+    String sql=" where 1=1";
+    for(int i=0;i<filters.size();i++){
+      PropertyFilter propertyFilter = filters.get(i);
+      String propertyName = propertyFilter.getPropertyNames()[0];
+      PropertyFilter.MatchType matchType = propertyFilter.getMatchType();
+      String name = matchType.name();
+      if(propertyName.indexOf("billDate")!=-1&&name.equals("GE")){
+        Date matchValue =(Date) propertyFilter.getMatchValue();
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd")+" 00;00;00";
+        sql+=" and "+propertyName+" >= to_date('"+dateString+"','yyyy-MM-dd HH24:mi:ss')";
+      }
+      if(propertyName.indexOf("billDate")!=-1&&name.equals("LE")){
+        Date matchValue =(Date) propertyFilter.getMatchValue();
+        String dateString = CommonUtil.getDateString(matchValue, "yyyy-MM-dd")+" 23:59:59";
+        sql+=" and "+propertyName+" <= to_date('"+dateString+"','yyyy-MM-dd HH24:mi:ss')";
+      }
+      if(name.equals("EQ")){
+        String value =(String) propertyFilter.getMatchValue();
+        sql+=" and "+propertyName+" = '"+value+"'";
+      }
+      if(name.equals("LIKE")){
+        String value =(String) propertyFilter.getMatchValue();
+        sql+=" and "+propertyName+" like '%"+value+"%'";
+      }
+    }
+    return sql;
+  }
 
 }

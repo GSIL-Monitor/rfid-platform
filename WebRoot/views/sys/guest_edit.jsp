@@ -21,6 +21,7 @@
         var curOwnerId="${ownerId}";
         var userId="${userId}";
         var linkman="${guest.linkman}";
+        var idCard = "${guest.idCard}";
     </script>
 
 </head>
@@ -50,7 +51,7 @@
                         <form class="form-horizontal" role="form" id="editForm" onkeydown="if(event.keyCode==13)return false;">
                             <div class="form-group">
                                 <input name="id" value="${guest.id}" id="edit_id" hidden/>
-                                <input name="preType" value="${guest.type}"hidden/>
+                                <input name="preType" value="${guest.type}" hidden/>
                                 <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
                                        for="edit_name">
                                     <span style="color: #ff0000;">*</span>
@@ -238,6 +239,12 @@
                                     <input class="form-control" id="edit_vipId" name="vipId"
                                            value="${guest.vipId}"/>
                                 </div>
+                                <label class="col-xs-2 col-sm-2 col-md-1 col-lg-1 control-label text-right"
+                                       for="edit_storeDate">VIP等级</label>
+                                <div class="col-xs-4 col-sm-4 col-md-1 col-lg-1">
+                                    <select class="chosen-select form-control" id="edit_idCard" name="idCard">
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
@@ -284,16 +291,49 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>
 <script>
+    var pageType = "${pageType}";
     $(function () {
         keydowns();
         if (userId=="admin"){
         }else {
             $("#edit_type").attr("disabled",true);
+        }
+        if (pageType=="add"){
+            $.ajax({
+                url: basePath + "/shop/vipCard/list.do?filter_EQI_upgradeType=0",
+                cache: false,
+                async: false,
+                type: "POST",
+                success: function (data, textStatus) {
+                    $("#edit_idCard").empty();
+                    $("#edit_idCard").append("<option value=''>--请选择等级--</option>");
+                    var json = data;
+                    for (var i = 0; i < json.length; i++) {
+                        $("#edit_idCard").append("<option value='" + json[i].id + "'>" + "[" + json[i].rank + "]" + json[i].name + "</option>");
+                    }
+                }
+            });
+        }else {
+            $.ajax({
+                url: basePath + "/shop/vipCard/list.do?",
+                cache: false,
+                async: false,
+                type: "POST",
+                success: function (data, textStatus) {
+                    $("#edit_idCard").empty();
+                    $("#edit_idCard").append("<option value=''>--请选择等级--</option>");
+                    var json = data;
+                    for (var i = 0; i < json.length; i++) {
+                        $("#edit_idCard").append("<option value='" + json[i].id + "'>" + "[" + json[i].rank + "]" + json[i].name + "</option>");
+                    }
+                    $("#edit_idCard").val("${guest.idCard}");
+                }
+            });
         }
     });
     function initData() {

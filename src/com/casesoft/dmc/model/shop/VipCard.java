@@ -18,23 +18,20 @@ public class VipCard {
     @Column(length = 20)
     private String name; //会员卡名  白金会员，铂金会员，钻石会员等
     @Column(length = 1)
-    private Integer rank; //会员卡等级
+    private String rank; //会员卡等级 1 2 3 4
     @Column(length = 5)
-    private Double discount; //折扣
+    private Integer discount; //折扣
     @Column(length = 1)
-    private Boolean FreeShipping; //是否包邮
-    @Column(length = 20)
-    private String upgradeType; //升级类型， 自动升级 手动升级
+    private int freeShipping; //是否包邮 1包邮 0不包邮
+    @Column(length = 1)
+    private int upgradeType; //升级类型， 1自动升级 0手动升级
     @Column(length = 5)
     private Long upgradeDealNo; //升级规则 成交数量
     @Column(length = 8)
     private Double upgradeConsumeNo;//升级规则 总消费金额
     @Column(length = 8)
     private Long upgradePoints;//升级规则 总累计积分
-    @Column(length = 20)
-    private String createTime;//创建时间
-    @Column(length = 100)
-    private String remark;//备注
+
     public String getId() {
         return id;
     }
@@ -42,6 +39,20 @@ public class VipCard {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    @Column(length = 20)
+
+    private String createTime;//创建时间
+    @Column(length = 100)
+    private String remark;//备注
 
     public String getName() {
         return name;
@@ -51,21 +62,27 @@ public class VipCard {
         this.name = name;
     }
 
-
-    public Double getDiscount() {
+    public Integer getDiscount() {
         return discount;
     }
 
-    public void setDiscount(Double discount) {
+    public void setDiscount(Integer discount) {
         this.discount = discount;
     }
 
+    public int getFreeShipping() {
+        return freeShipping;
+    }
 
-    public String getUpgradeType() {
+    public void setFreeShipping(int freeShipping) {
+        this.freeShipping = freeShipping;
+    }
+
+    public int getUpgradeType() {
         return upgradeType;
     }
 
-    public void setUpgradeType(String upgradeType) {
+    public void setUpgradeType(int upgradeType) {
         this.upgradeType = upgradeType;
     }
 
@@ -93,6 +110,14 @@ public class VipCard {
         this.upgradePoints = upgradePoints;
     }
 
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -101,27 +126,4 @@ public class VipCard {
         this.remark = remark;
     }
 
-    public Integer getRank() {
-        return rank;
-    }
-
-    public void setRank(Integer rank) {
-        this.rank = rank;
-    }
-
-    public Boolean getFreeShipping() {
-        return FreeShipping;
-    }
-
-    public void setFreeShipping(Boolean freeShipping) {
-        FreeShipping = freeShipping;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
 }

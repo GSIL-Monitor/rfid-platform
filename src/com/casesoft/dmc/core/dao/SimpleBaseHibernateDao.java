@@ -1,6 +1,7 @@
 package com.casesoft.dmc.core.dao;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,7 +261,7 @@ public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimp
     return (X) createQuery(hql, values).uniqueResult();
   }
   public <X> X findSqlUnique(final String hql, final Map<String, ?> values) {
-    return (X) createSqlQuery(hql, values).uniqueResult();
+    return (X) createSqlQuery(hql, null,values).uniqueResult();
   }
 
   /*
@@ -299,15 +301,22 @@ public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimp
     return query;
   }
 
-  public SQLQuery createSqlQuery(final String queryString, final Object... values){
+  public SQLQuery createSqlQuery(final String queryString,final Class<?> className,final Object... values){
     Assert.hasText(queryString, "queryString不能为空");
     SQLQuery query = getSession().createSQLQuery(queryString);
-    if (values != null) {
+   /* if (values != null) {
       for (int i = 0; i < values.length; i++) {
         query.setParameter(i, values[i]);
       }
-    }
+    }*/
     //query.addEntity(LabelChangeBill.class);
+    if(CommonUtil.isNotBlank(className)) {
+      Field[] fields = className.getDeclaredFields();
+      for (Field field : fields) {
+        query.addScalar(field.getName());
+      }
+      query.setResultTransformer(Transformers.aliasToBean(className));
+    }
     return query;
   }
 

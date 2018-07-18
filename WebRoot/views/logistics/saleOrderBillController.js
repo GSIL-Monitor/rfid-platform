@@ -2115,44 +2115,31 @@ function doPrintA4() {
 }
 
 
-function _resetForm() {
+function _resetForm(){
     $("#searchForm").clearForm();
     $("#search_destId").val();
     $("#search_origId").val();
     $("#filter_INI_outStatus").val();
     $("#filter_INI_inStatus").val();
     $(".selectpicker").selectpicker('refresh');
-    var dialogOpenPage;
-    var prefixId;
+}
+function doPrint() {
 
-    function openSearchGuestDialog() {
-        dialogOpenPage = "saleOrder";
-        prefixId = "seach"
-        $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
-            initGuestSelect_Grid();
-        });
-        $("#searchGuestDialog_buttonGroup").html("" +
-            "<button type='button'  class='btn btn-primary' onclick='confirm_selected_GuestId_sale()'>确认</button>"
-        );
-    }
-
-    function doPrint() {
-
-        /*$("#editForm").resetForm();*/
-        debugger;
-        $("#edit-dialog-print").modal('show');
-        $("#form_code").removeAttr("readOnly");
-        var billNo = $("#edit_billNo").val();
-        $("#billno").val(billNo);
-        $("#edit-dialog-print").show();
-        $.ajax({
-            dataType: "json",
-            url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
-            type: "POST",
-            data: {
-                type: "SO"
-            },
-            success: function (msg) {
+    /*$("#editForm").resetForm();*/
+    debugger;
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#edit_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"SO"
+        },
+        success: function (msg) {
 
                 if (msg.success) {
                     var addcont = "";
@@ -2267,5 +2254,5 @@ function _resetForm() {
                 }
             }
         });
-    }
+
 }

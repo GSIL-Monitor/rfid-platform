@@ -180,7 +180,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>

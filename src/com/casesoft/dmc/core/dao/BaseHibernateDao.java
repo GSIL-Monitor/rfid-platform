@@ -132,6 +132,27 @@ public BaseHibernateDao() {
     page.setRows(result);
     return page;
   }
+  public Page<T> findPageBySQl(final Page<T> page, final Class<?>className ,final String sql, final Map<String, ?> values) {
+    Assert.notNull(page, "page不能为空");
+
+    //Query q = createQuery(hql, values);
+    SQLQuery q = createSqlQuery(sql, className,values);
+    if (page.isAutoCount()) {
+      //long totalCount = countHqlResult(hql, values);
+      page.setTotal(q.list().size());
+    }
+    page.setTotPage(page.getTotal()/page.getPageSize()+1);
+    setPageParameterToQuery(q, page);
+
+    List result = q.list();
+    page.setRows(result);
+    return page;
+  }
+  public List<T> findBySQl(final Class<?>className ,final String sql,final Map<String, ?> values){
+    SQLQuery q = createSqlQuery(sql, className,values);
+    List result = q.list();
+    return result;
+  }
 
   /*
    * (non-Javadoc)

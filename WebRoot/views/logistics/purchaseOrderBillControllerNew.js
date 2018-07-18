@@ -129,6 +129,7 @@ $("#edit_destId").on("change",function () {
 $("#destId").click(function () {
     $("#tree").css("display","block");
     /*初始化jstree*/
+    initTree();
 });
 //确定
 function chooseCage() {

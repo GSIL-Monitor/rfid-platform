@@ -135,7 +135,7 @@
 
             </div>
         </div>
-        <jsp:include page="../layout/footer.jsp"></jsp:include>
+
         <!--/.fluid-container#main-container-->
     </div>
 
@@ -296,7 +296,7 @@
                            if(rowObject.resourceButtonList!=""&&rowObject.resourceButtonList!=undefined){
                                for(var i=0;i<rowObject.resourceButtonList.length;i++){
                                    if(pageType=="add"){
-                                       html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                       html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;";
                                        if((i%3)==0){
                                            html+="<br>"
                                        }
@@ -330,7 +330,7 @@
                             if(rowObject.resourcetableList!=""&&rowObject.resourcetableList!=undefined){
                                 for(var i=0;i<rowObject.resourcetableList.length;i++){
                                     if(pageType=="add"){
-                                        html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;";
                                         if((i%3)==0){
                                             html+="<br>"
                                         }

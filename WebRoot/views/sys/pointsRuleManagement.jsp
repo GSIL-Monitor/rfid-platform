@@ -136,7 +136,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="pointsRuleManagement_dialog.jsp"></jsp:include>
@@ -236,6 +236,9 @@
     function loadDetail(id) {
         var rowData = $("#grid").jqGrid('getRowData', id);
         $('#ruleManagement_dialog').modal('show');
+        $('#form_unitId').attr('disabled',true);
+        $('#form_startDate').attr('disabled', true);
+        $('#form_endDate').attr('disabled', true);
         $('#ruleManagementForm').loadData(rowData);
         if (ownerId === 1 || ownerId === "1") {
             $("#div_defaultRule").show();

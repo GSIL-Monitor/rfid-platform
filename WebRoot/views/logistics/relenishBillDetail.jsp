@@ -159,7 +159,7 @@
         </div>
     </div>
  <%--   <img style="width: 200px;height: 200px" src="/csr/images/check/check.png">--%>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>

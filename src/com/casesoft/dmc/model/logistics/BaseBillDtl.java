@@ -71,14 +71,9 @@ public abstract class BaseBillDtl {
     @Column()
     protected Integer arrival;
 
+    @Transient
+    protected String stylePriceMap;
 
-    public String getStylePriceMap() {
-        return stylePriceMap;
-    }
-
-    public void setStylePriceMap(String stylePriceMap) {
-        this.stylePriceMap = stylePriceMap;
-    }
 
     public Integer getArrival() {
         return arrival;
@@ -87,8 +82,7 @@ public abstract class BaseBillDtl {
     public void setArrival(Integer arrival) {
         this.arrival = arrival;
     }
-    @Transient
-    protected String stylePriceMap;
+
 
 
     public String getBillId() {
@@ -291,4 +285,11 @@ public abstract class BaseBillDtl {
         this.imgUrl = imgUrl;
     }
 
+    public String getStylePriceMap() {
+        return stylePriceMap;
+    }
+
+    public void setStylePriceMap(String stylePriceMap) {
+        this.stylePriceMap = stylePriceMap;
+    }
 }

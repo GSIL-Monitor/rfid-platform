@@ -1895,14 +1895,13 @@ function setA4(id) {
                     }
                     recordmessage+="</tr>";
                     sum = sum + parseInt(conts.qty);
-                    debugger
+
                     var totPrice=conts.totPrice;
                     alltotPrice+=totPrice;
 
                 }
                 alltotPrice=parseFloat(alltotPrice).toFixed(2)
-                recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;border:1px solid #000;'>"
-                //recordmessage +=  "<td align='left' style='border-top:1px ;padding-top:5px;>合计:</td>" +
+                /*recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;border:1px solid #000;'>"
                 for(var b = 0; b < printTableCode.length; b++){
                     if(printTableCode[b]=="qty"){
                         recordmessage+="<td align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + sum  + "</td>"
@@ -1917,9 +1916,35 @@ function setA4(id) {
                     }
 
                 }
-                recordmessage+ "</tr>";
+                recordmessage +="</tr>";*/
+                var recordfoorNow ="<tr>"
+                var recordfoorAll="<tr>";
+                for(var b = 0; b < printTableCode.length; b++){
+                    if(printTableCode[b]=="qty"){
+                        recordfoorNow+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'><font  tdata='SubCount' format='#'>###</font></th>"
+                        recordfoorAll+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'><font  tdata='AllSum' format='#'>###</font></th>"
+                    }else if(printTableCode[b]=="totPrice"){
+                        recordfoorNow+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='SubSum' format='#,##0.00'>###</font></th>"
+                        recordfoorAll+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='AllSum' format='#,##0.00'>###</font></th>"
+                    }else if(sizeArry.indexOf(printTableCode[b])!=-1){
+                        recordfoorNow+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='SubSum' format='#'>###</font></th>"
+                        recordfoorAll+="<th align='middle'style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;' ><font  tdata='AllSum' format='#'>###</font></th>"
+                    }else if(b==0) {
+                        recordfoorNow+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>单页合计</th>"
+                        recordfoorAll+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>合计</th>"
+                    }else{
+                        recordfoorNow+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>&nbsp;</th>"
+                        recordfoorAll+="<th align='middle' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>&nbsp;</th>"
+                    }
+
+                }
+                recordfoorNow +="</tr>";
+                recordfoorAll +="</tr>";
+                var recordfoorend="<tr><th id ='loadtableA4tad' width='100%' colspan='15' style='font-size:25px' >第<font tdata='PageNO' format='0' color='blue'>##</font>页</span>/共<font tdata='PageCount' format='0' color='blue'>##</font></span>页</th></tr>"
                 $("#loadtabthA4").html(print.printTableTh);
                 $("#loadtabA4").html(recordmessage);
+                $("#loadtabA4foot").html(recordfoorNow+recordfoorAll+recordfoorend);
+                $("#loadtableA4tad").attr("colspan",printTableCode.length)
                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
                 //LODOP.PREVIEW();
                 LODOP.PRINT();

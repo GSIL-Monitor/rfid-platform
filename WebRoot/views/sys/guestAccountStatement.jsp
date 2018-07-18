@@ -163,7 +163,7 @@
     </div>
 
 </div>
-<jsp:include page="../layout/footer.jsp"></jsp:include>
+
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="gathering_dialog.jsp"></jsp:include>

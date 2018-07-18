@@ -13,6 +13,7 @@
         var userId = "${userId}";
         var styleId = "${styleId}";
         var pageType = "${pageType}";
+        var remark  = "${style.remark}";
     </script>
     <style>
         a#focusColor:hover {
@@ -51,7 +52,6 @@
 
                 <ul class="breadcrumb">
                     <li>
-
                         <a href="#" onclick="toIndex()">商品款式</a>
                     </li>
                     <li class="active">
@@ -87,8 +87,6 @@
                                         <br/>
                                         <form class="form-horizontal" role="form" id="editStyleForm"
                                               onkeydown="if(event.keyCode==13)return false;">
-
-
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_styleId"><span class="text-danger">* </span>款号</label>
@@ -161,16 +159,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label no-padding-right"
-                                                       for="form_remark">成分</label>
-
-                                                <div class="col-xs-9 col-sm-9">
-                                            <textarea maxlength="400" class="form-control" id="form_remark"
-                                                      name="remark">${style.remark}</textarea>
-                                                </div>
-                                            </div>
+                                            <input id="form_remark" name ="remark" type="hidden"/>
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_class1">品牌</label>
@@ -185,25 +174,6 @@
                                                         <%--  <select id="form_brandCode" class="selectpicker" data-live-search="true">
                                                           </select>--%>
                                                         <span class="input-group-addon"
-                                                              title="添加${classTypes[0].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[0].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class2">${classTypes[1].value}</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group ">
-                                                        <select class="chosen-select form-control" id="form_class2"
-                                                                name="class2">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择${classTypes[1].value}</option>
-                                                        </select>
-                                                        <span class="input-group-addon"
                                                               title="添加${classTypes[1].value}">
                                                             <a href='#' class="white"
                                                                onclick="addStyleProperty('${classTypes[1].id}')">
@@ -213,18 +183,12 @@
                                                     </div>
                                                 </div>
 
-
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class3">${classTypes[2].value}</label>
+                                                       for="form_class2">${classTypes[2].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class3" name="class3">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[2].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class3"
-                                                                name="class3">
+                                                        <select class="chosen-select form-control" id="form_class2"
+                                                                name="class2">
                                                             <option value="" style="background-color: #eeeeee">
                                                                 请选择${classTypes[2].value}</option>
                                                         </select>
@@ -237,15 +201,19 @@
                                                         </span>
                                                     </div>
                                                 </div>
+
+
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class4">${classTypes[3].value}</label>
+                                                       for="form_class3">${classTypes[3].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class4" name="class4">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[3].value}--</option>
+                                                        <%--<select class="chosen-select form-control" id="form_class3" name="class3">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[2].value}--</option>
                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class4"
-                                                                name="class4">
+                                                        <select class="chosen-select form-control" id="form_class3"
+                                                                name="class3">
                                                             <option value="" style="background-color: #eeeeee">
                                                                 请选择${classTypes[3].value}</option>
                                                         </select>
@@ -258,17 +226,15 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class5">${classTypes[4].value}</label>
+                                                       for="form_class4">${classTypes[4].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class5" name="class5">
-                                                            <option value="" style="background-color: #eeeeee">--请选择无${classTypes[4].value}--</option>
+                                                        <%--<select class="chosen-select form-control" id="form_class4" name="class4">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[3].value}--</option>
                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class5"
-                                                                name="class5">
+                                                        <select class="chosen-select form-control" id="form_class4"
+                                                                name="class4">
                                                             <option value="" style="background-color: #eeeeee">
                                                                 请选择${classTypes[4].value}</option>
                                                         </select>
@@ -281,14 +247,19 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class6">${classTypes[5].value}</label>
+                                                       for="form_class5">${classTypes[5].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%-- <select class="chosen-select form-control" id="form_class6" name="class6">
-                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class6"
-                                                                name="class6">
+                                                        <%--<select class="chosen-select form-control" id="form_class5" name="class5">
+                                                            <option value="" style="background-color: #eeeeee">--请选择无${classTypes[4].value}--</option>
+                                                        </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class5"
+                                                                name="class5">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择${classTypes[5].value}</option>
                                                         </select>
                                                         <span class="input-group-addon"
                                                               title="添加${classTypes[5].value}">
@@ -299,62 +270,14 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class5">${classTypes[7].value}</label>
+                                                       for="form_class6">${classTypes[6].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class8" name="class8">
-                                                            <option value="" style="background-color: #eeeeee">--请选择无${classTypes[7].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class8"
-                                                                name="class8">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择无${classTypes[7].value}</option>
-                                                        </select>
-                                                        <span class="input-group-addon"
-                                                              title="添加${classTypes[7].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[7].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class6">${classTypes[9].value}</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class10" name="class10">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[9].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class10"
-                                                                name="class10">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择${classTypes[9].value}</option>
-                                                        </select>
-                                                        <span class="input-group-addon"
-                                                              title="添加${classTypes[9].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[9].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class7">${classTypes[6].value}</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class7" name="class7">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[6].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class7">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择${classTypes[6].value}</option>
+                                                        <%-- <select class="chosen-select form-control" id="form_class6" name="class6">
+                                                         </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class6"
+                                                                name="class6">
                                                         </select>
                                                         <span class="input-group-addon"
                                                               title="添加${classTypes[6].value}">
@@ -365,9 +288,75 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_class5">${classTypes[8].value}</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <div class="input-group ">
+                                                        <%--<select class="chosen-select form-control" id="form_class8" name="class8">
+                                                            <option value="" style="background-color: #eeeeee">--请选择无${classTypes[7].value}--</option>
+                                                        </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class8"
+                                                                name="class8">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择无${classTypes[8].value}</option>
+                                                        </select>
+                                                        <span class="input-group-addon"
+                                                              title="添加${classTypes[8].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[8].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_class6">${classTypes[10].value}</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <div class="input-group ">
+                                                        <%--<select class="chosen-select form-control" id="form_class10" name="class10">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[9].value}--</option>
+                                                        </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class10"
+                                                                name="class10">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择${classTypes[10].value}</option>
+                                                        </select>
+                                                        <span class="input-group-addon"
+                                                              title="添加${classTypes[10].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[10].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_class7">${classTypes[7].value}</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <div class="input-group ">
+                                                        <%--<select class="chosen-select form-control" id="form_class7" name="class7">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[6].value}--</option>
+                                                        </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class7">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择${classTypes[7].value}</option>
+                                                        </select>
+                                                        <span class="input-group-addon"
+                                                              title="添加${classTypes[7].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[7].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
 
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class6">${classTypes[8].value}</label>
+                                                       for="form_class6">${classTypes[9].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
                                                         <%--<select class="chosen-select form-control" id="form_class10" name="class10">
@@ -377,9 +366,9 @@
                                                                 name="class9">
                                                         </select>
                                                         <span class="input-group-addon"
-                                                              title="添加${classTypes[8].value}">
+                                                              title="添加${classTypes[9].value}">
                                                             <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[8].id}')">
+                                                               onclick="addStyleProperty('${classTypes[9].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -438,28 +427,49 @@
                                                 <%--</div>--%>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group">
-                                                        <c:if test="${pageType == 'edit'}"><input class="form-control"
-                                                                                                  id="form_styleCycle"
-                                                                                                  name="styleCycle"
-                                                                                                  required="required"
-                                                                                                  type="number"
-                                                                                                  placeholder=""
-                                                                                                  value="${style.styleCycle}"
-                                                                                                  step="1"/>
+                                                        <c:if test="${pageType == 'edit'}">
+                                                            <input class="form-control"
+                                                              id="form_styleCycle"
+                                                              name="styleCycle"
+                                                              required="required"
+                                                              type="number"
+                                                              placeholder=""
+                                                              value="${style.styleCycle}"
+                                                              step="1"/>
                                                         </c:if>
-                                                        <c:if test="${pageType == 'add'}"><input class="form-control"
-                                                                                                 id="form_styleCycle"
-                                                                                                 name="styleCycle"
-                                                                                                 required="required"
-                                                                                                 type="number"
-                                                                                                 placeholder=""
-                                                                                                 value="20" step="1"/>
+                                                        <c:if test="${pageType == 'add'}">
+                                                            <input class="form-control"
+                                                             id="form_styleCycle"
+                                                             name="styleCycle"
+                                                             required="required"
+                                                             type="number"
+                                                             placeholder=""
+                                                             value="20" step="1"/>
                                                         </c:if>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </form>
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="tags_3">成分</label>
+                                                <div class="col-xs-7 col-sm-7">
+                                                    <div class="input-group ">
+                                                    <textarea maxlength="400" class="form-control" id="tags_3"
+                                                              name="remark">
+                                                    </textarea>
+                                                    <span class="input-group-addon"
+                                                          title="添加${classTypes[0].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[0].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -507,23 +517,31 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
-    <!--/.fluid-container#main-container-->
+
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+
 <link rel="stylesheet" href="<%=basePath%>/Olive/assets/css/bootstrap-colorpicker.min.css"/>
 <script type="text/javascript" src="<%=basePath%>/Olive/assets/js/bootstrap-colorpicker.min.js"></script>
-
+<link rel="stylesheet" href="<%=basePath%>/Olive/assets/JSON/jquery.tagsinput.css"/>
+<script src="<%=basePath%>/Olive/assets/JSON/jquery.tagsinput.js"></script>
 <jsp:include page="style_colorAndSize_dialog.jsp"></jsp:include>
 <jsp:include page="style_color_edit.jsp"></jsp:include>
 <jsp:include page="style_size_edit.jsp"></jsp:include>
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
+
+
 <script type="text/javascript">
     var checkNum;
     $(function () {
-//        initLoadStyle();
+        $("#tags_3").val(remark);
+        $('#tags_3').tagsInput({
+            width: '540',
+            height:'70',
+            autocomplete_url:'remark.do'
+        });
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
@@ -755,10 +773,12 @@
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class5").append("<option value='" + json[i].code + "' style='background-color: #eeeeee'>" + json[i].name + "</option>");
                 }
+                $("#form_class5").find("option[value='1']").attr("selected", true);
                 if ("${pageType}" == "edit") {
                     $("#form_class5").find("option[value='${style.class5}']").attr("selected", true);
                 }
                 $('#form_class5').multiselect('rebuild');
+
                 $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
                 $("div.btn-group").css("padding", "0");
             }
@@ -1059,8 +1079,9 @@
 
     function saveStyleAndProduct(str) {
         var isSeries = $("#form_isSeries").val();
-        var remark = $("#form_remark").val();
-        if ((remark.indexOf(",") >= 0)||(remark.indexOf("，") >= 0)){
+        var re = $("#tags_3").val();
+        $("#form_remark").val(re);
+        if ((re.indexOf(",") >= 0)||(re.indexOf("，") >= 0)){
             bootbox.alert("成分中不允许含有回车及逗号字符");
         }else {
             if (isSeries == "N") {

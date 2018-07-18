@@ -1,6 +1,7 @@
 package com.casesoft.dmc.core;
 
 import com.casesoft.dmc.core.util.file.PropertyUtil;
+import io.swagger.models.auth.In;
 
 public class Constant {
     public static Boolean isWindows;
@@ -363,5 +364,16 @@ public class Constant {
         public final static String level = "2";
         public final static String allocation = "3";
         public final static String Company = "REPOSITORY";
+    }
+    //客户欠款变动，积分变动记录的状态设置
+    public final static class ChangeRecordStatus{
+        public final static Integer SaleOrder = 1; //销售单
+        public final static Integer SaleOrderChange = -1; //销售单据发生改变
+        public final static Integer SaleOrderCancel = -2; //销售单据撤销
+        public final static Integer SaleReturnOrder = 2; //销售退货单
+        public final static Integer SaleReturnOrderChange = -3; //销售退货单发生改变
+        public final static Integer SaleReturnOrderCancel = -4; //销售退货单撤销
+        public final static Integer SaleOrder2ReturnOrder = 3; //销售单关联生成退货单
+        public final static Integer CMOrder2ReturnOrder = 4; //寄存单关联销售退货单
     }
 }

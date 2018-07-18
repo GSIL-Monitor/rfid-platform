@@ -299,7 +299,7 @@
         </div>
     </div>
 
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
     <!--/.fluid-container#main-container-->
 </div>
 <jsp:include page="../base/style_dialog.jsp"></jsp:include>

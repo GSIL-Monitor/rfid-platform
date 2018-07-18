@@ -26,7 +26,7 @@
                     <h5 class="widget-title">主题:${email.title}</h5>
 
                     <div class="widget-toolbar no-border">
-                        <button class="btn btn-xs btn-light bigger" onclick="javascript:history.back(-1);">
+                        <button class="btn btn-xs btn-light bigger" onclick="history.back(-1);">
                             <i class="ace-icon fa fa-arrow-left"></i>
                             返回
                         </button>
@@ -69,7 +69,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
@@ -89,7 +89,7 @@
              html+="</div>";
             $("#search_adjunctUrl").append(html);
         }
-    })
+    });
     function download(fileName){
        window.location.href=basePath+"/email/download.do?fileName="+fileName;
     }

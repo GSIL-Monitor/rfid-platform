@@ -26,14 +26,13 @@ import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
-import com.casesoft.dmc.service.stock.EpcStockService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
-import com.casesoft.dmc.service.sys.impl.ResourceService;
-import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,6 +60,12 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @Autowired
     private EpcStockService epcStockService;
     @Autowired
+    private WeiXinUserService weiXinUserService;
+    @Autowired
+    private TemplateMsgService templateMsgService;
+    @Autowired
+    private GuestViewService guestViewService;
+    @Autowired
     private CustomerService customerService;
     @Autowired
     private UnitService unitService;
@@ -68,11 +73,6 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
-    private WeiXinUserService weiXinUserService;
-    @Autowired
-    private TemplateMsgService templateMsgService;
-    @Autowired
-    private GuestViewService guestViewService;
 
     @Override
 //    @RequestMapping(value = "/index")

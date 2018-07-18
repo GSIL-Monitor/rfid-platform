@@ -112,12 +112,20 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_rank">客户等级</label>
+                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                <select id="search_rank" class="chosen-select form-control selectpicker show-tick" data-live-search="true" name="filter_EQS_idCard">
+                                    <option value="">--请选择--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-11 btnPosition">
                                 <button type="button" class="btn btn-sm btn-primary" onclick="_search()">
                                     <i class="ace-icon fa fa-search"></i>
                                     <span class="bigger-110">查询</span>
                                 </button>
-                                <button type="reset" class="btn btn-sm btn-warning">
+                                <button type="reset" class="btn btn-sm btn-warning" onclick="empty()">
                                     <i class="ace-icon fa fa-undo"></i>
                                     <span class="bigger-110">清空</span></button>
                             </div>
@@ -130,10 +138,11 @@
             <table id="gridPager"></table>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>
+<jsp:include page="../sys/setRank_edit.jsp"></jsp:include>
 <script src="<%=basePath%>/views/sys/guestController.js"></script>
 </body>
 </html>

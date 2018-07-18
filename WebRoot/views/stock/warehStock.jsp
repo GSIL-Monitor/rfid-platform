@@ -218,8 +218,6 @@
         </div>
     </div>
     <jsp:include page="../search/search_js.jsp"></jsp:include>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
-
     <!--/.fluid-container#main-container-->
 </div>
 <%--<jsp:include page="../search/search_js.jsp"></jsp:include>--%>
