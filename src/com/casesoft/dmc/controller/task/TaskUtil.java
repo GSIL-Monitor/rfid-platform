@@ -1316,56 +1316,58 @@ public class TaskUtil {
                 if (CommonUtil.isNotBlank(record.getExtField())) {
                     epcStock.setInSotreType(record.getExtField());
                 }
+                //解析库位号
+                String rackId = null;
+                String levelId = null;
+                String allocationId = null;
+                if(CommonUtil.isNotBlank(record.getRmId())){
+                    String[] rmId = record.getRmId().split("-");
+                    if (rmId.length == 4) {
+                        rackId = rmId[1];
+                        levelId = rmId[2];
+                        allocationId = rmId[3];
+                    }
+                }
                 switch (record.getToken().intValue()) {
                     case Constant.Token.Storage_Adjust_Inbound:
                     case Constant.Token.Shop_Adjust_Inbound:
-                        epcStock.setFloorArea(epcStock.getWarehouseId());
+                        epcStock.setFloorRack(rackId);
+                        epcStock.setFloorArea(levelId);
+                        epcStock.setFloorAllocation(allocationId);
                         epcStock.setInStock(1);
                         epcStock.setProgress(EpcStock.ADJUSTING);
                         break;
                     case Constant.Token.Storage_Refund_Inbound:
                     case Constant.Token.Shop_Sales_refund:
+                        epcStock.setFloorRack(rackId);
+                        epcStock.setFloorArea(levelId);
+                        epcStock.setFloorAllocation(allocationId);
                         epcStock.setProgress(EpcStock.REFUNDING);
-                        epcStock.setFloorArea(epcStock.getWarehouseId());
                         epcStock.setInStock(1);
                         break;
                     case Constant.Token.Storage_Inbound:
                     case Constant.Token.Storage_Inbound_customer:
                     case Constant.Token.Storage_Consigment_Inbound:
                     case Constant.Token.Shop_Inbound:
-                        epcStock.setFloorArea(epcStock.getWarehouseId());
+                        epcStock.setFloorRack(rackId);
+                        epcStock.setFloorArea(levelId);
+                        epcStock.setFloorAllocation(allocationId);
                         epcStock.setProgress(EpcStock.INSOTRAGE);
                         epcStock.setInStock(1);
                         break;
                     case Constant.Token.Shop_Transfer_Inbound:
                     case Constant.Token.Storage_Transfer_Inbound:
+                        epcStock.setFloorRack(rackId);
+                        epcStock.setFloorArea(levelId);
+                        epcStock.setFloorAllocation(allocationId);
                         epcStock.setProgress(EpcStock.TRANING);
                         epcStock.setInStock(1);
-                        epcStock.setFloorArea(epcStock.getWarehouseId());
-                        break;
-                    case Constant.Token.Storage_Adjust_Outbound:
-                    case Constant.Token.Shop_Adjust_Outbound:
-                        epcStock.setProgress(EpcStock.ADJUSTING);
-                        epcStock.setInStock(0);
-                        break;
-                    case Constant.Token.Storage_Outbound:
-                    case Constant.Token.Shop_Sales:
-                        epcStock.setProgress(EpcStock.INSOTRAGE);
-                        epcStock.setInStock(0);
-                        break;
-                    case Constant.Token.Storage_Transfer_Outbound:
-                    case Constant.Token.Shop_Transfer_Outbound:
-                        epcStock.setProgress(EpcStock.TRANING);
-                        epcStock.setInStock(0);
-                        break;
-                    case Constant.Token.Shop_Refund_Outbound:
-                    case Constant.Token.Storage_refoundOut_customer:
-                        epcStock.setProgress(EpcStock.REFUNDING);
-                        epcStock.setInStock(0);
                         break;
                 }
                 listStock.add(epcStock);
             }
+
+
         }
         return listStock;
     }

@@ -6,15 +6,13 @@ import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.tag.util.StringUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.sys.Resource;
-import com.casesoft.dmc.model.sys.ResourceButton;
-import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
@@ -22,6 +20,7 @@ import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.PurchaseReturnBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.tag.InitService;
 import org.springframework.beans.BeanUtils;
@@ -43,7 +42,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/logistics/purchase")
-public class PurchaseOrderBillController extends BaseController implements ILogisticsBillController<PurchaseOrderBill> {
+public class    PurchaseOrderBillController extends BaseController implements ILogisticsBillController<PurchaseOrderBill> {
     @Autowired
     private PurchaseOrderBillService purchaseOrderBillService;
     @Autowired
@@ -56,6 +55,8 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
     private ResourceButtonService resourceButtonService;
     @Autowired
     private PurchaseReturnBillService purchaseReturnBillService;
+    @Autowired
+    private SettingService settingService;
    /* @Override
     @RequestMapping(value = "/index")
     public String index() {
@@ -64,6 +65,8 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
+        //查询系统操作
+        Setting setting = this.settingService.get("id","repositoryManagement");
         ModelAndView mv = new ModelAndView("/views/logistics/purchaseOrderBillNew");
         mv.addObject("pageType", "add");
         User user = this.getCurrentUser();
@@ -72,6 +75,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
         mv.addObject("defaultWarehId", defaultWarehId);
+        this.getRequest().setAttribute("rm", setting);
         return mv;
     }
 
@@ -151,7 +155,6 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
     public MessageBox save(String purchaseBillStr, String strDtlList, String userId) throws Exception {
         this.logAllRequestParams();
         try {
-
             PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
             if (CommonUtil.isBlank(purchaseOrderBill.getBillNo())) {
                 String prefix = BillConstant.BillPrefix.purchase
@@ -368,6 +371,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
             User currentUser = (User) this.getSession().getAttribute(
                     Constant.Session.User_Session);
             PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", purchaseOrderBillDtlList.get(0).getBillNo());
+            //转入库单
             Business business = BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, epcList, currentUser);
             this.purchaseOrderBillService.saveBusiness(purchaseOrderBill, purchaseOrderBillDtlList, business);
             String srcBillNo = purchaseOrderBill.getSrcBillNo();

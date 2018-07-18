@@ -33,7 +33,7 @@ public class RepositoryManagement implements Serializable{
     @Column
     private Boolean isRoot;
     @Column
-    private String repath;//深度
+    private String deep;//深度
     @Column
     private String img;  //jstree属性字段，预留
     @Column
@@ -97,12 +97,12 @@ public class RepositoryManagement implements Serializable{
         isRoot = root;
     }
 
-    public String getRepath() {
-        return repath;
+    public String getDeep() {
+        return deep;
     }
 
-    public void setRepath(String repath) {
-        this.repath = repath;
+    public void setDeep(String deep) {
+        this.deep = deep;
     }
 
     public String getImg() {

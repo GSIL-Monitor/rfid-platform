@@ -212,6 +212,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="repositoryManagement_edit.jsp"></jsp:include>
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>
+<link rel="stylesheet" href="<%=basePath%>/font-awesome-4.7.0/css/font-awesome.min.css">
 <script type="text/javascript" src="<%=basePath%>/views/sys/repositoryManagement.js"></script>
 <script type="text/javascript">
 

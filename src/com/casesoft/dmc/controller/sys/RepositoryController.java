@@ -11,6 +11,7 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.cfg.VO.State;
+import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.rem.RepositoryManagement;
 import com.casesoft.dmc.model.rem.VO.TreeChildVO;
 import com.casesoft.dmc.model.sys.Unit;
@@ -57,29 +58,34 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
     public MessageBox save(Unit entity) throws Exception {
         this.logAllRequestParams();
         User currentUser = this.getCurrentUser();
-        String maxCode = Constant.UnitCodePrefix.Warehouse+this.getSuffix();
+        String id = entity.getOwnerId();
         RepositoryManagement repositoryManagement = new RepositoryManagement();
-        repositoryManagement.setId(maxCode);
         repositoryManagement.setParentId(entity.getOwnerId());
         repositoryManagement.setRoot(false);
         repositoryManagement.setRemLevelType(Constant.RepositoryType.Company);
-        repositoryManagement.setRelatedId(maxCode);
-        repositoryManagement.setRepath(entity.getDeep());
+        repositoryManagement.setRelatedId(id);
+        repositoryManagement.setDeep(Constant.RepositoryType.rack);
         if(!StringUtil.isEmpty(entity.getRackId())){
-            repositoryManagement.setName(entity.getRackId());
-            repositoryManagement.setTreePath(entity.getOwnerId()+">"+maxCode+">");
+            repositoryManagement.setName(entity.getRackId()+"号货架");
+            id += "-"+entity.getRackId();
+            repositoryManagement.setTreePath(entity.getOwnerId()+">"+id);
         }
         if(!StringUtil.isEmpty(entity.getLevelId()) || !StringUtil.isEmpty(entity.getAllocationId())){
-            //接上父节点的repath
+            //接上父节点的treepath
             RepositoryManagement rm = repositoryManagementService.get("id",entity.getOwnerId());
-            repositoryManagement.setTreePath(rm.getTreePath() + ">" + maxCode + ">");
+            repositoryManagement.setTreePath(rm.getTreePath() + ">" + id);
             if(!StringUtil.isEmpty(entity.getLevelId())){
-                repositoryManagement.setName(entity.getLevelId());
+                id += "-"+entity.getLevelId();
+                repositoryManagement.setName(entity.getLevelId()+"号货层");
+                repositoryManagement.setDeep(Constant.RepositoryType.level);
             }
             if(!StringUtil.isEmpty(entity.getAllocationId())){
-                repositoryManagement.setName(entity.getRackId());
+                id += "-"+entity.getAllocationId();
+                repositoryManagement.setName(entity.getAllocationId()+"号货位");
+                repositoryManagement.setDeep(Constant.RepositoryType.allocation);
             }
         }
+        repositoryManagement.setId(id);
         try {
             this.repositoryManagementService.save(repositoryManagement);
             //刷新缓存
@@ -89,10 +95,6 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
             e.printStackTrace();
             return this.returnFailInfo("保存失败");
         }
-    }
-    private String getSuffix(){
-        String suffix = Math.round(Math.random()*1000)+"";
-        return suffix;
     }
 
     @Override
@@ -147,13 +149,72 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
                 treeChildVO.setChildren(true);
                 treeChildVO.setState(new State(false));
                 treeChildVO.setText(repositoryManagement.getName());
-                treeChildVO.setDeep(Constant.RepositoryType.rack);
+                treeChildVO.setDeep(repositoryManagement.getDeep());
+                if (Constant.RepositoryType.allocation.equals(repositoryManagement.getDeep())){
+                    treeChildVO.setChildren(false);
+                }
                 result.add(treeChildVO);
             }
             return result;
         }
     }
-
+    @RequestMapping(value = "/unitListById")
+    @ResponseBody
+    public List<TreeVO> getUnitListById(){
+        //条件查询所有仓库
+        this.logAllRequestParams();
+        String id = request.getParameter("id");
+        //查询节点
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        PropertyFilter filter = new PropertyFilter("EQS_parentId", id);
+        filters.add(filter);
+        List<TreeVO> result = new ArrayList<TreeVO>();
+        List<RepositoryManagement> repositoryManagements=repositoryManagementService.find(filters);
+        for (RepositoryManagement repositoryManagement:repositoryManagements){
+            TreeVO treeVO = new TreeVO();
+            treeVO.setId(repositoryManagement.getId());
+            treeVO.setState(new State(true));
+            treeVO.setText(repositoryManagement.getName());
+            treeVO.setDeep(repositoryManagement.getDeep());
+            //查询子节点
+            filters.remove(filter);
+            filter = new PropertyFilter("EQS_parentId", repositoryManagement.getId());
+            List<TreeVO> child = new ArrayList<>();
+            filters.add(filter);
+            List<RepositoryManagement> rm=repositoryManagementService.find(filters);
+            if (rm.size() > 0){
+                filters.remove(filter);
+                for (RepositoryManagement rm1:rm){
+                    TreeVO childVO = new TreeVO();
+                    childVO.setId(rm1.getId());
+                    childVO.setState(new State(true));
+                    childVO.setText(rm1.getName());
+                    childVO.setDeep(rm1.getDeep());
+                    //查询子节点
+                    filter = new PropertyFilter("EQS_parentId", rm1.getId());
+                    filters.add(filter);
+                    List<TreeVO> child1 = new ArrayList<>();
+                    List<RepositoryManagement> rm2=repositoryManagementService.find(filters);
+                    if(rm2.size() > 0){
+                        for(RepositoryManagement rm3:rm2){
+                            TreeVO childVO1 = new TreeVO();
+                            childVO1.setId(rm3.getId());
+                            childVO1.setState(new State(true));
+                            childVO1.setText(rm3.getName());
+                            childVO1.setDeep(rm3.getDeep());
+                            child1.add(childVO1);
+                        }
+                    }
+                    childVO.setChildren(child1);
+                    child.add(childVO);
+                }
+            }
+            treeVO.setChildren(child);
+            result.add(treeVO);
+        }
+        return result;
+    }
 
 
 }

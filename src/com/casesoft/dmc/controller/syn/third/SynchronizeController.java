@@ -8,6 +8,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.service.ISynErpService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.extend.tiantan.service.TiantanSynErpService;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.log.ServerLogMessage;
 import com.casesoft.dmc.model.product.*;
@@ -40,7 +41,7 @@ import java.util.List;
 public class SynchronizeController extends BaseController implements ISynProductController, ISynUnitController {
 
     @Autowired
-    private ISynErpService synErpService;
+    private TiantanSynErpService synErpService;
 
     @Autowired
     private FittingRecordService fittingRecordService;

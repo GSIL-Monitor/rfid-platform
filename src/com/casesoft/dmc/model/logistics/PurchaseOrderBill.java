@@ -14,8 +14,6 @@ public class PurchaseOrderBill extends BaseBill {
     @Id
     @Column()
     private String id;
-
-
     @Column()
     private Long totOutQty=0L;//
     @Column()
@@ -36,6 +34,9 @@ public class PurchaseOrderBill extends BaseBill {
     private String orderWarehouseId; //订货仓库Id
     @Column
     private String orderWarehouseName; //订货仓库名
+    @Column
+    private String rmId;//入库库位id
+
     public String getBuyahandId() {
         return buyahandId;
     }
@@ -143,4 +144,15 @@ public class PurchaseOrderBill extends BaseBill {
     public List<PurchaseStyleVo> getStyleList() { return styleList; }
 
     public void setStyleList(List<PurchaseStyleVo> styleList) { this.styleList = styleList; }
+
+    /**
+     * add by lly
+     */
+    public String getRmId() {
+        return rmId;
+    }
+
+    public void setRmId(String rmId) {
+        this.rmId = rmId;
+    }
 }

@@ -5,7 +5,7 @@ import com.casesoft.dmc.model.cfg.VO.State;
 
 /**
  * Created by lly on 2018/7/7.
- * 用于jsTree控件
+ * 用于jsTree懒加载
  */
 public class TreeChildVO {
     private String id;

@@ -44,8 +44,9 @@ public class EpcStock implements Serializable {
 	private String taskId;
 	private int progress;// 0:库中，1:购买中，2:调拨中，3：退货中，4：调整
 
-	private String floorArea;// 区
-	private String floor;// 库位
+	private String floorArea;// 货层
+	private String floor;// 仓库名
+	private String floorAllocation;//货位
 	private String floorRack;// 货架
 	private Boolean isOvered = false;// 是否过期
 
@@ -410,11 +411,11 @@ public class EpcStock implements Serializable {
 	}
 
 
+	public String getFloorAllocation() {
+		return floorAllocation;
+	}
 
-
-
-
-
-
-
+	public void setFloorAllocation(String floorAllocation) {
+		this.floorAllocation = floorAllocation;
+	}
 }

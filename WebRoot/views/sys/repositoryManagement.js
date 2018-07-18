@@ -35,6 +35,9 @@ function initTree() {
             showCompanyInfo(nodeId);
         }
     }).jstree({
+        "themes": {
+            "stripes": true,
+        },
         'core': {
             'animation': 0,
             'check_callback': true,
@@ -58,8 +61,8 @@ function initTree() {
             }
         },
         'types': {
-            "#": {
-                "max_children": 100
+            "default" : {
+                "icon": "fa fa-university"
             }
         },
         'plugins': ['dnd', 'search', 'wholerow', 'types']
@@ -201,7 +204,7 @@ function _clearSearch() {
 }
 
 function _search() {
-    $('#jstree').jstree(true).search($("#search_organizationName").val())
+    $('#jstree').jstree(true).search($("#search_organizationName").val());
 }
 
 function add() {

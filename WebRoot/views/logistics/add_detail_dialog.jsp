@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-11 btnPosition">
-                                        <button type="button" class="btn btn-sm btn-primary" onclick="searchStyle()">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="searcheditStyle()">
                                             <i class="ace-icon fa fa-search"></i>
                                             <span class="bigger-110">查询</span>
                                         </button>
@@ -251,5 +251,4 @@
             return false;
         }
     }
-
 </script>

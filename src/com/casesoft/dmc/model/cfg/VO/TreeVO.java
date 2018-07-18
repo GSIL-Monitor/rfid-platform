@@ -15,6 +15,7 @@ public class TreeVO {
     private String img;
     private String tinyImg;
     private String fontColor;
+    private String deep;//深度
 
     public String getId() {
         return id;
@@ -78,5 +79,13 @@ public class TreeVO {
 
     public void setFontColor(String fontColor) {
         this.fontColor = fontColor;
+    }
+
+    public String getDeep() {
+        return deep;
+    }
+
+    public void setDeep(String deep) {
+        this.deep = deep;
     }
 }

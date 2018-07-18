@@ -16,7 +16,6 @@
                     <input type="hidden" id="form_creatorId" name='creatorId' hidden="true">
                     <input type="hidden" id="form_creatorTime" name='createTime' hidden="true">
                     <input type="hidden" id="form_code" name="code" type="text" hidden="true">
-                    <input type="hidden" id="form_deep" name="deep" type="text" hidden="true">
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_ownerId">所属方</label>

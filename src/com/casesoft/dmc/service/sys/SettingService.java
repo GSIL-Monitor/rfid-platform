@@ -48,6 +48,7 @@ public class SettingService extends AbstractBaseService<Setting, String>  {
         return this.settingDao.find(filters);
     }
 
+
     @Transactional(readOnly = true)
     public List<Setting> getAll() {
         return this.settingDao.getAll();

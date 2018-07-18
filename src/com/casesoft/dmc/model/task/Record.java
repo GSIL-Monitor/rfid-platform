@@ -41,6 +41,7 @@ public class Record implements java.io.Serializable {
   private String origName;
 
   private String destId;//收货方仓库
+  private String rmId;//收获仓库库位
   private String destName;
 
   private String destUnitId; //如果是品牌商自己的门店，值为null
@@ -343,5 +344,13 @@ public class Record implements java.io.Serializable {
 
   public void setOnlibrary(String onlibrary) {
     this.onlibrary = onlibrary;
+  }
+
+  public String getRmId() {
+    return rmId;
+  }
+
+  public void setRmId(String rmId) {
+    this.rmId = rmId;
   }
 }

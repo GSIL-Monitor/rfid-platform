@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: admin
@@ -162,11 +163,6 @@
                                                                        readonly/>
                                                             </div>
                                                         </div>
-                                                        <label class="col-md-3 control-label" for="edit_billNo">单据编号</label>
-                                                        <div class="col-md-3">
-                                                            <input class="form-control" id="edit_billNo" name="billNo"
-                                                                   type="text" readonly />
-                                                        </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-md-1 control-label" for="search_buyahandId">买手</label>
@@ -176,19 +172,19 @@
                                                                     style="width: 100%;" data-live-search="true">
                                                             </select>
                                                         </div>
-                                                        <label class="col-md-1 control-label" for="edit_destId"><span class="text-danger">* </span>入库仓库</label>
+                                                        <label class="col-md-1 control-label" for="edit_billNo">单据编号</label>
                                                         <div class="col-md-3">
-                                                            <select class="form-control selectpicker show-tick" id="edit_destId" name="destId"
-                                                                    style="width: 100%;"  data-live-search="true">
-                                                            </select>
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readonly />
                                                         </div>
-                                                        <label class="col-md-1 control-label" for="search_billDate"
-                                                        ><span class="text-danger">* </span>单据日期</label>
+                                                        <label class="col-md-1 control-label" for="search_billDate">
+                                                        <span class="text-danger">* </span>单据日期</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control date-picker" id="search_billDate" name="billDate"
                                                                    type="text" />
                                                         </div>
                                                     </div>
+
                                                     <div class="form-group">
                                                         <label class="col-md-1 control-label" for="search_payPrice"><span
                                                                 class="text-danger">* </span>实付金额</label>
@@ -204,20 +200,49 @@
                                                             <input class="form-control" id="search_payType" name="payType"
                                                                    type="text"/>
                                                         </div>
-                                                        <label class="col-md-1 control-label" for="search_orderWarehouseId"></span>订货仓库</label>
-                                                        <div class="col-md-3">
-                                                            <select class="form-control selectpicker show-tick" id="search_orderWarehouseId" name="orderWarehouseId"
-                                                                    style="width: 100%;"  data-live-search="true">>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
                                                         <label class="col-md-1 control-label" for="search_discount">整单折扣</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control" id="search_discount" name="discount"
                                                                    onblur="search_discount_onblur()">
                                                             </input>
                                                         </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-1 control-label" for="search_orderWarehouseId"></span>订货仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick" id="search_orderWarehouseId" name="orderWarehouseId"
+                                                                    style="width: 100%;"  data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                        <label class="col-md-1 control-label" for="edit_destId"><span class="text-danger">* </span>入库仓库</label>
+                                                        <div class="col-md-3" style="position:relative;z-index: 100;">
+                                                            <select class="form-control selectpicker show-tick" id="edit_destId" name="destId"
+                                                                    style="width: 100%;"  data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                        <c:if test="${rm.value=='true'}">
+                                                        <label class="col-md-1 control-label" for="destId"><span class="text-danger">* </span>入库库位</label>
+                                                        <div class="col-md-3" style="position:relative;z-index: 100;">
+                                                            <input class="form-control" id="destId" name="rmId" readonly
+                                                                  style="width: 100%;background-color: #abbac3 !important;color: #ffffff;border-width: 3px;">
+                                                            </input>
+                                                            <div class="widget-body" id="tree" style="display:none;height:600px;width: 93%; overflow-y:auto;text-align: left;position:absolute;z-index: 9999;!important;">
+                                                                <div class="col-sm-12" style="text-align: center;margin-top:2%;">
+                                                                    <button type="button" class="btn btn-sm btn-primary" onclick="chooseCage()" style="width: 35%;border: 0;margin-right: 8%;">
+                                                                        <span class="bigger-110">确定</span>
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm btn-warning" onclick="unChoose()" style="width: 35%;border: 0;">
+                                                                        <span class="bigger-110">取消</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="widget-main no-padding">
+                                                                    <div id="jstree"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </c:if>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label class="col-md-1 control-label" for="search_srcBillNo">补货单编号</label>
                                                         <div class="col-md-3">
                                                             <input class="form-control" id="search_srcBillNo" name="srcBillNo"
@@ -229,6 +254,7 @@
                                                                    type="text" readonly/>
                                                         </div>
                                                     </div>
+
                                                     <div class="form-group">
                                                         <label class="col-xs-1 control-label"
                                                                for="form_remark">备注</label>
@@ -283,6 +309,7 @@
     <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
     <jsp:include page="../base/waitingPage.jsp"></jsp:include>
     <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+    <link rel="stylesheet" href="<%=basePath%>/font-awesome-4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseOrderBillControllerNew.js"></script>
     <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
     <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>

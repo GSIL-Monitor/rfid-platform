@@ -5,6 +5,11 @@ var editDtailRowId = null;  //当前编辑行号
 var editDtailColumn = null; //当前编辑列名
 var addDetailgridiRow;//存储iRow
 var addDetailgridiCol;//存储iCol
+var allocationId =null;//货位
+var levelId = null;//货层
+var rackId = null;//货架
+var cageId = null;//仓库
+var deep = null;//深度
 $(function () {
     /*初始化左侧grig*/
     initSearchGrid();
@@ -12,6 +17,9 @@ $(function () {
     initAddGrid();
     /*初始化from表单*/
     initForm();
+    /*初始化jstree*/
+    $("#destId").empty();
+    $("#destId").val("--请选择入库库位--");
     if(billNo){
         bootbox.alert("单据"+billNo+"正在编辑中");
     }else{
@@ -37,6 +45,111 @@ $(function () {
         }
     });
 });
+//初始化树形结构
+function initTree() {
+    cageId = $("#edit_destId").val();
+    $.jstree.destroy ("#jstree");
+    $('#jstree').on("changed.jstree", function (e, data) {
+        //变化事件
+        if (data.selected.length) {
+            // 点击节点，显示节点信息
+            deep = data.node.original.deep;
+            console.info(deep);
+            var allocationName = "请选择";
+            var levelName = "请选择";
+            var rackName = "请选择";
+            if(deep == "3"){
+                allocationId = data.node.id;
+                levelId = data.node.parents[0];
+                rackId = data.node.parents[1];
+                allocationName = data.node.text;
+                levelName = $("#"+allocationId+"_anchor").parent().parent().prev().text();
+                rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
+            }
+            else if(deep == "2"){
+                levelId = data.node.id;
+                rackId = data.node.parents[0];
+                levelName = data.node.text;
+                rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
+            }
+            else {
+                rackId = data.node.id;
+                rackName = data.node.text;
+            }
+            console.info(cageId);
+            console.info(rackId);
+            console.info(levelId);
+            console.info(allocationId);
+            $("#destId").text(rackName+"-"+levelName+"-"+allocationName);
+            $("#destId").val(allocationId);
+        }
+    })
+        .jstree({
+        'core': {
+            'animation': 0,
+            'check_callback': true,
+            'data': {
+                'url': basePath + "/sys/repositoryController/unitListById.do",
+                "data": function (node) {
+                    return {
+                        "id": cageId
+                    }
+                },
+                success: function (res) {
+                }
+            }
+        },
+        'types': {
+            "default" : {
+                "icon": "fa fa-university"
+            }
+        },
+        'plugins': ['dnd', 'search', 'wholerow', 'types']
+    })
+    //双击  确定jstree.js中已经添加双击事件
+        .bind('dblclick.jstree',function(event){
+            if(deep != "3"){
+                $.gritter.add({
+                    text: "请选择具体货位！",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+            else{
+                $("#tree").css("display","none");
+            }
+        })
+}
+//入库仓库改变事件
+$("#edit_destId").on("change",function () {
+    /*初始化jstree*/
+    initTree();
+    $("#destId").val("--请选择入库库位--");
+});
+//入库选择点击事件
+$("#destId").click(function () {
+    $("#tree").css("display","block");
+    /*初始化jstree*/
+});
+//确定
+function chooseCage() {
+    if(deep != "3"){
+        $.gritter.add({
+            text: "请选择具体货位！",
+            class_name: 'gritter-success  gritter-light'
+        });
+    }
+    else{
+        $("#tree").css("display","none");
+    }
+}
+//取消
+function unChoose() {
+    rackId = null;
+    levelId = null;
+    allocationId = null;
+    $("#destId").val("--请选择入库库位--");
+    $("#tree").css("display","none");
+}
 function initForm() {
     initSelectDestForm();
 
@@ -118,6 +231,7 @@ function initSearchGrid() {
             {name: 'destUnitName', label: '收货方', hidden: true, width: 40},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 35},
+            {name: 'rmId', label: '入库库位', width: 35},
             {name: 'totQty', label: '单据数量', sortable: false, width: 20},
             {name: 'totInQty', label: '已入库数', width: 30,hidden:true},
             {name: 'totInVal', label: '总入库金额', width: 30,hidden:true,
@@ -670,6 +784,19 @@ function initEditFormValid() {
                         }
                     }
                 }
+            },
+            rmId: {
+                validators: {
+                    callback: {
+                        message: '请选择入库库位',
+                        callback: function (value, validator) {
+                            if ($.trim(value) == $.trim("--请选择入库库位--")) {
+                                return false;
+                            }
+                            return true;
+                        }
+                    }
+                }
             }
         }
     });
@@ -956,10 +1083,12 @@ function save() {
     }
 
     var dtlArray = [];
+    console.info($("#destId").val());
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
+    console.log(array2obj($("#editForm").serializeArray()));
     $.ajax({
         dataType: "json",
         async:true,
@@ -1322,4 +1451,5 @@ function initButtonGroup(type){
     }
     $("#addDetail").show();
     loadingButton();
+
 }
