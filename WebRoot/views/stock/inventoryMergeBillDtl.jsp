@@ -15,7 +15,7 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
-        var allrowDate = new Array();
+        var allrowDate = [];
     </script>
     <style>
         #searchBtn:hover {
@@ -146,7 +146,7 @@
             <input id="sku" type=hidden  name='sku' value=''>
         </form>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="inventoryMerge_origList.jsp"></jsp:include>
@@ -238,7 +238,7 @@
     
     function decruit() {
         if ($("#displayType").is(':checked')) {
-            var rowIdd = new Array();
+            var rowIdd = [];
             /*获取所有行id*/
             rowIdd = $("#detailgrid").jqGrid('getGridParam','selarrrow');
             console.log(rowIdd);
@@ -251,12 +251,12 @@
                 $("#edit_inventoryMergeBillDtl_dialog").modal('show');
                 /*将数据传递给dialog*/
                 $("#edit_inventoryMergeBillDtl_dialog").loadData(allrowDate);
-                var rowIdg = new  Array();
+                var rowIdg = [];
                 rowIdg = $("#grid").jqGrid('getGridParam','selarrrow');
                 for (var i = 0; i<allrowDate.length;i++) {
                     $("#grid").addRowData(i + 1,allrowDate[i]);
                 }
-                allrowDate = new Array();
+                allrowDate = [];
             }else {
                 bootbox.alert("请选择后调出！");
             }

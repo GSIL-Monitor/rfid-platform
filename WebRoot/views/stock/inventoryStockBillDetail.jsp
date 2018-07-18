@@ -173,7 +173,6 @@
         </form>
 
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="changeLaber_Dailog.jsp"></jsp:include>
@@ -449,7 +448,7 @@
         var editChangeForm=array2obj($("#editChangeForm").serializeArray());
         editChangeForm.origId=$("#search_origId").val().split("]")[0].split("[")[1];
         editChangeForm.srcBillNo=$("#search_id").val();
-        console.log(editChangeForm)
+        console.log(editChangeForm);
         $.ajax({
             dataType: "json",
             async: false,
@@ -527,7 +526,7 @@
             labelChangeBillDel.discount=$("#search_discount").val();
             labelChangeBillDel.price=rowData.price;
             labelChangeBillDel.actPrice=rowData.price;
-            labelChangeBillDel.totActPrice=rowData.price*labelChangeBillDel.qty
+            labelChangeBillDel.totActPrice=rowData.price*labelChangeBillDel.qty;
             dtlArray.push(labelChangeBillDel);
         });
         console.log(dtlArray);

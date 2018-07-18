@@ -206,7 +206,7 @@
 
 
 </div>
-<jsp:include page="../layout/footer.jsp"></jsp:include>
+
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_epc_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
