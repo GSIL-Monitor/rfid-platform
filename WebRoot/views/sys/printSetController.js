@@ -638,18 +638,22 @@ function findPrintSetSanLian(sum) {
                     $("#receiptNameSanLian").val(result.name);
                     $("#receiptTypeSanLian").val(result.type);
                     $("#commonTypeSanLian").val(result.commonType);
+                    var printFootExtend=""+result.printFootExtend;
+                    printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
+                    $("#footExtendWriteSanLian").val(printFootExtend);
+                    $("#footExtendSanLian").find("span").html(printFootExtend);
                     $("#headPrintSanLian").find("div").each(function (index,element) {
                         var name=$(this).data("name");
 
                         if(!(result.printCode.indexOf(name)!= -1)){
                             $(this).attr("class","stecs");
-                            $("#"+name+"A4").hide();
+                            $("#"+name+"SanLian").hide();
                         }else{
                             $(this).attr("class","stecs on");
-                            $("#"+name+"A4").show();
+                            $("#"+name+"SanLian").show();
                         }
                     });
-                    $("#footerPrintSanLian").find("div").each(function (index,element) {
+                    $("#printFootSanLian").find("div").each(function (index,element) {
                         var name=$(this).data("name");
 
                         if(!(result.printCode.indexOf(name)!= -1)){
@@ -678,13 +682,13 @@ function findPrintSetSanLian(sum) {
                     $("#receiptNameSanLian").val("");
                     //$("#receiptType").val("SO");
                     $("#commonTypeSanLian").val("1");
-                    $("#headPrint").find("div").each(function (index,element) {
+                    $("#headPrintSanLian").find("div").each(function (index,element) {
                         var name=$(this).data("name");
                         $(this).attr("class","stecs on");
                         $("#"+name+"SanLian").show();
 
                     });
-                    $("#footerPrint").find("div").each(function (index,element) {
+                    $("#printFootSanLian").find("div").each(function (index,element) {
                         var name=$(this).data("name");
                         $(this).attr("class","stecs on");
                         $("#"+name+"SanLian").show();
@@ -1070,7 +1074,7 @@ function lodingTableA4() {
 }
 function lodingTableSanLian() {
     var tableHtml="<table style='text-align: center;font-size:12px;border-collapse:collapse;border:1px solid #000;'class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>";
-    var tableHtmlcont="<tbody id='loadtabA4'><tr style='border-top:1px ;padding-top:5px;border:1px solid #000;'>";
+    var tableHtmlcont="<tbody id='loadtabSanLian'><tr style='border-top:1px ;padding-top:5px;border:1px solid #000;'>";
     tableHtml+="<thead >";
     tableHtml+="<tr style='border:1px solid #000;'>";
     tableHtml+="<th align='left' data-name='styleId' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>款号</th>";
@@ -1081,7 +1085,7 @@ function lodingTableSanLian() {
     tableHtmlcont+="<td align='left' data-name='colorId' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;'>&nbsp;</td>";
     for(var i=0;i<printParameter.sizeArrySanLian.split(",").length;i++){
         var classname=printParameter.sizeArrySanLian.split(",")[i]
-        tableHtml+="<th align='left'  data-name='"+classname+"' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;width: 7%'>"+printParameter.sizeArry.split(",")[i]+"</th>";
+        tableHtml+="<th align='left'  data-name='"+classname+"' style='border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;width: 7%'>"+printParameter.sizeArrySanLian.split(",")[i]+"</th>";
         tableHtmlcont+="<td align='left' data-name='"+classname+"' style='border-top:1px ;padding-top:5px;border:1px solid #000;word-wrap:break-word;width: 7%'>0</td>";
 
 
@@ -1288,7 +1292,7 @@ function saveSanLian() {
             type:$("#receiptTypeSanLian").val(),
             printTableCode:printTableCode,
             printTableTh:html,
-            //printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
+            printFootExtend:$("#footExtendWriteSanLian").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
             commonType:$("#commonTypeSanLian").val()
         }

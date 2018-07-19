@@ -817,9 +817,9 @@
                             </div>
                             <div id="printFootSanLian">
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
-                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="thisMoney" id="thisMoneySanLian" style="display:table-cell;vertical-align:middle;text-align:center">本单额xx</span>
-                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="thisArrears" id="thisArrearsSanLian" style="display:table-cell;vertical-align:middle;text-align:center">本单欠xx</span>
-                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="totalArrears" id="totalArrearsSanLian" style="display:table-cell;vertical-align:middle;text-align:center">累计欠xx</span>
+                                    <span class="col-xs-4 col-sm-4 col-md-4 col-lg-4" data-name="thisMoney" id="thisMoneySanLian" style="display:table-cell;vertical-align:middle;text-align:center">本单额xx</span>
+                                    <span class="col-xs-4 col-sm-4 col-md-4 col-lg-4" data-name="thisArrears" id="thisArrearsSanLian" style="display:table-cell;vertical-align:middle;text-align:center">本单欠xx</span>
+                                    <span class="col-xs-4 col-sm-4 col-md-4 col-lg-4" data-name="totalArrears" id="totalArrearsSanLian" style="display:table-cell;vertical-align:middle;text-align:center">累计欠xx</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
                                     <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10" data-name="remark" id="remarkSanLian" style="display:table-cell;vertical-align:middle;text-align:center">备注:xx</span>
@@ -830,12 +830,12 @@
                                     <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="phone" id="phoneSanLian" style="display:table-cell;vertical-align:middle;text-align:center">手机:xx</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
-                                    <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="address" id="addressSanLian" style="display:table-cell;vertical-align:middle;text-align:center">地址:xx</span>
+                                    <span class="col-xs-12 col-sm-12 col-md-12 col-lg-12" data-name="address" id="addressSanLian" style="display:table-cell;vertical-align:middle;text-align:center">地址:xx</span>
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtendSanLian">
-                                    <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
-                                        <span >欢迎来到Ancient Stone</span>
-                                    </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtendSanLian">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                    <span >欢迎来到Ancient Stone</span>
                                 </div>
                             </div>
                         </div>

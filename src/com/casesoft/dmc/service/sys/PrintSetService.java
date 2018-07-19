@@ -378,7 +378,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             SaleOrderBill saleOrderBill = this.saleOrderBillService.load(billno);
             mapcont.put("storeName",printSet.getName());
             mapcont.put("billType","销售单");
-            mapcont.put("businessId",saleOrderBill.getBusnissName());
+            mapcont.put("businessId","营业员:"+saleOrderBill.getBusnissName());
             mapcont.put("billNo","单号:"+billno);
             User user = CacheManager.getUserById(saleOrderBill.getOprId());
             mapcont.put("handler","制单人:"+user.getName());
