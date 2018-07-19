@@ -244,7 +244,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setAreasId(unit.getAreasId());
                 guest.setOwnerids(unit.getOwnerids());
             }
-
+            guest.setIdCard(entity.getIdCard());
             guest.setFax(entity.getFax());
             guest.setDiscount(entity.getDiscount());
             guest.setAddress(entity.getAddress());
@@ -266,56 +266,62 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 return returnFailInfo("保存失败");
             }
         } else {
-            Customer guest = this.customerService.getById(entity.getId());
-            if (CommonUtil.isBlank(guest)) {
-                guest = new Customer();
-                String maxNo = this.customerService.getMaxNo(Constant.ScmConstant.CodePrefix.Customer);
-                guest.setId(maxNo);
-                guest.setCode(maxNo);
-                guest.setCreateTime(new Date());
-                guest.setCreatorId(getCurrentUser().getId());
-                guest.setStoredValue(0.0);
-                guest.setOwingValue(0.0);
-            }
-            guest.setName(entity.getName());
-            guest.setVipId(entity.getVipId());
-            guest.setStatus(entity.getStatus());
-            guest.setSex(entity.getSex());
-            guest.setType(entity.getType());
-            guest.setLinkman(entity.getLinkman());
-            guest.setTel(entity.getTel());
-            guest.setEmail(entity.getEmail());
-            guest.setBankCode(entity.getBankCode());
-            guest.setBankAccount(entity.getBankAccount());
-            guest.setDepositBank(entity.getDepositBank());
-            guest.setBirth(entity.getBirth());
-            guest.setPhone(entity.getPhone());
-            guest.setOwnerId(entity.getOwnerId());
-            Unit unit = CacheManager.getUnitById(entity.getOwnerId());
-            if (CommonUtil.isNotBlank(unit)) {
-                guest.setAreasId(unit.getAreasId());
-                guest.setOwnerids(unit.getOwnerids());
-            }
-            guest.setFax(entity.getFax());
-            guest.setDiscount(entity.getDiscount());
-            guest.setAddress(entity.getAddress());
-            guest.setProvince(entity.getProvince());
-            guest.setCity(entity.getCity());
-            guest.setAreaId(entity.getAreaId());//原为County
-            guest.setRemark(entity.getRemark());
-            guest.setUpdaterId(this.getCurrentUser().getId());
-            guest.setUpdateTime(new Date());
+            int number = this.customerService.findId(entity.getTel()).size();
+            if (number != 0) {
+                return returnFailInfo("电话号码已存在，保存失败");
+            } else {
+                Customer guest = this.customerService.getById(entity.getId());
+                if (CommonUtil.isBlank(guest)) {
+                    guest = new Customer();
+                    String maxNo = this.customerService.getMaxNo(Constant.ScmConstant.CodePrefix.Customer);
+                    guest.setId(maxNo);
+                    guest.setCode(maxNo);
+                    guest.setCreateTime(new Date());
+                    guest.setCreatorId(getCurrentUser().getId());
+                    guest.setStoredValue(0.0);
+                    guest.setOwingValue(0.0);
+                }
+                guest.setName(entity.getName());
+                guest.setVipId(entity.getVipId());
+                guest.setStatus(entity.getStatus());
+                guest.setSex(entity.getSex());
+                guest.setType(entity.getType());
+                guest.setLinkman(entity.getLinkman());
+                guest.setTel(entity.getTel());
+                guest.setEmail(entity.getEmail());
+                guest.setBankCode(entity.getBankCode());
+                guest.setBankAccount(entity.getBankAccount());
+                guest.setDepositBank(entity.getDepositBank());
+                guest.setBirth(entity.getBirth());
+                guest.setPhone(entity.getPhone());
+                guest.setOwnerId(entity.getOwnerId());
+                Unit unit = CacheManager.getUnitById(entity.getOwnerId());
+                if (CommonUtil.isNotBlank(unit)) {
+                    guest.setAreasId(unit.getAreasId());
+                    guest.setOwnerids(unit.getOwnerids());
+                }
+                guest.setIdCard(entity.getIdCard());
+                guest.setFax(entity.getFax());
+                guest.setDiscount(entity.getDiscount());
+                guest.setAddress(entity.getAddress());
+                guest.setProvince(entity.getProvince());
+                guest.setCity(entity.getCity());
+                guest.setAreaId(entity.getAreaId());//原为County
+                guest.setRemark(entity.getRemark());
+                guest.setUpdaterId(this.getCurrentUser().getId());
+                guest.setUpdateTime(new Date());
 		/*	guest.setStoredValue(entity.getStoredValue());
 			guest.setStoreDate(entity.getStoreDate());*/
 
-            try {
-                this.customerService.save(guest);
-                CacheManager.refreshUnitCache();
-                CacheManager.refreshCustomer();
-                return returnSuccessInfo("保存成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return returnFailInfo("保存失败");
+                try {
+                    this.customerService.save(guest);
+                    CacheManager.refreshUnitCache();
+                    CacheManager.refreshCustomer();
+                    return returnSuccessInfo("保存成功");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return returnFailInfo("保存失败");
+                }
             }
         }
     }
@@ -364,6 +370,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     guest.setAreasId(unit.getAreasId());
                     guest.setOwnerids(unit.getOwnerids());
                 }
+                guest.setIdCard(entity.getIdCard());
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());
@@ -429,6 +436,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     guest.setAreasId(unit.getAreasId());
                     guest.setOwnerids(unit.getOwnerids());
                 }
+                guest.setIdCard(entity.getIdCard());
                 guest.setFax(entity.getFax());
                 guest.setDiscount(entity.getDiscount());
                 guest.setAddress(entity.getAddress());
@@ -446,7 +454,18 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     }
                     this.guestService.updateCustomer(guest,preUnit);
                 }else {
-                    this.customerService.save(guest);
+                    List<String> number = this.customerService.findId(entity.getTel());
+                    if (number.size()==1){
+                        if (number.get(0).equals(guest.getId())){
+                            this.customerService.save(guest);
+                        }else {
+                            return returnFailInfo("手机号码已存在，保存失败");
+                        }
+                    }else if (number.size()>1){
+                        return returnFailInfo("手机号码已存在，保存失败");
+                    }else {
+                        this.customerService.save(guest);
+                    }
                 }
                 CacheManager.refreshUnitCache();
                 CacheManager.refreshCustomer();

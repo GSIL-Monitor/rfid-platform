@@ -75,11 +75,6 @@ public class GuestView {
 	@Column()
 	private String updaterId;
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> newMaster
 	@Column
 	private String idCard;
 
@@ -91,10 +86,6 @@ public class GuestView {
 		this.idCard = idCard;
 	}
 
-<<<<<<< HEAD
-=======
->>>>>>> 0f7a54ab35803fdd90f8b02064e78a59eb8d1be9
->>>>>>> newMaster
 	private String vipId;
 	@Column()
 	private String unionid;
