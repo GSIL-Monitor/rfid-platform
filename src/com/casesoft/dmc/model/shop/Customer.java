@@ -76,7 +76,14 @@ public class Customer implements java.io.Serializable {
     private String updaterId;
     private String linkman;
     private Date updateTime;
+<<<<<<< HEAD
     //会员id
+=======
+<<<<<<< HEAD
+=======
+    //会员id
+>>>>>>> 0f7a54ab35803fdd90f8b02064e78a59eb8d1be9
+>>>>>>> newMaster
     private String vipId;
     private Double vippoints;
     @Column( length = 100)

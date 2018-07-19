@@ -3,7 +3,6 @@ package com.casesoft.dmc.controller.logistics;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -16,8 +15,11 @@ import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+<<<<<<< HEAD
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
+=======
+>>>>>>> newMaster
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.Resource;
@@ -27,11 +29,12 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
-import com.casesoft.dmc.service.pad.TemplateMsgService;
-import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
+<<<<<<< HEAD
 import com.casesoft.dmc.service.sys.GuestViewService;
+=======
+>>>>>>> newMaster
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
@@ -43,7 +46,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -62,12 +64,15 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Autowired
     private  CustomerService customerService;
     @Autowired
+<<<<<<< HEAD
     private WeiXinUserService weiXinUserService;
     @Autowired
     private TemplateMsgService templateMsgService;
     @Autowired
     private GuestViewService guestViewService;
     @Autowired
+=======
+>>>>>>> newMaster
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
@@ -422,34 +427,9 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
         //saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
         Business business = BillConvertUtil.covertToSaleOrderBusinessOut(saleOrderBill, saleOrderBillDtlList, epcList, currentUser);
+
         MessageBox messageBox = this.saleOrderBillService.saveBusinessout(saleOrderBill, saleOrderBillDtlList, business, epcList);
         if(messageBox.getSuccess()){
-            String actPrice = saleOrderBill.getActPrice().toString();
-            String totQty = saleOrderBill.getTotQty().toString();
-            String sbillNo = saleOrderBill.getBillNo();
-            String name = saleOrderBill.getOrigUnitName();
-            try {
-                Date date = new Date();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
-                String phone = this.guestViewService.get("id",saleOrderBill.getDestUnitId()).getTel();
-                String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
-                String state = WechatTemplate.senMsg(openId,actPrice,totQty,sbillNo,name);
-                if (state.equals("success")){
-                    TemplateMsg templateMsg = new TemplateMsg();
-                    templateMsg.setBillNo(billNo);
-                    templateMsg.setOpenId(openId);
-                    templateMsg.setActPrice(actPrice);
-                    templateMsg.setTotQty(totQty);
-                    templateMsg.setName(name);
-                    templateMsg.setTime(simpleDateFormat.format(date));
-                    templateMsg.setType(0);
-                    templateMsgService.save(templateMsg);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-                this.logger.error(e.getMessage());
-                return new MessageBox(true, "出库成功");
-            }
             return new MessageBox(true, "出库成功");
         }else{
             return messageBox;

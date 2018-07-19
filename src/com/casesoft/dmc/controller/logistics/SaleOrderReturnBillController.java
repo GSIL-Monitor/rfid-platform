@@ -2,7 +2,6 @@ package com.casesoft.dmc.controller.logistics;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
@@ -10,11 +9,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.BillRecord;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBillDtl;
-import com.casesoft.dmc.model.pad.Template.TemplateMsg;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
@@ -26,14 +21,10 @@ import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
-import com.casesoft.dmc.service.pad.TemplateMsgService;
-import com.casesoft.dmc.service.pad.WeiXinUserService;
-import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
-import com.casesoft.dmc.service.sys.GuestViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +33,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,12 +49,6 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private SaleOrderReturnBillService saleOrderReturnBillService;
     @Autowired
     private EpcStockService epcStockService;
-    @Autowired
-    private WeiXinUserService weiXinUserService;
-    @Autowired
-    private TemplateMsgService templateMsgService;
-    @Autowired
-    private GuestViewService guestViewService;
     @Autowired
     private CustomerService customerService;
     @Autowired
@@ -266,7 +250,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         return mav;
     }
 
-    @RequestMapping(value = {"/returnDetails","/returnDetailsWS"})
+    @RequestMapping(value = "/returnDetails")
     @ResponseBody
     public List<SaleOrderReturnBillDtl> findReturnDtls(String billNo) {
         this.logAllRequestParams();
@@ -283,7 +267,6 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             }
         }
         for (SaleOrderReturnBillDtl s : saleOrderReturnBillDtls) {
-            Style style = CacheManager.getStyleById(s.getStyleId());
             if(codeMap.containsKey(s.getSku())){
                 s.setUniqueCodes(codeMap.get(s.getSku()));
             }
@@ -296,17 +279,18 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             if (CommonUtil.isNotBlank(CacheManager.getSizeById(s.getSizeId()))) {
                 s.setSizeName(CacheManager.getSizeNameById(s.getSizeId()));
             }
+            s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
+            Style style = CacheManager.getStyleById(s.getStyleId());
             Map<String,Double> stylePriceMap = new HashMap<>();
             stylePriceMap.put("price",style.getPrice());
             stylePriceMap.put("wsPrice",style.getWsPrice());
             stylePriceMap.put("puPrice",style.getPuPrice());
             s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
-            s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
         }
         return saleOrderReturnBillDtls;
     }
 
-    @RequestMapping(value = {"/save","/saveReturnWS"})
+    @RequestMapping("/save")
     @ResponseBody
     @Override
     public MessageBox save(String bill, String strDtlList, String userId) throws Exception {
@@ -484,31 +468,6 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             Business business = BillConvertUtil.covertToSaleReturnOrderBusinessIn(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
             MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
             if(messageBox.getSuccess()){
-                String rBillNo = saleOrderReturnBill.getBillNo();
-                String totQty = saleOrderReturnBill.getTotQty().toString();
-                String actPrice = saleOrderReturnBill.getActPrice().toString();
-                String name = currentUser.getName();
-                try {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
-                    String phone = this.guestViewService.get("id",saleOrderReturnBill.getOrigUnitId()).getTel();
-                    String openId = this.weiXinUserService.getByPhone(phone).getOpenId();
-                    String state = WechatTemplate.returnMsg(openId,rBillNo,totQty,actPrice);
-                    if (state.equals("success")){
-                        TemplateMsg templateMsg = new TemplateMsg();
-                        templateMsg.setBillNo(rBillNo);
-                        templateMsg.setOpenId(openId);
-                        templateMsg.setActPrice(actPrice);
-                        templateMsg.setTotQty(totQty);
-                        templateMsg.setTime(simpleDateFormat.format(date));
-                        templateMsg.setType(1);
-                        templateMsg.setName(name);
-                        templateMsgService.save(templateMsg);
-                    }
-                }catch (Exception e){
-                    this.logger.error(e.getMessage());
-                    return new MessageBox(true, "入库成功");
-                }
                 return new MessageBox(true, "入库成功");
             }else{
                 return messageBox ;
