@@ -15,7 +15,7 @@ http://www.springframework.org/schema/cache http://www.springframework.org/schem
 	<!--
  	<import resource="classpath*:/applicationContext-erp-demo.xml"/>
      -->
-	<import resource="classpath*:/applicationContext-db-gelaimei.xml"/>
+	<import resource="classpath*:/applicationContext-paris.xml"/>
 
 	<!-- 缓存管理器，指定ehcache的配置文件路径 -->
 	<bean id="cacheManager"

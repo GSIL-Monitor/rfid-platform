@@ -13,8 +13,13 @@
 
 <div id="edit-dialogA4" style="text-align: center;font-size:12px;display: none">
 
-    <table style="text-align:center;font-size:10px;table-layout:fixed;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+    <table style="text-align:center;font-size:10px;table-layout:fixed;" border="1" cellspacing="0" cellpadding="0" width="100%" align="center">
         <thead >
+    <%--   <tr>
+            <th id ="loadtableA4tad"width="100%" colspan="15" style="font-size:25px" >
+                第<font tdata="PageNO" format="0" color="blue">##</font>页</span>/共<font tdata="PageCount" format="0" color="blue">##</font></span>页</th>
+        </tr>--%>
+
         <tr id="loadtabthA4">
             <th align="left"  nowrap="nowrap" style="border:0px;font-size:17px;width:16%;">款号</th>
             <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">款名</th>
@@ -42,6 +47,9 @@
             <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
         </tr>
         </tbody>
+        <tfoot id="loadtabA4foot">
+
+        </tfoot>
     </table>
 
 

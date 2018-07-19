@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
@@ -28,7 +29,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/8/14.
@@ -258,6 +261,7 @@ public class ConsignmentBillController extends BaseController implements ILogist
         this.logAllRequestParams();
         List<ConsignmentBillDtl> consignmentBillDtls = this.consignmentBillService.findDtlByBillNo(billNo);
         for (ConsignmentBillDtl s : consignmentBillDtls) {
+            Style style = CacheManager.getStyleById(s.getStyleId());
             if (CommonUtil.isNotBlank(CacheManager.getColorById(s.getColorId()))) {
                 s.setColorName(CacheManager.getColorNameById(s.getColorId()));
             }
@@ -281,6 +285,11 @@ public class ConsignmentBillController extends BaseController implements ILogist
                 }
             }
             s.setUniqueCodes(uniqueCodes);
+            Map<String,Double> stylePriceMap = new HashMap<>();
+            stylePriceMap.put("price",style.getPrice());
+            stylePriceMap.put("wsPrice",style.getWsPrice());
+            stylePriceMap.put("puPrice",style.getPuPrice());
+            s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
         }
 
 

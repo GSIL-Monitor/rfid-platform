@@ -513,6 +513,7 @@ function closeEditDialog() {
 function changePurchase() {
     // 验证参数
     var isok=true;
+    save();
     if(pageType=="add"){
         $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
 

@@ -13,9 +13,12 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.wechat.wxpay.pay.WXPayConfigImpl;
+import com.casesoft.dmc.model.logistics.PurchaseBystyleid;
 import com.casesoft.dmc.model.pad.MobilePayment;
+import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.GuestView;
+import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
@@ -120,6 +123,20 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(false,"");
         }
     }
+
+    /**
+     * 小程序自助收银通过OwnerId获取默认客户
+     * add by Anna on 2018-06-06
+     */
+    @RequestMapping("/customer/findDefaultCustomerIdWS")
+    @ResponseBody
+    public MessageBox findDefaultCustomerId(String ownerId){
+        this.logAllRequestParams();
+        Unit unit = CacheManager.getUnitByCode(ownerId);
+        String defaultCustomerId = unit.getDefalutCustomerId();
+        return new MessageBox(true,"",defaultCustomerId);
+    }
+
 
     /**
      * 客户查询
@@ -238,7 +255,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
      * @param payType 支付类型
      * @return 结果
      */
-    @RequestMapping("/padUser/payType")
+    @RequestMapping(value = {"/padUser/payType","/padUser/payTypeWS"})
     @ResponseBody
     public MessageBox payType(String billNo,String payType){
         try {
@@ -258,7 +275,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
      * @return 支付消息
      * @throws Exception
      */
-    @RequestMapping("/padUser/WXcode")
+    @RequestMapping(value = {"/padUser/WXcode","/padUser/WXcodeWS"})
     @ResponseBody
     public MessageBox WXpay(HttpServletRequest request, String payPrice, String billNo) throws Exception {
         String codeUrl;
@@ -274,7 +291,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         data.put("fee_type", "CNY"); //设置货币类型，人民币
         data.put("total_fee", /*Integer.toString(price)*/"1"); //订单总金额，单位为分，只能为整数
         data.put("spbill_create_ip", ip); //调用微信支付API的机器IP
-        data.put("notify_url", "http://6kiqhy.natappfree.cc/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
+        data.put("notify_url", "http://tnsti6.natappfree.cc/csr/pad/padUser/getWxPayNotifyWS.do"); //接收微信支付异步通知回调地址
         data.put("trade_type", "NATIVE");//交易方式，扫码支付
         data.put("product_id", "12"); //设置trade_type=NATIVE时，此参数必传。此id为二维码中包含的商品ID
         // data.put("time_expire", "20170112104120");//订单失效时间
@@ -360,7 +377,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
      * @return liutianci
      */
     @ResponseBody
-    @RequestMapping("/padUser/getPayState")
+    @RequestMapping(value = {"/padUser/getPayState","/padUser/getPayStateWS"})
     public MessageBox getPayState(String billNo){
         for (String key : wxPayType.keySet()) {
             if (key.equals(billNo));
@@ -379,7 +396,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
      * @return 保存结果
      */
     @ResponseBody
-    @RequestMapping("/padUser/associated")
+    @RequestMapping(value = {"/padUser/associated","/padUser/associatedWS"})
     public MessageBox associated(String billNo,String rbillNo){
         try {
             this.saleOrderBillService.updateNo(billNo,rbillNo);
@@ -387,7 +404,7 @@ public class PadUserController extends BaseController implements IBaseInfoContro
             return new MessageBox(true,"销售退货单号关联成功");
         }catch (Exception e){
             this.logger.error(e.getMessage());
-            return new MessageBox(true,"销售退货单号关联失败");
+            return new MessageBox(false,"销售退货单号关联失败");
         }
     }
 

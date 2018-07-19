@@ -307,6 +307,7 @@ function save() {
             type:$("#receiptType").val(),
             printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
+            storeName:$("#editStoreName").val(),
             commonType:$("#commonType").val()
         }
         saveAjax(printSet);
@@ -366,6 +367,8 @@ function findPrintSet(sum) {
                     $("#receiptName").val(result.name);
                     $("#receiptType").val(result.type);
                     $("#commonType").val(result.commonType);
+                    $("#editStoreName").val(result.storeName);
+                    $("#storeName").find("span").text(result.storeName);
                     var printFootExtend=""+result.printFootExtend;
                     printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
                     $("#footExtendWrite").val(printFootExtend);
@@ -693,7 +696,7 @@ function saveA4() {
         });
         var top=((recordsum+(sum-recordsum)/2+1)*printParameter.aRowheight+(recordsum+(sum-recordsum)/2+1)*printParameter.intervalHeight);
         var tabbleth="";
-        var html="\"<body><table style='text-align:center;font-size:12px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead ><tr>"
+        var html="\"<body><table style='text-align:center;font-size:12px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead ><th width='100%' colspan='5' tindex='1' 当前是第<font tdata='PageNO' format='ChineseNum' color='blue'>##</font>页</span>/共<font tdata='PageCount' format='ChineseNum' color='blue'>##</font></span>页，本页从第<font color='blue' format='00' tdata='Count-SubCount+1'>##</font>行到第<font color='blue' tdata='Count'>##</font>行</th> </tr><tr>"
         $("#edit-A4-dialog").find("th").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var message=$(this).html();
@@ -730,7 +733,8 @@ function saveA4() {
         });
         html+="</tr></tbody></table>\"";
         console.log(html);
-        str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
+        //str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
+        str+="LODOP.ADD_PRINT_TABLE("+top+",10,"+receiptWith+","+receiptHight+","+html+");"
         str+="LODOP.SET_PRINT_STYLEA(0,\"ItemName\",\"baseHtml\");";
         sum=0;
         $("#printFootA4").find("span").each(function (index,element) {
@@ -775,6 +779,7 @@ function saveA4() {
             type:$("#receiptTypeA4").val(),
             printTableCode:printTableCode,
             printTableTh:tabbleth,
+            storeName:$("#editStoreName").val(),
             //printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
             commonType:$("#commonTypeA4").val()
@@ -843,4 +848,9 @@ function loadingTablecheck() {
     tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='price' onclick=selectThisA4class(this,\"price\")><i></i><span>吊牌价</span></div></li>";
     tableHtmlCheck+="<li class='headTitleLi'><div class='stecs on' data-name='totPrice' onclick=selectThisA4class(this,\"totPrice\")><i></i><span>金额</span></div></li>";
     $("#tablePrintA4").html(tableHtmlCheck)
+}
+
+function writeStoreName(t) {
+    console.log($(t).val());
+    $("#storeName").find("span").html($(t).val());
 }

@@ -157,11 +157,14 @@
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
+<jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="purchaseReturnBillPrint.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+
+
 
 <script src="<%=basePath%>/views/logistics/purchaseReturnBillDtlController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>

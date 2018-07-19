@@ -3,6 +3,8 @@ package com.casesoft.dmc.service.cfg;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.casesoft.dmc.dao.sys.VendorDao;
+import com.casesoft.dmc.model.sys.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,9 @@ public class PropertyService implements IBaseService<PropertyType, String> {
 
     @Autowired
     private PropertyTypeDao propertyTypeDao;
+
+    @Autowired
+    private VendorDao vendorDao;
 
 
     @Override
@@ -67,6 +72,13 @@ public class PropertyService implements IBaseService<PropertyType, String> {
     public void save(PropertyType entity) {
         // TODO Auto-generated method stub
         this.propertyTypeDao.saveOrUpdate(entity);
+    }
+
+    public void saveKey(PropertyKey entity, Unit unit) {
+        // TODO Auto-generated method stub
+        //this.propertyTypeDao.saveOrUpdate(entity);
+        this.propertyTypeDao.saveOrUpdateX(entity);
+        vendorDao.saveOrUpdate(unit);
     }
 
     public void saveKey(PropertyKey entity) {

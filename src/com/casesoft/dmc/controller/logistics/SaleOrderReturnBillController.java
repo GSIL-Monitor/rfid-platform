@@ -250,7 +250,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         return mav;
     }
 
-    @RequestMapping(value = "/returnDetails")
+    @RequestMapping(value = {"/returnDetails","/returnDetailsWS"})
     @ResponseBody
     public List<SaleOrderReturnBillDtl> findReturnDtls(String billNo) {
         this.logAllRequestParams();
@@ -453,7 +453,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/convertIn")
+    @RequestMapping(value = {"/convertIn","/convertInWS"})
     @ResponseBody
     public MessageBox convertIn(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = this.saleOrderReturnBillService.findDtlByBillNo(billNo);

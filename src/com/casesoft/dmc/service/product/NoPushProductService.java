@@ -183,6 +183,10 @@ public class NoPushProductService extends AbstractBaseService<NoPushProduct, Str
                             String Hql = "update NoPushStyle f set f.pushsuccess = 'Y' where f.id = '" + style.getId() + "'";
                             this.noPushStyleDao.batchExecute(Hql);
 
+                        }else{
+                            String moreInfo = map.get("moreInfo")+"";
+                            String Hql = "update NoPushStyle f set f.erroMessage = '" + moreInfo + "' where f.id = '" + style.getId() + "'";
+                            this.noPushStyleDao.batchExecute(Hql);
                         }
                     }
                 }

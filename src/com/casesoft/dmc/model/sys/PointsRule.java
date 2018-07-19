@@ -12,7 +12,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SYS_POINTSRULE")
-public class PointsRule implements java.io.Serializable {
+public class
+PointsRule implements java.io.Serializable {
     @Id
     @Column
     private String id; //店铺ID，起止时间拼接

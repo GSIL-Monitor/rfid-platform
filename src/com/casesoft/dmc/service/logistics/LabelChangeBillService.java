@@ -124,6 +124,8 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
             String newStylesuffix=null;
             Init init=null;
             boolean issave=true;
+            boolean ishavePricingRules=true;
+            String message="";
             //2.保存数据，标签初始化
             if(CommonUtil.isBlank(labelChangeBill.getBillNo())){
                 String prefix = BillConstant.BillPrefix.labelChangeBill
@@ -139,6 +141,8 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
                 labelChangeBill.setStatus(0);
                 labelChangeBill.setBillDate(new Date());
                 Map<String, Object> map = StyleUtil.newstyleidonlabelChangeBillDel(labelChangeBill, labelChangeBillDels,pricingRulesService,productService);
+                ishavePricingRules=(Boolean) map.get("ishavePricingRules");
+                message=(String)map.get("message");
                  listStyle=( List<Style>) map.get("style");
                 listproduct=( List<Product>)map.get("product");
                  newStylesuffix=(String)map.get("newStylesuffix");
@@ -147,10 +151,14 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
             }else{
                 issave=false;
             }
-            User curUser = CacheManager.getUserById(userId);
-            BillConvertUtil.covertToLabelChangeBill( labelChangeBill,labelChangeBillDels,curUser);
-            save(labelChangeBill,labelChangeBillDels,listStyle,listproduct,issave,init);
-            return new MessageBox(true, "保存成功", labelChangeBill.getBillNo());
+            if(ishavePricingRules) {
+                User curUser = CacheManager.getUserById(userId);
+                BillConvertUtil.covertToLabelChangeBill(labelChangeBill, labelChangeBillDels, curUser);
+                save(labelChangeBill, labelChangeBillDels, listStyle, listproduct, issave, init);
+                return new MessageBox(true, "保存成功", labelChangeBill.getBillNo());
+            }else{
+                return new MessageBox(false, message+"没有定价规则", labelChangeBill.getBillNo());
+            }
 
     }
 
@@ -198,7 +206,7 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
 
     public  Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page, List<PropertyFilter> filters, Class<?> billClass, Class<?> billDtlClass,String constructorParameter){
         String hql= CommonUtil.hqlbyBillandBillDel(billClass, billDtlClass, filters, constructorParameter);
-         page = this.labelChangeBillDao.findPage(page, hql);
+         page = this.labelChangeBillDao.findSqlPage(page, hql);
 
         return page;
     }

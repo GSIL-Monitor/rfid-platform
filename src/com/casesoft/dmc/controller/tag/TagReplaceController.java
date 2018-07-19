@@ -156,6 +156,10 @@ public class TagReplaceController extends BaseController {
         try {
             EpcStock origEpc = JSON.parseObject(origInfoStr, EpcStock.class);
             EpcStock newEpc = JSON.parseObject(newInfoStr, EpcStock.class);
+            if(!CommonUtil.isOctNumberRex(origEpc.getCode()) || origEpc.getCode().length() != 13
+                    || !CommonUtil.isOctNumberRex(newEpc.getCode()) || newEpc.getCode().length() != 13){
+                return new MessageBox(false, "唯一码格式错误");
+            }
             String origSku = origEpc.getStyleId() + origEpc.getColorId() + origEpc.getSizeId();
             String newSku = newEpc.getStyleId() + newEpc.getColorId() + newEpc.getSizeId();
             origEpc.setSku(origSku);

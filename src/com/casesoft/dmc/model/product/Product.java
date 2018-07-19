@@ -39,6 +39,13 @@ public class Product extends BaseProduct implements java.io.Serializable {
 	@Column()
 	private String push;
 
+	@Column
+	private Integer styleCycle; //款销售退货周期，默认20天
+
+	public Integer getStyleCycle() { return styleCycle; }
+
+	public void setStyleCycle(Integer styleCycle) { this.styleCycle = styleCycle; }
+
 	public String getPush() {
 		return push;
 	}
