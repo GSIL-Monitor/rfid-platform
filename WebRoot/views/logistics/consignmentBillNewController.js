@@ -80,6 +80,9 @@ function initSelectDestForm() {
             for (var i = 0; i < json.length; i++) {
                 $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
+            if(defaultWarehId!=undefined&&defaultWarehId!=""){
+                $("#search_destId").val(defaultWarehId);
+            }
         }
     });
 }
