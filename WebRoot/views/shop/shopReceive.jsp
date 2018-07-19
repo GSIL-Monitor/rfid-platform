@@ -155,8 +155,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
-    <!--/.fluid-container#main-container-->
+    <jsp:include page="../layout/footer.jsp"></jsp:include> <!--/.fluid-container#main-container-->
 </div>
 <jsp:include page="../base/shop_dialog.jsp"></jsp:include>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>

@@ -2115,7 +2115,6 @@ function doPrintA4() {
 }
 
 
-<<<<<<< HEAD
 function _resetForm(){
     $("#searchForm").clearForm();
     $("#search_destId").val();
@@ -2123,19 +2122,6 @@ function _resetForm(){
     $("#filter_INI_outStatus").val();
     $("#filter_INI_inStatus").val();
     $(".selectpicker").selectpicker('refresh');
-=======
-var dialogOpenPage;
-var prefixId;
-function openSearchGuestDialog() {
-    dialogOpenPage = "saleOrder";
-    prefixId="seach"
-    $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
-        initGuestSelect_Grid();
-    });
-    $("#searchGuestDialog_buttonGroup").html("" +
-        "<button type='button'  class='btn btn-primary' onclick='confirm_selected_GuestId_sale()'>确认</button>"
-    );
->>>>>>> 0f7a54ab35803fdd90f8b02064e78a59eb8d1be9
 }
 function doPrint() {
 

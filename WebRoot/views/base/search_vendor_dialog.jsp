@@ -91,7 +91,6 @@
             sortname: 'id',
             sortorder: "desc",
             ondblClickRow: function (rowid) {
-                debugger;
                 if (dialogOpenPage === "purchaseOrder") {
                     confirm_selected_VendorId_purchaseOrder(prefixId);
                 } else if (dialogOpenPage === "purchaseReturn") {
@@ -100,6 +99,8 @@
                     confirm_selected_VendorId_purchaseOrder_search();
                 }else if(dialogOpenPage==="meregegridDialog"){
                     confirm_selected_VendorId_purchaseOrders(saveid);
+                }else if(dialogOpenPage === "purchaseOrderCount"){
+                    selected_VendorId_purchaseOrder();
                 }
 
                 closeSearchGuestDialog();
@@ -113,7 +114,6 @@
     function confirm_selected_VendorId_purchaseOrder(prefixId) {
         var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-<<<<<<< HEAD
         if (prefixId=="edit"){
             $("#edit_origUnitId").val(rowData.id);
             $("#edit_origUnitName").val(rowData.name);
@@ -121,12 +121,6 @@
             $("#search_origUnitId").val(rowData.id);
             $("#search_origUnitName").val(rowData.name);
         }
-=======
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        $("#search_origUnitId").val(rowData.id);
-        $("#search_origUnitName").val(rowData.name);
->>>>>>> 0f7a54ab35803fdd90f8b02064e78a59eb8d1be9
         $("#modal_vendor_search_table").modal('hide');
     }
     function confirm_selected_VendorId_purchaseReturn() {

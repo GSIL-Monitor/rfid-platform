@@ -235,12 +235,7 @@
                                 </div>
                                 <label class="col-xs-4 col-sm-4 col-md-3 col-lg-3 control-label text-right"
                                        for="edit_storeDate">VIP信息</label>
-<<<<<<< HEAD
                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                    <input class="form-control" id="edit_vipId" name="vipId"
-                                           value="${guest.vipId}"/>
-=======
-                                <div class="col-xs-2 col-sm-2 col-md-1 col-lg-1">
                                     <input class="form-control" id="edit_vipId" name="vipId"
                                            value="${guest.vipId}"/>
                                 </div>
@@ -249,7 +244,6 @@
                                 <div class="col-xs-4 col-sm-4 col-md-1 col-lg-1">
                                     <select class="chosen-select form-control" id="edit_idCard" name="idCard">
                                     </select>
->>>>>>> 0f7a54ab35803fdd90f8b02064e78a59eb8d1be9
                                 </div>
                             </div>
                             <div class="form-group">
@@ -297,7 +291,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>

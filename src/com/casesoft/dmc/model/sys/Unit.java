@@ -70,8 +70,6 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 	@Column( length = 50)
 	private String defalutCustomerId;//默认客户Id
 	private String defaultSaleStaffId;//默认销售员Id
-<<<<<<< HEAD
-=======
 
 	private String idCard;
 	@Column(length = 1)
@@ -83,7 +81,6 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 		this.idCard = idCard;
 	}
 
->>>>>>> 0f7a54ab35803fdd90f8b02064e78a59eb8d1be9
 	private String vipId;
 	private String areasId;//区域ID
 	@Column( length = 50)

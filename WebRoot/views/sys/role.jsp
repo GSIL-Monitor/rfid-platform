@@ -165,7 +165,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
     <jsp:include page="roleButton_add.jsp"></jsp:include>
     <jsp:include page="roleTable_add.jsp"></jsp:include>
     <jsp:include page="rolePower_edit.jsp"></jsp:include>

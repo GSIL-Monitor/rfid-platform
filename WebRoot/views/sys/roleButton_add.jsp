@@ -44,7 +44,7 @@
         </div>
         <div class="modal-footer">
             <a href="#" class="btn" onclick="closeEditButtonDialog()">关闭</a>
-            <button type="button"  class="btn btn-primary" onclick="pSave()">保存</button>
+            <button type="button"  class="btn btn-primary" onclick="saveButton()">保存</button>
         </div>
     </div>
 </div>
@@ -77,7 +77,7 @@
 
 
 
-    function pSave() {
+    function saveButton() {
 
         checkButtonId(checkBack);
 

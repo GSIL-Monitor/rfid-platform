@@ -156,7 +156,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <script src="<%=basePath%>/views/shop/dressRecordController.js"></script>

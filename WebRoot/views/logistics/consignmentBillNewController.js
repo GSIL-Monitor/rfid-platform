@@ -1532,7 +1532,10 @@ function saleRetrunNook() {
 }
 function findRetrunno() {
     $("#show-findRetrunNo-list").modal('show');
+    $("#findRetrunNoListGrid").jqGrid("clearGridData");
+    $('#findRetrunNoListGrid').jqGrid('GridUnload');
     initUniqueretrunList();
+    $("#findRetrunNoListGrid").trigger("reloadGrid");
     retrunListReload();
 
 }

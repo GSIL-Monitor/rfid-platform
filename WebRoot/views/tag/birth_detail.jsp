@@ -27,7 +27,7 @@
                     <div class="widget-header">
                         <h5 class="widget-title">基本信息</h5>
                         <div class="widget-toolbar no-border">
-                            <button class="btn btn-xs bigger btn-yellow dropdown-toggle" onclick="javascript:history.back(-1);">
+                            <button class="btn btn-xs bigger btn-yellow dropdown-toggle" onclick="history.back(-1);">
                                 <i class="ace-icon fa fa-arrow-left"></i>
                                 返回
                             </button>
@@ -133,7 +133,7 @@
       <%---->--%>
 <%--</div>--%>
 </div>
-<jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <script type="text/javascript">
