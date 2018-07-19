@@ -470,15 +470,18 @@
         if(prefixId =="search") {
             $("#search_origUnitId").val(rowData.id);
             $("#search_origUnitName").val(rowData.name);
+            $("#edit_customerType").val(rowData.unitType);
             initSelectOrigForm();
             $("#modal_guest_search_table").modal('hide');
         }else if(prefixId =="edit"){
             $("#edit_origUnitId").val(rowData.id);
             $("#edit_origUnitName").val(rowData.name);
+            $("#edit_customerType").val(rowData.unitType);
             initSelectOrigForm();
             $("#modal_guest_search_table").modal('hide');
         }
-
+        $(".selectpicker").selectpicker('refresh');
+        $("#modal_guest_search_table").modal('hide');
       /*  var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
         $("#search_origUnitId").val(rowData.id);
