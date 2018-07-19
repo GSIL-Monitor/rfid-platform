@@ -227,6 +227,10 @@
                                                                   style="width: 100%;background-color: #abbac3 !important;color: #ffffff;border-width: 3px;">
                                                             </input>
                                                             <div class="widget-body" id="tree" style="display:none;height:600px;width: 93%; overflow-y:auto;text-align: left;position:absolute;z-index: 9999;!important;">
+                                                                <div class="col-sm-12" style="width: 98%;margin-top: 3%;">
+                                                                    <input class="form-control" id="search_organizationName" type="text"
+                                                                           placeholder="模糊查询"/>
+                                                                </div>
                                                                 <div class="col-sm-12" style="text-align: center;margin-top:2%;">
                                                                     <button type="button" class="btn btn-sm btn-primary" onclick="chooseCage()" style="width: 35%;border: 0;margin-right: 8%;">
                                                                         <span class="bigger-110">确定</span>

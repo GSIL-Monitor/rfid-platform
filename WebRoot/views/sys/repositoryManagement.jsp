@@ -40,7 +40,6 @@
 
                                     <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                         <input class="form-control" id="search_organizationName" type="text"
-                                               onkeyup="_search()"
                                                placeholder="模糊查询"/>
                                     </div>
                                 </div>

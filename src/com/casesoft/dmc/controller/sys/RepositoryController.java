@@ -72,15 +72,17 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
         }
         if(!StringUtil.isEmpty(entity.getLevelId()) || !StringUtil.isEmpty(entity.getAllocationId())){
             //接上父节点的treepath
-            RepositoryManagement rm = repositoryManagementService.get("id",entity.getOwnerId());
-            repositoryManagement.setTreePath(rm.getTreePath() + ">" + id);
             if(!StringUtil.isEmpty(entity.getLevelId())){
                 id += "-"+entity.getLevelId();
+                RepositoryManagement rm = repositoryManagementService.get("id",entity.getOwnerId());
+                repositoryManagement.setTreePath(rm.getTreePath() + ">" + id);
                 repositoryManagement.setName(entity.getLevelId()+"号货层");
                 repositoryManagement.setDeep(Constant.RepositoryType.level);
             }
             if(!StringUtil.isEmpty(entity.getAllocationId())){
                 id += "-"+entity.getAllocationId();
+                RepositoryManagement rm = repositoryManagementService.get("id",entity.getOwnerId());
+                repositoryManagement.setTreePath(rm.getTreePath() + ">" + id);
                 repositoryManagement.setName(entity.getAllocationId()+"号货位");
                 repositoryManagement.setDeep(Constant.RepositoryType.allocation);
             }
@@ -184,7 +186,6 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
             filters.add(filter);
             List<RepositoryManagement> rm=repositoryManagementService.find(filters);
             if (rm.size() > 0){
-                filters.remove(filter);
                 for (RepositoryManagement rm1:rm){
                     TreeVO childVO = new TreeVO();
                     childVO.setId(rm1.getId());
@@ -192,6 +193,7 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
                     childVO.setText(rm1.getName());
                     childVO.setDeep(rm1.getDeep());
                     //查询子节点
+                    filters.remove(filter);
                     filter = new PropertyFilter("EQS_parentId", rm1.getId());
                     filters.add(filter);
                     List<TreeVO> child1 = new ArrayList<>();

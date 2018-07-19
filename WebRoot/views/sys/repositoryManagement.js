@@ -66,8 +66,6 @@ function initTree() {
             }
         },
         'plugins': ['dnd', 'search', 'wholerow', 'types']
-    }).on('move_node.jstree', function (event, data) {
-        moveTree(event, data);
     })
 }
 
@@ -202,9 +200,14 @@ function refresh() {
 function _clearSearch() {
 
 }
-
+$("#search_organizationName").keydown(function(e) {
+    if (e.keyCode == 13) {
+        _search();
+    }
+});
 function _search() {
-    $('#jstree').jstree(true).search($("#search_organizationName").val());
+    var searchResult = $("#jstree").jstree('search', $("#search_organizationName").val());
+    $(searchResult).find('.jstree-search').focus();
 }
 
 function add() {

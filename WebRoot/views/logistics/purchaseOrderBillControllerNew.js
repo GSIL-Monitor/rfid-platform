@@ -125,15 +125,17 @@ $("#edit_destId").on("change",function () {
     initTree();
     $("#destId").val("--请选择入库库位--");
 });
+
 //入库选择点击事件
 $("#destId").click(function () {
     $("#tree").css("display","block");
     /*初始化jstree*/
     initTree();
 });
-//确定
+//确定搜索
 function chooseCage() {
-    if(deep != "3"){
+    searchTree();
+    /*if(deep != "3"){
         $.gritter.add({
             text: "请选择具体货位！",
             class_name: 'gritter-success  gritter-light'
@@ -141,7 +143,7 @@ function chooseCage() {
     }
     else{
         $("#tree").css("display","none");
-    }
+    }*/
 }
 //取消
 function unChoose() {
@@ -150,6 +152,13 @@ function unChoose() {
     allocationId = null;
     $("#destId").val("--请选择入库库位--");
     $("#tree").css("display","none");
+}
+//jstree搜索
+function searchTree() {
+    var searchResult = $("#jstree").jstree('search', $("#search_organizationName").val());
+    //var searchResult = $('#jstree').jstree(true).search($("#search_organizationName"));
+    $(searchResult).find('.jstree-search').focus();
+
 }
 function initForm() {
     initSelectDestForm();
