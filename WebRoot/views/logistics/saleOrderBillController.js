@@ -85,35 +85,35 @@ function initSearchGrid() {
                 }
             },
             {name: 'outStatus', hidden: true},
-         /*   {
-                name: 'outStatusImg', label: '出库状态', width: 15, align: 'center',sortable: false,
-                formatter: function (cellValue, options, rowObject) {
-                    if (rowObject.outStatus == 0) {
-                        return '<i class="fa fa-tasks blue" title="订单状态"></i>';
-                    } else if (rowObject.outStatus == 2) {
-                        return '<i class="fa fa-sign-out blue" title="已出库"></i>';
-                    } else if (rowObject.outStatus == 3) {
-                        return '<i class="fa fa-truck blue" title="出库中"></i>';
-                    } else {
-                        return '';
-                    }
-                }
-            },*/
+            /*   {
+             name: 'outStatusImg', label: '出库状态', width: 15, align: 'center',sortable: false,
+             formatter: function (cellValue, options, rowObject) {
+             if (rowObject.outStatus == 0) {
+             return '<i class="fa fa-tasks blue" title="订单状态"></i>';
+             } else if (rowObject.outStatus == 2) {
+             return '<i class="fa fa-sign-out blue" title="已出库"></i>';
+             } else if (rowObject.outStatus == 3) {
+             return '<i class="fa fa-truck blue" title="出库中"></i>';
+             } else {
+             return '';
+             }
+             }
+             },*/
             {name: 'inStatus', hidden: true},
             /*{
-                name: 'inStatusImg', label: '入库状态', width: 15, align: 'center',sortable: false,
-                formatter: function (cellValue, options, rowObject) {
-                    if (rowObject.inStatus == 0) {
-                        return '<i class="fa fa-tasks blue" title="订单状态"></i>';
-                    } else if (rowObject.inStatus == 1) {
-                        return '<i class="fa fa-sign-in blue" title="已入库"></i>';
-                    } else if (rowObject.inStatus == 4) {
-                        return '<i class="fa fa-truck blue" title="入库中"></i>';
-                    } else {
-                        return '';
-                    }
-                }
-            },*/
+             name: 'inStatusImg', label: '入库状态', width: 15, align: 'center',sortable: false,
+             formatter: function (cellValue, options, rowObject) {
+             if (rowObject.inStatus == 0) {
+             return '<i class="fa fa-tasks blue" title="订单状态"></i>';
+             } else if (rowObject.inStatus == 1) {
+             return '<i class="fa fa-sign-in blue" title="已入库"></i>';
+             } else if (rowObject.inStatus == 4) {
+             return '<i class="fa fa-truck blue" title="入库中"></i>';
+             } else {
+             return '';
+             }
+             }
+             },*/
             {name: 'destUnitId', label: '客户ID', hidden: true},
             {name: 'destUnitName', label: '客户', hidden: true},
 
@@ -980,6 +980,10 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>A4打印</span>" +
             "</button>" +
+            "<button id='SODtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
+            "    <i class='ace-icon fa fa-print'></i>" +
+            "    <span class='bigger-110'>三联打印</span>" +
+            "</button>" +
             "<button id='SODtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findRetrunno()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找退单</span>" +
@@ -1014,9 +1018,9 @@ function initButtonGroup(type){
             $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
         }
         //判断是否是admin
-       /* if (roleid != "0" && roleid != "SHOPUSER") {
-            $("#SODtl_doPrintA4").hide();
-        }*/
+        /* if (roleid != "0" && roleid != "SHOPUSER") {
+         $("#SODtl_doPrintA4").hide();
+         }*/
         if(groupid=="JMS"){
             $("#SODtl_doPrintA4").hide();
         }
@@ -2113,6 +2117,39 @@ function doPrintA4() {
         }
     });
 }
+function doPrintSanLian() {
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#search_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"SO",
+            ruleReceipt:"SanLian"
+        },
+        success: function (msg) {
+            if (msg.success) {
+                var addcont = "";
+                for (var i = 0; i < msg.result.length; i++) {
+                    addcont += "<div class='form-group' onclick=setSanLian('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
+                }
+                $("#addbutton").html(addcont);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
 
 
 function _resetForm(){
@@ -2247,6 +2284,115 @@ function loadingTableName() {
                     }
 
                 }
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function setSanLian(id) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessageSanLian.do",
+        data: {"id": id, "billno": $("#edit_billNo").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                console.log(print);
+                console.log(cont);
+                console.log(contDel);
+                var LODOP = getLodop();
+                //eval(print.printCont);
+                $("#edit-dialogSanLian").html(print.printTableTh);
+                var printCode=print.printCode;
+                var printCodeArray=printCode.split(",");
+                for(var i=0;i<printCodeArray.length;i++){
+                    debugger
+                    var plp = printCodeArray[i];
+                    var message = cont[plp];
+                    $("#edit-dialogSanLian").find("#"+plp).text(message);
+                }
+                var tbodyCont=""
+                for(var a=0;a<contDel.length;a++){
+                    var del=contDel[a];
+                    var printTableCode=print.printTableCode.split(",");
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    for(var b=0;b<printTableCode.length;b++){
+                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printParameter.sizeArrySanLian.indexOf(printTableCode[b])!=-1){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else{
+                            tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }
+
+                    }
+                    tbodyCont+="</tr>"
+                }
+                $("#loadtabSanLian").html(tbodyCont);
+                console.log($("#edit-dialogSanLian").html());
+                //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,800,300,$("#edit-dialogSanLian").html());
+                LODOP.PREVIEW();
+                $("#edit-dialog-print").hide();
+                /* var a=$("#edit-dialogSanLian").html();
+                 LODOP.ADD_PRINT_TABLE(100,1,800,300,a);
+                 LODOP.PREVIEW();
+                 $("#edit-dialog-print").hide();*/
+                /*var LODOP = getLodop();
+                 //var LODOP=getLodop(document.getElementById('LODOP2'),document.getElementById('LODOP_EM2'));
+                 eval(print.printCont);
+                 var printCode = print.printCode;
+                 var printCodes = printCode.split(",");
+                 for (var i = 0; i < printCodes.length; i++) {
+                 var plp = printCodes[i];
+                 var message = cont[plp];
+                 if (message != "" && message != null && message != undefined) {
+                 LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', message);
+                 } else {
+                 LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', "");
+                 }
+
+                 }
+
+                 var recordmessage = "";
+                 var sum = 0;
+                 var allprice = 0;
+                 var alldiscount = 0;
+                 for (var a = 0; a < contDel.length; a++) {
+                 var conts = contDel[a];
+                 recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                 "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
+                 "<td align='left'style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.qty + "</td>" +
+                 "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.price.toFixed(1) + "</td>" +
+                 "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.actPrice.toFixed(1) + "</td>" +
+                 "<td align='right' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + (conts.actPrice * conts.qty).toFixed(2) + "</td>" +
+                 "</tr>";
+
+                 sum = sum + parseInt(conts.qty);
+                 //allprice = allprice + parseFloat(conts.actPrice*conts.qty.toFixed(2));
+                 alldiscount = alldiscount + parseFloat((conts.actPrice * conts.qty).toFixed(2));
+                 }
+                 alldiscount = alldiscount.toFixed(0);
+                 recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                 "<td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td>" +
+                 "<td align='left'style='border-top:1px dashed black;padding-top:5px;'>" + sum + "</td>" +
+                 "<td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                 " <td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                 "<td align='right' style='border-top:1px dashed black;padding-top:5px;'>" + alldiscount + "</td>" +
+                 " </tr>";
+
+                 $("#loadtab").html(recordmessage);
+                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
+                 LODOP.PREVIEW();
+                 //LODOP.PRINT();
+                 $("#edit-dialog-print").hide();*/
+
 
             } else {
                 bootbox.alert(msg.msg);

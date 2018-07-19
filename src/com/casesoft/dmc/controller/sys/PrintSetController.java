@@ -153,6 +153,17 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
         }
 
     }
+    @RequestMapping(value="/printMessageSanLian")
+    @ResponseBody
+    public MessageBox printMessageSanLian(String id,String billno){
+        try {
+            Map<String, Object> map = this.printSetService.printMessageSanLian(id, billno);
+            return new MessageBox(true, "查询成功",map);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
+        }
+
+    }
 
 
 }
