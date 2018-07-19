@@ -123,6 +123,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             }
 
         }else{
+            hql+=" and ruleReceipt<>'A4' and ruleReceipt<>'SanLian'";
             printSets = this.printSetDao.find(hql, new Object[]{ownerId,type});
         }
 
