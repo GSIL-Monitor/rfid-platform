@@ -437,4 +437,8 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     public long findSbByDuId (String origUnitId){
         return this.saleOrderReturnBillDao.findUnique("select count (*) from SaleOrderReturnBill where origUnitId=?",origUnitId);
     }
+
+    public List<String> codeList (String billNo){
+        return this.saleOrderReturnBillDao.find("select code from BillRecord where billNo=? ", new Object[]{billNo});
+    }
 }

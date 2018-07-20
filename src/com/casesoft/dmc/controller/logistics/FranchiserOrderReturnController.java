@@ -9,10 +9,17 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
+import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.sys.Resource;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
+import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,28 +32,57 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
+ *
  * Created by admin on 2018/4/11.
  */
 @Controller
-@RequestMapping(value = "/logistics/FranchiserOrderReturn")
+@RequestMapping(value = "/logistics")
 public class FranchiserOrderReturnController extends BaseController implements ILogisticsBillController<SaleOrderReturnBill> {
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
     @Autowired
     private EpcStockService epcStockService;
+    @Autowired
+    private UnitService unitService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
 
-    @RequestMapping(value = "/index")
+    @RequestMapping(value = "/franchiserOrderReturnNew/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/FranchiserOrderReturn");
+        ModelAndView mv = new ModelAndView("/views/logistics/franchiserOrderReturnNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
-        mv.addObject("userId",getCurrentUser().getId());
-        Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+        Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        mv.addObject("name", unit.getName());
+        String defaultWarehId = unit.getDefaultWarehId();
+        String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+        String defalutCustomerId = unit.getDefalutCustomerId();
+        if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+            Customer customer = this.customerService.load(defalutCustomerId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+        mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("roleid", getCurrentUser().getRoleId());
+        mv.addObject("defaultWarehId", defaultWarehId);
+
+
+        mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType", "add");
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("userId", getCurrentUser().getId());
         return mv;
     }
 
 
-    @RequestMapping(value = "/page")
+    @RequestMapping(value = "/FranchiserOrderReturn/page")
     @ResponseBody
     public Page<SaleOrderReturnBill> findPage(Page<SaleOrderReturnBill> page, String userId) throws Exception {
         this.logAllRequestParams();
@@ -68,7 +104,7 @@ public class FranchiserOrderReturnController extends BaseController implements I
         return null;
     }
 
-    @RequestMapping(value = "/list")
+    @RequestMapping(value = "/FranchiserOrderReturn/list")
     @ResponseBody
     @Override
     public List<SaleOrderReturnBill> list() throws Exception {
@@ -90,7 +126,7 @@ public class FranchiserOrderReturnController extends BaseController implements I
         return null;
     }
 
-    @RequestMapping(value = "/edit")
+    @RequestMapping(value = "/FranchiserOrderReturn/edit")
     @ResponseBody
     @Override
     public ModelAndView edit(String billNo) throws Exception {
@@ -106,7 +142,7 @@ public class FranchiserOrderReturnController extends BaseController implements I
         return mav;
     }
 
-    @RequestMapping(value = "/back")
+    @RequestMapping(value = "/FranchiserOrderReturn/back")
     @ResponseBody
     public ModelAndView back(String billNo){
         SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.findBillByBillNo(billNo);
@@ -143,6 +179,19 @@ public class FranchiserOrderReturnController extends BaseController implements I
 
     @Override
     public String index() {
-        return "/views/logistics/FranchiserOrderReturn";
+        return null;
+    }
+
+    @RequestMapping(value = "/FranchiserOrderReturn/findResourceButton")
+    @ResponseBody
+    public MessageBox findResourceButton(){
+        try {
+            Resource resource = this.resourceService.get("url", "logistics/franchiserOrderReturnNew");
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
+        }
     }
 }

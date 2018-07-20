@@ -9,6 +9,7 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var curOwnerId = "${ownerId}";
+        var name = "${name}";
         var ownersId = "${ownersId}";
         var userId = "${userId}";
         var billNo = "${billNo}";
@@ -81,28 +82,6 @@
                                                                class="input-sm form-control"
                                                                name="filter_LED_billDate"
                                                                data-date-format="yyyy-mm-dd"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label"
-                                                       for="search_origUnitId">客户</label>
-                                                <div class="col-md-10">
-                                                    <div class="input-group">
-                                                        <input class="form-control" id="search_origUnitId"
-                                                               type="text"
-                                                               name="filter_EQS_origUnitId" readonly/>
-                                                        <span class="input-group-btn">
-                                                            <button class="btn btn-sm btn-default"
-                                                                    id="search_guest_button"
-                                                                    type="button"
-                                                                    onclick="openSearchGuestDialog('search')">
-                                                                <i class="ace-icon fa fa-list"></i>
-                                                            </button>
-											            </span>
-                                                        <input class="form-control" id="search_origUnitName"
-                                                               type="text"
-                                                               name="search_origUnitName" readonly/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -197,7 +176,7 @@
                                                             <input class="form-control" id="edit_origUnitId"
                                                                    type="text"
                                                                    name="origUnitId"
-                                                                   value="${SaleOrderReturnBill.origUnitId}" readonly/>
+                                                                  readonly/>
                                                             <span class="input-group-btn">
 												                <button class="btn btn-sm btn-default"
                                                                         id="edit_guest_button"
@@ -208,8 +187,7 @@
 											                </span>
                                                             <input class="form-control" id="edit_origUnitName"
                                                                    type="text"
-                                                                   name="origUnitName"
-                                                                   value="${SaleOrderReturnBill.origUnitName}" readonly/>
+                                                                   name="origUnitName" readonly/>
                                                         </div>
                                                     </div>
                                                     <label class="col-md-3 control-label"
@@ -218,8 +196,7 @@
                                                         <select class="form-control selectpicker"
                                                                 id="edit_customerType"
                                                                 name="customerType"
-                                                                style="width: 100%;"
-                                                                value="${SaleOrderReturnBill.customerType}" disabled>
+                                                                style="width: 100%;" disabled>
                                                         </select>
                                                     </div>
 
@@ -231,20 +208,20 @@
                                                     <div class="col-md-3">
                                                         <input class="form-control" id="edit_billNo" name="billNo"
                                                                type="text" readOnly
-                                                               value="${SaleOrderReturnBill.billNo}"/>
+                                                              />
                                                     </div>
                                                     <label class="col-md-1 control-label"
                                                            for="edit_billDate">单据日期</label>
                                                     <div class="col-md-3">
                                                         <input class="form-control date-picker" id="edit_billDate"
                                                                name="billDate"
-                                                               type="text" value="${SaleOrderReturnBill.billDate}"/>
+                                                               type="text" />
                                                     </div>
                                                     <label class="col-md-1 control-label"
                                                            for="edit_payType">支付方式</label>
                                                     <div class="col-md-3">
                                                         <input class="form-control" id="edit_payType" name="payType"
-                                                               type="text" value="${SaleOrderReturnBill.payType}"/>
+                                                               type="text"/>
                                                     </div>
                                                 </div>
 
@@ -254,7 +231,7 @@
                                                     <div class="col-md-3">
                                                         <select class="form-control selectpicker show-tick"
                                                                 id="edit_destId" name="destId"
-                                                                style="width: 100%;" value="${SaleOrderReturnBill.destId}"
+                                                                style="width: 100%;"
                                                                 data-live-search="true">
                                                         </select>
                                                     </div>
@@ -263,18 +240,17 @@
                                                     <div class="col-md-3">
                                                         <select class="form-control selectpicker show-tick"
                                                                 id="edit_origId" name="origId"
-                                                                style="width: 100%;" value="${SaleOrderReturnBill.origId}"
+                                                                style="width: 100%;"
                                                                 data-live-search="true">
                                                         </select>
                                                     </div>
                                                     <label class="col-md-1 control-label"
-                                                           for="edit_busnissId">销售员</label>
+                                                           for="edit_pre_Balance">售前余额</label>
                                                     <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_busnissId"
-                                                                name="busnissId"
-                                                                style="width: 100%;" data-live-search="true">
-                                                        </select>
+                                                        <input class="form-control" id="edit_pre_Balance"
+                                                               name="preBalance"
+                                                               readonly>
+                                                        </input>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -287,7 +263,7 @@
                                                             <input class="form-control" id="edit_actPrice"
                                                                    name="actPrice"
                                                                    type="number" step="0.01" readonly
-                                                                   value="${SaleOrderReturnBill.actPrice}"/>
+                                                                  />
                                                         </div>
                                                     </div>
 
@@ -300,93 +276,48 @@
                                                             <input class="form-control" id="edit_payPrice"
                                                                    name="payPrice"
                                                                    type="number" step="0.01"
-                                                                   value="${SaleOrderReturnBill.payPrice}"/>
+                                                                  />
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_discount">整单折扣</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_discount"
-                                                               name="discount"
-                                                               value="${SaleOrderReturnBill.discount}"
-                                                               onblur="edit_discount_onblur()">
-                                                        </input>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_pre_Balance">售前余额</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_pre_Balance"
-                                                               name="preBalance"
-                                                               value="${SaleOrderReturnBill.preBalance}" readonly>
-                                                        </input>
-                                                    </div>
-
                                                     <label class="col-md-1 control-label"
                                                            for="edit_after_Balance">售后余额</label>
                                                     <div class="col-md-3">
                                                         <input class="form-control" id="edit_after_Balance"
                                                                name="afterBalance"
-                                                               value="${SaleOrderReturnBill.afterBalance}" readonly>
+                                                               readonly>
                                                         </input>
                                                     </div>
                                                 </div>
-
                                                 <div class="form-group">
                                                     <label class="col-md-1 control-label"
                                                            for="edit_remark">备注</label>
 
                                                     <div class="col-md-11 col-sm-11">
                                             <textarea maxlength="400" class="form-control" id="edit_remark"
-                                                      name="remark">${SaleOrderReturnBill.remark}</textarea>
+                                                      name="remark"></textarea>
                                                     </div>
                                                 </div>
                                                 <div>
+                                                    <input id="edit_busnissId" name="busnissId" value="CJM-001"
+                                                            type="hidden"/>
                                                     <input id="edit_status" name="status"
-                                                           value="${SaleOrderReturnBill.status}"
-                                                           type="hidden">
-                                                    </input>
+                                                           type="hidden"/>
                                                     <input id="edit_outStatus" name="outStatus"
-                                                           value="${SaleOrderReturnBill.outStatus}"
-                                                           type="hidden">
-                                                    </input>
+                                                           type="hidden"/>
                                                     <input id="edit_inStatus" name="inStatus"
-                                                           value="${SaleOrderReturnBill.inStatus}"
-                                                           type="hidden">
-                                                    </input>
+                                                           type="hidden"/>
                                                     <input id="edit_ownerId" name="ownerId"
-                                                           value="${SaleOrderReturnBill.ownerId}"
-                                                           type="hidden">
-                                                    </input>
+                                                           type="hidden"/>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
-                                    <div class="widget-box transparent">
-                                        <div class="widget-header ">
-                                            <div class="widget-toolbar no-border">
-                                                <ul class="nav nav-tabs" id="myTab">
-                                                    <li class="active">
-                                                        <a data-toggle="tab" href="#addDetail">SKU明细</a>
-                                                    </li>
-                                                    <li>
-                                                        <a data-toggle="tab" href="#codeDetail">唯一码明细</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="widget-body">
-                                            <div class="widget-main padding-12 no-padding-left no-padding-right">
-                                                <div class="tab-content padding-4">
-                                                    <div id="addDetail" class="tab-pane in active" style="height:80%;">
-                                                        <table id="addDetailgrid"></table>
-                                                        <div id="addDetailgrid-pager"></div>
-                                                    </div>
-                                                    <div id="codeDetail" class="tab-pane" style="height:80%;">
-                                                        <table id="codegrid"></table>
-                                                        <div id="codeDetailgrid-pager"></div>
-                                                    </div>
+                                    <div class="widget-body">
+                                        <div class="widget-main padding-12 no-padding-left no-padding-right">
+                                            <div class="tab-content padding-4">
+                                                <div id="addDetail" class="tab-pane in active">
+                                                    <table id="addDetailgrid"></table>
+                                                    <div id="addDetailgrid-pager"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -396,17 +327,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.col -->
-
             </div>
-            <!-- /.row -->
-            <!--/#page-content-->
-
-
         </div>
-
     </div>
-
 </div>
 <!--/.fluid-container#main-container-->
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
@@ -417,7 +340,7 @@
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="uniqueCode_saleReturn_detail.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
-<script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderReturnNewController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/franchiserOrderReturnContorllerNew.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 
