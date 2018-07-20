@@ -151,7 +151,7 @@ function initSearchGrid() {
                             html = "<i class='fa fa-check-square-o blue' title='审核'></i>";
                             break;
                         case 2 :
-                            html = "<i class='fa fa-tasks blue' title='结束'></i>";
+                            html = "<i class='fa fa-archive blue' title='结束'></i>";
                             break;
                         case 3:
                             html = "<i class='fa fa-wrench blue' title='操作中'></i>";
@@ -1171,7 +1171,7 @@ function saveother(totActPrice) {
                     text: msg.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
-                $("#search_billNo").val(msg.result);
+                $("#edit_billNo").val(msg.result);
                 billNo = msg.result;
                 issaleretrun = true;
             } else {
