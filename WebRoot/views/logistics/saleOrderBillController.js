@@ -2338,7 +2338,8 @@ function setSanLian(id) {
                 console.log($("#edit-dialogSanLian").html());
                 //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
                 LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthSanLian,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
-                LODOP.PREVIEW();
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
                 $("#edit-dialog-print").hide();
                 /* var a=$("#edit-dialogSanLian").html();
                  LODOP.ADD_PRINT_TABLE(100,1,800,300,a);
