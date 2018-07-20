@@ -2337,8 +2337,118 @@ function setSanLian(id) {
                 $("#loadtabSanLian").html(tbodyCont);
                 console.log($("#edit-dialogSanLian").html());
                 //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
-                LODOP.ADD_PRINT_TABLE(100,1,800,300,$("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthSanLian,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
                 LODOP.PREVIEW();
+                $("#edit-dialog-print").hide();
+                /* var a=$("#edit-dialogSanLian").html();
+                 LODOP.ADD_PRINT_TABLE(100,1,800,300,a);
+                 LODOP.PREVIEW();
+                 $("#edit-dialog-print").hide();*/
+                /*var LODOP = getLodop();
+                 //var LODOP=getLodop(document.getElementById('LODOP2'),document.getElementById('LODOP_EM2'));
+                 eval(print.printCont);
+                 var printCode = print.printCode;
+                 var printCodes = printCode.split(",");
+                 for (var i = 0; i < printCodes.length; i++) {
+                 var plp = printCodes[i];
+                 var message = cont[plp];
+                 if (message != "" && message != null && message != undefined) {
+                 LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', message);
+                 } else {
+                 LODOP.SET_PRINT_STYLEA(printCodes[i], 'Content', "");
+                 }
+
+                 }
+
+                 var recordmessage = "";
+                 var sum = 0;
+                 var allprice = 0;
+                 var alldiscount = 0;
+                 for (var a = 0; a < contDel.length; a++) {
+                 var conts = contDel[a];
+                 recordmessage += "<tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                 "<td align='left' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.sku + "</td>" +
+                 "<td align='left'style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.qty + "</td>" +
+                 "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.price.toFixed(1) + "</td>" +
+                 "<td style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + conts.actPrice.toFixed(1) + "</td>" +
+                 "<td align='right' style='border-top:1px dashed black;padding-top:5px;font-size:12px;'>" + (conts.actPrice * conts.qty).toFixed(2) + "</td>" +
+                 "</tr>";
+
+                 sum = sum + parseInt(conts.qty);
+                 //allprice = allprice + parseFloat(conts.actPrice*conts.qty.toFixed(2));
+                 alldiscount = alldiscount + parseFloat((conts.actPrice * conts.qty).toFixed(2));
+                 }
+                 alldiscount = alldiscount.toFixed(0);
+                 recordmessage += " <tr style='border-top:1px dashed black;padding-top:5px;'>" +
+                 "<td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td>" +
+                 "<td align='left'style='border-top:1px dashed black;padding-top:5px;'>" + sum + "</td>" +
+                 "<td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                 " <td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td>" +
+                 "<td align='right' style='border-top:1px dashed black;padding-top:5px;'>" + alldiscount + "</td>" +
+                 " </tr>";
+
+                 $("#loadtab").html(recordmessage);
+                 LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialog2").html());
+                 LODOP.PREVIEW();
+                 //LODOP.PRINT();
+                 $("#edit-dialog-print").hide();*/
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function setA4(id) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessageA4.do",
+        data: {"id": id, "billno": $("#edit_billNo").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                console.log(print);
+                console.log(cont);
+                console.log(contDel);
+                var LODOP = getLodop();
+                //eval(print.printCont);
+                $("#edit-dialogSanLian").html(print.printTableTh);
+                var printCode=print.printCode;
+                var printCodeArray=printCode.split(",");
+                for(var i=0;i<printCodeArray.length;i++){
+                    debugger
+                    var plp = printCodeArray[i];
+                    var message = cont[plp];
+                    $("#edit-dialogSanLian").find("#"+plp).text(message);
+                }
+                var tbodyCont=""
+                for(var a=0;a<contDel.length;a++){
+                    var del=contDel[a];
+                    var printTableCode=print.printTableCode.split(",");
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    for(var b=0;b<printTableCode.length;b++){
+                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printParameter.sizeArry.indexOf(printTableCode[b])!=-1){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else{
+                            tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }
+
+                    }
+                    tbodyCont+="</tr>"
+                }
+                $("#loadtabA4").html(tbodyCont);
+                console.log($("#edit-dialogSanLian").html());
+                //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthA4,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
                 $("#edit-dialog-print").hide();
                 /* var a=$("#edit-dialogSanLian").html();
                  LODOP.ADD_PRINT_TABLE(100,1,800,300,a);

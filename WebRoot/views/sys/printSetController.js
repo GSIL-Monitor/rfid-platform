@@ -854,7 +854,95 @@ function saveA4() {
         var recordsum=0;//记录前两次打印的次数
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
-        $("#printTopA4").find("span").each(function (index,element) {
+        var html="\"<table style='text-align:center;font-size:10px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead >"
+        $("#printTopA4").find("span").each(function (index,element){
+            if(index==2||index==4){
+               html+="<tr>"
+            }
+
+            if(!$(this).is(":hidden")){
+                var id=$(this).data("name");
+                var message=$(this).text();
+                if(index==0||index==1){
+                    html+="<tr><th  colspan='24' id='"+id+"' style='font-size:25px;padding-top:5px'>"+message+"</th></tr>'";
+                }else if(index==6){
+                    html+="<tr><th  colspan='12 ' id='"+id+"' style='font-size:25px;padding-top:5px'>"+message+"</th></tr>'";
+                }else{
+                    html+="<th  colspan='12 ' id='"+id+"' style='font-size:25px;padding-top:5px'>"+message+"</th>'";
+                }
+                if(printCode==""){
+                    printCode+=id;
+                }else{
+                    printCode+=","+id;
+                }
+            }
+            if(index==3||index==5){
+                html+="</tr>"
+            }
+        });
+        html+="<tr>"
+        var tabbleth="";
+        var tabblethall="";
+        $("#edit-A4-dialog").find("th").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var message=$(this).html();
+                var classname=$(this).data("name");
+                console.log(message);
+                if(printParameter.sizeArry.indexOf(classname)!=-1) {
+                    html+="<th align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>";
+                    tabbleth+="<td align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>";
+                    tabblethall+="<td align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>";
+                }else if(classname=="styleId"){
+                    html+="<th align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>";
+                    tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>本页合计</td>";
+                    tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>单据合计</td>";
+                }else if(classname=="styleName"){
+                    html+="<th align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
+                    tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>";
+                    tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>";
+                }else if(classname=="colorId"){
+                    html+="<th align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
+                    tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>"
+                    tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>"
+                }else if(classname=="qty") {
+                    html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
+                    tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>"
+                    tabblethall+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>"
+                }else if(classname=="totPrice"){
+                    html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
+                    tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#.00'>##</font></td>"
+                    tabblethall+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#.00'>##</font></td>"
+                }else{
+                    html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
+                    tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>"
+                    tabblethall+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>"
+                }
+                if(printTableCode==""){
+                    printTableCode+=classname;
+                }else{
+                    printTableCode+=","+classname;
+                }
+            }
+        });
+        html+="</thead><tbody id='loadtabA4'></tbody><tfoot><tr>"+tabbleth+"</tr><tr>"+tabblethall+"</tr><tr>"
+        $("#printFootA4").find("span").each(function (index,element) {
+
+            if(!$(this).is(":hidden")){
+                var id=$(this).data("name");
+                var message=$(this).text();
+                html+="<th colspan='10' id='"+id+"' align='middle' style='font-size:15px;padding-top:5px;word-wrap:break-word'>xx</th>"
+                if(printCode==""){
+                    printCode+=id;
+                }else{
+                    printCode+=","+id;
+                }
+            }
+
+        });
+        html+="<th colspan='4'  align='middle' style='font-size:15px;padding-top:5px;word-wrap:break-word'>第<font tdata='PageNO' format='0' color='blue'>##</font>页</span>/共<font tdata='PageCount' format='0' color='blue'>##</font></span>页</th></tr>"
+        html+="</tfoot></table>\""
+        str+="LODOP.ADD_PRINT_TABLE(100,1,"+receiptWith+","+receiptHight+","+html+");"
+       /* $("#printTopA4").find("span").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var id="\""+$(this).data("name")+"\"";
                 var message="\""+$(this).text()+"\"";
@@ -1003,16 +1091,16 @@ function saveA4() {
                     str+="LODOP.SET_PRINT_STYLEA(0,\"Alignment\",2);";
                     printCode+=","+$(this).data("name");
                 }
-                /*  var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
+                /!*  var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
                  console.log(id);
-                 console.log(message);*/
+                 console.log(message);*!/
 
 
                 sum++;
             }
         });
         console.log(str);
-        console.log(printTableCode);
+        console.log(printTableCode);*/
         //得到需要保存的数据
         var printSet={
             id:$("#idA4").val(),
@@ -1022,7 +1110,7 @@ function saveA4() {
             name:$("#receiptNameA4").val(),
             type:$("#receiptTypeA4").val(),
             printTableCode:printTableCode,
-            printTableTh:tabbleth,
+            printTableTh:html,
             //printFootExtend:$("#footExtendWrite").val().replace(/<br>/g,"\\n"),
             ruleReceipt:recordRule,
             commonType:$("#commonTypeA4").val()
