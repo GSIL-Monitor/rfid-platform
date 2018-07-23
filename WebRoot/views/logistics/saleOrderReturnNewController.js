@@ -1054,7 +1054,7 @@ function save() {
         addDetailgridiRow = null;
         addDetailgridiCol = null;
     }
-
+    $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
     var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {

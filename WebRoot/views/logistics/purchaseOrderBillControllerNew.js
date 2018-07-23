@@ -960,6 +960,7 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
+    $("#search_billDate").val(updateTime($("#search_billDate").val()));
     $.ajax({
         dataType: "json",
         async:true,

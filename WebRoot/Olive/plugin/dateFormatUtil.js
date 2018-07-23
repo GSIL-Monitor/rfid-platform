@@ -115,3 +115,19 @@ function TimeCom(dateValue){
     this.msecond = newCom.getMilliseconds();
     this.week = newCom.getDay();
 }
+/*
+*dateTime 客户选择的时间
+* */
+function updateTime(dateTime) {
+    //判断是否需要更新时间到时分秒
+    if(dateTime.length=10){
+        var myDate = new Date();
+        var HH=myDate.getHours();
+        var mm=myDate.getMinutes();
+        var ss=myDate.getSeconds();
+        var time =" "+HH+":"+mm+":"+ss;
+        return dateTime+time;
+    }else {
+        return dateTime;
+    }
+}

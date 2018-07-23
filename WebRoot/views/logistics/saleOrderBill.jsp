@@ -447,7 +447,6 @@
 <jsp:include page="sendStreamNO.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
-<script type="text/javascript" src="<%=basePath%>/views/sys/printSetController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>

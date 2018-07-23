@@ -22,7 +22,7 @@ public abstract class BaseBill {
     protected String billNo;
 
     @Column(nullable = false, length = 19)
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     @Excel(name="日期")
     protected Date billDate;
     @Column(length = 50)

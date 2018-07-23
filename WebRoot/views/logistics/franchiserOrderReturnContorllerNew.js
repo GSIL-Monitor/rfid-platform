@@ -844,7 +844,7 @@ function initDetailData(rowid) {
         $("#edit_customerType").removeAttr('disabled');
         $("#edit_origId").removeAttr('disabled');
         $("#edit_destId").removeAttr('disabled');
-
+        $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
         if ($("#edit_origId").val() == $("#edit_destId").val()) {
             bootbox.alert("不能在相同的单位之间做销售退货");
             cs.closeProgressBar();
@@ -1242,7 +1242,7 @@ function addProductsOnCode() {
     }
 
     function saveother(totActPrice) {
-
+        $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
         cs.showProgressBar();
         $("#edit_customerType").removeAttr('disabled');
         $("#edit_origId").removeAttr('disabled');
