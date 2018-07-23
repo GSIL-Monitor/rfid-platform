@@ -1170,5 +1170,31 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
         $(".selectpicker").selectpicker('val', '');
         $(".selectpicker").selectpicker('refresh');
     }
+    /*
+    *打印参数
+     */
+    var printParameter={
+        fontSize58mm:9,//58mm小票字体的大小
+        fontSize80mm:9,//80mm小票字体的大小
+        fontSize110mm:9,//110mm小票字体的大小
+        fontSizeA4:12,//A4字体的大小
+        fontSizeSanLian:12,//三联字体的大小
+        receiptWidth58mm:220,//58mm小票的宽度
+        receiptWidth80mm:260,//80mm小票的宽度
+        receiptWidth110mm:500,//110mm小票的宽度
+        receiptWidthA4:780,//A4的宽度
+        receiptWidthSanLian:800,//三联的宽度
+        receiptheight58mm:693,//58mm小票的高度
+        receiptheight80mm:741,//80mm小票的高度
+        receiptheight110mm:610,//100mm小票的高度
+        receiptheightA4:639,//A4的高度
+        receiptheightSanLian:300,//三联的高度
+        aRowheight:25,//每行的高度
+        intervalHeight:10,//行之间的间隔
+        sizeArry:"S,XS,M,L,XL,XXL,XXXL,F,其他",
+        sizeArrySanLian:"S,M,L,XL,2XL,3XL,4XL,5XL"
+
+
+    };
 
 </script>

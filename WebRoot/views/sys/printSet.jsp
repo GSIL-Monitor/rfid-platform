@@ -294,6 +294,12 @@
                                 <span>A4</span>
                             </ul>
                         </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2" id="isshowA4N0Size">
+                            <ul class="stecs" data-name="A4N0Size" onclick="selectRuleReceipt('A4N0Size');">
+                                <i></i>
+                                <span>A4(对货)</span>
+                            </ul>
+                        </div>
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2" id="isshowSanLian">
                             <ul class="stecs" data-name="SanLian" onclick="selectRuleReceipt('SanLian');">
                                 <i></i>
@@ -448,7 +454,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
                         <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
                             <div class="headTitle">
-                                <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>
+                                <button id='save_guest_button' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='savePrint()'>
                                     <i class='ace-icon fa fa-save'></i>
                                     <span class='bigger-110'>保存</span>
                                 </button>
@@ -466,6 +472,7 @@
                         <div id="printTopA4">
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billType" id="billTypeA4" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
@@ -563,6 +570,12 @@
                                 <span>A4</span>
                             </ul>
                         </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="A4N0Size" onclick="selectRuleReceiptA4('A4N0Size');">
+                                <i></i>
+                                <span>A4(对货)</span>
+                            </ul>
+                        </div>
                         <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2" >
                             <ul class="stecs" data-name="SanLian" onclick="selectRuleReceiptA4('SanLian');">
                                 <i></i>
@@ -580,8 +593,9 @@
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                                         <span>小票类型:</span>
-                                        <select id="receiptTypeA4" onchange="receiptTypeSelect()">
+                                        <select id="receiptTypeA4" onchange="receiptTypeSelectA4(this)">
                                             <option value="SO">销售单据</option>
+                                            <option value="TR">调拨单</option>
                                         </select>
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
@@ -872,6 +886,12 @@
                                 </ul>
                             </div>
                             <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                                <ul class="stecs" data-name="A4N0Size" onclick="selectRuleReceiptSanLian('A4N0Size');">
+                                    <i></i>
+                                    <span>A4(对货)</span>
+                                </ul>
+                            </div>
+                            <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
                                 <ul class="stecs" data-name="SanLian" onclick="selectRuleReceiptSanLian('SanLian');">
                                     <i></i>
                                     <span>三联</span>
@@ -1027,6 +1047,191 @@
                             <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
                                 <div class="headTitle">
                                     <button id='save_guest_buttonSanLian' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saveSanLian()'>
+                                        <i class='ace-icon fa fa-save'></i>
+                                        <span class='bigger-110'>保存</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="A4NoSizePrint" style="display: none">
+            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="margin-top: 20px;margin-left: 50px;"  >
+                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                    <div class="headTitle">
+                        <div id="edit-A4-dialog-NoSize" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                            <table style="text-align: center;font-size:12px;border-collapse:collapse;"class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <thead >
+                                <tr style="border:1px solid #000;" id="head-A4-dialog-NoSize">
+                                    <th align="left" class="styleIdNoSizeA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款号</th>
+                                    <th align="left" class="styleNameNoSizeA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款名</th>
+                                    <th align="left" class="class1NameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">厂家/品牌</th>
+                                    <th align="left" class="qtyNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">数量</th>
+                                    <th align="left" class="priceNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">吊牌价</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot id="foot-A4-dialog-NoSize">
+                                <tr>
+                                    <th align="left" class="styleIdNoSizeA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;"></th>
+                                    <th align="left" class="styleNameNoSizeA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;"></th>
+                                    <th align="left" class="class1NameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;"></th>
+                                    <th align="left" class="qtyNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">0</th>
+                                    <th align="left" class="priceNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;"></th>
+                                </tr>
+                                <tr>
+                                    <th align="left" data-name ='remark' colspan="4" class="remarkNoSizeA4" nowrap="nowrap"   style="border:0px;font-size:10px; text-align:center">备注</th>
+                                </tr>
+                                <tr>
+                                    <th align="left" data-name ='destName' colspan="4" class="destNameNoSizeA4" nowrap="nowrap"  style="border:0px;font-size:10px; text-align:center">仓库</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="ruleReceiptA4NoSize">
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <span style="text-align:center;display: block">小票规格:</span>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="58" onclick="selectRuleReceiptA4NoSize(58);">
+                                <i></i>
+                                <span>58mm</span>
+                            </ul>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="80" onclick="selectRuleReceiptA4NoSize(80);">
+                                <i></i>
+                                <span>80mm</span>
+                            </ul>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="110" onclick="selectRuleReceiptA4NoSize(110);">
+                                <i></i>
+                                <span>110mm</span>
+                            </ul>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="A4" onclick="selectRuleReceiptA4NoSize('A4');">
+                                <i></i>
+                                <span>A4</span>
+                            </ul>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2">
+                            <ul class="stecs" data-name="A4N0Size" onclick="selectRuleReceiptA4NoSize('A4N0Size');">
+                                <i></i>
+                                <span>A4(对货)</span>
+                            </ul>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2	col-lg-2" >
+                            <ul class="stecs" data-name="SanLian" onclick="selectRuleReceiptA4NoSize('SanLian');">
+                                <i></i>
+                                <span>三联</span>
+                            </ul>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <input type="text" id="idA4NoSize" style="display: none"/>
+                                    <input type="text" id="ownerIdA4NoSize" style="display: none"/>
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>小票名称:</span>
+                                        <input type="text" id="receiptNameA4NoSize"/>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>小票类型:</span>
+                                        <select id="receiptTypeA4NoSize" onchange="receiptTypeSelectNoSizeA4(this)">
+                                            <option value="TR">调拨单</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>公共类型:</span>
+                                        <select id="commonTypeA4NoSize">
+                                            <option value="1">否</option>
+                                            <option value="0">是</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <h3 onclick="selectTablePrintA4NoSize()">
+                                        <span style="font-size: 14px;">表头打印</span>
+                                    </h3>
+                                </div>
+                                <div class="headTitleDiv" id="tablePrintA4NoSize" style="display: none">
+                                    <ul>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="styleId" onclick="selectThisA4NoSizeclass(this,'styleIdNoSizeA4')">
+                                                <i></i>
+                                                <span>款号</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="styleName" onclick="selectThisA4NoSizeclass(this,'styleNameNoSizeA4')">
+                                                <i></i>
+                                                <span>款名</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="class1" onclick="selectThisA4NoSizeclass(this,'class1NameNoSizeA4')">
+                                                <i></i>
+                                                <span>厂家/品牌</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="qty" onclick="selectThisA4NoSizeclass(this,'qtyNoSizeA4')">
+                                                <i></i>
+                                                <span>数量</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="price" onclick="selectThisA4NoSizeclass(this,'priceNoSizeA4')">
+                                                <i></i>
+                                                <span>吊牌价</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <h3 onclick="selectFootPrintA4NoSize()">
+                                        <span style="font-size: 14px;">页脚打印</span>
+                                    </h3>
+                                    <div class="headTitleDiv" id="footPrintA4NoSize">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4NoSizeclass(this,'remarkNoSizeA4')">
+                                                    <i></i>
+                                                    <span>备注</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="destName" onclick="selectThisA4NoSizeclass(this,'destNameNoSizeA4')">
+                                                    <i></i>
+                                                    <span>仓库</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                            <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                                <div class="headTitle">
+                                    <button id='save_guest_buttonA4NoSize' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='saveA4NoSize()'>
                                         <i class='ace-icon fa fa-save'></i>
                                         <span class='bigger-110'>保存</span>
                                     </button>
