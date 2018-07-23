@@ -1,26 +1,4 @@
-var printParameter={
-    fontSize58mm:9,//58mm小票字体的大小
-    fontSize80mm:9,//80mm小票字体的大小
-    fontSize110mm:9,//110mm小票字体的大小
-    fontSizeA4:12,//A4字体的大小
-    fontSizeSanLian:12,//三联字体的大小
-    receiptWidth58mm:220,//58mm小票的宽度
-    receiptWidth80mm:260,//80mm小票的宽度
-    receiptWidth110mm:500,//110mm小票的宽度
-    receiptWidthA4:780,//A4的宽度
-    receiptWidthSanLian:800,//三联的宽度
-    receiptheight58mm:693,//58mm小票的高度
-    receiptheight80mm:741,//80mm小票的高度
-    receiptheight110mm:610,//100mm小票的高度
-    receiptheightA4:639,//A4的高度
-    receiptheightSanLian:300,//三联的高度
-    aRowheight:25,//每行的高度
-    intervalHeight:10,//行之间的间隔
-    sizeArry:"S,XS,M,L,XL,XXL,XXXL,F,其他",
-    sizeArrySanLian:"S,M,L,XL,2XL,3XL,4XL,5XL"
 
-
-};
 
 var LODOP; //声明为全局变量
 
@@ -52,6 +30,7 @@ function selectRuleReceipt(sum) {
         $("#edit-A4-dialog").html(html);
         loadingTablecheck();
         $("#A4Print").show();
+        $("#A4NoSizePrint").hide();
         $("#receiptPrint").hide();
         $("#SanLianPrint").hide();
         $("#ruleReceiptA4").find("ul").each(function(index,element){
@@ -68,7 +47,27 @@ function selectRuleReceipt(sum) {
             }
 
         });
-    }else if(sum=="SanLian"){
+    }else if(sum=="A4N0Size"){
+        debugger
+        $("#A4NoSizePrint").show();
+        $("#SanLianPrint").hide();
+        $("#A4Print").hide();
+        $("#receiptPrint").hide();
+        $("#ruleReceiptA4NoSize").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4NoSize").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /* if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                //findPrintSetSanLian(sum);
+                /*}else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    } else if(sum=="SanLian"){
         var html=lodingTableSanLian();
         $("#edit-SanLian-dialog").html(html);
         loadingTablecheckSanLian();
@@ -125,6 +124,25 @@ function selectRuleReceiptA4(sum) {
             }
 
         });
+    }else if(sum=="A4N0Size"){
+        $("#A4NoSizePrint").show();
+        $("#SanLianPrint").hide();
+        $("#A4Print").hide();
+        $("#receiptPrint").hide();
+        $("#ruleReceiptA4NoSize").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4NoSize").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /* if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                //findPrintSetSanLian(sum);
+                /*}else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
     }else if(sum=="SanLian"){
         var html=lodingTableSanLian();
         $("#edit-SanLian-dialog").html(html);
@@ -168,6 +186,84 @@ function selectRuleReceiptA4(sum) {
 
 
 }
+function selectRuleReceiptA4NoSize(sum) {
+    if(sum=="A4N0Size"){
+        $("#ruleReceiptA4NoSize").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4NoSize").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /* if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                //findPrintSetSanLian(sum);
+                /*}else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }else if(sum=="A4"){
+        var html=lodingTableA4();
+        $("#edit-A4-dialog").html(html);
+        loadingTablecheck();
+        $("#A4Print").show();
+        $("#receiptPrint").hide();
+        $("#SanLianPrint").hide();
+        $("#ruleReceiptA4").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /* if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                findPrintSetA4(sum);
+                /*}else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }else if(sum=="SanLian"){
+        var html=lodingTableSanLian();
+        $("#edit-SanLian-dialog").html(html);
+        loadingTablecheckSanLian();
+        $("#SanLianPrint").show();
+        $("#A4Print").hide();
+        $("#receiptPrint").hide();
+        $("#ruleReceiptSanLian").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptSanLian").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /* if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                findPrintSetSanLian(sum);
+                /*}else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }else{
+        $("#A4Print").hide();
+        $("#receiptPrint").show();
+        $("#SanLianPrint").hide();
+        $("#ruleReceipt").find("ul").each(function(index,element){
+            var b=$("#ruleReceipt").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /*  if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                findPrintSet(sum);
+                /* }else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }
+}
 function selectRuleReceiptSanLian(sum) {
     if(sum=="SanLian"){
 
@@ -198,6 +294,25 @@ function selectRuleReceiptSanLian(sum) {
                 /* if($(this).attr("class")=="stecs"){*/
                 $(this).attr("class","stecs on") ;
                 findPrintSetA4(sum);
+                /*}else{
+                 $(this).attr("class","stecs") ;
+                 }*/
+            }else{
+                $(this).attr("class","stecs") ;
+            }
+
+        });
+    }else if(sum=="A4N0Size"){
+        $("#A4NoSizePrint").show();
+        $("#SanLianPrint").hide();
+        $("#A4Print").hide();
+        $("#receiptPrint").hide();
+        $("#ruleReceiptSanLian").find("ul").each(function(index,element){
+            var b=$("#ruleReceiptA4NoSize").find("ul")[index].getAttribute('data-name');
+            if(b==sum){
+                /* if($(this).attr("class")=="stecs"){*/
+                $(this).attr("class","stecs on") ;
+                //findPrintSetSanLian(sum);
                 /*}else{
                  $(this).attr("class","stecs") ;
                  }*/
@@ -245,7 +360,7 @@ function writeFootExtendSanLian(t) {
     $("#footExtendSanLian").find("span").html($(t).val());
 }
 
-function save() {
+function savePrint() {
     var recordRule="";//记录选择的规格
     var isSavePrint=false;//是否保存
     var printCode="";
@@ -715,6 +830,7 @@ function receiptTypeSelect() {
 
 }
 
+
 function selectheadPrintA4() {
     $("#headPrintA4").show();
     $("#tablePrintA4").hide();
@@ -729,6 +845,14 @@ function selectFootPrintA4() {
     $("#headPrintA4").hide();
     $("#tablePrintA4").hide();
     $("#footPrintA4").show();
+}
+function selectTablePrintA4NoSize() {
+    $("#tablePrintA4NoSize").show();
+    $("#footPrintA4NoSize").hide();
+}
+function selectFootPrintA4NoSize() {
+    $("#tablePrintA4NoSize").hide();
+    $("#footPrintA4NoSize").show();
 }
 function selectheadPrintSanLian() {
     $("#headPrintSanLian").show();
@@ -761,6 +885,31 @@ function selectThisSanLian(t,selectId) {
     }else{
         $(t).attr("class","stecs");
         $("#"+selectId).hide();
+    }
+}
+function selectThisA4NoSizeclass(t,selectId) {
+    if($(t).attr("class")=="stecs"){
+        $(t).attr("class","stecs on");
+        //$("."+selectId).show();
+        /*$("#edit-A4-dialog-TR").find("th").each(function (index,element) {
+            if($(this).data("name")==selectId){
+                console.log("saber:"+$(this).data("name"));
+                $(this).show();
+            }
+        });*/
+        $("#edit-A4-dialog-NoSize").find("."+selectId).show();
+
+    }else{
+        $(t).attr("class","stecs");
+        $("#edit-A4-dialog-NoSize").find("."+selectId).hide();
+        //$("."+selectId).hide();
+        /*$("#edit-A4-dialog-TR").find("th").each(function (index,element) {
+            if($(this).data("name")==selectId){
+                console.log("saber:"+$(this).data("name"));
+                $(this).hide();
+            }
+        });*/
+
     }
 }
 function selectThisA4class(t,selectId) {
@@ -1392,4 +1541,70 @@ function saveSanLian() {
         });
     }
 
+}
+function saveA4NoSize() {
+    var recordRule="";//记录选择的规格
+    var isSavePrint=false;//是否保存
+    var printCode="";
+    var printTableCode="";
+    $("#ruleReceiptA4NoSize").find("ul").each(function(index,element){
+        if($(this).attr("class")!="stecs"){
+            recordRule=$(this).data("name");
+            isSavePrint=true;
+        }
+    });
+    if($("#receiptNameA4NoSize").val()==""||$("#receiptNameSanLian").val()==undefined){
+        $.gritter.add({
+            text: "请填写小票名称",
+            class_name: 'gritter-success  gritter-light'
+        });
+        return;
+    }
+    if(isSavePrint){
+        if(recordRule=="A4N0Size"){
+            receiptWith=printParameter.receiptWidthA4;
+            receiptHight=printParameter.receiptheightA4;
+            receiptFontSize=printParameter.fontSizeA4;
+        }
+        LODOP=getLodop();
+        var tabbleth="";
+        var tabblethall="";
+        var tabbleEndFoot=""
+        var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
+        var html="\"<table style='text-align:center;font-size:10px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead ><tr>"
+        $("#head-A4-dialog-NoSize").find("th").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var message=$(this).html();
+                var classname=$(this).data("name");
+                console.log(classname);
+                debugger
+                if(classname!=undefined&&classname!=""){
+                    tabbleEndFoot+="<tr><th width='100%'align='middle' colspan='15' id='"+classname+"' style='font-size:15px;padding-top:5px'>xx</th></tr>"
+                }else{
+                    html+="<th align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>";
+                    tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>";
+                    tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>";
+                }
+            }
+        });
+        $("#foot-A4-dialog-NoSize").find("th").each(function (index,element) {
+            if(!$(this).is(":hidden")){
+                var message=$(this).html();
+                var classname=$(this).data("name");
+                console.log(classname);
+                debugger
+                if(classname!=undefined&&classname!=""){
+                    tabbleEndFoot+="<tr><th width='100%'align='middle' colspan='15' id='"+classname+"' style='font-size:15px;padding-top:5px'>xx</th></tr>"
+                }
+            }
+        });
+        html+="</tr>"
+        html+="</thead ><tbody id='loadtabNoSize'></tbody><tfoot><tr>"+tabbleth+"</tr><tr>"+tabblethall+"</tr>"+tabbleEndFoot;
+        html+="<tr><th colspan='15'  align='middle' style='font-size:15px;padding-top:5px;word-wrap:break-word'>第<font tdata='PageNO' format='0' color='blue'>##</font>页</span>/共<font tdata='PageCount' format='0' color='blue'>##</font></span>页</th></th>"
+        html+="</tfoot></table>\"";
+        console.log(html);
+        var str="LODOP.ADD_PRINT_TABLE(100,1,"+receiptWith+","+receiptHight+","+html+");"
+        eval(str);
+        LODOP.PREVIEW();
+    }
 }
