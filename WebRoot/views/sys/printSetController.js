@@ -1649,9 +1649,14 @@ function saveA4NoSize() {
 
 
                     html+="<th align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>";
-                    tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>";
-                    tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>";
-                    if(printTableCode==""){
+                    if(classname=="qty"){
+                        tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>";
+                        tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>";
+                    }else{
+                        tabbleth+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>";
+                        tabblethall+="<td align='middle' colspan='3'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>";
+                    }
+                   if(printTableCode==""){
                         printTableCode+=classname;
                     }else {
                         printTableCode += "," + classname;

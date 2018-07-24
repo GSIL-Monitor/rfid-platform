@@ -1006,21 +1006,20 @@ function confirmWareHouseIn() {
 
     $("#add-uniqCode-dialog").modal('hide');
 }
-function doPrintA4() {
+/*function doPrintA4() {
     var billno = $("#edit_billNo").val();
     $.ajax({
         dataType: "json",
         url: basePath + "/logistics/transferOrder/printA4Info.do",
         data: {
             "billNo": billno,
-            "ruleReceipt":"A4",
+            "ruleReceipt":"A4N0Size",
             "type":"TR"
 
         },
         type: "POST",
         success: function (msg) {
             if (msg.success) {
-                debugger
                 var print = msg.result.print;
                 var bill = msg.result.bill;
                 var billDtl = msg.result.dtl;
@@ -1080,6 +1079,94 @@ function doPrintA4() {
     });
 
 
+}*/
+function doPrintA4() {
+    var billno = $("#edit_billNo").val();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/transferOrder/printA4Info.do",
+        data: {
+            "billNo": billno,
+            "ruleReceipt":"A4N0Size",
+            "type":"TR"
+
+        },
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+                var print = msg.result.print;
+                var bill = msg.result.bill;
+                var billDtl = msg.result.dtl;
+                var LODOP = getLodop();
+
+
+
+                //LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+                $("#edit-dialogA4").html(print.printTableTh);
+                var printCode=print.printCode;
+                var printCodeArray=printCode.split(",");
+                for(var i=0;i<printCodeArray.length;i++){
+                    debugger
+                    var plp = printCodeArray[i];
+                    var message = "";
+                    if(plp=="remark"){
+                        if(bill[plp]!=undefined&&bill[plp]!=""){
+                            message ="备注:"+ bill[plp];
+                        }else{
+                            message = "备注:";
+                        }
+
+                    }else if(plp=="destName"){
+                        if(bill[plp]!=undefined&&bill[plp]!=""){
+                            message ="仓库:"+ bill[plp];
+                        }else{
+                            message = "仓库:";
+                        }
+                    }
+
+
+                    $("#edit-dialogA4").find("#"+plp).text(message);
+                }
+                var tbodyCont=""
+                for(var a=0;a<billDtl.length;a++){
+                    var del=billDtl[a];
+                    var printTableCode=print.printTableCode.split(",");
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    for(var b=0;b<printTableCode.length;b++){
+
+                        if(printTableCode[b]=="qty"){
+                            var qty = 0;
+                            switch ($("#form_printSelect").val()) {
+                                case "0":
+                                    qty = del.inQty
+                                    break;
+                                case "1":
+                                    qty = del.outQty
+                                    break;
+                                case "2":
+                                    qty = del.qty
+                                    break;
+                            }
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" +qty + "</td>"
+                        }else {
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }
+
+                    }
+                    tbodyCont+="</tr>"
+                }
+                $("#loadtabNoSize").html(tbodyCont);
+                console.log($("#edit-dialogA4").html());
+                //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthA4,printParameter.receiptheightSanLian,$("#edit-dialogA4").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 function cancel() {
 

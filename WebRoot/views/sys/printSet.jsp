@@ -1067,7 +1067,7 @@
                                 <tr style="border:1px solid #000;" id="head-A4-dialog-NoSize">
                                     <th align="left" data-name="styleId" class="styleIdNoSizeA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款号</th>
                                     <th align="left" data-name="styleName" class="styleNameNoSizeA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款名</th>
-                                    <th align="left" data-name="class1Name" class="class1NameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">厂家/品牌</th>
+                                    <th align="left" data-name="supplierName" class="supplierNameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">厂家/品牌</th>
                                     <th align="left" data-name="qty" class="qtyNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">数量</th>
                                     <th align="left" data-name="price" class="priceNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">吊牌价</th>
                                 </tr>
@@ -1078,7 +1078,7 @@
                                 <tr>
                                     <th align="left" class="styleIdNoSizeA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;"></th>
                                     <th align="left" class="styleNameNoSizeA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;"></th>
-                                    <th align="left" class="class1NameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;"></th>
+                                    <th align="left" class="supplierNameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;"></th>
                                     <th align="left" class="qtyNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">0</th>
                                     <th align="left" class="priceNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;"></th>
                                 </tr>
@@ -1182,7 +1182,7 @@
                                             </div>
                                         </li>
                                         <li class="headTitleLi">
-                                            <div class="stecs on" data-name="class1" onclick="selectThisA4NoSizeclass(this,'class1NameNoSizeA4')">
+                                            <div class="stecs on" data-name="supplierName" onclick="selectThisA4NoSizeclass(this,'supplierNameNoSizeA4')">
                                                 <i></i>
                                                 <span>厂家/品牌</span>
                                             </div>
