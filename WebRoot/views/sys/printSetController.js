@@ -1154,6 +1154,10 @@ function saveA4() {
                     html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
                     tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#.00'>##</font></td>"
                     tabblethall+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#.00'>##</font></td>"
+                }else if(classname=="other"){
+                    html+="<th align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>";
+                    tabbleth+="<td align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>";
+                    tabblethall+="<td align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>";
                 }else{
                     html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
                     tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>"

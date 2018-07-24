@@ -1214,6 +1214,8 @@ function doPrintA4Size() {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
                         }else if(printParameter.sizeArry.indexOf(printTableCode[b])!=-1){
                             tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printTableCode[b]=="other"){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
                         }else{
                             tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
                         }
@@ -1225,8 +1227,8 @@ function doPrintA4Size() {
                 console.log($("#edit-dialogA4").html());
                 //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
                 LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthA4,printParameter.receiptheightSanLian,$("#edit-dialogA4").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
 
 
             } else {
