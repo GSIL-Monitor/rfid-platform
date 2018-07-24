@@ -74,12 +74,12 @@ public class FranchiseeBillService implements IBaseService<SaleOrderBill, String
     }
 
     public List<Business> findBusiness(String billno){
-        String hql = "from Business b where b.billId=?";
+        String hql = "from Business b where b.billId=? and b.type=0";
         return this.franchiseeBillDao.find(hql,new Object[] {billno});
     }
-    public List<Record> findRecord(String taskid){
-        String hql = "from Record b where b.taskId in (?)";
-        return this.franchiseeBillDao.find(hql,new Object[] {taskid});
+    public List<Record> findRecord(String inSql){
+        String hql = "from Record record  where "+inSql;
+        return this.franchiseeBillDao.find(hql);
     }
     public List<EpcStock> findEpcStock(String code){
         String hql = "from EpcStock b where b.code=?";

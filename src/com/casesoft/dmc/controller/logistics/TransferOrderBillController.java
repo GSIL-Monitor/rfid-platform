@@ -392,6 +392,24 @@ public class TransferOrderBillController extends BaseController implements ILogi
             return new MessageBox(false,"获取数据失败"+e.getMessage());
         }
     }
+    /**
+     * 调拨单A4(有尺寸)打印模块
+     * @param billNo 单据编号
+     * @Author czf 2018-7-24
+     * */
+    @RequestMapping(value = "/printA4SizeInfo")
+    @ResponseBody
+    public MessageBox printA4SizeInfo(String billNo,String ruleReceipt,String type){
+        try {
+            //Print print = this.printService.findPrint(Long.parseLong("42"));//打印Id需要优化不能些定值
+            User currentUser = this.getCurrentUser();
+            PrintSet printSet = this.printSetService.findPrintSet(ruleReceipt, type, currentUser.getOwnerId());
+            Map<String, Object> map = this.printSetService.printMessageA4(printSet.getId()+"", billNo);
+            return new MessageBox(true, "查询成功",map);
+        }catch (Exception e){
+            return new MessageBox(false,"获取数据失败"+e.getMessage());
+        }
+    }
     @RequestMapping(value = "/findResourceButton")
     @ResponseBody
     public MessageBox findResourceButton(){

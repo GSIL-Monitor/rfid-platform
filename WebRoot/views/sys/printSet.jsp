@@ -593,7 +593,7 @@
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                                         <span>小票类型:</span>
-                                        <select id="receiptTypeA4" onchange="receiptTypeSelectA4(this)">
+                                        <select id="receiptTypeA4" onchange="receiptTypeSelectA4()">
                                             <option value="SO">销售单据</option>
                                             <option value="TR">调拨单</option>
                                         </select>
@@ -649,7 +649,7 @@
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
-                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'coustmerA4')">
+                                                <div class="stecs on" data-name="coustmer" onclick="selectThisA4(this,'coustmerA4')">
                                                     <i></i>
                                                     <span>客户</span>
                                                 </div>

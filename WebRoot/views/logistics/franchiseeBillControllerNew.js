@@ -257,6 +257,7 @@ function initGrid() {
 }
 
 function initDetailData(rowid) {
+    $("#myTab li").eq(0).find("a").click();
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     $(".selectpicker").selectpicker('refresh');

@@ -560,6 +560,10 @@ function initButtonGroup() {
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
+            "<button id='TRDtl_doPrintA4Size' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4Size()'>" +
+            "    <i class='ace-icon fa fa-print'></i>" +
+            "    <span class='bigger-110'>A4打印(有尺寸)</span>" +
+            "</button>"+
             "<button id='TRDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>A4打印</span>" +
@@ -1165,6 +1169,72 @@ function doPrintA4() {
             } else {
                 bootbox.alert(msg.msg);
             }
+        }
+    });
+}
+function doPrintA4Size() {
+    var billno = $("#edit_billNo").val();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/transferOrder/printA4SizeInfo.do",
+        data: {
+            "billNo": billno,
+            "ruleReceipt":"A4",
+            "type":"TR"
+
+        },
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                console.log(print);
+                console.log(cont);
+                console.log(contDel);
+                var LODOP = getLodop();
+                //eval(print.printCont);
+                $("#edit-dialogA4").html(print.printTableTh);
+                var printCode=print.printCode;
+                var printCodeArray=printCode.split(",");
+                for(var i=0;i<printCodeArray.length;i++){
+                    debugger
+                    var plp = printCodeArray[i];
+                    var message = cont[plp];
+                    $("#edit-dialogA4").find("#"+plp).text(message);
+                }
+                var tbodyCont=""
+                for(var a=0;a<contDel.length;a++){
+                    var del=contDel[a];
+                    var printTableCode=print.printTableCode.split(",");
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    for(var b=0;b<printTableCode.length;b++){
+                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printParameter.sizeArry.indexOf(printTableCode[b])!=-1){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printTableCode[b]=="other"){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else{
+                            tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }
+
+                    }
+                    tbodyCont+="</tr>"
+                }
+                $("#loadtabA4").html(tbodyCont);
+                console.log($("#edit-dialogA4").html());
+                //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthA4,printParameter.receiptheightSanLian,$("#edit-dialogA4").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+
         }
     });
 }

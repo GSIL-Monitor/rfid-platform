@@ -670,6 +670,7 @@ function findPrintSetA4(sum) {
             if (msg.success) {
                 var result=msg.result;
                 if(result!=undefined){
+
                     $("#idA4").val(result.id);
                     $("#ownerIdA4").val(result.ownerId);
                     $("#receiptNameA4").val(result.name);
@@ -697,22 +698,33 @@ function findPrintSetA4(sum) {
                             $("#"+name+"A4").show();
                         }
                     });
+                    $("#tablePrintA4").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+
+                        if(!(result.printTableCode.indexOf(name)!= -1)){
+                            $(this).attr("class","stecs");
+                            $("#"+name+"A4").hide();
+                        }else{
+                            $(this).attr("class","stecs on");
+                            $("#"+name+"A4").show();
+                        }
+                    });
                     $("#edit-A4-dialog").find("th").each(function (index,element) {
-                        /* var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                        var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
-                         $(this).hide();
-                         }*/
+                             $(this).hide();
+                         }
                     });
                     $("#edit-A4-dialog").find("td").each(function (index,element) {
-                        /* var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                        var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
-                         $(this).hide();
-                         }*/
+                            $(this).hide();
+                         }
                     });
                 }else{
-                    $("#id").val("");
-                    $("#ownerId").val("");
-                    $("#receiptName").val("");
+                    $("#idA4").val("");
+                    $("#ownerIdA4").val("");
+                    $("#receiptNameA4").val("");
                     //$("#receiptType").val("SO");
                     $("#commonType").val("1");
                     $("#headPrint").find("div").each(function (index,element) {
@@ -894,6 +906,18 @@ function receiptTypeSelect() {
         if(!($(this).attr("class")=="stecs")) {
             sum=$(this).data("name")
             findPrintSet(sum);
+        }
+    });
+
+}
+function receiptTypeSelectA4() {
+    var sum;
+
+    $("#ruleReceiptA4").find("ul").each(function(index,element){
+
+        if(!($(this).attr("class")=="stecs")) {
+            sum=$(this).data("name")
+            findPrintSetA4(sum);
         }
     });
 
@@ -1130,6 +1154,10 @@ function saveA4() {
                     html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
                     tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#.00'>##</font></td>"
                     tabblethall+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#.00'>##</font></td>"
+                }else if(classname=="other"){
+                    html+="<th align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>";
+                    tabbleth+="<td align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='SubSum' format='#'>##</font></td>";
+                    tabblethall+="<td align='middle' colspan='1'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'><font color='black' tdata='AllSum' format='#'>##</font></td>";
                 }else{
                     html+="<th align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'>"+message+"</th>"
                     tabbleth+="<td align='middle' colspan='2'nowrap='nowrap' style='height:30px;border:0px;font-size:10px;border:1px solid #000;word-wrap:break-word;'></td>"

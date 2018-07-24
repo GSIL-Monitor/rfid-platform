@@ -368,6 +368,87 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             map.put("cont",mapcont);
             map.put("contDel",sendDelList);
         }
+        if(billno.indexOf(BillConstant.BillPrefix.Transfer)!=-1){
+            Map<String,Object> mapcont=new HashMap<String,Object>();
+            String hql="from PrintSet t where t.id=?";
+            PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+            TransferOrderBill transferOrderBill = this.transferOrderBillService.load(billno);
+            mapcont.put("storeName","Ancient Stone");
+            mapcont.put("billType","调拨单");
+            mapcont.put("billNo","单号:"+billno);
+            User user = CacheManager.getUserById(transferOrderBill.getOprId());
+            mapcont.put("makeBill","制单人:"+user.getName());
+            mapcont.put("billDate", "日期:"+CommonUtil.getDateString(transferOrderBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("coustmer","客户:"+transferOrderBill.getDestUnitName());
+            if(CommonUtil.isNotBlank(transferOrderBill.getRemark())){
+                mapcont.put("remark","备注:"+transferOrderBill.getRemark());
+            }else{
+                mapcont.put("remark","备注:");
+            }
+            List<TransferOrderBillDtl> billDtlByBillNo = this.transferOrderBillService.findBillDtlByBillNo(billno);
+            String sizeArray = PropertyUtil.getValue("sizeArray");
+            Map<String,Object> sendDel=new HashMap<String,Object>();//存储根据款号和颜色封装的map
+            List<Object> sendDelList=new ArrayList<Object>();//存储发送前台的list
+            String[] sizeArrays = sizeArray.split(",");
+            for(TransferOrderBillDtl transferOrderBillDtl:billDtlByBillNo){
+                Map alreadyMap =( Map<String,Object>)sendDel.get(transferOrderBillDtl.getStyleId() + transferOrderBillDtl.getColorId());
+                Style style = CacheManager.getStyleById(transferOrderBillDtl.getStyleId());
+                if(CommonUtil.isBlank(alreadyMap)){
+                    Map<String,Object> saveSaleOrderDtl=new HashMap<String,Object>();
+                    boolean isNoOther=false;//判断是否是其他
+                    for(int i=0;i<sizeArrays.length;i++){
+                        if(CommonUtil.isNotBlank(transferOrderBillDtl.getSizeId())&&transferOrderBillDtl.getSizeId().equals(sizeArrays[i])){
+                            saveSaleOrderDtl.put(sizeArrays[i],transferOrderBillDtl.getQty());
+                            isNoOther=true;
+                        }else {
+                            saveSaleOrderDtl.put(sizeArrays[i],0);
+                        }
+                    }
+                    if(!isNoOther){
+                        saveSaleOrderDtl.put("other",transferOrderBillDtl.getQty());
+                    }else{
+                        saveSaleOrderDtl.put("other",0);
+                    }
+                    saveSaleOrderDtl.put("styleId",transferOrderBillDtl.getStyleId());
+
+                    saveSaleOrderDtl.put("styleName",style.getStyleName());
+                    saveSaleOrderDtl.put("colorId",transferOrderBillDtl.getColorId());
+                    saveSaleOrderDtl.put("qty",transferOrderBillDtl.getQty());
+                    saveSaleOrderDtl.put("price",style.getPrice());
+                    saveSaleOrderDtl.put("totPrice",Integer.parseInt(saveSaleOrderDtl.get("qty")+"")*style.getPrice());
+                    sendDel.put(transferOrderBillDtl.getStyleId() + transferOrderBillDtl.getColorId(),saveSaleOrderDtl);
+                }else{
+                    boolean isNoOther=false;//判断是否是其他
+                    for(int i=0;i<sizeArrays.length;i++){
+                        if(CommonUtil.isNotBlank(transferOrderBillDtl.getSizeId())&&transferOrderBillDtl.getSizeId().equals(sizeArrays[i])){
+                            Long sizeQty = Long.parseLong(alreadyMap.get(sizeArrays[i])+"");
+                            alreadyMap.put(sizeArrays[i],sizeQty+transferOrderBillDtl.getQty());
+                            Long qty = Long.parseLong(alreadyMap.get("qty")+"");
+                            alreadyMap.put("qty",qty+transferOrderBillDtl.getQty());
+                            alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
+                            isNoOther=true;
+                        }
+                    }
+                    if(!isNoOther){
+                        Long sizeQty = Long.parseLong(alreadyMap.get("other")+"");
+                        alreadyMap.put("other",sizeQty+transferOrderBillDtl.getQty());
+                        Long qty = Long.parseLong(alreadyMap.get("qty")+"");
+                        alreadyMap.put("qty",qty+transferOrderBillDtl.getQty());
+                        alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
+                    }
+                }
+            }
+            Iterator it = sendDel.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                Object value = entry.getValue();
+                sendDelList.add(value);
+            }
+            map.put("print",printSet);
+            map.put("cont",mapcont);
+            map.put("contDel",sendDelList);
+        }
         return map;
     }
     public Map<String,Object> printMessageSanLian(String id,String billno)throws Exception{
