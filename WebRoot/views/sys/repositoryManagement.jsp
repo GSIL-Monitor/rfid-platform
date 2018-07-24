@@ -53,7 +53,7 @@
                             <div class="col-md-5 col-lg-5">
                                 <div class="widget-box widget-color-blue light-border">
                                     <div class="widget-header">
-                                        <h5 class="widget-title">组织架构</h5>
+                                        <h5 class="widget-title">仓库信息</h5>
                                         <div class="widget-toolbar no-border">
                                             <button class="btn btn-xs btn-success bigger" onclick="add();">
                                                 <i class="ace-icon fa fa-plus"></i>
@@ -68,131 +68,70 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <%--右边展示详细信息--%>
-                            <div class="col-md-7 col-lg-7">
-                                <div class="widget-box widget-color-blue light-border">
-                                    <div class="widget-header">
-                                        <h5 class="widget-title">组织信息</h5>
-                                        <div class="widget-toolbar no-border">
-                                            <button class="btn btn-xs btn-yellow bigger" onclick="saveEdit();">
-                                                <i class="ace-icon fa fa-save"></i>
-                                                保存
-                                            </button>
-                                        </div>
+                                <%--右边展示详细信息--%>
+                            <div class="widget-box transparent">
+                                <div class="widget-header ">
+                                    <div class="widget-toolbar no-border">
+                                        <ul class="nav nav-tabs" id="myTab">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#skuDetail">SKU明细</a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#codeDetail">唯一码明细</a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#styleDetail">唯一码明细</a>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div class="widget-body" style="height:600px">
-                                        <div class="widget-main no-padding">
-                                            <form class="form-horizontal" id="companyInfo" style="padding-top: 20px">
-                                                <input type="hidden" name="id"/>
-
-                                                <input type="hidden" id="info_creatorId" name='creatorId' hidden="true">
-                                                <input type="hidden" id="info_createTime" name='createTime'
-                                                       hidden="true">
-                                                <div class="form-group" id="codeGroup">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_code">编号</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_code" name="code"
-                                                               type="text" readonly/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_name">名称</label>
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_name" name="name"
-                                                               type="text" placeholder=""/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_ownerId">所属方</label>
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <div class="input-group">
-                                                            <input class="form-control" id="info_ownerId"
-                                                                   type="text" name="ownerId" readonly/>
-                                                            <span class="input-group-btn">
-                                                                 <button class="btn btn-sm btn-default" disabled="disabled">
-                                                                    <i class="ace-icon fa fa-list"></i>
-                                                                </button>
-                                                            </span>
-                                                            <input class="form-control" id="info_unitName"
-                                                                   type="text" name="unitName" readonly/>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="widget-main padding-12 no-padding-left no-padding-right">
+                                        <div class="tab-content padding-4">
+                                            <div id="skuDetail" class="tab-pane  active" style="height:80%;">
+                                                <div class="col-sm-7">
+                                                    <div class="col-xs-12 col-sm-12">
+                                                        <div class="widget-box widget-color-blue  light-border" id="sku">
+                                                            <div class="widget-header">
+                                                                <h5 class="widget-title">按sku汇总</h5>
+                                                            </div>
+                                                            <table id="gridsku"></table>
+                                                            <div id="grid-pagersku"></div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="from_tel">联系电话</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="from_tel" name="tel"
-                                                               type="text"
-                                                               placeholder=""/>
+                                            </div>
+                                            <div id="codeDetail" class="tab-pane" style="height:80%;">
+                                                <div class="col-sm-7">
+                                                    <div class="col-xs-12 col-sm-12">
+                                                        <div class="widget-box widget-color-blue  light-border" id="code">
+                                                            <div class="widget-header">
+                                                                <h5 class="widget-title">按code汇总</h5>
+                                                            </div>
+                                                            <table id="gridcode"></table>
+                                                            <div id="grid-pagercode"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_linkman">联系人</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_linkman" name="linkman"
-                                                               type="text" placeholder=""/>
+                                            </div>
+                                            <div id="styleDetail" class="tab-pane" style="height:80%;">
+                                                <div class="col-sm-7">
+                                                    <div class="col-xs-12 col-sm-12">
+                                                        <div class="widget-box widget-color-blue  light-border" id="style">
+                                                            <div class="widget-header">
+                                                                <h5 class="widget-title">按款汇总</h5>
+                                                            </div>
+                                                            <table id="gridstyle"></table>
+                                                            <div id="grid-pagerstyle"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_email">邮箱</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_email" name="email"
-                                                               type="text" placeholder=""/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_provinceId">所在省份</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_provinceId"
-                                                               name="provinceId"
-                                                               type="text" placeholder=""/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_cityId">所在城市</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_cityId" name="cityId"
-                                                               type="text" placeholder=""/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_address">街道地址</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_address" name="address"
-                                                               type="text" placeholder=""/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-2 control-label no-padding-right"
-                                                           for="info_remark">备注</label>
-
-                                                    <div class="col-xs-14 col-sm-7">
-                                                        <input class="form-control" id="info_remark" name="remark"
-                                                               type="text" placeholder=""/>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <!-- PAGE CONTENT ENDS -->

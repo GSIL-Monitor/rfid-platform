@@ -1,6 +1,8 @@
 $(function () {
     initTree();
-    initCompanyInfoValid();
+    initSearchGridsku();
+    initSearchGridcode();
+    initSearchGridstyle();
 });
 
 //初始化树形结构
@@ -32,7 +34,9 @@ function initTree() {
                 $(".level").hide();
                 $(".allocation").show();
             }
-            showCompanyInfo(nodeId);
+            initSearchGridsku(nodeId);
+            initSearchGridcode(nodeId);
+            initSearchGridstyle(nodeId);
         }
     }).jstree({
         "themes": {
@@ -65,124 +69,7 @@ function initTree() {
                 "icon": "fa fa-university"
             }
         },
-        'plugins': ['dnd', 'search', 'wholerow', 'types']
-    })
-}
-
-function showCompanyInfo(nodeId) {
-    $.ajax({
-        url: basePath + "/sys/organizationController/findOrganization.do",
-        type: "POST",
-        data: {
-            unitId: nodeId
-        },
-        success: function (data) {
-            if (data.success) {
-                var company = data.result;
-                $("#info_creatorId").val(company.creatorId);
-                $("#info_createTime").val(company.createTime);
-                $("#info_code").val(company.code);
-                $("#info_name").val(company.name);
-                $("#info_ownerId").val(company.ownerId);
-                $("#info_unitName").val(company.unitName);
-                $("#from_tel").val(company.tel);
-                $("#info_linkman").val(company.linkman);
-                $("#info_email").val(company.email);
-                $("#info_provinceId").val(company.provinceId);
-                $("#info_cityId").val(company.cityId);
-                $("#info_address").val(company.address);
-                $("#info_remark").val(company.remark);
-            } else {
-                $.gritter.add({
-                    text: data.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-            }
-        }
-    });
-}
-
-function saveOrganization() {
-    var that = this;
-    $("#addForm").data('bootstrapValidator').validate();
-    if (!$("#addForm").data('bootstrapValidator').isValid()) {
-        return;
-    }
-    //进度条
-    cs.showProgressBar();
-    $.post(basePath + "/sys/repositoryController/save.do",
-        $("#addForm").serialize(),
-        function (result) {
-            cs.closeProgressBar();
-            if (result.success == true || result.success == 'true') {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success  gritter-light'
-                });
-                $("#edit-dialog").modal('hide');
-                refresh();
-            }
-        }, 'json');
-}
-
-function saveEdit() {
-    var companyInfo = $("#companyInfo");
-    companyInfo.data('bootstrapValidator').destroy();
-    companyInfo.data('bootstrapValidator', null);
-    initCompanyInfoValid();
-    companyInfo.data('bootstrapValidator').validate();
-    if (!companyInfo.data('bootstrapValidator').isValid()) {
-        return;
-    }
-
-    cs.showProgressBar();
-    $.post(basePath + "/sys/repositoryController/save.do",
-        companyInfo.serialize(),
-        function (result) {
-            cs.closeProgressBar();
-            if (result.success == true || result.success == 'true') {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-success gritter-light'
-                });
-            } else {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-fail gritter-light'
-                });
-            }
-        }, 'json');
-
-}
-
-function moveTree(event, data) {
-    var id = data.node.id;
-    var parentId = data.parent;
-    var position = data.position;
-    var sourcePosition = data.old_position;
-    var sourceParentId = data.old_parent;
-    var params = {
-        "id": id,
-        "parentId": parentId,
-        "position": position,
-        "sourceParentId": sourceParentId,
-        "sourcePosition": sourcePosition
-    };
-    $.ajax({
-        url: basePath + "/sys/organizationController/move.do",
-        type: 'post',
-        dataType: 'json',
-        data: params,
-        timeout: 1000 * 10,
-        success: function (data) {
-            if (data.success == true || data.success == 'true') {
-            } else {
-                $.gritter.add({
-                    text: result.msg,
-                    class_name: 'gritter-fail gritter-light'
-                });
-            }
-        }
+        'plugins': ['search', 'wholerow', 'types']
     })
 }
 
@@ -223,65 +110,100 @@ function add() {
     }
 }
 
-function del() {
+function initSearchGridsku(nodeId) {
+    $("#gridsku").jqGrid({
+        height: "auto",
+        url: basePath + "/sys/repositoryController/findbysku.do?rmId="+nodeId,
+        datatype: "json",
+        mtype: 'POST',
+        colModel: [
+            {name: 'newRmId', label: 'sku'},
+            {name: 'newRmId', label: '款号'},
+            {name: 'newRmId', label: '款名'},
+            {name: 'newRmId', label: '颜色'},
+            {name: 'newRmId', label: '尺码'},
+            {name: 'newRmId', label: '仓库'},
+            {name: 'newRmId', label: '库位'},
+            {name: 'totQty', label: '库存数量'},
+            ],
+        viewrecords: true,
+        autowidth: true,
+        rownumbers: true,
+        altRows: true,
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: "#grid-pagersku",
+        multiselect: false,
+        shrinkToFit: true,
+        autoScroll: false,
+        footerrow: true,
+        sortname: 'billNo',
+        sortorder: "desc"
 
+    });
 }
+function initSearchGridcode(nodeId) {
+    $("#gridcode").jqGrid({
+        height: "auto",
+        url: basePath + "/sys/repositoryController/findbycode.do?rmId="+nodeId,
+        datatype: "json",
+        mtype: 'POST',
+        colModel: [
+            {name: 'billNo', label: '唯一码', sortable: true, width: 45},
+            {name: 'newRmId', label: 'sku'},
+            {name: 'newRmId', label: '款号'},
+            {name: 'newRmId', label: '款名'},
+            {name: 'newRmId', label: '颜色'},
+            {name: 'newRmId', label: '尺码'},
+            {name: 'newRmId', label: '仓库'},
+            {name: 'newRmId', label: '库位'},
+            {name: 'totQty', label: '库存数量'}
 
-function initCompanyInfoValid() {
-    $('#companyInfo').bootstrapValidator({
-        message: '输入值无效',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        submitHandler: function (validator, form, submitButton) {
-            $.post(form.attr('action'), form.serialize(), function (result) {
-                if (result.success == true || result.success == 'true') {
-                } else {
-                    // Enable the submit buttons
-                    $('#companyInfo').bootstrapValidator('disableSubmitButtons', false);
-                }
-            }, 'json');
-        },
-        fields: {
-            name: {
-                validators: {
-                    notEmpty: '名称不能为空'
-                }
-            },
-            tel: {
-                validators: {
-                    stringLength: {
-                        min: 11,
-                        max: 11,
-                        message: '请输入11位手机号码'
-                    },
-                    regexp: {
-                        regexp: /^1[3|5|8]{1}[0-9]{9}$/,
-                        message: '请输入正确的手机号码'
-                    },
-                    notEmpty: {
-                        message: '联系电话人不能为空'
-                    }
-                }
-            },
-            linkman: {
-                validators: {
-                    notEmpty: {
-                        message: '联系人不能为空'
-                    }
-                }
-            },
-            address: {
-                validators: {
-                    notEmpty: {
-                        message: '街道地址不能为空'
-                    }
-                }
-            }
+        ],
+        viewrecords: true,
+        autowidth: true,
+        rownumbers: true,
+        altRows: true,
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: "#grid-pagercode",
+        multiselect: false,
+        shrinkToFit: true,
+        autoScroll: false,
+        footerrow: true,
+        sortname: 'billNo',
+        sortorder: "desc"
+    });
+}
+function initSearchGridstyle(nodeId) {
+    $("#gridstyle").jqGrid({
+        height: "auto",
+        url: basePath + "/sys/repositoryController/findbystyle.do?rmId="+nodeId,
+        datatype: "json",
+        mtype: 'POST',
+        colModel: [
+            {name: 'billNo', label: '款号', sortable: true},
 
-        }
+            {name: 'billNo', label: '款名', sortable: true},
+            {name: 'billNo', label: '库存数量', sortable: true},
+            {name: 'billNo', label: '仓库', sortable: true},
+            {name: 'billNo', label: '库位', sortable: true}
+
+        ],
+        viewrecords: true,
+        autowidth: true,
+        rownumbers: true,
+        altRows: true,
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: "#grid-pagerstyle",
+        multiselect: false,
+        shrinkToFit: true,
+        autoScroll: false,
+        footerrow: true,
+        sortname: 'billNo',
+        sortorder: "desc"
+
     });
 }
 

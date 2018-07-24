@@ -1021,6 +1021,16 @@ function addUniqCode() {
 }
 
 function rmIdChange() {
+    cs.showProgressBar();
+
+    $("#editForm").data('bootstrapValidator').destroy();
+    $('#editForm').data('bootstrapValidator', null);
+    initEditFormValid();
+    $('#editForm').data('bootstrapValidator').validate();
+    if (!$('#editForm').data('bootstrapValidator').isValid()) {
+        cs.closeProgressBar();
+        return false;
+    }
     var billNo = $("#edit_billNo").val();
     $.ajax({
      dataType: "json",
@@ -1031,10 +1041,11 @@ function rmIdChange() {
      },
      type: "POST",
         success:function (res) {
-         $.gritter.add({
-             text: res.msg,
-             class_name: 'gritter-success  gritter-light'
-         });
+            cs.closeProgressBar();
+            $.gritter.add({
+                text: res.msg,
+                class_name: 'gritter-success  gritter-light'
+            });
 
             initcodeDetail(billNo);
             $("#grid").trigger("reloadGrid");
