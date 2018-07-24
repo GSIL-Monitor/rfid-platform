@@ -14,9 +14,11 @@ import com.casesoft.dmc.model.cfg.VO.State;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.rem.RepositoryManagement;
 import com.casesoft.dmc.model.rem.VO.TreeChildVO;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.rem.RepositoryManagementService;
+import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,8 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
     private UnitService unitService;
     @Autowired
     private RepositoryManagementService repositoryManagementService;
+    @Autowired
+    private EpcStockService epcStockService;
 
     @Override
     public Page<Unit> findPage(Page<Unit> page) throws Exception {
@@ -217,6 +221,37 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
         }
         return result;
     }
+    @RequestMapping(value = "findbysku")
+    @ResponseBody
+    public List<EpcStock> findbysku(String rmId){
+        if (CommonUtil.isNotBlank(rmId)){
 
+        }
+        List<PropertyFilter> filters = new ArrayList<>();
+        List<EpcStock> epcStocks = epcStockService.find(filters);
 
+        return epcStocks;
+    }
+    @RequestMapping(value = "findbycode")
+    @ResponseBody
+    public List<EpcStock> findbycode(String rmId){
+        if (CommonUtil.isNotBlank(rmId)){
+            
+        }
+        List<PropertyFilter> filters = new ArrayList<>();
+        List<EpcStock> epcStocks = epcStockService.find(filters);
+
+        return epcStocks;
+    }
+    @RequestMapping(value = "findbystyle")
+    @ResponseBody
+    public List<EpcStock> findbystyle(String rmId){
+        if (CommonUtil.isNotBlank(rmId)){
+
+        }
+        List<PropertyFilter> filters = new ArrayList<>();
+        List<EpcStock> epcStocks = epcStockService.find(filters);
+
+        return epcStocks;
+    }
 }
