@@ -19,6 +19,7 @@ import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.model.search.DetailStockskuView;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +89,7 @@ public class DetailStockskuViewService extends BaseService<DetailStockView, Stri
 
     }
 
-    public List<Map<String,Object>> findSkuStock(List <Wxshoppramer>list,String customerId,String customerName,String discount){
+    public List<Map<String,Object>> findSkuStock(PaymentMessage paymentMessage,List <Wxshoppramer>list,String customerId,String customerName,String discount){
         String skus="";
         String weraIds="";
         String alreadyweraIds="";
@@ -257,6 +258,7 @@ public class DetailStockskuViewService extends BaseService<DetailStockView, Stri
                     List<SaleOrderBill> listsale = new ArrayList<SaleOrderBill>();
                     List<SaleOrderBillDtl> listsaleDtl = new ArrayList<SaleOrderBillDtl>();
                     List<SaleOrderBillDtl> snedlistsaleDtl = new ArrayList<SaleOrderBillDtl>();
+                    List<PaymentMessage> listpaymentMessage = new ArrayList<PaymentMessage>();
                     String weraId = split[i].replace("'", "");
                     String prefix = BillConstant.BillPrefix.saleOrder
                             + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
@@ -371,10 +373,18 @@ public class DetailStockskuViewService extends BaseService<DetailStockView, Stri
                         saleOrderBill.setRemark("商城单据");
                         dtlmap.put("remark", "商城单据");
                         saleOrderBill.setCustomerTypeId("CT-LS");
+                        //saleOrderBill.setStatus(BillConstant.BillStatus.shophold);
                         saleOrderBill.setStatus(BillConstant.BillStatus.shophold);
+                        saleOrderBill.setPayPrice(saleOrderBill.getActPrice());
+                        PaymentMessage newpaymentMessage=new PaymentMessage();
+                        BeanUtils.copyProperties(paymentMessage,newpaymentMessage);
+                        newpaymentMessage.setId(new GuidCreator().toString());
+                        newpaymentMessage.setBillNo(saleOrderBill.getBillNo());
+                        listpaymentMessage.add(newpaymentMessage);
                         listsale.add(saleOrderBill);
                         sendList.add(dtlmap);
                     }
+                    this.detailStockskuViewDao.doBatchInsert(listpaymentMessage);
                     this.detailStockskuViewDao.doBatchInsert(listsale);
                     this.detailStockskuViewDao.doBatchInsert(listsaleDtl);
                     this.detailStockskuViewDao.doBatchInsert(listBillRecord);

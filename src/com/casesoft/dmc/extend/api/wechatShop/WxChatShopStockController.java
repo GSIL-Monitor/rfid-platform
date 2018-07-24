@@ -1,5 +1,6 @@
 package com.casesoft.dmc.extend.api.wechatShop;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -34,11 +35,11 @@ public class WxChatShopStockController extends ApiBaseController {
     }
     @RequestMapping(value = "/findSkuStock")
     @ResponseBody
-    public MessageBox findSkuStock(String dates){
+    public MessageBox findSkuStock(String dates,String paymentDates){
         //String a="[{'sku':'KE12026卡其S','weraId':'B4253','qty':'1' ,'Price':'100','totPrice':'100'},{'sku':'s22179白色L','weraId':'AUTO_WH003','qty':'1','Price':'100','totPrice':'100'}]";
-
+        PaymentMessage paymentMessage= JSON.parseObject(paymentDates,PaymentMessage.class);
        List <Wxshoppramer>list = JSONUtil.getJsonStr2List(dates, Wxshoppramer.class);
-        List<Map<String, Object>> skuStock = this.detailStockskuViewService.findSkuStock(list, "", "", "100");
+        List<Map<String, Object>> skuStock = this.detailStockskuViewService.findSkuStock(paymentMessage,list, "", "", "100");
         Map<String, Object> stringObjectMap = skuStock.get(0);
         Object mes = stringObjectMap.get("mes");
         if(CommonUtil.isNotBlank(mes)){
