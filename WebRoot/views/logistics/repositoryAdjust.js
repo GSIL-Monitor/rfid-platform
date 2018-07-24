@@ -382,6 +382,12 @@ function initSearchGrid() {
 function initDetailData(rowid){
     $("#myTab li").eq(0).find("a").click();
     var rowData = $("#grid").getRowData(rowid);
+    if(rowData.newRmId != null){
+        var rmId = rowData.newRmId.split("-");
+        var warehId = rowData.origId;
+        var id = warehId+"-"+rmId[0].replace(/[^0-9]/ig,"")+"-"+rmId[1].replace(/[^0-9]/ig,"")+"-"+rmId[2].replace(/[^0-9]/ig,"");
+        initTree(id);
+    }
     $("#editForm").setFromData(rowData);
     $("#edit_Id").val(rowData.billNo);
     console.info(rowData);
@@ -1026,10 +1032,13 @@ function rmIdChange() {
      type: "POST",
         success:function (res) {
          $.gritter.add({
-         text: res.msg,
-         class_name: 'gritter-success  gritter-light'
+             text: res.msg,
+             class_name: 'gritter-success  gritter-light'
          });
-         initcodeDetail(billNo);
+
+            initcodeDetail(billNo);
+            $("#grid").trigger("reloadGrid");
+            $("#codeDetailgrid").trigger("reloadGrid");
         }
      });
     //调整后不能撤销
@@ -1197,9 +1206,12 @@ function saveAjax() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#editForm").setFromData(msg.result);
-                var rmId = msg.result.newRmId.split("-");
-                var id = $("#edit_origId").val()+"-"+rmId[0].replace(/[^0-9]/ig,"")+"-"+rmId[1].replace(/[^0-9]/ig,"")+"-"+rmId[2].replace(/[^0-9]/ig,"");
-                initTree(id);
+                if(msg.result.newRmId != null){
+                    var rmId = msg.result.newRmId.split("-");
+                    var id = $("#edit_origId").val()+"-"+rmId[0].replace(/[^0-9]/ig,"")+"-"+rmId[1].replace(/[^0-9]/ig,"")+"-"+rmId[2].replace(/[^0-9]/ig,"");
+                    initTree(id);
+                }
+
                 $("#addDetailgrid").jqGrid('setGridParam', {
                     datatype: "json",
                     page: 1,
