@@ -272,10 +272,15 @@ function initDetailData(rowid) {
     var slaeOrder_status = rowData.status;
     //如果入库仓库为空，禁止入库按钮
     if ($("#search_destId").val() && $("#search_destId").val() != null) {
-        $("#SODtl_wareHouseIn").removeAttr("disabled");
+        if($("#edit_status").val()=="2"||$("#edit_status").val()=="3"){
+            $("#SODtl_wareHouseIn").attr("disabled","disabled");
+        }else {
+            $("#SODtl_wareHouseIn").removeAttr("disabled");
+        }
     } else {
         $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
     }
+
     $("#edit_customerType").attr('disabled', true);
     $("#edit_busnissId").attr('disabled', true);
     $("#addDetail").show();

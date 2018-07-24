@@ -593,6 +593,7 @@ function save() {
         bootbox.alert("请添加退货商品");
         return;
     }
+    $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
     var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
     console.log(purchaseReturnBill);
     $("#addDetailgrid").saveRow(editDtailRowId);

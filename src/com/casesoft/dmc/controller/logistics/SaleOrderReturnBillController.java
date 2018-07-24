@@ -3,12 +3,15 @@ package com.casesoft.dmc.controller.logistics;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
+import com.casesoft.dmc.controller.stock.StockUtil;
+import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
@@ -24,6 +27,7 @@ import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.pad.TemplateMsgService;
@@ -34,6 +38,7 @@ import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.GuestViewService;
+import com.casesoft.dmc.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,10 +48,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017-06-29.
@@ -73,6 +75,62 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
+    @Autowired
+    private TaskService taskService;
+    private String billNo;
+    private String warehId;
+
+
+    /**
+     * add by Anna 2018-04-20
+     * 销售退货流程新增查看 原始单号＋最近销售日期＋销售周期
+     *
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     */
+    @RequestMapping(value = "/findCodeSaleReturnList")
+    @ResponseBody
+    public List<EpcStock> findCodeSaleReturnList(String billNo,String warehId) {
+        try {
+            List<String> codeList =this.saleOrderReturnBillService.codeList(billNo);
+            List<EpcStock> stockList = new ArrayList<>();
+            for (String code :codeList){
+                EpcStock epcStock;
+                List<EpcStock> epcStockList = new ArrayList<>();
+                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
+                if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
+                    epcStock = this.epcStockService.findEpcAllowInCode(code);
+                } else {
+                    epcStock = epcStockList.get(0);
+                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    epcStock.setSaleCycle(cycle);
+                }
+                if (CommonUtil.isNotBlank(epcStock)) {
+                    StockUtil.convertEpcStock(epcStock);
+                        stockList.add(epcStock);
+                }else {
+                    Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
+                    if (CommonUtil.isNotBlank(tagEpc)) {
+                        epcStock = new EpcStock();
+                        epcStock.setId(code);
+                        epcStock.setCode(code);
+                        epcStock.setSku(tagEpc.getSku());
+                        epcStock.setStyleId(tagEpc.getStyleId());
+                        epcStock.setColorId(tagEpc.getColorId());
+                        epcStock.setSizeId(tagEpc.getSizeId());
+                        epcStock.setInStock(0);
+                        epcStock.setWarehouseId(warehId);
+                        StockUtil.convertEpcStock(epcStock);
+                        stockList.add(epcStock);
+                    }
+                }
+            }
+            return stockList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -363,8 +421,9 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.findBillByBillNo(billNo);
         if (saleOrderReturnBill.getStatus() == BillConstant.BillStatus.Enter)
             saleOrderReturnBill.setStatus(BillConstant.BillStatus.Check);
-        else
+        else {
             return returnFailInfo("不是录入状态，无法审核");
+        }
         try {
             this.saleOrderReturnBillService.save(saleOrderReturnBill);
             return returnSuccessInfo("审核成功");

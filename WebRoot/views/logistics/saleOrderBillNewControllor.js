@@ -1374,6 +1374,7 @@ function addProductsOnCode() {
 
 
 function saveAjax() {
+    $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);

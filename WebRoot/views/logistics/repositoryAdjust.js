@@ -380,6 +380,7 @@ function initSearchGrid() {
 }
 
 function initDetailData(rowid){
+    $("#myTab li").eq(0).find("a").click();
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     $("#edit_Id").val(rowData.billNo);
@@ -438,10 +439,12 @@ function initDetailData(rowid){
         $("#destId").unbind("click");
     }
     $(".selectpicker").selectpicker('refresh');
+
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     $('#codeDetailgrid').jqGrid("clearGridData");
     $('#codeDetailgrid').jqGrid('GridUnload');
+
     initeditGrid(rowData.billNo);
     initcodeDetail(rowData.billNo);
 
@@ -1167,6 +1170,7 @@ function addProductsOnCode() {
 
 
 function saveAjax() {
+    $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
     var origName = $('#edit_origId option:selected').text();
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {

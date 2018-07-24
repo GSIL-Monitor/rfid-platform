@@ -613,6 +613,7 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
+    $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
     $.ajax({
         dataType: "json",
         async: false,

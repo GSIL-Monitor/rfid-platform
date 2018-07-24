@@ -123,7 +123,9 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
             List<PrintSet> printSets;
             if(CommonUtil.isNotBlank(ruleReceipt)&&ruleReceipt.equals("A4")&&currentUser.getOwnerId().equals("1")){
                 printSets = this.printSetService.findPrintSetListByOwnerIdA4(type,ruleReceipt);
-            }else{
+            }else if(CommonUtil.isNotBlank(ruleReceipt)){
+                printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type,ruleReceipt);
+            } else{
                 printSets = this.printSetService.findPrintSetListByOwnerId(currentUser.getOwnerId(),type,ruleReceipt);
             }
             return new MessageBox(true, "查询成功",printSets);
@@ -147,6 +149,17 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     public MessageBox printMessageA4(String id,String billno){
         try {
             Map<String, Object> map = this.printSetService.printMessageA4(id, billno);
+            return new MessageBox(true, "查询成功",map);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
+        }
+
+    }
+    @RequestMapping(value="/printMessageSanLian")
+    @ResponseBody
+    public MessageBox printMessageSanLian(String id,String billno){
+        try {
+            Map<String, Object> map = this.printSetService.printMessageSanLian(id, billno);
             return new MessageBox(true, "查询成功",map);
         }catch (Exception e){
             return new MessageBox(false, "查询失败");

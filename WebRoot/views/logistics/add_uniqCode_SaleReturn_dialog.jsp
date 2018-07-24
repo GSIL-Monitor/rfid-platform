@@ -149,6 +149,12 @@
             $("#uniqueCodeGrid").setGridParam().hideCol("wsPrice");
             $("#uniqueCodeGrid").setGridParam().hideCol("preCast");
             $("#uniqueCodeGrid").setGridParam().hideCol("stockPrice").trigger("reloadGrid");
+        }else if (storeType == "price"){
+            $("#uniqueCodeGrid").setGridParam().hideCol("preCast");
+            $("#uniqueCodeGrid").setGridParam().hideCol("puPrice");
+            $("#uniqueCodeGrid").setGridParam().hideCol("wsPrice");
+            $("#uniqueCodeGrid").setGridParam().hideCol("stockPrice");
+            $("#uniqueCodeGrid").setGridParam().showCol("price").trigger("reloadGrid");
         }
     }
 

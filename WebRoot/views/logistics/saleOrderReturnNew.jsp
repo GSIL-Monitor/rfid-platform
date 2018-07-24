@@ -363,16 +363,32 @@
                                             </form>
                                         </div>
                                     </div>
-                                    <div class="widget-body">
-                                        <div class="widget-main padding-12 no-padding-left no-padding-right">
-                                            <div class="tab-content padding-4">
-                                                <div id="addDetail" class="tab-pane in active">
-                                                    <table id="addDetailgrid"></table>
-                                                    <div id="addDetailgrid-pager"></div>
+                                    <div class="widget-box transparent">
+                                        <div class="widget-header ">
+                                            <div class="widget-toolbar no-border">
+                                                <ul class="nav nav-tabs" id="myTab">
+                                                    <li class="active">
+                                                        <a data-toggle="tab" href="#addDetail">SKU明细</a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="tab" href="#codeDetail">唯一码明细</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="widget-body">
+                                            <div class="widget-main padding-12 no-padding-left no-padding-right">
+                                                <div class="tab-content padding-4">
+                                                    <div id="addDetail" class="tab-pane in active" style="height:80%;">
+                                                        <table id="addDetailgrid"></table>
+                                                        <div id="addDetailgrid-pager"></div>
+                                                    </div>
+                                                    <div id="codeDetail" class="tab-pane" style="height:80%;">
+                                                        <table id="codegrid"></table>
+                                                        <div id="codeDetailgrid-pager"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>

@@ -1890,6 +1890,8 @@ public class BillConvertUtil {
         bill.setDestUnitId(dest.getOwnerId());
         Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
         bill.setDestUnitName(destUnit.getName());
+        Unit origUnit = CacheManager.getUnitByCode(bill.getOrigId());
+        bill.setOrigName(origUnit.getName());
         bill.setTotQty(totQty);
         bill.setTotPrice(totPrice);
 //        bill.setActPrice(totActPrice);

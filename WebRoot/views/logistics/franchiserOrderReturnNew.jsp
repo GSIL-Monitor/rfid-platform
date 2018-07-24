@@ -9,9 +9,27 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var curOwnerId = "${ownerId}";
-        var pageType = "${pageType}";
+        var name = "${name}";
+        var ownersId = "${ownersId}";
         var userId = "${userId}";
-        var ownersId="${ownersId}";
+        var billNo = "${billNo}";
+        var saleOrder_customerTypeId = "${saleOrderBill.customerTypeId}";
+        var saleOrder_origId = "${saleOrderBill.origId}";
+        var saleOrder_destId = "${saleOrderBill.destId}";
+        var defaultWarehId = "${defaultWarehId}";
+        var defaultSaleStaffId = "${defaultSaleStaffId}";
+        var defalutCustomerId = "${defalutCustomerId}";
+        var defalutCustomerName = "${defalutCustomerName}";
+        var defalutCustomerdiscount = "${defalutCustomerdiscount}";
+        var defalutCustomercustomerType = "${defalutCustomercustomerType}";
+        var defalutCustomerowingValue = "${defalutCustomerowingValue}";
+
+        var saleOrder_busnissId = "${saleOrderBill.busnissId}";
+        var slaeOrder_status = "${saleOrderBill.status}";
+        var roleid = "${roleid}";
+        var Codes = "${Codes}";
+        var groupid="${groupid}";
+        var pageType = "${pageType}";
     </script>
 
 </head>
@@ -35,6 +53,8 @@
                             <div class="panel panel-default  left-panel">
                                 <div class="panel-body">
                                     <div class="widget-body">
+
+
                                         <form class="form-horizontal" role="form" id="searchForm">
                                             <div class="form-group">
                                                 <label class="col-md-2 control-label" for="search_billId">单号</label>
@@ -62,50 +82,6 @@
                                                                class="input-sm form-control"
                                                                name="filter_LED_billDate"
                                                                data-date-format="yyyy-mm-dd"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label"
-                                                       for="search_origUnitId">发货方</label>
-                                                <div class="col-md-10">
-                                                    <div class="input-group">
-                                                        <input class="form-control" id="search_origUnitId"
-                                                               type="text"
-                                                               name="filter_EQS_origUnitId" readonly/>
-                                                        <span class="input-group-btn">
-                                                            <button class="btn btn-sm btn-default"
-                                                                    id="search_origUnitId_button"
-                                                                    type="button"
-                                                                    onclick="openSearchOrigDialog('search');">
-                                                                <i class="ace-icon fa fa-list"></i>
-                                                            </button>
-											            </span>
-                                                        <input class="form-control" id="search_origUnitName"
-                                                               type="text"
-                                                               name="origUnitName" readonly/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label"
-                                                       for="search_destUnitId">收货方</label>
-                                                <div class="col-md-10">
-                                                    <div class="input-group">
-                                                        <input class="form-control" id="search_destUnitId"
-                                                               type="text"
-                                                               name="filter_EQS_origUnitId" readonly/>
-                                                        <span class="input-group-btn">
-                                                            <button class="btn btn-sm btn-default"
-                                                                    id="search_destUnitId_button"
-                                                                    type="button"
-                                                                    onclick="openSearchDestDialog('search');">
-                                                                <i class="ace-icon fa fa-list"></i>
-                                                            </button>
-											            </span>
-                                                        <input class="form-control" id="search_destUnitName"
-                                                               type="text"
-                                                               name="destUnitName" readonly/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -155,7 +131,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="form-group">
                                                 <div class="col-md-offset-3 col-md-6">
                                                     <button type="button" class="btn btn-sm btn-primary"
@@ -181,6 +156,7 @@
                             <!-- 左则面板 end -->
                         </div>
                         <div class="col-md-8 order-panel-right">
+
                             <div class="panel panel-default">
                                 <div class="panel-heading" style="text-align: right">
                                     <div id="buttonGroup">
@@ -188,74 +164,43 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="widget-body">
+
                                         <div class="widget-main padding-12">
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
                                                 <div class="form-group">
                                                     <label class="col-md-1 control-label"
-                                                           for="edit_origUnitId">发货方</label>
+                                                           for="edit_origUnitId">客户</label>
                                                     <div class="col-md-5">
                                                         <div class="input-group">
                                                             <input class="form-control" id="edit_origUnitId"
                                                                    type="text"
                                                                    name="origUnitId"
-                                                                   value="${transferOrderBill.origUnitId}" readonly/>
+                                                                  readonly/>
                                                             <span class="input-group-btn">
 												                <button class="btn btn-sm btn-default"
-                                                                        id="edit_orig_button"
+                                                                        id="edit_guest_button"
                                                                         type="button"
-                                                                        onclick="openSearchOrigDialog('edit');">
+                                                                        onclick="openSearchGuestDialog('edit')">
                                                                     <i class="ace-icon fa fa-list"></i>
                                                                 </button>
 											                </span>
                                                             <input class="form-control" id="edit_origUnitName"
                                                                    type="text"
-                                                                   name="origUnitName"
-                                                                   value="${transferOrderBill.origUnitName}" readonly/>
+                                                                   name="origUnitName" readonly/>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_destUnitId">收货方</label>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <input class="form-control" id="edit_destUnitId"
-                                                                   type="text"
-                                                                   name="destUnitId"
-                                                                   value="${transferOrderBill.destUnitId}" readonly/>
-                                                            <span class="input-group-btn">
-												                <button class="btn btn-sm btn-default"
-                                                                        id="edit_dest_button"
-                                                                        type="button"
-                                                                        onclick="openSearchDestDialog('edit');">
-                                                                    <i class="ace-icon fa fa-list"></i>
-                                                                </button>
-											                </span>
-                                                            <input class="form-control" id="edit_destUnitName"
-                                                                   type="text"
-                                                                   name="destUnitName"
-                                                                   value="${transferOrderBill.destUnitName}" readonly/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_origId">出库仓库</label>
-                                                    <div class="col-md-5">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_origId"
-                                                                name="origId"
-                                                                style="width: 100%;" data-live-search="true"value="${transferOrderBill.origId}">
+                                                    <label class="col-md-3 control-label"
+                                                           for="edit_customerType">客户类型</label>
+                                                    <div class="col-md-3">
+                                                        <select class="form-control selectpicker"
+                                                                id="edit_customerType"
+                                                                name="customerType"
+                                                                style="width: 100%;" disabled>
                                                         </select>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_destId">入库仓库</label>
-                                                    <div class="col-md-5">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_destId"
-                                                                name="destId"
-                                                                style="width: 100%;" data-live-search="true"value="${transferOrderBill.destId}">
-                                                        </select>
-                                                    </div>
+
+
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-1 control-label"
@@ -263,25 +208,84 @@
                                                     <div class="col-md-3">
                                                         <input class="form-control" id="edit_billNo" name="billNo"
                                                                type="text" readOnly
-                                                               value="${transferOrderBill.billNo}"/>
+                                                              />
                                                     </div>
                                                     <label class="col-md-1 control-label"
                                                            for="edit_billDate">单据日期</label>
                                                     <div class="col-md-3">
                                                         <input class="form-control date-picker" id="edit_billDate"
                                                                name="billDate"
-                                                               type="text" value="${transferOrderBill.billDate}"/>
+                                                               type="text" />
                                                     </div>
                                                     <label class="col-md-1 control-label"
-                                                           for="form_printSelect">打印选择</label>
+                                                           for="edit_payType">支付方式</label>
                                                     <div class="col-md-3">
-                                                        <select class="form-control" id="form_printSelect"
-                                                                style="width: 100%;">
-                                                            <option value="0">入库数量</option>
-                                                            <option value="1">出库数量</option>
-                                                            <option value="2">单据数量</option>
+                                                        <input class="form-control" id="edit_payType" name="payType"
+                                                               type="text"/>
+                                                    </div>
+                                                </div>
 
+                                                <div class="form-group">
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_destId">入库仓库</label>
+                                                    <div class="col-md-3">
+                                                        <select class="form-control selectpicker show-tick"
+                                                                id="edit_destId" name="destId"
+                                                                style="width: 100%;"
+                                                                data-live-search="true">
                                                         </select>
+                                                    </div>
+                                                    <label class="col-md-1 control-label"
+                                                           for="search_origId">出库仓库</label>
+                                                    <div class="col-md-3">
+                                                        <select class="form-control selectpicker show-tick"
+                                                                id="edit_origId" name="origId"
+                                                                style="width: 100%;"
+                                                                data-live-search="true">
+                                                        </select>
+                                                    </div>
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_pre_Balance">售前余额</label>
+                                                    <div class="col-md-3">
+                                                        <input class="form-control" id="edit_pre_Balance"
+                                                               name="preBalance"
+                                                               readonly>
+                                                        </input>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_actPrice">应付金额</label>
+                                                    <div class="col-md-3">
+                                                        <div class="input-group">
+                                                                <span class="input-group-addon"><i
+                                                                        class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="edit_actPrice"
+                                                                   name="actPrice"
+                                                                   type="number" step="0.01" readonly
+                                                                  />
+                                                        </div>
+                                                    </div>
+
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_payPrice">实付金额</label>
+                                                    <div class="col-md-3">
+                                                        <div class="input-group">
+                                                                <span class="input-group-addon"><i
+                                                                        class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="edit_payPrice"
+                                                                   name="payPrice"
+                                                                   type="number" step="0.01"
+                                                                  />
+                                                        </div>
+                                                    </div>
+                                                    <label class="col-md-1 control-label"
+                                                           for="edit_after_Balance">售后余额</label>
+                                                    <div class="col-md-3">
+                                                        <input class="form-control" id="edit_after_Balance"
+                                                               name="afterBalance"
+                                                               readonly>
+                                                        </input>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -290,12 +294,21 @@
 
                                                     <div class="col-md-11 col-sm-11">
                                             <textarea maxlength="400" class="form-control" id="edit_remark"
-                                                      name="remark">${transferOrderBill.remark}</textarea>
+                                                      name="remark"></textarea>
                                                     </div>
                                                 </div>
-                                                <input id="edit_status" name="status" value="${transferOrderBill.status}"
-                                                       type="hidden">
-                                                </input>
+                                                <div>
+                                                    <input id="edit_busnissId" name="busnissId" value="CJM-001"
+                                                            type="hidden"/>
+                                                    <input id="edit_status" name="status"
+                                                           type="hidden"/>
+                                                    <input id="edit_outStatus" name="outStatus"
+                                                           type="hidden"/>
+                                                    <input id="edit_inStatus" name="inStatus"
+                                                           type="hidden"/>
+                                                    <input id="edit_ownerId" name="ownerId"
+                                                           type="hidden"/>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>
@@ -307,8 +320,6 @@
                                                     <div id="addDetailgrid-pager"></div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -316,55 +327,23 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.col -->
-
             </div>
-            <!-- /.row -->
-            <!--/#page-content-->
-
-
         </div>
-
     </div>
-    <div id="edit-dialogA4" style="text-align: center;font-size:12px;display: none">
-
-        <table style="text-align:center;font-size:10px;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
-            <thead >
-            <tr >
-                <th align="left"  nowrap="nowrap" style="border:0px;font-size:17px;width:20%;">款号</th>
-                <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">款名</th>
-                <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">厂家/品牌</th>
-                <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 7%;">数量</th>
-                <th align="left" nowrap="nowrap" style="border:0px;font-size:17px;width: 10%;">吊牌价</th>
-
-            </tr>
-            </thead>
-            <tbody id="loadtabA4">
-            <tr style="border-top:1px ;padding-top:5px;">
-                <td align="left" style="border-top:1px ;padding-top:5px;width: 20%;">&nbsp;</td>
-                <td align="left" style="border-top:1px ;padding-top:5px;width: 20%;">&nbsp;</td>
-                <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">&nbsp;</td>
-                <td align="left" style="border-top:1px ;padding-top:5px;width: 10%;">0</td>
-            </tr>
-            </tbody>
-        </table>
-
-
-
-    </div>
-
 </div>
 <!--/.fluid-container#main-container-->
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
-<jsp:include page="add_epc_dialog.jsp"></jsp:include>
+<jsp:include page="add_detail_dialog.jsp"></jsp:include>
+<jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
+<jsp:include page="../sys/print_two.jsp"></jsp:include>
+<jsp:include page="add_uniqCode_SaleReturn_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
-<jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
-<jsp:include page="../base/waitingPage.jsp"></jsp:include>
+<jsp:include page="uniqueCode_saleReturn_detail.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
-<script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderBillNewController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/franchiserOrderReturnContorllerNew.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>

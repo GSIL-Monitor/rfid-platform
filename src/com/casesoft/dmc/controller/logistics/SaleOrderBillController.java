@@ -180,9 +180,17 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Override
     public MessageBox cancel(String billNo) throws Exception {
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
-        saleOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.saleOrderBillService.cancelUpdate(saleOrderBill);
-        return new MessageBox(true, "撤销成功");
+        try {
+            if (saleOrderBill.getStatus() == BillConstant.BillStatus.Enter) {
+                saleOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.saleOrderBillService.cancelUpdate(saleOrderBill);
+                return new MessageBox(true, "撤销成功");
+            } else {
+                return returnFailInfo("不是录入状态，无法撤销");
+            }
+        }catch (Exception e) {
+            return returnFailInfo("撤销失败");
+        }
     }
 
     @RequestMapping(value = "/apply")

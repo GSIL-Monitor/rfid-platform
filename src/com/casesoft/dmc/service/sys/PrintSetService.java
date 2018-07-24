@@ -114,7 +114,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
         List<PrintSet> printSets;
         String hql="from PrintSet t where t.ownerId=? and type=?";
         if(CommonUtil.isNotBlank(ruleReceipt)){
-            if(ruleReceipt.equals("A4")){
+            if(ruleReceipt.equals("A4")||ruleReceipt.equals("SanLian")){
                 hql+=" and ruleReceipt=?";
                 printSets = this.printSetDao.find(hql, new Object[]{ownerId,type,ruleReceipt});
             }else{
@@ -123,6 +123,7 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             }
 
         }else{
+            hql+=" and ruleReceipt<>'A4' and ruleReceipt<>'SanLian'";
             printSets = this.printSetDao.find(hql, new Object[]{ownerId,type});
         }
 
@@ -354,6 +355,103 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
                         alreadyMap.put("qty",qty+saleOrderBillDtl.getQty());
                         alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
                     }
+                }
+            }
+            Iterator it = sendDel.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                Object value = entry.getValue();
+                sendDelList.add(value);
+            }
+            map.put("print",printSet);
+            map.put("cont",mapcont);
+            map.put("contDel",sendDelList);
+        }
+        return map;
+    }
+    public Map<String,Object> printMessageSanLian(String id,String billno)throws Exception{
+        Map<String,Object> map=new HashMap<String,Object>();
+        if(billno.indexOf(BillConstant.BillPrefix.saleOrder)!=-1){
+            Map<String,Object> mapcont=new HashMap<String,Object>();
+            String hql="from PrintSet t where t.id=?";
+            PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+            SaleOrderBill saleOrderBill = this.saleOrderBillService.load(billno);
+            mapcont.put("storeName",printSet.getName());
+            mapcont.put("billType","销售单");
+            mapcont.put("businessId","营业员:"+saleOrderBill.getBusnissName());
+            mapcont.put("billNo","单号:"+billno);
+            User user = CacheManager.getUserById(saleOrderBill.getOprId());
+            mapcont.put("handler","制单人:"+user.getName());
+            mapcont.put("billDate", "日期:"+CommonUtil.getDateString(saleOrderBill.getBillDate(),"yyyy-MM-dd"));
+            mapcont.put("coustmer","客户:"+saleOrderBill.getDestUnitName());
+            if(CommonUtil.isNotBlank(saleOrderBill.getRemark())){
+                mapcont.put("remark","备注:"+saleOrderBill.getRemark());
+            }else{
+                mapcont.put("remark","备注:");
+            }
+            mapcont.put("thisMoney","本单额:"+saleOrderBill.getActPrice());
+            mapcont.put("thisArrears","本单欠:"+(saleOrderBill.getPayPrice()-saleOrderBill.getActPrice()));
+            if(CommonUtil.isNotBlank(saleOrderBill.getAfterBalance())){
+                mapcont.put("totalArrears","本单额:"+saleOrderBill.getAfterBalance());
+            }else{
+                mapcont.put("totalArrears","售后余额:");
+            }
+            mapcont.put("address","地址:深圳市南山区南油第二工业区天安6座625");
+            mapcont.put("phone","手机:15768734210");
+            mapcont.put("Tel","电话:");
+            mapcont.put("printTime",CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billno);
+            String sizeArraySanLian = PropertyUtil.getValue("sizeArraySanLian");
+            Map<String,Object> sendDel=new HashMap<String,Object>();//存储根据款号和颜色封装的map
+            List<Object> sendDelList=new ArrayList<Object>();//存储发送前台的list
+            String[] sizeArrays = sizeArraySanLian.split(",");
+            for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
+                Map alreadyMap =( Map<String,Object>)sendDel.get(saleOrderBillDtl.getStyleId() + saleOrderBillDtl.getColorId());
+                Style style = CacheManager.getStyleById(saleOrderBillDtl.getStyleId());
+                if(CommonUtil.isBlank(alreadyMap)){
+                    Map<String,Object> saveSaleOrderDtl=new HashMap<String,Object>();
+                    //boolean isNoOther=false;//判断是否是其他
+                    for(int i=0;i<sizeArrays.length;i++){
+                        if(CommonUtil.isNotBlank(saleOrderBillDtl.getSizeId())&&saleOrderBillDtl.getSizeId().equals(sizeArrays[i])){
+                            saveSaleOrderDtl.put(sizeArrays[i],saleOrderBillDtl.getQty());
+
+                        }else {
+                            saveSaleOrderDtl.put(sizeArrays[i],0);
+                        }
+                    }
+                   /* if(!isNoOther){
+                        saveSaleOrderDtl.put("other",saleOrderBillDtl.getQty());
+                    }else{
+                        saveSaleOrderDtl.put("other",0);
+                    }*/
+                    saveSaleOrderDtl.put("styleId",saleOrderBillDtl.getStyleId());
+
+                    saveSaleOrderDtl.put("styleName",style.getStyleName());
+                    saveSaleOrderDtl.put("colorId",saleOrderBillDtl.getColorId());
+                    saveSaleOrderDtl.put("qty",saleOrderBillDtl.getQty());
+                    saveSaleOrderDtl.put("price",style.getPrice());
+                    saveSaleOrderDtl.put("totPrice",Integer.parseInt(saveSaleOrderDtl.get("qty")+"")*style.getPrice());
+                    sendDel.put(saleOrderBillDtl.getStyleId() + saleOrderBillDtl.getColorId(),saveSaleOrderDtl);
+                }else{
+                    //boolean isNoOther=false;//判断是否是其他
+                    for(int i=0;i<sizeArrays.length;i++){
+                        if(CommonUtil.isNotBlank(saleOrderBillDtl.getSizeId())&&saleOrderBillDtl.getSizeId().equals(sizeArrays[i])){
+                            Long sizeQty = Long.parseLong(alreadyMap.get(sizeArrays[i])+"");
+                            alreadyMap.put(sizeArrays[i],sizeQty+saleOrderBillDtl.getQty());
+                            Long qty = Long.parseLong(alreadyMap.get("qty")+"");
+                            alreadyMap.put("qty",qty+saleOrderBillDtl.getQty());
+                            alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
+                            //isNoOther=true;
+                        }
+                    }
+                   /* if(!isNoOther){
+                        Long sizeQty = Long.parseLong(alreadyMap.get("other")+"");
+                        alreadyMap.put("other",sizeQty+saleOrderBillDtl.getQty());
+                        Long qty = Long.parseLong(alreadyMap.get("qty")+"");
+                        alreadyMap.put("qty",qty+saleOrderBillDtl.getQty());
+                        alreadyMap.put("totPrice",Integer.parseInt(alreadyMap.get("qty")+"")*style.getPrice());
+                    }*/
                 }
             }
             Iterator it = sendDel.entrySet().iterator();

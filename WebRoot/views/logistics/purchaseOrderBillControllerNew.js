@@ -1117,7 +1117,7 @@ function save() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
-    console.log(array2obj($("#editForm").serializeArray()));
+    $("#search_billDate").val(updateTime($("#search_billDate").val()));
     $.ajax({
         dataType: "json",
         async:true,
@@ -1480,5 +1480,4 @@ function initButtonGroup(type){
     }
     $("#addDetail").show();
     loadingButton();
-
 }
