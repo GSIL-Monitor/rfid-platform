@@ -77,12 +77,12 @@ function setOperate(id,value) {
     console.info(id);
     console.info(value);
     const jobUrl = basePath+'/sys/sysSetting/setOperate.do';
-    if($("ace").hasClass("checked")){
-        $("ace").removeAttr("checked");
+    if($(".ace").hasClass("checked")){
+        $(".ace").removeAttr("checked");
         cs.showProgressBar();
     }
     else {
-        $("ace").attr("checked");
+        $(".ace").attr("checked");
         cs.showProgressBar();
     }
     $.ajax({

@@ -17,6 +17,7 @@ public class BillConstant {
         public final static Integer shopEnter = 7;//商城订单录入
         public final static Integer noCheck=8;//反审核
         public final static Integer EndWithCancel = 9;//部分完成部分撤销
+        public final static Integer adjust =  10;//调整
         public final static Integer ThirdPartyCancel = -3; //第三方撤销，例如：补货单由销售员提出，又采购员全部撤销时的状态
 
     }
@@ -28,6 +29,7 @@ public class BillConstant {
     }
     public final  static class BillPrefix{
         public final static String purchase ="PI";
+        public final static String rmADjust ="RM";
         public final static String saleOrder ="SO";//
         public final static String purchaseReturn="PR";//采购退货
         public final static String SaleOrderReturn="SR";//退货

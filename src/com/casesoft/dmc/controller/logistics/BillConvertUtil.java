@@ -674,8 +674,8 @@ public class BillConvertUtil {
             PurchaseOrderBillDtl dtl = purchaseBillDtlMap.get(record.getSku());
             record.setExtField(dtl.getInStockType());//record中增加入库类型
             record.setId(new GuidCreator().toString());
-            record.setType(Constant.TaskType.Inbound);
             record.setRmId(purchaseOrderBill.getRmId());
+            record.setType(Constant.TaskType.Inbound);
             recordList.add(record);
             BillRecord billRecord = new BillRecord(purchaseOrderBill.getBillNo() + "-" + record.getCode(), record.getCode(), purchaseOrderBill.getBillNo(), record.getSku());
             billRecordList.add(billRecord);

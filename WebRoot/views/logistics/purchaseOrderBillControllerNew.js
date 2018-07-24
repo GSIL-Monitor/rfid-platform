@@ -46,43 +46,44 @@ $(function () {
     });
 });
 //初始化树形结构
-function initTree() {
+function initTree(id) {
     cageId = $("#edit_destId").val();
-    $.jstree.destroy ("#jstree");
-    $('#jstree').on("changed.jstree", function (e, data) {
+    $("#jstree").jstree("destroy");
+    $('#jstree').on("select_node.jstree", function (e, data) {
         //变化事件
         if (data.selected.length) {
             // 点击节点，显示节点信息
-            deep = data.node.original.deep;
-            console.info(deep);
-            var allocationName = "请选择";
-            var levelName = "请选择";
-            var rackName = "请选择";
-            if(deep == "3"){
-                allocationId = data.node.id;
-                levelId = data.node.parents[0];
-                rackId = data.node.parents[1];
-                allocationName = data.node.text;
-                levelName = $("#"+allocationId+"_anchor").parent().parent().prev().text();
-                rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
-            }
-            else if(deep == "2"){
-                levelId = data.node.id;
-                rackId = data.node.parents[0];
-                levelName = data.node.text;
-                rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
-            }
-            else {
-                rackId = data.node.id;
-                rackName = data.node.text;
-            }
-            console.info(cageId);
-            console.info(rackId);
-            console.info(levelId);
-            console.info(allocationId);
-            $("#destId").text(rackName+"-"+levelName+"-"+allocationName);
-            $("#destId").val(allocationId);
-        }
+                deep = data.node.original.deep;
+                console.info(deep);
+                var allocationName = "请选择";
+                var levelName = "请选择";
+                var rackName = "请选择";
+                if(deep == "3"){
+                    allocationId = data.node.id;
+                    levelId = data.node.parents[0];
+                    rackId = data.node.parents[1];
+                    allocationName = data.node.text;
+                    levelName = $("#"+allocationId+"_anchor").parent().parent().prev().text();
+                    rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
+                }
+                else if(deep == "2"){
+                    levelId = data.node.id;
+                    rackId = data.node.parents[0];
+                    levelName = data.node.text;
+                    rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
+                }
+                else {
+                    rackId = data.node.id;
+                    rackName = data.node.text;
+                }
+                console.info(cageId);
+                console.info(rackId);
+                console.info(levelId);
+                console.info(allocationId);
+                $("#destId").val(rackName+"-"+levelName+"-"+allocationName);
+
+           }
+
     })
         .jstree({
         'core': {
@@ -118,6 +119,12 @@ function initTree() {
                 $("#tree").css("display","none");
             }
         })
+        .on("loaded.jstree", function (event, data) {
+            var inst = data.instance;
+            var obj = inst.get_node(id);
+            inst.select_node(obj);
+
+        })
 }
 //入库仓库改变事件
 $("#edit_destId").on("change",function () {
@@ -129,13 +136,10 @@ $("#edit_destId").on("change",function () {
 //入库选择点击事件
 $("#destId").click(function () {
     $("#tree").css("display","block");
-    /*初始化jstree*/
-    initTree();
 });
 //确定搜索
 function chooseCage() {
-    searchTree();
-    /*if(deep != "3"){
+    if(deep != "3"){
         $.gritter.add({
             text: "请选择具体货位！",
             class_name: 'gritter-success  gritter-light'
@@ -143,7 +147,7 @@ function chooseCage() {
     }
     else{
         $("#tree").css("display","none");
-    }*/
+    }
 }
 //取消
 function unChoose() {
@@ -154,6 +158,11 @@ function unChoose() {
     $("#tree").css("display","none");
 }
 //jstree搜索
+$("#search_organizationName").keydown(function (event) {
+    if (event.keyCode == 13) {
+        searchTree();
+    }
+});
 function searchTree() {
     var searchResult = $("#jstree").jstree('search', $("#search_organizationName").val());
     //var searchResult = $('#jstree').jstree(true).search($("#search_organizationName"));
@@ -241,7 +250,6 @@ function initSearchGrid() {
             {name: 'destUnitName', label: '收货方', hidden: true, width: 40},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 35},
-            {name: 'rmId', label: '入库库位', width: 35},
             {name: 'totQty', label: '单据数量', sortable: false, width: 20},
             {name: 'totInQty', label: '已入库数', width: 30,hidden:true},
             {name: 'totInVal', label: '总入库金额', width: 30,hidden:true,
@@ -250,6 +258,7 @@ function initSearchGrid() {
                     return totInVal;
                 }},
             {name: 'remark', label: '备注', sortable: false, width: 40,hidden:true},
+            {name: 'rmId', label: '入库库位', width: 35,hidden:true},
             {name: 'id', hidden: true},
             {name:'buyahandId',hidden:true},
             {name:'payPrice',hidden:true},
@@ -301,6 +310,15 @@ function initDetailData(rowid) {
     $("#SODtl_save").attr('disabled',false);
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
+    initTree(rowData.rmId);
+    if(rowData.rmId != null){
+        var rmId = $("#destId").val().split("-");
+        var rackName = rmId[1]+"号货架";
+        var levelName = rmId[2]+"号货层";
+        var allocationName =rmId[3]+"号货位";
+
+        $("#destId").val(rackName+"-"+levelName+"-"+allocationName);
+    }
     slaeOrder_status = rowData.status;
     if (slaeOrder_status != "0" && userId != "admin") {
         $("#edit_origId").attr('disabled', true);
@@ -909,6 +927,7 @@ function initSelectDestForm() {
                 }
                 $(".selectpicker").selectpicker('refresh');
                 $("#edit_destId").val(defaultWarehId);
+                initTree();
             }
         });
     }else{

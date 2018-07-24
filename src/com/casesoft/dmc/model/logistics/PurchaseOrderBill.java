@@ -15,15 +15,15 @@ public class PurchaseOrderBill extends BaseBill {
     @Column()
     private String id;
     @Column()
-    private Long totOutQty=0L;//
+    private Long totOutQty=0L;//总出库数量
     @Column()
     private Long totInQty=0L;
     @Column()
-    private int outStatus=0;
+    private int outStatus=0;//出库状态
     @Column()
     private int inStatus =0;
     @Column()
-    private Double totOutVal=0D;//
+    private Double totOutVal=0D;//出库金额
     @Column()
     private Double totInVal=0D;//
     @Column()

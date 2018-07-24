@@ -553,6 +553,41 @@ public class WarehStockController extends BaseController {
 
 
     /**
+     * add by lly
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @param code    唯一码
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     *
+     * 获取当前在库唯一码信息
+     */
+    @RequestMapping("getEpcStock")
+    @ResponseBody
+    public MessageBox getEpcStock(String warehId, String code,boolean isCheckWareHouse) {
+        try {
+            if (code.length() != 13) {
+                String epcCode = code.toUpperCase();
+                code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+            }
+
+            EpcStock epcStock;
+            epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
+            //得到款名
+            Style style = CacheManager.getStyleById(epcStock.getStyleId());
+            epcStock.setStyleName(style.getStyleName());
+            if (CommonUtil.isNotBlank(epcStock)) {
+                StockUtil.convertEpcStock(epcStock);
+                return new MessageBox(true, "", epcStock);
+            } else {
+                    return new MessageBox(false, "唯一码:" + code + "不在当前选中仓库");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+
+    }
+
+    /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param code    唯一码
      * @param type    出入库类型 0出库，1入库

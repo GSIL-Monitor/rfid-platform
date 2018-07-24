@@ -31,7 +31,7 @@ public abstract class BaseBillDtl {
     @Column(nullable = false)
     protected Long qty;
     @Column()
-    protected Long actQty;
+        protected Long actQty;
     @Column()
     protected Double price;
     @Column()

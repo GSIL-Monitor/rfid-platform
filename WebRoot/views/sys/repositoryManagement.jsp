@@ -40,7 +40,7 @@
 
                                     <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                         <input class="form-control" id="search_organizationName" type="text"
-                                               placeholder="模糊查询"/>
+                                               placeholder="模糊查询,回车结束"/>
                                     </div>
                                 </div>
                             </div>
