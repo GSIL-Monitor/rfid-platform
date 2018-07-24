@@ -1309,7 +1309,7 @@ function save() {
             return;
         }
     }
-
+    $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
     var consignmentBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
 
     if (addDetailgridiRow != null && addDetailgridiCol != null) {

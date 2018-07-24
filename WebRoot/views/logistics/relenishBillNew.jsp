@@ -239,7 +239,7 @@
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 
 
-
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/relenishBillNewController.js"></script>
 <div id="dialog"></div>
 <div id="progressDialog"></div>
