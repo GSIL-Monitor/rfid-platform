@@ -1065,11 +1065,11 @@
                             <table style="text-align: center;font-size:12px;border-collapse:collapse;"class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <thead >
                                 <tr style="border:1px solid #000;" id="head-A4-dialog-NoSize">
-                                    <th align="left" class="styleIdNoSizeA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款号</th>
-                                    <th align="left" class="styleNameNoSizeA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款名</th>
-                                    <th align="left" class="class1NameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">厂家/品牌</th>
-                                    <th align="left" class="qtyNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">数量</th>
-                                    <th align="left" class="priceNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">吊牌价</th>
+                                    <th align="left" data-name="styleId" class="styleIdNoSizeA4" nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款号</th>
+                                    <th align="left" data-name="styleName" class="styleNameNoSizeA4"nowrap="nowrap" style="border:0px;font-size:10px;border:1px solid #000;">款名</th>
+                                    <th align="left" data-name="class1Name" class="class1NameNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">厂家/品牌</th>
+                                    <th align="left" data-name="qty" class="qtyNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">数量</th>
+                                    <th align="left" data-name="price" class="priceNoSizeA4" nowrap="nowrap"style="border:0px;font-size:10px;border:1px solid #000;">吊牌价</th>
                                 </tr>
                                 </thead>
                                 <tbody>
