@@ -407,23 +407,23 @@ function initAllCodesList() {
 function initButtonGroup(type) {
     if(type === "add"){
         $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='PIDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
-            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "<button id='PIDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
             "    <i class='ace-icon fa fa-undo'></i>" +
             "    <span class='bigger-110'>撤销</span>" +
             "</button>" +
-            "<button id='SODtl_save' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "<button id='PIDtl_save' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-            "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+            "<button id='PIDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseOut' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
+            "<button id='PIDtl_wareHouseOut' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>"
@@ -431,29 +431,33 @@ function initButtonGroup(type) {
     }
     if (type === "edit") {
         $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='PIDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
             "</button>" +
-            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+            "<button id='PIDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
             "    <i class='ace-icon fa fa-undo'></i>" +
             "    <span class='bigger-110'>撤销</span>" +
             "</button>" +
-            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "<button id='PIDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>" +
-            "<button id='SODtl_addUniqCode' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+            "<button id='PIDtl_addUniqCode' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseOut' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseOut()'>" +
+            "<button id='PIDtl_wareHouseOut' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>"+
             "<button  type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint(billNo)'>" +
             "    <i class='ace-icon fa fa-reply'></i>" +
             "    <span class='bigger-110'>打印</span>" +
+            "</button>"+
+            "<button id='PRDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
+            "    <i class='ace-icon fa fa-print'></i>" +
+            "    <span class='bigger-110'>三联打印</span>" +
             "</button>"
         );
     }
@@ -955,8 +959,8 @@ function wareHouseOut() {
                     var all_outQty = sum_outQty + epcArray.length;
                     var diff_qty = sum_qty - all_outQty;
                     if (pageType === "edit") {
-                        $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
-                        $("#SODtl_save").attr({"disabled": "disabled"});
+                        $("#PIDtl_addUniqCode").attr({"disabled": "disabled"});
+                        $("#PIDtl_save").attr({"disabled": "disabled"});
                         $("#edit_origId").attr('disabled', true);
                         $("#edit_billDate").attr('readOnly', true);
                         if (sum_qty > all_outQty) {
@@ -1037,7 +1041,7 @@ function cancel() {
         buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
         message: "撤销确定",
         callback: function (result) {
-            /* $("#SODtl_save").removeAttr("disabled");*/
+            /* $("#PIDtl_save").removeAttr("disabled");*/
             if (result) {
                 cancelAjax(billId);
             } else {
@@ -1058,6 +1062,98 @@ function cancelAjax(billId) {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function doPrintSanLian() {
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#search_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"PR",
+            ruleReceipt:"SanLian"
+        },
+        success: function (msg) {
+            if (msg.success) {
+                var addcont = "";
+                for (var i = 0; i < msg.result.length; i++) {
+                    addcont += "<div class='form-group' onclick=setSanLian('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
+                }
+                $("#addbutton").html(addcont);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function setSanLian(id) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessageSanLian.do",
+        data: {"id": id, "billno": $("#edit_billNo").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                console.log(print);
+                console.log(cont);
+                console.log(contDel);
+                var LODOP = getLodop();
+                //eval(print.printCont);
+                $("#edit-dialogSanLian").html(print.printTableTh);
+                var printCode=print.printCode;
+                var printCodeArray=printCode.split(",");
+                for(var i=0;i<printCodeArray.length;i++){
+                    debugger
+                    var plp = printCodeArray[i];
+                    var message = cont[plp];
+                    $("#edit-dialogSanLian").find("#"+plp).text(message);
+                }
+                var tbodyCont=""
+                for(var a=0;a<contDel.length;a++){
+                    var del=contDel[a];
+                    var printTableCode=print.printTableCode.split(",");
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    for(var b=0;b<printTableCode.length;b++){
+                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printParameter.sizeArrySanLian.indexOf(printTableCode[b])!=-1){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else{
+                            tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }
+
+                    }
+                    tbodyCont+="</tr>"
+                }
+                $("#loadtabSanLian").html(tbodyCont);
+                console.log($("#edit-dialogSanLian").html());
+                //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthSanLian,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
 
             } else {
                 bootbox.alert(msg.msg);

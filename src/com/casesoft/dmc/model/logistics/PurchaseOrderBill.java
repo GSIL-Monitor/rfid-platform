@@ -34,9 +34,9 @@ public class PurchaseOrderBill extends BaseBill {
     private String orderWarehouseId; //订货仓库Id
     @Column
     private String orderWarehouseName; //订货仓库名
-    @Column
+   /* @Column
     private String rmId;//入库库位id
-
+*/
     public String getBuyahandId() {
         return buyahandId;
     }
@@ -148,11 +148,11 @@ public class PurchaseOrderBill extends BaseBill {
     /**
      * add by lly
      */
-    public String getRmId() {
+  /*  public String getRmId() {
         return rmId;
     }
 
     public void setRmId(String rmId) {
         this.rmId = rmId;
-    }
+    }*/
 }

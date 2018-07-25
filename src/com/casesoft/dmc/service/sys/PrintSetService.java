@@ -732,12 +732,13 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             User user = CacheManager.getUserById(purchaseOrderBill.getOprId());
             mapcont.put("handler","制单人:"+user.getName());
             mapcont.put("billDate", "日期:"+CommonUtil.getDateString(purchaseOrderBill.getBillDate(),"yyyy-MM-dd"));
-            mapcont.put("coustmer","客户:"+purchaseOrderBill.getOrigUnitName());
+            mapcont.put("coustmer","供应商:"+purchaseOrderBill.getOrigUnitName());
             if(CommonUtil.isNotBlank(purchaseOrderBill.getRemark())){
                 mapcont.put("remark","备注:"+purchaseOrderBill.getRemark());
             }else{
                 mapcont.put("remark","备注:");
             }
+            mapcont.put("thisMoney","本单额:"+purchaseOrderBill.getActPrice());
            /* mapcont.put("address","地址:深圳市南山区南油第二工业区天安6座625");
             mapcont.put("phone","手机:15768734210");
             mapcont.put("Tel","电话:");*/
@@ -818,7 +819,8 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             User user = CacheManager.getUserById(purchaseReturnBill.getOprId());
             mapcont.put("handler","制单人:"+user.getName());
             mapcont.put("billDate", "日期:"+CommonUtil.getDateString(purchaseReturnBill.getBillDate(),"yyyy-MM-dd"));
-            mapcont.put("coustmer","客户:"+purchaseReturnBill.getOrigUnitName());
+            mapcont.put("coustmer","供应商:"+purchaseReturnBill.getDestUnitName());
+            mapcont.put("thisMoney","本单额:"+purchaseReturnBill.getActPrice());
             if(CommonUtil.isNotBlank(purchaseReturnBill.getRemark())){
                 mapcont.put("remark","备注:"+purchaseReturnBill.getRemark());
             }else{

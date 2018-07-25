@@ -1496,7 +1496,7 @@ function doPrintSanLian() {
         url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
         data: {
-            type:"SR",
+            type:"PI",
             ruleReceipt:"SanLian"
         },
         success: function (msg) {
