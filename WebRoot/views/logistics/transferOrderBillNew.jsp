@@ -360,6 +360,8 @@
 <jsp:include page="add_epc_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
+<jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
+<jsp:include page="../sys/print_Test.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderBillNewController.js"></script>

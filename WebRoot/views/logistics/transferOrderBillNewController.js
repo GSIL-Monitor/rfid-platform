@@ -567,6 +567,10 @@ function initButtonGroup() {
             "<button id='TRDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>A4打印</span>" +
+            "</button>"+
+            "<button id='TRDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
+            "    <i class='ace-icon fa fa-print'></i>" +
+            "    <span class='bigger-110'>三联打印</span>" +
             "</button>"
         );
         loadingButton();
@@ -1277,6 +1281,98 @@ function cancelAjax(billId) {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#grid").trigger("reloadGrid");
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function doPrintSanLian() {
+    $("#edit-dialog-print").modal('show');
+    $("#form_code").removeAttr("readOnly");
+    var billNo = $("#search_billNo").val();
+    $("#billno").val(billNo);
+    $("#edit-dialog-print").show();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
+        type: "POST",
+        data: {
+            type:"TR",
+            ruleReceipt:"SanLian"
+        },
+        success: function (msg) {
+            if (msg.success) {
+                var addcont = "";
+                for (var i = 0; i < msg.result.length; i++) {
+                    addcont += "<div class='form-group' onclick=setSanLian('" + msg.result[i].id + "') title='" + msg.result[i].name + "'>" +
+                        "<button class='btn btn-info'>" +
+                        "<i class='cae-icon fa fa-refresh'></i>" +
+                        "<span class='bigger-10'>套打" + msg.result[i].name + "</span>" +
+                        "</button>" +
+                        "</div>"
+                }
+                $("#addbutton").html(addcont);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+function setSanLian(id) {
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/sys/printset/printMessageSanLian.do",
+        data: {"id": id, "billno": $("#edit_billNo").val()},
+        type: "POST",
+        success: function (msg) {
+            if (msg.success) {
+
+                var print = msg.result.print;
+                var cont = msg.result.cont;
+                var contDel = msg.result.contDel;
+                console.log(print);
+                console.log(cont);
+                console.log(contDel);
+                var LODOP = getLodop();
+                //eval(print.printCont);
+                $("#edit-dialogSanLian").html(print.printTableTh);
+                var printCode=print.printCode;
+                var printCodeArray=printCode.split(",");
+                for(var i=0;i<printCodeArray.length;i++){
+                    debugger
+                    var plp = printCodeArray[i];
+                    var message = cont[plp];
+                    $("#edit-dialogSanLian").find("#"+plp).text(message);
+                }
+                var tbodyCont=""
+                for(var a=0;a<contDel.length;a++){
+                    var del=contDel[a];
+                    var printTableCode=print.printTableCode.split(",");
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    for(var b=0;b<printTableCode.length;b++){
+                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                            tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else if(printParameter.sizeArrySanLian.indexOf(printTableCode[b])!=-1){
+                            tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }else{
+                            tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
+                        }
+
+                    }
+                    tbodyCont+="</tr>"
+                }
+                $("#loadtabSanLian").html(tbodyCont);
+                console.log($("#edit-dialogSanLian").html());
+                //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthSanLian,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
+                //LODOP.PREVIEW();
+                LODOP.PRINT();
+                $("#edit-dialog-print").hide();
+
+
 
             } else {
                 bootbox.alert(msg.msg);

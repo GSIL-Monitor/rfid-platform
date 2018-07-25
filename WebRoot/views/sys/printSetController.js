@@ -788,6 +788,17 @@ function findPrintSetSanLian(sum) {
 
                         if(!(result.printCode.indexOf(name)!= -1)){
                             $(this).attr("class","stecs");
+
+                        }else{
+                            $(this).attr("class","stecs on");
+
+                        }
+                    });
+                    $("#tablePrintSanLian").find("div").each(function (index,element) {
+                        var name=$(this).data("name");
+
+                        if(!(result.printTableCode.indexOf(name)!= -1)){
+                            $(this).attr("class","stecs");
                             $("#"+name+"SanLian").hide();
                         }else{
                             $(this).attr("class","stecs on");
@@ -795,16 +806,16 @@ function findPrintSetSanLian(sum) {
                         }
                     });
                     $("#edit-SanLian-dialog").find("th").each(function (index,element) {
-                        /* var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                         var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
-                         $(this).hide();
-                         }*/
+                             $(this).hide();
+                         }
                     });
                     $("#edit-SanLian-dialog").find("td").each(function (index,element) {
-                        /* var name=$(this).attr("class").substring(0,$(this).attr("class").length-2);
+                        var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
-                         $(this).hide();
-                         }*/
+                            $(this).hide();
+                         }
                     });
                 }else{
                     $("#idSanLian").val("");
@@ -909,6 +920,17 @@ function receiptTypeSelect() {
         }
     });
 
+}
+function receiptTypeSelectSanLian() {
+    var sum;
+
+    $("#ruleReceiptSanLian").find("ul").each(function(index,element){
+
+        if(!($(this).attr("class")=="stecs")) {
+            sum=$(this).data("name")
+            findPrintSetSanLian(sum);
+        }
+    });
 }
 function receiptTypeSelectA4() {
     var sum;

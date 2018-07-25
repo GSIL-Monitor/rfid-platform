@@ -839,13 +839,13 @@
                                     <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10" data-name="remark" id="remarkSanLian" style="display:table-cell;vertical-align:middle;text-align:center">备注:xx</span>
                                     <span class="col-xs-2 col-sm-2 col-md-2 col-lg-2" data-name="handler" id="handlerSanLian" style="display:table-cell;vertical-align:middle;text-align:center">经办人:xx</span>
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                <%--<div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
                                     <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="Tel" id="TelSanLian" style="display:table-cell;vertical-align:middle;text-align:center">电话:xx</span>
                                     <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="phone" id="phoneSanLian" style="display:table-cell;vertical-align:middle;text-align:center">手机:xx</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
                                     <span class="col-xs-12 col-sm-12 col-md-12 col-lg-12" data-name="address" id="addressSanLian" style="display:table-cell;vertical-align:middle;text-align:center">地址:xx</span>
-                                </div>
+                                </div>--%>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="footExtendSanLian">
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
@@ -909,8 +909,10 @@
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
                                         <span>小票类型:</span>
-                                        <select id="receiptTypeSanLian" onchange="receiptTypeSelect()">
+                                        <select id="receiptTypeSanLian" onchange="receiptTypeSelectSanLian()">
                                             <option value="SO">销售单据</option>
+                                            <option value="SR">销售退货</option>
+                                            <option value="TR">调拨申请</option>
                                         </select>
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
@@ -1015,7 +1017,7 @@
                                                     <span>经办人</span>
                                                 </div>
                                             </li>
-                                            <li class="headTitleLi">
+                                           <%-- <li class="headTitleLi">
                                                 <div class="stecs on" data-name="Tel" onclick="selectThisSanLian(this,'TelSanLian')">
                                                     <i></i>
                                                     <span>电话</span>
@@ -1032,7 +1034,7 @@
                                                     <i></i>
                                                     <span>地址</span>
                                                 </div>
-                                            </li>
+                                            </li>--%>
                                             <li class="headTitleLi">
                                                 <span>扩展打印(在页脚展示扩展信息,换行请输入&lt;br&gt;)：</span>
                                                 <br>
