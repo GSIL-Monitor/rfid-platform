@@ -530,6 +530,7 @@
 <jsp:include page="style_color_edit.jsp"></jsp:include>
 <jsp:include page="style_size_edit.jsp"></jsp:include>
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
+<jsp:include page="changeRemark_dialog.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
 
 
@@ -1084,6 +1085,7 @@
         if ((re.indexOf(",") >= 0)||(re.indexOf("，") >= 0)){
             bootbox.alert("成分中不允许含有回车及逗号字符");
         }else {
+            bootbox.setDefaults("locale","zh_CN");
             if (isSeries == "N") {
                 $('#editStyleForm').data('bootstrapValidator').validate();
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
@@ -1093,52 +1095,80 @@
                     saveItem(editDtailRowId)
                 }
                 $("#form_sizeSortId").removeAttr("disabled");
-                cs.showProgressBar();
                 var dtlArray = [];
+                var isRemark=true;
                 $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
                     var dtlRow = $("#CSGrid").getRowData(dtlValue);
-                    dtlArray.push(dtlRow);
+                    if (re!=dtlRow.remark){
+                        isRemark=false;
+                        return false;
+                    }
                 });
-                $.ajax({
-                    dataType: "json",
-                    url: basePath + "/prod/style/saveStyleAndProduct.do",
-                    data: {
-                        styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
-                        productStr: JSON.stringify(dtlArray),
-                        userId: userId,
-                        pageType: str
-                    },
-                    type: "POST",
-                    success: function (msg) {
-                        cs.closeProgressBar();
-                        if (msg.success) {
-                            $.gritter.add({
-                                text: msg.msg,
-                                class_name: 'gritter-success  gritter-light'
+                if (!isRemark){
+                    bootbox.confirm("是否需要覆盖色码列表成分", function(result) {
+                        if (result){
+                            $.each($("#CSGrid").getDataIDs(), function (index, value) {
+                                $('#CSGrid').setCell(value, "remark", re);
                             });
-                        } else {
-                            bootbox.alert(msg.msg);
+                            cs.showProgressBar();
+                            $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                dtlArray.push(dtlRow);
+                            });
+                            $.ajax({
+                                dataType: "json",
+                                url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                data: {
+                                    styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                    productStr: JSON.stringify(dtlArray),
+                                    userId: userId,
+                                    pageType: str
+                                },
+                                type: "POST",
+                                success: function (msg) {
+                                    cs.closeProgressBar();
+                                    if (msg.success) {
+                                        $.gritter.add({
+                                            text: msg.msg,
+                                            class_name: 'gritter-success  gritter-light'
+                                        });
+                                    } else {
+                                        bootbox.alert(msg.msg);
+                                    }
+                                }
+                            });
+                        }else {
+                            cs.showProgressBar();
+                            $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                dtlArray.push(dtlRow);
+                            });
+                            $.ajax({
+                                dataType: "json",
+                                url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                data: {
+                                    styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                    productStr: JSON.stringify(dtlArray),
+                                    userId: userId,
+                                    pageType: str
+                                },
+                                type: "POST",
+                                success: function (msg) {
+                                    cs.closeProgressBar();
+                                    if (msg.success) {
+                                        $.gritter.add({
+                                            text: msg.msg,
+                                            class_name: 'gritter-success  gritter-light'
+                                        });
+                                    } else {
+                                        bootbox.alert(msg.msg);
+                                    }
+                                }
+                            });
                         }
-                    }
-                });
-            } else {
-                if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
-                    $.gritter.add({
-                        text: "采购价和吊牌价不符合定价规则，请核对对应价格",
-                        class_name: 'gritter-success  gritter-light'
                     });
-                } else {
-                    $("#form_price").attr("disabled",false);
-                    $('#editStyleForm').data('bootstrapValidator').validate();
-                    if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
-                        return;
-                    }
-                    if (editDtailRowId != null) {
-                        saveItem(editDtailRowId)
-                    }
-                    $("#form_sizeSortId").removeAttr("disabled");
+                }else {
                     cs.showProgressBar();
-                    var dtlArray = [];
                     $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
                         var dtlRow = $("#CSGrid").getRowData(dtlValue);
                         dtlArray.push(dtlRow);
@@ -1160,12 +1190,134 @@
                                     text: msg.msg,
                                     class_name: 'gritter-success  gritter-light'
                                 });
-                                $("#form_price").attr("disabled",true);
                             } else {
                                 bootbox.alert(msg.msg);
                             }
                         }
                     });
+                }
+            } else {
+                if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
+                    $.gritter.add({
+                        text: "采购价和吊牌价不符合定价规则，请核对对应价格",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                } else {
+                    $("#form_price").attr("disabled",false);
+                    $('#editStyleForm').data('bootstrapValidator').validate();
+                    if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
+                        return;
+                    }
+                    if (editDtailRowId != null) {
+                        saveItem(editDtailRowId)
+                    }
+                    $("#form_sizeSortId").removeAttr("disabled");
+                    var isRemark=true;
+                    $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                        var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                        if (re!=dtlRow.remark){
+                            isRemark=false;
+                            return false;
+                        }
+                    });
+                    if (!isRemark){
+                        bootbox.confirm("是否需要覆盖色码列表成分", function(result) {
+                            if (result){
+                                $.each($("#CSGrid").getDataIDs(), function (index, value) {
+                                    $('#CSGrid').setCell(value, "remark", re);
+                                });
+                                cs.showProgressBar();
+                                var dtlArray = [];
+                                $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                    var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                    dtlArray.push(dtlRow);
+                                });
+                                $.ajax({
+                                    dataType: "json",
+                                    url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                    data: {
+                                        styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                        productStr: JSON.stringify(dtlArray),
+                                        userId: userId,
+                                        pageType: str
+                                    },
+                                    type: "POST",
+                                    success: function (msg) {
+                                        cs.closeProgressBar();
+                                        if (msg.success) {
+                                            $.gritter.add({
+                                                text: msg.msg,
+                                                class_name: 'gritter-success  gritter-light'
+                                            });
+                                            $("#form_price").attr("disabled",true);
+                                        } else {
+                                            bootbox.alert(msg.msg);
+                                        }
+                                    }
+                                });
+                            }else {
+                                cs.showProgressBar();
+                                var dtlArray = [];
+                                $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                    var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                    dtlArray.push(dtlRow);
+                                });
+                                $.ajax({
+                                    dataType: "json",
+                                    url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                    data: {
+                                        styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                        productStr: JSON.stringify(dtlArray),
+                                        userId: userId,
+                                        pageType: str
+                                    },
+                                    type: "POST",
+                                    success: function (msg) {
+                                        cs.closeProgressBar();
+                                        if (msg.success) {
+                                            $.gritter.add({
+                                                text: msg.msg,
+                                                class_name: 'gritter-success  gritter-light'
+                                            });
+                                            $("#form_price").attr("disabled",true);
+                                        } else {
+                                            bootbox.alert(msg.msg);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }else {
+                        cs.showProgressBar();
+                        var dtlArray = [];
+                        $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                            var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                            dtlArray.push(dtlRow);
+                        });
+                        $.ajax({
+                            dataType: "json",
+                            url: basePath + "/prod/style/saveStyleAndProduct.do",
+                            data: {
+                                styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                productStr: JSON.stringify(dtlArray),
+                                userId: userId,
+                                pageType: str
+                            },
+                            type: "POST",
+                            success: function (msg) {
+                                cs.closeProgressBar();
+                                if (msg.success) {
+                                    $.gritter.add({
+                                        text: msg.msg,
+                                        class_name: 'gritter-success  gritter-light'
+                                    });
+                                    $("#form_price").attr("disabled",true);
+                                } else {
+                                    bootbox.alert(msg.msg);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -1181,7 +1333,7 @@
             mtype: 'POST',
             colModel: [
                 {
-                    name: "", label: "操作", width: 80, editable: false, align: "center",
+                    name: "", label: "操作", width: 80, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         var html;
                         if (pageType == "add") {
@@ -1196,19 +1348,21 @@
                         }
                     }
                 },
-                {name: 'colorId', label: '颜色', editable: false},
-                {name: 'sizeId', label: '尺寸', editable: false},
+                {name: 'colorId', label: '颜色'},
+                {name: 'sizeId', label: '尺寸'},
                 {
-                    name: 'barcode', label: '条码', editable: true,
+                    name: 'barcode', label: '条码',
                     editrules: {
                         number: true
                     }
                 },
-                {name: 'push', label: '推送', editable: false},
+                {name:'remark',label:'成分'},
+                {name: 'push', label: '推送'},
                 {name: 'code', hidden: true}
 
             ],
             viewrecords: true,
+            cellEdit:true,
             autoWidth: true,
             rownumbers: true,
             altRows: true,
@@ -1220,16 +1374,83 @@
             autoScroll: false,
             sortname: 'colorId',
             sortorder: "asc",
-            onSelectRow: function (rowid, status) {
+            /*onSelectRow: function (rowid, status) {
                 if (editDtailRowId != null) {
                     saveItem(editDtailRowId);
                 }
                 editDtailRowId = rowid;
-                $('#CSGrid').editRow(rowid);
+                var rowData = $("#CSGrid").jqGrid('getRowData',rowid);
+
+
+            }*/
+            onCellSelect : function(rowid, index, contents, event){
+                if (index==5){
+                    changeRemark(rowid,contents);
+                }
             }
         });
         $("#CSGrid").setGridWidth($("#parentWidth").width());
     }
+
+    function changeRemark(rowid,contents) {
+        $("#changeRemark_form").html("");
+        $("#changeRemark_dialog").modal('show');
+        var remarkList = contents.split(" ");
+        var remark = new Array();
+        var number = new Array();
+        $.each(remarkList, function (dtlndex, dtlValue) {
+            remark.push(GetChinese(dtlValue));
+            number.push(GetNumber(dtlValue));
+        });
+        $("#changeRemark_buttonGroup").html("" +
+            "<button  type='button' id = 'changeRemark_save'  class='btn btn-primary' onclick=RemarkSave('" + remark + "','" + rowid + "')>确认</button>"
+        );
+        $.each(remark,function (Rindex,Rvalue) {
+            $("#changeRemark_form").append("<div class='form-group'>" +
+                "<label class='col-sm-2 control-label no-padding-right'>"+Rvalue+"</label> " +
+                "<div class='col-xs-9 col-sm-5'> " +
+                "<input class='form-control' id='remark"+Rindex+"' type='number' value='"+number[Rindex]+"'/> </div>" +
+                "<label class='col-sm-1 control-label no-padding-right'>%</label>" +
+                " </div>");
+        });
+    }
+    function RemarkSave(remark,rowid) {
+        var newRemark = remark.split(",");
+        var strRemark ="";
+        $.each(newRemark,function (Rindex,Rvalue) {
+            if((Rindex+1)==newRemark.length){
+                strRemark +=Rvalue + $("#remark"+Rindex).val()+"%";
+            }else {
+                strRemark +=Rvalue + $("#remark"+Rindex).val()+"% ";
+            }
+        });
+        $.ajax({
+            url: basePath + "/prod/product/remarkSave.do?",
+            data:{
+                id:rowid,
+                remark:strRemark
+            },
+            cache: false,
+            async: false,
+            type: 'POST',
+            success: function (data) {
+                if (data.success) {
+                    $("#changeRemark_dialog").modal('hide');
+                    $("#CSGrid").setCell(rowid, 'remark', strRemark);
+                    $.gritter.add({
+                        text: data.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }else {
+                    $.gritter.add({
+                        text: data.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }
+            }
+        });
+    }
+
 
     function saveItem(rowId) {
         editDtailRowId = null;
@@ -1450,6 +1671,20 @@
         );
     }
 
+    /*$("#tags_3").onmouseover(function(){
+        debugger;
+       var remark = $("#tags_3").val();
+        $.each($("#CSGrid").getDataIDs(), function (index, value) {
+            $('#CSGrid').setCell(value, "remark", remark);
+        });
+    });*/
+    function removed() {
+        console.info("11");
+        var remark = $("#tags_3").val();
+        $.each($("#CSGrid").getDataIDs(), function (index, value) {
+            $('#CSGrid').setCell(value, "remark", remark);
+        });
+    }
 </script>
 </body>
 </html>
