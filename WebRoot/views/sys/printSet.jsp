@@ -912,6 +912,8 @@
                                         <select id="receiptTypeSanLian" onchange="receiptTypeSelectSanLian()">
                                             <option value="SO">销售单据</option>
                                             <option value="SR">销售退货</option>
+                                            <option value="PI">采购单据</option>
+                                            <option value="PR">采购退货</option>
                                             <option value="TR">调拨申请</option>
                                         </select>
                                     </div>

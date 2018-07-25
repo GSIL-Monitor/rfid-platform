@@ -783,15 +783,15 @@ function findPrintSetSanLian(sum) {
                             $("#"+name+"SanLian").show();
                         }
                     });
-                    $("#printFootSanLian").find("div").each(function (index,element) {
+                    $("#footPrintSanLian").find("div").each(function (index,element) {
                         var name=$(this).data("name");
 
                         if(!(result.printCode.indexOf(name)!= -1)){
                             $(this).attr("class","stecs");
-
+                            $("#"+name+"SanLian").hide();
                         }else{
                             $(this).attr("class","stecs on");
-
+                            $("#"+name+"SanLian").show();
                         }
                     });
                     $("#tablePrintSanLian").find("div").each(function (index,element) {
@@ -829,7 +829,7 @@ function findPrintSetSanLian(sum) {
                         $("#"+name+"SanLian").show();
 
                     });
-                    $("#printFootSanLian").find("div").each(function (index,element) {
+                    $("#footPrintSanLian").find("div").each(function (index,element) {
                         var name=$(this).data("name");
                         $(this).attr("class","stecs on");
                         $("#"+name+"SanLian").show();
