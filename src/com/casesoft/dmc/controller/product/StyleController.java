@@ -10,12 +10,16 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Term;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.tag.InitService;
+import net.sf.jasperreports.repo.Resource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +54,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public InitService initService;
 	@Autowired
 	private PropertyService propertyService;
-
+	@Autowired
+	private ResourceButtonService resourceButtonService;
 	@RequestMapping("/page")
 	@ResponseBody
 	@Override
@@ -170,12 +175,17 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public ModelAndView editStyle(String styleId){
 		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+		String roleId = getCurrentUser().getRoleId();
+		//查询当前用户对应字段
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findResourceButtonByCodeAndRoleId("/prod/style",roleId,"table");
 		Style s = CacheManager.getStyleById(styleId);
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
 		mv.addObject("styleId", styleId);
 		mv.addObject("classTypes",propertyTypeList);
-		mv.addObject("roleId",getCurrentUser().getRoleId());
+		mv.addObject("roleId",roleId);
+		//传递字段
+		mv.addObject("fieldList",resourceButtonList);
 		mv.addObject("userId",getCurrentUser().getId());
 		return mv;
 	}
