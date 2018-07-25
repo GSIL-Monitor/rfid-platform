@@ -85,6 +85,7 @@ function addNewSize(){
 }
 
 function saveColAndSize(){
+    var remark = $("#tags_3").val();
     var colorArray=$("#form_colorId_select").val();
     var sizeArray=$("#form_sizeId").val();
     if(colorArray == null){
@@ -97,7 +98,7 @@ function saveColAndSize(){
     }
    $.each(colorArray,function (colorIndex,color) {
       $.each(sizeArray,function (sizeIndex,size) {
-          $("#CSGrid").addRowData($("#addDetailgrid").getRowData().length,{colorId:color,sizeId:size});
+          $("#CSGrid").addRowData($("#addDetailgrid").getRowData().length,{colorId:color,sizeId:size,remark:remark});
       })
    });
     $("#modal-colorAndSize").modal('hide');

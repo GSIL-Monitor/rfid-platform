@@ -328,9 +328,6 @@ public class StyleUtil {
             p.setCode(p.getStyleId()+p.getColorId()+p.getSizeId());
             p.setBrandCode(style.getBrandCode());
             p.setStyleCycle(style.getStyleCycle());
-            if(CommonUtil.isNotBlank(sty.getRemark())){
-                p.setRemark(sty.getRemark());
-            }
             saveList.add(p);
         }
         return saveList;

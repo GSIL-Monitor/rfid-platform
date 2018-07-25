@@ -230,4 +230,21 @@ public class ProductController extends BaseController implements IBaseInfoContro
         }
     }
 
+    @RequestMapping("/remarkSave")
+    @ResponseBody
+    public MessageBox remarkSave (String id,String remark){
+        this.logAllRequestParams();
+        try {
+            Product product = this.productService.load(id);
+            if (CommonUtil.isNotBlank(product)){
+                this.productService.updateRemarkById(id,remark);
+                return returnSuccessInfo("更改成功");
+            }else {
+                return returnFailInfo("请先保存后更改");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return returnFailInfo("更改失败");
+        }
+    }
 }

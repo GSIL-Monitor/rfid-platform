@@ -32,6 +32,10 @@ public class ProductService extends AbstractBaseService<Product, String> {
     @Autowired
     private SysLogService sysLogService;
 
+    public void updateRemarkById(String id,String remark){
+        this.productDao.batchExecute("update Product set remark = '"+remark+"' where id =?",id);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<Product> findPage(Page<Product> page, List<PropertyFilter> filters) {
