@@ -595,6 +595,9 @@
                                         <span>小票类型:</span>
                                         <select id="receiptTypeA4" onchange="receiptTypeSelectA4()">
                                             <option value="SO">销售单据</option>
+                                            <option value="SR">销售退货</option>
+                                            <option value="PI">采购单据</option>
+                                            <option value="PR">采购退货</option>
                                             <option value="TR">调拨单</option>
                                         </select>
                                     </div>
