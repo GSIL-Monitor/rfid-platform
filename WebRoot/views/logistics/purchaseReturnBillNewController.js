@@ -1026,6 +1026,7 @@ function addNew(){
     $(".selectpicker").selectpicker('refresh');
     pageType="add";
     initButtonGroup(pageType);
+    $("#edit_guest_button").removeAttr("disabled");
 
 }
 function cancel() {
