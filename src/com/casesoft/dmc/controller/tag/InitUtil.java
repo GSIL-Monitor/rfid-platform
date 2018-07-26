@@ -758,7 +758,6 @@ public class InitUtil {
 				}
 				sb.append(df.format(style.getPrice()));
 				sb.append(" ");
-//				sb.append(style.getRemark());
 			}
 			Product p = CacheManager.getProductByCode(detail.getSku());
 			if (CommonUtil.isNotBlank(p)) {
@@ -951,7 +950,7 @@ public class InitUtil {
 				}
 
 				sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
-						.append(",").append(class7).append(",").append(style.getRemark());
+						.append(",").append(class7).append(",").append(p.getRemark());
 			} else {
 				sb.append(",").append("").append(",").append("").append(",").append("").append(",").append("");
 			}
@@ -1038,7 +1037,7 @@ public class InitUtil {
 
 
 							sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
-									.append(",").append(class7).append(",").append(style.getRemark());
+									.append(",").append(class7).append(",").append(p.getRemark());
 						} else {
 							sb.append(",").append("").append(",").append("").append(",").append("");
 						}
@@ -1050,77 +1049,6 @@ public class InitUtil {
 		return sb.toString();
 	}
 
-	public static String writeTextFile2(InitDtl detail, boolean isRfid)
-			throws Exception {
-		String title = "";
-		if (isRfid)
-			title = "款式,款名,色码,颜色,尺寸,尺码,吊牌码,芯片码,二维码,价格,系列  \r\n";
-		else
-			title = "款式,款名,色码,颜色,尺寸,尺码,吊牌码,二维码,价格,系列  \r\n";
-
-		StringBuffer sb = new StringBuffer(title);
-		int startNo = (int) detail.getStartNum();
-		for (int i = 1; i <= detail.getQty(); i++) {
-			// int seriaLength = Constant.Length.Epc_Length -
-			// detail.getSku().length();
-			// String epc =
-			// detail.getSku()+CommonUtil.produceIntToString(startNo+i-1,seriaLength);
-			// String code2 = PropertyUtil.getValue("webservice")+epc;
-			String className = PropertyUtil.getValue("tag_name");
-			ITag tag = TagFactory.getTag(className);
-			tag.setStyleId(detail.getStyleId());
-			tag.setColorId(detail.getColorId());
-			tag.setSizeId(detail.getSizeId());
-			tag.setSku(detail.getSku());
-			// String uniqueCode = EpcSecretUtil.getUniqueCode(detail.getSku(),
-			// startNo, i);
-			// String epc = EpcSecretUtil.convertUniqueCodeToEpc2(uniqueCode);//
-			// 待加密的EPC为转码之后的唯一码+“补0”
-			// String secretEpc = EpcSecretUtil.encodeEpc(epc);// encode(epc);
-			String uniqueCode = tag.getUniqueCode(startNo, i);
-			String epc = tag.getEpc();
-			String secretEpc = tag.getSecretEpc();
-			String code2 = PropertyUtil.getValue("webservice") + uniqueCode;
-
-			sb.append(detail.getStyleId());
-			sb.append(",");
-			sb.append(CacheManager.getStyleNameById(detail.getStyleId()));
-			sb.append(",");
-			sb.append(detail.getColorId());
-			sb.append(",");
-			sb.append(CacheManager.getColorNameById(detail.getColorId()));
-			sb.append(",");
-			sb.append(detail.getSizeId());
-			sb.append(",");
-			sb.append(CacheManager.getSizeNameById(detail.getSizeId()));
-			sb.append(",");
-
-			// sb.append(convertToASCII(epc,0));
-			if (isRfid) {
-				sb.append(uniqueCode);
-				sb.append(",");
-				sb.append(secretEpc);
-			} else
-				sb.append(uniqueCode);
-
-			sb.append(",");
-			sb.append(code2);
-
-			sb.append(",");
-			Style style = CacheManager.getStyleById(detail.getStyleId());
-			DecimalFormat df = new DecimalFormat("#####0");// 设置价格显示无小数位
-			sb.append(df.format(style.getPrice()));
-			sb.append(",");
-			sb.append(style.getRemark());
-
-			sb.append("\r\n");
-
-			Epc epcObj = initEpcObj(detail, uniqueCode, secretEpc, code2);
-			epcList.add(epcObj);
-
-		}
-		return sb.toString();
-	}
 
 	public static String writeTextFile3(InitDtl detail, boolean isRfid)
 			throws Exception {
@@ -1175,6 +1103,7 @@ public class InitUtil {
 
 			sb.append(",");
 			Style style = CacheManager.getStyleById(detail.getStyleId());
+			Product p = CacheManager.getProductByCode(detail.getSku());
 			if (style == null) {
 				sb.append("");
 				sb.append(",");
@@ -1189,28 +1118,20 @@ public class InitUtil {
 				}
 				sb.append(df.format(style.getPrice()));
 				sb.append(",");
-				sb.append(style.getRemark());
+				sb.append(p.getRemark());
 			}
-			Product p = CacheManager.getProductByCode(detail.getSku());
+
 			if (CommonUtil.isNotBlank(p)) {
 				String class7 = "";
 				if (CommonUtil.isNotBlank(style) && CommonUtil.isNotBlank(style.getClass7())) {
 					class7 = style.getClass7();
 				}
 				sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
-						.append(",").append(class7).append(",").append(style.getRemark());
+						.append(",").append(class7).append(",").append(p.getRemark());
 			} else {
 				sb.append(",").append("").append(",").append("").append(",").append("");
 			}
 			sb.append("\r\n");
-			/*Style style = CacheManager.getStyleById(detail.getStyleId());
-			DecimalFormat df = new DecimalFormat("#####0");// 设置价格显示无小数位
-			sb.append(df.format(style.getPrice()));
-			sb.append(",");
-			sb.append(style.getRemark());
-
-			sb.append("\r\n");*/
-
 			Epc epcObj = initEpcObj(detail, uniqueCode, secretEpc, code2);
 			epcList.add(epcObj);
 
