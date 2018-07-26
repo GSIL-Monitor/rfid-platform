@@ -310,6 +310,8 @@ public class StyleUtil {
 //        sty.setRules(style.getRules());
         sty.setIspush(style.getIspush());
         sty.setStyleCycle(style.getStyleCycle());
+        sty.setBargainPrice(style.getBargainPrice());
+        sty.setIsSeries(style.getIsSeries());
         List<Product> saveList = new ArrayList<>();
         int index = CacheManager.getMaxProductId();
         for(int i =0 ; i < productList.size(); i++){

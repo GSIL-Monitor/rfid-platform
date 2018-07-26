@@ -14,6 +14,7 @@
         var styleId = "${styleId}";
         var pageType = "${pageType}";
         var remark  = "${style.remark}";
+        var fieldList = ${fieldList};
     </script>
     <style>
         a#focusColor:hover {
@@ -108,56 +109,80 @@
 
                                             </div>
                                             <div class="form-group" id="form-group-preCast">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_preCast"><span class="text-danger">* </span>采购价</label>
+                                                <div id="preCase_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_preCast"><span class="text-danger">* </span>采购价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_preCast" name="preCast"
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.preCast}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_preCast" name="preCast"
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.preCast}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_puPrice"><span
-                                                        class="text-danger">* </span>代理商价</label>
+                                                <div id="puPrice_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_puPrice"><span
+                                                            class="text-danger">* </span>代理商价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_puPrice" name="puPrice"
-                                                               readonly
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.puPrice}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_puPrice" name="puPrice"
+                                                                   readonly
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.puPrice}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
+
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_wsPrice"><span class="text-danger">* </span>门店价</label>
+                                                <div id="wsPrice_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_wsPrice"><span class="text-danger">* </span>门店价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_wsPrice" name="wsPrice"
-                                                               readonly
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.wsPrice}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_wsPrice" name="wsPrice"
+                                                                   readonly
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.wsPrice}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_price"><span class="text-danger">* </span>吊牌价</label>
+                                                <div id="price_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_price"><span class="text-danger">* </span>吊牌价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_price" name="price"
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.price}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_price" name="price"
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.price}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div id="bargainPrice_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_bargainPrice"><span class="text-danger">* </span>特价</label>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_bargainPrice" name="bargainPrice"
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.bargainPrice}" step="0.01"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+
                                             </div>
                                             <input id="form_remark" name ="remark" type="hidden"/>
                                             <div class="form-group">
@@ -406,46 +431,51 @@
                                                     <option value="Y" style="background-color: #eeeeee">是</option>
                                                     </select>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_isSeries">是否用定价规则</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <select class="form-control" id="form_isSeries"
-                                                            onchange="priceIsUse();" name="isSeries"/>
-                                                    <option value="Y" style="background-color: #eeeeee">是</option>
-                                                    <option value="N" style="background-color: #eeeeee">否</option>
-                                                    </select>
+                                                <div id="isSeries_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_isSeries">是否用定价规则</label>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <select class="form-control" id="form_isSeries"
+                                                                onchange="priceIsUse();" name="isSeries"/>
+                                                        <option value="Y" style="background-color: #eeeeee">是</option>
+                                                        <option value="N" style="background-color: #eeeeee">否</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
+
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_styleCycle">退换周期(天)</label>
-                                                <%--<div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">--%>
-                                                <%--<select class="chosen-select form-control" id="form_styleCycle"--%>
-                                                <%--name="styleCycle">--%>
-                                                <%--</select>--%>
-                                                <%--</div>--%>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <c:if test="${pageType == 'edit'}">
-                                                            <input class="form-control"
-                                                              id="form_styleCycle"
-                                                              name="styleCycle"
-                                                              required="required"
-                                                              type="number"
-                                                              placeholder=""
-                                                              value="${style.styleCycle}"
-                                                              step="1"/>
-                                                        </c:if>
-                                                        <c:if test="${pageType == 'add'}">
-                                                            <input class="form-control"
-                                                             id="form_styleCycle"
-                                                             name="styleCycle"
-                                                             required="required"
-                                                             type="number"
-                                                             placeholder=""
-                                                             value="20" step="1"/>
-                                                        </c:if>
+                                                <div id="styleCycle_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_styleCycle">退换周期(天)</label>
+                                                    <%--<div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">--%>
+                                                    <%--<select class="chosen-select form-control" id="form_styleCycle"--%>
+                                                    <%--name="styleCycle">--%>
+                                                    <%--</select>--%>
+                                                    <%--</div>--%>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <c:if test="${pageType == 'edit'}">
+                                                                <input class="form-control"
+                                                                       id="form_styleCycle"
+                                                                       name="styleCycle"
+                                                                       required="required"
+                                                                       type="number"
+                                                                       placeholder=""
+                                                                       value="${style.styleCycle}"
+                                                                       step="1"/>
+                                                            </c:if>
+                                                            <c:if test="${pageType == 'add'}">
+                                                                <input class="form-control"
+                                                                       id="form_styleCycle"
+                                                                       name="styleCycle"
+                                                                       required="required"
+                                                                       type="number"
+                                                                       placeholder=""
+                                                                       value="20" step="1"/>
+                                                            </c:if>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -543,6 +573,7 @@
             height:'70',
             autocomplete_url:'remark.do'
         });
+        loadingButton();
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
@@ -556,7 +587,7 @@
                 $("#form-group-preCast").hide();
                 $("#form_price").attr("readonly", true);
             }
-
+            $("#form_isSeries").val("${style.isSeries}");
         } else {
             /*  $("#focusColor").removeAttr("onclick");*/
             if ('${roleId}' == '0') {
@@ -565,6 +596,7 @@
                 $("#form-group-preCast").hide();
             }
             $("#edit_isNotDeton").click();
+            $("#form_bargainPrice").val(0.0);
         }
         initeditStyleFormValid();
 
@@ -585,7 +617,19 @@
         $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
         $("div.btn-group").css("padding", "0");
         if ($("#form_isSeries").val()=="Y"){
-            $("#form_price").attr("disabled",true);
+            $("#form_price").attr("readonly",true);
+        }
+
+    });
+
+    $("#form_bargainPrice").blur(function(){
+        var bargainPrice = $("#form_bargainPrice").val();
+        if (bargainPrice>$("#form_price").val()){
+            $.gritter.add({
+                text: "特价价格不能高于吊牌价",
+                class_name: 'gritter-success  gritter-light'
+            });
+            $("#form_bargainPrice").val("");
         }
     });
 
@@ -1007,12 +1051,14 @@
     /*判断是否使用定价规则*/
     function priceIsUse() {
         var price = $("#form_price").val();
+        $("#form_puPrice").val(price);
+        $("#form_wsPrice").val(price);
         var isSeries = $("#form_isSeries").val();
         if (isSeries == "Y") {
-            $("#form_price").attr("disabled",true);
+            $("#form_price").attr("readonly",true);
             changPrice($("#form_class9").val(),$("#form_class3").val());
         } else {
-            $("#form_price").attr("disabled",false);
+            $("#form_price").attr("readonly",false);
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
         }
@@ -1079,6 +1125,14 @@
 
 
     function saveStyleAndProduct(str) {
+        if($('#form_isSeries').is(':hidden')){
+            var price = $("#form_price").val();
+            $("#form_puPrice").val(price);
+            $("#form_wsPrice").val(price);
+            $("#form_preCast").val(price);
+        }else {
+            $("#form_bargainPrice").val(0);
+        }
         var isSeries = $("#form_isSeries").val();
         var re = $("#tags_3").val();
         $("#form_remark").val(re);
@@ -1670,20 +1724,25 @@
             }
         );
     }
-
-    /*$("#tags_3").onmouseover(function(){
-        debugger;
-       var remark = $("#tags_3").val();
-        $.each($("#CSGrid").getDataIDs(), function (index, value) {
-            $('#CSGrid').setCell(value, "remark", remark);
+    function loadingButton() {
+        $.each(fieldList,function (index,value) {
+            if(fieldList[index].ishow===0){
+                console.log(value);
+                if( $("#"+fieldList[index].buttonId).length>0){
+                    $("#"+fieldList[index].buttonId).show();
+                }
+            }else {
+                if( $("#"+fieldList[index].buttonId).length>0){
+                    $("#"+fieldList[index].buttonId).hide();
+                }
+            }
         });
-    });*/
-    function removed() {
-        console.info("11");
-        var remark = $("#tags_3").val();
-        $.each($("#CSGrid").getDataIDs(), function (index, value) {
-            $('#CSGrid').setCell(value, "remark", remark);
-        });
+        if($('#form_isSeries').is(':hidden')){
+            $('#form_isSeries').val("N");
+            var price = $("form_price").val();
+            $("#form_puPrice").val(price);
+            $("#form_wsPrice").val(price);
+        }
     }
 </script>
 </body>
