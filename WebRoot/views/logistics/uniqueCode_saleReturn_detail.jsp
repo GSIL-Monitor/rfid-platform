@@ -30,8 +30,7 @@
     //        initUniqueCodeList();
     //    });
 
-    function initUniqueCodeSaleReturnList(uniqueCodes) {
-        debugger;
+    function initUniqueCodeSaleReturnList(uniqueCodes,billNo) {
         $("#uniqueCodeSaleReturnListGrid").jqGrid({
             height: 400,
             // url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes,

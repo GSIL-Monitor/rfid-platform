@@ -406,7 +406,7 @@
                 ondblClickRow: function (rowid) {
 
                     if (dialogOpenPage === "saleOrder"){
-                        confirm_selected_GuestId_sale();
+                        confirm_selected_GuestId_sale(prefixId);
                     }else if(dialogOpenPage ==="saleOrderReturn"){
                         confirm_selected_GuestId_saleReturn();
                     }else if(dialogOpenPage === "transferOrderOrig"){
@@ -433,61 +433,117 @@
     function confirm_selected_GuestId_sale() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        initSelectDestForm();
-        if(prefixId=="edit"){
-            $("#search_customerType").val(rowData.unitType);
+        if(prefixId =="search") {
+            $("#search_destUnitId").val(rowData.id);
+            $("#search_destUnitName").val(rowData.name);
+            initSelectDestForm();
             $("#search_destId").selectpicker('val', rowData.defaultWarehId);
-            $("#search_destId").selectpicker('refresh');
-            if(rowData.discount){
-                $("#search_discount").val(rowData.discount);
+        }else if(prefixId =="edit"){
+            $("#edit_destUnitId").val(rowData.id);
+            $("#edit_destUnitName").val(rowData.name);
+            initSelectDestForm();
+            $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_discount").val(rowData.discount);
+            $("#edit_customerType").val(rowData.unitType);
+            if(rowData.discount) {
+                $("#edit_discount").val(rowData.discount);
             }else{
-                $("#search_discount").val(100);
+                $("#edit_discount").val(100);
             }
-            //$("#search_discount").val(rowData.discount);
-            $("#pre_Balance").val((0-rowData.owingValue).toFixed(2));
-           // $("#pre_Balance").val(0-rowData.owingValue);
+            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
             updateBillDetailData();
-            $("#modal_guest_search_table").modal('hide');
-
-            if ($("#search_destId").val() && $("#search_destId").val() != null) {
+            setDiscount();
+            if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
                 $("#SODtl_wareHouseIn").removeAttr("disabled");
             } else {
                 $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
             }
-            setDiscount();
         }
+        $(".selectpicker").selectpicker('refresh');
         $("#modal_guest_search_table").modal('hide');
+
     }
 
     function confirm_selected_GuestId_Consignment() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+        if(prefixId =="search") {
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+            $("#edit_customerType").val(rowData.unitType);
+            initSelectOrigForm();
+            $("#modal_guest_search_table").modal('hide');
+        }else if(prefixId =="edit"){
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+            $("#edit_customerType").val(rowData.unitType);
+            initSelectOrigForm();
+            $("#modal_guest_search_table").modal('hide');
+        }
+        $(".selectpicker").selectpicker('refresh');
+        $("#modal_guest_search_table").modal('hide');
+      /*  var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
         $("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
-        if(prefixId=="edit"){
-            $("#search_customerType").val(rowData.unitType);
-            $('#search_origId').selectpicker();
-            $("#search_origId").selectpicker('val', rowData.defaultWarehId);
-            $("#search_origId").selectpicker('refresh');
-            console.log($("#search_origId").val())
-            //$("#search_discount").val(rowData.discount);
-            if(rowData.discount){
-                $("#search_discount").val(rowData.discount);
-            }else{
-                $("#search_discount").val(100);
-            }
-            updateBillDetailData();
-            setDiscount();
-        }
-        $("#modal_guest_search_table").modal('hide');
+        $("#search_customerType").val(rowData.unitType);
+        $("#search_origId").selectpicker('val', rowData.defaultWarehId);
+        $("#search_origId").selectpicker('refresh');
+        $("#search_discount").val(rowData.discount);
+        $("#modal_guest_search_table").modal('hide');*/
     }
     function confirm_selected_GuestId_saleReturn() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_origUnitId").val(rowData.id);
+        if(prefixId =="search"){
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+            initSelectOrigForm();
+            //$("#edit_customerType").val(rowData.unitType);
+            $("#modal_guest_search_table").modal('hide');
+        }else if(prefixId =="edit"){
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+            initSelectOrigEditForm();
+            //$("#edit_customerType").val(rowData.unitType);
+            $("#edit_customerType").selectpicker('val', rowData.unitType);
+            $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_origId").selectpicker('refresh');
+            if(rowData.discount){
+                $("#edit_discount").val(rowData.discount);
+            }else{
+                $("#edit_discount").val(100);
+            }
+            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
+            updateBillDetailData();
+            setDiscount();
+            $(".selectpicker").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+           /* if (pageType === "add"){
+                if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== ""){
+                    $("#SODtl_wareHouseOut").removeAttr("disabled");
+                    $("#SODtl_wareHouseIn").attr({"disabled": "disabled"});
+                }else{
+                    $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
+                    $("#SODtl_wareHouseIn").removeAttr("disabled");
+                }
+
+            }else if (pageType === "edit"){
+                if ($("#search_origId").val() && $("#search_origId").val() !== null && $("#search_origId").val() !== ""){
+                    $("#SODtl_wareHouseOut").removeAttr("disabled");
+                    $("#SODtl_wareHouseIn").show();
+                    $("#SODtl_wareHouseIn_noOutHouse").hide();
+
+                }else {//发货仓库为空，例如零售客户
+                    $("#SODtl_wareHouseOut").attr({"disabled": "disabled"});
+                    $("#SODtl_wareHouseIn").hide();
+                    $("#SODtl_wareHouseIn_noOutHouse").show();
+
+                }
+            }*/
+        }
+        /*$("#search_origUnitId").val(rowData.id);
         $("#search_origUnitName").val(rowData.name);
         initSelectOrigForm();
         if(prefixId=="edit") {
@@ -531,29 +587,55 @@
 //                $("#addDetailgrid-pager_left").hide();
 //                $("#addDetailgrid").setColProp('qty',{editoptions:{value:"False"}});
             }
-        }
+        }*/
     }
 
     function confirm_selected_OrigUnit() {
-        var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
-        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_origUnitId").val(rowData.id);
-        $("#search_origUnitName").val(rowData.name);
-        initSelectOrigForm();
-        $("#search_origId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_origId").selectpicker('refresh');
-        $("#modal_guest_search_table").modal('hide');
+        if(prefixId =="search"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+            initSelectOrigForm();
+            $("#search_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_origId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+        if(prefixId =="edit"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+            initSelectOrigEditForm();
+            $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_origId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+
     }
 
     function confirm_selected_DestUnit() {
-        var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
-        var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        initSelectDestForm();
-        $("#search_destId").selectpicker('val', rowData.defaultWarehId);
-        $("#search_destId").selectpicker('refresh');
-        $("#modal_guest_search_table").modal('hide');
+        if(prefixId =="search"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#search_destUnitId").val(rowData.id);
+            $("#search_destUnitName").val(rowData.name);
+            initSelectDestForm();
+            $("#search_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#search_destId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+        if(prefixId =="edit"){
+            var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
+            $("#edit_destUnitId").val(rowData.id);
+            $("#edit_destUnitName").val(rowData.name);
+            initSelectDestEditForm();
+            $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_destId").selectpicker('refresh');
+            $("#modal_guest_search_table").modal('hide');
+        }
+
     }
     function confirm_selected_businessAccount() {
         debugger

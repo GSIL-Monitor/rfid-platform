@@ -31,9 +31,10 @@
 
     function initUniqueretrunList() {
         debugger;
+        console.log($("#edit_billNo").val());
         $("#findRetrunNoListGrid").jqGrid({
             height: 400,
-            url: basePath + "/logistics/Consignment/findSaleOrderReturnBillNo.do?billno=" + $("#search_billNo").val(),
+            url: basePath + "/logistics/Consignment/findSaleOrderReturnBillNo.do?billno=" + $("#edit_billNo").val(),
             datatype: "json",
             mtype: "POST",
             colModel: [
@@ -111,7 +112,7 @@
         debugger;
         $("#uniqueCodeListGrid").clearGridData();
         $("#uniqueCodeListGrid").jqGrid('setGridParam', {
-            url: basePath + "/logistics/Consignment/findSaleOrderReturnBillNo.do?billno=" + $("#search_billNo").val()
+            url: basePath + "/logistics/Consignment/findSaleOrderReturnBillNo.do?billno=" + $("#edit_billNo").val()
         }).trigger("reloadGrid");
     }
 </script>

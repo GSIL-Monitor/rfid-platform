@@ -149,6 +149,12 @@
             $("#uniqueCodeGrid").setGridParam().hideCol("wsPrice");
             $("#uniqueCodeGrid").setGridParam().hideCol("preCast");
             $("#uniqueCodeGrid").setGridParam().hideCol("stockPrice").trigger("reloadGrid");
+        }else if (storeType == "price"){
+            $("#uniqueCodeGrid").setGridParam().hideCol("preCast");
+            $("#uniqueCodeGrid").setGridParam().hideCol("puPrice");
+            $("#uniqueCodeGrid").setGridParam().hideCol("wsPrice");
+            $("#uniqueCodeGrid").setGridParam().hideCol("stockPrice");
+            $("#uniqueCodeGrid").setGridParam().showCol("price").trigger("reloadGrid");
         }
     }
 
@@ -209,12 +215,13 @@
 
                 var ajax_url;
                 var ajax_data;
+
                 if (taskType === -1) {
                     ajax_url = basePath + "/stock/warehStock/inCheckEpcStockAndFindDate.do";
                     ajax_data = {warehId: wareHouse, code: code, billNo: billNo};
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStockAndFindDate.do";
-                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo};
+                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo,isCheckWareHouse:isCheckWareHouse};
                 }
                 $.ajax({
                     async: false,

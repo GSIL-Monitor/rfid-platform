@@ -63,3 +63,29 @@ cs.showConfirmMsgBox = function (msg, callbackFunc) {
         //title: "bootbox confirm也可以添加标题哦",
     });
 };
+
+/*
+* ltc
+* 提取字符串中的汉字
+* */
+function GetChinese(strValue) {
+    if(strValue!= null && strValue!= ""){
+        var reg = /[\u4e00-\u9fa5]/g;
+        return strValue.match(reg).join("");
+    }else{
+        return "";
+    }
+}
+
+/*
+ * ltc
+ * 提取字符串中的数字
+ * */
+function GetNumber(strValue) {
+    if(strValue!= null && strValue!= ""){
+        var reg = /[^0-9]/ig;
+        return strValue.replace(reg,"");
+    }else{
+        return "";
+    }
+}

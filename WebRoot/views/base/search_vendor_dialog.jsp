@@ -91,15 +91,16 @@
             sortname: 'id',
             sortorder: "desc",
             ondblClickRow: function (rowid) {
-                debugger;
                 if (dialogOpenPage === "purchaseOrder") {
-                    confirm_selected_VendorId_purchaseOrder();
+                    confirm_selected_VendorId_purchaseOrder(prefixId);
                 } else if (dialogOpenPage === "purchaseReturn") {
                     confirm_selected_VendorId_purchaseReturn();
                 }else if(dialogOpenPage==="purchaseOrderSearch"){
                     confirm_selected_VendorId_purchaseOrder_search();
                 }else if(dialogOpenPage==="meregegridDialog"){
                     confirm_selected_VendorId_purchaseOrders(saveid);
+                }else if(dialogOpenPage === "purchaseOrderCount"){
+                    selected_VendorId_purchaseOrder();
                 }
 
                 closeSearchGuestDialog();
@@ -110,21 +111,32 @@
         $("#vendorSelect_Page_left").css("width","2px");
         $("#vendorSelect_Grid").jqGrid('setGridWidth', parent_column.width() - 2);
     }
-    function confirm_selected_VendorId_purchaseOrder() {
+    function confirm_selected_VendorId_purchaseOrder(prefixId) {
         var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        $("#search_origUnitId").val(rowData.id);
-        $("#search_origUnitName").val(rowData.name);
+        if (prefixId=="edit"){
+            $("#edit_origUnitId").val(rowData.id);
+            $("#edit_origUnitName").val(rowData.name);
+        }else {
+            $("#search_origUnitId").val(rowData.id);
+            $("#search_origUnitName").val(rowData.name);
+        }
         $("#modal_vendor_search_table").modal('hide');
     }
     function confirm_selected_VendorId_purchaseReturn() {
-        var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
-        var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-        $("#search_destUnitId").val(rowData.id);
-        $("#search_destUnitName").val(rowData.name);
-        $("#modal_vendor_search_table").modal('hide');
+        if(prefixId=="search"){
+            var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+            $("#search_destUnitId").val(rowData.id);
+            $("#search_destUnitName").val(rowData.name);
+            $("#modal_vendor_search_table").modal('hide');
+        }else if(prefixId =="edit"){
+            var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
+            var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
+            $("#edit_destUnitId").val(rowData.id);
+            $("#edit_destUnitName").val(rowData.name);
+            $("#modal_vendor_search_table").modal('hide');
+        }
     }
     function closeSearchGuestDialog() {
         $("#modal_vendor_search_table").modal('hide');

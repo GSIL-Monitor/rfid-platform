@@ -227,7 +227,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("checkEpcStockAndFindDate")
     @ResponseBody
-    public MessageBox checkEpcStockAndFindDate(String warehId, String code, String billNo,Integer type){
+    public MessageBox checkEpcStockAndFindDate(String warehId, String code, String billNo,Integer type,boolean isCheckWareHouse){
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -263,7 +263,7 @@ public class WarehStockController extends BaseController {
             if (Constant.TaskType.Outbound == type) {
                 epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                    epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
                 }else{
                     epcStock = epcStockList.get(0);
                     Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
@@ -273,7 +273,7 @@ public class WarehStockController extends BaseController {
             } else {
                 epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code,isCheckWareHouse);
                 }else{
                     epcStock = epcStockList.get(0);
                     Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
@@ -345,7 +345,7 @@ public class WarehStockController extends BaseController {
             if (Constant.TaskType.Outbound == type) {
                 epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                    epcStock = this.epcStockService.findEpcInCode(warehId, code,false);
                 }else{
                     epcStock = epcStockList.get(0);
                     Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
@@ -355,7 +355,7 @@ public class WarehStockController extends BaseController {
             } else {
                 epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code,false);
                 }else{
                     epcStock = epcStockList.get(0);
                     Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
@@ -383,6 +383,7 @@ public class WarehStockController extends BaseController {
     /**
      * @param code 唯一码
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     * 通过唯一吗查销售订单接口
      */
     @RequestMapping("checksaleEpcStock")
     @ResponseBody
@@ -552,6 +553,41 @@ public class WarehStockController extends BaseController {
 
 
     /**
+     * add by lly
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @param code    唯一码
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     *
+     * 获取当前在库唯一码信息
+     */
+    @RequestMapping("getEpcStock")
+    @ResponseBody
+    public MessageBox getEpcStock(String warehId, String code,boolean isCheckWareHouse) {
+        try {
+            if (code.length() != 13) {
+                String epcCode = code.toUpperCase();
+                code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
+            }
+
+            EpcStock epcStock;
+            epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
+            //得到款名
+            Style style = CacheManager.getStyleById(epcStock.getStyleId());
+            epcStock.setStyleName(style.getStyleName());
+            if (CommonUtil.isNotBlank(epcStock)) {
+                StockUtil.convertEpcStock(epcStock);
+                return new MessageBox(true, "", epcStock);
+            } else {
+                    return new MessageBox(false, "唯一码:" + code + "不在当前选中仓库");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+
+    }
+
+    /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param code    唯一码
      * @param type    出入库类型 0出库，1入库
@@ -561,7 +597,7 @@ public class WarehStockController extends BaseController {
      */
     @RequestMapping("checkEpcStock")
     @ResponseBody
-    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo) {
+    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo,boolean isCheckWareHouse) {
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -593,9 +629,9 @@ public class WarehStockController extends BaseController {
 
             EpcStock epcStock;
             if (Constant.TaskType.Outbound == type) {
-                epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
             } else {
-                epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                epcStock = this.epcStockService.findEpcNotInCode(warehId, code,isCheckWareHouse);
             }
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);

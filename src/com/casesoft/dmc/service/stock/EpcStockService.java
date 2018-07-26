@@ -1,5 +1,6 @@
 package com.casesoft.dmc.service.stock;
 
+import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
@@ -180,21 +181,53 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         this.epcStockDao.batchExecute("delete EpcStock b");
     }
 
+    /**
+     * 检查在库唯一吗信息
+     * warehId:仓库
+     * code：唯一码
+     * isCheckWareHouse：是否检验仓库
+     * */
+    public EpcStock findEpcInCode(String warehId, String code,boolean isCheckWareHouse) {
+        if(CacheManager.getCheckWarehhouse()) {
+            return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=1 and code=? and warehouseId=?", new Object[]{code, warehId});
+        }else{
+            if(isCheckWareHouse){
+                return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=1 and code=? and warehouseId=?", new Object[]{code, warehId});
+            }else{
+                return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=1 and code=?", new Object[]{code});
+            }
 
-    public EpcStock findEpcInCode(String warehId, String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=1 and code=? and warehouseId=?", new Object[]{code, warehId});
+        }
     }
-
-    public EpcStock findEpcNotInCode(String warehId, String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
+    /**
+     * 检查不在库唯一吗信息
+     * warehId:仓库
+     * code：唯一码
+     * isCheckWareHouse：是否检验仓库
+     * */
+    public EpcStock findEpcNotInCode(String warehId, String code,boolean isCheckWareHouse) {
+        if(CacheManager.getCheckWarehhouse()) {
+            return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
+        }else{
+            if(isCheckWareHouse){
+                return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
+            }else{
+                return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=?", new Object[]{code});
+            }
+        }
     }
 
     public EpcStock findProductByCode(String code) {
         return this.epcStockDao.findUnique("from EpcStock where code=?", code);
     }
 
+    /**查找在库多个唯一码**/
     public List<EpcStock> findEpcInCodes(String warehId, String codes) {
-        return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
+        if(CacheManager.getCheckWarehhouse()) {
+            return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
+        }else{
+            return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes);
+        }
     }
 
     public List<EpcStock> findEpcCodes(String codes){

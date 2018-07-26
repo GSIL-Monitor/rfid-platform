@@ -112,7 +112,7 @@
                                     <label   class="col-sm-2  control-label">状态</label>
                                     <div class="col-sm-10">
                                         <label><input type="radio" name="configState" value="1">是</label>
-                                        <label><input type="radio"  name="configState" value="0"> 否</label>
+                                        <label><input type="radio" name="configState" value="0"> 否</label>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 
     <!--/.fluid-container#main-container-->
 </div>

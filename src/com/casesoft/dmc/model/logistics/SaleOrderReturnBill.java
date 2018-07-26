@@ -35,6 +35,11 @@ public class SaleOrderReturnBill extends BaseBill{
 	private Double totStockVal =0D;//库存成本
 	@Column
 	private String returnCode;
+	@Column()
+	private Double preBalance = 0D;
+
+	@Column()
+	private Double afterBalance = 0D;
 
 	public String getReturnCode() {
 		return returnCode;
@@ -138,4 +143,19 @@ public class SaleOrderReturnBill extends BaseBill{
 		this.totInVal = totInVal;
 	}
 
+	public Double getPreBalance() {
+		return preBalance;
+	}
+
+	public void setPreBalance(Double preBalance) {
+		this.preBalance = preBalance;
+	}
+
+	public Double getAfterBalance() {
+		return afterBalance;
+	}
+
+	public void setAfterBalance(Double afterBalance) {
+		this.afterBalance = afterBalance;
+	}
 }

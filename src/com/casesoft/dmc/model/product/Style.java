@@ -36,6 +36,17 @@ public class Style extends BaseStyle implements java.io.Serializable {
     @Transient
     private String class1Name;
 
+    @Column()
+    private String isSeries;
+
+    public String getIsSeries() {
+        return isSeries;
+    }
+
+    public void setIsSeries(String isSeries) {
+        this.isSeries = isSeries;
+    }
+
     public Integer getStyleCycle() { return styleCycle; }
 
     public void setStyleCycle(Integer styleCycle) { this.styleCycle = styleCycle; }

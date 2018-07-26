@@ -214,17 +214,17 @@ public class Constant {
         public final static int Factory_Out = 62;//加工厂发货
         public final static int Factory_dye = 63;//加工厂染色
         
-        public final static int Storage_Inbound = 8;//
+        public final static int Storage_Inbound = 8;//采购入库
         public final static int Storage_Refund_Outbound = 26;//退货给供应商
-        public final static int Storage_Inventory = 9;
-        public final static int Storage_Outbound = 10;
+        public final static int Storage_Inventory = 9;//盘点
+        public final static int Storage_Outbound = 10;//仓库出库
         public final static int Storage_Inbound_customer = 11;//客户仓库收货（代理商或门店仓库收货token值 销售订单入库)
         public final static int Storage_refoundOut_customer  = 13;//客户仓库退货出库（代理商或门店仓库退货出库token值 销售退货出库)
         public final static int Storage_Refund_Inbound = 23;//门店退给总部
-        public final static int Storage_Transfer_Outbound = 24;
-        public final static int Storage_Transfer_Inbound = 25;
-        public final static int Storage_Adjust_Outbound = 28;
-        public final static int Storage_Adjust_Inbound = 29;
+        public final static int Storage_Transfer_Outbound = 24;//调拨出库
+        public final static int Storage_Transfer_Inbound = 25;//调拨入库
+        public final static int Storage_Adjust_Outbound = 28;//调整出库
+        public final static int Storage_Adjust_Inbound = 29;//调整入库
         public final static int Storage_Consigment_Inbound = 12;//寄售入库
 
         public final static int Storage_Outbound_agent = 37;//仓库给代理商发货
@@ -358,7 +358,13 @@ public class Constant {
         public final static String Size = "SIZE";
         public final static String Product = "PRODUCT";
     }
-
+    public final static class RepositoryType{
+        public final static String root = "0";
+        public final static String rack = "1";
+        public final static String level = "2";
+        public final static String allocation = "3";
+        public final static String Company = "REPOSITORY";
+    }
     //客户欠款变动，积分变动记录的状态设置
     public final static class ChangeRecordStatus{
         public final static Integer SaleOrder = 1; //销售单

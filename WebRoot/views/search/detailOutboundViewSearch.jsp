@@ -186,7 +186,7 @@
         </div>
     </div>
 
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
     <!--/.fluid-container#main-container-->
 </div>
 

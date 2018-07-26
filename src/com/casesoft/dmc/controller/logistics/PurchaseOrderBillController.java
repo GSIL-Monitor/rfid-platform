@@ -6,18 +6,22 @@ import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.tag.util.StringUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
+import com.casesoft.dmc.service.logistics.PurchaseReturnBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.SettingService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.tag.InitService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,13 +42,21 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/logistics/purchase")
-public class PurchaseOrderBillController extends BaseController implements ILogisticsBillController<PurchaseOrderBill> {
+public class    PurchaseOrderBillController extends BaseController implements ILogisticsBillController<PurchaseOrderBill> {
     @Autowired
     private PurchaseOrderBillService purchaseOrderBillService;
     @Autowired
     private InitService initService;
     @Autowired
     private ReplenishBillService replenishBillService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
+    @Autowired
+    private PurchaseReturnBillService purchaseReturnBillService;
+    @Autowired
+    private SettingService settingService;
    /* @Override
     @RequestMapping(value = "/index")
     public String index() {
@@ -52,9 +65,17 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/purchaseOrderBill");
+        //查询系统操作
+        Setting setting = this.settingService.get("id","repositoryManagement");
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseOrderBillNew");
+        mv.addObject("pageType", "add");
         User user = this.getCurrentUser();
-        mv.addObject("OwnerId", user.getOwnerId());
+        mv.addObject("ownerId", user.getOwnerId());
+        mv.addObject("userId", getCurrentUser().getId());
+        Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        mv.addObject("defaultWarehId", defaultWarehId);
+        this.getRequest().setAttribute("rm", setting);
         return mv;
     }
 
@@ -100,13 +121,40 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         return purchaseOrderBillDtls;
     }
 
+    @RequestMapping("/endNb")
+    @ResponseBody
+    public MessageBox endNb(String purchaseBillStr ,String strDtlList,String userId,String PbillNo)throws Exception{
+        this.logAllRequestParams();
+        try {
+            PurchaseReturnBill purchaseReturnBill = JSON.parseObject(purchaseBillStr, PurchaseReturnBill.class);
+            List<PurchaseReturnBillDtl> purchaseReturnBillDtlList = JSON.parseArray(strDtlList, PurchaseReturnBillDtl.class);
+            String prefix = BillConstant.BillPrefix.purchaseReturn
+                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+            String billNo = this.purchaseReturnBillService.findMaxBillNo(prefix);
+            purchaseReturnBill.setBillNo(billNo);
+            purchaseReturnBill.setId(billNo);
+            User currentUser = CacheManager.getUserById(userId);
+            double actPriceSum = 0;
+            for (PurchaseReturnBillDtl returnBill :purchaseReturnBillDtlList){
+                actPriceSum +=returnBill.getTotActPrice();
+            }
+            purchaseReturnBill.setActPrice(actPriceSum);
+            purchaseReturnBill.setPayPrice(actPriceSum);
+            BillConvertUtil.convertToPurchaseReturnBill(purchaseReturnBill, purchaseReturnBillDtlList,currentUser);
+            this.purchaseReturnBillService.saveBatch(purchaseReturnBill, purchaseReturnBillDtlList,PbillNo,billNo);
+            return returnSuccessInfo("保存成功", purchaseReturnBill.getBillNo());
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false, e.getMessage());
+        }
+    }
+
     @RequestMapping(value = {"/save","/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(String purchaseBillStr, String strDtlList, String userId) throws Exception {
         this.logAllRequestParams();
         try {
-
             PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
             if (CommonUtil.isBlank(purchaseOrderBill.getBillNo())) {
                 String prefix = BillConstant.BillPrefix.purchase
@@ -311,6 +359,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
         return new MessageBox(true, "申请成功");
     }
 
+
     @RequestMapping(value = "/convert")
     @ResponseBody
     @Override
@@ -322,6 +371,7 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
             User currentUser = (User) this.getSession().getAttribute(
                     Constant.Session.User_Session);
             PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", purchaseOrderBillDtlList.get(0).getBillNo());
+            //转入库单
             Business business = BillConvertUtil.covertToPurchaseBusiness(purchaseOrderBill, purchaseOrderBillDtlList, epcList, currentUser);
             this.purchaseOrderBillService.saveBusiness(purchaseOrderBill, purchaseOrderBillDtlList, business);
             String srcBillNo = purchaseOrderBill.getSrcBillNo();
@@ -348,6 +398,19 @@ public class PurchaseOrderBillController extends BaseController implements ILogi
 
     @Override
     public String index() {
-        return null;
+        return "/views/logistics/purchaseOrderBillNew";
+    }
+
+    @RequestMapping(value = "/findResourceButton")
+    @ResponseBody
+    public MessageBox findResourceButton(){
+        try {
+            Resource resource = this.resourceService.get("url", "logistics/purchase");
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
+        }
     }
 }

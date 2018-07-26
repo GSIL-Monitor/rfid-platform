@@ -15,6 +15,7 @@ $(function () {
     }
     initButtonGroup();
 
+    $(".selectpicker").selectpicker('refresh');
 });
 
 function initButtonGroup(){

@@ -29,11 +29,11 @@
     //        initUniqueCodeList();
     //    });
 
-    function initUniqueretrunList() {
+    function initUniquePurchaseList() {
         debugger;
         $("#findPurchaseListGrid").jqGrid({
             height: 400,
-            url: basePath + "/logistics/relenishBill/findpurchaseOrderBillonReplenishBill.do?billno=" + $("#search_billNo").val(),
+            url: basePath + "/logistics/relenishBill/findpurchaseOrderBillonReplenishBill.do?billno=" + $("#edit_billNo").val(),
             datatype: "json",
             mtype: "POST",
             colModel: [

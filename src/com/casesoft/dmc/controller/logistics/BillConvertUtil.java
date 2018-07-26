@@ -47,10 +47,14 @@ public class BillConvertUtil {
         Long totQty = 0L;
         Long actQty = 0L;
         Long rcvQty = 0L;
+        Long arrival = 0L;
         Double totPrice = 0D;
         Double actPrice = 0D;
         Double rcvVal = 0D;
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
+            if (dtl.getArrival()==null){
+                dtl.setArrival(0);
+            }
             dtl.setId(new GuidCreator().toString());
             dtl.setBillId(purchaseOrderBill.getId());
             dtl.setBillNo(purchaseOrderBill.getBillNo());
@@ -58,6 +62,7 @@ public class BillConvertUtil {
             dtl.setActQty(dtl.getQty());
             dtl.setInQty(0);
             dtl.setPrintQty(dtl.getQty().intValue());
+            arrival+= dtl.getArrival();
             totQty += dtl.getQty();
             actQty += dtl.getQty();
             totPrice += dtl.getPrice() * dtl.getQty();
@@ -90,7 +95,7 @@ public class BillConvertUtil {
         purchaseOrderBill.setActPrice(actPrice);
         purchaseOrderBill.setTotInQty(rcvQty);
         purchaseOrderBill.setTotInVal(rcvVal);
-
+        purchaseOrderBill.setArrival(arrival);
 
     }
 
@@ -485,12 +490,12 @@ public class BillConvertUtil {
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
             if (dtl.getPrintQty() > 0 && dtl.getQty() > dtl.getActPrintQty()) {
 
-                if (dtl.getPrintQty().intValue() == (dtl.getQty().intValue() - dtl.getActPrintQty().intValue())) {
+                if (dtl.getPrintQty().intValue() == (dtl.getQty().intValue() - dtl.getActPrintQty().intValue())&&dtl.getQty().intValue()==dtl.getArrival()) {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Print);
                 } else {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Printting);
                 }
-                dtl.setActPrintQty(dtl.getActPrintQty() + dtl.getPrintQty());
+                dtl.setActPrintQty(dtl.getArrival());
                 InitDtl detail = new InitDtl();
                 detail.setId(taskId + "-" + dtl.getSku());
                 detail.setStyleId(dtl.getStyleId());
@@ -500,7 +505,7 @@ public class BillConvertUtil {
                 detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
                 detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
                         + dtl.getPrintQty());
-                detail.setQty(dtl.getPrintQty());
+                detail.setQty(dtl.getArrival()-dtl.getInQty());
                 detail.setOwnerId(currentUser.getOwnerId());
                 detail.setStatus(1);
                 totQty += dtl.getPrintQty();
@@ -669,6 +674,7 @@ public class BillConvertUtil {
             PurchaseOrderBillDtl dtl = purchaseBillDtlMap.get(record.getSku());
             record.setExtField(dtl.getInStockType());//record中增加入库类型
             record.setId(new GuidCreator().toString());
+           /* record.setRmId(purchaseOrderBill.getRmId());*/
             record.setType(Constant.TaskType.Inbound);
             recordList.add(record);
             BillRecord billRecord = new BillRecord(purchaseOrderBill.getBillNo() + "-" + record.getCode(), record.getCode(), purchaseOrderBill.getBillNo(), record.getSku());
@@ -1884,6 +1890,8 @@ public class BillConvertUtil {
         bill.setDestUnitId(dest.getOwnerId());
         Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
         bill.setDestUnitName(destUnit.getName());
+        Unit origUnit = CacheManager.getUnitByCode(bill.getOrigId());
+        bill.setOrigName(origUnit.getName());
         bill.setTotQty(totQty);
         bill.setTotPrice(totPrice);
 //        bill.setActPrice(totActPrice);
@@ -1892,6 +1900,9 @@ public class BillConvertUtil {
         bill.setTotInQty(inQty);
         bill.setTotInVal(totInVal);
         bill.setTotOutVal(totOutVal);
+        if (CommonUtil.isNotBlank(bill.getBusnissId())) {
+            bill.setBusnissName(CacheManager.getUserById(bill.getBusnissId()).getName());
+        }
     }
 
     /**

@@ -6,6 +6,7 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.dao.logistics.PurchaseBillOrderDao;
 import com.casesoft.dmc.dao.logistics.PurchaseReturnBillDao;
 import com.casesoft.dmc.dao.logistics.PurchaseReturnBillDtlDao;
 import com.casesoft.dmc.dao.sys.UnitDao;
@@ -40,6 +41,9 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 
 	@Autowired
 	private TaskService taskService;
+
+	@Autowired
+	private PurchaseBillOrderDao purchaseBillOrderDao;
 
 	@Override
 	public Page<PurchaseReturnBill> findPage(Page<PurchaseReturnBill> page, List<PropertyFilter> filters) {
@@ -90,8 +94,35 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 		if(CommonUtil.isNotBlank(prb.getBillRecordList())){
 			this.purchaseReturnBillDao.doBatchInsert(prb.getBillRecordList());
 		}
-
 	}
+
+	public void saveBatch(PurchaseReturnBill prb, List<PurchaseReturnBillDtl> prblst,String PbillNo,String billNo){
+		this.purchaseReturnBillDao.batchExecute("delete from PurchaseReturnBillDtl pd where pd.billNo =?", prb.getBillNo());
+		this.purchaseReturnBillDao.batchExecute("delete from BillRecord where billNo=?", prb.getBillNo());
+
+		Double diffPrice = prb.getActPrice() - prb.getPayPrice();
+		Double preDiffPrice = this.purchaseReturnBillDao.findUnique("select s.actPrice-s.payPrice from PurchaseReturnBill as s where s.billNo = ?", prb.getBillNo());
+		String preDestUnitId = this.unitDao.findUnique("select destUnitId from PurchaseReturnBill as s where s.billNo = ?", prb.getBillNo());
+		Unit unit = this.unitDao.findUnique("from Unit where id = ?",new Object[]{prb.getDestUnitId()});
+
+		if (CommonUtil.isNotBlank(preDiffPrice) && CommonUtil.isNotBlank(preDestUnitId)){
+			//this.purchaseReturnBillDao.batchExecute("update Unit set owingValue = owingValue - ? where id=?", preDiffPrice,preDestUnitId);
+			unit.setOwingValue(unit.getOwingValue()-preDiffPrice);
+		}
+		Double owingValue = unit.getOwingValue()==null?0.0:unit.getOwingValue();
+		unit.setOwingValue(owingValue+diffPrice);
+		this.unitDao.update(unit);
+		prb.setStatus(2);
+		prb.setReturnBillNo(PbillNo);
+		this.purchaseReturnBillDao.saveOrUpdate(prb);
+		this.purchaseReturnBillDao.doBatchInsert(prblst);
+		if(CommonUtil.isNotBlank(prb.getBillRecordList())){
+			this.purchaseReturnBillDao.doBatchInsert(prb.getBillRecordList());
+		}
+		this.purchaseBillOrderDao.batchExecute("update PurchaseOrderBill set returnBillNo = '"+billNo+"' where billNo = ?",PbillNo);
+		this.purchaseBillOrderDao.batchExecute("update PurchaseOrderBill set status = 2 where billNo = ?",PbillNo);
+	}
+
 	@Override
 	public PurchaseReturnBill load(String id) {
 		return this.purchaseReturnBillDao.load(id);

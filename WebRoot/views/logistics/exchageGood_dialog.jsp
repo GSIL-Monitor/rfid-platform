@@ -177,7 +177,7 @@
         var exchangeCode = $("#exchange_code").val();
         var origSku = $("#orig_sku").val();
         var exchangeSku = $("#exchange_sku").val();
-        var billNo = $("#search_billNo").val();
+        var billNo = $("#edit_billNo").val();
 
         if(origSku === exchangeSku &&
             exchangeSku && exchangeSku !== null){

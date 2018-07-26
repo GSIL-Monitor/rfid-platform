@@ -25,16 +25,14 @@
 </div>
 
 <script>
-    //    $(function () {
-    //        initUniqueCodeList();
-    //    });
+    $(function () {
+        initUniqueCodeList();
+    });
 
-    function initUniqueCodeList(uniqueCodes) {
-        debugger;
+    function initUniqueCodeList() {
         $("#uniqueCodeListGrid").jqGrid({
             height: 400,
-            url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes,
-            datatype: "json",
+            datatype:"local",
             mtype: "POST",
             colModel: [
                 {name: 'code', label: '唯一码', width: 150},
@@ -70,10 +68,11 @@
     }
 
     function codeListReload(uniqueCodes,billNo) {
-        debugger;
-        $("#uniqueCodeListGrid").clearGridData();
+     /*   debugger;
+        $("#uniqueCodeListGrid").clearGridData();*/
         $("#uniqueCodeListGrid").jqGrid('setGridParam', {
-            url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes+"&billNo="+billNo
+            url: basePath + "/stock/warehStock/findCodeList.do?uniqueCodes=" + uniqueCodes+"&billNo="+billNo,
+            datatype:"json"
         }).trigger("reloadGrid");
     }
 </script>

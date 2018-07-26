@@ -93,9 +93,9 @@ public class LogisticsController extends ApiBaseController {
             }
             EpcStock epcStock;
             if (Constant.TaskType.Outbound == type) {
-                epcStock = this.epcStockService.findEpcInCode(warehId, code);
+                epcStock = this.epcStockService.findEpcInCode(warehId, code,false);
             } else {
-                epcStock = this.epcStockService.findEpcNotInCode(warehId, code);
+                epcStock = this.epcStockService.findEpcNotInCode(warehId, code,false);
             }
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);

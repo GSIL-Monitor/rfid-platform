@@ -1,6 +1,7 @@
 package com.casesoft.dmc.controller.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -123,7 +125,7 @@ public class FranchiseeBillControll extends BaseController implements ILogistics
     }
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/franchiseeBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/franchiseeBillNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
@@ -138,16 +140,12 @@ public class FranchiseeBillControll extends BaseController implements ILogistics
         this.logAllRequestParams();
         List<Business> businessList=this.franchiseeBillService.findBusiness(billNo);
         //拼接taskid
-        String taskid="";
+        List<String> taskIdStr = new ArrayList<>();
         for(int i=0;i<businessList.size();i++){
             Business business = businessList.get(i);
-            if(i==0){
-                taskid+=business.getId();
-            }else{
-                taskid+=","+business.getId();
-            }
+            taskIdStr.add(business.getId());
         }
-        List<Record> recordList=this.franchiseeBillService.findRecord(taskid);
+        List<Record> recordList=this.franchiseeBillService.findRecord(TaskUtil.getSqlStrByList(taskIdStr,Record.class,"taskId"));
        for(Record dtl : recordList) {
            List<EpcStock> epcStock = this.franchiseeBillService.findEpcStock(dtl.getCode());
            if(epcStock.get(0).getInStock()==1){

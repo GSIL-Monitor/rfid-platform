@@ -177,7 +177,7 @@
             </div>
 
             </div>
-        <jsp:include page="../layout/footer.jsp"></jsp:include>
+
     </div>
      <jsp:include page="../layout/footer_js.jsp"></jsp:include>
     <script type="text/javascript">
@@ -219,10 +219,10 @@
                 sortname: 'id',
                 sortorder: "asc"
             });
-            var parent_column = $("#detailgrid").closest('.widget-main');;
+            var parent_column = $("#detailgrid").closest('.widget-main');
             $("#detailgrid").jqGrid('setGridWidth', parent_column.width() - 2);
             $(window).on('resize.jqGrid', function () {
-                var parent_column = $("#detailgrid").closest('.widget-main');;
+                var parent_column = $("#detailgrid").closest('.widget-main');
                 $("#detailgrid").jqGrid('setGridWidth', parent_column.width() - 2);
             });
         }

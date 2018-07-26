@@ -11,6 +11,7 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var pageType="${pageType}"
     </script>
 
 </head>
@@ -44,7 +45,7 @@
             <div class="page-content">
                 <!-- /.page-header -->
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 widget-container-col">
+                    <div class="col-xs-12 col-sm-4 widget-container-col">
                         <div class="widget-box widget-color-blue light-border">
                             <div class="widget-header">
                                 <h5 class="widget-title">角色信息</h5>
@@ -99,7 +100,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-8">
                         <div class="widget-box widget-color-blue light-border" id="authBox">
                             <div class="widget-header">
                                 <h5 class="widget-title">角色权限</h5>
@@ -134,7 +135,7 @@
 
             </div>
         </div>
-        <jsp:include page="../layout/footer.jsp"></jsp:include>
+
         <!--/.fluid-container#main-container-->
     </div>
 
@@ -163,6 +164,8 @@
                         });
                         $("#editForm-id").val(result.result.id);
                         $("#editForm-code").attr("readonly",true);
+                        pageType="edit";
+                        initAuthGrid();
                     } else {
                         cs.showAlertMsgBox(result.msg);
                     }
@@ -258,7 +261,7 @@
         function initAuthGrid() {
             $("#authGrid").jqGrid({
                 treeGrid: true,
-                url: basePath + "/sys/role/findResource.do?roleId=${role.code}",
+                url: basePath + "/sys/role/findResource.do?roleId=${role.code}&pageType="+pageType,
                 datatype: "json",
                 autowidth: true,
                 height: 300,
@@ -266,21 +269,89 @@
                 shrinkToFit: true,
                 colModel: [
 
-                    {name: 'code', label: '资源编号', width: 80,key:true,
+                    {name: 'code', label: '资源编号', width: 10,key:true,
                         formatter: function (cellvalue, options, rowObject) {
                             return "    "+cellvalue;
                         }
                     },
-                    {name: 'name', label: '资源名称',width: 80},
+                    {name: 'name', label: '资源名称',width: 20},
                     {name: 'ownerId', label: '父菜单ID',hidden:true},
-                    {name: 'seqNo', label: '序号',width: 80},
-                    {name:'checked', label:'选择', width: 60, align:'center', formatter: function (cellvalue, options, rowObject) {
+                    {name: 'seqNo', label: '序号',width: 5},
+                    {name:'checked', label:'选择', width: 5, align:'center', formatter: function (cellvalue, options, rowObject) {
                         if(cellvalue) {
-                            return '<input id="ckbox_' + rowObject.code + '" name="' + rowObject.code + '" type="checkbox" checked="checked" />';
+                            return '<input id="ckbox_' + rowObject.code + '" name="' + rowObject.code + '" class="inputcheckbox" type="checkbox" checked="checked" />';
                         } else {
-                            return '<input id="ckbox_' + rowObject.code + '" name="' + rowObject.code + '" type="checkbox" />';
+                            return '<input id="ckbox_' + rowObject.code + '" name="' + rowObject.code + '" class="inputcheckbox" type="checkbox" />';
                         }
                     }
+                    },
+                    {
+                        name: '',
+                        label: '按钮配置细则',
+                        width: 60,
+                        align: 'center',
+                        formatter: function (cellvalue, options, rowObject) {
+                           console.log(rowObject.resourceButtonList);
+                           var html="";
+                           if(rowObject.resourceButtonList!=""&&rowObject.resourceButtonList!=undefined){
+                               for(var i=0;i<rowObject.resourceButtonList.length;i++){
+                                   if(pageType=="add"){
+                                       html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;";
+                                       if((i%3)==0){
+                                           html+="<br>"
+                                       }
+                                   }else{
+                                       if(rowObject.resourceButtonList[i].ishow===0){
+                                           html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                       }else{
+                                           html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                       }
+                                       if((i%3)==0){
+                                           html+="<br>"
+                                       }
+                                   }
+
+                               }
+                               return html;
+                           }else{
+                               return html;
+                           }
+
+                        }
+                    },
+                    {
+                        name: '',
+                        label: '表格配置细则',
+                        width: 60,
+                        align: 'center',
+                        formatter: function (cellvalue, options, rowObject) {
+                            console.log(rowObject.resourcetableList);
+                            var html="";
+                            if(rowObject.resourcetableList!=""&&rowObject.resourcetableList!=undefined){
+                                for(var i=0;i<rowObject.resourcetableList.length;i++){
+                                    if(pageType=="add"){
+                                        html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;";
+                                        if((i%3)==0){
+                                            html+="<br>"
+                                        }
+                                    }else{
+                                        if(rowObject.resourcetableList[i].ishow===0){
+                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        }else{
+                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        }
+                                        if((i%3)==0){
+                                            html+="<br>"
+                                        }
+                                    }
+
+                                }
+                                return html;
+                            }else{
+                                return html;
+                            }
+
+                        }
                     }
 
                 ],
@@ -304,7 +375,7 @@
                 },
                 loadComplete: function(data) {
                     //绑定选择事件
-                    $("input[type='checkbox']").click(function () {
+                    $(".inputcheckbox").click(function () {
                         if(cs.isBlank($("#editForm-id").val() )) {
                             cs.showAlertMsgBox("角色信息未保存，不能编辑权限");
                             return;
@@ -348,6 +419,32 @@
             });
 
 
+        }
+        function selectresourceButton(id,t) {
+             var state=0;
+            if($(t).prop('checked')){
+                state=0;
+            }else{
+                state=1;
+            }
+            if(cs.isBlank($("#editForm-id").val() )) {
+                cs.showAlertMsgBox("角色信息未保存，不能编辑权限");
+                return;
+            }
+            cs.showProgressBar();
+            $.post(basePath+"/sys/role/updateResourceButtonIsshow.do",
+                {id:id,ishow:state},
+                function(result) {
+                    cs.closeProgressBar();
+                    if(result.success == true || result.success == 'true') {
+                        $.gritter.add({
+                            text: result.msg,
+                            class_name: 'gritter-success  gritter-light'
+                        });
+                    } else {
+                        cs.showAlertMsgBox(result.msg);
+                    }
+                }, 'json');
         }
     </script>
 </body>

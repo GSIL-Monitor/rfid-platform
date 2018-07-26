@@ -16,9 +16,12 @@ import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.sys.Resource;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -29,6 +32,8 @@ import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.GuestViewService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,6 +67,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private TemplateMsgService templateMsgService;
     @Autowired
     private GuestViewService guestViewService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -74,6 +83,25 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        String defaultWarehId = unit.getDefaultWarehId();
+        String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+        String defalutCustomerId = unit.getDefalutCustomerId();
+        if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+            Customer customer = this.customerService.load(defalutCustomerId);
+            mv.addObject("defalutCustomerId", defalutCustomerId);
+            mv.addObject("defalutCustomerName", customer.getName());
+            mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+            mv.addObject("defalutCustomercustomerType", unit.getType());
+            mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+        }
+        mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("roleid", getCurrentUser().getRoleId());
+        mv.addObject("defaultWarehId", defaultWarehId);
+
+
+        mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
+        mv.addObject("ownersId", unit.getOwnerids());
+        mv.addObject("pageType", "add");
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());
         return mv;
@@ -152,9 +180,17 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Override
     public MessageBox cancel(String billNo) throws Exception {
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
-        saleOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.saleOrderBillService.cancelUpdate(saleOrderBill);
-        return new MessageBox(true, "撤销成功");
+        try {
+            if (saleOrderBill.getStatus() == BillConstant.BillStatus.Enter) {
+                saleOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+                this.saleOrderBillService.cancelUpdate(saleOrderBill);
+                return new MessageBox(true, "撤销成功");
+            } else {
+                return returnFailInfo("不是录入状态，无法撤销");
+            }
+        }catch (Exception e) {
+            return returnFailInfo("撤销失败");
+        }
     }
 
     @RequestMapping(value = "/apply")
@@ -185,10 +221,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         for (int i = 0; i < saleOrderBillDtls.size(); i++) {
             SaleOrderBillDtl dtl = saleOrderBillDtls.get(i);
             Style style = CacheManager.getStyleById(dtl.getStyleId());
-            dtl.setStyleName(CacheManager.getStyleNameById(dtl.getStyleId()));
+            dtl.setStyleName(style.getStyleName());
             dtl.setColorName(CacheManager.getColorNameById(dtl.getColorId()));
             dtl.setSizeName(CacheManager.getSizeNameById(dtl.getSizeId()));
-            dtl.setTagPrice(CacheManager.getStyleById(dtl.getStyleId()).getPrice());
+            dtl.setTagPrice(style.getPrice());
             Map<String,Double> stylePriceMap = new HashMap<>();
             stylePriceMap.put("price",style.getPrice());
             stylePriceMap.put("wsPrice",style.getWsPrice());
@@ -227,7 +263,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             saleOrderBill.setId(saleOrderBill.getBillNo());
             BillConvertUtil.covertToSaleOrderBill(saleOrderBill, saleOrderBillDtlList, curUser);
             this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
-            return new MessageBox(true, "保存成功", saleOrderBill.getBillNo());
+            return new MessageBox(true, "保存成功", saleOrderBill);
         } catch (Exception e) {
             e.printStackTrace();
             return new MessageBox(false, e.getMessage());
@@ -515,6 +551,28 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(false, "替换失败");
+        }
+    }
+    @RequestMapping(value = "/findResourceButton")
+    @ResponseBody
+    public MessageBox findResourceButton(){
+        try {
+            List<ResourceButton> resourceButton = this.resourceButtonService.findButtonByCodeAndRoleId("logistics/saleOrder", this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
+        }
+    }
+    @RequestMapping(value = "/findResourceTable")
+    @ResponseBody
+    public MessageBox findResourceTable(){
+        try {
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId("logistics/saleOrder", this.getCurrentUser().getRoleId(),"table");
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
         }
     }
 }

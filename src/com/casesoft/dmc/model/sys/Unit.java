@@ -90,6 +90,42 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 	@Column( length = 50)
 	private String sendSucess;
 
+	@Transient
+	private String rackId;//货架号
+
+	@Transient
+	private String levelId;//货层号
+
+	@Transient
+	private String allocationId;//货位号
+
+	@Transient
+	private String deep;//深度
+
+	public String getRackId() {
+		return rackId;
+	}
+
+	public void setRackId(String rackId) {
+		this.rackId = rackId;
+	}
+
+	public String getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(String levelId) {
+		this.levelId = levelId;
+	}
+
+	public String getAllocationId() {
+		return allocationId;
+	}
+
+	public void setAllocationId(String allocationId) {
+		this.allocationId = allocationId;
+	}
+
 	public String getSendSucess() {
 		return sendSucess;
 	}
@@ -624,5 +660,13 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 
 	public void setVippoints(Double vippoints) {
 		this.vippoints = vippoints;
+	}
+
+	public String getDeep() {
+		return deep;
+	}
+
+	public void setDeep(String deep) {
+		this.deep = deep;
 	}
 }

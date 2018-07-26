@@ -22,11 +22,22 @@ public abstract class BaseBill {
     protected String billNo;
 
     @Column(nullable = false, length = 19)
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     @Excel(name="日期")
     protected Date billDate;
     @Column(length = 50)
     protected String srcBillNo;//原始单号（入库单关联的出库单单号）可以为空
+    @Column(length = 50)
+    protected String returnBillNo;//未完成订单结束时关联的退货单号
+
+    public String getReturnBillNo() {
+        return returnBillNo;
+    }
+
+    public void setReturnBillNo(String returnBillNo) {
+        this.returnBillNo = returnBillNo;
+    }
+
     @Column(length = 50)
     protected String destUnitId;// 收货方组织ID
     @Column()
@@ -75,6 +86,9 @@ public abstract class BaseBill {
     protected Long actQty;//实际数量
     @Column()
     protected Long actSkuQty;//实际sku数
+    //到貨數量
+    @Column()
+    protected Long arrival;
 
     @Column()
     protected Double totPrice;//总价格
@@ -326,6 +340,14 @@ public abstract class BaseBill {
 
     @Transient
     private List<BillRecord> billRecordList;
+
+    public Long getArrival() {
+        return arrival;
+    }
+
+    public void setArrival(Long arrival) {
+        this.arrival = arrival;
+    }
 
     public List<BillRecord> getBillRecordList() {
         return billRecordList;

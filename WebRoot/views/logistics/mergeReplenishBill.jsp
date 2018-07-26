@@ -162,14 +162,14 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
     <!--/.fluid-container#main-container-->
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
-<jsp:include page="add_saleOrder_code_dialog.jsp"></jsp:include>
+<jsp:include page="search_saleOrder_code_dialog.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <link href="<%=basePath%>/kendoUI/styles/kendo.common-material.min.css" rel="stylesheet">
 <link href="<%=basePath%>/kendoUI/styles/kendo.rtl.min.css" rel="stylesheet">

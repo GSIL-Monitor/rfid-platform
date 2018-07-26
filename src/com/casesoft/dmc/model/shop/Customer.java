@@ -31,7 +31,7 @@ public class Customer implements java.io.Serializable {
     private String epay;
 
     private Date birth;
-    // 会员等级
+    // john 添加属性
     private String idCard;
     private Integer sex;
     private String rank;//等级

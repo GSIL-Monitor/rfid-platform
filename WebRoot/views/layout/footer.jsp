@@ -5,7 +5,7 @@
         <div class="footer-content">
 						<span class="bigger-120">
 							<span class="blue bolder">&copy; CaseSoft RFID</span>
-							 @2011-2018 &nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.casesoft.com.cn" target="_blank" style="text-decoration: none;">关于 CaseSoft</a>
+							 @2011-2018 &nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://newretailcloud.cn" target="_blank" style="text-decoration: none;">关于 庭云科技</a>
 						</span>
 
             &nbsp; &nbsp; 建议使用

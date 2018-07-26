@@ -42,3 +42,69 @@ function refreshCache() {
             }
         }, 'json');
 }
+function switchOn(id){
+    var rowData=$("#grid").jqGrid('getRowData',id);
+    var jobUrl=basePath;
+    if(rowData.configState==0){
+        jobUrl+="/timer/runSingleJob.do";
+    }else{
+        jobUrl+="/timer/shutdownSingleJob.do";
+    }
+    openProgress();
+    $.ajax({
+        type: "POST",
+        url: jobUrl,
+        data: {job:rowData.id},
+        dataType: "json",
+        success: function(data) {
+            closeProgress();
+            if(data.success) {
+                $("#notification").data('kendoNotification').showText('成功！', 'success');
+            }else{
+                openWarmDialog('操作失败！'+data.msg);
+                $("#notification").data('kendoNotification').showText('操作失败！'+data.msg, 'error');
+            }
+            $("#grid").jqGrid().trigger('reloadGrid');
+        },
+        error:function (e) {
+            closeProgress();
+            openWarmDialog("操作失败");
+            $("#notification").data('kendoNotification').showText('操作失败！', 'error');
+        }
+    });
+}
+function setOperate(id,value) {
+    console.info(id);
+    console.info(value);
+    const jobUrl = basePath+'/sys/sysSetting/setOperate.do';
+    if($(".ace").hasClass("checked")){
+        $(".ace").removeAttr("checked");
+        cs.showProgressBar();
+    }
+    else {
+        $(".ace").attr("checked");
+        cs.showProgressBar();
+    }
+    $.ajax({
+        type: "POST",
+        url: jobUrl,
+        data: {id:id,value:value},
+        dataType: "json",
+        success: function(data) {
+            cs.closeProgressBar();
+            location.href=basePath+"/sys/sysSetting/index.do"
+            $.gritter.add({
+                text: data.msg,
+                class_name: 'gritter-success  gritter-light'
+            });
+        },
+        error:function (e) {
+            cs.closeProgressBar();
+            location.href=basePath+"/sys/sysSetting/index.do"
+            $.gritter.add({
+                text: data.msg,
+                class_name: 'gritter-fail gritter-light'
+            });
+        }
+    });
+}

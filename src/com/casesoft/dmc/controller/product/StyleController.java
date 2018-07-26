@@ -1,17 +1,28 @@
 package com.casesoft.dmc.controller.product;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Term;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
+import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.tag.InitService;
+import net.sf.jasperreports.repo.Resource;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +53,10 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ProductService productService;
 	@Autowired
 	public InitService initService;
-
+	@Autowired
+	private PropertyService propertyService;
+	@Autowired
+	private ResourceButtonService resourceButtonService;
 	@RequestMapping("/page")
 	@ResponseBody
 	@Override
@@ -150,11 +164,14 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public ModelAndView addStyle(){
 		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+		String roleId = getCurrentUser().getRoleId();
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
 		mv.addObject("pageType","add");
 		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("styleId", "");
 		mv.addObject("roleId",getCurrentUser().getRoleId());
 		mv.addObject("userId",getCurrentUser().getId());
+		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
 		return mv;
 	}
 	@RequestMapping("/edit")
@@ -162,12 +179,17 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public ModelAndView editStyle(String styleId){
 		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+		String roleId = getCurrentUser().getRoleId();
+		//查询当前用户对应字段
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
 		Style s = CacheManager.getStyleById(styleId);
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
 		mv.addObject("styleId", styleId);
 		mv.addObject("classTypes",propertyTypeList);
-		mv.addObject("roleId",getCurrentUser().getRoleId());
+		mv.addObject("roleId",roleId);
+		//传递字段
+		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
 		mv.addObject("userId",getCurrentUser().getId());
 		return mv;
 	}
@@ -264,6 +286,19 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		}
 
 	}
-
-
+	@RequestMapping("/remark")
+	@ResponseBody
+	public net.sf.json.JSON remark(){
+		String termString = request.getParameter("term");
+		List<PropertyKey> propertyTypeList = this.propertyService.findByRemark(termString);
+		List<Term> termList = new ArrayList<>();
+		for (PropertyKey propertyKey : propertyTypeList){
+			Term term = new Term();
+			term.setId(propertyKey.getId());
+			term.setLabel(propertyKey.getName());
+			term.setValue(propertyKey.getName());
+			termList.add(term);
+		}
+		return JSONArray.fromObject(termList);
+	}
 }

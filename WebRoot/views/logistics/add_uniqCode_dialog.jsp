@@ -61,10 +61,11 @@
     function initUniqueCodeGrid() {
         $("#uniqueCodeGrid").jqGrid({
             height: 400,
-            datatype:"local",
+            datatype: "local",
             colModel: [
-                {name:'',label:'操作',width:40,
-                    formatter:function (cellValue, options, rowObject) {
+                {
+                    name: '', label: '操作', width: 40,
+                    formatter: function (cellValue, options, rowObject) {
                         return "<a style='margin-left: 10px' href='javascript:void(0);' onclick=deleteUniqueCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }
                 },
@@ -159,10 +160,10 @@
             }
         });
     }
-    function deleteUniqueCode(rowId){
+    function deleteUniqueCode(rowId) {
         var row = $('#uniqueCodeGrid').getRowData(rowId);
         $("#uniqueCodeGrid").jqGrid("delRowData", rowId);
-        allCodes = allCodes.replace(row.code,"");
+        allCodes = allCodes.replace(row.code, "");
         console.log(allCodes);
         var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
         $("#codeQty").text(scanCodeQty);
@@ -198,13 +199,13 @@
                     ajax_url = basePath + "/stock/warehStock/inCheckEpcStock.do";
                     ajax_data = {warehId: wareHouse, code: code, billNo: billNo}
 
-                } else if(taskType === 3){
+                } else if (taskType === 3) {
                     ajax_url = basePath + "/stock/warehStock/checkLaberEpcStockAndFindDate.do";
-                    ajax_data = {warehId: wareHouse, code: code, type: 0, billNo: billNo,class9:class9};
+                    ajax_data = {warehId: wareHouse, code: code, type: 0, billNo: billNo, class9: class9};
 
                 } else {
                     ajax_url = basePath + "/stock/warehStock/checkEpcStock.do";
-                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo};
+                    ajax_data = {warehId: wareHouse, code: code, type: taskType, billNo: billNo,isCheckWareHouse:isCheckWareHouse};
                 }
                 $.ajax({
                     async: false,

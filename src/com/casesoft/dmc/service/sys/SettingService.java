@@ -39,7 +39,7 @@ public class SettingService extends AbstractBaseService<Setting, String>  {
 
     @Override
     public Setting get(String propertyName, Object value) {
-        return null;
+        return this.settingDao.findUniqueBy(propertyName,value);
     }
 
     @Transactional(readOnly = true)
@@ -47,6 +47,7 @@ public class SettingService extends AbstractBaseService<Setting, String>  {
     public List<Setting> find(List<PropertyFilter> filters) {
         return this.settingDao.find(filters);
     }
+
 
     @Transactional(readOnly = true)
     public List<Setting> getAll() {

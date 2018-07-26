@@ -29,6 +29,7 @@
         var roleid = "${roleid}";
         var Codes = "${Codes}";
         var groupid="${groupid}";
+
     </script>
 </head>
 <body class="no-skin">
@@ -217,7 +218,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
+
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>

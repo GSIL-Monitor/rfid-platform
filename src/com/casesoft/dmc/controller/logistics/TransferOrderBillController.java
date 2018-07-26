@@ -16,16 +16,15 @@ import com.casesoft.dmc.model.product.Color;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.sys.Print;
-import com.casesoft.dmc.model.sys.PrintSet;
-import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.sys.PrintService;
 import com.casesoft.dmc.service.sys.PrintSetService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.impl.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +51,10 @@ public class TransferOrderBillController extends BaseController implements ILogi
     private PrintService printService;
     @Autowired
     private PrintSetService printSetService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
 
     @Override
     public String index() {
@@ -60,11 +63,13 @@ public class TransferOrderBillController extends BaseController implements ILogi
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillNew");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());
+        mv.addObject("pageType", "add");
+        mv.addObject("ownersId", unit.getOwnerids());
         return mv;
     }
 
@@ -385,6 +390,36 @@ public class TransferOrderBillController extends BaseController implements ILogi
             return new MessageBox(true, "ok", resultMap);
         }catch (Exception e){
             return new MessageBox(false,"获取数据失败"+e.getMessage());
+        }
+    }
+    /**
+     * 调拨单A4(有尺寸)打印模块
+     * @param billNo 单据编号
+     * @Author czf 2018-7-24
+     * */
+    @RequestMapping(value = "/printA4SizeInfo")
+    @ResponseBody
+    public MessageBox printA4SizeInfo(String billNo,String ruleReceipt,String type){
+        try {
+            //Print print = this.printService.findPrint(Long.parseLong("42"));//打印Id需要优化不能些定值
+            User currentUser = this.getCurrentUser();
+            PrintSet printSet = this.printSetService.findPrintSet(ruleReceipt, type, currentUser.getOwnerId());
+            Map<String, Object> map = this.printSetService.printMessageA4(printSet.getId()+"", billNo);
+            return new MessageBox(true, "查询成功",map);
+        }catch (Exception e){
+            return new MessageBox(false,"获取数据失败"+e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/findResourceButton")
+    @ResponseBody
+    public MessageBox findResourceButton(){
+        try {
+            Resource resource = this.resourceService.get("url", "logistics/transferOrder");
+            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功",resourceButton);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(true, "查询失败");
         }
     }
 }

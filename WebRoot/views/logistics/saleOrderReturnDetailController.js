@@ -1311,6 +1311,7 @@ function edit_wareHouseIn() {
     taskType = 1;
     var destId = $("#search_destId").val();
     wareHouse = destId;
+    isCheckWareHouse=true;
     var ct = $("#search_customerType").val();
     if (destId && destId !== null) {
         $("#dialog_buttonGroup").html("" +
