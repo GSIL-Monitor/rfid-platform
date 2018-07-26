@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
@@ -163,11 +164,14 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public ModelAndView addStyle(){
 		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
+		String roleId = getCurrentUser().getRoleId();
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
 		mv.addObject("pageType","add");
 		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("styleId", "");
 		mv.addObject("roleId",getCurrentUser().getRoleId());
 		mv.addObject("userId",getCurrentUser().getId());
+		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
 		return mv;
 	}
 	@RequestMapping("/edit")
@@ -177,7 +181,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
 		String roleId = getCurrentUser().getRoleId();
 		//查询当前用户对应字段
-		List<ResourceButton> resourceButtonList = this.resourceButtonService.findResourceButtonByCodeAndRoleId("/prod/style",roleId,"table");
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
 		Style s = CacheManager.getStyleById(styleId);
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
@@ -185,7 +189,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("roleId",roleId);
 		//传递字段
-		mv.addObject("fieldList",resourceButtonList);
+		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
 		mv.addObject("userId",getCurrentUser().getId());
 		return mv;
 	}
