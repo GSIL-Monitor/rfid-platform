@@ -373,6 +373,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     }
     /*
     * lly
+    * 重复代码有时间做封装
     * */
     public Page<sku> findskuByRm(String wareId, String rackId, String levelId, String allocationId,Page<sku> page){
         SQLQuery query =null;
@@ -431,6 +432,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     }
     /*
     * lly
+    * 重复代码有时间做封装
     * */
     public Page<code> findcodeByRm(String wareId, String rackId, String levelId, String allocationId,Page<code> page){
         SQLQuery query =null;
@@ -489,6 +491,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     }
     /*
     * lly
+    * 重复代码有时间做封装
     * */
     public Page<styled> findstyledByRm(String wareId, String rackId, String levelId, String allocationId, Page<styled> page){
         SQLQuery query =null;
