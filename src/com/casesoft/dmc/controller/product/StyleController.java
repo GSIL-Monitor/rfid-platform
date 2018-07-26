@@ -286,7 +286,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		}
 
 	}
-	@RequestMapping("/remark")
+	@RequestMapping(value = {"/remark","/remarkWS"})
 	@ResponseBody
 	public net.sf.json.JSON remark(){
 		String termString = request.getParameter("term");
@@ -301,4 +301,14 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		}
 		return JSONArray.fromObject(termList);
 	}
+	/*
+	* 根据权限查询div
+	* */
+	@RequestMapping("/getResourceButtonList")
+	@ResponseBody
+	public List<ResourceButton> getResourceButtonList(){
+		String roleId = getCurrentUser().getRoleId();
+		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
+	}
+
 }

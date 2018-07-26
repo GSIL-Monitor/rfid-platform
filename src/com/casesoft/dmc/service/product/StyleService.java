@@ -231,7 +231,7 @@ public class StyleService extends AbstractBaseService<Style, String> {
 	}
 
     public List<PropertyType> findStylePropertyType() {
-		return this.styleDao.find("from PropertyType where type=?",new Object[]{"商品代码分类"} );
+		return this.styleDao.find("from PropertyType where type=? order by seqNo asc",new Object[]{"商品代码分类"} );
     }
 
 	public void saveStyleAndProducts(Style sty, List<Product> saveList) {
