@@ -18,7 +18,11 @@ public class RepositoryManagementBillDtl extends BaseBillDtl implements Serializ
     @Column
     private String warehouseId;//所属仓库
     @Column
-    private String oldRmId;//旧库位id
+    private String OrackId;//旧货架
+    @Column
+    private String OlevelId;//旧货层
+    @Column
+    private String OallocationId;//旧货位
     @Column
     private Long inStock =0L;//已入库数量
 
@@ -30,13 +34,6 @@ public class RepositoryManagementBillDtl extends BaseBillDtl implements Serializ
         this.id = id;
     }
 
-    public String getOldRmId() {
-        return oldRmId;
-    }
-
-    public void setOldRmId(String oldRmId) {
-        this.oldRmId = oldRmId;
-    }
 
     public String getWarehouseId() {
         return warehouseId;
@@ -46,6 +43,29 @@ public class RepositoryManagementBillDtl extends BaseBillDtl implements Serializ
         this.warehouseId = warehouseId;
     }
 
+    public String getOrackId() {
+        return OrackId;
+    }
+
+    public void setOrackId(String orackId) {
+        OrackId = orackId;
+    }
+
+    public String getOlevelId() {
+        return OlevelId;
+    }
+
+    public void setOlevelId(String olevelId) {
+        OlevelId = olevelId;
+    }
+
+    public String getOallocationId() {
+        return OallocationId;
+    }
+
+    public void setOallocationId(String oallocationId) {
+        OallocationId = oallocationId;
+    }
 
     public Long getInStock() {
         return inStock;

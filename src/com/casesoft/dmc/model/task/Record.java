@@ -41,7 +41,14 @@ public class Record implements java.io.Serializable {
   private String origName;
 
   private String destId;//收货方仓库
-  private String rmId;//收获仓库库位
+  @Column
+  private String cageId;//入库仓库id
+  @Column
+  private String rackId;//入库货架id
+  @Column
+  private String levelId;//入库货层id
+  @Column
+  private String allocationId;//入库货位id
   private String destName;
 
   private String destUnitId; //如果是品牌商自己的门店，值为null
@@ -346,11 +353,35 @@ public class Record implements java.io.Serializable {
     this.onlibrary = onlibrary;
   }
 
-  public String getRmId() {
-    return rmId;
+  public String getCageId() {
+    return cageId;
   }
 
-  public void setRmId(String rmId) {
-    this.rmId = rmId;
+  public void setCageId(String cageId) {
+    this.cageId = cageId;
+  }
+
+  public String getRackId() {
+    return rackId;
+  }
+
+  public void setRackId(String rackId) {
+    this.rackId = rackId;
+  }
+
+  public String getLevelId() {
+    return levelId;
+  }
+
+  public void setLevelId(String levelId) {
+    this.levelId = levelId;
+  }
+
+  public String getAllocationId() {
+    return allocationId;
+  }
+
+  public void setAllocationId(String allocationId) {
+    this.allocationId = allocationId;
   }
 }

@@ -162,6 +162,10 @@ public class    PurchaseOrderBillController extends BaseController implements IL
                 //String billNo = this.purchaseOrderBillService.findMaxBillNo(prefix);
                 purchaseOrderBill.setId(prefix);
                 purchaseOrderBill.setBillNo(prefix);
+                purchaseOrderBill.setCageId(request.getParameter("cageId"));
+                purchaseOrderBill.setRackId(request.getParameter("rackId"));
+                purchaseOrderBill.setLevelId(request.getParameter("levelId"));
+                purchaseOrderBill.setAllocationId(request.getParameter("allocationId"));
             } else {
 
                 Integer status = this.purchaseOrderBillService.findBillStatus(purchaseOrderBill.getBillNo());

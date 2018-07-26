@@ -3,6 +3,10 @@ $(function () {
     initSearchGridsku();
     initSearchGridcode();
     initSearchGridstyle();
+    var parent_column = $("#gridcode").closest('#wid');
+    //resize to fit page size
+    $("#gridcode").jqGrid( 'setGridWidth', parent_column.width()-52);
+    $("#gridstyle").jqGrid( 'setGridWidth', parent_column.width()-52);
 });
 
 //初始化树形结构
@@ -12,7 +16,6 @@ function initTree() {
             // 点击节点，显示节点信息
             var nodeId = data.node.id;
             console.info(nodeId);
-            console.info(data);
             $("#form_ownerId").val(nodeId);
             var deep = data.node.original.deep;
             var unitName = data.node.original.text;
@@ -34,9 +37,21 @@ function initTree() {
                 $(".level").hide();
                 $(".allocation").show();
             }
+            $('#gridsku').jqGrid("clearGridData");
+            $('#gridsku').jqGrid('GridUnload');
             initSearchGridsku(nodeId);
+            $("#gridsku").trigger("reloadGrid");
+
+            $('#gridcode').jqGrid("clearGridData");
+            $('#gridcode').jqGrid('GridUnload');
             initSearchGridcode(nodeId);
-            initSearchGridstyle(nodeId);
+            $("#gridcode").trigger("reloadGrid");
+
+            $('#gridstyle').jqGrid("clearGridData");
+            $('#gridstyle').jqGrid('GridUnload');
+             initSearchGridstyle(nodeId);
+            $("#gridstyle").trigger("reloadGrid");
+
         }
     }).jstree({
         "themes": {
@@ -72,7 +87,28 @@ function initTree() {
         'plugins': ['search', 'wholerow', 'types']
     })
 }
-
+function saveOrganization() {
+    var that = this;
+    $("#addForm").data('bootstrapValidator').validate();
+    if (!$("#addForm").data('bootstrapValidator').isValid()) {
+        return;
+    }
+    //进度条
+    cs.showProgressBar();
+    $.post(basePath + "/sys/repositoryController/save.do",
+        $("#addForm").serialize(),
+        function (result) {
+            cs.closeProgressBar();
+            if (result.success == true || result.success == 'true') {
+                $.gritter.add({
+                    text: result.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#edit-dialog").modal('hide');
+                refresh();
+            }
+        }, 'json');
+}
 function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast", function () {
         var searchFormHeight = $(".widget-main").height();
@@ -106,28 +142,32 @@ function add() {
         $("#form_unitName").val(unitName);
         $("#edit-dialog").modal('show');
     } else {
-        bootbox.alert("请先选择上级公司");
+        bootbox.alert("请先选择上级仓库");
     }
 }
 
 function initSearchGridsku(nodeId) {
+    console.log("saber"+nodeId);
     $("#gridsku").jqGrid({
         height: "auto",
         url: basePath + "/sys/repositoryController/findbysku.do?rmId="+nodeId,
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'newRmId', label: 'sku'},
-            {name: 'newRmId', label: '款号'},
-            {name: 'newRmId', label: '款名'},
-            {name: 'newRmId', label: '颜色'},
-            {name: 'newRmId', label: '尺码'},
-            {name: 'newRmId', label: '仓库'},
-            {name: 'newRmId', label: '库位'},
-            {name: 'totQty', label: '库存数量'},
+            {name: 'sku', label: 'sku',width: 100},
+            {name: 'styleId', label: '款号',width: 100},
+            {name: 'colorId', label: '颜色',width: 100},
+            {name: 'sizeId', label: '尺码',width: 100},
+            {name: 'warehouseId', label: '仓库',width: 100},
+            {name: 'rackName', label: '货架',width: 100},
+            {name: 'areaName', label: '货层',width: 100},
+            {name: 'allocationName', label: '货位',width: 97},
+            {name: 'floorRack', label: '货架',hidden: true},
+            {name: 'floorArea', label: '货层',hidden: true},
+            {name: 'floorAllocation', label: '货位',hidden: true},
+            {name: 'qty', label: '库存数量',width: 68},
             ],
         viewrecords: true,
-        autowidth: true,
         rownumbers: true,
         altRows: true,
         rowNum: 20,
@@ -138,7 +178,10 @@ function initSearchGridsku(nodeId) {
         autoScroll: false,
         footerrow: true,
         sortname: 'billNo',
-        sortorder: "desc"
+        sortorder: "desc",
+        gridComplete: function () {
+            setFooterData("gridsku");
+        }
 
     });
 }
@@ -149,19 +192,22 @@ function initSearchGridcode(nodeId) {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'billNo', label: '唯一码', sortable: true, width: 45},
-            {name: 'newRmId', label: 'sku'},
-            {name: 'newRmId', label: '款号'},
-            {name: 'newRmId', label: '款名'},
-            {name: 'newRmId', label: '颜色'},
-            {name: 'newRmId', label: '尺码'},
-            {name: 'newRmId', label: '仓库'},
-            {name: 'newRmId', label: '库位'},
-            {name: 'totQty', label: '库存数量'}
+            {name: 'code', label: '唯一码',width: 90},
+            {name: 'sku', label: 'sku',width: 90},
+            {name: 'styleId', label: '款号',width: 90},
+            {name: 'colorId', label: '颜色',width: 90},
+            {name: 'sizeId', label: '尺码',width: 90},
+            {name: 'warehouseId', label: '仓库',width: 90},
+            {name: 'rackName', label: '货架',width: 90},
+            {name: 'areaName', label: '货层',width: 90},
+            {name: 'allocationName', label: '货位',width: 85},
+            {name: 'floorRack', label: '货架',hidden: true},
+            {name: 'floorArea', label: '货层',hidden: true},
+            {name: 'floorAllocation', label: '货位',hidden: true},
+            {name: 'qty', label: '库存数量',width: 60},
 
         ],
         viewrecords: true,
-        autowidth: true,
         rownumbers: true,
         altRows: true,
         rowNum: 20,
@@ -172,7 +218,10 @@ function initSearchGridcode(nodeId) {
         autoScroll: false,
         footerrow: true,
         sortname: 'billNo',
-        sortorder: "desc"
+        sortorder: "desc",
+        gridComplete: function () {
+            setFooterData("gridcode");
+        }
     });
 }
 function initSearchGridstyle(nodeId) {
@@ -182,16 +231,19 @@ function initSearchGridstyle(nodeId) {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'billNo', label: '款号', sortable: true},
+            {name: 'styleId', label: '款号',width: 150},
+            {name: 'warehouseId', label: '仓库',width: 150},
+            {name: 'rackName', label: '货架',width: 150},
+            {name: 'areaName', label: '货层',width: 150},
+            {name: 'allocationName', label: '货位',width: 147},
+            {name: 'floorRack', label: '货架',hidden: true},
+            {name: 'floorArea', label: '货层',hidden: true},
+            {name: 'floorAllocation', label: '货位',hidden: true},
+            {name: 'qty', label: '库存数量',width: 118}
 
-            {name: 'billNo', label: '款名', sortable: true},
-            {name: 'billNo', label: '库存数量', sortable: true},
-            {name: 'billNo', label: '仓库', sortable: true},
-            {name: 'billNo', label: '库位', sortable: true}
 
         ],
         viewrecords: true,
-        autowidth: true,
         rownumbers: true,
         altRows: true,
         rowNum: 20,
@@ -202,8 +254,19 @@ function initSearchGridstyle(nodeId) {
         autoScroll: false,
         footerrow: true,
         sortname: 'billNo',
-        sortorder: "desc"
+        sortorder: "desc",
+        gridComplete: function () {
+            setFooterData("gridstyle");
 
+        }
+    });
+}
+function setFooterData(id) {
+
+    var sum_totQty = $("#"+id+"").getCol('qty', false, 'sum');
+    $("#"+id+"").footerData('set', {
+        styleId: "合计",
+        qty: sum_totQty
     });
 }
 

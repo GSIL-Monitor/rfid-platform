@@ -26,6 +26,7 @@ public class RepositoryManagementBillDtlService extends AbstractBaseService<Repo
 
     @Override
     public void save(RepositoryManagementBillDtl entity) {
+
         repositoryManagementBillDtlDao.saveOrUpdate(entity);
     }
 

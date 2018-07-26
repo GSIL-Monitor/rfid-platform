@@ -116,7 +116,7 @@ function SinitTree(id) {
                     "icon": "fa fa-university"
                 }
             },
-            'plugins': ['dnd', 'search', 'wholerow', 'types']
+            'plugins': ['search', 'wholerow', 'types']
         })
         //双击  确定jstree.js中已经添加双击事件
         .bind('dblclick.jstree',function(event){
@@ -244,7 +244,7 @@ function initTree(id) {
                     "icon": "fa fa-university"
                 }
             },
-            'plugins': ['dnd', 'search', 'wholerow', 'types']
+            'plugins': ['search', 'wholerow', 'types']
         })
         //双击  确定jstree.js中已经添加双击事件
         .bind('dblclick.jstree',function(event){
@@ -346,7 +346,9 @@ function initSearchGrid() {
             {name: 'origId', label: '仓库ID', hidden: true},
             {name: 'origName', label: '发货仓库', hidden: true},
             {name: 'ownerId',  hidden: true},
-            {name: 'newRmId', label: '新库位', hidden: true},
+            {name:'nrackId',label:'新货架',hidden:true},
+            {name:'nlevelId',label:'新货层',hidden:true},
+            {name:'nallocationId',label:'新货位',hidden:true},
             {name: 'busnissId', hidden: true},
             {name: 'totQty', label: '单据数量', width: 20},
             {name: 'oprId', label: '操作人', width: 20},
@@ -382,11 +384,8 @@ function initSearchGrid() {
 function initDetailData(rowid){
     $("#myTab li").eq(0).find("a").click();
     var rowData = $("#grid").getRowData(rowid);
-    if(rowData.newRmId != null){
-        var rmId = rowData.newRmId.split("-");
-        var warehId = rowData.origId;
-        var id = warehId+"-"+rmId[0].replace(/[^0-9]/ig,"")+"-"+rmId[1].replace(/[^0-9]/ig,"")+"-"+rmId[2].replace(/[^0-9]/ig,"");
-        initTree(id);
+    if(rowData.nallocationId != null){
+        initTree(rowData.nallocationId);
     }
     $("#editForm").setFromData(rowData);
     $("#edit_Id").val(rowData.billNo);
@@ -396,7 +395,6 @@ function initDetailData(rowid){
     initButtonGroup(pageType);
     if (rm_status == "0") {
         //录入状态可以所有操作
-        $("#SODtl_finishBill").removeAttr("disabled");
         $("#SODtl_rmIdAdjust").removeAttr("disabled");
         $("#SODtl_cancel").removeAttr("disabled");
         $("#SODtl_addUniqCode").removeAttr("disabled");
@@ -409,7 +407,6 @@ function initDetailData(rowid){
     }
     if(rm_status == "-1"){
         //撤销状态按钮全禁用，页面不可编辑
-        $("#SODtl_finishBill").attr({"disabled": "disabled"});
         $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
         $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
         $("#SODtl_cancel").attr({"disabled": "disabled"});
@@ -419,22 +416,8 @@ function initDetailData(rowid){
         //取消点击事件
         $("#destId").unbind("click");
     }
-    if(rm_status == "10"){
-        //调整状态不能撤销
-        $("#SODtl_cancel").attr({"disabled": "disabled"});
-        $("#SODtl_finishBill").removeAttr("disabled");
-        $("#SODtl_rmIdAdjust").removeAttr("disabled");
-        $("#SODtl_addUniqCode").removeAttr("disabled");
-        //可编辑表单
-        $("#edit_origId").removeAttr("disabled");
-        //入库选择点击事件
-        $("#destId").click(function () {
-            $("#tree").css("display","block");
-        });
-    }
     if(rm_status == "2"){
         //结束和撤销一样
-        $("#SODtl_finishBill").attr({"disabled": "disabled"});
         $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
         $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
         $("#SODtl_cancel").attr({"disabled": "disabled"});
@@ -462,13 +445,17 @@ function initDetailData(rowid){
  * isScan 是否调用扫码框
  * */
 function addNew(isScan){
+    $("#myTab li").eq(0).find("a").click();
     showScanDialog = isScan;
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
+    $('#codeDetailgrid').jqGrid("clearGridData");
+    $('#codeDetailgrid').jqGrid('GridUnload');
     initAddGrid();
     $("#editForm").clearForm();
     setEditFormVal();
     $("#addDetailgrid").trigger("reloadGrid");
+    $("#codedetaillgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
     pageType="add";
     initButtonGroup(pageType);
@@ -504,8 +491,6 @@ function initAddGrid() {
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.status == 0) {
                         return '<i class="fa fa-tasks blue" title="录入状态"></i>';
-                    } else if (rowObject.status == 1) {
-                        return '<i class="fa fa-sign-in blue" title="调整状态"></i>';
                     } else if (rowObject.status == 2) {
                         return '<i class="fa fa-sign-out blue" title="结束状态"></i>';
                     } else {
@@ -531,7 +516,6 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'inStock', label: '已入库数量', width: 40,sortable: false},
             {name: 'sku', label: 'SKU', width: 50,sortable: false},
             {
                 name: 'price', label: '销售价格', width: 40,sortable: false,
@@ -557,7 +541,9 @@ function initAddGrid() {
             },
             {name: 'totActPrice', label: '实际金额', width: 40,sortable: false},
             {name:'stylePriceMap',label:'价格表',hidden:true},
-            {name: 'oldRmId', label: '货位号', width: 40, hidden: true},
+            {name:'orackId',label:'旧货架',hidden:true},
+            {name:'olevelId',label:'旧货层',hidden:true},
+            {name:'oallocationId',label:'旧货位',hidden:true},
             {name: 'warehouseId', label: '仓库号', width: 40, hidden: true},
             {name: 'uniqueCodes', label: '唯一码', width: 40, hidden: true}
         ],
@@ -633,7 +619,6 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'inStock', label: '已入库数量', width: 40,sortable: false},
             {name: 'sku', label: 'SKU', width: 50,sortable: false},
             {
                 name: 'price', label: '销售价格', width: 40,sortable: false,
@@ -659,7 +644,9 @@ function initeditGrid(billId) {
             },
             {name: 'totActPrice', label: '实际金额', width: 40,sortable: false},
             {name:'stylePriceMap',label:'价格表',hidden:true},
-            {name: 'oldRmId', label: '货位号', width: 40, hidden: true},
+            {name:'orackId',label:'旧货架',hidden:true},
+            {name:'olevelId',label:'旧货层',hidden:true},
+            {name:'oallocationId',label:'旧货位',hidden:true},
             {name: 'warehouseId', label: '仓库号', width: 40, hidden: true},
             {name: 'uniqueCodes', label: '唯一码', width: 40, hidden: true}
         ],
@@ -677,10 +664,10 @@ function initeditGrid(billId) {
         cellsubmit: 'clientArray',
         gridComplete: function () {
             setAddFooterData();
-        }
-       /* loadComplete: function () {
+        },
+        loadComplete: function () {
             initAllCodesList();
-        }*/
+        }
     });
 
 }
@@ -763,6 +750,7 @@ function initSelectOrigForm() {
         type: "POST",
         success: function (data, textStatus) {
             var json = data;
+            $("#search_origId").append("<option value=''>--请选择仓库--</option>");
             for (var i = 0; i < json.length; i++) {
                 $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 $("#edit_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
@@ -857,10 +845,6 @@ function initButtonGroup(type){
             "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='SODtl_finishBill' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='end()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>结束单据</span>" +
             "</button>"
         );
     }
@@ -885,10 +869,6 @@ function initButtonGroup(type){
             "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='SODtl_finishBill' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>结束单据</span>" +
             "</button>"
         );
 
@@ -961,9 +941,9 @@ function deleteItem(rowId) {
     var value = $('#addDetailgrid').getRowData(rowId);
     $("#addDetailgrid").jqGrid("delRowData", rowId);
     setAddFooterData();
-
     var totActPrice = value.totActPrice;
-
+    cs.showProgressBar();
+    saveAjax();
 }
 
 /**
@@ -973,6 +953,9 @@ function _search() {
     if($.trim($("#SdestId").val()) == "--请选择入库库位--") {
         $("#SdestId").val("");
     }
+    else {
+        $("#SdestId").val(SallocationId);
+    }
     var serializeArray = $("#searchForm").serializeArray();
     console.info(serializeArray);
     var params = array2obj(serializeArray);
@@ -981,7 +964,6 @@ function _search() {
         url: searchUrl,
         postData: params,
          loadComplete: function () {
-             $("#SdestId").empty();
              $("#SdestId").val("--请选择入库库位--");
          }
     });
@@ -991,10 +973,10 @@ function _search() {
 
 function _resetForm(){
     $("#searchForm").clearForm();
-    $("#search_origId").val();
     $("#SdestId").empty();
     $("#SdestId").val("--请选择入库库位--");
     $(".selectpicker").selectpicker('refresh');
+    $("#search_origId").val();
 }
 
 
@@ -1052,8 +1034,16 @@ function rmIdChange() {
             $("#codeDetailgrid").trigger("reloadGrid");
         }
      });
-    //调整后不能撤销
+    //调整后不能撤销,库位不能改变
+    //结束和撤销一样
+    $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
+    $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
     $("#SODtl_cancel").attr({"disabled": "disabled"});
+    $("#SODtl_save").attr({"disabled": "disabled"});
+    //不可编辑表单
+    $("#edit_origId").attr('disabled', true);
+    //取消点击事件
+    $("#destId").unbind("click");
 }
 
 function cancel() {
@@ -1095,7 +1085,15 @@ function cancelAjax(billId) {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#grid").trigger("reloadGrid");
-
+                //撤销状态按钮全禁用，页面不可编辑
+                $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
+                $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
+                $("#SODtl_cancel").attr({"disabled": "disabled"});
+                $("#SODtl_save").attr({"disabled": "disabled"});
+                //不可编辑表单
+                $("#edit_origId").attr('disabled', true);
+                //取消点击事件
+                $("#destId").unbind("click");
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1137,7 +1135,9 @@ function addProductsOnCode() {
                 productInfo.stylePriceMap=JSON.stringify(stylePriceMap);
                 //记录商品原库位信息
                 productInfo.inStock = productInfo.inStock;
-                productInfo.oldRmId = productInfo.floorRack+"-"+productInfo.floorArea+"-"+productInfo.floorAllocation;
+                productInfo.orackId = productInfo.floorRack;
+                productInfo.olevelId = productInfo.floorArea;
+                productInfo.oallocationId = productInfo.floorAllocation;
                 productInfo.warehouseId = productInfo.warehouseId;
 
                 productListInfo.push(productInfo);
@@ -1205,7 +1205,10 @@ function saveAjax() {
             rmAdjustBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
             strDtlList: JSON.stringify(dtlArray),
             userId: userId,
-            origName:origName
+            origName:origName,
+            rackId: rackId,
+            levelId: levelId,
+            allocationId: allocationId
         },
         type: "POST",
         success: function (msg) {
@@ -1231,6 +1234,7 @@ function saveAjax() {
                 $("#addDetailgrid").trigger("reloadGrid");
                 $("#grid").trigger("reloadGrid");
                 initcodeDetail(msg.result.billNo);
+                $("#codeDetailgrid").trigger("reloadGrid");
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1305,7 +1309,7 @@ function initcodeDetail(billNo) {
         datatype: "json",
         mtype:"POST",
         colModel: [
-            {name: 'uniqueCode', label: 'id',width :120},
+            {name: 'uniqueCode', label: 'code',width :120},
             {name: 'sku', label: 'SKU',width :120,editable :true},
             {name: 'billNo', label: '单据号',width :120,editable :true},
             {name: 'userId', label: '操作人',width :60,editable :true},
