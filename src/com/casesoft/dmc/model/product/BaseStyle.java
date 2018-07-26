@@ -33,6 +33,10 @@ public abstract class BaseStyle {
     protected Double puPrice;//代理商批发价格
     protected Double wsPrice;//门店批发价格
 
+
+
+    protected Double bargainPrice;//特价
+
     protected Integer isReexp;//能否退货
     protected Integer ident;//能否订货
 
@@ -256,6 +260,14 @@ public abstract class BaseStyle {
 
     public void setWsPrice(Double wsPrice) {
         this.wsPrice = wsPrice;
+    }
+    @Column()
+    public Double getBargainPrice() {
+        return bargainPrice;
+    }
+
+    public void setBargainPrice(Double bargainPrice) {
+        this.bargainPrice = bargainPrice;
     }
 
     @Column(length = 15)

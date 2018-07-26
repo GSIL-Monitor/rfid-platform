@@ -310,6 +310,8 @@ public class StyleUtil {
 //        sty.setRules(style.getRules());
         sty.setIspush(style.getIspush());
         sty.setStyleCycle(style.getStyleCycle());
+        sty.setBargainPrice(style.getBargainPrice());
+        sty.setIsSeries(style.getIsSeries());
         List<Product> saveList = new ArrayList<>();
         int index = CacheManager.getMaxProductId();
         for(int i =0 ; i < productList.size(); i++){
@@ -328,9 +330,6 @@ public class StyleUtil {
             p.setCode(p.getStyleId()+p.getColorId()+p.getSizeId());
             p.setBrandCode(style.getBrandCode());
             p.setStyleCycle(style.getStyleCycle());
-            if(CommonUtil.isNotBlank(sty.getRemark())){
-                p.setRemark(sty.getRemark());
-            }
             saveList.add(p);
         }
         return saveList;
@@ -439,14 +438,26 @@ public class StyleUtil {
         File file =  new File(rootPath + "/product/photo/" + styleId);
         if(file.exists()){
             File[] files = file.listFiles();
-            if(files.length > 0){
-                File[] photos = files[0].listFiles();
-                if(photos.length > 0){
-                    //d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
-                    String url = StyleUtil.exportImgUrl(styleId, rootPath, ImgUtil.ImgExt.small);
-                    return url;
+            if(CommonUtil.isNotBlank(files)){
+                if(files.length > 0){
+                    File[] photos = files[0].listFiles();
+                    if(CommonUtil.isNotBlank(photos)){
+                        if(photos.length > 0){
+                            //d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
+                            String url = StyleUtil.exportImgUrl(styleId, rootPath, ImgUtil.ImgExt.small);
+                            return url;
+                        }else{
+                            return "/product/photo/noImg.png";
+                        }
+                    }else{
+                        return "/product/photo/noImg.png";
+                    }
+
                 }
+            }else{
+                return "/product/photo/noImg.png";
             }
+
         }
         return "/product/photo/noImg.png";
     }

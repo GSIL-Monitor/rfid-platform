@@ -178,7 +178,7 @@ public class WXProductApiController extends ApiBaseController {
     @RequestMapping("/getStyleByIdWS.do")
     @ResponseBody
     public MessageBox getStyleByIdWS(String styleId) throws Exception {
-        Style s = CacheManager.getStyleById(styleId);
+        Style s = this.styleService.get("styleId",styleId);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         String imgUrl = StyleUtil.returnImageUrl(styleId, rootPath);
         s.setUrl(imgUrl);

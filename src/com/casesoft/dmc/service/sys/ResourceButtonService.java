@@ -77,4 +77,14 @@ public class ResourceButtonService implements IBaseService<ResourceButton,String
         List<ResourceButton> list = this.resourceButtonDao.find(hql, new Object[]{code, roleId,type});
         return list;
     }
+    /*
+    * @param url  Controller url 路径
+    * @param roleId 当前登陆账户角色id
+    * @param type  查询类型 按钮/字段
+    * */
+    public List<ResourceButton> findButtonByCodeAndRoleId(String url,String roleId,String type){
+        String hql="select t from ResourceButton t,Resource r where r.url=? and t.roleId=? and t.type=? and r.code = t.code ";
+        List<ResourceButton> list = this.resourceButtonDao.find(hql, new Object[]{url,roleId,type});
+        return list;
+    }
 }

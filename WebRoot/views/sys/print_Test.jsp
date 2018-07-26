@@ -10,12 +10,7 @@
     .orderTable  th {border:0px;height: 20px;}
     .orderTable .endTr td {border-top:1px dashed black;padding-top:5px;}
 </style>--%>
-<%
-    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-%>
-<script type="text/javascript">
-    var basePath = "<%=basePath%>";
-</script>
+
 <div id="edit-dialogSanLian" style="text-align: center;font-size:12px;display: none">
 
     <table style="text-align:center;font-size:10px;table-layout:fixed;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
@@ -404,17 +399,6 @@
         </tfoot>
     </table>
 
-<div>
-    <button value="sdad" onclick="Test()"></button>
-</div>
+
 
 </div>
-<jsp:include page="../layout/footer_js.jsp"></jsp:include>
-<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
-<script>
-       function Test() {
-           var LODOP = getLodop();
-           LODOP.ADD_PRINT_TABLE(100,1,780,250,document.getElementById("edit-dialogA4").innerHTML);
-           LODOP.PREVIEW();
-       }
-</script>

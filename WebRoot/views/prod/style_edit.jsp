@@ -14,6 +14,7 @@
         var styleId = "${styleId}";
         var pageType = "${pageType}";
         var remark  = "${style.remark}";
+        var fieldList = ${fieldList};
     </script>
     <style>
         a#focusColor:hover {
@@ -108,56 +109,80 @@
 
                                             </div>
                                             <div class="form-group" id="form-group-preCast">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_preCast"><span class="text-danger">* </span>采购价</label>
+                                                <div id="preCase_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_preCast"><span class="text-danger">* </span>采购价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_preCast" name="preCast"
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.preCast}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_preCast" name="preCast"
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.preCast}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_puPrice"><span
-                                                        class="text-danger">* </span>代理商价</label>
+                                                <div id="puPrice_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_puPrice"><span
+                                                            class="text-danger">* </span>代理商价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_puPrice" name="puPrice"
-                                                               readonly
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.puPrice}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_puPrice" name="puPrice"
+                                                                   readonly
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.puPrice}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
+
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_wsPrice"><span class="text-danger">* </span>门店价</label>
+                                                <div id="wsPrice_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_wsPrice"><span class="text-danger">* </span>门店价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_wsPrice" name="wsPrice"
-                                                               readonly
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.wsPrice}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_wsPrice" name="wsPrice"
+                                                                   readonly
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.wsPrice}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_price"><span class="text-danger">* </span>吊牌价</label>
+                                                <div id="price_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_price"><span class="text-danger">* </span>吊牌价</label>
 
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                        <input class="form-control" id="form_price" name="price"
-                                                               required="required" type="number" placeholder=""
-                                                               value="${style.price}" step="0.01"/>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_price" name="price"
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.price}" step="0.01"/>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div id="bargainPrice_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_bargainPrice"><span class="text-danger">* </span>特价</label>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                            <input class="form-control" id="form_bargainPrice" name="bargainPrice"
+                                                                   required="required" type="number" placeholder=""
+                                                                   value="${style.bargainPrice}" step="0.01"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+
                                             </div>
                                             <input id="form_remark" name ="remark" type="hidden"/>
                                             <div class="form-group">
@@ -174,6 +199,25 @@
                                                         <%--  <select id="form_brandCode" class="selectpicker" data-live-search="true">
                                                           </select>--%>
                                                         <span class="input-group-addon"
+                                                              title="添加${classTypes[0].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[0].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_class2">${classTypes[1].value}</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <div class="input-group ">
+                                                        <select class="chosen-select form-control" id="form_class2"
+                                                                name="class2">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择${classTypes[1].value}</option>
+                                                        </select>
+                                                        <span class="input-group-addon"
                                                               title="添加${classTypes[1].value}">
                                                             <a href='#' class="white"
                                                                onclick="addStyleProperty('${classTypes[1].id}')">
@@ -183,12 +227,18 @@
                                                     </div>
                                                 </div>
 
+
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class2">${classTypes[2].value}</label>
+                                                       for="form_class3">${classTypes[2].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <select class="chosen-select form-control" id="form_class2"
-                                                                name="class2">
+                                                        <%--<select class="chosen-select form-control" id="form_class3" name="class3">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[2].value}--</option>
+                                                        </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class3"
+                                                                name="class3">
                                                             <option value="" style="background-color: #eeeeee">
                                                                 请选择${classTypes[2].value}</option>
                                                         </select>
@@ -201,19 +251,15 @@
                                                         </span>
                                                     </div>
                                                 </div>
-
-
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class3">${classTypes[3].value}</label>
+                                                       for="form_class4">${classTypes[3].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class3" name="class3">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[2].value}--</option>
+                                                        <%--<select class="chosen-select form-control" id="form_class4" name="class4">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[3].value}--</option>
                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class3"
-                                                                name="class3">
+                                                        <select class="chosen-select form-control" id="form_class4"
+                                                                name="class4">
                                                             <option value="" style="background-color: #eeeeee">
                                                                 请选择${classTypes[3].value}</option>
                                                         </select>
@@ -226,15 +272,17 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class4">${classTypes[4].value}</label>
+                                                       for="form_class5">${classTypes[4].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class4" name="class4">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[3].value}--</option>
+                                                        <%--<select class="chosen-select form-control" id="form_class5" name="class5">
+                                                            <option value="" style="background-color: #eeeeee">--请选择无${classTypes[4].value}--</option>
                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class4"
-                                                                name="class4">
+                                                        <select class="chosen-select form-control" id="form_class5"
+                                                                name="class5">
                                                             <option value="" style="background-color: #eeeeee">
                                                                 请选择${classTypes[4].value}</option>
                                                         </select>
@@ -247,19 +295,14 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class5">${classTypes[5].value}</label>
+                                                       for="form_class6">${classTypes[5].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class5" name="class5">
-                                                            <option value="" style="background-color: #eeeeee">--请选择无${classTypes[4].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class5"
-                                                                name="class5">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择${classTypes[5].value}</option>
+                                                        <%-- <select class="chosen-select form-control" id="form_class6" name="class6">
+                                                         </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class6"
+                                                                name="class6">
                                                         </select>
                                                         <span class="input-group-addon"
                                                               title="添加${classTypes[5].value}">
@@ -270,28 +313,10 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class6">${classTypes[6].value}</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group ">
-                                                        <%-- <select class="chosen-select form-control" id="form_class6" name="class6">
-                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class6"
-                                                                name="class6">
-                                                        </select>
-                                                        <span class="input-group-addon"
-                                                              title="添加${classTypes[6].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[6].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class5">${classTypes[8].value}</label>
+                                                       for="form_class5">${classTypes[7].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <div class="input-group ">
                                                         <%--<select class="chosen-select form-control" id="form_class8" name="class8">
@@ -300,50 +325,7 @@
                                                         <select class="chosen-select form-control" id="form_class8"
                                                                 name="class8">
                                                             <option value="" style="background-color: #eeeeee">
-                                                                请选择无${classTypes[8].value}</option>
-                                                        </select>
-                                                        <span class="input-group-addon"
-                                                              title="添加${classTypes[8].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[8].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class6">${classTypes[10].value}</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class10" name="class10">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[9].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class10"
-                                                                name="class10">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择${classTypes[10].value}</option>
-                                                        </select>
-                                                        <span class="input-group-addon"
-                                                              title="添加${classTypes[10].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[10].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_class7">${classTypes[7].value}</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group ">
-                                                        <%--<select class="chosen-select form-control" id="form_class7" name="class7">
-                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[6].value}--</option>
-                                                        </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class7">
-                                                            <option value="" style="background-color: #eeeeee">
-                                                                请选择${classTypes[7].value}</option>
+                                                                请选择无${classTypes[7].value}</option>
                                                         </select>
                                                         <span class="input-group-addon"
                                                               title="添加${classTypes[7].value}">
@@ -354,7 +336,6 @@
                                                         </span>
                                                     </div>
                                                 </div>
-
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                        for="form_class6">${classTypes[9].value}</label>
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -362,13 +343,54 @@
                                                         <%--<select class="chosen-select form-control" id="form_class10" name="class10">
                                                             <option value="" style="background-color: #eeeeee">--请选择${classTypes[9].value}--</option>
                                                         </select>--%>
-                                                        <select class="chosen-select form-control" id="form_class9"
-                                                                name="class9">
+                                                        <select class="chosen-select form-control" id="form_class10"
+                                                                name="class10">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择${classTypes[9].value}</option>
                                                         </select>
                                                         <span class="input-group-addon"
                                                               title="添加${classTypes[9].value}">
                                                             <a href='#' class="white"
                                                                onclick="addStyleProperty('${classTypes[9].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_class7">${classTypes[6].value}</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <div class="input-group ">
+                                                        <%--<select class="chosen-select form-control" id="form_class7" name="class7">
+                                                            <option value="" style="background-color: #eeeeee">--请选择${classTypes[6].value}--</option>
+                                                        </select>--%>
+                                                        <select class="chosen-select form-control" id="form_class7">
+                                                            <option value="" style="background-color: #eeeeee">
+                                                                请选择${classTypes[6].value}</option>
+                                                        </select>
+                                                        <span class="input-group-addon"
+                                                              title="添加${classTypes[6].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[6].id}')">
+                                                            <i class="fa fa-plus red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                       for="form_class6">${classTypes[8].value}</label>
+                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                    <div class="input-group ">
+                                                        <select class="chosen-select form-control" id="form_class9"
+                                                                name="class9">
+                                                        </select>
+                                                        <span class="input-group-addon"
+                                                              title="添加${classTypes[8].value}">
+                                                            <a href='#' class="white"
+                                                               onclick="addStyleProperty('${classTypes[8].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -406,46 +428,51 @@
                                                     <option value="Y" style="background-color: #eeeeee">是</option>
                                                     </select>
                                                 </div>
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_isSeries">是否用定价规则</label>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <select class="form-control" id="form_isSeries"
-                                                            onchange="priceIsUse();" name="isSeries"/>
-                                                    <option value="Y" style="background-color: #eeeeee">是</option>
-                                                    <option value="N" style="background-color: #eeeeee">否</option>
-                                                    </select>
+                                                <div id="isSeries_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_isSeries">是否用定价规则</label>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <select class="form-control" id="form_isSeries"
+                                                                onchange="priceIsUse();" name="isSeries"/>
+                                                        <option value="Y" style="background-color: #eeeeee">是</option>
+                                                        <option value="N" style="background-color: #eeeeee">否</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
+
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="form_styleCycle">退换周期(天)</label>
-                                                <%--<div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">--%>
-                                                <%--<select class="chosen-select form-control" id="form_styleCycle"--%>
-                                                <%--name="styleCycle">--%>
-                                                <%--</select>--%>
-                                                <%--</div>--%>
-                                                <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                                    <div class="input-group">
-                                                        <c:if test="${pageType == 'edit'}">
-                                                            <input class="form-control"
-                                                              id="form_styleCycle"
-                                                              name="styleCycle"
-                                                              required="required"
-                                                              type="number"
-                                                              placeholder=""
-                                                              value="${style.styleCycle}"
-                                                              step="1"/>
-                                                        </c:if>
-                                                        <c:if test="${pageType == 'add'}">
-                                                            <input class="form-control"
-                                                             id="form_styleCycle"
-                                                             name="styleCycle"
-                                                             required="required"
-                                                             type="number"
-                                                             placeholder=""
-                                                             value="20" step="1"/>
-                                                        </c:if>
+                                                <div id="styleCycle_div">
+                                                    <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
+                                                           for="form_styleCycle">退换周期(天)</label>
+                                                    <%--<div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">--%>
+                                                    <%--<select class="chosen-select form-control" id="form_styleCycle"--%>
+                                                    <%--name="styleCycle">--%>
+                                                    <%--</select>--%>
+                                                    <%--</div>--%>
+                                                    <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                                        <div class="input-group">
+                                                            <c:if test="${pageType == 'edit'}">
+                                                                <input class="form-control"
+                                                                       id="form_styleCycle"
+                                                                       name="styleCycle"
+                                                                       required="required"
+                                                                       type="number"
+                                                                       placeholder=""
+                                                                       value="${style.styleCycle}"
+                                                                       step="1"/>
+                                                            </c:if>
+                                                            <c:if test="${pageType == 'add'}">
+                                                                <input class="form-control"
+                                                                       id="form_styleCycle"
+                                                                       name="styleCycle"
+                                                                       required="required"
+                                                                       type="number"
+                                                                       placeholder=""
+                                                                       value="20" step="1"/>
+                                                            </c:if>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -460,9 +487,9 @@
                                                               name="remark">
                                                     </textarea>
                                                     <span class="input-group-addon"
-                                                          title="添加${classTypes[0].value}">
+                                                          title="添加${classTypes[10].value}">
                                                             <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[0].id}')">
+                                                               onclick="addStyleProperty('${classTypes[10].id}')">
                                                             <i class="fa fa-plus red"></i>
                                                             </a>
                                                         </span>
@@ -530,6 +557,7 @@
 <jsp:include page="style_color_edit.jsp"></jsp:include>
 <jsp:include page="style_size_edit.jsp"></jsp:include>
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
+<jsp:include page="changeRemark_dialog.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
 
 
@@ -542,6 +570,7 @@
             height:'70',
             autocomplete_url:'remark.do'
         });
+        loadingButton();
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
@@ -555,7 +584,7 @@
                 $("#form-group-preCast").hide();
                 $("#form_price").attr("readonly", true);
             }
-
+            $("#form_isSeries").val("${style.isSeries}");
         } else {
             /*  $("#focusColor").removeAttr("onclick");*/
             if ('${roleId}' == '0') {
@@ -564,6 +593,7 @@
                 $("#form-group-preCast").hide();
             }
             $("#edit_isNotDeton").click();
+            $("#form_bargainPrice").val(0.0);
         }
         initeditStyleFormValid();
 
@@ -584,7 +614,19 @@
         $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
         $("div.btn-group").css("padding", "0");
         if ($("#form_isSeries").val()=="Y"){
-            $("#form_price").attr("disabled",true);
+            $("#form_price").attr("readonly",true);
+        }
+
+    });
+
+    $("#form_bargainPrice").blur(function(){
+        var bargainPrice = $("#form_bargainPrice").val();
+        if (bargainPrice>$("#form_price").val()){
+            $.gritter.add({
+                text: "特价价格不能高于吊牌价",
+                class_name: 'gritter-success  gritter-light'
+            });
+            $("#form_bargainPrice").val("");
         }
     });
 
@@ -1006,12 +1048,14 @@
     /*判断是否使用定价规则*/
     function priceIsUse() {
         var price = $("#form_price").val();
+        $("#form_puPrice").val(price);
+        $("#form_wsPrice").val(price);
         var isSeries = $("#form_isSeries").val();
         if (isSeries == "Y") {
-            $("#form_price").attr("disabled",true);
+            $("#form_price").attr("readonly",true);
             changPrice($("#form_class9").val(),$("#form_class3").val());
         } else {
-            $("#form_price").attr("disabled",false);
+            $("#form_price").attr("readonly",false);
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
         }
@@ -1078,12 +1122,21 @@
 
 
     function saveStyleAndProduct(str) {
+        if($('#form_isSeries').is(':hidden')){
+            var price = $("#form_price").val();
+            $("#form_puPrice").val(price);
+            $("#form_wsPrice").val(price);
+            $("#form_preCast").val(price);
+        }else {
+            $("#form_bargainPrice").val(0);
+        }
         var isSeries = $("#form_isSeries").val();
         var re = $("#tags_3").val();
         $("#form_remark").val(re);
         if ((re.indexOf(",") >= 0)||(re.indexOf("，") >= 0)){
             bootbox.alert("成分中不允许含有回车及逗号字符");
         }else {
+            bootbox.setDefaults("locale","zh_CN");
             if (isSeries == "N") {
                 $('#editStyleForm').data('bootstrapValidator').validate();
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
@@ -1093,52 +1146,80 @@
                     saveItem(editDtailRowId)
                 }
                 $("#form_sizeSortId").removeAttr("disabled");
-                cs.showProgressBar();
                 var dtlArray = [];
+                var isRemark=true;
                 $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
                     var dtlRow = $("#CSGrid").getRowData(dtlValue);
-                    dtlArray.push(dtlRow);
+                    if (re!=dtlRow.remark){
+                        isRemark=false;
+                        return false;
+                    }
                 });
-                $.ajax({
-                    dataType: "json",
-                    url: basePath + "/prod/style/saveStyleAndProduct.do",
-                    data: {
-                        styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
-                        productStr: JSON.stringify(dtlArray),
-                        userId: userId,
-                        pageType: str
-                    },
-                    type: "POST",
-                    success: function (msg) {
-                        cs.closeProgressBar();
-                        if (msg.success) {
-                            $.gritter.add({
-                                text: msg.msg,
-                                class_name: 'gritter-success  gritter-light'
+                if (!isRemark){
+                    bootbox.confirm("是否需要覆盖色码列表成分", function(result) {
+                        if (result){
+                            $.each($("#CSGrid").getDataIDs(), function (index, value) {
+                                $('#CSGrid').setCell(value, "remark", re);
                             });
-                        } else {
-                            bootbox.alert(msg.msg);
+                            cs.showProgressBar();
+                            $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                dtlArray.push(dtlRow);
+                            });
+                            $.ajax({
+                                dataType: "json",
+                                url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                data: {
+                                    styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                    productStr: JSON.stringify(dtlArray),
+                                    userId: userId,
+                                    pageType: str
+                                },
+                                type: "POST",
+                                success: function (msg) {
+                                    cs.closeProgressBar();
+                                    if (msg.success) {
+                                        $.gritter.add({
+                                            text: msg.msg,
+                                            class_name: 'gritter-success  gritter-light'
+                                        });
+                                    } else {
+                                        bootbox.alert(msg.msg);
+                                    }
+                                }
+                            });
+                        }else {
+                            cs.showProgressBar();
+                            $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                dtlArray.push(dtlRow);
+                            });
+                            $.ajax({
+                                dataType: "json",
+                                url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                data: {
+                                    styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                    productStr: JSON.stringify(dtlArray),
+                                    userId: userId,
+                                    pageType: str
+                                },
+                                type: "POST",
+                                success: function (msg) {
+                                    cs.closeProgressBar();
+                                    if (msg.success) {
+                                        $.gritter.add({
+                                            text: msg.msg,
+                                            class_name: 'gritter-success  gritter-light'
+                                        });
+                                    } else {
+                                        bootbox.alert(msg.msg);
+                                    }
+                                }
+                            });
                         }
-                    }
-                });
-            } else {
-                if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
-                    $.gritter.add({
-                        text: "采购价和吊牌价不符合定价规则，请核对对应价格",
-                        class_name: 'gritter-success  gritter-light'
                     });
-                } else {
-                    $("#form_price").attr("disabled",false);
-                    $('#editStyleForm').data('bootstrapValidator').validate();
-                    if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
-                        return;
-                    }
-                    if (editDtailRowId != null) {
-                        saveItem(editDtailRowId)
-                    }
-                    $("#form_sizeSortId").removeAttr("disabled");
+                }else {
                     cs.showProgressBar();
-                    var dtlArray = [];
                     $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
                         var dtlRow = $("#CSGrid").getRowData(dtlValue);
                         dtlArray.push(dtlRow);
@@ -1160,12 +1241,134 @@
                                     text: msg.msg,
                                     class_name: 'gritter-success  gritter-light'
                                 });
-                                $("#form_price").attr("disabled",true);
                             } else {
                                 bootbox.alert(msg.msg);
                             }
                         }
                     });
+                }
+            } else {
+                if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
+                    $.gritter.add({
+                        text: "采购价和吊牌价不符合定价规则，请核对对应价格",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                } else {
+                    $("#form_price").attr("disabled",false);
+                    $('#editStyleForm').data('bootstrapValidator').validate();
+                    if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
+                        return;
+                    }
+                    if (editDtailRowId != null) {
+                        saveItem(editDtailRowId)
+                    }
+                    $("#form_sizeSortId").removeAttr("disabled");
+                    var isRemark=true;
+                    $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                        var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                        if (re!=dtlRow.remark){
+                            isRemark=false;
+                            return false;
+                        }
+                    });
+                    if (!isRemark){
+                        bootbox.confirm("是否需要覆盖色码列表成分", function(result) {
+                            if (result){
+                                $.each($("#CSGrid").getDataIDs(), function (index, value) {
+                                    $('#CSGrid').setCell(value, "remark", re);
+                                });
+                                cs.showProgressBar();
+                                var dtlArray = [];
+                                $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                    var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                    dtlArray.push(dtlRow);
+                                });
+                                $.ajax({
+                                    dataType: "json",
+                                    url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                    data: {
+                                        styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                        productStr: JSON.stringify(dtlArray),
+                                        userId: userId,
+                                        pageType: str
+                                    },
+                                    type: "POST",
+                                    success: function (msg) {
+                                        cs.closeProgressBar();
+                                        if (msg.success) {
+                                            $.gritter.add({
+                                                text: msg.msg,
+                                                class_name: 'gritter-success  gritter-light'
+                                            });
+                                            $("#form_price").attr("disabled",true);
+                                        } else {
+                                            bootbox.alert(msg.msg);
+                                        }
+                                    }
+                                });
+                            }else {
+                                cs.showProgressBar();
+                                var dtlArray = [];
+                                $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                                    var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                                    dtlArray.push(dtlRow);
+                                });
+                                $.ajax({
+                                    dataType: "json",
+                                    url: basePath + "/prod/style/saveStyleAndProduct.do",
+                                    data: {
+                                        styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                        productStr: JSON.stringify(dtlArray),
+                                        userId: userId,
+                                        pageType: str
+                                    },
+                                    type: "POST",
+                                    success: function (msg) {
+                                        cs.closeProgressBar();
+                                        if (msg.success) {
+                                            $.gritter.add({
+                                                text: msg.msg,
+                                                class_name: 'gritter-success  gritter-light'
+                                            });
+                                            $("#form_price").attr("disabled",true);
+                                        } else {
+                                            bootbox.alert(msg.msg);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }else {
+                        cs.showProgressBar();
+                        var dtlArray = [];
+                        $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                            var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                            dtlArray.push(dtlRow);
+                        });
+                        $.ajax({
+                            dataType: "json",
+                            url: basePath + "/prod/style/saveStyleAndProduct.do",
+                            data: {
+                                styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                                productStr: JSON.stringify(dtlArray),
+                                userId: userId,
+                                pageType: str
+                            },
+                            type: "POST",
+                            success: function (msg) {
+                                cs.closeProgressBar();
+                                if (msg.success) {
+                                    $.gritter.add({
+                                        text: msg.msg,
+                                        class_name: 'gritter-success  gritter-light'
+                                    });
+                                    $("#form_price").attr("disabled",true);
+                                } else {
+                                    bootbox.alert(msg.msg);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -1181,7 +1384,7 @@
             mtype: 'POST',
             colModel: [
                 {
-                    name: "", label: "操作", width: 80, editable: false, align: "center",
+                    name: "", label: "操作", width: 80, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         var html;
                         if (pageType == "add") {
@@ -1196,19 +1399,21 @@
                         }
                     }
                 },
-                {name: 'colorId', label: '颜色', editable: false},
-                {name: 'sizeId', label: '尺寸', editable: false},
+                {name: 'colorId', label: '颜色'},
+                {name: 'sizeId', label: '尺寸'},
                 {
-                    name: 'barcode', label: '条码', editable: true,
+                    name: 'barcode', label: '条码',
                     editrules: {
                         number: true
                     }
                 },
-                {name: 'push', label: '推送', editable: false},
+                {name:'remark',label:'成分'},
+                {name: 'push', label: '推送'},
                 {name: 'code', hidden: true}
 
             ],
             viewrecords: true,
+            cellEdit:true,
             autoWidth: true,
             rownumbers: true,
             altRows: true,
@@ -1220,16 +1425,83 @@
             autoScroll: false,
             sortname: 'colorId',
             sortorder: "asc",
-            onSelectRow: function (rowid, status) {
+            /*onSelectRow: function (rowid, status) {
                 if (editDtailRowId != null) {
                     saveItem(editDtailRowId);
                 }
                 editDtailRowId = rowid;
-                $('#CSGrid').editRow(rowid);
+                var rowData = $("#CSGrid").jqGrid('getRowData',rowid);
+
+
+            }*/
+            onCellSelect : function(rowid, index, contents, event){
+                if (index==5){
+                    changeRemark(rowid,contents);
+                }
             }
         });
         $("#CSGrid").setGridWidth($("#parentWidth").width());
     }
+
+    function changeRemark(rowid,contents) {
+        $("#changeRemark_form").html("");
+        $("#changeRemark_dialog").modal('show');
+        var remarkList = contents.split(" ");
+        var remark = new Array();
+        var number = new Array();
+        $.each(remarkList, function (dtlndex, dtlValue) {
+            remark.push(GetChinese(dtlValue));
+            number.push(GetNumber(dtlValue));
+        });
+        $("#changeRemark_buttonGroup").html("" +
+            "<button  type='button' id = 'changeRemark_save'  class='btn btn-primary' onclick=RemarkSave('" + remark + "','" + rowid + "')>确认</button>"
+        );
+        $.each(remark,function (Rindex,Rvalue) {
+            $("#changeRemark_form").append("<div class='form-group'>" +
+                "<label class='col-sm-2 control-label no-padding-right'>"+Rvalue+"</label> " +
+                "<div class='col-xs-9 col-sm-5'> " +
+                "<input class='form-control' id='remark"+Rindex+"' type='number' value='"+number[Rindex]+"'/> </div>" +
+                "<label class='col-sm-1 control-label no-padding-right'>%</label>" +
+                " </div>");
+        });
+    }
+    function RemarkSave(remark,rowid) {
+        var newRemark = remark.split(",");
+        var strRemark ="";
+        $.each(newRemark,function (Rindex,Rvalue) {
+            if((Rindex+1)==newRemark.length){
+                strRemark +=Rvalue + $("#remark"+Rindex).val()+"%";
+            }else {
+                strRemark +=Rvalue + $("#remark"+Rindex).val()+"% ";
+            }
+        });
+        $.ajax({
+            url: basePath + "/prod/product/remarkSave.do?",
+            data:{
+                id:rowid,
+                remark:strRemark
+            },
+            cache: false,
+            async: false,
+            type: 'POST',
+            success: function (data) {
+                if (data.success) {
+                    $("#changeRemark_dialog").modal('hide');
+                    $("#CSGrid").setCell(rowid, 'remark', strRemark);
+                    $.gritter.add({
+                        text: data.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }else {
+                    $.gritter.add({
+                        text: data.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                }
+            }
+        });
+    }
+
 
     function saveItem(rowId) {
         editDtailRowId = null;
@@ -1375,10 +1647,13 @@
         if (!$("#editFormdetailed").data('bootstrapValidator').isValid()) {
             return;
         }
-        /* if($("#form_ownerId").val()==""){
-         bootbox.alert("所属方不能为空");
-         return;
-         }*/
+        if( $("#form_ids").val()=="C11"){
+            var name =GetNumber($("#form_name").val()) ;
+            if (name!=""){
+                bootbox.alert("成分名称中不能有数字");
+                return;
+            }
+        }
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i>数据上传中...</p>'
         });
@@ -1449,7 +1724,26 @@
             }
         );
     }
-
+    function loadingButton() {
+        $.each(fieldList,function (index,value) {
+            if(fieldList[index].ishow===0){
+                console.log(value);
+                if( $("#"+fieldList[index].buttonId).length>0){
+                    $("#"+fieldList[index].buttonId).show();
+                }
+            }else {
+                if( $("#"+fieldList[index].buttonId).length>0){
+                    $("#"+fieldList[index].buttonId).hide();
+                }
+            }
+        });
+        if($('#form_isSeries').is(':hidden')){
+            $('#form_isSeries').val("N");
+            var price = $("form_price").val();
+            $("#form_puPrice").val(price);
+            $("#form_wsPrice").val(price);
+        }
+    }
 </script>
 </body>
 </html>
