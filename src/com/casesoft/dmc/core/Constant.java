@@ -244,6 +244,7 @@ public class Constant {
 
         public final static int Shop_Other_Outbound=33;
         public final static int Shop_TransferSale_Outbound=50;
+        public final static int Storage_Repository_Adjust=34;//库位调整
 
 
     }
