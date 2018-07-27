@@ -301,10 +301,11 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		}
 		return JSONArray.fromObject(termList);
 	}
+
 	/*
 	* 根据权限查询div
 	* */
-	@RequestMapping("/getResourceButtonList")
+	@RequestMapping(value = {"/getResourceButtonList","/getResourceButtonListWS"})
 	@ResponseBody
 	public List<ResourceButton> getResourceButtonList(){
 		String roleId = getCurrentUser().getRoleId();

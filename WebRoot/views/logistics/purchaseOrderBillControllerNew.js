@@ -105,7 +105,7 @@ function initTree(id) {
                 "icon": "fa fa-university"
             }
         },
-        'plugins': ['dnd', 'search', 'wholerow', 'types']
+        'plugins': ['search', 'wholerow', 'types']
     })
     //双击  确定jstree.js中已经添加双击事件
         .bind('dblclick.jstree',function(event){
@@ -258,7 +258,10 @@ function initSearchGrid() {
                     return totInVal;
                 }},
             {name: 'remark', label: '备注', sortable: false, width: 40,hidden:true},
-            {name: 'rmId', label: '入库库位', width: 35,hidden:true},
+            {name: 'cageId', hidden: true},
+            {name: 'rackId', hidden: true},
+            {name: 'levelId', hidden: true},
+            {name: 'allocationId', hidden: true},
             {name: 'id', hidden: true},
             {name:'buyahandId',hidden:true},
             {name:'payPrice',hidden:true},
@@ -310,14 +313,13 @@ function initDetailData(rowid) {
     $("#PIDtl_save").attr('disabled',false);
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
-    initTree(rowData.rmId);
-    if(rowData.rmId != null){
-        var rmId = $("#destId").val().split("-");
-        var rackName = rmId[1]+"号货架";
-        var levelName = rmId[2]+"号货层";
-        var allocationName =rmId[3]+"号货位";
-
-        $("#destId").val(rackName+"-"+levelName+"-"+allocationName);
+    console.info(rowData);
+    if(rowData.allocationId == "" || rowData.allocationId == undefined || rowData.allocationId == null){
+        $("#destId").empty();
+        $("#destId").val("--请选择入库库位--");
+    }
+    else {
+        initTree(rowData.allocationId);
     }
     slaeOrder_status = rowData.status;
     if (slaeOrder_status != "0" && userId != "admin") {
@@ -1125,7 +1127,11 @@ function save() {
         data: {
             purchaseBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
             strDtlList: JSON.stringify(dtlArray),
-            userId: userId
+            userId: userId,
+            cageId: cageId,
+            rackId: rackId,
+            levelId: levelId,
+            allocationId: allocationId
         },
         type: "POST",
         success: function (msg) {

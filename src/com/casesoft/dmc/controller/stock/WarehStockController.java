@@ -582,7 +582,7 @@ public class WarehStockController extends BaseController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new MessageBox(false, e.getMessage());
+            return new MessageBox(false, "唯一码:" + code + "不在当前选中仓库或不存在");
         }
 
     }

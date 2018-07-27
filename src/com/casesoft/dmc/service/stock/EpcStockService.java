@@ -6,15 +6,26 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.dao.rem.vo.codeDao;
+import com.casesoft.dmc.dao.rem.vo.skuDao;
+import com.casesoft.dmc.dao.rem.vo.styledDao;
 import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.model.erp.BillDtl;
+import com.casesoft.dmc.model.rem.VO.code;
+import com.casesoft.dmc.model.rem.VO.sku;
+import com.casesoft.dmc.model.rem.VO.styled;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.tag.Epc;
+import org.apache.poi.ss.formula.functions.T;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +37,12 @@ import java.util.List;
 public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     @Autowired
     private EpcStockDao epcStockDao;
+    @Autowired
+    private skuDao skuDao;
+    @Autowired
+    private codeDao codeDao;
+    @Autowired
+    private styledDao styledDao;
 
     @Override
     public Page<EpcStock> findPage(Page<EpcStock> page, List<PropertyFilter> filters) {
@@ -353,5 +370,221 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         }
         String codeListStr = TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code");
         return this.findEpcInCodes(codeListStr);
+    }
+    /*
+    * lly
+    * 重复代码有时间做封装
+    * */
+    public Page<sku> findskuByRm(String wareId, String rackId, String levelId, String allocationId,Page<sku> page){
+        SQLQuery query =null;
+        int startIndex = 0;
+        int endIndex = page.getPageSize()*page.getPageNo();
+        StringBuilder sql =new StringBuilder();
+        Session session = this.epcStockDao.getSession();
+        //sql.append("select A.*,ROWNUM from(");
+        sql.append("select ''as rackName,'' as areaName,'' as allocationName,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
+        sql.append("from STOCK_EPCSTOCK\r\n");
+        sql.append("where inStock =1\r\n");
+        if (CommonUtil.isNotBlank(wareId)){
+            sql.append("and warehouseId='"+wareId+"'\r\n");
+        }
+        if(CommonUtil.isNotBlank(rackId)){
+            sql.append("and floorRack='"+rackId+"'\r\n");
+        }
+        if(CommonUtil.isNotBlank(levelId)){
+            sql.append("and floorArea='"+levelId+"'\r\n");
+        }
+        if (CommonUtil.isNotBlank(allocationId)){
+            sql.append("and floorAllocation='"+allocationId+"'\r\n");
+        }
+        sql.append("group by sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation\n");
+        //sql.append(") A\r\n");
+        //sql.append("where ROWNUM>=:startIndex and ROWNUM<=:endIndex\r\n");
+        /*if(page.getPageNo() ==1){
+            startIndex = 0;
+        }
+        else{
+            startIndex = page.getPageSize() * (page.getPageNo()-1);
+        }
+        query = session.createSQLQuery(sql.toString());
+        query.setParameter("wareId",wareId);
+        *//*query.setParameter("startIndex",startIndex);
+        query.setParameter("endIndex",endIndex);*//*
+        if(CommonUtil.isNotBlank(rackId)) {
+            query.setParameter("rackId",rackId);
+        }
+        if(CommonUtil.isNotBlank(levelId)) {
+            query.setParameter("levelId",levelId);
+        }
+        if(CommonUtil.isNotBlank(allocationId)) {
+            query.setParameter("allocationId",allocationId);
+        }*/
+        Page<sku> pageBySQl = this.skuDao.findPageBySQl(page, sku.class, sql.toString(), null);
+      /*  //跟sku映射
+        Field[] fields = sku.class.getDeclaredFields();
+        for (Field field : fields) {
+            query.addScalar(field.getName());
+        }
+        query.setResultTransformer(Transformers.aliasToBean(sku.class));
+        List<sku> skus = query.list();
+        return skus;*/
+      return  pageBySQl;
+    }
+    /*
+    * lly
+    * 重复代码有时间做封装
+    * */
+    public Page<code> findcodeByRm(String wareId, String rackId, String levelId, String allocationId,Page<code> page){
+        SQLQuery query =null;
+        int startIndex = 0;
+        //int endIndex = page.getPageSize()*page.getPageNo();
+        StringBuilder sql =new StringBuilder();
+        //Session session = this.epcStockDao.getSession();
+        //sql.append("select A.*,ROWNUM from(");
+        sql.append("select ''as rackName,'' as areaName,'' as allocationName,code,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
+        sql.append("from STOCK_EPCSTOCK\r\n");
+        sql.append("where inStock =1\r\n");
+        if (CommonUtil.isNotBlank(wareId)){
+            sql.append("and warehouseId='"+wareId+"'\r\n");
+        }
+        if(CommonUtil.isNotBlank(rackId)){
+            sql.append("and floorRack='"+rackId+"'\r\n");
+        }
+        if(CommonUtil.isNotBlank(levelId)){
+            sql.append("and floorArea='"+levelId+"'\r\n");
+        }
+        if (CommonUtil.isNotBlank(allocationId)){
+            sql.append("and floorAllocation='"+allocationId+"'\r\n");
+        }
+        sql.append("group by code,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation\n");
+        //sql.append(") A\r\n");
+        //sql.append("where ROWNUM>=:startIndex and ROWNUM<=:endIndex\r\n");
+        /*if(page.getPageNo() ==1){
+            startIndex = 0;
+        }
+        else{
+            startIndex = page.getPageSize() * (page.getPageNo()-1);
+        }
+        query = session.createSQLQuery(sql.toString());
+        query.setParameter("wareId",wareId);
+        *//*query.setParameter("startIndex",startIndex);
+        query.setParameter("endIndex",endIndex);*//*
+        if(CommonUtil.isNotBlank(rackId)) {
+            query.setParameter("rackId",rackId);
+        }
+        if(CommonUtil.isNotBlank(levelId)) {
+            query.setParameter("levelId",levelId);
+        }
+        if(CommonUtil.isNotBlank(allocationId)) {
+            query.setParameter("allocationId",allocationId);
+        }*/
+        Page<code> pageBySQl = this.codeDao.findPageBySQl(page, code.class, sql.toString(), null);
+      /*  //跟sku映射
+        Field[] fields = sku.class.getDeclaredFields();
+        for (Field field : fields) {
+            query.addScalar(field.getName());
+        }
+        query.setResultTransformer(Transformers.aliasToBean(sku.class));
+        List<sku> skus = query.list();
+        return skus;*/
+        return  pageBySQl;
+    }
+    /*
+    * lly
+    * 重复代码有时间做封装
+    * */
+    public Page<styled> findstyledByRm(String wareId, String rackId, String levelId, String allocationId, Page<styled> page){
+        SQLQuery query =null;
+        int startIndex = 0;
+        //int endIndex = page.getPageSize()*page.getPageNo();
+        StringBuilder sql =new StringBuilder();
+        //Session session = this.epcStockDao.getSession();
+        //sql.append("select A.*,ROWNUM from(");
+        sql.append("select ''as rackName,'' as areaName,'' as allocationName,styleId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
+        sql.append("from STOCK_EPCSTOCK\r\n");
+        sql.append("where inStock =1\r\n");
+        if (CommonUtil.isNotBlank(wareId)){
+            sql.append("and warehouseId='"+wareId+"'\r\n");
+        }
+        if(CommonUtil.isNotBlank(rackId)){
+            sql.append("and floorRack='"+rackId+"'\r\n");
+        }
+        if(CommonUtil.isNotBlank(levelId)){
+            sql.append("and floorArea='"+levelId+"'\r\n");
+        }
+        if (CommonUtil.isNotBlank(allocationId)){
+            sql.append("and floorAllocation='"+allocationId+"'\r\n");
+        }
+        sql.append("group by styleId,warehouseId,floorRack,floorArea,floorAllocation\n");
+        //sql.append(") A\r\n");
+        //sql.append("where ROWNUM>=:startIndex and ROWNUM<=:endIndex\r\n");
+        /*if(page.getPageNo() ==1){
+            startIndex = 0;
+        }
+        else{
+            startIndex = page.getPageSize() * (page.getPageNo()-1);
+        }
+        query = session.createSQLQuery(sql.toString());
+        query.setParameter("wareId",wareId);
+        *//*query.setParameter("startIndex",startIndex);
+        query.setParameter("endIndex",endIndex);*//*
+        if(CommonUtil.isNotBlank(rackId)) {
+            query.setParameter("rackId",rackId);
+        }
+        if(CommonUtil.isNotBlank(levelId)) {
+            query.setParameter("levelId",levelId);
+        }
+        if(CommonUtil.isNotBlank(allocationId)) {
+            query.setParameter("allocationId",allocationId);
+        }*/
+        Page<styled> pageBySQl = this.styledDao.findPageBySQl(page, styled.class, sql.toString(), null);
+      /*  //跟sku映射
+        Field[] fields = sku.class.getDeclaredFields();
+        for (Field field : fields) {
+            query.addScalar(field.getName());
+        }
+        query.setResultTransformer(Transformers.aliasToBean(sku.class));
+        List<sku> skus = query.list();
+        return skus;*/
+        return  pageBySQl;
+    }
+    //查询总数
+    public int count(String wareId, String rackId, String levelId, String allocationId){
+        SQLQuery query =null;
+        int count = 0;
+        StringBuilder sql =new StringBuilder();
+        Session session = this.epcStockDao.getSession();
+        sql.append("select count(*) from (");
+        sql.append("select A.*,ROWNUM from(");
+        sql.append("select ''as rackName,'' as areaName,'' as allocationName,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
+        sql.append("from STOCK_EPCSTOCK\r\n");
+        sql.append("where inStock =1\r\n");
+        sql.append("and warehouseId=:wareId\r\n");
+        if(CommonUtil.isNotBlank(rackId)){
+            sql.append("and floorRack=:rackId\r\n");
+        }
+        if(CommonUtil.isNotBlank(levelId)){
+            sql.append("and floorArea=:levelId\r\n");
+        }
+        if (CommonUtil.isNotBlank(allocationId)){
+            sql.append("and floorAllocation=:allocationId\r\n");
+        }
+        sql.append("group by sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation\n");
+        sql.append(") A\r\n");
+        sql.append(")");
+        query = session.createSQLQuery(sql.toString());
+        query.setParameter("wareId",wareId);
+        if(CommonUtil.isNotBlank(rackId)) {
+            query.setParameter("rackId",rackId);
+        }
+        if(CommonUtil.isNotBlank(levelId)) {
+            query.setParameter("levelId",levelId);
+        }
+        if(CommonUtil.isNotBlank(allocationId)) {
+            query.setParameter("allocationId",allocationId);
+        }
+        List<BigDecimal> ct = query.list();
+        count = ct.get(0).intValue();
+        return count;
     }
 }

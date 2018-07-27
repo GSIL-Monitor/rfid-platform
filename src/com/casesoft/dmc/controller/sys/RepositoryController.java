@@ -13,7 +13,11 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.cfg.VO.State;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.rem.RepositoryManagement;
+import com.casesoft.dmc.model.rem.RepositoryManagementBill;
 import com.casesoft.dmc.model.rem.VO.TreeChildVO;
+import com.casesoft.dmc.model.rem.VO.code;
+import com.casesoft.dmc.model.rem.VO.sku;
+import com.casesoft.dmc.model.rem.VO.styled;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -30,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by lly on 2018/7/7.
@@ -223,35 +229,170 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
     }
     @RequestMapping(value = "findbysku")
     @ResponseBody
-    public List<EpcStock> findbysku(String rmId){
+    public Page<sku> findbysku(Page<sku> page,String rmId){
+        String wareId = null;
+        String rackId =null;
+        String levelId = null;
+        String allocationId =null;
+        String rackName = null;
+        String areaName = null;
+        String allocationName = null;
+        int count =0;
+        int pageNo = 0;
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        page.setPageProperty();
         if (CommonUtil.isNotBlank(rmId)){
-
+            String []rm = rmId.split("-");
+            if (rm.length == 1){
+                wareId = rm[0];
+            }
+            else if(rm.length ==2){
+                rackId = rm[0]+"-"+rm[1];
+            }
+            else if(rm.length ==3){
+                levelId = rm[0]+"-"+rm[1]+"-"+rm[2];
+            }
+            else{
+                allocationId = rmId;
+            }
         }
-        List<PropertyFilter> filters = new ArrayList<>();
-        List<EpcStock> epcStocks = epcStockService.find(filters);
-
-        return epcStocks;
+        //获取字符串中的数字
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Page<sku> skus = epcStockService.findskuByRm(wareId,rackId,levelId,allocationId,page);
+        List<sku>  skuList= page.getRows();
+        for(sku sku:skuList){
+            if(CommonUtil.isNotBlank(sku.getFloorAllocation())){
+                Matcher m = p.matcher(sku.getFloorRack().split("-")[1]);
+                Matcher m1 = p.matcher(sku.getFloorArea().split("-")[2]);
+                Matcher m2 = p.matcher(sku.getFloorAllocation().split("-")[3]);
+                rackName = m.replaceAll("").trim()+"号货架";
+                areaName = m1.replaceAll("").trim()+"号货层";
+                allocationName = m2.replaceAll("").trim()+"号货位";
+            }
+            sku.setRackName(rackName);
+            sku.setAreaName(areaName);
+            sku.setAllocationName(allocationName);
+        }
+        page.setRows(skuList);
+        /*count = epcStockService.count(wareId,rackId,levelId,allocationId);
+        pageNo = count/page.getPageSize();
+        page.setTotPage(pageNo);
+        page.setTotal(count);
+        page.setRows(skus);*/
+        return page;
     }
     @RequestMapping(value = "findbycode")
     @ResponseBody
-    public List<EpcStock> findbycode(String rmId){
+    public Page<code> findbycode(Page<code> page, String rmId){
+        String wareId = null;
+        String rackId =null;
+        String levelId = null;
+        String allocationId =null;
+        String rackName = null;
+        String areaName = null;
+        String allocationName = null;
+        int count =0;
+        int pageNo = 0;
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        page.setPageProperty();
         if (CommonUtil.isNotBlank(rmId)){
-            
+            String []rm = rmId.split("-");
+            if (rm.length == 1){
+                wareId = rm[0];
+            }
+            else if(rm.length ==2){
+                rackId = rm[0]+"-"+rm[1];
+            }
+            else if(rm.length ==3){
+                levelId = rm[0]+"-"+rm[1]+"-"+rm[2];
+            }
+            else{
+                allocationId = rmId;
+            }
         }
-        List<PropertyFilter> filters = new ArrayList<>();
-        List<EpcStock> epcStocks = epcStockService.find(filters);
-
-        return epcStocks;
+        //获取字符串中的数字
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Page<code> codes = epcStockService.findcodeByRm(wareId,rackId,levelId,allocationId,page);
+        List<code>  codeList= page.getRows();
+        for(code code:codeList){
+            if(CommonUtil.isNotBlank(code.getFloorAllocation())){
+                Matcher m = p.matcher(code.getFloorRack().split("-")[1]);
+                Matcher m1 = p.matcher(code.getFloorArea().split("-")[2]);
+                Matcher m2 = p.matcher(code.getFloorAllocation().split("-")[3]);
+                rackName = m.replaceAll("").trim()+"号货架";
+                areaName = m1.replaceAll("").trim()+"号货层";
+                allocationName = m2.replaceAll("").trim()+"号货位";
+            }
+            code.setRackName(rackName);
+            code.setAreaName(areaName);
+            code.setAllocationName(allocationName);
+        }
+        page.setRows(codeList);
+        /*count = epcStockService.count(wareId,rackId,levelId,allocationId);
+        pageNo = count/page.getPageSize();
+        page.setTotPage(pageNo);
+        page.setTotal(count);
+        page.setRows(skus);*/
+        return page;
     }
     @RequestMapping(value = "findbystyle")
     @ResponseBody
-    public List<EpcStock> findbystyle(String rmId){
+    public Page<styled> findbystyle(Page<styled> page, String rmId){
+        String wareId = null;
+        String rackId =null;
+        String levelId = null;
+        String allocationId =null;
+        String rackName = null;
+        String areaName = null;
+        String allocationName = null;
+        int count =0;
+        int pageNo = 0;
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
+                .getRequest());
+        page.setPageProperty();
         if (CommonUtil.isNotBlank(rmId)){
-
+            String []rm = rmId.split("-");
+            if (rm.length == 1){
+                wareId = rm[0];
+            }
+            else if(rm.length ==2){
+                rackId = rm[0]+"-"+rm[1];
+            }
+            else if(rm.length ==3){
+                levelId = rm[0]+"-"+rm[1]+"-"+rm[2];
+            }
+            else{
+                allocationId = rmId;
+            }
         }
-        List<PropertyFilter> filters = new ArrayList<>();
-        List<EpcStock> epcStocks = epcStockService.find(filters);
-
-        return epcStocks;
+        //获取字符串中的数字
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Page<styled> styleds = epcStockService.findstyledByRm(wareId,rackId,levelId,allocationId,page);
+        List<styled>  styledList= page.getRows();
+        for(styled styled:styledList){
+            if(CommonUtil.isNotBlank(styled.getFloorAllocation())){
+                Matcher m = p.matcher(styled.getFloorRack().split("-")[1]);
+                Matcher m1 = p.matcher(styled.getFloorArea().split("-")[2]);
+                Matcher m2 = p.matcher(styled.getFloorAllocation().split("-")[3]);
+                rackName = m.replaceAll("").trim()+"号货架";
+                areaName = m1.replaceAll("").trim()+"号货层";
+                allocationName = m2.replaceAll("").trim()+"号货位";
+            }
+            styled.setRackName(rackName);
+            styled.setAreaName(areaName);
+            styled.setAllocationName(allocationName);
+        }
+        page.setRows(styledList);
+        /*count = epcStockService.count(wareId,rackId,levelId,allocationId);
+        pageNo = count/page.getPageSize();
+        page.setTotPage(pageNo);
+        page.setTotal(count);
+        page.setRows(skus);*/
+        return page;
     }
 }

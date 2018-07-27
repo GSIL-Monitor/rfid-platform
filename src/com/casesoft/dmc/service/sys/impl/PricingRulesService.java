@@ -1,6 +1,7 @@
 package com.casesoft.dmc.service.sys.impl;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
+import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PricingRulesDao;
 import com.casesoft.dmc.model.cfg.PropertyType;
@@ -20,7 +21,12 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
   private PricingRulesDao pricingRulesDao;
 
   public PricingRules findBySC(String series,String class3){
-    return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+    if(CommonUtil.isNotBlank(class3)){
+      return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+    }else{
+      return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 is null");
+    }
+
   }
 
   @Transactional(readOnly = true)
