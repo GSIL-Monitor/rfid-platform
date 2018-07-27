@@ -5,6 +5,7 @@ import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.rem.RepositoryManagementBillDao;
 import com.casesoft.dmc.model.rem.RepositoryManagementBill;
+import com.casesoft.dmc.model.rem.RepositoryManagementBillDtl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,13 @@ public class RepositoryManagementBillService extends AbstractBaseService<Reposit
 
     @Override
     public void save(RepositoryManagementBill entity) {
+
+    }
+
+    public void save(RepositoryManagementBill entity, List<RepositoryManagementBillDtl> repositoryManagementBillDtls) {
+        this.repositoryManagementBillDao.batchExecute("delete from RepositoryManagementBillDtl where billNo=?", entity.getBillNo());
+        //保存单据明细表
+        repositoryManagementBillDao.doBatchInsert(repositoryManagementBillDtls);
         repositoryManagementBillDao.saveOrUpdate(entity);
     }
 

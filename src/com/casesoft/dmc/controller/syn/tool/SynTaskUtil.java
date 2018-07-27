@@ -99,7 +99,7 @@ public class SynTaskUtil {
         Map<String, StringBuffer> zipMap = new HashMap<String, StringBuffer>();
         try {
             // wing 2014-03-04 中文乱码bug解决
-             ZipInputStream zipInput = new ZipInputStream(ins);
+            ZipInputStream zipInput = new ZipInputStream(ins);
             ZipEntry zipEntry = null;
             BufferedReader in = null;
             while ((zipEntry = zipInput.getNextEntry()) != null) {

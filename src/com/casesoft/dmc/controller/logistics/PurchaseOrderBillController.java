@@ -156,6 +156,12 @@ public class    PurchaseOrderBillController extends BaseController implements IL
         this.logAllRequestParams();
         try {
             PurchaseOrderBill purchaseOrderBill = JSON.parseObject(purchaseBillStr, PurchaseOrderBill.class);
+            if(CommonUtil.isNotBlank(request.getParameter("allocationId"))){
+                purchaseOrderBill.setCageId(request.getParameter("cageId"));
+                purchaseOrderBill.setRackId(request.getParameter("rackId"));
+                purchaseOrderBill.setLevelId(request.getParameter("levelId"));
+                purchaseOrderBill.setAllocationId(request.getParameter("allocationId"));
+            }
             if (CommonUtil.isBlank(purchaseOrderBill.getBillNo())) {
                 String prefix = BillConstant.BillPrefix.purchase
                         + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");

@@ -166,7 +166,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                        <span>客户:</span>
+                                        <span>客户(供应商):</span>
                                     </div>
                                     <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
                                         <span>xxxxxx</span>
@@ -383,7 +383,7 @@
                                         <li class="headTitleLi">
                                             <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmer')">
                                                 <i></i>
-                                                <span>客户</span>
+                                                <span>客户(供应商)</span>
                                             </div>
                                         </li>
                                         <li class="headTitleLi">
@@ -478,7 +478,7 @@
                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billType" id="billTypeA4" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
-                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="coustmer" id="coustmerA4" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="coustmer" id="coustmerA4" style="display:table-cell;vertical-align:middle;text-align:center">客户(供应商):xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billNo" id="billNoA4" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billDate" id="billDateA4" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="makeBill" id="makeBillA4" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
@@ -654,7 +654,7 @@
                                             <li class="headTitleLi">
                                                 <div class="stecs on" data-name="coustmer" onclick="selectThisA4(this,'coustmerA4')">
                                                     <i></i>
-                                                    <span>客户</span>
+                                                    <span>客户(供应商)</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
@@ -794,7 +794,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billNo" id="billNoSanLian" style="display:table-cell;vertical-align:middle;text-align:center">单号:xx</span>
-                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="coustmer" id="coustmerSanLian" style="display:table-cell;vertical-align:middle;text-align:center">客户:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="coustmer" id="coustmerSanLian" style="display:table-cell;vertical-align:middle;text-align:center">客户(供应商):xx</span>
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="businessId" id="businessIdSanLian" style="display:table-cell;vertical-align:middle;text-align:center">销售员:xx</span>
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billDate" id="billDateSanLian" style="display:table-cell;vertical-align:middle;text-align:center">日期:xx</span>
                                 </div>
@@ -953,7 +953,7 @@
                                             <li class="headTitleLi">
                                                 <div class="stecs on" data-name="coustmer" onclick="selectThisSanLian(this,'coustmerSanLian')">
                                                     <i></i>
-                                                    <span>客户</span>
+                                                    <span>客户(供应商)</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">

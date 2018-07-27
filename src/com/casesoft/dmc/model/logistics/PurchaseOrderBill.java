@@ -34,9 +34,47 @@ public class PurchaseOrderBill extends BaseBill {
     private String orderWarehouseId; //订货仓库Id
     @Column
     private String orderWarehouseName; //订货仓库名
-   /* @Column
-    private String rmId;//入库库位id
-*/
+    @Column
+    private String cageId;//入库仓库id
+    @Column
+    private String rackId;//入库货架id
+    @Column
+    private String levelId;//入库货层id
+    @Column
+    private String allocationId;//入库货位id
+
+    public String getCageId() {
+        return cageId;
+    }
+
+    public void setCageId(String cageId) {
+        this.cageId = cageId;
+    }
+
+    public String getRackId() {
+        return rackId;
+    }
+
+    public void setRackId(String rackId) {
+        this.rackId = rackId;
+    }
+
+    public String getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(String levelId) {
+        this.levelId = levelId;
+    }
+
+    public String getAllocationId() {
+        return allocationId;
+    }
+
+    public void setAllocationId(String allocationId) {
+        this.allocationId = allocationId;
+    }
+
     public String getBuyahandId() {
         return buyahandId;
     }
@@ -145,14 +183,5 @@ public class PurchaseOrderBill extends BaseBill {
 
     public void setStyleList(List<PurchaseStyleVo> styleList) { this.styleList = styleList; }
 
-    /**
-     * add by lly
-     */
-  /*  public String getRmId() {
-        return rmId;
-    }
 
-    public void setRmId(String rmId) {
-        this.rmId = rmId;
-    }*/
 }

@@ -9,13 +9,13 @@ import com.casesoft.dmc.model.cfg.VO.State;
  */
 public class TreeChildVO {
     private String id;
-    private String text;
-    private String icon;
-    private boolean children;
-    private State state;
-    private String img;
-    private String tinyImg;
-    private String fontColor;
+    private String text;//jstree节点文本显示
+    private String icon;//节点图标
+    private boolean children;//是否有子节点
+    private State state;//是否展开
+    private String img;//预留
+    private String tinyImg;//预留
+    private String fontColor;//字体颜色
     private String deep;//深度
 
     public String getId() {

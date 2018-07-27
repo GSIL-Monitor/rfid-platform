@@ -19,7 +19,11 @@ public class RepositoryManagementBill extends BaseBill implements Serializable{
     @Column
     private String AdjustCount;//调整数量
     @Column
-    private String newRmId;//新入库库位id
+    private String NrackId;//新货架
+    @Column
+    private String NlevelId;//新货层
+    @Column
+    private String NallocationId;//新货位
 
     public String getId() {
         return id;
@@ -37,12 +41,27 @@ public class RepositoryManagementBill extends BaseBill implements Serializable{
         AdjustCount = adjustCount;
     }
 
-
-    public String getNewRmId() {
-        return newRmId;
+    public String getNrackId() {
+        return NrackId;
     }
 
-    public void setNewRmId(String newRmId) {
-        this.newRmId = newRmId;
+    public void setNrackId(String nrackId) {
+        NrackId = nrackId;
+    }
+
+    public String getNlevelId() {
+        return NlevelId;
+    }
+
+    public void setNlevelId(String nlevelId) {
+        NlevelId = nlevelId;
+    }
+
+    public String getNallocationId() {
+        return NallocationId;
+    }
+
+    public void setNallocationId(String nallocationId) {
+        NallocationId = nallocationId;
     }
 }

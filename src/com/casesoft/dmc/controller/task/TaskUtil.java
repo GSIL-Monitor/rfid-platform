@@ -1320,13 +1320,14 @@ public class TaskUtil {
                 String rackId = null;
                 String levelId = null;
                 String allocationId = null;
-                if(CommonUtil.isNotBlank(record.getRmId())){
-                    String[] rmId = record.getRmId().split("-");
-                    if (rmId.length == 4) {
-                        rackId = rmId[1];
-                        levelId = rmId[2];
-                        allocationId = rmId[3];
-                    }
+                if(CommonUtil.isNotBlank(record.getRackId())){
+                    rackId = record.getRackId();
+                }
+                if(CommonUtil.isNotBlank(record.getLevelId())){
+                    levelId = record.getLevelId();
+                }
+                if(CommonUtil.isNotBlank(record.getAllocationId())){
+                    allocationId = record.getAllocationId();
                 }
                 switch (record.getToken().intValue()) {
                     case Constant.Token.Storage_Adjust_Inbound:

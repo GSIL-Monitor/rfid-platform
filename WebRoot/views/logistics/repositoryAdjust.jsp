@@ -83,7 +83,7 @@
                                                 </div>
                                                 <label class="col-md-2 control-label" for="SdestId"></span>库位</label>
                                                 <div class="col-md-4" style="position:relative;z-index: 100;">
-                                                    <input class="form-control" id="SdestId" name="filter_LIKES_newRmId" readonly
+                                                    <input class="form-control" id="SdestId" name="filter_LIKES_NallocationId" readonly
                                                            style="width: 100%;background-color: #abbac3 !important;color: #ffffff;border-width: 3px;">
                                                     </input>
                                                     <div class="widget-body" id="Stree" style="display:none;height:600px;width: 120%; overflow-y:auto;text-align: left;position:absolute;z-index: 9999;!important;">
@@ -112,7 +112,7 @@
                                                         <i class="ace-icon fa fa-search"></i>
                                                         <span class="bigger-110">查询</span>
                                                     </button>
-                                                    <button type="reset" class="btn btn-sm btn-warning" ,
+                                                    <button type="button" class="btn btn-sm btn-warning" ,
                                                             onclick="_resetForm()">
                                                         <i class="ace-icon fa fa-undo"></i>
                                                         <span class="bigger-110">清空</span></button>

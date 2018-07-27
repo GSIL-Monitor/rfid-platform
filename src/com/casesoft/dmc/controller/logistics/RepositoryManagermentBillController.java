@@ -31,6 +31,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by lly on 2018/7/20.
@@ -112,9 +114,9 @@ public class RepositoryManagermentBillController extends BaseController implemen
     //记录商品原库位
     private MessageBox saveOldRm(String billNo,String sku,String code,String rmId,String warehouseId,String userId){
         UniqueCodeBill uniqueCodeBill = new UniqueCodeBill();
+        uniqueCodeBill.setId(billNo+code);
         uniqueCodeBill.setBillNo(billNo);
         uniqueCodeBill.setSku(sku);
-        uniqueCodeBill.setId(new GuidCreator().toString());
         uniqueCodeBill.setUniqueCode(code);
         uniqueCodeBill.setOldRm(rmId);
         uniqueCodeBill.setWarehouseId(warehouseId);
@@ -177,6 +179,9 @@ public class RepositoryManagermentBillController extends BaseController implemen
             Long totQty = 0L;
             RepositoryManagementBill repositoryManagementBill = JSON.parseObject(rmAdjustBillStr, RepositoryManagementBill.class);
             repositoryManagementBill.setOrigName(request.getParameter("origName"));
+            repositoryManagementBill.setNrackId(request.getParameter("rackId"));
+            repositoryManagementBill.setNlevelId(request.getParameter("levelId"));
+            repositoryManagementBill.setNallocationId(request.getParameter("allocationId"));
             if (CommonUtil.isBlank(repositoryManagementBill.getBillNo())) {
                 String prefix = BillConstant.BillPrefix.rmADjust
                         + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
@@ -203,15 +208,20 @@ public class RepositoryManagermentBillController extends BaseController implemen
                 repositoryManagementBillDtl.setBillNo(repositoryManagementBill.getBillNo());
                 repositoryManagementBillDtl.setStatus(repositoryManagementBill.getStatus());
                 totQty += repositoryManagementBillDtl.getQty();
+                String oldRmId = null;
 
-
+                if(CommonUtil.isNotBlank(repositoryManagementBillDtl.getOallocationId())){
+                    String rackId =repositoryManagementBillDtl.getOrackId().split("-")[1];
+                    String levelId = repositoryManagementBillDtl.getOlevelId().split("-")[2];
+                    String allocationId = repositoryManagementBillDtl.getOallocationId().split("-")[3];
+                    oldRmId = rackId+"号货架-"+levelId+"号货层-"+allocationId+"号货位";
+                }
                 //保存变动记录表
-                this.saveOldRm(repositoryManagementBill.getBillNo(),repositoryManagementBillDtl.getSku(),repositoryManagementBillDtl.getUniqueCodes(),repositoryManagementBillDtl.getOldRmId(),repositoryManagementBill.getOrigName(),curUser.getId());
-                //保存单据明细表
-                repositoryManagementBilllDtlService.save(repositoryManagementBillDtl);
+                this.saveOldRm(repositoryManagementBill.getBillNo(),repositoryManagementBillDtl.getSku(),repositoryManagementBillDtl.getUniqueCodes(),oldRmId,repositoryManagementBill.getOrigName(),curUser.getId());
+
             }
             repositoryManagementBill.setTotQty(totQty);
-            this.repositoryManagementBillService.save(repositoryManagementBill);
+            this.repositoryManagementBillService.save(repositoryManagementBill,repositoryManagementBillDtls);
             return new MessageBox(true, "保存成功", repositoryManagementBill);
 
         } catch (Exception e) {
@@ -240,22 +250,20 @@ public class RepositoryManagermentBillController extends BaseController implemen
         filters.add(filter);
         List<UniqueCodeBill> uniqueCodeBills = uniqueCodeBillService.find(filters);
         //修改对应商品库位
-        String []rmId = null;
-        if (CommonUtil.isNotBlank(repositoryManagementBill.getNewRmId())){
-            rmId = repositoryManagementBill.getNewRmId().split("-");
-        }
         String rackId = null;
         String levelId = null;
         String allocationId = null;
-        if(CommonUtil.isNotBlank(rmId) && rmId.length == 3){
-            rackId = rmId[0];
-            levelId = rmId[1];
-            allocationId = rmId[2];
+        String cageId =repositoryManagementBill.getOrigId();
+        if (CommonUtil.isNotBlank(repositoryManagementBill.getNallocationId())){
+            rackId = repositoryManagementBill.getNrackId();
+            levelId = repositoryManagementBill.getNlevelId();
+            allocationId = repositoryManagementBill.getNallocationId();
         }
+
         try{
             for (UniqueCodeBill uniqueCodeBill : uniqueCodeBills){
                 EpcStock epcStock = epcStockService.findStockEpcByCode(uniqueCodeBill.getUniqueCode());
-                uniqueCodeBill.setNewRm(repositoryManagementBill.getNewRmId());
+                uniqueCodeBill.setNewRm(rackId.split("-")[1]+"号货架"+levelId.split("-")[2]+"号货层"+allocationId.split("-")[3]+"号货位");
                 //获取当前时间
                 SimpleDateFormat myFmt1=new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
                 Date now=new Date();
@@ -267,6 +275,8 @@ public class RepositoryManagermentBillController extends BaseController implemen
                 epcStockService.save(epcStock);
                 uniqueCodeBillService.save(uniqueCodeBill);
             }
+            //调整完直接结束
+            this.end(billNo);
             return new MessageBox(true, "调整成功");
         }catch (Exception e){
             e.printStackTrace();
