@@ -59,6 +59,7 @@ public class Business implements java.io.Serializable {
 	private String destId;//接收仓库
 	private String destUnitId; //接收方组织
 	private Integer type;// 0:出库1：入库3：盘点
+	private String rmId;//库位id
 
 	private String destName;
 	private String destUnitName;
@@ -477,4 +478,11 @@ public class Business implements java.io.Serializable {
 		this.totPrice = totPrice;
 	}
 
+	public String getRmId() {
+		return rmId;
+	}
+
+	public void setRmId(String rmId) {
+		this.rmId = rmId;
+	}
 }

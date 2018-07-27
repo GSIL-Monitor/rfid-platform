@@ -137,10 +137,9 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
 
     @RequestMapping(value = "/unitList")
     @ResponseBody
-    public List<TreeChildVO> getUnitList(){
+    public List<TreeChildVO> getUnitList(String id){
         //条件查询所有仓库
         this.logAllRequestParams();
-        String id = request.getParameter("id");
         if (id.equals("#")) {
             List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                     .getRequest());
@@ -172,10 +171,9 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
     }
     @RequestMapping(value = "/unitListById")
     @ResponseBody
-    public List<TreeVO> getUnitListById(){
+    public List<TreeVO> getUnitListById(String id){
         //条件查询所有仓库
         this.logAllRequestParams();
-        String id = request.getParameter("id");
         //查询节点
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
@@ -226,6 +224,35 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
             result.add(treeVO);
         }
         return result;
+    }
+
+    /**
+     *
+     * @param id 仓库id
+     * @return 仓库下的子节点json
+     * {"result":[{"children":true,"deep":"1","id":"AUTO_WH001-1","state":{"opened":false},"text":"1号货架"},{"children":true,"deep":"1","id":"AUTO_WH001-2","state":{"opened":false},"text":"2号货架"}],"statusCode":"000","success":true}
+     * @throws Exception
+     */
+    @RequestMapping(value ={"getRmByUnitWS","getRmByUnit"})
+    @ResponseBody
+    public MessageBox getRmByUnit(String id) throws Exception {
+        MessageBox ms = new MessageBox();
+        try{
+            List<TreeChildVO> voList = this.getUnitList(id);
+            if(voList.size() > 0){
+                ms.setResult(voList);
+                ms.setSuccess(true);
+            }
+            else {
+                ms.setMsg("此仓库下没有库位！");
+            }
+        }catch (Exception e){
+            ms.setSuccess(false);
+            ms.setMsg("请求失败!");
+            e.printStackTrace();
+            return ms;
+        }
+        return ms;
     }
     @RequestMapping(value = "findbysku")
     @ResponseBody

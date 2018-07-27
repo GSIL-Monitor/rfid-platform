@@ -25,9 +25,13 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.tag.InitService;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -3901,4 +3905,66 @@ public class BillConvertUtil {
         bus.setTotPreVal(totRcvPrice);
         return bus;
     }
+    /*add by czf
+     *保存异常code信息的
+     */
+    public static List<AbnormalCodeMessage> fullAbnormalCodeMessage(List< ? extends Object> DtlList,Integer type,String code) throws Exception{
+       /* //获取AbnormalCodeMessage反射对象
+        Class<AbnormalCodeMessage> CodeClass = (Class<AbnormalCodeMessage>) Class.forName("com.casesoft.dmc.model.logistics.AbnormalCodeMessage");
+        Map<String,String> AbnormalCodeMessageMap=new HashMap<String,String>();//临时保存AbnormalCodeMessage的数据*/
+        List<AbnormalCodeMessage> list=new ArrayList<AbnormalCodeMessage>();
+        //判断泛型中noOutPutCode是否存在，是否有数据
+        if(CommonUtil.isNotBlank(DtlList)&&DtlList.size()>0){
+             for(Object t:DtlList){
+                 Class<?> aClass = t.getClass();
+                 Field[] fields = aClass.getDeclaredFields();
+                 for (Field field : fields) {
+                     field.setAccessible(true);
+                     System.out.println(field.getName());
+                      if(field.getName().equals("noOutPutCode")){
+                          Method m = (Method) aClass.getMethod("get"+getMethodName(field.getName()));
+                          String noOutPutCode = (String) m.invoke(t);// 调用getter方法获取属性值
+                          if(CommonUtil.isNotBlank(noOutPutCode)){
+                              String[] noOutPutCodes = noOutPutCode.split(",");
+                              for(int i=0;i<noOutPutCodes.length;i++){
+                                  AbnormalCodeMessage abnormalCodeMessage=new AbnormalCodeMessage();
+                                  abnormalCodeMessage.setCode(noOutPutCodes[i]);
+                                  Method mBillNo = (Method) aClass.getMethod("getBillNo");
+                                  abnormalCodeMessage.setBillNo((String) mBillNo.invoke(t));
+                                  Method mColorId = (Method) aClass.getMethod("getColorId");
+                                  abnormalCodeMessage.setColorId((String) mColorId.invoke(t));
+                                  Method mSku = (Method) aClass.getMethod("getSku");
+                                  abnormalCodeMessage.setSku((String) mSku.invoke(t));
+                                  Method mStyleId = (Method) aClass.getMethod("getStyleId");
+                                  abnormalCodeMessage.setStyleId((String) mStyleId.invoke(t));
+                                  Method mSizeId = (Method) aClass.getMethod("getSizeId");
+                                  abnormalCodeMessage.setSizeId((String) mSizeId.invoke(t));
+                                  abnormalCodeMessage.setId((String) mBillNo.invoke(t)+"_"+noOutPutCodes[i]);
+                                  if(code.indexOf(noOutPutCodes[i])!=-1){
+                                      abnormalCodeMessage.setStatus(0);
+                                  }else {
+                                      abnormalCodeMessage.setStatus(1);
+                                  }
+                                  abnormalCodeMessage.setType(type);
+                                  list.add(abnormalCodeMessage);
+                              }
+                          }
+
+                      }
+                 }
+             }
+        }
+
+
+        return list;
+    }
+    /*add by czf
+     *把一个字符串的第一个字母大写、效率是最高的
+     */
+
+       private static String getMethodName(String fildeName) throws Exception{
+          byte[] items = fildeName.getBytes();
+          items[0] = (byte) ((char) items[0] - 'a' + 'A');
+            return new String(items);
+       }
 }

@@ -226,6 +226,8 @@
                                 text: data.msg,
                                 class_name: 'gritter-success  gritter-light'
                             });
+                            var result=data.result;
+                            addProductsNoOutPutCode(result);
                         }
                         $('#uniqCode-editForm').clearForm();
                         progressDialog.modal('hide');

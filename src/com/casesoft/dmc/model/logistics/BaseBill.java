@@ -105,6 +105,16 @@ public abstract class BaseBill {
     @Column(length = 500)
     @Excel(name="备注")
     protected String remark;
+    @Transient
+    protected String noOutPutCode;//不能出库的唯一码
+
+    public String getNoOutPutCode() {
+        return noOutPutCode;
+    }
+
+    public void setNoOutPutCode(String noOutPutCode) {
+        this.noOutPutCode = noOutPutCode;
+    }
 
     public String getOwnerId() {
         return ownerId;
