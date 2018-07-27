@@ -148,12 +148,21 @@ public class WXProductApiController extends ApiBaseController {
             List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
             List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
             List<Product> productList = new ArrayList<>();
+            String remark ;
             for (ColorVo colorVo : colorVoList) {
                 for (SizeVo sizeVo : sizeVoList) {
                     Product product = new Product();
                     product.setCode(styleDTO.getStyleId() + colorVo.getId() + sizeVo.getId());
                     product.setColorId(colorVo.getId());
                     product.setSizeId(sizeVo.getId());
+                    // 给单个sku保存Remark
+                    if (styleDTO.getIsCoverSkuRemark()) {
+                        remark = styleDTO.getRemark();
+
+                    } else {
+                        remark = styleDTO.getRemarkOrigin();
+                    }
+                    product.setRemark(remark);
                     productList.add(product);
                 }
             }
@@ -178,7 +187,7 @@ public class WXProductApiController extends ApiBaseController {
     @RequestMapping("/getStyleByIdWS.do")
     @ResponseBody
     public MessageBox getStyleByIdWS(String styleId) throws Exception {
-        Style s = this.styleService.get("styleId",styleId);
+        Style s = this.styleService.get("styleId", styleId);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         String imgUrl = StyleUtil.returnImageUrl(styleId, rootPath);
         s.setUrl(imgUrl);
