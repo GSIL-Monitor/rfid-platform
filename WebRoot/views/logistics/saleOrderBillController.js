@@ -1059,6 +1059,18 @@ function loadingButton() {
             }
         }
     });
+    $.each(fieldList,function (index,value){
+        if(fieldList[index].ishow===0){
+            if( $("#"+value.buttonId).length>0){
+                $("#"+value.buttonId).show();
+            }
+        }else {
+            if( $("#"+value.buttonId).length>0){
+                $("#"+value.buttonId).hide();
+            }
+
+        }
+    });
 }
 var dialogOpenPage;
 var prefixId;
@@ -1325,7 +1337,12 @@ function addUniqCode() {
     taskType = 0;
     wareHouse = origId;
     billNo = $("#edit_billNo").val();
-    var ct = $("#edit_customerType").val();
+    var ct;
+    if($('#sale_discount_div').is(':hidden')){
+        ct = "CT-LS";
+    }else {
+        ct = $("#edit_customerType").val();
+    }
     if (ct && ct != null) {
         if (origId && origId != null) {
             $("#dialog_buttonGroup").html("" +
@@ -1404,12 +1421,16 @@ function addProductsOnCode() {
             var productInfo = $("#uniqueCodeGrid").getRowData(value);
             if(productInfo.code!=""&&productInfo.code!=undefined){
                 productInfo.qty = 1;
-                if (ct == "CT-AT") {//省代价格
-                    productInfo.price = productInfo.puPrice;
-                } else if (ct == "CT-ST") {//门店价格
-                    productInfo.price = productInfo.wsPrice;
-                } else if (ct == "CT-LS") {//吊牌价格
+                if($('#sale_discount_div').is(':hidden')){
                     productInfo.price = productInfo.price;
+                }else {
+                    if (ct == "CT-AT") {//省代价格
+                        productInfo.price = productInfo.puPrice;
+                    } else if (ct == "CT-ST") {//门店价格
+                        productInfo.price = productInfo.wsPrice;
+                    } else if (ct == "CT-LS") {//吊牌价格
+                        productInfo.price = productInfo.price;
+                    }
                 }
                 productInfo.outQty = 0;
                 productInfo.inQty = 0;

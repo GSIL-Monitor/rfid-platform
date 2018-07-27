@@ -29,6 +29,7 @@
         var Codes = "${Codes}";
         var groupid="${groupid}";
         var pageType = "${pageType}";
+        var fieldList = ${fieldList};
     </script>
 
 </head>
@@ -334,14 +335,16 @@
                                                                value="${saleOrderBill.afterBalance}" readonly>
                                                         </input>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_discount">整单折扣</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_discount"
-                                                               name="discount"
-                                                               value="${saleOrderBill.discount}"
-                                                               onblur="edit_discount_onblur()">
-                                                        </input>
+                                                    <div id="sale_discount_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_discount">整单折扣</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_discount"
+                                                                   name="discount"
+                                                                   value="${saleOrderBill.discount}"
+                                                                   onblur="edit_discount_onblur()">
+                                                            </input>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">

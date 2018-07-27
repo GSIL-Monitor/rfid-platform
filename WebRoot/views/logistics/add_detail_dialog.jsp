@@ -77,11 +77,11 @@
     var editcolosizeRow = null;
     var parent_dialog = $("#modal-addDetail-table");
     $(function () {
-
         $("#modal-addDetail-table").on('show.bs.modal', function () {
             initStyleGrid();
             initColorSizeGrid();
             searcheditStyle();
+
         });
 
     });
@@ -137,7 +137,7 @@
 
         });
         $("#stylegrid").jqGrid( 'setGridWidth', parent_dialog.width()*0.6/2);
-
+        $("#addDetailgrid").setGridParam().hideCol(result[i].buttonId);
 
     }
     function searcheditStyle(){

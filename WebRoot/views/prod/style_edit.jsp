@@ -109,7 +109,7 @@
 
                                             </div>
                                             <div class="form-group" id="form-group-preCast">
-                                                <div id="preCase_div">
+                                                <div id="style_preCase_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_preCast"><span class="text-danger">* </span>采购价</label>
 
@@ -122,7 +122,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div id="puPrice_div">
+                                                <div id="style_puPrice_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_puPrice"><span
                                                             class="text-danger">* </span>代理商价</label>
@@ -141,7 +141,7 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <div id="wsPrice_div">
+                                                <div id="style_wsPrice_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_wsPrice"><span class="text-danger">* </span>门店价</label>
 
@@ -155,7 +155,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div id="price_div">
+                                                <div id="style_price_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_price"><span class="text-danger">* </span>吊牌价</label>
 
@@ -168,7 +168,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div id="bargainPrice_div">
+                                                <div id="style_bargainPrice_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_bargainPrice"><span class="text-danger">* </span>特价</label>
                                                     <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -621,7 +621,8 @@
 
     $("#form_bargainPrice").blur(function(){
         var bargainPrice = $("#form_bargainPrice").val();
-        if (bargainPrice>$("#form_price").val()){
+        var price = $("#form_price").val();
+        if (parseInt(bargainPrice)>parseInt(price)){
             $.gritter.add({
                 text: "特价价格不能高于吊牌价",
                 class_name: 'gritter-success  gritter-light'
@@ -1737,11 +1738,13 @@
                 }
             }
         });
-        if($('#form_isSeries').is(':hidden')){
+        if($('#isSeries_div').is(':hidden')){
             $('#form_isSeries').val("N");
             var price = $("form_price").val();
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
+        }else {
+            $("#form_bargainPrice").val(0.0);
         }
     }
 </script>

@@ -443,12 +443,15 @@
             $("#edit_destUnitName").val(rowData.name);
             initSelectDestForm();
             $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
-            $("#edit_discount").val(rowData.discount);
             $("#edit_customerType").val(rowData.unitType);
-            if(rowData.discount) {
-                $("#edit_discount").val(rowData.discount);
-            }else{
+            if($('#sale_discount_div').is(':hidden')){
                 $("#edit_discount").val(100);
+            }else {
+                if(rowData.discount) {
+                    $("#edit_discount").val(rowData.discount);
+                }else{
+                    $("#edit_discount").val(100);
+                }
             }
             $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
             updateBillDetailData();

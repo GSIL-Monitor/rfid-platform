@@ -169,7 +169,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
 		String roleId = getCurrentUser().getRoleId();
-		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 		mv.addObject("pageType","add");
 		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("styleId", "");
@@ -185,7 +185,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
 		String roleId = getCurrentUser().getRoleId();
 		//查询当前用户对应字段
-		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
+		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 		Style s = CacheManager.getStyleById(styleId);
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
@@ -313,6 +313,6 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@ResponseBody
 	public List<ResourceButton> getResourceButtonList(String userId){
 		String roleId =this.userService.getUser(userId).getRoleId();
-		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
+		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 	}
 }

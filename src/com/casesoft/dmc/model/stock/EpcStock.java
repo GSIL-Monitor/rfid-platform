@@ -285,6 +285,17 @@ public class EpcStock implements Serializable {
 	private Double wsPrice;//门店批发价格
 
 	@Transient
+	private Double bargainPrice;//特價
+
+	public Double getBargainPrice() {
+		return bargainPrice;
+	}
+
+	public void setBargainPrice(Double bargainPrice) {
+		this.bargainPrice = bargainPrice;
+	}
+
+	@Transient
 	public String getStyleName() {
 		return styleName;
 	}

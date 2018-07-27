@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.BillConstant;
@@ -97,8 +98,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("defaultWarehId", defaultWarehId);
-
-
+        String roleId = getCurrentUser().getRoleId();
+        //查询当前用户对应字段
+        List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("logistics/saleOrder",roleId,"div");
+        mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");

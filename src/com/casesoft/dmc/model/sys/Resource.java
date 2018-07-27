@@ -81,8 +81,17 @@ public class Resource implements java.io.Serializable {
   private String clientName;//小程序名
   private List<Resource> children;
   private String ename;//英文名
-  private List<ResourceButton> resourceButtonList;
-  private List<ResourceButton> resourcetableList;
+  private List<ResourceButton> resourceButtonList;//buttonList权限
+  private List<ResourceButton> resourcetableList;//tableList权限
+  private List<ResourceButton> resourceDivList;//divList权限
+  @Transient
+  public List<ResourceButton> getResourceDivList() {
+    return resourceDivList;
+  }
+
+  public void setResourceDivList(List<ResourceButton> resourceDivList) {
+    this.resourceDivList = resourceDivList;
+  }
 
   public static long getSerialVersionUID() {
     return serialVersionUID;

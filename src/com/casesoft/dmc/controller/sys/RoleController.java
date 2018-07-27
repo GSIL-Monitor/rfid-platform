@@ -102,6 +102,18 @@ public class RoleController extends BaseController implements IBaseInfoControlle
                                 resource.setResourcetableList(resourcetableList);
                             }
                         }
+                    }else if(resourceButton.getType().equals("div")){
+                        if (resource.getCode().equals(resourceButton.getCode())) {
+                            if (CommonUtil.isNotBlank(resource.getResourceDivList()) && resource.getResourceDivList().size() != 0) {
+                                List<ResourceButton> resourceDivList = resource.getResourceDivList();
+                                resourceDivList.add(resourceButton);
+                                resource.setResourceDivList(resourceDivList);
+                            } else {
+                                List<ResourceButton> resourceDivList = new ArrayList<ResourceButton>();
+                                resourceDivList.add(resourceButton);
+                                resource.setResourceDivList(resourceDivList);
+                            }
+                        }
                     }
                 }
             }
@@ -403,9 +415,32 @@ public class RoleController extends BaseController implements IBaseInfoControlle
             e.printStackTrace();
             return this.returnFailInfo("保存失败");
         }
-
-
     }
+
+    @RequestMapping(value = "/saveResourceDiv")
+    @ResponseBody
+    public MessageBox saveResourceDiv(String roleStr){
+        try {
+            ResourceButton resourceButton = JSON.parseObject(roleStr,ResourceButton.class);
+            List<Role> allRoles = this.roleService.getAllRoles();
+            ArrayList<ResourceButton> saveLists=new ArrayList<>();
+            for(Role role:allRoles){
+                ResourceButton saveresourceButton=new ResourceButton();
+                BeanUtils.copyProperties(resourceButton,saveresourceButton);
+                saveresourceButton.setId(resourceButton.getCode()+"-"+resourceButton.getButtonId()+"-"+role.getId()+"-div");
+                saveresourceButton.setIshow(1);
+                saveresourceButton.setRoleId(role.getId());
+                saveresourceButton.setType("div");
+                saveLists.add(saveresourceButton);
+            }
+            this.resourceButtonService.saveAll(saveLists);
+            return this.returnSuccessInfo("保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.returnFailInfo("保存失败");
+        }
+    }
+
     @RequestMapping(value = "/saveResourceTable")
     @ResponseBody
     public MessageBox saveResourceTable(String roleStr){
