@@ -90,13 +90,26 @@ function initTree(id) {
             'animation': 0,
             'check_callback': true,
             'data': {
-                'url': basePath + "/sys/repositoryController/unitListById.do",
+                'url': basePath + "/sys/repositoryController/getRmByUnit.do",
                 "data": function (node) {
-                    return {
-                        "id": cageId
+                    if(node.id == "#"){//第一次加载
+                        return {
+                            "id": cageId
+                        }
                     }
+                    else{
+                        return {
+                            "id": node.id
+                        }
+                    }
+
                 },
                 success: function (res) {
+                },
+                'dataFilter':function (data, type) {
+                    // 对Ajax返回的原始数据进行预处理
+                    var json = JSON.parse(data)
+                    return JSON.stringify(json.result);// 返回处理后的数据
                 }
             }
         },
