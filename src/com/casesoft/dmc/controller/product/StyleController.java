@@ -12,6 +12,7 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Term;
 import com.casesoft.dmc.model.sys.ResourceButton;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.service.cfg.PropertyService;
@@ -19,6 +20,7 @@ import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
+import com.casesoft.dmc.service.sys.impl.UserService;
 import com.casesoft.dmc.service.tag.InitService;
 import net.sf.jasperreports.repo.Resource;
 import net.sf.json.JSONArray;
@@ -57,6 +59,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private PropertyService propertyService;
 	@Autowired
 	private ResourceButtonService resourceButtonService;
+	@Autowired
+	private UserService userService;
 	@RequestMapping("/page")
 	@ResponseBody
 	@Override
@@ -307,9 +311,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	* */
 	@RequestMapping(value = {"/getResourceButtonList","/getResourceButtonListWS"})
 	@ResponseBody
-	public List<ResourceButton> getResourceButtonList(){
-		String roleId = getCurrentUser().getRoleId();
+	public List<ResourceButton> getResourceButtonList(String userId){
+		String roleId =this.userService.getUser(userId).getRoleId();
 		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
 	}
-
 }
