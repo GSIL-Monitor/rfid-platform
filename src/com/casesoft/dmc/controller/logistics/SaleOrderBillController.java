@@ -13,10 +13,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.BillRecord;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
-import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.product.Style;
@@ -211,7 +208,9 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         this.logAllRequestParams();
         List<SaleOrderBillDtl> saleOrderBillDtls = this.saleOrderBillService.findBillDtlByBillNo(billNo);
         List<BillRecord> billRecordList = this.saleOrderBillService.getBillRecod(billNo);
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderBillService.findAbnormalCodeMessageByBillNo(billNo);
         Map<String, String> codeMap = new HashMap<>();
+        Map<String, String> abnormalCodeMap = new HashMap<>();
         for (BillRecord r : billRecordList) {
             if (codeMap.containsKey(r.getSku())) {
                 String code = codeMap.get(r.getSku());
@@ -219,6 +218,15 @@ public class SaleOrderBillController extends BaseController implements ILogistic
                 codeMap.put(r.getSku(), code);
             } else {
                 codeMap.put(r.getSku(), r.getCode());
+            }
+        }
+        for (AbnormalCodeMessage a : abnormalCodeMessageByBillNo) {
+            if (abnormalCodeMap.containsKey(a.getSku())) {
+                String code = abnormalCodeMap.get(a.getSku());
+                code += "," + a.getCode();
+                abnormalCodeMap.put(a.getSku(), code);
+            } else {
+                abnormalCodeMap.put(a.getSku(), a.getCode());
             }
         }
         for (int i = 0; i < saleOrderBillDtls.size(); i++) {
@@ -235,6 +243,9 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             dtl.setStylePriceMap(JSON.toJSONString(stylePriceMap));
             if (codeMap.containsKey(dtl.getSku())) {
                 dtl.setUniqueCodes(codeMap.get(dtl.getSku()));
+            }
+            if (abnormalCodeMap.containsKey(dtl.getSku())) {
+                dtl.setNoOutPutCode(abnormalCodeMap.get(dtl.getSku()));
             }
         }
         return saleOrderBillDtls;
@@ -265,7 +276,19 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             }
             saleOrderBill.setId(saleOrderBill.getBillNo());
             BillConvertUtil.covertToSaleOrderBill(saleOrderBill, saleOrderBillDtlList, curUser);
-            this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
+            //判断是否有异常唯一码
+            //拼接code字符串
+            String code="";
+            for(SaleOrderBillDtl saleOrderBillDtl: saleOrderBillDtlList){
+                if(CommonUtil.isBlank(code)){
+                    code+=saleOrderBillDtl.getUniqueCodes();
+                }else{
+                    code+=","+saleOrderBillDtl.getUniqueCodes();
+                }
+            }
+            List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderBillDtlList,0,code);
+            this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,list);
+
             return new MessageBox(true, "保存成功", saleOrderBill);
         } catch (Exception e) {
             e.printStackTrace();

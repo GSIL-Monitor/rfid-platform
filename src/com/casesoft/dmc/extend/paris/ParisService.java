@@ -457,7 +457,7 @@ public class ParisService implements IBillWSService {
                         List<SaleOrderBillDtl> dtlListSO = this.saleOrderBillService.findBillDtlByBillNo(bus.getBillNo());
                         List<SaleOrderBillDtl> saleOrderBillDtlList = this.copyNewSOBillDtl(dtlListSO);
                         BillConvertUtil.covertToSaleOrderBusiness(saleOrderBill, saleOrderBillDtlList, bus);
-                        this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
+                        this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,null);
                         break;
                     case Constant.Token.Storage_Inbound_customer:
                         SaleOrderBill saleOrderInBill = this.saleOrderBillService.load(bus.getBillNo());
