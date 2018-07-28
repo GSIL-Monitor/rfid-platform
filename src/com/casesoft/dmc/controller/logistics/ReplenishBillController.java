@@ -202,9 +202,13 @@ public class ReplenishBillController extends BaseController implements ILogistic
     @Override
     public MessageBox cancel(String billNo) throws Exception {
         ReplenishBill replenishBill = this.replenishBillService.get("billNo", billNo);
-        replenishBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.replenishBillService.cancelUpdate(replenishBill);
-        return new MessageBox(true, "撤销成功");
+        if(replenishBill.getStatus().equals((BillConstant.BillStatus.Enter))){
+            replenishBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.replenishBillService.cancelUpdate(replenishBill);
+            return new MessageBox(true, "撤销成功");
+        }else{
+            return returnFailInfo("不是录入状态，无法取消");
+        }
     }
 
     @Override
