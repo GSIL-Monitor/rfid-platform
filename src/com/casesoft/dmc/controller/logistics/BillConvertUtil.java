@@ -3920,7 +3920,7 @@ public class BillConvertUtil {
                  Field[] fields = aClass.getDeclaredFields();
                  for (Field field : fields) {
                      field.setAccessible(true);
-                     System.out.println(field.getName());
+                   /*  System.out.println(field.getName());*/
                       if(field.getName().equals("noOutPutCode")){
                           Method m = (Method) aClass.getMethod("get"+getMethodName(field.getName()));
                           String noOutPutCode = (String) m.invoke(t);// 调用getter方法获取属性值
