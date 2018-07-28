@@ -351,9 +351,13 @@ public class    PurchaseOrderBillController extends BaseController implements IL
     @Override
     public MessageBox cancel(String billNo) throws Exception {
         PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo", billNo);
-        purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.purchaseOrderBillService.cancel(purchaseOrderBill);
-        return new MessageBox(true, "撤销成功");
+        if(purchaseOrderBill.getStatus().equals(BillConstant.BillStatus.Enter)) {
+            purchaseOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.purchaseOrderBillService.cancel(purchaseOrderBill);
+            return new MessageBox(true, "撤销成功");
+        }else{
+            return returnFailInfo("不是录入状态，无法取消");
+        }
     }
 
     @RequestMapping(value = "/apply")
