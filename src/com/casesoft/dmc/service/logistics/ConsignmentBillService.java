@@ -254,7 +254,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
                 saleOrderReturnBillm.setSrcBillNo(consignmentBill.getBillNo());
 
                 BillConvertUtil.saveReturnConsignmentBill(consignmentBill, listm, saleOrderReturnBillDtlsm, saleOrderReturnBillm, prefixm, "m", codem);
-                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillm, saleOrderReturnBillDtlsm);
+                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillm, saleOrderReturnBillDtlsm,null);
             }
             //货物退货
             if(listq.size()>0) {
@@ -272,7 +272,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
                 }
                 saleOrderReturnBillq.setSrcBillNo(consignmentBill.getBillNo());
                 BillConvertUtil.saveReturnConsignmentBill(consignmentBill, listq, saleOrderReturnBillDtlsq, saleOrderReturnBillq, prefixq, "q", codeq);
-                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillq, saleOrderReturnBillDtlsq);
+                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillq, saleOrderReturnBillDtlsq,null);
                 Business business = BillConvertUtil.covertToConsignmentBillBusinessOut(consignmentBill, listq, epcList, curUser);
                 saveBusinessout(consignmentBill,listq,business);
             }
@@ -329,7 +329,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
                 saleOrderReturnBillm.setSrcBillNo(consignmentBill.getBillNo());
 
                 BillConvertUtil.saveReturnConsignmentBill(consignmentBill, listm, saleOrderReturnBillDtlsm, saleOrderReturnBillm, prefixm, "m", codem);
-                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillm, saleOrderReturnBillDtlsm);
+                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillm, saleOrderReturnBillDtlsm,null);
                 //把//准备销售数量（记录每次退款的销售数量）变成0
                 for(ConsignmentBillDtl consignmentBillDtl:listm){
                     consignmentBillDtl.setReadysale(0);
@@ -354,7 +354,7 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
                 }
                 saleOrderReturnBillq.setSrcBillNo(consignmentBill.getBillNo());
                 BillConvertUtil.saveReturnConsignmentBill(consignmentBill, listq, saleOrderReturnBillDtlsq, saleOrderReturnBillq, prefixq, "q", codeq);
-                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillq, saleOrderReturnBillDtlsq);
+                this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBillq, saleOrderReturnBillDtlsq,null);
                 Business business = BillConvertUtil.covertToConsignmentBillBusinessOut(consignmentBill, listq, epcList, curUser);
                 //把记录之前退货件数
                 for(ConsignmentBillDtl consignmentBillDtl:listq){

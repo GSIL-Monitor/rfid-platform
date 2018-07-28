@@ -7,10 +7,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.dao.logistics.ConsignmentBillDao;
-import com.casesoft.dmc.dao.logistics.ConsignmentBillDtlDao;
-import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
-import com.casesoft.dmc.dao.logistics.SaleOrderReturnBillDao;
+import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
@@ -39,6 +36,8 @@ import java.util.*;
 public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill, String> {
     @Autowired
     private SaleOrderReturnBillDao saleOrderReturnBillDao;
+    @Autowired
+    private AbnormalCodeMessageDao abnormalCodeMessageDao;
 
     @Autowired
     private TaskService taskService;
@@ -85,7 +84,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
      * @param bill
      * @param details
      */
-    public void saveReturnBatch(SaleOrderReturnBill bill, List<SaleOrderReturnBillDtl> details) {
+    public void saveReturnBatch(SaleOrderReturnBill bill, List<SaleOrderReturnBillDtl> details, List<AbnormalCodeMessage> list) {
         this.saleOrderReturnBillDao.batchExecute("delete from SaleOrderReturnBillDtl sd where sd.billNo=?", bill.getBillNo());
         this.saleOrderReturnBillDao.batchExecute("delete from BillRecord where billNo=?", bill.getBillNo());
         String curYearMonth = CommonUtil.getDateString(new Date(), "yyyy-MM");
@@ -134,6 +133,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.saleOrderReturnBillDao.doBatchInsert(details);
         if (CommonUtil.isNotBlank(bill.getBillRecordList())) {
             this.saleOrderReturnBillDao.doBatchInsert(bill.getBillRecordList());
+        }
+        if(CommonUtil.isNotBlank(list)&&list.size()>0){
+            this.saleOrderReturnBillDao.doBatchInsert(list);
         }
     }
 
@@ -440,5 +442,8 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
 
     public List<String> codeList (String billNo){
         return this.saleOrderReturnBillDao.find("select code from BillRecord where billNo=? ", new Object[]{billNo});
+    }
+    public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo){
+        return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?",new Object[]{billNo});
     }
 }

@@ -285,7 +285,10 @@ public class WarehStockController extends BaseController {
                 return new MessageBox(true, "", epcStock);
             } else {
                 if (Constant.TaskType.Outbound == type) {
-                    return new MessageBox(false, "唯一码:" + code + "不能出库");
+                    //查询这个不在库唯一码的epcStock
+                    EpcStock epcAllowInCode = this.epcStockService.findEpcAllowInCode(code);
+                    StockUtil.convertEpcStock(epcAllowInCode);
+                    return new MessageBox(false, "唯一码:" + code + "不能出库",epcAllowInCode);
                 } else {
                     return new MessageBox(false, "唯一码:" + code + "不能入库");
                 }
