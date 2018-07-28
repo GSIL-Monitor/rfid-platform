@@ -1733,11 +1733,18 @@ function addProductsNoOutPutCode(productInfo) {
                     });
                     return true;
                 }
-                dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                if(dtlRow.noOutPutCode.indexOf(value.code) != -1){
+                    isAdd = false;
+                    return;
+                }else{
+                    dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                    dtlRow.noOutPutCode = dtlRow.noOutPutCode + "," + value.code;
+                }
+
                 dtlRow.totPrice = dtlRow.qty * dtlRow.price;
                 dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
                 alltotActPrice += dtlRow.qty * dtlRow.actPrice;
-                dtlRow.noOutPutCode = dtlRow.noOutPutCode + "," + value.code;
+
                 if (dtlRow.id) {
                     $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
                 } else {

@@ -456,7 +456,18 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
         //saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
         Business business = BillConvertUtil.covertToSaleOrderBusinessOut(saleOrderBill, saleOrderBillDtlList, epcList, currentUser);
-        MessageBox messageBox = this.saleOrderBillService.saveBusinessout(saleOrderBill, saleOrderBillDtlList, business, epcList);
+        //判断是否有异常唯一码
+        //拼接code字符串
+        String code="";
+        for(SaleOrderBillDtl saleOrderBillDtl: saleOrderBillDtlList){
+            if(CommonUtil.isBlank(code)){
+                code+=saleOrderBillDtl.getUniqueCodes();
+            }else{
+                code+=","+saleOrderBillDtl.getUniqueCodes();
+            }
+        }
+        List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderBillDtlList,0,code);
+        MessageBox messageBox = this.saleOrderBillService.saveBusinessout(saleOrderBill, saleOrderBillDtlList, business, epcList,list);
         if(messageBox.getSuccess()){
             String actPrice = saleOrderBill.getActPrice().toString();
             String totQty = saleOrderBill.getTotQty().toString();

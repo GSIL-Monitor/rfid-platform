@@ -471,7 +471,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     }
 
-    public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) throws Exception {
+    public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList,List<AbnormalCodeMessage> list) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
             if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
@@ -525,6 +525,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
                     }
                 }
+            }
+            if(CommonUtil.isNotBlank(list)&&list.size()>0){
+                this.saleOrderBillDao.doBatchInsert(list);
             }
             return  messageBox;
         }else{
