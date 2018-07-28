@@ -61,6 +61,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ResourceButtonService resourceButtonService;
 	@Autowired
 	private UserService userService;
+
 	@RequestMapping("/page")
 	@ResponseBody
 	@Override
@@ -314,5 +315,6 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public List<ResourceButton> getResourceButtonList(String userId){
 		String roleId =this.userService.getUser(userId).getRoleId();
 		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
+
 	}
 }
