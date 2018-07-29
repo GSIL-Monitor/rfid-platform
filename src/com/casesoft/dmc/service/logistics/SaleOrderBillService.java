@@ -9,6 +9,7 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.dao.logistics.AbnormalCodeMessageDao;
 import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
 import com.casesoft.dmc.dao.logistics.SaleOrderBillDao;
 import com.casesoft.dmc.dao.logistics.SaleOrderReturnBillDao;
@@ -46,6 +47,8 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     @Autowired
     private SaleOrderBillDao saleOrderBillDao;
+    @Autowired
+    private AbnormalCodeMessageDao  abnormalCodeMessageDao;
     @Autowired
     private SaleOrderReturnBillDao saleOrderReturnBillDao;
 
@@ -139,7 +142,10 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         return code == null ? (prefix + "001") : prefix + CommonUtil.convertIntToString(code + 1, 3);
     }
 
-    public void save(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList) {
+    /*
+     *list:单据保存是不能出库异常的唯一码
+     */
+    public void save(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList,List<AbnormalCodeMessage> list) {
         this.saleOrderBillDao.batchExecute("delete from SaleOrderBillDtl where billNo=?", saleOrderBill.getBillNo());
         this.saleOrderBillDao.batchExecute("delete from BillRecord where billNo=?", saleOrderBill.getBillNo());
         //客户月结表数据Id
@@ -193,6 +199,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
             this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
         }
+        if(CommonUtil.isNotBlank(list)&&list.size()>0){
+            this.saleOrderBillDao.doBatchInsert(list);
+        }
     }
 
     /**
@@ -234,9 +243,19 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
      * @param saleOrderBill
      * @param saleOrderBillDtlList
      */
-    public void saveweChat(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) {
-
-        this.save(saleOrderBill, saleOrderBillDtlList);
+    public void saveweChat(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) throws Exception{
+        //判断是否有异常唯一码
+        //拼接code字符串
+        String code="";
+        for(SaleOrderBillDtl saleOrderBillDtl: saleOrderBillDtlList){
+            if(CommonUtil.isBlank(code)){
+                code+=saleOrderBillDtl.getUniqueCodes();
+            }else{
+                code+=","+saleOrderBillDtl.getUniqueCodes();
+            }
+        }
+        List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderBillDtlList,0,code);
+        this.save(saleOrderBill, saleOrderBillDtlList,list);
 
         //出库
         List<Style> styleList = new ArrayList<>();
@@ -452,7 +471,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     }
 
-    public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) throws Exception {
+    public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList,List<AbnormalCodeMessage> list) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
             if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
@@ -506,6 +525,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
                     }
                 }
+            }
+            if(CommonUtil.isNotBlank(list)&&list.size()>0){
+                this.saleOrderBillDao.doBatchInsert(list);
             }
             return  messageBox;
         }else{
@@ -619,6 +641,10 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     public Integer findBillStatus(String billNo) {
        return this.saleOrderBillDao.findUnique("select status from SaleOrderBill where id=?",billNo);
+    }
+
+    public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo){
+        return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?",new Object[]{billNo});
     }
 }
 

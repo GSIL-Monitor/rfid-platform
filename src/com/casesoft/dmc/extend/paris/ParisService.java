@@ -487,7 +487,7 @@ public class ParisService implements IBillWSService {
                         List<SaleOrderBillDtl> dtlListSO = this.saleOrderBillService.findBillDtlByBillNo(bus.getBillNo());
                         List<SaleOrderBillDtl> saleOrderBillDtlList = this.copyNewSOBillDtl(dtlListSO);
                         BillConvertUtil.covertToSaleOrderBusiness(saleOrderBill, saleOrderBillDtlList, bus);
-                        this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList);
+                        this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,null);
                         break;
                     case Constant.Token.Storage_Inbound_customer:
                         SaleOrderBill saleOrderInBill = this.saleOrderBillService.load(bus.getBillNo());
@@ -526,14 +526,14 @@ public class ParisService implements IBillWSService {
                         List<SaleOrderReturnBillDtl> dtlListSRO = this.saleOrderReturnBillService.findDetailsByBillNo(bus.getBillNo());
                         List<SaleOrderReturnBillDtl> saleOrderReturnOutBillDtl = this.copyNewSRBillDtl(dtlListSRO);
                         BillConvertUtil.convertToSaleOrderReturnBusinessOut(saleOrderReturnBill, saleOrderReturnOutBillDtl, bus);
-                        this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill, saleOrderReturnOutBillDtl);
+                        this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill, saleOrderReturnOutBillDtl,null);
                         break;
                     case Constant.Token.Storage_Refund_Inbound://销售退货入库
                         SaleOrderReturnBill saleOrderReturnBill1 = this.saleOrderReturnBillService.load(bus.getBillNo());
                         List<SaleOrderReturnBillDtl> dtlListSRI = this.saleOrderReturnBillService.findDtlByBillNo(bus.getBillNo());
                         List<SaleOrderReturnBillDtl> saleOrderReturnInBillDtl = this.copyNewSRBillDtl(dtlListSRI);
                         BillConvertUtil.convertSaleOrderReturnBusinessIn(saleOrderReturnBill1, saleOrderReturnInBillDtl, bus);
-                        this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill1, saleOrderReturnInBillDtl);
+                        this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill1, saleOrderReturnInBillDtl,null);
                         warehouseId=saleOrderReturnBill1.getDestId();
                         OwnerId=saleOrderReturnBill1.getDestUnitId();
                         break;

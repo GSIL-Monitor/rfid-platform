@@ -280,9 +280,14 @@ public class TransferOrderBillController extends BaseController implements ILogi
     @Override
     public MessageBox cancel(String billNo) throws Exception {
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
-        transferOrderBill.setStatus(BillConstant.BillStatus.Cancel);
-        this.transferOrderBillService.update(transferOrderBill);
-        return new MessageBox(true, "撤销成功");
+        if(transferOrderBill.getStatus().equals(BillConstant.BillStatus.Enter)){
+            transferOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.transferOrderBillService.update(transferOrderBill);
+            return new MessageBox(true, "撤销成功");
+        }else{
+            return returnFailInfo("不是录入状态，无法取消");
+        }
+
     }
 
     @Override

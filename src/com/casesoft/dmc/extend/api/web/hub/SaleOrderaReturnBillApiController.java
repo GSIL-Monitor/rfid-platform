@@ -101,7 +101,7 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 		try {
 			User user = CacheManager.getUserById(userId);
 			BillConvertUtil.convertToSaleOrderReturnBill(saleOrderReturnBill, saleOrderReturnBillDtls, user);
-			this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls);
+			this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls,null);
 			return returnSuccessInfo("保存成功",saleOrderReturnBill.getBillNo());
 		}catch (Exception e){
 			e.printStackTrace();

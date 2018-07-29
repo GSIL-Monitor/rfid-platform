@@ -29,6 +29,17 @@ public class SaleOrderReturnBillDtl extends BaseBillDtl{
 	@Transient
 	private Double tagPrice;
 
+	@Transient
+	private String noOutPutCode;//不能出库的唯一码
+
+	public String getNoOutPutCode() {
+		return noOutPutCode;
+	}
+
+	public void setNoOutPutCode(String noOutPutCode) {
+		this.noOutPutCode = noOutPutCode;
+	}
+
 	public Double getTagPrice() {
 		return tagPrice;
 	}

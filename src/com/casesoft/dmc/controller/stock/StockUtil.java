@@ -86,12 +86,17 @@ public class StockUtil {
 		Style style = CacheManager.getStyleById(epcStock.getStyleId());
 		Color color = CacheManager.getColorById(epcStock.getColorId());
 		Size size = CacheManager.getSizeById(epcStock.getSizeId());
-		epcStock.setPrice(style.getPrice());
 		epcStock.setWsPrice(style.getWsPrice());
 		epcStock.setPuPrice(style.getPuPrice());
 		epcStock.setPreCast(style.getPreCast());
 		epcStock.setColorName(color.getColorName());
 		epcStock.setSizeName(size.getSizeName());
+		epcStock.setBargainPrice(style.getBargainPrice());
+		if (style.getBargainPrice()!=0){
+			epcStock.setPrice(epcStock.getBargainPrice());
+		}else {
+			epcStock.setPrice(style.getPrice());
+		}
 	}
 
 	// ///

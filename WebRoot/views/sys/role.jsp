@@ -69,7 +69,11 @@
                                         </button>
                                         <button type="button" class="btn btn-primary" onclick="addTable()">
                                             <i class="ace-icon fa fa-edit"></i>
-                                            <span class="bigger-110">表格按钮</span>
+                                            <span class="bigger-110">表格字段</span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="addDiv()">
+                                            <i class="ace-icon fa fa-edit"></i>
+                                            <span class="bigger-110">表单字段</span>
                                         </button>
                                     </div>
                                 </div>
@@ -169,6 +173,7 @@
     <jsp:include page="roleButton_add.jsp"></jsp:include>
     <jsp:include page="roleTable_add.jsp"></jsp:include>
     <jsp:include page="rolePower_edit.jsp"></jsp:include>
+    <jsp:include page="roleDiv_add.jsp"></jsp:include>
 
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>

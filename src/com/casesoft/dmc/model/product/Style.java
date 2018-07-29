@@ -39,6 +39,20 @@ public class Style extends BaseStyle implements java.io.Serializable {
     @Column()
     private String isSeries;
 
+    @Transient
+    private Boolean isCoverSkuRemark; //是否覆盖色码的成份
+
+    @Transient
+    private String remarkOrigin; // 原成份
+
+    public String getRemarkOrigin() {return remarkOrigin;}
+
+    public void setRemarkOrigin(String remarkOrigin) {this.remarkOrigin = remarkOrigin;}
+
+    public Boolean getIsCoverSkuRemark() { return isCoverSkuRemark; }
+
+    public void setIsCoverSkuRemark(Boolean isCoverSkuRemark) { this.isCoverSkuRemark = isCoverSkuRemark; }
+
     public String getIsSeries() {
         return isSeries;
     }

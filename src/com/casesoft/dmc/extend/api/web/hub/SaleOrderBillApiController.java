@@ -7,10 +7,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.BillRecord;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
-import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import io.swagger.annotations.Api;
@@ -61,7 +58,7 @@ public class SaleOrderBillApiController extends ApiBaseController{
             saleOrderBill.setId(saleOrderBill.getBillNo());
             User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToSaleOrderBill(saleOrderBill,saleOrderBillDtlList,curUser);
-            this.saleOrderBillService.save(saleOrderBill,saleOrderBillDtlList);
+            this.saleOrderBillService.save(saleOrderBill,saleOrderBillDtlList,null);
             return new MessageBox(true,"保存成功",saleOrderBill.getBillNo());
 
         }catch (Exception e){

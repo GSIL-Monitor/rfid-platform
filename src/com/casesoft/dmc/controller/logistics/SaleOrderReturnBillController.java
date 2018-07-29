@@ -13,10 +13,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.BillRecord;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
@@ -330,7 +327,9 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         this.logAllRequestParams();
         List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls = this.saleOrderReturnBillService.findDtlByBillNo(billNo);
         List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecod(billNo);
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderReturnBillService.findAbnormalCodeMessageByBillNo(billNo);
         Map<String,String> codeMap = new HashMap<>();
+        Map<String, String> abnormalCodeMap = new HashMap<>();
         for(BillRecord r : billRecordList){
             if(codeMap.containsKey(r.getSku())){
                 String code = codeMap.get(r.getSku());
@@ -338,6 +337,15 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
                 codeMap.put(r.getSku(),code);
             }else{
                 codeMap.put(r.getSku(),r.getCode());
+            }
+        }
+        for (AbnormalCodeMessage a : abnormalCodeMessageByBillNo) {
+            if (abnormalCodeMap.containsKey(a.getSku())) {
+                String code = abnormalCodeMap.get(a.getSku());
+                code += "," + a.getCode();
+                abnormalCodeMap.put(a.getSku(), code);
+            } else {
+                abnormalCodeMap.put(a.getSku(), a.getCode());
             }
         }
         for (SaleOrderReturnBillDtl s : saleOrderReturnBillDtls) {
@@ -360,6 +368,9 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             stylePriceMap.put("puPrice",style.getPuPrice());
             s.setStylePriceMap(JSON.toJSONString(stylePriceMap));
             s.setTagPrice(CacheManager.getStyleById(s.getStyleId()).getPrice());
+            if (abnormalCodeMap.containsKey(s.getSku())) {
+                s.setNoOutPutCode(abnormalCodeMap.get(s.getSku()));
+            }
         }
         return saleOrderReturnBillDtls;
     }
@@ -389,8 +400,18 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             User currentUser = CacheManager.getUserById(userId);
             saleOrderReturnBill.setId(saleOrderReturnBill.getBillNo());
             // set&get BillRecordList
+            //拼接code字符串
+            String code="";
+            for(SaleOrderReturnBillDtl saleOrderReturnBillDtl: saleOrderReturnBillDtls){
+                if(CommonUtil.isBlank(code)){
+                    code+=saleOrderReturnBillDtl.getUniqueCodes();
+                }else{
+                    code+=","+saleOrderReturnBillDtl.getUniqueCodes();
+                }
+            }
             BillConvertUtil.convertToSaleOrderReturnBill(saleOrderReturnBill, saleOrderReturnBillDtls, currentUser);
-            this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill, saleOrderReturnBillDtls);
+            List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderReturnBillDtls,0,code);
+            this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill, saleOrderReturnBillDtls,list);
             return returnSuccessInfo("保存成功", saleOrderReturnBill.getBillNo());
         } catch (Exception e) {
             e.printStackTrace();

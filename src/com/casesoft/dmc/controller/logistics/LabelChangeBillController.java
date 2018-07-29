@@ -152,9 +152,13 @@ public class LabelChangeBillController extends BaseController implements ILogist
     public MessageBox cancel(String billNo) throws Exception {
         try {
             LabelChangeBill labelChangeBill = this.labelChangeBillService.get("billNo", billNo);
-            Init init = this.initService.get("remark", billNo);
-            this.labelChangeBillService.cancel(labelChangeBill,init);
-            return new MessageBox(true, "撤销成功");
+            if(labelChangeBill.getStatus().equals(BillConstant.BillStatus.Enter)) {
+                Init init = this.initService.get("remark", billNo);
+                this.labelChangeBillService.cancel(labelChangeBill, init);
+                return new MessageBox(true, "撤销成功");
+            }else{
+                return returnFailInfo("不是录入状态，无法取消");
+            }
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(false, e.getMessage());

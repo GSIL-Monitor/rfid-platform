@@ -45,6 +45,8 @@ public class SaleOrderBillDtl extends BaseBillDtl {
 
     @Transient
     private Double tagPrice;//吊牌价格
+    @Transient
+    private String noOutPutCode;//不能出库的唯一码
 
     public SaleOrderBillDtl() {
     }
@@ -195,5 +197,13 @@ public class SaleOrderBillDtl extends BaseBillDtl {
 
     public void setTagPrice(Double tagPrice) {
         this.tagPrice = tagPrice;
+    }
+
+    public String getNoOutPutCode() {
+        return noOutPutCode;
+    }
+
+    public void setNoOutPutCode(String noOutPutCode) {
+        this.noOutPutCode = noOutPutCode;
     }
 }
