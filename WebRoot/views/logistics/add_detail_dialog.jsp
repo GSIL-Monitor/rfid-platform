@@ -137,7 +137,6 @@
 
         });
         $("#stylegrid").jqGrid( 'setGridWidth', parent_dialog.width()*0.6/2);
-        $("#addDetailgrid").setGridParam().hideCol(result[i].buttonId);
 
     }
     function searcheditStyle(){
