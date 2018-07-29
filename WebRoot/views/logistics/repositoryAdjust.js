@@ -878,6 +878,10 @@ function initButtonGroup(type){
     $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
     $("#SODtl_cancel").attr({"disabled": "disabled"});
     $("#addDetail").show();
+    //入库选择点击事件
+    $("#destId").click(function () {
+        $("#tree").css("display","block");
+    });
     loadingButton();
 
 }

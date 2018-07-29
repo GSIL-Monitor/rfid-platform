@@ -16,15 +16,21 @@ import com.casesoft.dmc.model.erp.ErpStock;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.rem.RepositoryManagementBill;
+import com.casesoft.dmc.model.rem.RepositoryManagementBillDtl;
+import com.casesoft.dmc.model.rem.UniqueCodeBill;
 import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.model.shop.SaleBill;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.*;
+import com.casesoft.dmc.service.rem.RepositoryManagementBillService;
+import com.casesoft.dmc.service.rem.UniqueCodeBillService;
 import com.casesoft.dmc.service.search.DetailStockViewService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.syn.IBillWSService;
@@ -40,6 +46,10 @@ import java.util.*;
 @Transactional
 public class ParisService implements IBillWSService {
     private TaskDao taskDao;
+    @Autowired
+    private UniqueCodeBillService uniqueCodeBillService;
+    @Autowired
+    private RepositoryManagementBillService repositoryManagementBillService;
     @Autowired
     private PurchaseOrderBillService purchaseOrderBillService;
     @Autowired
@@ -89,6 +99,7 @@ public class ParisService implements IBillWSService {
         String storageId = "";
         String billId = values[6];
         String unitId = values[7];//所属方id(发货方或者收货方unitId)
+        String rmId = values[8];
         List<Bill> billList = new ArrayList<Bill>();
         List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
         if (CommonUtil.isBlank(CacheManager.getDeviceByCode(deviceId))) {
@@ -270,9 +281,27 @@ public class ParisService implements IBillWSService {
                 break;
             case Constant.Token.Storage_Inventory:
                 String warehId = CacheManager.getUnitByCode(unitId).getDefaultWarehId();
+                String rackId = null;
+                String levelId = null;
+                String allocationId = null;
+                if (CommonUtil.isNotBlank(rmId)){
+                    String []rm = rmId.split("-");
+                    if (rm.length == 1){
+                        warehId = rm[0];
+                    }
+                    else if(rm.length ==2){
+                        rackId = rm[0]+"-"+rm[1];
+                    }
+                    else if(rm.length ==3){
+                        levelId = rm[0]+"-"+rm[1]+"-"+rm[2];
+                    }
+                    else{
+                        allocationId = rmId;
+                    }
+                }
                 if (CommonUtil.isNotBlank(warehId)) {
                     List<Record> records = new ArrayList<>();
-                    List<EpcStock> stocks = epcStockService.findStock(warehId);
+                    List<EpcStock> stocks = epcStockService.findStock(warehId,rackId,levelId,allocationId);
                     Map<String, Integer> skuCountMap = new HashMap<>();
                     for (EpcStock s : stocks) {
                         Record record = new Record();
@@ -299,6 +328,7 @@ public class ParisService implements IBillWSService {
                     stockBill.setOwnerId(unitId);
                     stockBill.setOrigId(warehId);
                     stockBill.setDestId(warehId);
+                    stockBill.setRmRecord(rmId);
                     stockBill.setSkuQty((long) skuCountMap.keySet().size());
                     List<BillDtl> billDtlList = new ArrayList<>();
                     for (String sku : skuCountMap.keySet()) {
@@ -523,6 +553,8 @@ public class ParisService implements IBillWSService {
                         BillConvertUtil.convertToUploadInventoryRecord(bus);
                         this.taskDao.doBatchInsert(bus.getInventoryRecordList());
                         break;
+
+
                 }
                 //记录第一次入库时间
                 if(bus.getType().equals(Constant.TaskType.Inbound)){
@@ -538,6 +570,86 @@ public class ParisService implements IBillWSService {
                     }
                 }
             }
+            else{
+                switch (bus.getToken().intValue()) {
+                    case Constant.Token.Storage_Repository_Adjust:
+                        RepositoryManagementBill repositoryManagementBill =new RepositoryManagementBill();
+                        //解析上传的新库位
+                        String rmId = bus.getRmId();
+                        String wareId = null;
+                        String rackId = null;
+                        String levelId = null;
+                        String allocationId = null;
+                        if (CommonUtil.isNotBlank(rmId)){
+                            String []rm = rmId.split("-");
+                            wareId = rm[0];
+                            rackId = rm[0]+"-"+rm[1];
+                            levelId = rm[0]+"-"+rm[1]+"-"+rm[2];
+                            allocationId = rmId;
+                        }
+                        //判断是否有不在同一仓库的code
+                        List<String> rmcodes = TaskUtil.getRecordCodes(bus.getRecordList());
+                        String rmcode = TaskUtil.getSqlStrByList(rmcodes, EpcStock.class, "code");
+                        // 判断是否一个仓库
+                        List<EpcStock> rmlist = this.getInStock(rmcode, wareId);
+                        TaskUtil.getDifferEpcStockCodes(rmlist, rmcodes);
+                        if(CommonUtil.isNotBlank(rmcodes)){
+                            return new MessageBox(false, "存在不在所选仓库的唯一码!" + JSON.toJSON(rmcodes));
+                        }
+                        else{
+                            if(CommonUtil.isNotBlank(rmlist)){
+                                String userId = bus.getOperator();
+                                User user = CacheManager.getUserById(userId);
+                                repositoryManagementBill.setOwnerId(user.getOwnerId());
+                                if (CommonUtil.isBlank(repositoryManagementBill.getBillNo())) {
+                                    String prefix = BillConstant.BillPrefix.rmADjust
+                                            + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+                                    repositoryManagementBill.setId(prefix);
+                                    repositoryManagementBill.setBillNo(prefix);
+                                    repositoryManagementBill.setStatus(Constant.TaskStatus.Submitted);
+                                    repositoryManagementBill.setBillDate(new Date());
+                                } else {
+                                    //查询单据状态
+                                    Integer status = this.repositoryManagementBillService.findBillStatus(repositoryManagementBill.getBillNo());
+                                    if (status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")) {
+                                        return new MessageBox(false, "单据不是录入状态无法保存,请返回");
+                                    }
+                                }
+                                repositoryManagementBill.setOrigId(wareId);
+                                repositoryManagementBill.setNrackId(rackId);
+                                repositoryManagementBill.setNlevelId(levelId);
+                                repositoryManagementBill.setNallocationId(allocationId);
+
+                                List<RepositoryManagementBillDtl> repositoryManagementBillDtls = new ArrayList<>();
+                                for (EpcStock epcStock : rmlist){
+                                    RepositoryManagementBillDtl repositoryManagementBillDtl = new RepositoryManagementBillDtl();
+                                    if(CommonUtil.isBlank(repositoryManagementBillDtl.getId())){
+                                        repositoryManagementBillDtl.setId(new GuidCreator().toString());
+                                    }
+                                    repositoryManagementBillDtl.setBillId(repositoryManagementBill.getId());
+                                    repositoryManagementBillDtl.setBillNo(repositoryManagementBill.getBillNo());
+                                    repositoryManagementBillDtl.setStatus(repositoryManagementBill.getStatus());
+                                    repositoryManagementBillDtl.setQty(1L);
+                                    repositoryManagementBillDtl = this.covert(repositoryManagementBillDtl,epcStock);
+                                    repositoryManagementBillDtls.add(repositoryManagementBillDtl);
+                                    String oldRmId = null;
+                                    if(CommonUtil.isNotBlank(epcStock.getFloorAllocation())){
+                                        String r =epcStock.getFloorRack().split("-")[1];
+                                        String l = epcStock.getFloorArea().split("-")[2];
+                                        String a = epcStock.getFloorAllocation().split("-")[3];
+                                        oldRmId = r+"号货架-"+l+"号货层-"+a+"号货位";
+                                    }
+                                    //保存变动记录表
+                                    this.saveOldRm(repositoryManagementBill.getBillNo(),epcStock.getSku(),epcStock.getCode(),oldRmId,epcStock.getWarehouseId(),userId);
+                                }
+                                bus.setBillNo(repositoryManagementBill.getBillNo());
+                                repositoryManagementBillService.save(repositoryManagementBill,repositoryManagementBillDtls);
+                            }
+                        }
+                        break;
+                }
+            }
+
             bus.setEndTime(new Date());
             return new MessageBox(true, "");
         } catch (Exception e) {
@@ -692,6 +804,18 @@ public class ParisService implements IBillWSService {
                     msgBox = new MessageBox(false, "存在不能入库的唯一码!" + JSON.toJSON(copyList));
                 }
                 break;
+            case Constant.Token.Storage_Repository_Adjust:
+                List<String> rmcodes = TaskUtil.getRecordCodes(bus.getRecordList());
+                String rmcode = TaskUtil.getSqlStrByList(rmcodes, EpcStock.class, "code");
+                codeStr = rmcode;
+                // 未入库的
+                List<EpcStock> rmlist = this.getInStock(rmcode, null);
+                List<String> copyLists = TaskUtil.getDifferEpcStockCodes(rmlist, rmcodes);
+                if (CommonUtil.isBlank(rmlist)) {
+                    msgBox = new MessageBox(false, "存在不能调整的唯一码!" + JSON.toJSON(copyLists));
+                }
+                break;
+
             case Constant.Token.Storage_Adjust_Outbound:
             case Constant.Token.Storage_Outbound:
             case Constant.Token.Storage_Transfer_Outbound:
@@ -745,6 +869,7 @@ public class ParisService implements IBillWSService {
         }
         return this.taskDao.find(hql, new Object[]{});
     }
+
 
     @Override
     public MessageBox checkEpcStock(String uniqueCodeList, int token, String deviceId) {
@@ -935,5 +1060,38 @@ public class ParisService implements IBillWSService {
 
     public void setSaleOrderBillService(SaleOrderBillService saleOrderBillService) {
         this.saleOrderBillService = saleOrderBillService;
+    }
+    //记录商品原库位
+    private void saveOldRm(String billNo,String sku,String code,String rmId,String warehouseId,String userId){
+        UniqueCodeBill uniqueCodeBill = new UniqueCodeBill();
+        uniqueCodeBill.setId(billNo+code);
+        uniqueCodeBill.setBillNo(billNo);
+        uniqueCodeBill.setSku(sku);
+        uniqueCodeBill.setUniqueCode(code);
+        uniqueCodeBill.setOldRm(rmId);
+        uniqueCodeBill.setWarehouseId(warehouseId);
+        uniqueCodeBill.setUserId(userId);
+
+        try {
+            uniqueCodeBillService.save(uniqueCodeBill);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private RepositoryManagementBillDtl covert(RepositoryManagementBillDtl repositoryManagementBillDtl,EpcStock epcStock){
+        repositoryManagementBillDtl.setStyleId(epcStock.getStyleId());
+        repositoryManagementBillDtl.setStyleName(epcStock.getStyleName());
+        repositoryManagementBillDtl.setColorId(epcStock.getColorId());
+        repositoryManagementBillDtl.setStyleName(epcStock.getColorName());
+        repositoryManagementBillDtl.setSizeId(epcStock.getSizeId());
+        repositoryManagementBillDtl.setSizeName(epcStock.getSizeName());
+        repositoryManagementBillDtl.setSku(epcStock.getSku());
+        repositoryManagementBillDtl.setPrice(epcStock.getPrice());
+        repositoryManagementBillDtl.setOrackId(epcStock.getFloorRack());
+        repositoryManagementBillDtl.setOlevelId(epcStock.getFloorArea());
+        repositoryManagementBillDtl.setOallocationId(epcStock.getFloorAllocation());
+        repositoryManagementBillDtl.setWarehouseId(epcStock.getWarehouseId());
+        repositoryManagementBillDtl.setUniqueCodes(epcStock.getCode());
+        return repositoryManagementBillDtl;
     }
 }

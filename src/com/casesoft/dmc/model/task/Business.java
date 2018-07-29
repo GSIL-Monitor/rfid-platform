@@ -60,6 +60,7 @@ public class Business implements java.io.Serializable {
 	private String destUnitId; //接收方组织
 	private Integer type;// 0:出库1：入库3：盘点
 	private String rmId;//库位id
+	private String userId;//库位调整操作人
 
 	private String destName;
 	private String destUnitName;
@@ -484,5 +485,13 @@ public class Business implements java.io.Serializable {
 
 	public void setRmId(String rmId) {
 		this.rmId = rmId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

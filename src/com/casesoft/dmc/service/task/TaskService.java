@@ -698,31 +698,36 @@ public class TaskService extends AbstractBaseService<Business, String> {
         return this.taskDao.find(filter.getHql(), filter.getValues());
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void save(Business bus, boolean autoUpload) throws Exception {
-        long time1 = System.currentTimeMillis();
-        MessageBox msg = new MessageBox(true, "");
-        if (autoUpload) {
-            msg = this.billWSService.uploadTaskToErp(bus);
+    @Transactional
+    public void save(Business bus, boolean autoUpload) {
+        try {
+            long time1 = System.currentTimeMillis();
+            MessageBox msg = new MessageBox(true, "");
+            if (autoUpload) {
+                msg = this.billWSService.uploadTaskToErp(bus);
 
-        }
-        if (msg.getSuccess()) {
-            if (bus.getToken().intValue() == 3) {// 检测
-                saveKFBusiness(bus);
-                return;
             }
-            saveBus(bus);
-            if(bus.getToken().intValue() == Constant.Token.Storage_Inventory){
-                saveBusBill(bus);
-            }
-           // saveBusBill(bus);
+            if (msg.getSuccess()) {
+                if (bus.getToken().intValue() == 3) {// 检测
+                    saveKFBusiness(bus);
+                    return;
+                }
+                saveBus(bus);
+                if(bus.getToken().intValue() == Constant.Token.Storage_Inventory){
+                    saveBusBill(bus);
+                }
+                // saveBusBill(bus);
 
-           // updateSrcTask(bus);
-            long time2 = System.currentTimeMillis();
-            logger.error("存储数据消耗时间：" + (time2 - time1));
-        } else {
-            throw new Exception(msg.getMsg());
+                // updateSrcTask(bus);
+                long time2 = System.currentTimeMillis();
+                logger.error("存储数据消耗时间：" + (time2 - time1));
+            } else {
+                //throw new Exception(msg.getMsg());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
         // 增加对库存的处理 wing 2014-01-21， 2015-01-28 不再统计库存
         // if (CommonUtil.isOutStock(bus.getToken())) {

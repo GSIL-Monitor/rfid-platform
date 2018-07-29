@@ -59,6 +59,7 @@ public class Bill implements java.io.Serializable {
 
 	private String remark;
 
+	private String rmRecord;//盘点库位
 	// 电商单据增加字段
 	private String client;// 客户
 	private String phone1;
@@ -539,5 +540,12 @@ public class Bill implements java.io.Serializable {
 	public void setRecords(List<Record> records) {
 		this.records = records;
 	}
-	
+
+	public String getRmRecord() {
+		return rmRecord;
+	}
+
+	public void setRmRecord(String rmRecord) {
+		this.rmRecord = rmRecord;
+	}
 }

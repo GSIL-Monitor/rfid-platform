@@ -231,6 +231,7 @@ public class Constant {
         public final static int Storage_Inbound_agent_refund = 38;//代理商退仓
 
         public final static int Storage_Other_Outbound=32;
+        public final static int Storage_Repository_Adjust=34;//库位调整
 
         public final static int Shop_Inbound = 14;//门店入库
         public final static int Shop_Sales = 15;
@@ -244,7 +245,7 @@ public class Constant {
 
         public final static int Shop_Other_Outbound=33;
         public final static int Shop_TransferSale_Outbound=50;
-        public final static int Storage_Repository_Adjust=34;//库位调整
+
 
 
     }

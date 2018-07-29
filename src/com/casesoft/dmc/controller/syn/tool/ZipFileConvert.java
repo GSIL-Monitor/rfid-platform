@@ -31,6 +31,7 @@ public class ZipFileConvert {
         JSONObject jsonObj = JSON.parseObject(json);
         business.setOperator(jsonObj.getString("operator"));
         business.setId(jsonObj.getString("taskId"));
+        business.setRmId(jsonObj.getString("rmId"));
         business.setStatus(("finish".equals(jsonObj.getString("flagTaskStatus"))) ? 0
                 : -1);
 /*

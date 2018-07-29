@@ -24,10 +24,10 @@ public class UniqueCodeBill implements Serializable{
     private String warehouseId;//仓库id
 
     @Column
-    private String oldRm;//原库位
+    private String oldRm;//原库位名字
 
     @Column
-    private String newRm;//新库位
+    private String newRm;//新库位名字
 
     @Column
     private String updateTime;//调库时间
@@ -35,6 +35,27 @@ public class UniqueCodeBill implements Serializable{
     @Column
     private String sku;//款式
 
+    @Column
+    private String oldRmId;//原库位id
+
+    @Column
+    private String newRmId;//新库位id
+
+    public String getOldRmId() {
+        return oldRmId;
+    }
+
+    public void setOldRmId(String oldRmId) {
+        this.oldRmId = oldRmId;
+    }
+
+    public String getNewRmId() {
+        return newRmId;
+    }
+
+    public void setNewRmId(String newRmId) {
+        this.newRmId = newRmId;
+    }
 
     public String getWarehouseId() {
         return warehouseId;

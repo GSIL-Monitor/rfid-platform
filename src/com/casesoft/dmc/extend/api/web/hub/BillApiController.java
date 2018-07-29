@@ -122,7 +122,7 @@ public class BillApiController extends ApiBaseController {
      */
     @RequestMapping(value = "/listBillsByDeviceWS.do")
     @ResponseBody
-    public List<BillVO> listBillsByDevice(String deviceId, String type, String beginDate, String endDate, String billId, String unitId, String status) throws Exception {
+    public List<BillVO> listBillsByDevice(String deviceId, String type, String beginDate, String endDate, String billId, String unitId, String status,String rmId) throws Exception {
         this.logAllRequestParams();
         String styleId = this.getReqParam("styleId");
         if(CommonUtil.isBlank(styleId)){
@@ -132,7 +132,7 @@ public class BillApiController extends ApiBaseController {
         if (Integer.parseInt(type) <= Constant.Token.Label_Data_Feedback) {// 当type=2，说明为标签初始化单据,5为标签打印单
             billList = this.listPrintBillWS(deviceId, type ,beginDate, endDate,unitId, status,styleId);
         } else {
-            billList = this.findERPBillWS(deviceId, type, beginDate, endDate, billId, unitId, status);
+            billList = this.findERPBillWS(deviceId, type, beginDate, endDate, billId, unitId, status,rmId);
         }
         List<BillVO> voList = new ArrayList<BillVO>();
         if (CommonUtil.isNotBlank(billList)) {
@@ -159,7 +159,7 @@ public class BillApiController extends ApiBaseController {
      * @return
      * @throws Exception
      */
-    private List<Bill> findERPBillWS(String deviceId, String type, String beginDate, String endDate, String billId, String unitId, String status) throws Exception {
+    private List<Bill> findERPBillWS(String deviceId, String type, String beginDate, String endDate, String billId, String unitId, String status,String rmId) throws Exception {
         if (CommonUtil.isBlank(CacheManager.getDeviceByCode(deviceId))) {
             return new ArrayList<>();
 
@@ -171,8 +171,8 @@ public class BillApiController extends ApiBaseController {
         List<Bill> billList = this.billWSService.findBills(new String[]{
                 "filter_EQS_ownerId", "filter_EQI_type", "filter_GED_billDate",
                 "filter_LED_billDate", "filter_INI_status", "deviceId",
-                "styleId", "fitler_EQS_origUnitId"}, new String[]{ownerId, type, beginDate, endDate,
-                String.valueOf(status), deviceId, billId, unitId});
+                "styleId", "fitler_EQS_origUnitId","fitler_EQS_rmId"}, new String[]{ownerId, type, beginDate, endDate,
+                String.valueOf(status), deviceId, billId, unitId,rmId});
 
         return billList;
 
