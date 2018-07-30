@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <div id="edit-dialog" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="height: 80%;overflow-y:auto;">
         <div class="modal-header no-padding">
             <div class="table-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
