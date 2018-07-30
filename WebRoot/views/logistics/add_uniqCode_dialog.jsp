@@ -227,7 +227,9 @@
                                 class_name: 'gritter-success  gritter-light'
                             });
                             var result=data.result;
-                            addProductsNoOutPutCode(result);
+                            if(data.result!=""&&data.result!=undefined) {
+                                addProductsNoOutPutCode(result);
+                            }
                         }
                         $('#uniqCode-editForm').clearForm();
                         progressDialog.modal('hide');
