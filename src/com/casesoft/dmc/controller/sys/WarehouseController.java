@@ -142,7 +142,7 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 		unit.setDefaultWarehId(warehId);
 		this.warehouseService.save(unit);
 		CacheManager.refreshUnitCache();
-		return returnSuccessInfo("设置成功");
+		return returnSuccessInfo("设置默认仓库成功");
 	}
 
 	@Override
