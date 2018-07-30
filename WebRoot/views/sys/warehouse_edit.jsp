@@ -17,7 +17,7 @@
                     <input type="hidden" id="form_creatorId" name='creatorId' hidden="true">
                     <input type="hidden" id="form_creatorTime" name='createTime' hidden="true">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_code">编号</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form_code"><span class="text-danger">* </span>编号</label>
 
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_code" name="code"
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_name">名称</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form_name"><span class="text-danger">* </span>名称</label>
 
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_name" name="name"
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_ownerId">所属方</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form_ownerId"><span class="text-danger">* </span>所属方</label>
 
                         <div class="col-xs-14 col-sm-7">
                             <div class="input-group">
@@ -65,7 +65,7 @@
                     </div>
                     <!-- #section:elements.form -->
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="from_tel">联系电话</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="from_tel"><span class="text-danger">* </span>联系电话</label>
 
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="from_tel" name="tel"
