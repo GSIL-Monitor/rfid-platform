@@ -187,7 +187,7 @@
                         stringLength: {
                             min: 4,
                             max: 20,
-                            message: '用户名长度必须在4到20之间'
+                            message: '编号长度必须在4到20之间'
                         },
                     }
                 },
