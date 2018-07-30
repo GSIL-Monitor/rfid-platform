@@ -3520,7 +3520,7 @@ public class BillConvertUtil {
      */
     public static void convertToUploadInventoryRecord(Business bus) {
         if (CommonUtil.isNotBlank(bus.getOrigId())) {
-            List<EpcStock> epcStockList = epcStockService.findStock(bus.getOrigId());
+            List<EpcStock> epcStockList = epcStockService.findStock(bus.getOrigId(),null,null,null);
             List<Record> recordList = bus.getRecordList();
 
             Map<String, String> recordMap = new HashMap<>();

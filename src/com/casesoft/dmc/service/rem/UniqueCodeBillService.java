@@ -27,7 +27,7 @@ public class UniqueCodeBillService extends AbstractBaseService<UniqueCodeBill, S
 
     @Override
     public void save(UniqueCodeBill entity) {
-        uniqueCodeBillDao.save(entity);
+        uniqueCodeBillDao.saveOrUpdate(entity);
     }
 
     @Override

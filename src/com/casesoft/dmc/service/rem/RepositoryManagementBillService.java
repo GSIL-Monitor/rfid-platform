@@ -33,8 +33,8 @@ public class RepositoryManagementBillService extends AbstractBaseService<Reposit
     public void save(RepositoryManagementBill entity, List<RepositoryManagementBillDtl> repositoryManagementBillDtls) {
         this.repositoryManagementBillDao.batchExecute("delete from RepositoryManagementBillDtl where billNo=?", entity.getBillNo());
         //保存单据明细表
-        repositoryManagementBillDao.doBatchInsert(repositoryManagementBillDtls);
-        repositoryManagementBillDao.saveOrUpdate(entity);
+        this.repositoryManagementBillDao.doBatchInsert(repositoryManagementBillDtls);
+        this.repositoryManagementBillDao.saveOrUpdate(entity);
     }
 
     @Override

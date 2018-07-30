@@ -30,6 +30,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -129,10 +130,19 @@ public class RepositoryController extends BaseController implements IBaseInfoCon
         return null;
     }
 
-    @RequestMapping(value = "/index")
+    //@RequestMapping(value = "/index")
     @Override
     public String index() {
         return "/views/sys/repositoryManagement";
+    }
+
+    @RequestMapping(value = "/index")
+    public ModelAndView indexMV() throws Exception {
+
+        ModelAndView mv = new ModelAndView("/views/sys/repositoryManagement");
+        User user = this.getCurrentUser();
+        mv.addObject("ownerId", user.getOwnerId());
+        return mv;
     }
 
     @RequestMapping(value = "/unitList")

@@ -114,9 +114,20 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         this.epcStockDao.doBatchInsert(entitys);
     }
 
-    public List<EpcStock> findStock(String warehouse) {
+    public List<EpcStock> findStock(String warehouse,String rackId,String levelId,String allocationId) {
         if (CommonUtil.isNotBlank(warehouse)) {
-            return this.epcStockDao.find("from EpcStock e where e.warehouseId=? and e.inStock=1", new Object[]{warehouse});
+            String  hql = "";
+            hql+="from EpcStock e where e.warehouseId=? and e.inStock=1 ";
+            if(CommonUtil.isNotBlank(rackId)){
+                hql+="and e.floorRack ='"+rackId+"' ";
+            }
+            if(CommonUtil.isNotBlank(levelId)){
+                hql+="and e.floorArea ='"+levelId+"' ";
+            }
+            if (CommonUtil.isNotBlank(allocationId)){
+                hql+="and e.floorAllocation='"+allocationId+"' ";
+            }
+            return this.epcStockDao.find(hql, new Object[]{warehouse});
         } else {
             return this.epcStockDao.find("from EpcStock e where e.inStock=1", new Object[]{});
         }

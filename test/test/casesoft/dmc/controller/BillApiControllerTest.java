@@ -49,22 +49,23 @@ public class BillApiControllerTest extends AbstractTestCase{
 			String endDate="05-11月-16";
 			String styleId="P2GG604003";
 			String unitId="ZOL001";
-
-			List<BillVO> lstbill = this.billApiController.listBillsByDevice(deviceId,type,beginDate,endDate,styleId,unitId,"0");
+			String rmId = "AUTO_WH001-1-1-1";
+			List<BillVO> lstbill = this.billApiController.listBillsByDevice(deviceId,type,beginDate,endDate,styleId,unitId,"0",rmId);
 			Assert.assertTrue(lstbill.isEmpty());
 				
 		
 	}
 	@Test
 		public void testlistBillsByDevice_largerthan5() throws Exception{
-			String deviceId="KC201601";
+			String deviceId="KE201701";
 			String type="9";
-			String beginDate="03-11月-16";
-			String endDate="05-11月-16";
-			String styleId="P2GG604003";
-			String unitId="ZOL001";
-			List<BillVO> lstbll;			
-			lstbll = this.billApiController.listBillsByDevice(deviceId,type,beginDate,endDate,styleId,unitId,"0");
+			String beginDate="";
+			String endDate="";
+			String styleId="";
+			String unitId="1";
+			List<BillVO> lstbll;
+			String rmId = "AUTO_WH001-2";
+			lstbll = this.billApiController.listBillsByDevice(deviceId,type,beginDate,endDate,styleId,unitId,"0",rmId);
 			Assert.assertTrue(lstbll.size()>0);
 		}
 		

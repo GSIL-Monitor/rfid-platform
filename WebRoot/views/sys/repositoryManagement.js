@@ -3,6 +3,7 @@ $(function () {
     initSearchGridsku();
     initSearchGridcode();
     initSearchGridstyle();
+    initEditFormValid();
     var parent_column = $("#gridcode").closest('#wid');
     //resize to fit page size
     $("#gridcode").jqGrid( 'setGridWidth', parent_column.width()-52);
@@ -66,6 +67,7 @@ function initTree() {
                     if(node.id === "#") {
                         return {
                             "filter_EQI_type": 9,
+                            "filter_EQS_ownerId": ownerId,
                             "id": node.id
                         }
                     }
@@ -89,6 +91,9 @@ function initTree() {
 }
 function saveOrganization() {
     var that = this;
+    $("#addForm").data('bootstrapValidator').destroy();
+    $('#addForm').data('bootstrapValidator', null);
+    initEditFormValid();
     $("#addForm").data('bootstrapValidator').validate();
     if (!$("#addForm").data('bootstrapValidator').isValid()) {
         return;
@@ -154,18 +159,18 @@ function initSearchGridsku(nodeId) {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'sku', label: 'sku',width: 100},
-            {name: 'styleId', label: '款号',width: 100},
-            {name: 'colorId', label: '颜色',width: 100},
-            {name: 'sizeId', label: '尺码',width: 100},
-            {name: 'warehouseId', label: '仓库',width: 100},
-            {name: 'rackName', label: '货架',width: 100},
-            {name: 'areaName', label: '货层',width: 100},
+            {name: 'sku', label: 'sku',width: 110},
+            {name: 'styleId', label: '款号',width: 110},
+            {name: 'colorId', label: '颜色',width: 110},
+            {name: 'sizeId', label: '尺码',width: 110},
+            {name: 'warehouseId', label: '仓库',width: 110},
+            {name: 'rackName', label: '货架',width: 110},
+            {name: 'areaName', label: '货层',width: 110},
             {name: 'allocationName', label: '货位',width: 97},
             {name: 'floorRack', label: '货架',hidden: true},
             {name: 'floorArea', label: '货层',hidden: true},
             {name: 'floorAllocation', label: '货位',hidden: true},
-            {name: 'qty', label: '库存数量',width: 68},
+            {name: 'qty', label: '库存数量',width: 98},
             ],
         viewrecords: true,
         rownumbers: true,
@@ -192,19 +197,19 @@ function initSearchGridcode(nodeId) {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'code', label: '唯一码',width: 90},
-            {name: 'sku', label: 'sku',width: 90},
-            {name: 'styleId', label: '款号',width: 90},
-            {name: 'colorId', label: '颜色',width: 90},
-            {name: 'sizeId', label: '尺码',width: 90},
-            {name: 'warehouseId', label: '仓库',width: 90},
-            {name: 'rackName', label: '货架',width: 90},
-            {name: 'areaName', label: '货层',width: 90},
+            {name: 'code', label: '唯一码',width: 130},
+            {name: 'sku', label: 'sku',width: 130},
+            {name: 'styleId', label: '款号',width: 100},
+            {name: 'colorId', label: '颜色',width: 100},
+            {name: 'sizeId', label: '尺码',width: 40},
+            {name: 'warehouseId', label: '仓库',width: 100},
+            {name: 'rackName', label: '货架',width: 100},
+            {name: 'areaName', label: '货层',width: 100},
             {name: 'allocationName', label: '货位',width: 85},
             {name: 'floorRack', label: '货架',hidden: true},
             {name: 'floorArea', label: '货层',hidden: true},
             {name: 'floorAllocation', label: '货位',hidden: true},
-            {name: 'qty', label: '库存数量',width: 60},
+            {name: 'qty', label: '库存数量',width: 80},
 
         ],
         viewrecords: true,
@@ -231,17 +236,15 @@ function initSearchGridstyle(nodeId) {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'styleId', label: '款号',width: 150},
-            {name: 'warehouseId', label: '仓库',width: 150},
-            {name: 'rackName', label: '货架',width: 150},
-            {name: 'areaName', label: '货层',width: 150},
-            {name: 'allocationName', label: '货位',width: 147},
+            {name: 'styleId', label: '款号',width: 160},
+            {name: 'warehouseId', label: '仓库',width: 160},
+            {name: 'rackName', label: '货架',width: 160},
+            {name: 'areaName', label: '货层',width: 160},
+            {name: 'allocationName', label: '货位',width: 167},
             {name: 'floorRack', label: '货架',hidden: true},
             {name: 'floorArea', label: '货层',hidden: true},
             {name: 'floorAllocation', label: '货位',hidden: true},
-            {name: 'qty', label: '库存数量',width: 118}
-
-
+            {name: 'qty', label: '库存数量',width: 158}
         ],
         viewrecords: true,
         rownumbers: true,
@@ -267,6 +270,57 @@ function setFooterData(id) {
     $("#"+id+"").footerData('set', {
         styleId: "合计",
         qty: sum_totQty
+    });
+}
+function initEditFormValid() {
+    $('#addForm').bootstrapValidator({
+        message: '输入值无效',
+        excluded: [':disabled'],
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        submitHandler: function (validator, form, submitButton) {
+            $.post(form.attr('action'), form.serialize(), function (result) {
+                if (result.success == true || result.success == 'true') {
+                } else {
+                    $('#addForm').bootstrapValidator('disableSubmitButtons', false);
+                }
+            }, 'json');
+        },
+        fields: {
+            rackId: {
+                validators: {
+                    numeric: {
+                        message: '只能输入数字'
+                    },
+                    notEmpty: {
+                        message: '货架号不能为空'
+                    }
+                }
+            },
+            levelId: {
+                validators: {
+                    numeric: {
+                        message: '只能输入数字'
+                    },
+                    notEmpty: {
+                        message: '货层号不能为空'
+                    }
+                }
+            },
+            allocationId: {
+                validators: {
+                    numeric: {
+                        message: '只能输入数字'
+                    },
+                    notEmpty: {
+                        message: '货位号不能为空'
+                    }
+                }
+            }
+        }
     });
 }
 

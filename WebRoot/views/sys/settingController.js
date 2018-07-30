@@ -39,6 +39,10 @@ function refreshCache() {
         function(result) {
             if(result.success == true || result.success == 'true') {
                 cs.closeProgressBar();
+                $.gritter.add({
+                    text: result.msg,
+                    class_name: 'gritter-success gritter-light'
+                });
             }
         }, 'json');
 }

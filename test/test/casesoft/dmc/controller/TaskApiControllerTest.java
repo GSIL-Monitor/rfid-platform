@@ -76,7 +76,7 @@ public class TaskApiControllerTest extends AbstractTestCase{
 	@Test
 	public void testuploadTask_8()throws Exception{
 		String path = TaskApiControllerTest.class.getResource("").getPath();
-		File file = new File(path + "\\KE2017011523251945177.zip");
+		File file = new File(path + "\\KE2017011523251944177.zip");
 		String fileFileName = file.getName();
 
 		MessageBox msg =this.taskApiController.uploadTask(file, fileFileName);
@@ -92,8 +92,8 @@ public class TaskApiControllerTest extends AbstractTestCase{
 		List<BusinessDtl> dtlList = taskController.findDetail(taskId);
 		Assert.assertTrue(dtlList.size()>0);
 		Assert.assertEquals(dtlList.get(0).getDestId(),"ZCBJ001");*/
-		String taskId = "KE2017011523251945177";
-		msg = this.taskController.deleteByTaskId(taskId);
+		String taskId = "KE2017011523251944177";
+		//msg = this.taskController.deleteByTaskId(taskId);
 		Assert.assertTrue(msg.getSuccess());
 
 	}
