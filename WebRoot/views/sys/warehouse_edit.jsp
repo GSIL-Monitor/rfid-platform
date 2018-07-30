@@ -182,7 +182,7 @@
                         },
                         regexp: {
                             regexp: /^[a-zA-Z0-9_]+$/,
-                            message: '编号由数字字母下划线和.组成'
+                            message: '编号由数字字母下划线组成'
                         },
                         stringLength: {
                             min: 4,
