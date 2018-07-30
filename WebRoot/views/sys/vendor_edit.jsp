@@ -72,19 +72,19 @@
                             </div>
                     </div>
                     <div class="form-group">
-                            <label class="col-sm-2 control-label no-padding-right" for="form_linkman">联系人</label>
+                        <label class="col-sm-2 control-label no-padding-right" for="form_linkman">联系人</label>
 
-                            <div class="col-xs-14 col-sm-7">
-                                <input class="form-control" id="form_linkman" name="linkman"
-                                       type="text" placeholder=""/>
-                            </div>
+                        <div class="col-xs-14 col-sm-7">
+                            <input class="form-control" id="form_linkman" name="linkman"
+                                   type="text" placeholder=""/>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_remark">备注</label>
 
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_remark" name="remark"
-                                   type="textarea" placeholder=""/>
+                                   type="text" placeholder=""/>
                         </div>
                     </div>
                   </form>
