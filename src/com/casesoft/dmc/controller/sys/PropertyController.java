@@ -129,40 +129,44 @@ public class PropertyController extends BaseController implements IBaseInfoContr
                 entity.setLocked(0);
                 entity.setRegisterDate(new Date());
                 entity.setYnuse("Y");
-                Unit unit = new Unit();
-                unit.setId(entity.getId());
-                unit.setCode(entity.getId());
-                unit.setName(entity.getName());
-                Unit ut = this.vendorService.findById(unit.getId());
-                if (CommonUtil.isBlank(ut)) {
-                    ut = new Unit();
-                    if (CommonUtil.isBlank(unit.getCode())) {
-                        String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
-                        ut.setCode(code);
-                    } else {
-                        ut.setCode(unit.getCode());
+                if(entity.getType().equals("C1")){
+                    Unit unit = new Unit();
+                    unit.setId(entity.getId());
+                    unit.setCode(entity.getId());
+                    unit.setName(entity.getName());
+                    Unit ut = this.vendorService.findById(unit.getId());
+                    if (CommonUtil.isBlank(ut)) {
+                        ut = new Unit();
+                        if (CommonUtil.isBlank(unit.getCode())) {
+                            String code = this.vendorService.findMaxCode(Constant.UnitType.Vender);
+                            ut.setCode(code);
+                        } else {
+                            ut.setCode(unit.getCode());
+                        }
+                        ut.setId(ut.getCode());
+                        if (this.getCurrentUser() == null) {  //小程序增加供应商，userId传值
+                            User CurrentUser = CacheManager.getUserById(userId);
+                            ut.setCreatorId(CurrentUser.getCode());
+                        }else {   //web增加供应商,session传值
+                            ut.setCreatorId(this.getCurrentUser().getCode());
+                        }
+                        ut.setCreateTime(new Date());
                     }
-                    ut.setId(ut.getCode());
-                    if (this.getCurrentUser() == null) {  //小程序增加供应商，userId传值
+                    ut.setType(Constant.UnitType.Vender);
+                    ut.setUpdateTime(new Date());
+                    if (this.getCurrentUser() == null) {
                         User CurrentUser = CacheManager.getUserById(userId);
-                        ut.setCreatorId(CurrentUser.getCode());
-                    }else {   //web增加供应商,session传值
-                        ut.setCreatorId(this.getCurrentUser().getCode());
+                        ut.setUpdaterId(CurrentUser.getCode());
+                    }else {
+                        ut.setUpdaterId(this.getCurrentUser().getCode());
                     }
-                    ut.setCreateTime(new Date());
-                }
-                ut.setType(Constant.UnitType.Vender);
-                ut.setUpdateTime(new Date());
-                if (this.getCurrentUser() == null) {
-                    User CurrentUser = CacheManager.getUserById(userId);
-                    ut.setUpdaterId(CurrentUser.getCode());
+                    ut.setOwnerId("1");
+                    ut.setSrc(Constant.DataSrc.SYS);
+                    ut.setName(unit.getName());
+                    this.propertyService.saveKey(entity,ut);
                 }else {
-                    ut.setUpdaterId(this.getCurrentUser().getCode());
+                    this.propertyService.saveKey(entity);
                 }
-                ut.setOwnerId("1");
-                ut.setSrc(Constant.DataSrc.SYS);
-                ut.setName(unit.getName());
-                this.propertyService.saveKey(entity,ut);
             } else {
                 return returnFailInfo("保存失败,名称已存在不能重复添加");
             }

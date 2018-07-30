@@ -82,14 +82,14 @@ public class PropertyService implements IBaseService<PropertyType, String> {
     public void saveKey(PropertyKey entity, Unit unit) {
         // TODO Auto-generated method stub
         //this.propertyTypeDao.saveOrUpdate(entity);
-        this.propertyTypeDao.saveOrUpdateX(entity);
-        vendorDao.saveOrUpdate(unit);
+        this.propertyKeyDao.saveOrUpdate(entity);
+        this.vendorDao.saveOrUpdate(unit);
     }
 
     public void saveKey(PropertyKey entity) {
         // TODO Auto-generated method stub
         //this.propertyTypeDao.saveOrUpdate(entity);
-        this.propertyTypeDao.saveOrUpdateX(entity);
+        this.propertyKeyDao.saveOrUpdate(entity);
     }
 
     public Integer findtypeNum(String type) {
