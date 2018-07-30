@@ -330,9 +330,6 @@ function initSearchGrid() {
                         case 0 :
                             html = "<i class='fa fa-caret-square-o-down blue' title='录入'></i>";
                             break;
-                        case 10:
-                            html = "<i class='fa fa-check-square-o blue' title='调整'></i>";
-                            break;
                         case 2 :
                             html = "<i class='fa fa-archive blue' title='结束'></i>";
                             break;
@@ -393,6 +390,18 @@ function initDetailData(rowid){
     rm_status = rowData.status;
     pageType="edit";
     initButtonGroup(pageType);
+    $(".selectpicker").selectpicker('refresh');
+
+    $('#addDetailgrid').jqGrid("clearGridData");
+    $('#addDetailgrid').jqGrid('GridUnload');
+    $('#codeDetailgrid').jqGrid("clearGridData");
+    $('#codeDetailgrid').jqGrid('GridUnload');
+
+    initeditGrid(rowData.billNo);
+    initcodeDetail(rowData.billNo);
+
+    $("#codeDetailgrid").trigger("reloadGrid");
+    $("#addDetailgrid").trigger("reloadGrid");
     if (rm_status == "0") {
         //录入状态可以所有操作
         $("#SODtl_rmIdAdjust").removeAttr("disabled");
@@ -415,6 +424,8 @@ function initDetailData(rowid){
         $("#edit_origId").attr('disabled', true);
         //取消点击事件
         $("#destId").unbind("click");
+        //隐藏操作
+        $("#addDetailgrid").setGridParam().hideCol("operation");
     }
     if(rm_status == "2"){
         //结束和撤销一样
@@ -426,19 +437,10 @@ function initDetailData(rowid){
         $("#edit_origId").attr('disabled', true);
         //取消点击事件
         $("#destId").unbind("click");
+        //隐藏操作
+        $("#addDetailgrid").setGridParam().hideCol("operation");
     }
-    $(".selectpicker").selectpicker('refresh');
 
-    $('#addDetailgrid').jqGrid("clearGridData");
-    $('#addDetailgrid').jqGrid('GridUnload');
-    $('#codeDetailgrid').jqGrid("clearGridData");
-    $('#codeDetailgrid').jqGrid('GridUnload');
-
-    initeditGrid(rowData.billNo);
-    initcodeDetail(rowData.billNo);
-
-    $("#codeDetailgrid").trigger("reloadGrid");
-    $("#addDetailgrid").trigger("reloadGrid");
 }
 /**
  * 新增单据调用
@@ -1274,6 +1276,11 @@ function save() {
         cs.closeProgressBar();
         return false;
     }
+    if ($("#addDetailgrid").getDataIDs().length == 0) {
+        bootbox.alert("请添加调整商品！");
+        cs.closeProgressBar();
+        return false;
+    }
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1314,11 +1321,11 @@ function initcodeDetail(billNo) {
         mtype:"POST",
         colModel: [
             {name: 'uniqueCode', label: 'code',width :120},
-            {name: 'sku', label: 'SKU',width :120,editable :true},
-            {name: 'billNo', label: '单据号',width :120,editable :true},
+            {name: 'sku', label: 'SKU',width :170,editable :true},
+            {name: 'billNo', label: '单据号',width :170,editable :true},
             {name: 'userId', label: '操作人',width :60,editable :true},
-            {name: 'updateTime', label: '操作时间',width :120,editable :true},
-            {name: 'warehouseId', label: '所在仓库',width :120,editable :true},
+            {name: 'updateTime', label: '操作时间',width :130,editable :true},
+            {name: 'warehouseId', label: '所在仓库',width :130,editable :true},
             {name: 'oldRm', label: '原库位',width :180,editable :true},
             {name: 'newRm', label: '新库位',width :180,editable :true}
         ],

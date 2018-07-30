@@ -1796,6 +1796,7 @@ function saveAjax() {
                     url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + msg.result.billNo,
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                $("#grid").trigger("reloadGrid");
                 $("#SODtl_adddoPrint1").show();
             } else {
                 bootbox.alert(msg.msg);

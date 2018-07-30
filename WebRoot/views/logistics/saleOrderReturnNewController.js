@@ -324,6 +324,7 @@ function initSearchGrid() {
     });
 }
 function initDetailData(rowid){
+    $("#myTab li").eq(0).find("a").click();
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     slaeOrderReturn_status = rowData.status;
@@ -885,27 +886,26 @@ function initCodeGrid(parameters) {
                     return "<a style='margin-left: 10px' href='javascript:void(0);' onclick=deleteUniqueCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                 }
             },
-            {name: 'code', label: '唯一码', width: 100},
+            {name: 'code', label: '唯一码', width: 160},
             {name: 'updateTime', label: '修改时间', hidden: true},
             {name: 'styleId', label: '款号', hidden: true},
             {name: 'colorId', label: '色码', hidden: true},
             {name: 'sizeId', label: '尺码', hidden: true},
-            {name: 'sku', label: 'SKU', width: 120},
+            {name: 'sku', label: 'SKU', width: 180},
             {name: 'styleName', label: '款式', hidden: true},
             {name: 'colorName', label: '颜色', hidden: true},
             {name: 'sizeName', label: '尺寸', hidden: true},
-            {name: 'price', label: '销售价格', width: 100},                  //吊牌价格
+            {name: 'price', label: '销售价格', width: 160},                  //吊牌价格
             {name: 'preCast', label: '采购价', hidden: true},  //事前成本价(采购价)
             {name: 'wsPrice', label: '销售价格', hidden: true},  //门店批发价格
             {name: 'puPrice', label: '销售价格', hidden: true},  //代理商批发价格
             {name: 'stockPrice', label: '库存金额', hidden: true}, //库存金额
             /* add by Anna */
-            {name: 'originBillNo', label: '原始单号', width: 160},
-            {name: 'lastSaleTime', label: '最后销售时间', width: 160},
-            {name: 'saleCycle', label: '销售周期', width: 70, cellattr: addCellAttr} //销售周期（开单当天时间－销售单时间）
+            {name: 'originBillNo', label: '原始单号', width: 220},
+            {name: 'lastSaleTime', label: '最后销售时间', width: 220},
+            {name: 'saleCycle', label: '销售周期', width: 130, cellattr: addCellAttr} //销售周期（开单当天时间－销售单时间）
         ],
         viewrecords: true,
-        autowidth: true,
         rownumbers: true,
         altRows: true,
         rowNum: -1,
@@ -1276,6 +1276,7 @@ function save() {
                     url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + msg.result
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                $("#grid").trigger("reloadGrid");
             } else {
                 bootbox.alert(msg.msg);
             }
