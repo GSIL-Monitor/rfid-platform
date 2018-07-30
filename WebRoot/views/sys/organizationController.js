@@ -83,6 +83,7 @@ function saveOrganization() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#edit-dialog").modal('hide');
+                location.reload(true);
             }
         }, 'json');
 }
@@ -107,6 +108,7 @@ function saveEdit() {
                     text: result.msg,
                     class_name: 'gritter-success gritter-light'
                 });
+                location.reload(true);
             } else {
                 $.gritter.add({
                     text: result.msg,
