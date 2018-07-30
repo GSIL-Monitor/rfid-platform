@@ -143,14 +143,12 @@ function fullScreen() {
 function sizeSortAdd() {
     $("#editSizeSortForm").resetForm();
     $("#edit_size_sort_dialog").modal('show');
-    $("#form_sortNo").removeAttr("disabled");
 }
 
 function sizeSortEdit(rowId) {
-        var row = $("#sortgrid").jqGrid('getRowData', rowId);
-        $("#form_sortNo").attr("disabled", true);
-        $("#edit_size_sort_dialog").modal("show");
-        $("#editSizeSortForm").loadData(row);
+    var row = $("#sortgrid").jqGrid('getRowData', rowId);
+    $("#edit_size_sort_dialog").modal("show");
+    $("#editSizeSortForm").loadData(row);
 }
 
 function sizeAdd() {
