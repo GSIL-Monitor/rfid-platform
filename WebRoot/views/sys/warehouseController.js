@@ -30,7 +30,6 @@ function initGrid() {
         mtype: "POST",
         url: basePath + "/sys/warehouse/page.do?filter_EQI_type=9",
         datatype: "json",
-        height:"80%",
         colModel: [
             {
                 name: 'src',

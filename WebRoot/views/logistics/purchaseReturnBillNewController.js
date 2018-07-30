@@ -511,7 +511,7 @@ function initAddGrid() {
             {name: 'sizeId', label: '尺码', width: 40},
             {name: 'sizeName', label: '尺名', width: 40},
             {
-                name: 'qty', label: '数量', editable: true, width: 40,
+                name: 'qty', label: '数量', width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -527,7 +527,7 @@ function initAddGrid() {
             },
             {name: 'totPrice', label: '退货金额', width: 40},
             {
-                name: 'actPrice', label: '实际价格', editable: true, width: 40,
+                name: 'actPrice', label: '实际价格', width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -1319,4 +1319,70 @@ function addProductInfo(status) {
         $("#modal-addDetail-table").modal('hide');
     }
     setFooterData();
+}
+function confirmWareHouseOut() {
+    cs.showProgressBar();
+    var billNo = $("#edit_billNo").val();
+    var epcArray = [];
+    $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
+        var rowData = $("#uniqueCodeGrid").getRowData(value);
+        epcArray.push(rowData);
+    });
+    if (epcArray.length === 0) {
+        cs.showProgressBar();
+        bootbox.alert("请添加唯一码!");
+        return;
+    }
+
+    $.each(epcArray, function (index, value) {
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.sku === dtlRow.sku) {
+                if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+                    $.gritter.add({
+                        text: value.code + "不能重复添加",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    return true;
+                }
+                dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                if (dtlRow.id) {
+                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                } else {
+                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                }
+            }
+        });
+    });
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    $.ajax({
+        dataType: "json",
+        // async:false,
+        url: basePath + "/logistics/purchaseReturn/convertOut.do",
+        data: {
+            billNo: billNo,
+            strEpcList: JSON.stringify(epcArray),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#modal-addEpc-table").modal('hide');
+                $("#addDetailgrid").trigger("reloadGrid");
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+    $("#add-uniqCode-dialog").modal('hide');
 }
