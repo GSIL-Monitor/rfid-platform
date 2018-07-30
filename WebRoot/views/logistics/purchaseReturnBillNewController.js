@@ -1264,3 +1264,59 @@ function setA4(id) {
         }
     });
 }
+function addDetail() {
+    $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
+        $("#StyleSearchForm").resetForm();
+        $("#stylegrid").clearGridData();
+        $("#color_size_grid").clearGridData();
+    });
+}
+/**
+ * status 是否关闭对话框
+ * */
+function addProductInfo(status) {
+    if (editDtailRowId != null) {
+        $('#addDetailgrid').saveRow(editcolosizeRow);
+    }
+    var addProductInfo = [];
+    if (editcolosizeRow != null) {
+        $('#color_size_grid').saveRow(editcolosizeRow,false,'clientArray');
+    }
+    var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
+
+    $.each($("#color_size_grid").getDataIDs(), function (index, value) {
+        var productInfo = $("#color_size_grid").getRowData(value);
+        if (productInfo.qty > 0) {
+            productInfo.price = styleRow.preCast;
+            productInfo.outQty = 0;
+            productInfo.status = 0;
+            productInfo.outStatus = 0;
+            productInfo.actPrice = productInfo.price;
+            productInfo.totPrice = -Math.abs(productInfo.qty * productInfo.price);
+            productInfo.totActPrice = -Math.abs(productInfo.qty * productInfo.actPrice);
+            productInfo.sku = productInfo.code;
+            productInfo.inStockType = styleRow.class6;
+            addProductInfo.push(productInfo);
+        }
+    });
+    var isAdd = true;
+    $.each(addProductInfo, function (index, value) {
+        isAdd = true;
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.code === dtlRow.sku) {
+                dtlRow.qty = parseInt(dtlRow.qty) + parseInt(value.qty);
+                dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                $("#addDetailgrid").setRowData(dtlndex, dtlRow);
+                isAdd = false;
+            }
+        });
+        if (isAdd) {
+            $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+        }
+    });
+    if(status){
+        $("#modal-addDetail-table").modal('hide');
+    }
+    setFooterData();
+}
