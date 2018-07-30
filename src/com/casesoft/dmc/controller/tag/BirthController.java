@@ -362,16 +362,22 @@ public class BirthController extends BaseController implements IBaseInfoControll
 	@RequestMapping(value = "/scanCode")
 	@ResponseBody
 	public MessageBox scanCode(String uniqueCode){
-        if (uniqueCode.length() != 13) {
-            String epcCode = uniqueCode.toUpperCase();
-            uniqueCode = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
-        }
+		if(CommonUtil.isHexNumberRex(uniqueCode) || uniqueCode.length() ==13){
+			if (uniqueCode.length() != 13) {
+				String epcCode = uniqueCode.toUpperCase();
+				uniqueCode = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
 
-        Epc epc = this.initService.findEpc(uniqueCode);
-        if(CommonUtil.isNotBlank(epc)){
-            return new MessageBox(true,"uniqueCode", epc.getBillNo());
-        }else {
-            return new MessageBox(false, "未查到对应单号");
-        }
+			}
+
+			Epc epc = this.initService.findEpc(uniqueCode);
+			if(CommonUtil.isNotBlank(epc)){
+				return new MessageBox(true,"uniqueCode", epc.getBillNo());
+			}else {
+				return new MessageBox(false, "未查到对应单号");
+			}
+		}
+        else {
+			return new MessageBox(false, "唯一码格式不正确");
+		}
 	}
 }
