@@ -110,7 +110,12 @@
                                                        class="input-sm form-control" name="filter_LED_billDate"
                                                        data-date-format="yyyy-mm-dd"/>
                                             </div>
-
+                                        </div>
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 text-right control-label" for="search_fileName">导入文件名</label>
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <input class="form-control" id="search_fileName" name="filter_LIKES_fileName"
+                                                   type="text"
+                                                   placeholder="模糊查询"/>
                                         </div>
 
                                     </div>

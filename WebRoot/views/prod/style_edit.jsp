@@ -562,38 +562,18 @@
 <script type="text/javascript">
     var checkNum;
     $(function () {
+        loadingButton();
         $("#tags_3").val(remark);
         $('#tags_3').tagsInput({
             width: '540',
             height:'70',
             autocomplete_url:'remark.do'
         });
-        loadingButton();
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
 
-        if ('${pageType}' == 'edit') {
-            $("#form_styleId").attr("readonly", true);
-            if ('${roleId}' == '0') {
-                $("#form-group-preCast").show();
-                $("#form_price").removeAttr("readonly");
-            } else {
-                $("#form-group-preCast").hide();
-                $("#form_price").attr("readonly", true);
-            }
-            $("#form_isSeries").val("${style.isSeries}");
-        } else {
-            /*  $("#focusColor").removeAttr("onclick");*/
-            if ('${roleId}' == '0') {
-                $("#form-group-preCast").show();
-            } else {
-                $("#form-group-preCast").hide();
-            }
-            $("#form_price").removeAttr("readonly");
-            $("#edit_isNotDeton").click();
-            $("#form_bargainPrice").val(0.0);
-        }
+
         initeditStyleFormValid();
 
         initSelect();
@@ -1120,6 +1100,7 @@
 
     function saveStyleAndProduct(str) {
         if($('#form_isSeries').is(':hidden')){
+            $('#form_isSeries').val("N");
             var price = $("#form_price").val();
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
@@ -1740,7 +1721,26 @@
             var price = $("form_price").val();
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
-        }else {
+        }
+        if ('${pageType}' == 'edit') {
+            $("#form_styleId").attr("readonly", true);
+            if ('${roleId}' == '0') {
+                $("#form-group-preCast").show();
+                $("#form_price").removeAttr("readonly");
+            } else {
+                $("#form-group-preCast").hide();
+                $("#form_price").attr("readonly", true);
+            }
+            $("#form_isSeries").val("${style.isSeries}");
+        } else {
+            /*  $("#focusColor").removeAttr("onclick");*/
+            if ('${roleId}' == '0') {
+                $("#form-group-preCast").show();
+            } else {
+                $("#form-group-preCast").hide();
+            }
+            $("#form_price").removeAttr("readonly");
+            $("#edit_isNotDeton").click();
             $("#form_bargainPrice").val(0.0);
         }
     }
