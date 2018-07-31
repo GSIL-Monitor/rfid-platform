@@ -554,6 +554,10 @@ function initAddGrid() {
     );
     $("#addDetailgrid-pager_center").html("");
 }
+var arrival = 0;
+var isfrist = true;
+var editDtailiRow = null;
+var editDtailiCol = null;
 function initeditGrid(billNo) {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
@@ -632,34 +636,10 @@ function initeditGrid(billNo) {
             {name: 'colorName', label: '颜色', width: 20},
             {name: 'sizeName', label: '尺码', width: 20},
             {name: 'qty', label: '数量', width: 20},
-            {name: 'arrival', label: '到货数', width: 20,
-                editable: true
-                /*editoptions: {
-                    dataInit: function (e) {
-                        var maxValue = $(e).val();
-                        $(e).spinner({
-                            value: maxValue,
-                            min: 0, //最小值
-                            max: maxValue, //最大值
-                            step: 1
-                        });
-                    }
-                }*/},
+            {name: 'arrival', label: '本次到货数', width: 20, editable: true},
             {name: 'actPrintQty', label: '已打印数量', width: 20},
             {
-                name: 'printQty', label: '待打印数量', width: 20,
-                editable: true,
-                editoptions: {
-                    dataInit: function (e) {
-                        var maxValue = $(e).val();
-                        $(e).spinner({
-                            value: maxValue,
-                            min: 0, //最小值
-                            max: maxValue, //最大值
-                            step: 1
-                        });
-                    }
-                }
+                name: 'printQty', label: '待打印数量', width: 20
             },
             {name: 'inQty', label: '已入库数量', width: 20},
             {name: 'sku', label: 'SKU', width: 20},
@@ -696,6 +676,8 @@ function initeditGrid(billNo) {
             }
 
         ],
+
+        cellEdit: true,
         autowidth: true,
         rownumbers: true,
         altRows: true,
@@ -706,14 +688,51 @@ function initeditGrid(billNo) {
         sortname: 'id',
         sortorder: "asc",
         footerrow: true,
-        onSelectRow: function (rowid, status) {
-            if (editDtailRowId != null) {
-                $('#addDetailgrid').saveRow(editDtailRowId);
+        cellEdit: true,
+        cellsubmit: 'clientArray',
+        afterEditCell: function (rowid, celname, value, iRow, iCol) {
+            editDtailiCol = iCol;
+            editDtailiRow = iRow;
+        },
+        beforeEditCell: function (rowid, celname, value, iRow, iCol) {
+            if (isfrist) {
+                arrival = $('#addDetailgrid').getCell(rowid, "arrival");
             }
-            editDtailRowId = rowid;
-            $('#addDetailgrid').editRow(rowid);
+            isfrist = false;
+        },
+        afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+            var styleId = $('#addDetailgrid').getCell(rowid, "styleId");
+            //数量
+            var qty = $('#addDetailgrid').getCell(rowid, "qty");
+            //已打印数
+            var actPrintQty = $('#addDetailgrid').getCell(rowid, "actPrintQty");
+            //打印状态
+            var printStatus = $('#addDetailgrid').getCell(rowid, "printStatus");
+            //待打印数量
+            var printQty = $('#addDetailgrid').getCell(rowid, "printQty");
+
+            if (parseInt(value) > parseInt(printQty)) {
+                $.gritter.add({
+                    text: "已超过"+styleId+"的待打印总数量",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $('#addDetailgrid').setCell(rowid, "arrival", arrival);
+            }
+            if (parseInt(value) < 0) {
+                $.gritter.add({
+                    text: "请填写正确的到货数",
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $('#addDetailgrid').setCell(rowid, "arrival", arrival);
+            }
         },
         gridComplete: function () {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                var printStatus = $('#addDetailgrid').getCell(value, "printStatus");
+                if (printStatus==2){
+                    $("#addDetailgrid").jqGrid('setCell', value, 17, '', 'not-editable-cell');
+                }
+            });
             setAddFooterData();
         }
     });
@@ -1111,10 +1130,7 @@ function save() {
         cs.closeProgressBar();
         return;
     }
-    if (editDtailRowId != null) {
-        $("#addDetailgrid").saveRow(editDtailRowId);
-        editDtailRowId = null;
-    }
+    $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
     if ($("#addDetailgrid").getDataIDs().length == 0) {
         bootbox.alert("请添加采购商品");
         cs.closeProgressBar();
@@ -1181,15 +1197,21 @@ function quitback() {
     });
 }
 function convertToTagBirth() {
-    if (editDtailRowId != null) {
-        $("#addDetailgrid").saveRow(editDtailRowId);
-        editDtailRowId = null;
-    }
+    var sum = 0;
+    $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
+        sum+=parseInt(rowData.arrival);
         dtlArray.push(rowData);
     });
+    if (sum==0){
+        $.gritter.add({
+            text: "无初始化标签的商品！",
+            class_name: 'gritter-success  gritter-light'
+        });
+        return;
+    }
     cs.showProgressBar();
     $.ajax({
         dataType: "json",
