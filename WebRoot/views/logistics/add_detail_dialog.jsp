@@ -81,10 +81,48 @@
             initStyleGrid();
             initColorSizeGrid();
             searcheditStyle();
-
+            initStyleGridGroup()
         });
 
     });
+
+    function initStyleGridGroup() {
+        var name = [];
+        var colModel=$("#stylegrid").jqGrid('getGridParam','colModel');
+        $.each(colModel,function (index,value) {
+           if (index>0){
+               name.push(value.name);
+           }
+        });
+        $.ajax({
+            dataType: "json",
+            async: false,
+            url: basePath + "/prod/style/initStyleGridGroup.do",
+            type: "POST",
+            success: function (msg) {
+                if (msg.success) {
+                    var result=msg.result;
+                    for(var i=0;i<result.length;i++){
+                        if(result[i].ishow===0){
+                            for (var j = 0;j<name.length;j++){
+                                if (name[j]==result[i].buttonId){
+                                    $ ("#stylegrid").setGridParam().showCol(result[i].buttonId).trigger("reloadGrid");
+                                }
+                            }
+                        }else {
+                            for (var j = 0;j<name.length;j++) {
+                                if (name[j] == result[i].buttonId) {
+                                    $("#stylegrid").setGridParam().hideCol(result[i].buttonId);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }
     function initStyleGridColumn(storeType){
         if(storeType == "CT-AT"){
             $ ("#stylegrid").setGridParam().hideCol("preCast");
@@ -113,8 +151,8 @@
                 {name: 'puPrice', label: '销售价', editable:true,width: 80,hidden:true},
                 {name: 'wsPrice', label: '销售价', editable:true,width: 80,hidden:true},
                 {name: 'price', label: '吊牌价', editable:true,width: 80},
-                {name: 'class6', label: '入库类型',hidden:true}
-
+                {name: 'class6', label: '入库类型',hidden:true},
+                {name:'bargainPrice',label:'特价',editable:true,width:80,hidden:true}
             ],
             viewrecords: true,
             rownumbers: true,
@@ -162,6 +200,7 @@
                 {name: 'preCast', label: '采购价',width: 80,hidden:true},
                 {name: 'puPrice', label: '采购价', width: 80,hidden:true},
                 {name: 'wsPrice', label: '采购价', width: 80,hidden:true},
+                {name:'bargainPrice',label:'特价',hidden:true,width:80},
                 {name: 'price', label: '吊牌价',width: 80,hidden:true},
                 {name: 'colorId', label: '色码',width: 80,sortable: true},
                 {name: 'colorName', label: '颜色', width: 100,sortable: true},

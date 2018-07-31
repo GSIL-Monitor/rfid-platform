@@ -58,7 +58,7 @@ function initSelectOrigEditForm() {
 }
 function initSelectDestEditForm() {
     $.ajax({
-        url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_destUnitId").val(),
+        url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#edit_destUnitId").val(),
         cache: false,
         async: false,
         type: "POST",

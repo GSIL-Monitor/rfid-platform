@@ -1509,13 +1509,16 @@ function addProductInfo(status) {
 
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
-
-            if (ct == "CT-AT") {//省代价格
-                productInfo.price = styleRow.puPrice;
-            } else if (ct == "CT-ST") {//门店价格
-                productInfo.price = styleRow.wsPrice;
-            } else if (ct == "CT-LS") {//吊牌价格
-                productInfo.price = styleRow.price;
+            if (parseInt(styleRow.bargainPrice)!=0){
+                productInfo.price = styleRow.bargainPrice;
+            }else {
+                if (ct == "CT-AT") {//省代价格
+                    productInfo.price = styleRow.puPrice;
+                } else if (ct == "CT-ST") {//门店价格
+                    productInfo.price = styleRow.wsPrice;
+                } else if (ct == "CT-LS") {//吊牌价格
+                    productInfo.price = styleRow.price;
+                }
             }
             productInfo.outQty = 0;
             productInfo.inQty = 0;

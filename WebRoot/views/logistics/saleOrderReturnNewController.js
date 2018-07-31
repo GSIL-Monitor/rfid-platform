@@ -107,7 +107,7 @@ function initSelectOrigEditForm() {
         });
     } else {
         $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#search_origUnitId").val(),
+            url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#edit_origUnitId").val(),
             cache: false,
             async: false,
             type: "POST",
