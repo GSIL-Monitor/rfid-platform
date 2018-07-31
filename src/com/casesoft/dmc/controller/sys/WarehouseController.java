@@ -78,19 +78,19 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 		if(CommonUtil.isBlank(unitById)){
 			unitById=this.unitService.getunitbyId(currentUser.getOwnerId());
 		}
-		if(CommonUtil.isNotBlank(unitById.getGroupId())){
-			if(unitById.getGroupId().equals("JMS")){
-				PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
-				filters.add(filter);
-				warehouse.addAll(this.warehouseService.find(filters));
+		if(filters.size() >0){
+			if(CommonUtil.isNotBlank(unitById.getGroupId())){
+				if(unitById.getGroupId().equals("JMS")){
+					PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
+					filters.add(filter);
+					warehouse.addAll(this.warehouseService.find(filters));
+				}else{
+					warehouse.addAll(this.warehouseService.find(filters));
+				}
 			}else{
 				warehouse.addAll(this.warehouseService.find(filters));
 			}
-		}else{
-			warehouse.addAll(this.warehouseService.find(filters));
 		}
-
-
 		return warehouse;
 	}
 
