@@ -71,7 +71,7 @@ public abstract class BaseBillDtl {
     @Column()
     protected Integer arrival;
     @Column()
-    protected Integer abnormalStatus;//异常单状态
+    protected Integer abnormalStatus;//异常单状态(1.异常 0.非异常)
 
 
     @Transient
