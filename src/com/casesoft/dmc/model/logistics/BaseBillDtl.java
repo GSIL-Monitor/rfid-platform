@@ -70,6 +70,9 @@ public abstract class BaseBillDtl {
     //到貨數量
     @Column()
     protected Integer arrival;
+    @Column()
+    protected Integer abnormalStatus;//异常单状态
+
 
     @Transient
     protected String stylePriceMap;
@@ -291,5 +294,13 @@ public abstract class BaseBillDtl {
 
     public void setStylePriceMap(String stylePriceMap) {
         this.stylePriceMap = stylePriceMap;
+    }
+
+    public Integer getAbnormalStatus() {
+        return abnormalStatus;
+    }
+
+    public void setAbnormalStatus(Integer abnormalStatus) {
+        this.abnormalStatus = abnormalStatus;
     }
 }

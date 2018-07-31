@@ -722,7 +722,8 @@ function initeditGrid(billId) {
             },
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {name: 'returnbillNo', label: '退货单号', hidden: true},
-            {name:'stylePriceMap',label:'价格表',hidden:true}
+            {name:'stylePriceMap',label:'价格表',hidden:true},
+            {name:'abnormalStatus',label:'异常单状态',hidden:true}
 
         ],
         autowidth: true,
