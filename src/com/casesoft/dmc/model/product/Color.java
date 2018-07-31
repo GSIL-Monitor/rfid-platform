@@ -100,7 +100,7 @@ public class Color extends BaseModel implements java.io.Serializable {
         this.sizeList = sizeList;
     }
 
-    @Column(length = 10)
+    @Column(length = 30)
     public String getHex() {
         return hex;
     }
