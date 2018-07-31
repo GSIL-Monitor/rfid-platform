@@ -41,7 +41,7 @@ public class SaleOrderBillDtl extends BaseBillDtl {
     @Column()
     private Double profit = 0D;//OutVal - stockVal
     @Column()
-    private Double profitRate = 0D;//stockVal/outVal*100% 保留两位小数
+    private Double profitRate = 0D;//profit/outVal*100% 保留两位小数
 
     @Transient
     private Double tagPrice;//吊牌价格

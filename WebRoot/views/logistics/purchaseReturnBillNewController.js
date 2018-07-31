@@ -182,7 +182,7 @@ function initeditGrid(billId) {
             {name: 'sizeId', label: '尺码', width: 40},
             {name: 'sizeName', label: '尺名', width: 40},
             {
-                name: 'qty', label: '数量', editable: true, width: 40,
+                name: 'qty', label: '数量', width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -198,7 +198,7 @@ function initeditGrid(billId) {
             },
             {name: 'totPrice', label: '退货金额', width: 40},
             {
-                name: 'actPrice', label: '实际价格', editable: true, width: 40,
+                name: 'actPrice', label: '实际价格',  width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum

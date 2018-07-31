@@ -62,22 +62,27 @@ public class ColorController extends BaseController implements IBaseInfoControll
     @RequestMapping(value = "/save")
     @ResponseBody
     @Override
-    public MessageBox save(Color color) throws Exception {
-        this.logAllRequestParams();
-        Color col = CacheManager.getColorById(color.getColorId());
-        if (CommonUtil.isBlank(col)) {
-            col = new Color(color.getColorName(),color.getColorName(),color.getColorName());
-            col.setIsUse("Y");
+    public MessageBox save(Color color) {
+        try {
+            this.logAllRequestParams();
+            Color col = CacheManager.getColorById(color.getColorId());
+            if (CommonUtil.isBlank(col)) {
+                col = new Color(color.getColorName(),color.getColorName(),color.getColorName());
+                col.setIsUse("Y");
+            }
+            User u = getCurrentUser();
+            col.setOprId(u.getCode());
+            col.setColorName(color.getColorName());
+            //col.setColorId(color.getColorId());
+            col.setHex(color.getHex());
+            col.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            this.colorService.save(col);
+            CacheManager.refreshColorCache();
+            return returnSuccessInfo("ok",col);
+        }catch (Exception e){
+            e.printStackTrace();
+            return returnFailInfo("保存失败");
         }
-        User u = getCurrentUser();
-        col.setOprId(u.getCode());
-        col.setColorName(color.getColorName());
-        //col.setColorId(color.getColorId());
-        col.setHex(color.getHex());
-        col.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        this.colorService.save(col);
-        CacheManager.refreshColorCache();
-        return returnSuccessInfo("ok",col);
     }
 
     @RequestMapping(value = "/changeColorStatus")

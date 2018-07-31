@@ -1117,6 +1117,8 @@ function addNew() {
     initSelectDestForm();
     pageType="add";
     initButtonGroup(pageType);
+    $("#destId").empty();
+    $("#destId").val("--请选择入库库位--");
 }
 
 function save() {
@@ -1179,6 +1181,8 @@ function save() {
             }
         }
     });
+    $("#destId").empty();
+    $("#destId").val("--请选择入库库位--");
 }
 function quitback() {
     $.ajax({

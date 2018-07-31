@@ -2604,7 +2604,7 @@ public class BillConvertUtil {
             } else {
                 saleOrderBillDtl.setProfit(saleOrderBillDtl.getOutVal() - saleOrderBillDtl.getStockVal());
                 if (saleOrderBillDtl.getStockVal().intValue() != 0) {
-                    saleOrderBillDtl.setProfitRate(Double.parseDouble(CommonUtil.getDecimal(saleOrderBillDtl.getProfit() / saleOrderBillDtl.getStockVal() * 100, "######0.00")));
+                    saleOrderBillDtl.setProfitRate(Double.parseDouble(CommonUtil.getDecimal(saleOrderBillDtl.getProfit() / saleOrderBillDtl.getOutVal()* 100, "######0.00")));
                 } else {
                     saleOrderBillDtl.setProfitRate(0d);
                 }
@@ -3810,11 +3810,7 @@ public class BillConvertUtil {
                 if(styleTail.equals(BillConstant.styleNew.Alice)||styleTail.equals(BillConstant.styleNew.AncientStone)){
                     styleId=styleId.substring(0,styleIdLength-2);
                     Style style= CacheManager.getStyleById(styleId);
-                    if(CommonUtil.isBlank(style)){
-                        isUseOldStyle=false;
-                    }else{
-                        isUseOldStyle=true;
-                    }
+                    isUseOldStyle = !CommonUtil.isBlank(style);
                 }
                 String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
                 if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
@@ -3925,24 +3921,24 @@ public class BillConvertUtil {
                      field.setAccessible(true);
                    /*  System.out.println(field.getName());*/
                       if(field.getName().equals("noOutPutCode")){
-                          Method m = (Method) aClass.getMethod("get"+getMethodName(field.getName()));
+                          Method m = aClass.getMethod("get"+getMethodName(field.getName()));
                           String noOutPutCode = (String) m.invoke(t);// 调用getter方法获取属性值
                           if(CommonUtil.isNotBlank(noOutPutCode)){
                               String[] noOutPutCodes = noOutPutCode.split(",");
                               for(int i=0;i<noOutPutCodes.length;i++){
                                   AbnormalCodeMessage abnormalCodeMessage=new AbnormalCodeMessage();
                                   abnormalCodeMessage.setCode(noOutPutCodes[i]);
-                                  Method mBillNo = (Method) aClass.getMethod("getBillNo");
+                                  Method mBillNo = aClass.getMethod("getBillNo");
                                   abnormalCodeMessage.setBillNo((String) mBillNo.invoke(t));
-                                  Method mColorId = (Method) aClass.getMethod("getColorId");
+                                  Method mColorId = aClass.getMethod("getColorId");
                                   abnormalCodeMessage.setColorId((String) mColorId.invoke(t));
-                                  Method mSku = (Method) aClass.getMethod("getSku");
+                                  Method mSku = aClass.getMethod("getSku");
                                   abnormalCodeMessage.setSku((String) mSku.invoke(t));
-                                  Method mStyleId = (Method) aClass.getMethod("getStyleId");
+                                  Method mStyleId = aClass.getMethod("getStyleId");
                                   abnormalCodeMessage.setStyleId((String) mStyleId.invoke(t));
-                                  Method mSizeId = (Method) aClass.getMethod("getSizeId");
+                                  Method mSizeId = aClass.getMethod("getSizeId");
                                   abnormalCodeMessage.setSizeId((String) mSizeId.invoke(t));
-                                  abnormalCodeMessage.setId((String) mBillNo.invoke(t)+"_"+noOutPutCodes[i]);
+                                  abnormalCodeMessage.setId(mBillNo.invoke(t) +"_"+noOutPutCodes[i]);
                                   if(code.indexOf(noOutPutCodes[i])!=-1){
                                       abnormalCodeMessage.setStatus(0);
                                   }else {
