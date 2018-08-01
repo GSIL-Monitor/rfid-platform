@@ -57,10 +57,10 @@ public class VipCardController  extends BaseController implements IBaseInfoContr
     public MessageBox save(VipCard vipCard) throws Exception {
         this.logAllRequestParams();
         String pageType = this.getReqParam("pageType");
-        VipCard rank= this.vipCardService.get("id", vipCard.getId());
+        VipCard rank= this.vipCardService.get("rank", vipCard.getRank());
         if ("add".equals(pageType)) {
             if (CommonUtil.isNotBlank(rank)) {
-                return this.returnFailInfo("保存失败");
+                return this.returnFailInfo("保存失败,该等级已经存在！");
             } else {
                 rank = new VipCard();
                 rank.setId(vipCard.getRank());

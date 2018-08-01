@@ -18,12 +18,12 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
     if('ontouchstart' in document.documentElement) document.write("<script src='<%=basePath%>Olive/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 </script>
 <script src="<%=basePath%>Olive/assets/js/bootstrap.js"></script>
-
 <!-- page specific plugin scripts -->
 
 <!--[if lte IE 8]>
 <script src="<%=basePath%>Olive/assets/js/excanvas.js"></script>
 <![endif]-->
+<script src="<%=basePath%>Olive/assets/js/jquery.validate.js"></script>
 <script src="<%=basePath%>Olive/assets/js/jquery-ui.js"></script>
 <script src="<%=basePath%>Olive/assets/js/jquery-ui.custom.js"></script>
 <script src="<%=basePath%>Olive/assets/js/jquery.ui.touch-punch.js"></script>
