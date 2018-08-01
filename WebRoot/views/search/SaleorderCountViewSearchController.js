@@ -233,6 +233,7 @@ function exportExcelKendo() {
 }
 function exportExcelProPOI() {
     var filters = serializeToFilter($("#searchForm"));
+    console.info(filters);
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     var total = gridData.dataSource._total;
     var request = {};
@@ -291,9 +292,12 @@ function exportExcelProPOI() {
      });*/
 }
 function exportExcelPOI() {
+
     var filters = serializeToFilter($("#searchForm"));
     var gridData = $("#" + exportExcelid).data("kendoGrid");
+    console.info(filters);
     var total = gridData.dataSource._total;
+    console.log(total);
     var request = {};
     request.page = 1;
     request.pageSize = -1;
@@ -324,6 +328,8 @@ function exportExcelPOI() {
    $("#form1").attr("action",url);
    $("#gridId").val(exportExcelid);
    $("#request").val(JSON.stringify(request));
+   console.info(exportExcelid);
+    console.info(JSON.stringify(request));
     $("#form1").submit();
 
    /* $("#gridId").val(exportExcelid);
@@ -378,7 +384,6 @@ function initKendoUIGrid() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -1510,7 +1515,6 @@ function initKendoUIGridSalebusinessname(){
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -1702,7 +1706,6 @@ function initKendoUIGridSalebusinessname(){
     }
 }
 function initKendoUIGridSalebusinessnameno(){
-    debugger;
     exportExcelid = "searchsalebusinessnameGrid";
     if (isoneinitKendoUIGridSalebusinessname) {
         var filters = serializeToFilter($("#searchForm"));
@@ -2044,7 +2047,6 @@ function initKendoUIGridSaleorigname(){
                     title: "毛利",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var gross=parseFloat(data.gross).toFixed(2);
                         return gross;
                     }
@@ -2089,7 +2091,6 @@ function initKendoUIGridSaleorigname(){
                     title: "销售额",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var totactprice=parseFloat(data.totactprice).toFixed(2);
                         return totactprice;
                     }
@@ -2275,7 +2276,6 @@ function initKendoUIGridSaleorignameno(){
                     title: "销售退货金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
                         return salereturnmoney;
                     }

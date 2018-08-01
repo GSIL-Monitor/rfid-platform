@@ -32,8 +32,10 @@ import com.casesoft.dmc.service.sys.impl.UnitService;
 import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
+import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
+import org.jeecgframework.poi.excel.entity.params.ExcelExportEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.*;
@@ -199,12 +202,68 @@ public class SaleorderConutViewSearch extends BaseController {
         response.getOutputStream().write(data);
         response.flushBuffer();
     }
+    //根据权限获得导出字段
+    private List<ExcelExportEntity> getExcelField(List<ExcelExportEntity> entityList,Class clazz,boolean precast,boolean gross,boolean grossprofits){
+        // 获取实体类的所有属性信息，返回Field数组
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if(!field.isAccessible()){
+                field.setAccessible(true);
+            }
+            //获取字段上注解的名称
+            Excel excel = field.getAnnotation(Excel.class);
+            if("gross".equals(field.getName())){
+                if(gross){
+                    entityList.add(new ExcelExportEntity(excel.name(),field.getName(),25));
+                }
+            }
+            else if("precast".equals(field.getName())){
+
+                if(precast){
+                    entityList.add(new ExcelExportEntity(excel.name(),field.getName(),25));
+                }
+
+            }
+            else if("grossprofits".equals(field.getName())){
+                if(grossprofits){
+                    entityList.add(new ExcelExportEntity(excel.name(),field.getName(),25));
+                }
+            }
+            else {
+                entityList.add(new ExcelExportEntity(excel.name(),field.getName(),25));
+            }
+        }
+        return entityList;
+    }
 
 
     @RequestMapping(value = "/export")
     @ResponseBody
     public void export(String gridId, String request) throws IOException {
         DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
+        //根据权限获得字段
+        User currentUser = getCurrentUser();
+        List<ResourceButton> resourceButtondivList = this.resourceButtonService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
+        boolean precast= false;
+        boolean gross = false;
+        boolean grossprofits = false;
+        for (ResourceButton resourceButton : resourceButtondivList){
+            if("precast".equals(resourceButton.getButtonId())){
+                if(resourceButton.getIshow() == 0){
+                    precast = true;
+                }
+            }
+            if("gross".equals(resourceButton.getButtonId())){
+                if(resourceButton.getIshow() == 0){
+                    gross = true;
+                }
+            }
+            if("grossprofits".equals(resourceButton.getButtonId())){
+                if(resourceButton.getIshow() == 0){
+                    grossprofits = true;
+                }
+            }
+        }
         try{
             if(gridId.equals("searchGrid")){
                Long startTime= System.currentTimeMillis();
@@ -213,6 +272,7 @@ public class SaleorderConutViewSearch extends BaseController {
                 logger.error("查询销售明细所需的时间:"+(endtTime-startTime));
                 Long exportstartTime= System.currentTimeMillis();
                 List<SaleorderCountView> SaleDtlViewList = (List<SaleorderCountView>) sourceResultSaleDtl.getData();
+
                 ExportParams params = new ExportParams("销售明细", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
                 String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
@@ -272,6 +332,32 @@ public class SaleorderConutViewSearch extends BaseController {
                 logger.error("查询按销售员汇总所需的时间:"+(endtTime-startTime));
                 Long exportstartTime= System.currentTimeMillis();
                 List<SaleBybusinessname> SalebusinessnameList = (List<SaleBybusinessname>) sourceResultbusinessnameDtl.getData();
+
+                //反射获得类字段
+                Class clazz = SaleBybusinessname.class;
+                List<ExcelExportEntity> entityList = new ArrayList<ExcelExportEntity>();
+                entityList = this.getExcelField(entityList,clazz,precast,gross,grossprofits);
+                List<Map<String,Object>> dataResult = new ArrayList<>();
+                for(SaleBybusinessname saleBybusinessname :SalebusinessnameList){
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("busnissname",saleBybusinessname.getBusnissname());
+                    map.put("origname",saleBybusinessname.getOrigname());
+                    map.put("salesum",saleBybusinessname.getSalesum());
+                    map.put("salereturnsum",saleBybusinessname.getSalereturnsum());
+                    map.put("salemoney",saleBybusinessname.getSalemoney());
+                    map.put("salereturnmoney",saleBybusinessname.getSalereturnmoney());
+                    map.put("totactprice",saleBybusinessname.getTotactprice());
+                    if(gross){
+                        map.put("gross",saleBybusinessname.getGross());
+                    }
+                    if(precast){
+                        map.put("precast",saleBybusinessname.getPrecast());
+                    }
+                    if(grossprofits){
+                        map.put("grossprofits",saleBybusinessname.getGrossprofits());
+                    }
+                    dataResult.add(map);
+                }
                 ExportParams params = new ExportParams("按销售员汇总", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
                 String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
@@ -280,9 +366,20 @@ public class SaleorderConutViewSearch extends BaseController {
                 if(!files.exists())
                     files.mkdirs();
                 File file =new File(files,"按销售员汇总-" +  dateString + ".xlsx");
+                Workbook workbook = ExcelExportUtil.exportExcel(params,entityList, dataResult);
+
+
+               /* ExportParams params = new ExportParams("按销售员汇总", "sheet1", ExcelType.XSSF);
+                String path = Constant.Folder.Report_File_Folder;
+                String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
+                File files=new File(path + "\\按销售员汇总-" +  dateString + ".xlsx");
+
+                if(!files.exists())
+                    files.mkdirs();
+                File file =new File(files,"按销售员汇总-" +  dateString + ".xlsx");
                 //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleorderCountView.class, SaleDtlViewList);
-                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleBybusinessname.class, SalebusinessnameList);
-                ExcelExportUtil.closeExportBigExcel();
+                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleBybusinessname.class, SalebusinessnameList);*/
+                //ExcelExportUtil.closeExportExcel();
                 //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
                 // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
                 FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
@@ -302,6 +399,30 @@ public class SaleorderConutViewSearch extends BaseController {
                 logger.error("查询按部门汇总所需的时间:"+(endtTime-startTime));
                 Long exportstartTime= System.currentTimeMillis();
                 List<SaleByOrignames> SaleOrignamesList = (List<SaleByOrignames>) sourceResultbusinessnameDtl.getData();
+                //反射获得类字段
+                Class clazz = SaleByOrignames.class;
+                List<ExcelExportEntity> entityList = new ArrayList<ExcelExportEntity>();
+                entityList = this.getExcelField(entityList,clazz,precast,gross,grossprofits);
+                List<Map<String,Object>> dataResult = new ArrayList<>();
+                for(SaleByOrignames saleByOrignames :SaleOrignamesList){
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("origname",saleByOrignames.getOrigname());
+                    map.put("salesum",saleByOrignames.getSalesum());
+                    map.put("salereturnsum",saleByOrignames.getSalereturnsum());
+                    map.put("salemoney",saleByOrignames.getSalemoney());
+                    map.put("salereturnmoney",saleByOrignames.getSalereturnmoney());
+                    map.put("totactprice",saleByOrignames.getTotactprice());
+                    if(gross){
+                        map.put("gross",saleByOrignames.getGross());
+                    }
+                    if(precast){
+                        map.put("precast",saleByOrignames.getPrecast());
+                    }
+                    if(grossprofits){
+                        map.put("grossprofits",saleByOrignames.getGrossprofits());
+                    }
+                    dataResult.add(map);
+                }
                 ExportParams params = new ExportParams("按部门汇总", "sheet1", ExcelType.XSSF);
                 String path = Constant.Folder.Report_File_Folder;
                 String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
@@ -311,8 +432,8 @@ public class SaleorderConutViewSearch extends BaseController {
                     files.mkdirs();
                 File file =new File(files,"按部门汇总-" +  dateString + ".xlsx");
                 //Workbook workbook = ExcelExportUtil.exportExcel(params, SaleorderCountView.class, SaleDtlViewList);
-                Workbook workbook = ExcelExportUtil.exportBigExcel(params, SaleByOrignames.class, SaleOrignamesList);
-                ExcelExportUtil.closeExportBigExcel();
+                Workbook workbook = ExcelExportUtil.exportExcel(params,entityList, dataResult);
+                //ExcelExportUtil.closeExportBigExcel();
                 //String dateString = CommonUtil.getDateString(new Date(), "yyyyMMdd HH_mm_ss");
                 // FileOutputStream fos = new FileOutputStream(path + "\\销售明细-" +  dateString + ".xlsx");
                 FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());

@@ -88,7 +88,9 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 					warehouse.addAll(this.warehouseService.find(filters));
 				}
 			}else{
-				warehouse.addAll(this.warehouseService.find(filters));
+				if(this.warehouseService.find(filters) != null){
+					warehouse.addAll(this.warehouseService.find(filters));
+				}
 			}
 		}
 		return warehouse;
