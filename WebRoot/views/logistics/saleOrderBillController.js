@@ -13,7 +13,7 @@ var autoSelect =false;//是否自动选中
 var showScanDialog = false;
 var isCheckWareHouse=false;//是否检测出库仓库
 $(function () {
-
+    console.log(isUserAbnormal)
     /*初始化左侧grig*/
     initSearchGrid();
     /*初始化右侧grig*/
@@ -856,7 +856,7 @@ function initeditGrid(billId) {
         cellsubmit: 'clientArray',
         afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
             var rowData = $('#addDetailgrid').getRowData(rowid);
-
+            debugger
             if ((parseInt(rowData.qty) - parseInt(rowData.outQty)) >= parseInt(rowData.returnQty) || rowData.returnQty == "") {
                 $('#addDetailgrid').editCell(iRow, iCol, true);
             } else {
@@ -870,7 +870,7 @@ function initeditGrid(billId) {
             if (cellname === "discount") {
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
-                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "puPrice")){
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "puPrice")&&isUserAbnormal){
                     $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "puPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
                     var_actPrice =  $('#addDetailgrid').getCell(rowid, "puPrice");
                     $('#addDetailgrid').setCell(rowid, "actPrice", $('#addDetailgrid').getCell(rowid, "puPrice"));
@@ -1203,7 +1203,7 @@ function setDiscount() {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             //判断实际价格是不是小于门店批发价格
             var var_actPrice;
-            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<$('#addDetailgrid').getCell(value, "puPrice")){
+            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<$('#addDetailgrid').getCell(value, "puPrice")&&isUserAbnormal){
                 $('#addDetailgrid').setCell(value, "discount", parseFloat($('#addDetailgrid').getCell(value, "puPrice")/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
                 var_actPrice =  $('#addDetailgrid').getCell(value, "puPrice");
                 $('#addDetailgrid').setCell(value, "actPrice", $('#addDetailgrid').getCell(value, "puPrice"));
@@ -1553,7 +1553,7 @@ function addProductInfo(status) {
             }
             productInfo.puPrice=styleRow.puPrice;
             //判断实际价格是不是小于门店批发价格
-            if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice){
+            if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice&&isUserAbnormal){
                 productInfo.actPrice = styleRow.puPrice;
                 productInfo.discount = parseFloat(styleRow.puPrice/productInfo.price).toFixed(2)*100;
                 productInfo.abnormalStatus=1;
@@ -1801,7 +1801,7 @@ function addProductsOnCode() {
                 }
                 productInfo.puPrice=productInfo.puPrice;
                 //判断实际价格是不是小于门店批发价格
-                if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice){
+                if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice&&isUserAbnormal){
                     productInfo.actPrice = productInfo.puPrice;
                     productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
                     productInfo.abnormalStatus=1;
@@ -1893,7 +1893,7 @@ function addProductsNoOutPutCode(productInfo) {
         }
         productInfo.puPrice=productInfo.puPrice;
         //判断实际价格是不是小于门店批发价格
-        if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice){
+        if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice&&isUserAbnormal){
             productInfo.actPrice = productInfo.puPrice;
             productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
             productInfo.abnormalStatus=1;

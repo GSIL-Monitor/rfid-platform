@@ -18,10 +18,7 @@ import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
-import com.casesoft.dmc.model.sys.Resource;
-import com.casesoft.dmc.model.sys.ResourceButton;
-import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
@@ -31,6 +28,7 @@ import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +67,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private ResourceService resourceService;
     @Autowired
     private ResourceButtonService resourceButtonService;
+    @Autowired
+    private SettingService settingService;
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -104,6 +104,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         mv.addObject("pageType", "add");
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());
+        Setting setting = this.settingService.get("id", "isUserAbnormal");
+        mv.addObject("isUserAbnormal", setting.getValue());
         return mv;
     }
 
