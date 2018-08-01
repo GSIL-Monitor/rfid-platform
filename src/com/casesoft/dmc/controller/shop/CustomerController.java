@@ -56,13 +56,21 @@ public class CustomerController extends BaseController implements IBaseInfoContr
     @Override
     public Page<Customer> findPage(Page<Customer> page) throws Exception {
         this.logAllRequestParams();//日志
-        List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
         String ownerId = getCurrentUser().getOwnerId();
         String roleId = getCurrentUser().getRoleId();
-        if(roleId.equals("JMSJS")){
+        return findPage(page, ownerId, roleId, "desc");
+    }
+
+    @RequestMapping("/pageWS")
+    @ResponseBody
+    public Page<Customer> findPage(Page<Customer> page, String ownerId, String roleId, String order) throws  Exception{
+        List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
+        if("JMSJS".equals(roleId)){
             PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
             filters.add(filter);
         }
+        page.setSort("updateTime");
+        page.setOrder(order);
         page.setPageProperty();
         page = this.customerService.findPage(page, filters);
         return page;
@@ -102,6 +110,13 @@ public class CustomerController extends BaseController implements IBaseInfoContr
             return null;
         }
     }
+
+    @RequestMapping(value="/getCustomerByIdWS")
+    @ResponseBody
+    public Customer getCustomerById(String id){
+        return this.customerService.getCustomerById(id);
+    }
+
     @RequestMapping(value = "/save")
     @ResponseBody
     @Override

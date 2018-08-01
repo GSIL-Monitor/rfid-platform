@@ -33,7 +33,7 @@ public class VipCardController  extends BaseController implements IBaseInfoContr
         ModelAndView mv = new ModelAndView("/views/shop/vipCard");
         return mv;
     }
-    @RequestMapping("/page")
+    @RequestMapping(value = {"/page","/pageWS"})
     @ResponseBody
     @Override
     public Page<VipCard> findPage(Page<VipCard> page) throws Exception {
@@ -43,8 +43,7 @@ public class VipCardController  extends BaseController implements IBaseInfoContr
         page = this.vipCardService.findPage(page, filters);
         return page;
     }
-
-    @RequestMapping(value = "/list")
+    @RequestMapping(value = {"/list","/listWS"})
     @ResponseBody()
     @Override
     public List<VipCard> list() throws Exception {
@@ -52,7 +51,7 @@ public class VipCardController  extends BaseController implements IBaseInfoContr
         return vipCards;
     }
     /*保存*/
-    @RequestMapping(value = "/save")
+    @RequestMapping(value = {"/save","/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(VipCard vipCard) throws Exception {
@@ -152,5 +151,11 @@ public class VipCardController  extends BaseController implements IBaseInfoContr
     @Override
     public String index() {
         return "/views/shop/vipCard";
+    }
+
+    @RequestMapping(value = {"/getVipCardById","/getVipCardByIdWS"})
+    @ResponseBody
+    public VipCard getVipCardById(String id){
+        return this.vipCardService.get("id", id);
     }
 }

@@ -87,6 +87,20 @@ public class UserController extends BaseController implements IBaseInfoControlle
     }
 		return page;
 	}
+
+    @RequestMapping("/pageWS")
+    @ResponseBody
+    public Page<User> findUserPage(Page<User> page) throws Exception {
+        this.logAllRequestParams();//日志
+        List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
+        System.out.println("filters");
+        page.setPageProperty();
+
+        page=this.userService.findPage(page, filters);
+
+        return page;
+    }
+
     @RequestMapping("/list")
     @ResponseBody
 	@Override
