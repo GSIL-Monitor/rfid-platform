@@ -940,6 +940,7 @@ function wareHouseOut() {
             }
         });
     } else {
+        cs.closeProgressBar();
         bootbox.alert("请先保存当前单据");
     }
 
