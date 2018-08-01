@@ -647,7 +647,7 @@ function save() {
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
 
-    if ($("#edit_origId").val() == $("#search_destId").val()) {
+    if ($("#edit_origId").val() == $("#edit_destId").val()) {
         bootbox.alert("请选择不同的仓库进行调拨");
         cs.closeProgressBar();
         return;
