@@ -166,7 +166,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmer">
                                     <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
-                                        <span>客户(供应商):</span>
+                                        <span>客户:</span>
                                     </div>
                                     <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
                                         <span>xxxxxx</span>
@@ -189,7 +189,122 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div id="printTopPI" style="display: none">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="storeNamePI">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                    </div>
+                                    <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                         <span >销售单</span>
+                                     </div>--%>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billTypePI">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
+                                    </div>
+                                    <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                         <span >销售单</span>
+                                     </div>--%>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billNoPI" >
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>单号:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBillPI">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>制单人:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDatePI">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>日期:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmerPI">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>供应商:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remarkPI">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>备注:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="printTopPR" style="display: none">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="storeNamePR">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                    </div>
+                                    <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                         <span >销售单</span>
+                                     </div>--%>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billTypePR">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
+                                    </div>
+                                    <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
+                                         <span >销售单</span>
+                                     </div>--%>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billNoPR" >
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>单号:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="makeBillPR">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>制单人:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="billDatePR">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>日期:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="coustmerPR">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>供应商:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" id="remarkPR">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>备注:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div id="edit-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
 
                                 <table style="text-align: center;font-size:12px;"class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
@@ -323,7 +438,7 @@
                                         <option value="PI">采购单据</option>
                                         <option value="PR">采购退货</option>
                                         <option value="SR">销售退货</option>
-                                        <option value="TR">调拨单</option>
+                                       <%-- <option value="TR">调拨单</option>--%>
                                     </select>
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
@@ -383,7 +498,7 @@
                                         <li class="headTitleLi">
                                             <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmer')">
                                                 <i></i>
-                                                <span>客户(供应商)</span>
+                                                <span>客户</span>
                                             </div>
                                         </li>
                                         <li class="headTitleLi">
@@ -394,6 +509,100 @@
                                         </li>
                                         <li class="headTitleLi">
                                             <div class="stecs on" data-name="remark" onclick="selectThis(this,'remark')">
+                                                <i></i>
+                                                <span>备注</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="headTitleDiv" id="headPrintPI">
+                                    <ul>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="storeName" onclick="selectThis(this,'storeNamePI')">
+                                                <i></i>
+                                                <span>门店名称</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billType" onclick="selectThis(this,'billTypePI')">
+                                                <i></i>
+                                                <span>小票类型</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billNo" onclick="selectThis(this,'billNoPI')">
+                                                <i></i>
+                                                <span>单号</span>
+                                            </div>
+                                        </li>
+
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="makeBill" onclick="selectThis(this,'makeBillPI')">
+                                                <i></i>
+                                                <span>制单人</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billDate" onclick="selectThis(this,'billDate')">
+                                                <i></i>
+                                                <span>日期</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmerPI')">
+                                                <i></i>
+                                                <span>供应商</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="remark" onclick="selectThis(this,'remark')">
+                                                <i></i>
+                                                <span>备注</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="headTitleDiv" id="headPrintPR">
+                                    <ul>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="storeName" onclick="selectThis(this,'storeNamePR')">
+                                                <i></i>
+                                                <span>门店名称</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billType" onclick="selectThis(this,'billTypePR')">
+                                                <i></i>
+                                                <span>小票类型</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billNo" onclick="selectThis(this,'billNoPR')">
+                                                <i></i>
+                                                <span>单号</span>
+                                            </div>
+                                        </li>
+
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="makeBill" onclick="selectThis(this,'makeBillPR')">
+                                                <i></i>
+                                                <span>制单人</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billDate" onclick="selectThis(this,'billDatePR')">
+                                                <i></i>
+                                                <span>日期</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="billDate" onclick="selectThis(this,'coustmerPR')">
+                                                <i></i>
+                                                <span>供应商</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="remark" onclick="selectThis(this,'remarkPR')">
                                                 <i></i>
                                                 <span>备注</span>
                                             </div>
@@ -472,33 +681,63 @@
                         <div id="printTopA4">
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
-
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billType" id="billTypeA4" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
-                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="coustmer" id="coustmerA4" style="display:table-cell;vertical-align:middle;text-align:center">客户(供应商):xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="coustmer" id="coustmerA4" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billNo" id="billNoA4" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billDate" id="billDateA4" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="makeBill" id="makeBillA4" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
                                 <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="remark" id="remarkA4" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
                             </div>
-                            <%-- <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="coustmer" id="coustmerA4">
-                               <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
-                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billNo" id="billNoA4">
-                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
-                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billDate" id="billDateA4">
-                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
-                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="makeBill" id="makeBillA4">
-                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
-                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="remark" id="remarkA4">
-                                 <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
-                             </div>--%>
+                        </div>
+                        <div id="printTopA4PI" style="display: none">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4PI" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billType" id="billTypeA4PI" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="coustmer" id="coustmerA4PI" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billNo" id="billNoA4PI" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billDate" id="billDateA4PI" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="makeBill" id="makeBillA4PI" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="remark" id="remarkA4PI" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                            </div>
+                        </div>
+                        <div id="printTopA4PR" style="display: none">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4PR" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billType" id="billTypeA4PR" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="coustmer" id="coustmerA4PR" style="display:table-cell;vertical-align:middle;text-align:center">客户:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billNo" id="billNoA4PR" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billDate" id="billDateA4PR" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="makeBill" id="makeBillA4PR" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="remark" id="remarkA4PR" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                            </div>
+                        </div>
+                        <div id="printTopA4TR" style="display: none">
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameA4TR" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="billType" id="billTypeA4TR" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="origUnitName" id="origUnitNameA4TR" style="display:table-cell;vertical-align:middle;text-align:center">发货方:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="destUnitName" id="destUnitNameA4TR" style="display:table-cell;vertical-align:middle;text-align:center">收货方:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billNo" id="billNoA4TR" style="display:table-cell;vertical-align:middle;text-align:center">单号:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="billDate" id="billDateA4TR" style="display:table-cell;vertical-align:middle;text-align:center">日期:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="makeBill" id="makeBillA4TR" style="display:table-cell;vertical-align:middle;text-align:center">制单人:xxxxxxxxxxxx</span>
+                                <span class="col-xs-6 col-sm-6 col-md-6 col-lg-6" data-name="remark" id="remarkA4TR" style="display:table-cell;vertical-align:middle;text-align:center">备注:xxxxxxxxxxxx</span>
+                            </div>
                         </div>
                         <div id="edit-A4-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
 
@@ -654,11 +893,161 @@
                                             <li class="headTitleLi">
                                                 <div class="stecs on" data-name="coustmer" onclick="selectThisA4(this,'coustmerA4')">
                                                     <i></i>
-                                                    <span>客户(供应商)</span>
+                                                    <span>客户</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
                                                 <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remarkA4')">
+                                                    <i></i>
+                                                    <span>备注</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="headTitleDiv" id="headPrintA4PR">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'storeNameA4PR')">
+                                                    <i></i>
+                                                    <span>门店名称</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billType" onclick="selectThisA4(this,'billTypeA4PR')">
+                                                    <i></i>
+                                                    <span>单据类型</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'billNoA4PR')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="makeBill" onclick="selectThisA4(this,'makeBillA4PR')">
+                                                    <i></i>
+                                                    <span>制单人</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'billDateA4PR')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="coustmer" onclick="selectThisA4(this,'coustmerA4PR')">
+                                                    <i></i>
+                                                    <span>供应商</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remarkA4PR')">
+                                                    <i></i>
+                                                    <span>备注</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="headTitleDiv" id="headPrintA4PI">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'storeNameA4PI')">
+                                                    <i></i>
+                                                    <span>门店名称</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billType" onclick="selectThisA4(this,'billTypeA4PI')">
+                                                    <i></i>
+                                                    <span>单据类型</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'billNoA4PI')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="makeBill" onclick="selectThisA4(this,'makeBillA4PI')">
+                                                    <i></i>
+                                                    <span>制单人</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'billDateA4PI')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="coustmer" onclick="selectThisA4(this,'coustmerA4PI')">
+                                                    <i></i>
+                                                    <span>供应商</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remarkA4PI')">
+                                                    <i></i>
+                                                    <span>备注</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="headTitleDiv" id="headPrintA4TR">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisA4(this,'storeNameA4TR')">
+                                                    <i></i>
+                                                    <span>门店名称</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billType" onclick="selectThisA4(this,'billTypeA4TR')">
+                                                    <i></i>
+                                                    <span>单据类型</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisA4(this,'billNoA4TR')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="makeBill" onclick="selectThisA4(this,'makeBillA4TR')">
+                                                    <i></i>
+                                                    <span>制单人</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisA4(this,'billDateA4TR')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="origUnitName" onclick="selectThisA4(this,'origUnitNameA4TR')">
+                                                    <i></i>
+                                                    <span>发货方</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="origUnitName" onclick="selectThisA4(this,'destUnitNameA4TR')">
+                                                    <i></i>
+                                                    <span>收货方</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="remark" onclick="selectThisA4(this,'remarkA4TR')">
                                                     <i></i>
                                                     <span>备注</span>
                                                 </div>
@@ -794,9 +1183,40 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billNo" id="billNoSanLian" style="display:table-cell;vertical-align:middle;text-align:center">单号:xx</span>
-                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="coustmer" id="coustmerSanLian" style="display:table-cell;vertical-align:middle;text-align:center">客户(供应商):xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="coustmer" id="coustmerSanLian" style="display:table-cell;vertical-align:middle;text-align:center">客户:xx</span>
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="businessId" id="businessIdSanLian" style="display:table-cell;vertical-align:middle;text-align:center">销售员:xx</span>
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billDate" id="billDateSanLian" style="display:table-cell;vertical-align:middle;text-align:center">日期:xx</span>
+                                </div>
+                            </div>
+                            <div id="printTopSanLianPI"style="display: none">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                    <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameSanLianPI" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billNo" id="billNoSanLianPI" style="display:table-cell;vertical-align:middle;text-align:center">单号:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="coustmer" id="coustmerSanLianPI" style="display:table-cell;vertical-align:middle;text-align:center">供应商:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billDate" id="billDateSanLianPI" style="display:table-cell;vertical-align:middle;text-align:center">日期:xx</span>
+                                </div>
+                            </div>
+                            <div id="printTopSanLianPR"style="display: none">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                    <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameSanLianPR" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billNo" id="billNoSanLianPR" style="display:table-cell;vertical-align:middle;text-align:center">单号:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="coustmer" id="coustmerSanLianPR" style="display:table-cell;vertical-align:middle;text-align:center">供应商:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billDate" id="billDateSanLianPR" style="display:table-cell;vertical-align:middle;text-align:center">日期:xx</span>
+                                </div>
+                            </div>
+                            <div id="printTopSanLianTR" style="display: none">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
+                                    <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" data-name="storeName" id="storeNameSanLianTR" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billNo" id="billNoSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">单号:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="origUnitName" id="origUnitNameSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">发货方:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="origUnitName" id="destUnitNameSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">收货方:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billDate" id="billDateSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">日期:xx</span>
                                 </div>
                             </div>
                             <div id="edit-SanLian-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12">
@@ -953,7 +1373,7 @@
                                             <li class="headTitleLi">
                                                 <div class="stecs on" data-name="coustmer" onclick="selectThisSanLian(this,'coustmerSanLian')">
                                                     <i></i>
-                                                    <span>客户(供应商)</span>
+                                                    <span>客户</span>
                                                 </div>
                                             </li>
                                             <li class="headTitleLi">
@@ -964,6 +1384,96 @@
                                             </li>
                                             <li class="headTitleLi">
                                                 <div class="stecs on" data-name="billDate" onclick="selectThisSanLian(this,'billDateSanLian')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="headTitleDiv" id="headPrintSanLianPI">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisSanLian(this,'storeNameSanLianPI')">
+                                                    <i></i>
+                                                    <span>店铺名称</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisSanLian(this,'billNoSanLianPI')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="coustmer" onclick="selectThisSanLian(this,'coustmerSanLianPI')">
+                                                    <i></i>
+                                                    <span>供应商</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisSanLian(this,'billDateSanLianPI')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="headTitleDiv" id="headPrintSanLianPR">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisSanLian(this,'storeNameSanLianPR')">
+                                                    <i></i>
+                                                    <span>店铺名称</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisSanLian(this,'billNoSanLianPR')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="coustmer" onclick="selectThisSanLian(this,'coustmerSanLianPR')">
+                                                    <i></i>
+                                                    <span>供应商</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisSanLian(this,'billDateSanLianPR')">
+                                                    <i></i>
+                                                    <span>日期</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="headTitleDiv" id="headPrintSanLianTR">
+                                        <ul>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="storeName" onclick="selectThisSanLian(this,'storeNameSanLianTR')">
+                                                    <i></i>
+                                                    <span>店铺名称</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billNo" onclick="selectThisSanLian(this,'billNoSanLianTR')">
+                                                    <i></i>
+                                                    <span>单号</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="origUnitName" onclick="selectThisSanLian(this,'origUnitNameSanLianTR')">
+                                                    <i></i>
+                                                    <span>发货方</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="destUnitName" onclick="selectThisSanLian(this,'destUnitNameSanLianTR')">
+                                                    <i></i>
+                                                    <span>收货方</span>
+                                                </div>
+                                            </li>
+                                            <li class="headTitleLi">
+                                                <div class="stecs on" data-name="billDate" onclick="selectThisSanLian(this,'billDateSanLianTR')">
                                                     <i></i>
                                                     <span>日期</span>
                                                 </div>

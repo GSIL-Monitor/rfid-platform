@@ -404,7 +404,15 @@ function savePrint() {
         var sum=0;
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
-        $("#printTop").find(".Print-Bg-Top-div").each(function (index,element) {
+        var printTop="";
+        if($("#receiptType").val()=="PI"){
+            printTop="printTopPI";
+        }else if($("#receiptType").val()=="PR"){
+            printTop="printTopPR";
+        }else {
+            printTop="printTop";
+        }
+        $("#"+printTop).find(".Print-Bg-Top-div").each(function (index,element) {
             if(index==0){
                 if(!$(this).find(".col-xs-8").is(":hidden")){
                     var id="\""+$(this).find(".col-xs-8").attr("id")+"\"";
@@ -598,17 +606,45 @@ function findPrintSet(sum) {
                     printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
                     $("#footExtendWrite").val(printFootExtend);
                     $("#footExtend").find("span").html(printFootExtend);
-                    $("#headPrint").find("div").each(function (index,element) {
-                        var name=$(this).data("name");
+                    //根据单据类型加载表头数据
+                    if($("#receiptType").val()=="PI"){
+                        $("#headPrintPI").find("div").each(function (index,element) {
+                            var name=$(this).data("name");
 
-                        if(!(result.printCode.indexOf(name)!= -1)){
-                            $(this).attr("class","stecs");
-                            $("#"+name).hide();
-                        }else{
-                            $(this).attr("class","stecs on");
-                            $("#"+name).show();
-                        }
-                    });
+                            if(!(result.printCode.indexOf(name)!= -1)){
+                                $(this).attr("class","stecs");
+                                $("#"+name).hide();
+                            }else{
+                                $(this).attr("class","stecs on");
+                                $("#"+name).show();
+                            }
+                        });
+                    }else if($("#receiptType").val()=="PR"){
+                        $("#headPrintPR").find("div").each(function (index,element) {
+                            var name=$(this).data("name");
+
+                            if(!(result.printCode.indexOf(name)!= -1)){
+                                $(this).attr("class","stecs");
+                                $("#"+name).hide();
+                            }else{
+                                $(this).attr("class","stecs on");
+                                $("#"+name).show();
+                            }
+                        });
+                    }else {
+                        $("#headPrint").find("div").each(function (index,element) {
+                            var name=$(this).data("name");
+
+                            if(!(result.printCode.indexOf(name)!= -1)){
+                                $(this).attr("class","stecs");
+                                $("#"+name).hide();
+                            }else{
+                                $(this).attr("class","stecs on");
+                                $("#"+name).show();
+                            }
+                        });
+                    }
+
                     $("#footerPrint").find("div").each(function (index,element) {
                         var name=$(this).data("name");
 
@@ -676,7 +712,18 @@ function findPrintSetA4(sum) {
                     $("#receiptNameA4").val(result.name);
                     $("#receiptTypeA4").val(result.type);
                     $("#commonTypeA4").val(result.commonType);
-                    $("#headPrintA4").find("div").each(function (index,element) {
+                    var headPrintA4="";
+                    if($("#receiptTypeA4").val()=="PI"){
+                        headPrintA4="headPrintA4PI"
+                    }else if($("#receiptTypeA4").val()=="PR"){
+                        headPrintA4="headPrintA4PR"
+                    }else if($("#receiptTypeA4").val()=="TR"){
+                        headPrintA4="headPrintA4TR"
+                    }else {
+                        headPrintA4="headPrintA4"
+                    }
+
+                    $("#"+headPrintA4).find("div").each(function (index,element) {
                         var name=$(this).data("name");
 
                         if(!(result.printCode.indexOf(name)!= -1)){
@@ -772,7 +819,17 @@ function findPrintSetSanLian(sum) {
                     printFootExtend=printFootExtend.replace(/\\n/g, "<br>");
                     $("#footExtendWriteSanLian").val(printFootExtend);
                     $("#footExtendSanLian").find("span").html(printFootExtend);
-                    $("#headPrintSanLian").find("div").each(function (index,element) {
+                    var headPrintSanLian="";
+                    if($("#receiptTypeSanLian").val()=="PI"){
+                        headPrintSanLian="headPrintSanLianPI";
+                    }else if($("#receiptTypeSanLian").val()=="PR"){
+                        headPrintSanLian="headPrintSanLianPR";
+                    }else if($("#receiptTypeSanLian").val()=="TR"){
+                        headPrintSanLian="headPrintSanLianTR";
+                    }else{
+                        headPrintSanLian="headPrintSanLian";
+                    }
+                    $("#"+headPrintSanLian).find("div").each(function (index,element) {
                         var name=$(this).data("name");
 
                         if(!(result.printCode.indexOf(name)!= -1)){
@@ -919,6 +976,30 @@ function receiptTypeSelect() {
             findPrintSet(sum);
         }
     });
+    //根据不同的单据显示不同的表头
+    var receiptType=$("#receiptType").val();
+    if(receiptType=="PI"){
+        $("#printTop").hide();
+        $("#printTopPI").show();
+        $("#printTopPR").hide();
+        $("#headPrint").hide();
+        $("#headPrintPI").show();
+        $("#headPrintPR").hide();
+    }else if(receiptType=="PR"){
+        $("#printTop").hide();
+        $("#printTopPI").hide();
+        $("#printTopPR").show();
+        $("#headPrint").hide();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").show();
+    }else{
+        $("#printTop").show();
+        $("#printTopPI").hide();
+        $("#printTopPR").hide();
+        $("#headPrint").show();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").hide();
+    }
 
 }
 function receiptTypeSelectSanLian() {
@@ -931,6 +1012,34 @@ function receiptTypeSelectSanLian() {
             findPrintSetSanLian(sum);
         }
     });
+    if($("#receiptTypeSanLian").val()=="PI"){
+        $("#printTopSanLian").hide();
+        $("#printTopSanLianPI").show();
+        $("#printTopSanLianPR").hide();
+        $("#printTopSanLianTR").hide();
+        $("#headPrintSanLian").hide();
+        $("#headPrintSanLianPI").show();
+        $("#headPrintSanLianPR").hide();
+        $("#headPrintSanLianTR").hide();
+    }else if($("#receiptTypeSanLian").val()=="PR"){
+        $("#printTopSanLian").hide();
+        $("#printTopSanLianPI").hide();
+        $("#printTopSanLianPR").show();
+        $("#printTopSanLianTR").hide();
+        $("#headPrintSanLian").hide();
+        $("#headPrintSanLianPI").hide();
+        $("#headPrintSanLianPR").show();
+        $("#headPrintSanLianTR").hide();
+    }else if($("#receiptTypeSanLian").val()=="TR"){
+        $("#printTopSanLian").hide();
+        $("#printTopSanLianPI").hide();
+        $("#printTopSanLianPR").hide();
+        $("#printTopSanLianTR").show();
+        $("#headPrintSanLian").hide();
+        $("#headPrintSanLianPI").hide();
+        $("#headPrintSanLianPR").hide();
+        $("#headPrintSanLianTR").show();
+    }
 }
 function receiptTypeSelectA4() {
     var sum;
@@ -942,6 +1051,47 @@ function receiptTypeSelectA4() {
             findPrintSetA4(sum);
         }
     });
+    if($("#receiptTypeA4").val()=="PI"){
+        $("#headPrintA4PI").show();
+        $("#headPrintA4PR").hide();
+        $("#headPrintA4TR").hide();
+        $("#headPrintA4").hide();
+        $("#printTopA4").hide();
+        $("#printTopA4PI").show();
+        $("#printTopA4PR").hide();
+        $("#printTopA4TR").hide();
+    }else if($("#receiptTypeA4").val()=="PR"){
+        $("#headPrintA4PI").hide();
+        $("#headPrintA4PR").show();
+        $("#headPrintA4TR").hide();
+        $("#headPrintA4").hide();
+        $("#printTopA4").hide();
+        $("#printTopA4PI").hide();
+        $("#printTopA4PR").show();
+        $("#printTopA4TR").hide();
+    }else if($("#receiptTypeA4").val()=="TR"){
+        $("#headPrintA4PI").hide();
+        $("#headPrintA4PR").hide();
+        $("#headPrintA4TR").show();
+        $("#headPrintA4").hide();
+        $("#printTopA4").hide();
+        $("#printTopA4PI").hide();
+        $("#printTopA4PR").hide();
+        $("#printTopA4TR").show();
+    }else{
+        $("#headPrintA4PI").hide();
+        $("#headPrintA4PR").hide();
+        $("#headPrintA4TR").hide();
+        $("#headPrintA4").show();
+        $("#printTopA4").show();
+        $("#printTopA4PI").hide();
+        $("#printTopA4PR").hide();
+        $("#printTopA4TR").hide();
+    }
+
+
+
+
 
 }
 
@@ -1119,7 +1269,17 @@ function saveA4() {
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
         var html="\"<table style='text-align:center;font-size:10px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead >"
-        $("#printTopA4").find("span").each(function (index,element){
+        var printTopA4="";
+        if($("#receiptTypeA4").val()=="PI"){
+            printTopA4="printTopA4PI"
+        }else if($("#receiptTypeA4").val()=="PR"){
+            printTopA4="printTopA4PR"
+        }else if($("#receiptTypeA4").val()=="TR"){
+            printTopA4="printTopA4TR"
+        }else{
+            printTopA4="printTopA4"
+        }
+        $("#"+printTopA4).find("span").each(function (index,element){
             if(index==2||index==4){
                html+="<tr>"
             }
@@ -1521,7 +1681,17 @@ function saveSanLian() {
         LODOP=getLodop();
         var str="LODOP.PRINT_INITA(0,0,"+receiptWith+","+receiptHight+",'打印模板');";
         var html="\"<table style='text-align:center;font-size:10px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead >"
-        $("#printTopSanLian").find("span").each(function (index,element) {
+        var headPrintSanLian="";
+        if($("#receiptTypeSanLian").val()=="PI"){
+            headPrintSanLian="headPrintSanLianPI";
+        }else if($("#receiptTypeSanLian").val()=="PR"){
+            headPrintSanLian="headPrintSanLianPR";
+        }else if($("#receiptTypeSanLian").val()=="TR"){
+            headPrintSanLian="headPrintSanLianTR";
+        }else{
+            headPrintSanLian="headPrintSanLian";
+        }
+        $("#"+headPrintSanLian).find("span").each(function (index,element) {
             if(!$(this).is(":hidden")){
                 var id=$(this).data("name");
                 var message=$(this).text();

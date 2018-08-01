@@ -12,6 +12,7 @@
         var ownersId = "${ownersId}";
         var userId = "${userId}";
         var billNo = "${billNo}";
+        var isUserAbnormal="${isUserAbnormal}";
         var saleOrder_customerTypeId = "${saleOrderBill.customerTypeId}";
         var saleOrder_origId = "${saleOrderBill.origId}";
         var saleOrder_destId = "${saleOrderBill.destId}";
@@ -30,6 +31,7 @@
         var groupid="${groupid}";
         var pageType = "${pageType}";
         var fieldList = ${fieldList};
+
     </script>
 
 </head>

@@ -14,6 +14,7 @@ $(function () {
     initEditFormValid();
     /*回车监事件*/
     keydown();
+    loadingButton();
 });
 function initForm() {
     initSelectOrigForm();
@@ -616,6 +617,18 @@ function loadingButton() {
             }
         }
     });
+    $.each(resourceButton,function (index,value) {
+        if(resourceButton[index].ishow===0){
+            console.log(value);
+            if( $("#"+resourceButton[index].buttonId).length>0){
+                $("#"+resourceButton[index].buttonId).show();
+            }
+        }else {
+            if( $("#"+resourceButton[index].buttonId).length>0){
+                $("#"+resourceButton[index].buttonId).hide();
+            }
+        }
+    });
 }
 /**
  * 新增单据调用
@@ -626,6 +639,7 @@ function addNew(isScan){
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
     $("#editForm").clearForm();
+    $("#edit_status").val("");
     setEditFormVal();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
@@ -646,7 +660,7 @@ function save() {
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
 
-    if ($("#edit_origId").val() == $("#search_destId").val()) {
+    if ($("#edit_origId").val() == $("#edit_destId").val()) {
         bootbox.alert("请选择不同的仓库进行调拨");
         cs.closeProgressBar();
         return;
@@ -660,7 +674,7 @@ function save() {
         cs.closeProgressBar();
         return;
     }
-
+    console.log($("#edit_status").val());
     if (editDtailRowId !== null) {
         $("#addDetailgrid").saveRow(editDtailRowId);
         editDtailRowId = null;
@@ -702,6 +716,8 @@ function save() {
                     url: basePath + "/logistics/transferOrder/findBillDtl.do?billNo=" + $("#edit_billNo").val(),
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                addNew();
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -940,6 +956,7 @@ function wareHouseOut() {
             }
         });
     } else {
+        cs.closeProgressBar();
         bootbox.alert("请先保存当前单据");
     }
 

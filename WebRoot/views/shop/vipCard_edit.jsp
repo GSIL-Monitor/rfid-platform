@@ -93,10 +93,10 @@
 </div>
 <script>
     function save() {
-        /*$('#editVipCardForm').data('bootstrapValidator').validate();
+        $('#editVipCardForm').data('bootstrapValidator').validate();
         if(!$('#editVipCardForm').data('bootstrapValidator').isValid()){
             return ;
-        }*/
+        }
         cs.showProgressBar();
         var  formData = $("#editVipCardForm").serialize();
         $.post( basePath + "/shop/vipCard/save.do?pageType="+pageType,
@@ -116,14 +116,13 @@
         $("#edit_vipCard_dialog").modal('hide');
     }
     function closeEditDialog() {
-        $("#edit_vipCard__dialog").modal('hide');
+        $("#edit_vipCard_dialog").modal('hide');
     }
     $(function() {
-        $("#edit_vipCard__dialog").on('show.bs.modal', function () {
+        $("#edit_vipCard_dialog").on('show.bs.modal', function () {
             initEditFormValid();
-
         });
-        $("#edit_vipCard__dialog").on('hide.bs.modal', function () {
+        $("#edit_vipCard_dialog").on('hide.bs.modal', function () {
             $("#editVipCardForm").data('bootstrapValidator').destroy();
             $('#editVipCardForm').data('bootstrapValidator', null);
         });
@@ -153,43 +152,25 @@
                         }
                     }
                 },
-                rule1: {
+                rank: {
                     validators: {
                         notEmpty: {
-                            message: '吊牌价与采购价的关系不能为空'
+                            message: '等级不能为空'
+                        },
+                        regexp: {
+                            regexp: /^([1-9]|10)$/,
+                            message: '请输入1-9的数字'
+                        }
+                    }
+                },
+                discount: {
+                    validators: {
+                        notEmpty: {
+                            message: '折扣不能为空'
                         },
                         regexp: {
                             regexp: /^[0-9]{1}\d*(\.\d{1,2})?$/,
                             message: '请输入只有两位小数的数字'
-                        }
-                    }
-                },
-                rule2: {
-                    validators: {
-                        notEmpty: {
-                            message: '吊牌价与门店价的关系不能为空'
-                        },
-                        regexp: {
-                            regexp: /^[0-9]{1}\d*(\.\d{1,2})?$/,
-                            message: '请输入只有两位小数的数字'
-                        }
-                    }
-                },
-                rule3: {
-                    validators: {
-                        notEmpty: {
-                            message: '吊牌价与代理价的关系不能为空'
-                        },
-                        regexp: {
-                            regexp: /^[0-9]{1}\d*(\.\d{1,2})?$/,
-                            message: '请输入只有两位小数的数字'
-                        }
-                    }
-                },
-                series: {
-                    validators: {
-                        notEmpty: {
-                            message: '系列不能为空请选择'
                         }
                     }
                 }
