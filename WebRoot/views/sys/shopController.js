@@ -69,17 +69,17 @@ function initGrid() {
 			        return html;
 			    }
 			},
-            {
+            /*{
                 name: "", label: "操作", width: 55, editable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
                     var id = rowObject.id;
                     var html;
 
                     html = "<a style='margin-left: 20px' href='#' onclick=pushmessage('" + id + "')><i class='ace-icon fa fa-check-square-o' title='更新客户信息'></i></a>";
-                    /*html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*/
+                    /!*html += "<a style='margin-left: 20px' href='#' onclick=doPrint('" + billNo + "')><i class='ace-icon fa fa-print' title='打印'></i></a>";*!/
                     return html;
                 }
-            },
+            },*/
             {name: 'code', label: '编号', editable: true, width: 100},
             {name: 'name', label: '名称', editable: true, width: 150},
             {name: 'groupId', hidden: true},

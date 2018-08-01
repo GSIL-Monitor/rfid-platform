@@ -18,6 +18,8 @@
         var roleid="${roleid}";
         var groupid="${groupid}";
         var ownersId ="";
+        var tableRole= ${tableRole};
+        var divRole= ${divRole};
     </script>
     <style type="text/css">
         .data-container {
@@ -309,7 +311,7 @@
 
                             </div>
                         </div>
-                        <div style="font-size:0px;display: none" ng-show="showCountData" id="isadmin">
+                        <div style="font-size:0px;display: none" ng-show="showCountData" id="isadmin" class="all">
                             <div class="data-container">
                                 <span class="title">销售单品数</span>
                                 <span class="title salesum" id ="salesum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
@@ -328,7 +330,7 @@
                             <div class="data-container">
                                 <span class="title">销售毛利</span>
                                 <span class="title pressAll"id="pressAll" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
-                                <%--<span class="text" ng-bind = "sumGrossProfit|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
+                                    <%--<span class="text" ng-bind = "sumGrossProfit|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
                             </div>
                             <div class="data-container last-container">
                                 <span class="title">销售毛利率(%)</span>
@@ -336,18 +338,62 @@
                                 <%--<span class="text" ng-bind = "avgGrossProfitRate" ng-show="!sumDataLoading"></span>--%>
                             </div>
                         </div>
-                        <div style="font-size:0px; display: none" ng-show="showCountData" id="noadmin">
-                            <div class="data-container1">
+                        <div style="font-size:0px;display: none" ng-show="showCountData" id ="a" class="pressAlls">
+                            <div class="data-container" style="width: 25%;">
                                 <span class="title">销售单品数</span>
                                 <span class="title salesum" id ="salesum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
                                 <%--<span class="text" ng-bind = "sumQuantity" ng-show="!sumDataLoading"></span>--%>
                             </div>
-                            <div class="data-container1">
+                            <div class="data-container" style="width: 25%;">
                                 <span class="title">销售退货单品数</span>
                                 <span class="title salereturnsum" id ="salereturnsum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
                                 <%--<span class="text" ng-bind = "sumQuantity" ng-show="!sumDataLoading"></span>--%>
                             </div>
-                            <div class="data-container1">
+                            <div class="data-container" style="width: 25%;">
+                                <span class="title">销售额</span>
+                                <span class="title salemony" id="salemony"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumTrueAmount|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                            <div class="data-container last-container" style="width: 25%;">
+                                <span class="title">销售毛利</span>
+                                <span class="title pressAll"id="pressAll" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumGrossProfit|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                        </div>
+                        <div style="font-size:0px;display: none" ng-show="showCountData" id="isadmin" class="grossprofitss">
+                            <div class="data-container" style="width: 25%;">
+                                <span class="title">销售单品数</span>
+                                <span class="title salesum" id ="salesum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumQuantity" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                            <div class="data-container" style="width: 25%;">
+                                <span class="title">销售退货单品数</span>
+                                <span class="title salereturnsum" id ="salereturnsum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumQuantity" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                            <div class="data-container" style="width: 25%;">
+                                <span class="title">销售额</span>
+                                <span class="title salemony" id="salemony"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumTrueAmount|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                            <div class="data-container last-container" style="width: 25%;">
+                                <span class="title">销售毛利率(%)</span>
+                                <span class="title grossprofits"id="grossprofits" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "avgGrossProfitRate" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                        </div>
+                        <div style="font-size:0px; display: none" ng-show="showCountData" id="noadmin">
+                            <div class="data-container" style="width: 33%;">
+                                <span class="title">销售单品数</span>
+                                <span class="title salesum" id ="salesum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumQuantity" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                            <div class="data-container" style="width: 33%;">
+                                <span class="title">销售退货单品数</span>
+                                <span class="title salereturnsum" id ="salereturnsum"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <%--<span class="text" ng-bind = "sumQuantity" ng-show="!sumDataLoading"></span>--%>
+                            </div>
+                            <div class="data-container" style="width: 33%;">
                                 <span class="title">销售额</span>
                                 <span class="title salemony" id="salemony"ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
                                 <%--<span class="text" ng-bind = "sumTrueAmount|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
@@ -448,6 +494,34 @@
         $("#destUnitId").show();
         $("#billno").show();
         initKendoUIGrid();
+        var count =0;
+        for(var a=0;a<tableRole.length;a++){
+            $(".all").hide();
+            if(tableRole[a].ishow == 0){
+                $("#noadmin").hide();
+                $("."+tableRole[a].buttonId+"s").show();
+                count++;
+            }
+        }
+        if(count == 2){
+            $(".all").show();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").hide();
+        }
+        if(count ==0){
+            $(".all").hide();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").show();
+        }
+
+        var grid = $("#searchGrid").data("kendoGrid");
+        for(b in divRole){
+            if(divRole[b].ishow != 0){
+                grid.hideColumn(""+divRole[b].buttonId);
+            }
+        }
     }
     function saleorderDetail(){
         $("#searchGrid").hide();
@@ -460,6 +534,33 @@
         $("#destUnitId").show();
         $("#billno").show();
         initKendoUIGridSale();
+        var count =0;
+        for(var a=0;a<tableRole.length;a++){
+            $(".all").hide();
+            if(tableRole[a].ishow == 0){
+                $("#noadmin").hide();
+                $("."+tableRole[a].buttonId+"s").show();
+                count++;
+            }
+        }
+        if(count == 2){
+            $(".all").show();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").hide();
+        }
+        if(count ==0){
+            $(".all").hide();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").show();
+        }
+        var grid = $("#searchsaleGrid").data("kendoGrid");
+        for(b in divRole){
+            if(divRole[b].ishow != 0){
+                grid.hideColumn(""+divRole[b].buttonId);
+            }
+        }
     }
     function saleorderbusinessname(){
         $("#searchGrid").hide();
@@ -474,6 +575,33 @@
             initKendoUIGridSalebusinessname();
         }else{
             initKendoUIGridSalebusinessnameno()
+        }
+        var count =0;
+        for(var a=0;a<tableRole.length;a++){
+            $(".all").hide();
+            if(tableRole[a].ishow == 0){
+                $("#noadmin").hide();
+                $("."+tableRole[a].buttonId+"s").show();
+                count++;
+            }
+        }
+        if(count == 2){
+            $(".all").show();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").hide();
+        }
+        if(count ==0){
+            $(".all").hide();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").show();
+        }
+        var grid = $("#searchsalebusinessnameGrid").data("kendoGrid");
+        for(b in divRole){
+            if(divRole[b].ishow != 0){
+                grid.hideColumn(""+divRole[b].buttonId);
+            }
         }
 
     }
@@ -490,6 +618,33 @@
             initKendoUIGridSaleorigname();
         }else{
             initKendoUIGridSaleorignameno()
+        }
+        var count =0;
+        for(var a=0;a<tableRole.length;a++){
+            $(".all").hide();
+            if(tableRole[a].ishow == 0){
+                $("#noadmin").hide();
+                $("."+tableRole[a].buttonId+"s").show();
+                count++;
+            }
+        }
+        if(count == 2){
+            $(".all").show();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").hide();
+        }
+        if(count ==0){
+            $(".all").hide();
+            $(".pressAlls").hide();
+            $(".grossprofitss").hide();
+            $("#noadmin").show();
+        }
+        var grid = $("#searchsaleorignameGrid").data("kendoGrid");
+        for(b in divRole){
+            if(divRole[b].ishow != 0){
+                grid.hideColumn(""+divRole[b].buttonId);
+            }
         }
 
     }

@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <div id="edit-dialog" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="height: 100%">
         <div class="modal-header no-padding">
             <div class="table-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -9,7 +9,8 @@
                 编辑
             </div>
         </div>
-        <div class="modal-content">
+        <div class="modal-content" style="overflow-y: scroll;height: 70%;overflow-x: hidden;">
+
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="editForm">
                     <input type="hidden" name="id"/>

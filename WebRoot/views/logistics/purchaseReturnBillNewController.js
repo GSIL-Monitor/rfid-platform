@@ -182,7 +182,7 @@ function initeditGrid(billId) {
             {name: 'sizeId', label: '尺码', width: 40},
             {name: 'sizeName', label: '尺名', width: 40},
             {
-                name: 'qty', label: '数量', editable: true, width: 40,
+                name: 'qty', label: '数量', width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -198,7 +198,7 @@ function initeditGrid(billId) {
             },
             {name: 'totPrice', label: '退货金额', width: 40},
             {
-                name: 'actPrice', label: '实际价格', editable: true, width: 40,
+                name: 'actPrice', label: '实际价格',  width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -511,7 +511,7 @@ function initAddGrid() {
             {name: 'sizeId', label: '尺码', width: 40},
             {name: 'sizeName', label: '尺名', width: 40},
             {
-                name: 'qty', label: '数量', editable: true, width: 40,
+                name: 'qty', label: '数量', width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -527,7 +527,7 @@ function initAddGrid() {
             },
             {name: 'totPrice', label: '退货金额', width: 40},
             {
-                name: 'actPrice', label: '实际价格', editable: true, width: 40,
+                name: 'actPrice', label: '实际价格', width: 40,
                 editrules: {
                     custom: true,
                     custom_func: validNum
@@ -1263,4 +1263,126 @@ function setA4(id) {
             }
         }
     });
+}
+function addDetail() {
+    $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
+        $("#StyleSearchForm").resetForm();
+        $("#stylegrid").clearGridData();
+        $("#color_size_grid").clearGridData();
+    });
+}
+/**
+ * status 是否关闭对话框
+ * */
+function addProductInfo(status) {
+    if (editDtailRowId != null) {
+        $('#addDetailgrid').saveRow(editcolosizeRow);
+    }
+    var addProductInfo = [];
+    if (editcolosizeRow != null) {
+        $('#color_size_grid').saveRow(editcolosizeRow,false,'clientArray');
+    }
+    var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
+
+    $.each($("#color_size_grid").getDataIDs(), function (index, value) {
+        var productInfo = $("#color_size_grid").getRowData(value);
+        if (productInfo.qty > 0) {
+            productInfo.price = styleRow.preCast;
+            productInfo.outQty = 0;
+            productInfo.status = 0;
+            productInfo.outStatus = 0;
+            productInfo.actPrice = productInfo.price;
+            productInfo.totPrice = -Math.abs(productInfo.qty * productInfo.price);
+            productInfo.totActPrice = -Math.abs(productInfo.qty * productInfo.actPrice);
+            productInfo.sku = productInfo.code;
+            productInfo.inStockType = styleRow.class6;
+            addProductInfo.push(productInfo);
+        }
+    });
+    var isAdd = true;
+    $.each(addProductInfo, function (index, value) {
+        isAdd = true;
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.code === dtlRow.sku) {
+                dtlRow.qty = parseInt(dtlRow.qty) + parseInt(value.qty);
+                dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                $("#addDetailgrid").setRowData(dtlndex, dtlRow);
+                isAdd = false;
+            }
+        });
+        if (isAdd) {
+            $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+        }
+    });
+    if(status){
+        $("#modal-addDetail-table").modal('hide');
+    }
+    setFooterData();
+}
+function confirmWareHouseOut() {
+    cs.showProgressBar();
+    var billNo = $("#edit_billNo").val();
+    var epcArray = [];
+    $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
+        var rowData = $("#uniqueCodeGrid").getRowData(value);
+        epcArray.push(rowData);
+    });
+    if (epcArray.length === 0) {
+        cs.showProgressBar();
+        bootbox.alert("请添加唯一码!");
+        return;
+    }
+
+    $.each(epcArray, function (index, value) {
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.sku === dtlRow.sku) {
+                if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+                    $.gritter.add({
+                        text: value.code + "不能重复添加",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    return true;
+                }
+                dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                if (dtlRow.id) {
+                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                } else {
+                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                }
+            }
+        });
+    });
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    $.ajax({
+        dataType: "json",
+        // async:false,
+        url: basePath + "/logistics/purchaseReturn/convertOut.do",
+        data: {
+            billNo: billNo,
+            strEpcList: JSON.stringify(epcArray),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#modal-addEpc-table").modal('hide');
+                $("#addDetailgrid").trigger("reloadGrid");
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+    $("#add-uniqCode-dialog").modal('hide');
 }

@@ -3,6 +3,7 @@ $(function () {
     $(".selectpicker").selectpicker({
         noneSelectedText : '--请选择--'//默认显示内容
     });
+
     initMultiSelect();
     var myDate = new Date();
     var year = myDate.getFullYear();
@@ -41,7 +42,34 @@ $(function () {
     inttitledata();
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
+    var count =0;
+    for(var a=0;a<tableRole.length;a++){
+        $(".all").hide();
+        if(tableRole[a].ishow == 0){
+            $("#noadmin").hide();
+            $("."+tableRole[a].buttonId+"s").show();
+            count++;
+        }
+    }
+    if(count == 2){
+        $(".all").show();
+        $(".pressAlls").hide();
+        $(".grossprofitss").hide();
+        $("#noadmin").hide();
+    }
+    if(count ==0){
+        $(".all").hide();
+        $(".pressAlls").hide();
+        $(".grossprofitss").hide();
+        $("#noadmin").show();
+    }
 
+    var grid = $("#searchGrid").data("kendoGrid");
+    for(b in divRole){
+        if(divRole[b].ishow != 0){
+            grid.hideColumn(""+divRole[b].buttonId);
+        }
+    }
 });
 
 function inttitledata() {
@@ -73,7 +101,7 @@ function inttitledata() {
 }
 
 function initMultiSelect() {
-    if(roleid=="JMSJS"){
+    if(roleid =="JMSJS"){
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId="+curOwnerId,
             cache: false,
@@ -765,6 +793,15 @@ function initKendoUIGrid() {
 
         });
         isoneinitKendoUIGrid = false;
+        console.info(tableRole);
+        console.info(divRole);
+        var b=null;
+        var grid = $("#searchGrid").data("kendoGrid");
+        for(b in divRole){
+            if(divRole[b].ishow != 0){
+                grid.hideColumn(""+b.buttonId);
+            }
+        }
     } else {
         search();
     }
@@ -1111,7 +1148,16 @@ function initnoKendoUIGrid() {
             ]
 
         });
+        console.info(tableRole);
+        console.info(divRole);
         isoneinitKendoUIGrid = false;
+        var b =null;
+        var grid1 = $("#searchGrid").data("kendoGrid");
+        for(b in divRole){
+            if(divRole[b].ishow != 0){
+                grid1.hideColumn(""+b.buttonId);
+            }
+        }
     } else {
         search();
     }

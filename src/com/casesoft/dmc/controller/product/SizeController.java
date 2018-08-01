@@ -28,6 +28,7 @@ public class SizeController extends BaseController implements
     @Autowired
     private SizeService sizeService;
 
+
     @Override
     @RequestMapping(value = "/index")
     public String index() {
@@ -132,14 +133,13 @@ public class SizeController extends BaseController implements
         SizeSort ss = CacheManager.getSizeSortById(sizeSort.getId());
         if (CommonUtil.isBlank(ss)) {
             ss = new SizeSort();
-            ss.setId(sizeSort.getSortNo());
-            Integer maxSeqNo = this.sizeService.findMaxSeqNoInSizeSortBySortNo(sizeSort.getSortNo());
-            System.out.println(maxSeqNo);
+            Integer maxSeqNo = this.sizeService.findMaxSeqNoInSizeSortBySortNo();
             ss.setSeqNo(maxSeqNo + 1);
+            ss.setId(CommonUtil.convertIntToString(maxSeqNo + 1,2));
             ss.setIsUse("Y");
+            ss.setSortNo(ss.getId());
         }
         ss.setSortName(sizeSort.getSortName());
-        ss.setSortNo(sizeSort.getSortNo());
         ss.setRemark(sizeSort.getRemark());
         ss.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         this.sizeService.saveSort(ss);

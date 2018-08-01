@@ -37,7 +37,7 @@ public class RepositoryManagementBillDtlService extends AbstractBaseService<Repo
 
     @Override
     public RepositoryManagementBillDtl get(String propertyName, Object value) {
-        return null;
+        return this.repositoryManagementBillDtlDao.findUniqueBy(propertyName, value);
     }
 
     @Override

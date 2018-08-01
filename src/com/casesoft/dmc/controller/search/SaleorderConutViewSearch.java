@@ -11,6 +11,8 @@ import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.ImgUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
+import com.casesoft.dmc.core.util.json.FastJsonFun;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
@@ -21,9 +23,11 @@ import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.search.saleorderCount;
 import com.casesoft.dmc.model.stock.InventoryMergeBillDtl;
+import com.casesoft.dmc.model.sys.ResourceButton;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.sys.ResourceButtonService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -60,6 +64,8 @@ public class SaleorderConutViewSearch extends BaseController {
     private UnitService unitService;
     @Autowired
     private SaleOrderBillService saleOrderBillService;
+    @Autowired
+    private ResourceButtonService resourceButtonService;
     //@RequestMapping(value = "/index")
     public String index() {
         return "/views/search/SaleorderCountViewSearch";
@@ -69,6 +75,10 @@ public class SaleorderConutViewSearch extends BaseController {
         ModelAndView mv = new ModelAndView("/views/search/SaleorderCountViewSearch");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         User currentUser = getCurrentUser();
+        List<ResourceButton> resourceButtontableList = this.resourceButtonService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"table");
+        List<ResourceButton> resourceButtondivList = this.resourceButtonService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
+        mv.addObject("tableRole", FastJSONUtil.getJSONString(resourceButtontableList));
+        mv.addObject("divRole", FastJSONUtil.getJSONString(resourceButtondivList));
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
         mv.addObject("deportId", unit.getDefaultWarehId());
         Unit unit1 = this.unitService.getunitbyId(unit.getDefaultWarehId());

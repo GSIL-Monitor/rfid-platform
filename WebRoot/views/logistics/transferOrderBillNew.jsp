@@ -83,7 +83,7 @@
 											            </span>
                                                         <input class="form-control" id="search_origUnitName"
                                                                type="text"
-                                                               name="origUnitName" readonly/>
+                                                               name="filter_EQS_origUnitName" readonly/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -105,7 +105,7 @@
 											            </span>
                                                         <input class="form-control" id="search_destUnitName"
                                                                type="text"
-                                                               name="destUnitName" readonly/>
+                                                               name="filter_EQS_destUnitName" readonly/>
                                                     </div>
                                                 </div>
                                             </div>

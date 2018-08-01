@@ -61,10 +61,10 @@ public class SizeService implements IBaseService<Size, Serializable> {
         return this.sizesortDao.findUnique(hql, new Object[]{sizeId});
     }
 
-    public Integer findMaxSeqNoInSizeSortBySortNo(String sortNo) {
+    public Integer findMaxSeqNoInSizeSortBySortNo() {
         String hql = "select max(s.seqNo) from SizeSort s";
         Integer maxSeqNo = this.sizesortDao.findUnique(hql);
-        return maxSeqNo;
+        return maxSeqNo == null? 0 :maxSeqNo;
     }
 
     public Integer findMaxSeqNoInSizeBySortId(String sortId) {
@@ -105,7 +105,11 @@ public class SizeService implements IBaseService<Size, Serializable> {
     @Override
     public Size get(String propertyName, Object value) {
         // TODO Auto-generated method stub
-        return null;
+        return this.sizeDao.findUniqueBy(propertyName,value);
+    }
+
+    public SizeSort getsizeSort(String id) {
+        return this.sizesortDao.load(id);
     }
 
     @Override

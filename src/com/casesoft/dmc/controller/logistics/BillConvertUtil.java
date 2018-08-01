@@ -51,7 +51,6 @@ public class BillConvertUtil {
         Long totQty = 0L;
         Long actQty = 0L;
         Long rcvQty = 0L;
-        Long arrival = 0L;
         Double totPrice = 0D;
         Double actPrice = 0D;
         Double rcvVal = 0D;
@@ -62,11 +61,14 @@ public class BillConvertUtil {
             dtl.setId(new GuidCreator().toString());
             dtl.setBillId(purchaseOrderBill.getId());
             dtl.setBillNo(purchaseOrderBill.getBillNo());
-            dtl.setActPrintQty(0);
+            if(dtl.getActPrintQty()==null){
+                dtl.setActPrintQty(0);
+            }
             dtl.setActQty(dtl.getQty());
-            dtl.setInQty(0);
-            dtl.setPrintQty(dtl.getQty().intValue());
-            arrival+= dtl.getArrival();
+            if(dtl.getInQty()==null){
+                dtl.setInQty(0);
+            }
+            dtl.setPrintQty(dtl.getQty().intValue()-dtl.getActPrintQty());
             totQty += dtl.getQty();
             actQty += dtl.getQty();
             totPrice += dtl.getPrice() * dtl.getQty();
@@ -99,7 +101,6 @@ public class BillConvertUtil {
         purchaseOrderBill.setActPrice(actPrice);
         purchaseOrderBill.setTotInQty(rcvQty);
         purchaseOrderBill.setTotInVal(rcvVal);
-        purchaseOrderBill.setArrival(arrival);
 
     }
 
@@ -492,14 +493,16 @@ public class BillConvertUtil {
         Long totQty = 0L;
         List<InitDtl> initDtlList = new ArrayList<>();
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
-            if (dtl.getPrintQty() > 0 && dtl.getQty() > dtl.getActPrintQty()) {
-
-                if (dtl.getPrintQty().intValue() == (dtl.getQty().intValue() - dtl.getActPrintQty().intValue())&&dtl.getQty().intValue()==dtl.getArrival()) {
+            if (dtl.getArrival() > 0 && dtl.getQty() > dtl.getActPrintQty()) {
+                if (dtl.getArrival() == (dtl.getQty().intValue() - dtl.getActPrintQty().intValue())) {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Print);
                 } else {
                     dtl.setPrintStatus(BillConstant.PrintStatus.Printting);
                 }
-                dtl.setActPrintQty(dtl.getArrival());
+                //提取到货数，操作完成之后将本次到货数设为0
+                Integer arrival = dtl.getArrival();
+                dtl.setArrival(0);
+                dtl.setActPrintQty(dtl.getActPrintQty()+arrival);
                 InitDtl detail = new InitDtl();
                 detail.setId(taskId + "-" + dtl.getSku());
                 detail.setStyleId(dtl.getStyleId());
@@ -508,11 +511,11 @@ public class BillConvertUtil {
                 detail.setSku(dtl.getSku());
                 detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
                 detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
-                        + dtl.getPrintQty());
-                detail.setQty(dtl.getArrival()-dtl.getInQty());
+                        + arrival);
+                detail.setQty(arrival);
                 detail.setOwnerId(currentUser.getOwnerId());
                 detail.setStatus(1);
-                totQty += dtl.getPrintQty();
+                totQty += arrival;
                 detail.setBillNo(taskId);
                 initDtlList.add(detail);
 
@@ -2601,7 +2604,7 @@ public class BillConvertUtil {
             } else {
                 saleOrderBillDtl.setProfit(saleOrderBillDtl.getOutVal() - saleOrderBillDtl.getStockVal());
                 if (saleOrderBillDtl.getStockVal().intValue() != 0) {
-                    saleOrderBillDtl.setProfitRate(Double.parseDouble(CommonUtil.getDecimal(saleOrderBillDtl.getProfit() / saleOrderBillDtl.getStockVal() * 100, "######0.00")));
+                    saleOrderBillDtl.setProfitRate(Double.parseDouble(CommonUtil.getDecimal(saleOrderBillDtl.getProfit() / saleOrderBillDtl.getOutVal()* 100, "######0.00")));
                 } else {
                     saleOrderBillDtl.setProfitRate(0d);
                 }
@@ -3807,11 +3810,7 @@ public class BillConvertUtil {
                 if(styleTail.equals(BillConstant.styleNew.Alice)||styleTail.equals(BillConstant.styleNew.AncientStone)){
                     styleId=styleId.substring(0,styleIdLength-2);
                     Style style= CacheManager.getStyleById(styleId);
-                    if(CommonUtil.isBlank(style)){
-                        isUseOldStyle=false;
-                    }else{
-                        isUseOldStyle=true;
-                    }
+                    isUseOldStyle = !CommonUtil.isBlank(style);
                 }
                 String stylePDTail=styleId.substring(styleIdLength-4,styleIdLength-2);
                 if(stylePDTail.equals(BillConstant.styleNew.PriceDiscount)){
@@ -3922,24 +3921,24 @@ public class BillConvertUtil {
                      field.setAccessible(true);
                    /*  System.out.println(field.getName());*/
                       if(field.getName().equals("noOutPutCode")){
-                          Method m = (Method) aClass.getMethod("get"+getMethodName(field.getName()));
+                          Method m = aClass.getMethod("get"+getMethodName(field.getName()));
                           String noOutPutCode = (String) m.invoke(t);// 调用getter方法获取属性值
                           if(CommonUtil.isNotBlank(noOutPutCode)){
                               String[] noOutPutCodes = noOutPutCode.split(",");
                               for(int i=0;i<noOutPutCodes.length;i++){
                                   AbnormalCodeMessage abnormalCodeMessage=new AbnormalCodeMessage();
                                   abnormalCodeMessage.setCode(noOutPutCodes[i]);
-                                  Method mBillNo = (Method) aClass.getMethod("getBillNo");
+                                  Method mBillNo = aClass.getMethod("getBillNo");
                                   abnormalCodeMessage.setBillNo((String) mBillNo.invoke(t));
-                                  Method mColorId = (Method) aClass.getMethod("getColorId");
+                                  Method mColorId = aClass.getMethod("getColorId");
                                   abnormalCodeMessage.setColorId((String) mColorId.invoke(t));
-                                  Method mSku = (Method) aClass.getMethod("getSku");
+                                  Method mSku = aClass.getMethod("getSku");
                                   abnormalCodeMessage.setSku((String) mSku.invoke(t));
-                                  Method mStyleId = (Method) aClass.getMethod("getStyleId");
+                                  Method mStyleId = aClass.getMethod("getStyleId");
                                   abnormalCodeMessage.setStyleId((String) mStyleId.invoke(t));
-                                  Method mSizeId = (Method) aClass.getMethod("getSizeId");
+                                  Method mSizeId = aClass.getMethod("getSizeId");
                                   abnormalCodeMessage.setSizeId((String) mSizeId.invoke(t));
-                                  abnormalCodeMessage.setId((String) mBillNo.invoke(t)+"_"+noOutPutCodes[i]);
+                                  abnormalCodeMessage.setId(mBillNo.invoke(t) +"_"+noOutPutCodes[i]);
                                   if(code.indexOf(noOutPutCodes[i])!=-1){
                                       abnormalCodeMessage.setStatus(0);
                                   }else {

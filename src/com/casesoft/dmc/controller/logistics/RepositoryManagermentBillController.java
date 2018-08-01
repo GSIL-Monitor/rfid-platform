@@ -313,8 +313,11 @@ public class RepositoryManagermentBillController extends BaseController implemen
     @Override
     public MessageBox end(String billNo) throws Exception {
         RepositoryManagementBill repositoryManagementBill = this.repositoryManagementBillService.get("billNo", billNo);
+        RepositoryManagementBillDtl repositoryManagementBillDtl = this.repositoryManagementBilllDtlService.get("billNo", billNo);
         repositoryManagementBill.setStatus(BillConstant.BillStatus.End);
+        repositoryManagementBillDtl.setStatus(BillConstant.BillStatus.End);
         this.repositoryManagementBillService.update(repositoryManagementBill);
+        this.repositoryManagementBilllDtlService.save(repositoryManagementBillDtl);
         return new MessageBox(true, "结束成功");
     }
     @RequestMapping(value = "/findResourceButton")

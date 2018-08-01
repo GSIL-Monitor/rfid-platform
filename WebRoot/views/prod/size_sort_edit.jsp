@@ -12,14 +12,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="editSizeSortForm">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_sortNo"><span class="text-danger">* </span>尺寸组编码</label>
-
-                        <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="form_sortNo" name="sortNo"
-                                   type="text" onkeyup="this.value=this.value.toUpperCase()"/>
-                        </div>
-                    </div>
+                    <input id="form_id" name="id" type="hidden"/>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_sortName"><span class="text-danger">* </span>尺寸组名</label>
 
@@ -57,11 +50,9 @@
         if (!$('#editSizeSortForm').data('bootstrapValidator').isValid()) {
             return;
         }
-        $("#form_sortNo").removeAttr("disabled");
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 数据上传中...</p>'
         });
-        console.log(basePath);
         debugger;
         $.post(basePath + "/prod/size/sizeSortSave.do",
             $("#editSizeSortForm").serialize(),
@@ -69,7 +60,7 @@
                 if (result.success == true || result.success == 'true') {
                     progressDialog.modal('hide');
                     $("#edit_size_sort_dialog").modal('hide');
-                    $("#sortgrid").trigger("reloadGrid");
+                    location.reload(true);
                 }
             }, 'json');
     }
@@ -101,25 +92,6 @@
                 }, 'json');
             },
             fields: {
-                sortNo: {
-                    validators: {
-                        notEmpty: {
-                            message: '尺寸组编码不能为空'
-                        },
-                        remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
-                            url: basePath + "/prod/size/checkBySortNo.do",//验证地址
-                            message: '编码已存在',//提示消息
-                            delay: 2000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
-                            type: 'POST',//请求方式
-                            data: function (validator) {
-                                return {
-                                    //  password: $('[name="passwordNameAttributeInYourForm"]').val(),
-                                    //  whatever: $('[name="whateverNameAttributeInYourForm"]').val()
-                                };
-                            }
-                        }
-                    }
-                },
                 sortName: {
                     validators: {
                         notEmpty: {

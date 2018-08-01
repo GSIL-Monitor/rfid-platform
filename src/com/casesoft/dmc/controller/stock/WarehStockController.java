@@ -643,8 +643,12 @@ public class WarehStockController extends BaseController {
                 if (Constant.TaskType.Outbound == type) {
                     //查询这个不在库唯一码的epcStock
                     EpcStock epcAllowInCode = this.epcStockService.findEpcAllowInCode(code);
-                    StockUtil.convertEpcStock(epcAllowInCode);
-                    return new MessageBox(false, "唯一码:" + code + "不能出库",epcAllowInCode);
+                    if(CommonUtil.isNotBlank(epcAllowInCode)) {
+                        StockUtil.convertEpcStock(epcAllowInCode);
+                        return new MessageBox(false, "唯一码:" + code + "不能出库", epcAllowInCode);
+                    }else{
+                        return new MessageBox(false, "唯一码:" + code + "不存在");
+                    }
                 } else {
                     return new MessageBox(false, "唯一码:" + code + "不能入库");
                 }

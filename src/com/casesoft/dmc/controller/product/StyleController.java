@@ -294,17 +294,22 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@RequestMapping(value = {"/remark","/remarkWS"})
 	@ResponseBody
 	public net.sf.json.JSON remark(){
-		String termString = request.getParameter("term");
-		List<PropertyKey> propertyTypeList = this.propertyService.findByRemark(termString);
-		List<Term> termList = new ArrayList<>();
-		for (PropertyKey propertyKey : propertyTypeList){
-			Term term = new Term();
-			term.setId(propertyKey.getId());
-			term.setLabel(propertyKey.getName());
-			term.setValue(propertyKey.getName());
-			termList.add(term);
+		try {
+			String termString = request.getParameter("term");
+			List<PropertyKey> propertyTypeList = this.propertyService.findByRemark(termString);
+			List<Term> termList = new ArrayList<>();
+			for (PropertyKey propertyKey : propertyTypeList){
+				Term term = new Term();
+				term.setId(propertyKey.getId());
+				term.setLabel(propertyKey.getName());
+				term.setValue(propertyKey.getName());
+				termList.add(term);
+			}
+			return JSONArray.fromObject(termList);
+		}catch (Exception e){
+			e.printStackTrace();
+			return null;
 		}
-		return JSONArray.fromObject(termList);
 	}
 
 	/*
@@ -316,5 +321,21 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		String roleId =this.userService.getUser(userId).getRoleId();
 		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 
+	}
+
+	/**
+	 * 根据权限查询table
+	 */
+	@RequestMapping(value = "/initStyleGridGroup")
+	@ResponseBody
+	public MessageBox initStyleGridGroup(){
+		String roleId = getCurrentUser().getRoleId();
+		try {
+			List<ResourceButton> resourceButtons = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
+			return new MessageBox(true,"查询成功",resourceButtons);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

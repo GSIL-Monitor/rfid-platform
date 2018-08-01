@@ -41,12 +41,14 @@ public class SaleOrderBillDtl extends BaseBillDtl {
     @Column()
     private Double profit = 0D;//OutVal - stockVal
     @Column()
-    private Double profitRate = 0D;//stockVal/outVal*100% 保留两位小数
+    private Double profitRate = 0D;//profit/outVal*100% 保留两位小数
 
     @Transient
     private Double tagPrice;//吊牌价格
     @Transient
     private String noOutPutCode;//不能出库的唯一码
+    @Column()
+    private Double puPrice;//门店批发价
 
     public SaleOrderBillDtl() {
     }
@@ -205,5 +207,13 @@ public class SaleOrderBillDtl extends BaseBillDtl {
 
     public void setNoOutPutCode(String noOutPutCode) {
         this.noOutPutCode = noOutPutCode;
+    }
+
+    public Double getPuPrice() {
+        return puPrice;
+    }
+
+    public void setPuPrice(Double puPrice) {
+        this.puPrice = puPrice;
     }
 }

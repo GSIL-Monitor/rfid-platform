@@ -428,7 +428,7 @@
                                                     <option value="Y" style="background-color: #eeeeee">是</option>
                                                     </select>
                                                 </div>
-                                                <div id="isSeries_div">
+                                                <div id="style_isSeries_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_isSeries">是否用定价规则</label>
                                                     <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
@@ -439,11 +439,9 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
                                             </div>
-
                                             <div class="form-group">
-                                                <div id="styleCycle_div">
+                                                <div id="style_styleCycle_div">
                                                     <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
                                                            for="form_styleCycle">退换周期(天)</label>
                                                     <%--<div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">--%>
@@ -564,37 +562,18 @@
 <script type="text/javascript">
     var checkNum;
     $(function () {
+        loadingButton();
         $("#tags_3").val(remark);
         $('#tags_3').tagsInput({
             width: '540',
             height:'70',
             autocomplete_url:'remark.do'
         });
-        loadingButton();
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
 
-        if ('${pageType}' == 'edit') {
-            $("#form_styleId").attr("readonly", true);
-            if ('${roleId}' == '0') {
-                $("#form-group-preCast").show();
-                $("#form_price").removeAttr("readonly");
-            } else {
-                $("#form-group-preCast").hide();
-                $("#form_price").attr("readonly", true);
-            }
-            $("#form_isSeries").val("${style.isSeries}");
-        } else {
-            /*  $("#focusColor").removeAttr("onclick");*/
-            if ('${roleId}' == '0') {
-                $("#form-group-preCast").show();
-            } else {
-                $("#form-group-preCast").hide();
-            }
-            $("#edit_isNotDeton").click();
-            $("#form_bargainPrice").val(0.0);
-        }
+
         initeditStyleFormValid();
 
         initSelect();
@@ -613,9 +592,6 @@
         });
         $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
         $("div.btn-group").css("padding", "0");
-        if ($("#form_isSeries").val()=="Y"){
-            $("#form_price").attr("readonly",true);
-        }
 
     });
 
@@ -1124,6 +1100,7 @@
 
     function saveStyleAndProduct(str) {
         if($('#form_isSeries').is(':hidden')){
+            $('#form_isSeries').val("N");
             var price = $("#form_price").val();
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
@@ -1255,7 +1232,7 @@
                         class_name: 'gritter-success  gritter-light'
                     });
                 } else {
-                    $("#form_price").attr("disabled",false);
+                    $("#form_price").attr("readonly",false);
                     $('#editStyleForm').data('bootstrapValidator').validate();
                     if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                         return;
@@ -1301,7 +1278,7 @@
                                                 text: msg.msg,
                                                 class_name: 'gritter-success  gritter-light'
                                             });
-                                            $("#form_price").attr("disabled",true);
+                                            $("#form_price").attr("readonly",true);
                                         } else {
                                             bootbox.alert(msg.msg);
                                         }
@@ -1331,7 +1308,7 @@
                                                 text: msg.msg,
                                                 class_name: 'gritter-success  gritter-light'
                                             });
-                                            $("#form_price").attr("disabled",true);
+                                            $("#form_price").attr("readonly",true);
                                         } else {
                                             bootbox.alert(msg.msg);
                                         }
@@ -1363,7 +1340,7 @@
                                         text: msg.msg,
                                         class_name: 'gritter-success  gritter-light'
                                     });
-                                    $("#form_price").attr("disabled",true);
+                                    $("#form_price").attr("readonly",true);
                                 } else {
                                     bootbox.alert(msg.msg);
                                 }
@@ -1740,10 +1717,30 @@
         });
         if($('#isSeries_div').is(':hidden')){
             $('#form_isSeries').val("N");
+            $("#form_price").removeAttr("readonly");
             var price = $("form_price").val();
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
-        }else {
+        }
+        if ('${pageType}' == 'edit') {
+            $("#form_styleId").attr("readonly", true);
+            if ('${roleId}' == '0') {
+                $("#form-group-preCast").show();
+                $("#form_price").removeAttr("readonly");
+            } else {
+                $("#form-group-preCast").hide();
+                $("#form_price").attr("readonly", true);
+            }
+            $("#form_isSeries").val("${style.isSeries}");
+        } else {
+            /*  $("#focusColor").removeAttr("onclick");*/
+            if ('${roleId}' == '0') {
+                $("#form-group-preCast").show();
+            } else {
+                $("#form-group-preCast").hide();
+            }
+            $("#form_price").removeAttr("readonly");
+            $("#edit_isNotDeton").click();
             $("#form_bargainPrice").val(0.0);
         }
     }

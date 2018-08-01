@@ -285,6 +285,9 @@ function initAddGrid() {
             },
             {name: 'styleId', label: '款号', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -292,6 +295,9 @@ function initAddGrid() {
             },
             {name: 'styleName', label: '款名', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -299,6 +305,9 @@ function initAddGrid() {
             },
             {name: 'colorId', label: '色码', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -306,6 +315,9 @@ function initAddGrid() {
             },
             {name: 'colorName', label: '颜色', width: 30,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -313,6 +325,9 @@ function initAddGrid() {
             },
             {name: 'sizeId', label: '尺码', width: 30,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -320,6 +335,9 @@ function initAddGrid() {
             },
             {name: 'sizeName', label: '尺码', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -337,6 +355,9 @@ function initAddGrid() {
                     }
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -344,6 +365,9 @@ function initAddGrid() {
             },
             {name: 'outQty', label: '已出库数量', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -351,6 +375,9 @@ function initAddGrid() {
             },
             {name: 'inQty', label: '已入库数量', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -358,6 +385,9 @@ function initAddGrid() {
             },
             {name: 'sku', label: 'SKU', width: 50,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -369,6 +399,9 @@ function initAddGrid() {
                     number: true
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -376,6 +409,9 @@ function initAddGrid() {
             },
             {name: 'totPrice', label: '销售金额', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -389,6 +425,9 @@ function initAddGrid() {
                     maxValue: 100
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -401,6 +440,9 @@ function initAddGrid() {
                     minValue: 0
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -408,14 +450,19 @@ function initAddGrid() {
             },
             {name: 'totActPrice', label: '实际金额', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
                 }
             },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {name: 'puPrice', label: '门店批发价', hidden: true},
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
-            {name:'stylePriceMap',label:'价格表',hidden:true}
+            {name:'stylePriceMap',label:'价格表',hidden:true},
+            {name:'abnormalStatus',label:'异常单状态',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -559,6 +606,9 @@ function initeditGrid(billId) {
             },
             {name: 'styleId', label: '款号', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -566,6 +616,9 @@ function initeditGrid(billId) {
             },
             {name: 'styleName', label: '款名', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -573,6 +626,9 @@ function initeditGrid(billId) {
             },
             {name: 'colorId', label: '色码', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -580,6 +636,9 @@ function initeditGrid(billId) {
             },
             {name: 'colorName', label: '颜色', width: 30,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -587,6 +646,9 @@ function initeditGrid(billId) {
             },
             {name: 'sizeId', label: '尺码', width: 30,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -594,6 +656,9 @@ function initeditGrid(billId) {
             },
             {name: 'sizeName', label: '尺码', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -611,6 +676,9 @@ function initeditGrid(billId) {
                     }
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -618,6 +686,9 @@ function initeditGrid(billId) {
             },
             {name: 'returnQty', label: '退货数量', editable: true, width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -625,6 +696,9 @@ function initeditGrid(billId) {
             },
             {name: 'outQty', label: '已出库数量', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -632,6 +706,9 @@ function initeditGrid(billId) {
             },
             {name: 'inQty', label: '已入库数量', width: 40,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -639,6 +716,9 @@ function initeditGrid(billId) {
             },
             {name: 'sku', label: 'SKU', width: 50,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -654,6 +734,9 @@ function initeditGrid(billId) {
                     return price;
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -667,6 +750,9 @@ function initeditGrid(billId) {
                     return totPrice;
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -675,6 +761,9 @@ function initeditGrid(billId) {
             {
                 name: 'discount', label: "折扣", width: 40, editable: true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -690,6 +779,9 @@ function initeditGrid(billId) {
                     return actPrice;
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -702,6 +794,9 @@ function initeditGrid(billId) {
                     return totActPrice;
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
                     if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                         return "style='color:red;'";
                     }
@@ -721,8 +816,10 @@ function initeditGrid(billId) {
                 },
             },
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
+            {name: 'puPrice', label: '门店批发价', hidden: true},
             {name: 'returnbillNo', label: '退货单号', hidden: true},
-            {name:'stylePriceMap',label:'价格表',hidden:true}
+            {name:'stylePriceMap',label:'价格表',hidden:true},
+            {name:'abnormalStatus',label:'异常单状态',hidden:true}
 
         ],
         autowidth: true,
@@ -751,10 +848,25 @@ function initeditGrid(billId) {
                 });
             }
             if (cellname === "discount") {
-                var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                //判断实际价格是不是小于门店批发价格
+                var var_actPrice;
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "puPrice")){
+                    $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "puPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
+                    var_actPrice =  $('#addDetailgrid').getCell(rowid, "puPrice");
+                    $('#addDetailgrid').setCell(rowid, "actPrice", $('#addDetailgrid').getCell(rowid, "puPrice"));
+                    $('#addDetailgrid').setCell(rowid, "abnormalStatus",1);
+                    changeWordscolor(rowid,"blue");
+                }else{
+                    $('#addDetailgrid').setCell(rowid, "discount", value);
+                    var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                    $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                    $('#addDetailgrid').setCell(rowid, "abnormalStatus", 0);
+                    changeWordscolor(rowid,"black");
+                }
+
                 var var_totActPrice = Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
-                $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
                 $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+
             } else if (cellname === "actPrice") {
                 var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
                 var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
@@ -1068,14 +1180,47 @@ function setDiscount() {
     var discount = $("#edit_discount").val();
     if (discount && discount != null && discount != "") {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            $('#addDetailgrid').setCell(value, "discount", discount);
-            var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+            //判断实际价格是不是小于门店批发价格
+            var var_actPrice;
+            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<$('#addDetailgrid').getCell(value, "puPrice")){
+                $('#addDetailgrid').setCell(value, "discount", parseFloat($('#addDetailgrid').getCell(value, "puPrice")/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
+                var_actPrice =  $('#addDetailgrid').getCell(value, "puPrice");
+                $('#addDetailgrid').setCell(value, "actPrice", $('#addDetailgrid').getCell(value, "puPrice"));
+                $('#addDetailgrid').setCell(value, "abnormalStatus",1);
+                changeWordscolor(value,"blue");
+            }else{
+                $('#addDetailgrid').setCell(value, "discount", discount);
+                 var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+                $('#addDetailgrid').setCell(value, "abnormalStatus", 0);
+                changeWordscolor(value,"black");
+            }
             var var_totActPrice = Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
-            $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
             $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+            $("#grid-table").setCell(value,"useable",0,{color:'red'});
+
         });
     }
     setAddFooterData();
+}
+function changeWordscolor(value,color) {
+    debugger
+    $("#addDetailgrid").setCell(value,"styleId",$('#addDetailgrid').getCell(value, "styleId"),{color:color});
+    $("#addDetailgrid").setCell(value,"styleName",$('#addDetailgrid').getCell(value, "styleName"),{color:color});
+    $("#addDetailgrid").setCell(value,"colorId",$('#addDetailgrid').getCell(value, "colorId"),{color:color});
+    $("#addDetailgrid").setCell(value,"colorName",$('#addDetailgrid').getCell(value, "colorName"),{color:color});
+    $("#addDetailgrid").setCell(value,"sizeId",$('#addDetailgrid').getCell(value, "sizeId"),{color:color});
+    $("#addDetailgrid").setCell(value,"sizeName",$('#addDetailgrid').getCell(value, "sizeName"),{color:color});
+    $("#addDetailgrid").setCell(value,"qty",$('#addDetailgrid').getCell(value, "qty"),{color:color});
+    $("#addDetailgrid").setCell(value,"returnQty",$('#addDetailgrid').getCell(value, "returnQty"),{color:color});
+    $("#addDetailgrid").setCell(value,"outQty",$('#addDetailgrid').getCell(value, "outQty"),{color:color});
+    $("#addDetailgrid").setCell(value,"inQty",$('#addDetailgrid').getCell(value, "inQty"),{color:color});
+    $("#addDetailgrid").setCell(value,"sku",$('#addDetailgrid').getCell(value, "sku"),{color:color});
+    $("#addDetailgrid").setCell(value,"price",$('#addDetailgrid').getCell(value, "price"),{color:color});
+    $("#addDetailgrid").setCell(value,"totPrice",$('#addDetailgrid').getCell(value, "totPrice"),{color:color});
+    $("#addDetailgrid").setCell(value,"discount",$('#addDetailgrid').getCell(value, "discount"),{color:color});
+    $("#addDetailgrid").setCell(value,"actPrice",$('#addDetailgrid').getCell(value, "actPrice"),{color:color});
+    $("#addDetailgrid").setCell(value,"totActPrice",$('#addDetailgrid').getCell(value, "totActPrice"),{color:color});
 }
 /*根据权限初始化按钮*/
 function initButtonGroup(type){
@@ -1364,13 +1509,16 @@ function addProductInfo(status) {
 
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
-
-            if (ct == "CT-AT") {//省代价格
-                productInfo.price = styleRow.puPrice;
-            } else if (ct == "CT-ST") {//门店价格
-                productInfo.price = styleRow.wsPrice;
-            } else if (ct == "CT-LS") {//吊牌价格
-                productInfo.price = styleRow.price;
+            if (parseInt(styleRow.bargainPrice)!=0){
+                productInfo.price = styleRow.bargainPrice;
+            }else {
+                if (ct == "CT-AT") {//省代价格
+                    productInfo.price = styleRow.puPrice;
+                } else if (ct == "CT-ST") {//门店价格
+                    productInfo.price = styleRow.wsPrice;
+                } else if (ct == "CT-LS") {//吊牌价格
+                    productInfo.price = styleRow.price;
+                }
             }
             productInfo.outQty = 0;
             productInfo.inQty = 0;
@@ -1382,7 +1530,16 @@ function addProductInfo(status) {
             } else {
                 productInfo.discount = 100;
             }
-            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+            productInfo.puPrice=styleRow.puPrice;
+            //判断实际价格是不是小于门店批发价格
+            if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice){
+                productInfo.actPrice = styleRow.puPrice;
+                productInfo.discount = parseFloat(styleRow.puPrice/productInfo.price).toFixed(2)*100;
+                productInfo.abnormalStatus=1;
+            }else{
+                productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                productInfo.abnormalStatus=0;
+            }
             productInfo.totPrice = productInfo.qty * productInfo.price;
             productInfo.totActPrice = productInfo.qty * productInfo.actPrice;
             productInfo.sku = productInfo.code;
@@ -1616,18 +1773,27 @@ function addProductsOnCode() {
                         productInfo.price = productInfo.price;
                     }
                 }
+                if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
+                    productInfo.discount = $("#edit_discount").val();
+                } else {
+                    productInfo.discount = 100;
+                }
+                productInfo.puPrice=productInfo.puPrice;
+                //判断实际价格是不是小于门店批发价格
+                if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice){
+                    productInfo.actPrice = productInfo.puPrice;
+                    productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
+                    productInfo.abnormalStatus=1;
+                }else{
+                    productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                    productInfo.abnormalStatus=0;
+                }
                 productInfo.outQty = 0;
                 productInfo.inQty = 0;
                 productInfo.status = 0;
                 productInfo.inStatus = 0;
                 productInfo.outStatus = 0;
                 productInfo.uniqueCodes = productInfo.code;
-                if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                    productInfo.discount = $("#search_discount").val();
-                } else {
-                    productInfo.discount = 100;
-                }
-                productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                 productInfo.totPrice = productInfo.price;
                 productInfo.totActPrice = productInfo.actPrice;
                 var stylePriceMap={};
@@ -1699,12 +1865,22 @@ function addProductsNoOutPutCode(productInfo) {
         productInfo.inStatus = 0;
         productInfo.outStatus = 0;
         productInfo.noOutPutCode = productInfo.code;
-        if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-            productInfo.discount = $("#search_discount").val();
+        if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
+            productInfo.discount = $("#edit_discount").val();
         } else {
             productInfo.discount = 100;
         }
-        productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+        productInfo.puPrice=productInfo.puPrice;
+        //判断实际价格是不是小于门店批发价格
+        if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice){
+            productInfo.actPrice = productInfo.puPrice;
+            productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
+            productInfo.abnormalStatus=1;
+        }else{
+            productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+            productInfo.abnormalStatus=0;
+        }
+        //productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
         productInfo.totPrice = productInfo.price;
         productInfo.totActPrice = productInfo.actPrice;
         var stylePriceMap={};
@@ -1796,6 +1972,7 @@ function saveAjax() {
                     url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + msg.result.billNo,
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                $("#grid").trigger("reloadGrid");
                 $("#SODtl_adddoPrint1").show();
             } else {
                 bootbox.alert(msg.msg);

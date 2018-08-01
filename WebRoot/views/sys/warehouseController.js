@@ -104,8 +104,17 @@ function showAdvSearchPanel() {
 //john 添加
 function save() {
     $("#editForm").data('bootstrapValidator').validate();
-    if(!$("#editForm").data('bootstrapValidator').isValid()){
-        return ;
+
+
+    var code = $("#editForm input[name='code']").val();
+    if(code != null && code != ""){
+        $('#editForm').bootstrapValidator('enableFieldValidators', 'code', false);
+    } else {
+        $('#editForm').bootstrapValidator('enableFieldValidators', 'code', true);
+    }
+    console.log($("#editForm").data('bootstrapValidator').isValid())
+    if(!$("#editForm").data('bootstrapValidator').isValid()) {
+        return;
     }
     if($("#form_ownerId").val()==""){
         bootbox.alert("所属方不能为空");
