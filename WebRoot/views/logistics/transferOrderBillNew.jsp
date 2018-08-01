@@ -293,8 +293,7 @@
                                                       name="remark">${transferOrderBill.remark}</textarea>
                                                     </div>
                                                 </div>
-                                                <input id="edit_status" name="status" value="${transferOrderBill.status}"
-                                                       type="hidden">
+                                                <input id="edit_status" name="status" type="hidden">
                                                 </input>
                                             </form>
                                         </div>

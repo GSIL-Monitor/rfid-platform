@@ -626,6 +626,7 @@ function addNew(isScan){
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
     $("#editForm").clearForm();
+    $("#edit_status").val("");
     setEditFormVal();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
@@ -660,7 +661,7 @@ function save() {
         cs.closeProgressBar();
         return;
     }
-
+    console.log($("#edit_status").val());
     if (editDtailRowId !== null) {
         $("#addDetailgrid").saveRow(editDtailRowId);
         editDtailRowId = null;
@@ -702,6 +703,8 @@ function save() {
                     url: basePath + "/logistics/transferOrder/findBillDtl.do?billNo=" + $("#edit_billNo").val(),
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                addNew();
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
