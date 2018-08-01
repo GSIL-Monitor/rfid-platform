@@ -458,6 +458,16 @@ function initAddGrid() {
                     }
                 }
             },
+            {name: 'delRemark', label: '详情备注', editable: true,
+                cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
+                    if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
+                        return "style='color:red;'";
+                    }
+                }
+            },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
             {name: 'puPrice', label: '门店批发价', hidden: true},
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
@@ -802,18 +812,28 @@ function initeditGrid(billId) {
                     }
                 }
             },
+            {name: 'delRemark', label: '详情备注', editable: true,
+                cellattr:function(rowId, val, rawObject, cm, rdata) {
+                    if(rawObject.abnormalStatus==1){
+                        return "style='color:blue;'";
+                    }
+                    if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
+                        return "style='color:red;'";
+                    }
+                }
+            },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
             {
                 name: '', label: '唯一码明细', width: 40, align: "center",
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
-                },
+                }
             },
             {
                 name: '', label: '异常唯一码明细', width: 40, align: "center",
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.noOutPutCode + "')><i class='ace-icon ace-icon fa fa-list' title='显示异常唯一码明细'></i></a>";
-                },
+                }
             },
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {name: 'puPrice', label: '门店批发价', hidden: true},
@@ -882,7 +902,8 @@ function initeditGrid(billId) {
             var value = $('#addDetailgrid').getRowData(rowid);
             if ((value.outStatus != 2 && celname == "returnQty" && value.returnbillNo == "") ||
                 (value.outStatus != 2 && celname == "discount" && value.returnbillNo == "") ||
-                (value.outStatus != 2 && celname == "actPrice" && value.returnbillNo == "")) {
+                (value.outStatus != 2 && celname == "actPrice" && value.returnbillNo == "")||
+                (value.outStatus != 2 && celname == "delRemark" && value.returnbillNo == "")) {
                 addDetailgridiRow = iRow;
                 addDetailgridiCol = iCol;
             } else {

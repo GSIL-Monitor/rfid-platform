@@ -49,6 +49,8 @@ public class SaleOrderBillDtl extends BaseBillDtl {
     private String noOutPutCode;//不能出库的唯一码
     @Column()
     private Double puPrice;//门店批发价
+    @Column()
+    private String delRemark;//详情备注
 
     public SaleOrderBillDtl() {
     }
@@ -215,5 +217,13 @@ public class SaleOrderBillDtl extends BaseBillDtl {
 
     public void setPuPrice(Double puPrice) {
         this.puPrice = puPrice;
+    }
+
+    public String getDelRemark() {
+        return delRemark;
+    }
+
+    public void setDelRemark(String delRemark) {
+        this.delRemark = delRemark;
     }
 }
