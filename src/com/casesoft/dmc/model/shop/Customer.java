@@ -74,7 +74,13 @@ public class Customer implements java.io.Serializable {
     private String city;
     private Date storeDate;
     private String updaterId;
-    private String linkman;
+    private String linkman;  // 销售联系人ID
+
+    @Transient   // 销售联系人姓名
+    private String linkmanName;
+    public String getLinkmanName() { return linkmanName; }
+    public void setLinkmanName(String linkmanName) { this.linkmanName = linkmanName; }
+
     private Date updateTime;
     //会员id
     private String vipId;
@@ -406,7 +412,7 @@ public class Customer implements java.io.Serializable {
 
 
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd")
     @Column( length = 19)
     public Date getBirth() {
         return birth;
