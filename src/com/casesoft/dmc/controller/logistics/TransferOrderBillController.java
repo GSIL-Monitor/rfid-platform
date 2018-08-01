@@ -7,6 +7,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.PropertyKey;
@@ -56,6 +57,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
     @Autowired
     private ResourceButtonService resourceButtonService;
 
+
     @Override
     public String index() {
         return "/views/logistics/transferOrderBill";
@@ -64,6 +66,9 @@ public class TransferOrderBillController extends BaseController implements ILogi
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
         ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillNew");
+        Resource resource = this.resourceService.get("url", "logistics/transferOrder");
+        List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"div");
+        mv.addObject("resourceButton", FastJSONUtil.getJSONString(resourceButton));
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());

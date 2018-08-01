@@ -12,6 +12,7 @@
         var pageType = "${pageType}";
         var userId = "${userId}";
         var ownersId="${ownersId}";
+        var resourceButton =${resourceButton};
     </script>
 
 </head>
@@ -272,16 +273,18 @@
                                                                name="billDate"
                                                                type="text" value="${transferOrderBill.billDate}"/>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="form_printSelect">打印选择</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control" id="form_printSelect"
-                                                                style="width: 100%;">
-                                                            <option value="0">入库数量</option>
-                                                            <option value="1">出库数量</option>
-                                                            <option value="2">单据数量</option>
+                                                    <div id="printSelect_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="form_printSelect">打印选择</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control" id="form_printSelect"
+                                                                    style="width: 100%;">
+                                                                <option value="0">入库数量</option>
+                                                                <option value="1">出库数量</option>
+                                                                <option value="2">单据数量</option>
 
-                                                        </select>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">

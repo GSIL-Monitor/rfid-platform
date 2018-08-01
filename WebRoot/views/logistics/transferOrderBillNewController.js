@@ -14,6 +14,7 @@ $(function () {
     initEditFormValid();
     /*回车监事件*/
     keydown();
+    loadingButton();
 });
 function initForm() {
     initSelectOrigForm();
@@ -613,6 +614,18 @@ function loadingButton() {
 
             } else {
                 bootbox.alert(msg.msg);
+            }
+        }
+    });
+    $.each(resourceButton,function (index,value) {
+        if(resourceButton[index].ishow===0){
+            console.log(value);
+            if( $("#"+resourceButton[index].buttonId).length>0){
+                $("#"+resourceButton[index].buttonId).show();
+            }
+        }else {
+            if( $("#"+resourceButton[index].buttonId).length>0){
+                $("#"+resourceButton[index].buttonId).hide();
             }
         }
     });
