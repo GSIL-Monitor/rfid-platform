@@ -6,7 +6,6 @@ import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.tag.util.StringUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
@@ -19,7 +18,7 @@ import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.PurchaseReturnBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.tag.InitService;
@@ -32,7 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +50,7 @@ public class    PurchaseOrderBillController extends BaseController implements IL
     @Autowired
     private ResourceService resourceService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
     @Autowired
     private PurchaseReturnBillService purchaseReturnBillService;
     @Autowired
@@ -416,8 +414,8 @@ public class    PurchaseOrderBillController extends BaseController implements IL
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/purchase");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");

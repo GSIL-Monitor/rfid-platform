@@ -1425,8 +1425,8 @@
         $("#changeRemark_form").html("");
         $("#changeRemark_dialog").modal('show');
         var remarkList = contents.split(" ");
-        var remark = new Array();
-        var number = new Array();
+        var remark = [];
+        var number = [];
         $.each(remarkList, function (dtlndex, dtlValue) {
             remark.push(GetChinese(dtlValue));
             number.push(GetNumber(dtlValue));
@@ -1706,12 +1706,12 @@
         $.each(fieldList,function (index,value) {
             if(fieldList[index].ishow===0){
                 console.log(value);
-                if( $("#"+fieldList[index].buttonId).length>0){
-                    $("#"+fieldList[index].buttonId).show();
+                if( $("#"+fieldList[index].privilegeId).length>0){
+                    $("#"+fieldList[index].privilegeId).show();
                 }
             }else {
-                if( $("#"+fieldList[index].buttonId).length>0){
-                    $("#"+fieldList[index].buttonId).hide();
+                if( $("#"+fieldList[index].privilegeId).length>0){
+                    $("#"+fieldList[index].privilegeId).hide();
                 }
             }
         });

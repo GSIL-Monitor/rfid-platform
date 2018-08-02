@@ -14,7 +14,7 @@ $(function () {
     initEditFormValid();
     /*回车监事件*/
     keydown();
-   // loadingButtonDivTable();
+    loadingButtonDivTable();
 });
 function initForm() {
     initSelectOrigForm();
@@ -588,16 +588,18 @@ function initButtonGroup() {
     $("#addDetail").show();
 
 }
+/**
+ * 动态配置按钮,div,表格列字段
+ * */
 function loadingButtonDivTable() {
-    var tableFieldList = ButtonAndDivPower(resourceButton);
-    initgridField(tableFieldList);
-}
-
-function initgridField(tableFieldList){
+    var tableFieldList = ButtonAndDivPower(resourcePrivilege);
     $.each(tableFieldList,function(index,value){
-
+        if(value.isShow!==0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
     });
 }
+
 /**
  * 新增单据调用
  *
@@ -1001,79 +1003,79 @@ function confirmWareHouseIn() {
     $("#add-uniqCode-dialog").modal('hide');
 }
 /*function doPrintA4() {
-    var billno = $("#edit_billNo").val();
-    $.ajax({
-        dataType: "json",
-        url: basePath + "/logistics/transferOrder/printA4Info.do",
-        data: {
-            "billNo": billno,
-            "ruleReceipt":"A4N0Size",
-            "type":"TR"
+ var billno = $("#edit_billNo").val();
+ $.ajax({
+ dataType: "json",
+ url: basePath + "/logistics/transferOrder/printA4Info.do",
+ data: {
+ "billNo": billno,
+ "ruleReceipt":"A4N0Size",
+ "type":"TR"
 
-        },
-        type: "POST",
-        success: function (msg) {
-            if (msg.success) {
-                var print = msg.result.print;
-                var bill = msg.result.bill;
-                var billDtl = msg.result.dtl;
-                var LODOP = getLodop();
-                eval(print.printCont);
-                LODOP.SET_PRINT_STYLEA("remark", 'Content', bill.remark);
-                LODOP.SET_PRINT_STYLEA("storehouseName", 'Content', bill.origUnitName + "-" + bill.origName);
-                var recordmessage = "";
-                var totQty = 0;
-                $.each(billDtl, function (index, value) {
-                    recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleName + "</td>";
-                    if (value.supplierName == undefined) {
-                        recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + "" + "</td>";
-                    } else {
-                        recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName + "</td>";
-                    }
-                    var qty = 0;
-                    switch ($("#form_printSelect").val()) {
-                        case "0":
-                            qty = value.inQty
-                            break;
-                        case "1":
-                            qty = value.outQty
-                            break;
-                        case "2":
-                            qty = value.qty
-                            break;
-                    }
-                    totQty += qty;
-                    recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
-                        "</tr>";
-                });
+ },
+ type: "POST",
+ success: function (msg) {
+ if (msg.success) {
+ var print = msg.result.print;
+ var bill = msg.result.bill;
+ var billDtl = msg.result.dtl;
+ var LODOP = getLodop();
+ eval(print.printCont);
+ LODOP.SET_PRINT_STYLEA("remark", 'Content', bill.remark);
+ LODOP.SET_PRINT_STYLEA("storehouseName", 'Content', bill.origUnitName + "-" + bill.origName);
+ var recordmessage = "";
+ var totQty = 0;
+ $.each(billDtl, function (index, value) {
+ recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleName + "</td>";
+ if (value.supplierName == undefined) {
+ recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + "" + "</td>";
+ } else {
+ recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName + "</td>";
+ }
+ var qty = 0;
+ switch ($("#form_printSelect").val()) {
+ case "0":
+ qty = value.inQty
+ break;
+ case "1":
+ qty = value.outQty
+ break;
+ case "2":
+ qty = value.qty
+ break;
+ }
+ totQty += qty;
+ recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
+ "</tr>";
+ });
 
-                recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + totQty + "</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
-                    "</tr>";
-                $("#loadtabA4").html(recordmessage);
-                //alert($("#edit-dialogA4").html());
-                console.log($("#edit-dialogA4").html());
-                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
-                $("#edit-dialog-print").hide();
-
-
-            } else {
-                bootbox.alert(msg.msg);
-            }
-        }
-    });
+ recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + totQty + "</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
+ "</tr>";
+ $("#loadtabA4").html(recordmessage);
+ //alert($("#edit-dialogA4").html());
+ console.log($("#edit-dialogA4").html());
+ LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
+ LODOP.PREVIEW();
+ //LODOP.PRINT();
+ $("#edit-dialog-print").hide();
 
 
-}*/
+ } else {
+ bootbox.alert(msg.msg);
+ }
+ }
+ });
+
+
+ }*/
 function doPrintA4() {
     var billno = $("#edit_billNo").val();
     $.ajax({

@@ -8,28 +8,22 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 
-import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
-import com.casesoft.dmc.core.util.json.FastJsonFun;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
-import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.SaleByOrignames;
 import com.casesoft.dmc.model.logistics.SaleBybusinessname;
 import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.search.saleorderCount;
-import com.casesoft.dmc.model.stock.InventoryMergeBillDtl;
-import com.casesoft.dmc.model.sys.ResourceButton;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
-import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -44,14 +38,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -68,7 +60,7 @@ public class SaleorderConutViewSearch extends BaseController {
     @Autowired
     private SaleOrderBillService saleOrderBillService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
     //@RequestMapping(value = "/index")
     public String index() {
         return "/views/search/SaleorderCountViewSearch";
@@ -78,8 +70,8 @@ public class SaleorderConutViewSearch extends BaseController {
         ModelAndView mv = new ModelAndView("/views/search/SaleorderCountViewSearch");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         User currentUser = getCurrentUser();
-        List<ResourceButton> resourceButtontableList = this.resourceButtonService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"table");
-        List<ResourceButton> resourceButtondivList = this.resourceButtonService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
+        List<ResourcePrivilege> resourceButtontableList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"table");
+        List<ResourcePrivilege> resourceButtondivList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
         mv.addObject("tableRole", FastJSONUtil.getJSONString(resourceButtontableList));
         mv.addObject("divRole", FastJSONUtil.getJSONString(resourceButtondivList));
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
@@ -243,23 +235,23 @@ public class SaleorderConutViewSearch extends BaseController {
         DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
         //根据权限获得字段
         User currentUser = getCurrentUser();
-        List<ResourceButton> resourceButtondivList = this.resourceButtonService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
+        List<ResourcePrivilege> resourceButtondivList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
         boolean precast= false;
         boolean gross = false;
         boolean grossprofits = false;
-        for (ResourceButton resourceButton : resourceButtondivList){
-            if("precast".equals(resourceButton.getButtonId())){
-                if(resourceButton.getIshow() == 0){
+        for (ResourcePrivilege resourcePrivilege : resourceButtondivList){
+            if("precast".equals(resourcePrivilege.getPrivilegeId())){
+                if(resourcePrivilege.getIsShow() == 0){
                     precast = true;
                 }
             }
-            if("gross".equals(resourceButton.getButtonId())){
-                if(resourceButton.getIshow() == 0){
+            if("gross".equals(resourcePrivilege.getPrivilegeId())){
+                if(resourcePrivilege.getIsShow() == 0){
                     gross = true;
                 }
             }
-            if("grossprofits".equals(resourceButton.getButtonId())){
-                if(resourceButton.getIshow() == 0){
+            if("grossprofits".equals(resourcePrivilege.getPrivilegeId())){
+                if(resourcePrivilege.getIsShow() == 0){
                     grossprofits = true;
                 }
             }

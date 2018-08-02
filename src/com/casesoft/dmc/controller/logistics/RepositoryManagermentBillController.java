@@ -21,7 +21,7 @@ import com.casesoft.dmc.service.rem.RepositoryManagementBillDtlService;
 import com.casesoft.dmc.service.rem.RepositoryManagementBillService;
 import com.casesoft.dmc.service.rem.UniqueCodeBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,8 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by lly on 2018/7/20.
@@ -51,7 +49,7 @@ public class RepositoryManagermentBillController extends BaseController implemen
     @Autowired
     private ResourceService resourceService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
 
     @Override
     public String index() {
@@ -325,8 +323,8 @@ public class RepositoryManagermentBillController extends BaseController implemen
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/repositoryAdjust");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");

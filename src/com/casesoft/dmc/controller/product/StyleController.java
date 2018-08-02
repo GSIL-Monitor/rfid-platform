@@ -11,20 +11,15 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Term;
-import com.casesoft.dmc.model.sys.ResourceButton;
-import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.tag.Epc;
-import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
-import com.casesoft.dmc.service.sys.impl.ResourceService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import com.casesoft.dmc.service.tag.InitService;
-import net.sf.jasperreports.repo.Resource;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +53,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@Autowired
 	private PropertyService propertyService;
 	@Autowired
-	private ResourceButtonService resourceButtonService;
+	private ResourcePrivilegeService resourcePrivilegeService;
 	@Autowired
 	private UserService userService;
 
@@ -170,13 +165,13 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		ModelAndView mv = new ModelAndView("/views/prod/style_edit");
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
 		String roleId = getCurrentUser().getRoleId();
-		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
+		List<ResourcePrivilege> resourcePrivilegeList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 		mv.addObject("pageType","add");
 		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("styleId", "");
 		mv.addObject("roleId",getCurrentUser().getRoleId());
 		mv.addObject("userId",getCurrentUser().getId());
-		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
+		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourcePrivilegeList));
 		return mv;
 	}
 	@RequestMapping("/edit")
@@ -186,7 +181,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		List<PropertyType> propertyTypeList = this.styleService.findStylePropertyType();
 		String roleId = getCurrentUser().getRoleId();
 		//查询当前用户对应字段
-		List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
+		List<ResourcePrivilege> resourcePrivilegeList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 		Style s = CacheManager.getStyleById(styleId);
 		mv.addObject("pageType","edit");
 		mv.addObject("style",s);
@@ -194,7 +189,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		mv.addObject("classTypes",propertyTypeList);
 		mv.addObject("roleId",roleId);
 		//传递字段
-		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
+		mv.addObject("fieldList", FastJSONUtil.getJSONString(resourcePrivilegeList));
 		mv.addObject("userId",getCurrentUser().getId());
 		return mv;
 	}
@@ -317,9 +312,9 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	* */
 	@RequestMapping(value = {"/getResourceButtonList","/getResourceButtonListWS"})
 	@ResponseBody
-	public List<ResourceButton> getResourceButtonList(String userId){
+	public List<ResourcePrivilege> getResourceButtonList(String userId){
 		String roleId =this.userService.getUser(userId).getRoleId();
-		return this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
+		return this.resourcePrivilegeService.findButtonByCodeAndRoleId("prod/style",roleId,"div");
 
 	}
 
@@ -331,8 +326,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public MessageBox initStyleGridGroup(){
 		String roleId = getCurrentUser().getRoleId();
 		try {
-			List<ResourceButton> resourceButtons = this.resourceButtonService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
-			return new MessageBox(true,"查询成功",resourceButtons);
+			List<ResourcePrivilege> resourcePrivileges = this.resourcePrivilegeService.findButtonByCodeAndRoleId("prod/style",roleId,"table");
+			return new MessageBox(true,"查询成功", resourcePrivileges);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

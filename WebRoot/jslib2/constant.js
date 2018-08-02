@@ -94,17 +94,17 @@ function GetNumber(strValue) {
  * resourceButton 该页面所有权限
  * tableList 表格权限的集合，许单独配置
  */
-function ButtonAndDivPower(resourceButton) {
+function ButtonAndDivPower(resourcePrivilege) {
     var tableList = [];
-    $.each(resourceButton,function (index,value) {
+    $.each(resourcePrivilege,function (index,value) {
         if (value.type!="table") {
-            if(value.ishow===0){
-                if( $("#"+value.buttonId).length>0){
-                    $("#"+value.buttonId).show();
+            if(value.isShow===0){
+                if( $("#"+value.privilegeId).length>0){
+                    $("#"+value.privilegeId).show();
                 }
             }else {
-                if( $("#"+value.buttonId).length>0){
-                    $("#"+value.buttonId).hide();
+                if( $("#"+value.privilegeId).length>0){
+                    $("#"+value.privilegeId).hide();
                 }
             }
         }else {

@@ -291,20 +291,20 @@
                         width: 40,
                         align: 'center',
                         formatter: function (cellvalue, options, rowObject) {
-                           console.log(rowObject.resourceButtonList);
+                           console.log(rowObject.resourcePrivilegeList);
                            var html="";
-                           if(rowObject.resourceButtonList!=""&&rowObject.resourceButtonList!=undefined){
-                               for(var i=0;i<rowObject.resourceButtonList.length;i++){
+                           if(rowObject.resourcePrivilegeList!=""&&rowObject.resourcePrivilegeList!=undefined){
+                               for(var i=0;i<rowObject.resourcePrivilegeList.length;i++){
                                    if(pageType=="add"){
-                                       html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;";
+                                       html+='<input id="ckbox_' + rowObject.resourcePrivilegeList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourcePrivilegeList[i].id + '",this) name="' + rowObject.resourcePrivilegeList[i].privilegeId + '" value="' + rowObject.resourcePrivilegeList[i].privilegeId + '" type="checkbox" /> '+ rowObject.resourcePrivilegeList[i].privilegeName+"&nbsp;";
                                        if((i%3)==0){
                                            html+="<br>"
                                        }
                                    }else{
-                                       if(rowObject.resourceButtonList[i].ishow===0){
-                                           html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                       if(rowObject.resourcePrivilegeList[i].isShow===0){
+                                           html+='<input id="ckbox_' + rowObject.resourcePrivilegeList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourcePrivilegeList[i].id + '",this) name="' + rowObject.resourcePrivilegeList[i].privilegeId + '" value="' + rowObject.resourcePrivilegeList[i].privilegeId + '" type="checkbox" checked="checked"/> '+ rowObject.resourcePrivilegeList[i].privilegeName+"&nbsp;"
                                        }else{
-                                           html+='<input id="ckbox_' + rowObject.resourceButtonList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceButtonList[i].id + '",this) name="' + rowObject.resourceButtonList[i].buttonId + '" value="' + rowObject.resourceButtonList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceButtonList[i].buttonName+"&nbsp;"
+                                           html+='<input id="ckbox_' + rowObject.resourcePrivilegeList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourcePrivilegeList[i].id + '",this) name="' + rowObject.resourcePrivilegeList[i].privilegeId + '" value="' + rowObject.resourcePrivilegeList[i].privilegeId + '" type="checkbox" /> '+ rowObject.resourcePrivilegeList[i].privilegeName+"&nbsp;"
                                        }
                                        if((i%3)==0){
                                            html+="<br>"
@@ -330,15 +330,15 @@
                             if(rowObject.resourcetableList!=""&&rowObject.resourcetableList!=undefined){
                                 for(var i=0;i<rowObject.resourcetableList.length;i++){
                                     if(pageType=="add"){
-                                        html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;";
+                                        html+='<input id="ckbox_' + rowObject.resourcetableList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].privilegeId + '" value="' + rowObject.resourcetableList[i].privilegeId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].privilegeName+"&nbsp;";
                                         if((i%3)==0){
                                             html+="<br>"
                                         }
                                     }else{
-                                        if(rowObject.resourcetableList[i].ishow===0){
-                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                        if(rowObject.resourcetableList[i].isShow===0){
+                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].privilegeId + '" value="' + rowObject.resourcetableList[i].privilegeId + '" type="checkbox" checked="checked"/> '+ rowObject.resourcetableList[i].privilegeName+"&nbsp;"
                                         }else{
-                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].buttonId + '" value="' + rowObject.resourcetableList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].buttonName+"&nbsp;"
+                                            html+='<input id="ckbox_' + rowObject.resourcetableList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourcetableList[i].id + '",this) name="' + rowObject.resourcetableList[i].privilegeId + '" value="' + rowObject.resourcetableList[i].privilegeId + '" type="checkbox" /> '+ rowObject.resourcetableList[i].privilegeName+"&nbsp;"
                                         }
                                         if((i%3)==0){
                                             html+="<br>"
@@ -364,15 +364,15 @@
                             if(rowObject.resourceDivList!=""&&rowObject.resourceDivList!=undefined){
                                 for(var i=0;i<rowObject.resourceDivList.length;i++){
                                     if(pageType=="add"){
-                                        html+='<input id="ckbox_' + rowObject.resourceDivList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceDivList[i].id + '",this) name="' + rowObject.resourceDivList[i].buttonId + '" value="' + rowObject.resourceDivList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceDivList[i].buttonName+"&nbsp;";
+                                        html+='<input id="ckbox_' + rowObject.resourceDivList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourceDivList[i].id + '",this) name="' + rowObject.resourceDivList[i].privilegeId + '" value="' + rowObject.resourceDivList[i].privilegeId + '" type="checkbox" /> '+ rowObject.resourceDivList[i].privilegeName+"&nbsp;";
                                         if((i%3)==0){
                                             html+="<br>"
                                         }
                                     }else{
-                                        if(rowObject.resourceDivList[i].ishow===0){
-                                            html+='<input id="ckbox_' + rowObject.resourceDivList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceDivList[i].id + '",this) name="' + rowObject.resourceDivList[i].buttonId + '" value="' + rowObject.resourceDivList[i].buttonId + '" type="checkbox" checked="checked"/> '+ rowObject.resourceDivList[i].buttonName+"&nbsp;"
+                                        if(rowObject.resourceDivList[i].isShow===0){
+                                            html+='<input id="ckbox_' + rowObject.resourceDivList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourceDivList[i].id + '",this) name="' + rowObject.resourceDivList[i].privilegeId + '" value="' + rowObject.resourceDivList[i].privilegeId + '" type="checkbox" checked="checked"/> '+ rowObject.resourceDivList[i].privilegeName+"&nbsp;"
                                         }else{
-                                            html+='<input id="ckbox_' + rowObject.resourceDivList[i].buttonId + '" onclick=selectresourceButton("' + rowObject.resourceDivList[i].id + '",this) name="' + rowObject.resourceDivList[i].buttonId + '" value="' + rowObject.resourceDivList[i].buttonId + '" type="checkbox" /> '+ rowObject.resourceDivList[i].buttonName+"&nbsp;"
+                                            html+='<input id="ckbox_' + rowObject.resourceDivList[i].privilegeId + '" onclick=selectresourcePrivilege("' + rowObject.resourceDivList[i].id + '",this) name="' + rowObject.resourceDivList[i].privilegeId + '" value="' + rowObject.resourceDivList[i].privilegeId + '" type="checkbox" /> '+ rowObject.resourceDivList[i].privilegeName+"&nbsp;"
                                         }
                                         if((i%3)==0){
                                             html+="<br>"
@@ -454,7 +454,7 @@
 
 
         }
-        function selectresourceButton(id,t) {
+        function selectresourcePrivilege(id, t) {
              var state=0;
             if($(t).prop('checked')){
                 state=0;
@@ -466,8 +466,8 @@
                 return;
             }
             cs.showProgressBar();
-            $.post(basePath+"/sys/role/updateResourceButtonIsshow.do",
-                {id:id,ishow:state},
+            $.post(basePath+"/sys/role/updateResourceButtonIsShow.do",
+                {id:id,isShow:state},
                 function(result) {
                     cs.closeProgressBar();
                     if(result.success == true || result.success == 'true') {
@@ -479,6 +479,25 @@
                         cs.showAlertMsgBox(result.msg);
                     }
                 }, 'json');
+        }
+        function initPrivilegeCheckbox(privilegeList){
+            $.each(privilegeList,function(index,value){
+                if(pageType=="add"){
+                    html+='<input id="ckbox_' + rowObject.resourceDivList[i].privilegeId + '" onclick=selectresourcePrivilege("' + value.id + '",this) name="' + rowObject.resourceDivList[i].privilegeId + '" value="' + value.privilegeId + '" type="checkbox" /> '+ value.privilegeName+"&nbsp;";
+                    if((i%3)==0){
+                        html+="<br>"
+                    }
+                }else{
+                    if(rowObject.resourceDivList[i].isShow===0){
+                        html+='<input id="ckbox_' + rowObject.resourceDivList[i].privilegeId + '" onclick=selectresourcePrivilege("' + value.id + '",this) name="' + rowObject.resourceDivList[i].privilegeId + '" value="' + value.privilegeId + '" type="checkbox" checked="checked"/> '+ value.privilegeName+"&nbsp;"
+                    }else{
+                        html+='<input id="ckbox_' + rowObject.resourceDivList[i].privilegeId + '" onclick=selectresourcePrivilege("' + value.id + '",this) name="' + rowObject.resourceDivList[i].privilegeId + '" value="' + value.privilegeId + '" type="checkbox" /> '+ value.privilegeName+"&nbsp;"
+                    }
+                    if((i%3)==0){
+                        html+="<br>"
+                    }
+                }
+            })
         }
     </script>
 </body>

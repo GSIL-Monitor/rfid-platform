@@ -27,14 +27,14 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right"><span class="text-danger"></span>名称</label>
                         <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="tableName" name="buttonName"
+                            <input class="form-control" id="tableName" name="privilegeName"
                                    type="text"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right"><span class="text-danger"></span>表列name</label>
                         <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="tabelId" name="buttonId"
+                            <input class="form-control" id="tabelId" name="privilegeId"
                                    type="text"/>
                         </div>
                     </div>
@@ -150,10 +150,10 @@
         $.ajax({
             dataType:"json",
             async: true,
-            url: basePath + "/sys/role/checkButtonId.do",
+            url: basePath + "/sys/role/checkPrivilegeId.do",
             data:{
                 code:$("#code").val(),
-                buttonId:$("#buttonId").val()
+                privilegeId:$("#privilegeId").val()
             },
             type:"POST",
             success:function(result) {
