@@ -141,9 +141,10 @@
                 } else {
                     cs.showAlertMsgBox(result.msg);
                 }
+                closeButtonDialog();
             }
         });
-        closeDialog();
+
     }
     function checkButtonId(checkBack) {
         cs.showProgressBar();
