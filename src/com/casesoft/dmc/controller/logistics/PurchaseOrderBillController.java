@@ -7,6 +7,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -39,7 +40,7 @@ import java.util.List;
  * Created by Alvin on 2017-06-13.
  */
 @Controller
-@RequestMapping("/logistics/purchase")
+@RequestMapping("/logistics/purchaseOrderBill")
 public class    PurchaseOrderBillController extends BaseController implements ILogisticsBillController<PurchaseOrderBill> {
     @Autowired
     private PurchaseOrderBillService purchaseOrderBillService;
@@ -55,18 +56,16 @@ public class    PurchaseOrderBillController extends BaseController implements IL
     private PurchaseReturnBillService purchaseReturnBillService;
     @Autowired
     private SettingService settingService;
-   /* @Override
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "/views/logistics/purchaseOrderBill";
-    }*/
+
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
         //查询系统操作
         Setting setting = this.settingService.get("id","repositoryManagement");
-        ModelAndView mv = new ModelAndView("/views/logistics/purchaseOrderBillNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseOrderBill");
         mv.addObject("pageType", "add");
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/purchaseOrderBill", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         User user = this.getCurrentUser();
         mv.addObject("ownerId", user.getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
@@ -406,14 +405,14 @@ public class    PurchaseOrderBillController extends BaseController implements IL
 
     @Override
     public String index() {
-        return "/views/logistics/purchaseOrderBillNew";
+        return "/views/logistics/purchaseOrderBill";
     }
 
     @RequestMapping(value = "/findResourceButton")
     @ResponseBody
     public MessageBox findResourceButton(){
         try {
-            Resource resource = this.resourceService.get("url", "logistics/purchase");
+            Resource resource = this.resourceService.get("url", "logistics/purchaseOrderBill");
             List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
             return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){

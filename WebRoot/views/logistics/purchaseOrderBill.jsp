@@ -1,4 +1,12 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--
+  Created by IntelliJ IDEA.
+  User: admin
+  Date: 2018/6/19
+  Time: 9:21
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 %>
@@ -8,158 +16,334 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var pageType = "${pageType}";
+        var billNo = "${purchaseOrderBill.billNo}";
+        var purchaseOrder_destId = "${purchaseOrderBill.destId}";
+        var purchaseOrder_orderWarehouseId = "${purchaseOrderBill.orderWarehouseId}";
+        var saleOrder_buyahandId = "${purchaseOrderBill.buyahandId}";
         var curOwnerId = "${ownerId}";
         var userId = "${userId}";
-        var billNo = "${billNo}";
+        var defaultWarehId = "${defaultWarehId}";
+        var resourcePrivilege =${resourcePrivilege};
     </script>
-
 </head>
-<body class="no-skin">
+<body>
 <div class="main-container" id="main-container" style="">
     <script type="text/javascript">
         try {
-            ace.settings.check('main-container', 'fixed')
-        } catch (e) {
+            ace.settings.check('main-container','fixed')
+        }catch(e) {
         }
     </script>
     <div class="main-content">
         <div class="main-content-inner">
             <!-- /.page-header -->
-
-            <div id="page-content">
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <!-- PAGE CONTENT BEGINS -->
-                        <div class="widget-body">
-
-                            <div class="widget-toolbox padding-8 clearfix">
-                                <div class="btn-toolbar" role="toolbar">
-                                    <div class="btn-group btn-group-sm pull-left">
-                                        <button class="btn btn-info" onclick="refresh()">
-                                            <i class="ace-icon fa fa-refresh"></i>
-                                            <span class="bigger-110">刷新</span>
-                                        </button>
-                                    </div>
-                                    <div class="btn-group btn-group-sm pull-left">
-                                        <button type="button" class="btn btn-primary" onclick="add()">
-                                            <i class="ace-icon fa fa-plus"></i>
-                                            <span class="bigger-110">新增</span>
-                                        </button>
-                                    </div>
-
-                                    <div class="btn-group btn-group-sm pull-right">
-
-                                        <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
-                                            <i class="ace-icon fa fa-binoculars"></i>
-                                            <span class="bigger-110">高级查询</span>
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="hr hr4"></div>
-                            <div class="widget-main" id="searchPanel" style="display:none">
-                                <form class="form-horizontal" role="form" id="searchForm">
-                                    <div class="form-group">
-                                        <label class="col-xs-1 control-label" for="search_billId">单号</label>
-                                        <div class="col-xs-2">
-                                            <input class="form-control" id="search_billId" name="filter_LIKES_billNo"
-                                                   type="text" onkeyup="this.value=this.value.toUpperCase()"
-                                                   placeholder="模糊查询"/>
-                                        </div>
-                                        <label class="col-xs-1 control-label" for="search_createTime">创建日期</label>
-                                        <div class="col-xs-2">
-                                            <div class="input-group">
-                                                <input class="form-control date-picker" id="search_createTime"
-                                                       type="text" name="filter_GED_billDate"
-                                                       data-date-format="yyyy-mm-dd"/>
-                                                <span class="input-group-addon">
+            <div class="row">
+                <!-- PAGE CONTENT BEGINS -->
+                <div class="col-md-12">
+                    <div class="center">
+                        <div class="col-md-4 order-panel-left">
+                            <!-- 左则面板 -->
+                            <div class="panel panel-default  left-panel">
+                                <div class="panel-body">
+                                    <div class="widget-body">
+                                        <form class="form-horizontal" role="form" id="searchForm">
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label" for="search_billId">单号</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" id="search_billId" name="filter_LIKES_billNo"
+                                                           type="text" onkeyup="this.value=this.value.toUpperCase()"
+                                                           placeholder="模糊查询"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label" for="search_returnBillNo">退货单号</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" id="search_returnBillNo" name="filter_LIKES_returnBillNo"
+                                                           type="text" onkeyup="this.value=this.value.toUpperCase()"
+                                                           placeholder="模糊查询"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label" for="search_createTime">创建日期</label>
+                                                <div class="col-md-10">
+                                                    <div class="input-group">
+                                                        <input class="form-control date-picker" id="search_createTime"
+                                                               type="text" name="filter_GED_billDate"
+                                                               data-date-format="yyyy-mm-dd"/>
+                                                        <span class="input-group-addon">
                                                     <i class="fa fa-exchange"></i>
                                                 </span>
-                                                <input class="form-control date-picker" type="text"
-                                                       class="input-sm form-control" name="filter_LED_billDate"
-                                                       data-date-format="yyyy-mm-dd"/>
+                                                        <input class="form-control date-picker" type="text"
+                                                               class="input-sm form-control" name="filter_LED_billDate"
+                                                               data-date-format="yyyy-mm-dd"/>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-1 control-label" for="search_origUnitId">供应商</label>
-                                        <%--<div class="col-xs-2">--%>
-                                            <%--<input class="form-control" id="search_origUnitId"--%>
-                                                   <%--name="filter_EQS_origUnitId" style="width: 100%;"--%>
-                                                   <%--placeholder="模糊查询"/>--%>
-                                        <%--</div>--%>
-                                        <div class="col-xs-2">
-                                            <div class="input-group">
-                                                <input class="form-control" id="search_origUnitId" type="text"
-                                                       name="filter_EQS_origUnitId" readonly/>
-                                                <span class="input-group-btn">
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label" for="search_origUnitId">供应商</label>
+                                                <div class="col-md-10">
+                                                    <div class="input-group">
+                                                        <input class="form-control" id="search_origUnitId" type="text"
+                                                               name="filter_EQS_origUnitId" readonly/>
+                                                        <span class="input-group-btn">
                                                     <button class="btn btn-sm btn-default" id="search_vendor_button"
-                                                            type="button" onclick="openSearchVendorDialog()">
+                                                            type="button" onclick="openSearchVendorDialog('search')">
                                                         <i class="ace-icon fa fa-list"></i>
                                                     </button>
 											    </span>
-                                                <input class="form-control" id="search_origUnitName" type="text"
-                                                       name="origUnitName" readonly/>
+                                                        <input class="form-control" id="search_origUnitName" type="text"
+                                                               name="search_origUnitName" readonly/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label" for="search_destId">入库仓库</label>
+                                                <div class="col-md-4">
+                                                    <select class="form-control selectpicker show-tick" id="search_destId" name="filter_LIKES_destId"
+                                                            style="width: 100%;" data-live-search="true">
+                                                    </select>
+                                                </div>
+                                                <label class="col-md-2 control-label" for="select_inStatus">入库状态</label>
+                                                <div class="col-md-4">
+                                                    <select class="form-control selectpicker show-tick" id="select_inStatus"
+                                                            name="filter_EQI_inStatus" data-live-search="true">
+                                                        <option value="">--请选择--</option>
+                                                        <option value="0">订单状态</option>
+                                                        <option value="1">已入库</option>
+                                                        <option value="4">入库中</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-3 col-sm-6">
+                                                    <button type="button" class="btn btn-sm btn-primary" onclick="_search()">
+                                                        <i class="ace-icon fa fa-search"></i>
+                                                        <span class="bigger-110">查询</span>
+                                                    </button>
+                                                    <button type="reset" class="btn btn-sm btn-warning" onclick="_resetForm()">
+                                                        <i class="ace-icon fa fa-undo"></i>
+                                                        <span class="bigger-110">清空</span></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table id="grid"></table>
+                                        <div id="grid-pager"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 左则面板 end -->
+                        </div>
+                        <div class="col-md-8 order-panel-right">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="text-align: right">
+                                    <div id="buttonGroup">
+                                    </div>
+                                </div>
+                                <div class="panel=body">
+                                    <div class="widget-body">
+                                        <div class="widget-main padding-12">
+                                            <form id="editForm" class="form-horizontal" role="form">
+                                                <div class="form-group">
+                                                    <div id="origUnitName_div">
+                                                        <label class="col-md-1 control-label" for="search_origUnitId"><span
+                                                                class="text-danger">* </span>供应商</label>
+                                                        <div class="col-md-5">
+                                                            <div class="input-group">
+                                                                <input class="form-control" id="edit_origUnitId" type="text"
+                                                                       name="origUnitId"  readonly/>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-sm btn-default" id="edit_vendor_button"
+                                                                            type="button" onclick="openSearchVendorDialog('edit')">
+                                                                        <i class="ace-icon fa fa-list"></i>
+                                                                    </button>
+											                    </span>
+                                                                <input class="form-control" id="edit_origUnitName" type="text"
+                                                                       name="origUnitName"
+                                                                       readonly/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="buyahandId_div">
+                                                        <label class="col-md-1 control-label" for="search_buyahandId">买手</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick" id="search_buyahandId"
+                                                                    name="buyahandId"
+                                                                    style="width: 100%;" data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="billNo_div">
+                                                        <label class="col-md-1 control-label" for="edit_billNo">单据编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readonly />
+                                                        </div>
+                                                    </div>
+                                                    <div id="billDate_div">
+                                                        <label class="col-md-1 control-label" for="search_billDate">
+                                                            <span class="text-danger">* </span>单据日期</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control date-picker" id="search_billDate" name="billDate"
+                                                                   type="text" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="payPrice_div">
+                                                        <label class="col-md-1 control-label" for="search_payPrice"><span
+                                                                class="text-danger">* </span>实付金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                                <input class="form-control" id="search_payPrice" name="payPrice"
+                                                                       type="number"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="payType_div">
+                                                        <label class="col-md-1 control-label" for="search_payType">支付方式</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="search_payType" name="payType"
+                                                                   type="text"/>
+                                                        </div>
+                                                    </div>
+                                                    <div id="discount_div">
+                                                        <label class="col-md-1 control-label" for="search_discount">整单折扣</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="search_discount" name="discount"
+                                                                   onblur="search_discount_onblur()">
+                                                            </input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="orderWarehouseId_div">
+                                                        <label class="col-md-1 control-label" for="search_orderWarehouseId"></span>订货仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick" id="search_orderWarehouseId" name="orderWarehouseId"
+                                                                    style="width: 100%;"  data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="destId_div">
+                                                        <label class="col-md-1 control-label" for="edit_destId"><span class="text-danger">* </span>入库仓库</label>
+                                                        <div class="col-md-3" style="position:relative;z-index: 100;">
+                                                            <select class="form-control selectpicker show-tick" id="edit_destId" name="destId"
+                                                                    style="width: 100%;"  data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="rmId_div">
+                                                        <c:if test="${rm.value=='true'}">
+                                                            <label class="col-md-1 control-label" for="destId"><span class="text-danger">* </span>入库库位</label>
+                                                            <div class="col-md-3" style="position:relative;z-index: 100;">
+                                                                <input class="form-control" id="destId" name="rmId" readonly
+                                                                       style="width: 100%;background-color: #abbac3 !important;color: #ffffff;border-width: 3px;">
+                                                                </input>
+                                                                <div class="widget-body" id="tree" style="display:none;height:600px;width: 93%; overflow-y:auto;text-align: left;position:absolute;z-index: 9999;!important;">
+                                                                    <div class="col-sm-12" style="width: 98%;margin-top: 3%;">
+                                                                        <input class="form-control" id="search_organizationName" type="text"
+                                                                               placeholder="模糊查询"/>
+                                                                    </div>
+                                                                    <div class="col-sm-12" style="text-align: center;margin-top:2%;">
+                                                                        <button type="button" class="btn btn-sm btn-primary" onclick="chooseCage()" style="width: 35%;border: 0;margin-right: 8%;">
+                                                                            <span class="bigger-110">确定</span>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-warning" onclick="unChoose()" style="width: 35%;border: 0;">
+                                                                            <span class="bigger-110">取消</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="widget-main no-padding">
+                                                                        <div id="jstree"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="srcBillNo_div">
+                                                        <label class="col-md-1 control-label" for="search_srcBillNo">补货单编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="search_srcBillNo" name="srcBillNo"
+                                                                   type="text" readonly/>
+                                                        </div>
+                                                    </div>
+                                                    <div id="returnBillNo_div">
+                                                        <label class="col-md-1 control-label" for="search_retBillNo">退货单编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="search_retBillNo" name="returnBillNo"
+                                                                   type="text" readonly/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div id="remark_div">
+                                                        <label class="col-xs-1 control-label"
+                                                               for="form_remark">备注</label>
+                                                        <div class="col-md-11 col-sm-11">
+                                                        <textarea maxlength="400" class="form-control" id="form_remark"
+                                                                  name="remark" >
+                                                        </textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input id="search_status" name="status" type="hidden">
+                                                </input>
+                                                <input id="search_ownerId" name="ownerId"  type="hidden">
+                                                </input>
+                                                <input id="search_id" name="id" type="hidden">
+                                                </input>
+                                            </form>
+                                            <form id="ReturnEditForm" >
+                                                <input id="return_origId" name="origId" type="hidden"/>
+                                                <input id="return_destUnitId" type="hidden" name="destUnitId"/>
+                                                <input id="return_destUnitName" type="hidden" name="destUnitName"/>
+                                                <input id="return_actPrice" name="actPrice" type="hidden"/>
+                                                <input id="return_billDate" name="billDate" type="hidden"/>
+                                                <input id="return_payPrice" name="payPrice" type="hidden"/>
+                                                <input  name="remark" id="search_remark" type="hidden"/>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="widget-body">
+                                        <div class="widget-main padding-12 no-padding-left no-padding-right">
+                                            <div class="tab-content padding-4">
+                                                <div id="addDetail" class="tab-pane in active" style="height:80%;">
+                                                    <table id="addDetailgrid"></table>
+                                                    <div id="addDetailgrid-pager"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control selectpicker show-tick" id="search_destId" name="filter_LIKES_destId"
-                                                    style="width: 100%;" data-live-search="true">
-                                            </select>
-                                        </div>
-                                        <%--<input id="search_unitId" type="text" value="${OwnerId}" name="filter_EQS_unitId" style="display: none">--%>
-                                        <label class="col-xs-1 control-label" for="select_inStatus">入库状态</label>
-                                        <div class="col-xs-2">
-                                            <select class="form-control selectpicker show-tick" id="select_inStatus"
-                                                    name="filter_EQI_inStatus" data-live-search="true">
-                                                <option value="">--请选择--</option>
-                                                <option value="0">订单状态</option>
-                                                <option value="1">已入库</option>
-                                                <option value="4">入库中</option>
-                                            </select>
-                                        </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-5 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="_search()">
-                                                <i class="ace-icon fa fa-search"></i>
-                                                <span class="bigger-110">查询</span>
-                                            </button>
-                                            <button type="reset" class="btn btn-sm btn-warning", onclick="_reset()">
-                                                <i class="ace-icon fa fa-undo"></i>
-                                                <span class="bigger-110">清空</span></button>
-                                        </div>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                        <table id="grid"></table>
-
-                        <div id="grid-pager"></div>
-                        <!-- PAGE CONTENT ENDS -->
                     </div>
-                    <!-- /.col -->
                 </div>
-                <!-- /.row -->
-                <!--/#page-content-->
             </div>
         </div>
     </div>
-
-
-
-    <!--/.fluid-container#main-container-->
 </div>
-
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="add_detail_dialog.jsp"></jsp:include>
+<jsp:include page="add_epc_dialog.jsp"></jsp:include>
 <jsp:include page="purchaseOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
+<jsp:include page="../sys/print_Test.jsp"></jsp:include>
+<jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
+<jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
+<link rel="stylesheet" href="<%=basePath%>/font-awesome-4.7.0/css/font-awesome.min.css">
 <script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseOrderBillController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
+<script type="text/javascript" src="<%=basePath%>/jslib2/constant.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 <div id="dialog"></div>
 <div id="progressDialog"></div>
