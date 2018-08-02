@@ -89,3 +89,27 @@ function GetNumber(strValue) {
         return "";
     }
 }
+
+/**
+ * resourceButton 该页面所有权限
+ * tableList 表格权限的集合，许单独配置
+ */
+function ButtonAndDivPower(resourceButton) {
+    var tableList = [];
+    $.each(resourceButton,function (index,value) {
+        if (value.type!="table") {
+            if(value.ishow===0){
+                if( $("#"+value.buttonId).length>0){
+                    $("#"+value.buttonId).show();
+                }
+            }else {
+                if( $("#"+value.buttonId).length>0){
+                    $("#"+value.buttonId).hide();
+                }
+            }
+        }else {
+            tableList.push(value);
+        }
+    });
+    return tableList;
+}
