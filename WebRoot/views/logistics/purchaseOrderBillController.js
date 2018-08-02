@@ -26,7 +26,7 @@ $(function () {
         sessionStorage.removeItem("billNopurchase");
     }
     pageType="add";
-    initButtonGroup(pageType);
+    initButtonGroup(0);
     loadingButtonDivTable();
     initEditFormValid();
     initSelectbuyahandIdForm();
@@ -229,7 +229,7 @@ function initSearchGrid() {
                             html = "<i class='fa fa-check-square-o blue' title='审核'></i>";
                             break;
                         case 2 :
-                            html = "<i class='fa fa-tasks blue' title='结束'></i>";
+                            html = "<i class='fa fa-archive blue' title='结束'></i>";
                             break;
                         case 3 :
                             html = "<i class='fa fa-sign-out blue' title='未结束'></i>";
@@ -348,7 +348,7 @@ function initDetailData(rowid) {
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
     pageType="edit";
-    initButtonGroup(pageType);
+    initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
     $("#search_billDate").val(getToDay("yyyy-MM-dd"));
     if (slaeOrder_status == "3"){
@@ -865,14 +865,6 @@ function initEditFormValid() {
     });
 }
 
-function loadingButtonDivTable() {
-    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
-    $.each(privilegeMap['table'],function(index,value){
-        if(value.isShow!=0) {
-            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
-        }
-    });
-}
 
 function addDetail() {
     $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
@@ -1461,20 +1453,7 @@ function end() {
     });
 }
 
-function initButtonGroup(type){
-    if (type === "add") {
-        $("#buttonGroup").html("" +
-            "<button id='PIDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='PIDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>"
-        );
-    }
-    if (type === "edit") {
+function initButtonGroup(billStatus){
         $("#buttonGroup").html("" +
             "<button id='PIDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
@@ -1513,10 +1492,47 @@ function initButtonGroup(type){
             "    <span class='bigger-110'>结束订单</span>" +
             "</button>"
         );
-    }
     $("#addDetail").show();
-    loadingButtonDivTable();
+    loadingButtonDivTable(billStatus);
 }
+
+function loadingButtonDivTable(billStatus) {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
+    });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["PIDtl_save","PIDtl_cancel","PIDtl_findRetrunno","PIDtl_findshopMessage","PIDtl_end"];
+            break;
+        case "0" :
+            disableButtonIds = [];
+            break;
+        case "1":
+            disableButtonIds = [];
+            break;
+        case "2" :
+            disableButtonIds = ["PIDtl_save","PIDtl_cancel","PIDtl_findRetrunno","PIDtl_findshopMessage","PIDtl_end"];
+            break;
+        case "3":
+            disableButtonIds = [];
+            break;
+        default:
+            disableButtonIds = [];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
+        }
+    });
+}
+
 function doPrintSanLian() {
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");

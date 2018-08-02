@@ -30,8 +30,7 @@ $(function () {
     addProduct_keydown();
     input_keydown();
     /*初始化按钮*/
-    pageType="add";
-    initButtonGroup(pageType);
+    initButtonGroup(0);
     /*初始化右侧表单验证*/
     initEditFormValid();
     loadingButtonDivTable();
@@ -181,8 +180,7 @@ function initDetailData(rowid){
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
-    pageType="edit";
-    initButtonGroup(pageType);
+    initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
 
 
@@ -1232,45 +1230,7 @@ function changeWordscolor(value,color) {
     $("#addDetailgrid").setCell(value,"totActPrice",$('#addDetailgrid').getCell(value, "totActPrice"),{color:color});
 }
 /*根据权限初始化按钮*/
-function initButtonGroup(type){
-    if (type === "add") {
-        $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='SODtl_search' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='opnenSearchOrderDialog()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>查询订单</span>" +
-            "</button>" +
-            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-
-            "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='SODtl_wareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>出售</span>" +
-            "</button>" +
-            "<button id='SODtl_doPrint' type='button' style='margin: 8px;display: none;' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>打印</span>" +
-            "</button>"
-        );
-        $("#search_guest_button").removeAttr("disabled");
-        if (defalutCustomerId != "" && defalutCustomerId != undefined && showScanDialog) {
-            addUniqCode();
-        }
-    }
-    if (type === "edit") {
+function initButtonGroup(billStatus){
         $("#buttonGroup").html("" +
             "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
@@ -1354,16 +1314,48 @@ function initButtonGroup(type){
         if(groupid=="JMS"){
             $("#SODtl_doPrintA4").hide();
         }
-    }
     $("#addDetail").show();
-    loadingButtonDivTable();
-
+    loadingButtonDivTable(billStatus);
 }
-function loadingButtonDivTable() {
+function loadingButtonDivTable(billStatus) {
     var privilegeMap = ButtonAndDivPower(resourcePrivilege);
     $.each(privilegeMap['table'],function(index,value){
         if(value.isShow!=0) {
             $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
+    });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["SODtl_search","SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseRe","SODtl_wareHouseCh","SODtl_findRetrunno"];
+            break;
+        case "0" :
+            disableButtonIds = ["SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_wareHouseCh"];
+            break;
+        case "1":
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
+            break;
+        case "2" :
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_wareHouseCh"];
+            break;
+        case "3":
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
+            break;
+        case "6":
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_wareHouseIn","SODtl_wareHouseRe"];
+            break;
+        case "7":
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_wareHouseIn","SODtl_wareHouseRe"];
+            break;
+        default:
+            disableButtonIds = [];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
         }
     });
 }
