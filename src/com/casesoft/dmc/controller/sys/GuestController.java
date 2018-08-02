@@ -210,7 +210,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
         return mav;
     }
 
-    @RequestMapping(value = "/save")
+    @RequestMapping(value={"/save","/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(Unit entity) throws Exception {
@@ -326,7 +326,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
         }
     }
 
-    @RequestMapping(value = "/update")
+    @RequestMapping(value={"/update","/updateWS"})
     @ResponseBody
     public MessageBox update(Unit entity) throws Exception {
         String preType = this.getReqParam("preType");

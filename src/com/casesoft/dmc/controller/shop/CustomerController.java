@@ -37,15 +37,15 @@ public class CustomerController extends BaseController implements IBaseInfoContr
     @RequestMapping("/index")
     @Override
     public String index() {
-    	String ownerId = this.getCurrentUser().getOwnerId();
+        String ownerId = this.getCurrentUser().getOwnerId();
         Unit unit = CacheManager.getUnitById(ownerId);
-        if(unit.getType() != Constant.UnitType.Shop) {
-           // return "/views/error/noAuth";
-        	this.getRequest().setAttribute("ownerId",ownerId);
+        if (unit.getType() != Constant.UnitType.Shop) {
+            // return "/views/error/noAuth";
+            this.getRequest().setAttribute("ownerId", ownerId);
         } else {
-        	this.getRequest().setAttribute("ownerId",unit.getOwnerId());//门店所属组织
-            this.getRequest().setAttribute("shopId",ownerId);
-            this.getRequest().setAttribute("shopName",unit.getName());
+            this.getRequest().setAttribute("ownerId", unit.getOwnerId());//门店所属组织
+            this.getRequest().setAttribute("shopId", ownerId);
+            this.getRequest().setAttribute("shopName", unit.getName());
 
         }
         return "/views/shop/customer";
@@ -63,9 +63,9 @@ public class CustomerController extends BaseController implements IBaseInfoContr
 
     @RequestMapping("/pageWS")
     @ResponseBody
-    public Page<Customer> findPage(Page<Customer> page, String ownerId, String roleId, String order) throws  Exception{
-        List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
-        if("JMSJS".equals(roleId)){
+    public Page<Customer> findPage(Page<Customer> page, String ownerId, String roleId, String order) throws Exception {
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        if ("JMSJS".equals(roleId)) {
             PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
             filters.add(filter);
         }
@@ -83,8 +83,9 @@ public class CustomerController extends BaseController implements IBaseInfoContr
         this.logAllRequestParams();//日志
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         List<Customer> list = this.customerService.find(filters);
-        return  list;
+        return list;
     }
+
     @RequestMapping(value = "/add")
     @ResponseBody
     public ModelAndView add() {
@@ -94,6 +95,7 @@ public class CustomerController extends BaseController implements IBaseInfoContr
 
         return mav;
     }
+
     @RequestMapping(value = "/edit")
     @ResponseBody
     public ModelAndView editGuest(String id) {
@@ -105,26 +107,30 @@ public class CustomerController extends BaseController implements IBaseInfoContr
             mav.addObject("mainUrl", "/shop/customer/index.do");
             mav.addObject("customer", load);
             return mav;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value="/getCustomerByIdWS")
+    @RequestMapping(value = "/getCustomerByIdWS")
     @ResponseBody
-    public Customer getCustomerById(String id){
-        return this.customerService.getCustomerById(id);
+    public Customer getCustomerById(String id) {
+        Customer customerById = this.customerService.getCustomerById(id);
+        //   通过缓存id取联系人名字
+        User findlinkman = CacheManager.getUserById(customerById.getLinkman());
+        customerById.setLinkmanName(findlinkman.getName());
+        return customerById;
     }
 
-    @RequestMapping(value = "/save")
+    @RequestMapping(value = {"/save", "/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(Customer entity) throws Exception {
         String maxNo = this.customerService.getMaxNo(Constant.ScmConstant.CodePrefix.Customer);
         Customer customerById = this.customerService.getCustomerById(entity.getId());
         try {
-            if(CommonUtil.isBlank(customerById)){
+            if (CommonUtil.isBlank(customerById)) {
                 User user = this.getCurrentUser();
                 entity.setId(maxNo);
                 entity.setCode(maxNo);
@@ -132,22 +138,26 @@ public class CustomerController extends BaseController implements IBaseInfoContr
                 entity.setOwnerId(user.getOwnerId());
                 this.customerService.save(entity);
                 return returnSuccessInfo("保存成功");
-            }else{
+            }
                /* entity.setCode(customerById.getCode());
                 entity.setId(customerById.getId());*/
-                customerById.setBirth(entity.getBirth());
-                customerById.setName(entity.getName());
-                customerById.setCompany(entity.getCompany());
-                customerById.setEmail(entity.getEmail());
-                customerById.setSex(entity.getSex());
-                customerById.setRemark(entity.getRemark());
-                customerById.setJob(entity.getJob());
-                customerById.setSocialNo(entity.getSocialNo());
-                customerById.setCreateTime(entity.getCreateTime());
-                customerById.setStatus(entity.getStatus());
-                this.customerService.save(customerById);
-                return returnSuccessInfo("保存成功");
-            }
+            customerById.setBirth(entity.getBirth());
+            customerById.setName(entity.getName());
+            customerById.setCompany(entity.getCompany());
+            customerById.setEmail(entity.getEmail());
+            customerById.setSex(entity.getSex());
+            customerById.setRemark(entity.getRemark());
+            customerById.setJob(entity.getJob());
+            customerById.setSocialNo(entity.getSocialNo());
+            customerById.setCreateTime(entity.getCreateTime());
+            customerById.setStatus(entity.getStatus());
+            customerById.setLinkman(entity.getLinkman());
+            customerById.setDiscount(entity.getDiscount());
+            customerById.setTel(entity.getTel());
+            customerById.setIdCard(entity.getIdCard());
+            this.customerService.save(customerById);
+
+            return returnSuccessInfo("保存成功");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,6 +165,7 @@ public class CustomerController extends BaseController implements IBaseInfoContr
         }
 
     }
+
     @RequestMapping("/changeStatus")
     @ResponseBody
     public MessageBox changeStatus(String id, Integer status) {
