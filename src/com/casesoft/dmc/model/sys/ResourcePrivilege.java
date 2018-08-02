@@ -9,23 +9,23 @@ import javax.persistence.Table;
  * Created by Administrator on 2018/6/11.
  */
 @Entity
-@Table(name = "SYS_RESOURCEBUTTON")
-public class ResourceButton {
+@Table(name = "SYS_RESOURCEPRIVILEGE")
+public class ResourcePrivilege {
     @Id
     @Column()
     private String id;
     @Column()
-    private String code;
+    private String code;//页面code sys_resource中code
     @Column()
-    private String buttonId;
+    private String privilegeId;//权限元素ID
     @Column()
-    private String buttonName;
+    private String privilegeName;
     @Column()
-    private Integer ishow;//0:显示，1：不显示
+    private Integer isShow;//0:显示，1：不显示
     @Column()
-    private String roleId;
+    private String roleId;//角色ID
     @Column()
-    private String type;
+    private String type;//元素类型 div,table,button
 
     public String getId() {
         return id;
@@ -43,28 +43,28 @@ public class ResourceButton {
         this.code = code;
     }
 
-    public String getButtonId() {
-        return buttonId;
+    public String getPrivilegeId() {
+        return privilegeId;
     }
 
-    public void setButtonId(String buttonId) {
-        this.buttonId = buttonId;
+    public void setPrivilegeId(String privilegeId) {
+        this.privilegeId = privilegeId;
     }
 
-    public Integer getIshow() {
-        return ishow;
+    public Integer getIsShow() {
+        return isShow;
     }
 
-    public void setIshow(Integer ishow) {
-        this.ishow = ishow;
+    public void setIsShow(Integer isShow) {
+        this.isShow = isShow;
     }
 
-    public String getButtonName() {
-        return buttonName;
+    public String getPrivilegeName() {
+        return privilegeName;
     }
 
-    public void setButtonName(String buttonName) {
-        this.buttonName = buttonName;
+    public void setPrivilegeName(String privilegeName) {
+        this.privilegeName = privilegeName;
     }
 
     public String getRoleId() {

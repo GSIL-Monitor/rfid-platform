@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.ResourceDao;
 import com.casesoft.dmc.dao.sys.RoleDao;
@@ -87,7 +86,7 @@ public class RoleService implements IRoleService {
       }
     return role.getCode();
   }
-  public String saveOrUpdateAndList(Role role, List<ResourceButton> saveList) {
+  public String saveOrUpdateAndList(Role role, List<ResourcePrivilege> saveList) {
     this.roleDao.saveOrUpdate(role);
     if(CommonUtil.isNotBlank(role.getAuthIds())) {
       List<RoleRes> rrList = new ArrayList<RoleRes>();

@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.controller.stock.StockUtil;
-import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
@@ -19,19 +18,17 @@ import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Resource;
-import com.casesoft.dmc.model.sys.ResourceButton;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
-import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
-import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.GuestViewService;
@@ -71,7 +68,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @Autowired
     private ResourceService resourceService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
     @Autowired
     private TaskService taskService;
     private String billNo;
@@ -137,9 +134,10 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturnNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturn");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/saleOrderReturn", this.getCurrentUser().getRoleId());
         String defaultWarehId = unit.getDefaultWarehId();
         String defaultSaleStaffId = unit.getDefaultSaleStaffId();
         String defalutCustomerId = unit.getDefalutCustomerId();
@@ -154,7 +152,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("defaultWarehId", defaultWarehId);
-
+        mv.addObject("resourceButton", FastJSONUtil.getJSONString(resourcePrivilege));
 
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
@@ -624,8 +622,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/saleOrderReturn");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");

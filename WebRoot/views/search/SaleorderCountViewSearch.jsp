@@ -499,7 +499,7 @@
             $(".all").hide();
             if(tableRole[a].ishow == 0){
                 $("#noadmin").hide();
-                $("."+tableRole[a].buttonId+"s").show();
+                $("."+tableRole[a].privilegeId+"s").show();
                 count++;
             }
         }
@@ -519,7 +519,7 @@
         var grid = $("#searchGrid").data("kendoGrid");
         for(b in divRole){
             if(divRole[b].ishow != 0){
-                grid.hideColumn(""+divRole[b].buttonId);
+                grid.hideColumn(""+divRole[b].privilegeId);
             }
         }
     }
@@ -539,7 +539,7 @@
             $(".all").hide();
             if(tableRole[a].ishow == 0){
                 $("#noadmin").hide();
-                $("."+tableRole[a].buttonId+"s").show();
+                $("."+tableRole[a].privilegeId+"s").show();
                 count++;
             }
         }
@@ -558,7 +558,7 @@
         var grid = $("#searchsaleGrid").data("kendoGrid");
         for(b in divRole){
             if(divRole[b].ishow != 0){
-                grid.hideColumn(""+divRole[b].buttonId);
+                grid.hideColumn(""+divRole[b].privilegeId);
             }
         }
     }
@@ -581,7 +581,7 @@
             $(".all").hide();
             if(tableRole[a].ishow == 0){
                 $("#noadmin").hide();
-                $("."+tableRole[a].buttonId+"s").show();
+                $("."+tableRole[a].privilegeId+"s").show();
                 count++;
             }
         }
@@ -600,7 +600,7 @@
         var grid = $("#searchsalebusinessnameGrid").data("kendoGrid");
         for(b in divRole){
             if(divRole[b].ishow != 0){
-                grid.hideColumn(""+divRole[b].buttonId);
+                grid.hideColumn(""+divRole[b].privilegeId);
             }
         }
 
@@ -624,7 +624,7 @@
             $(".all").hide();
             if(tableRole[a].ishow == 0){
                 $("#noadmin").hide();
-                $("."+tableRole[a].buttonId+"s").show();
+                $("."+tableRole[a].privilegeId+"s").show();
                 count++;
             }
         }
@@ -643,7 +643,7 @@
         var grid = $("#searchsaleorignameGrid").data("kendoGrid");
         for(b in divRole){
             if(divRole[b].ishow != 0){
-                grid.hideColumn(""+divRole[b].buttonId);
+                grid.hideColumn(""+divRole[b].privilegeId);
             }
         }
 

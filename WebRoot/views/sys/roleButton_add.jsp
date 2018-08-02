@@ -28,14 +28,14 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right"><span class="text-danger"></span>按钮名称</label>
                         <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="buttonName" name="buttonName"
+                            <input class="form-control" id="privilegeName" name="privilegeName"
                                    type="text"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right"><span class="text-danger"></span>按钮Id</label>
                         <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="buttonId" name="buttonId"
+                            <input class="form-control" id="privilegeId" name="privilegeId"
                                    type="text"/>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
         if(!isok){
             return;
         }
-        if($("#buttonName").val()==""||$("#buttonName").val()==undefined){
+        if($("#privilegeName").val()==""||$("#privilegeName").val()==undefined){
             $.gritter.add({
                 text: "按钮名称不能为空",
                 class_name: 'gritter-success  gritter-light'
@@ -150,10 +150,10 @@
         $.ajax({
             dataType:"json",
             async: true,
-            url: basePath + "/sys/role/checkButtonId.do",
+            url: basePath + "/sys/role/checkPrivilegeId.do",
             data:{
                 code:$("#code").val(),
-                buttonId:$("#buttonId").val()
+                privilegeId:$("#privilegeId").val()
             },
             type:"POST",
             success:function(result) {

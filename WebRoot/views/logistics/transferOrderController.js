@@ -14,7 +14,7 @@ $(function () {
     initEditFormValid();
     /*回车监事件*/
     keydown();
-    loadingButton();
+    loadingButtonDivTable();
 });
 function initForm() {
     initSelectOrigForm();
@@ -575,7 +575,7 @@ function initButtonGroup() {
             "    <span class='bigger-110'>三联打印</span>" +
             "</button>"
         );
-        loadingButton();
+        loadingButtonDivTable();
         if (transferOrder_status !== "0") {
             $("#edit_orig_button").attr({"disabled": "disabled"});
             $("#edit_dest_button").attr({"disabled": "disabled"});
@@ -588,48 +588,18 @@ function initButtonGroup() {
     $("#addDetail").show();
 
 }
-function loadingButton() {
-    $.ajax({
-        dataType: "json",
-        async: false,
-        url: basePath + "/logistics/transferOrder/findResourceButton.do",
-        type: "POST",
-        success: function (msg) {
-            if (msg.success) {
-
-                var result=msg.result;
-                for(var i=0;i<result.length;i++){
-                    if(result[i].ishow===0){
-                        if( $("#"+result[i].buttonId).length>0){
-                            $("#"+result[i].buttonId).show();
-                        }
-                    }else {
-                        if( $("#"+result[i].buttonId).length>0){
-                            $("#"+result[i].buttonId).hide();
-                        }
-
-                    }
-
-                }
-
-            } else {
-                bootbox.alert(msg.msg);
-            }
-        }
-    });
-    $.each(resourceButton,function (index,value) {
-        if(resourceButton[index].ishow===0){
-            console.log(value);
-            if( $("#"+resourceButton[index].buttonId).length>0){
-                $("#"+resourceButton[index].buttonId).show();
-            }
-        }else {
-            if( $("#"+resourceButton[index].buttonId).length>0){
-                $("#"+resourceButton[index].buttonId).hide();
-            }
+/**
+ * 动态配置按钮,div,表格列字段
+ * */
+function loadingButtonDivTable() {
+    var tableFieldList = ButtonAndDivPower(resourcePrivilege);
+    $.each(tableFieldList,function(index,value){
+        if(value.isShow!==0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });
 }
+
 /**
  * 新增单据调用
  *
@@ -1033,79 +1003,79 @@ function confirmWareHouseIn() {
     $("#add-uniqCode-dialog").modal('hide');
 }
 /*function doPrintA4() {
-    var billno = $("#edit_billNo").val();
-    $.ajax({
-        dataType: "json",
-        url: basePath + "/logistics/transferOrder/printA4Info.do",
-        data: {
-            "billNo": billno,
-            "ruleReceipt":"A4N0Size",
-            "type":"TR"
+ var billno = $("#edit_billNo").val();
+ $.ajax({
+ dataType: "json",
+ url: basePath + "/logistics/transferOrder/printA4Info.do",
+ data: {
+ "billNo": billno,
+ "ruleReceipt":"A4N0Size",
+ "type":"TR"
 
-        },
-        type: "POST",
-        success: function (msg) {
-            if (msg.success) {
-                var print = msg.result.print;
-                var bill = msg.result.bill;
-                var billDtl = msg.result.dtl;
-                var LODOP = getLodop();
-                eval(print.printCont);
-                LODOP.SET_PRINT_STYLEA("remark", 'Content', bill.remark);
-                LODOP.SET_PRINT_STYLEA("storehouseName", 'Content', bill.origUnitName + "-" + bill.origName);
-                var recordmessage = "";
-                var totQty = 0;
-                $.each(billDtl, function (index, value) {
-                    recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleName + "</td>";
-                    if (value.supplierName == undefined) {
-                        recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + "" + "</td>";
-                    } else {
-                        recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName + "</td>";
-                    }
-                    var qty = 0;
-                    switch ($("#form_printSelect").val()) {
-                        case "0":
-                            qty = value.inQty
-                            break;
-                        case "1":
-                            qty = value.outQty
-                            break;
-                        case "2":
-                            qty = value.qty
-                            break;
-                    }
-                    totQty += qty;
-                    recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
-                        "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
-                        "</tr>";
-                });
+ },
+ type: "POST",
+ success: function (msg) {
+ if (msg.success) {
+ var print = msg.result.print;
+ var bill = msg.result.bill;
+ var billDtl = msg.result.dtl;
+ var LODOP = getLodop();
+ eval(print.printCont);
+ LODOP.SET_PRINT_STYLEA("remark", 'Content', bill.remark);
+ LODOP.SET_PRINT_STYLEA("storehouseName", 'Content', bill.origUnitName + "-" + bill.origName);
+ var recordmessage = "";
+ var totQty = 0;
+ $.each(billDtl, function (index, value) {
+ recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleId + "</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>" + value.styleName + "</td>";
+ if (value.supplierName == undefined) {
+ recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + "" + "</td>";
+ } else {
+ recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.supplierName + "</td>";
+ }
+ var qty = 0;
+ switch ($("#form_printSelect").val()) {
+ case "0":
+ qty = value.inQty
+ break;
+ case "1":
+ qty = value.outQty
+ break;
+ case "2":
+ qty = value.qty
+ break;
+ }
+ totQty += qty;
+ recordmessage += "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + qty + "</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + value.price.toFixed(2) + "</td>" +
+ "</tr>";
+ });
 
-                recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + totQty + "</td>" +
-                    "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
-                    "</tr>";
-                $("#loadtabA4").html(recordmessage);
-                //alert($("#edit-dialogA4").html());
-                console.log($("#edit-dialogA4").html());
-                LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
-                LODOP.PREVIEW();
-                //LODOP.PRINT();
-                $("#edit-dialog-print").hide();
-
-
-            } else {
-                bootbox.alert(msg.msg);
-            }
-        }
-    });
+ recordmessage += "<tr style='border-top:1px ;padding-top:5px;'>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 20%;font-size:17px;'>&nbsp;</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>" + totQty + "</td>" +
+ "<td align='left' style='border-top:1px ;padding-top:5px;width: 10%;font-size:17px;'>&nbsp;</td>" +
+ "</tr>";
+ $("#loadtabA4").html(recordmessage);
+ //alert($("#edit-dialogA4").html());
+ console.log($("#edit-dialogA4").html());
+ LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogA4").html());
+ LODOP.PREVIEW();
+ //LODOP.PRINT();
+ $("#edit-dialog-print").hide();
 
 
-}*/
+ } else {
+ bootbox.alert(msg.msg);
+ }
+ }
+ });
+
+
+ }*/
 function doPrintA4() {
     var billno = $("#edit_billNo").val();
     $.ajax({
@@ -1133,7 +1103,7 @@ function doPrintA4() {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = "";
                     if(plp=="remark"){
@@ -1154,24 +1124,24 @@ function doPrintA4() {
 
                     $("#edit-dialogA4").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";
                 for(var a=0;a<billDtl.length;a++){
                     var del=billDtl[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
 
                         if(printTableCode[b]=="qty"){
                             var qty = 0;
                             switch ($("#form_printSelect").val()) {
                                 case "0":
-                                    qty = del.inQty
+                                    qty = del.inQty;
                                     break;
                                 case "1":
-                                    qty = del.outQty
+                                    qty = del.outQty;
                                     break;
                                 case "2":
-                                    qty = del.qty
+                                    qty = del.qty;
                                     break;
                             }
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" +qty + "</td>"
@@ -1221,16 +1191,16 @@ function doPrintA4Size() {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogA4").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -1360,16 +1330,16 @@ function setSanLian(id) {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"

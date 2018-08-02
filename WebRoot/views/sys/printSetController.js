@@ -1683,13 +1683,13 @@ function saveSanLian() {
         var html="\"<table style='text-align:center;font-size:10px;table-layout:fixed;' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><thead >"
         var headPrintSanLian="";
         if($("#receiptTypeSanLian").val()=="PI"){
-            headPrintSanLian="headPrintSanLianPI";
+            headPrintSanLian="printTopSanLianPI";
         }else if($("#receiptTypeSanLian").val()=="PR"){
-            headPrintSanLian="headPrintSanLianPR";
+            headPrintSanLian="printTopSanLianPR";
         }else if($("#receiptTypeSanLian").val()=="TR"){
-            headPrintSanLian="headPrintSanLianTR";
+            headPrintSanLian="printTopSanLianTR";
         }else{
-            headPrintSanLian="headPrintSanLian";
+            headPrintSanLian="printTopSanLian";
         }
         $("#"+headPrintSanLian).find("span").each(function (index,element) {
             if(!$(this).is(":hidden")){
@@ -1822,6 +1822,7 @@ function saveSanLian() {
             ruleReceipt:recordRule,
             commonType:$("#commonTypeSanLian").val()
         }
+        debugger
         saveAjax(printSet);
     }else{
         $.gritter.add({

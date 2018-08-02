@@ -11,17 +11,16 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.Resource;
-import com.casesoft.dmc.model.sys.ResourceButton;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -49,7 +48,7 @@ public class FranchiserOrderReturnController extends BaseController implements I
     @Autowired
     private ResourceService resourceService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
 
     @RequestMapping(value = "/franchiserOrderReturnNew/index")
     public ModelAndView indexMV() throws Exception {
@@ -187,8 +186,8 @@ public class FranchiserOrderReturnController extends BaseController implements I
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/franchiserOrderReturnNew");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");

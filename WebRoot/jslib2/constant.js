@@ -89,3 +89,45 @@ function GetNumber(strValue) {
         return "";
     }
 }
+
+/**
+ * resourceButton 该页面所有权限
+ * privliegeMap 权限的集合
+ */
+function ButtonAndDivPower(resourcePrivilege) {
+    var tableList = [];
+    var buttonList= [];
+    var divList = [];
+    var privliegeMap = {};
+    $.each(resourcePrivilege,function (index,value) {
+        if (value.type==="button") {
+            if(value.isShow===0){
+                if( $("#"+value.privilegeId).length>0){
+                    $("#"+value.privilegeId).show();
+                }
+            }else {
+                if( $("#"+value.privilegeId).length>0){
+                    $("#"+value.privilegeId).hide();
+                }
+            }
+            buttonList.push(value);
+        }else if(value.type==="div"){
+            if(value.isShow===0){
+                if( $("#"+value.privilegeId).length>0){
+                    $("#"+value.privilegeId).show();
+                }
+            }else {
+                if( $("#"+value.privilegeId).length>0){
+                    $("#"+value.privilegeId).hide();
+                }
+            }
+            divList.push(value);
+        }else{
+            tableList.push(value);
+        }
+    });
+    privliegeMap['table'] = tableList;
+    privliegeMap['button'] = buttonList;
+    privliegeMap['div'] = divList;
+    return privliegeMap;
+}

@@ -625,7 +625,8 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             User user = CacheManager.getUserById(transferOrderBill.getOprId());
             mapcont.put("makeBill","制单人:"+user.getName());
             mapcont.put("billDate", "日期:"+CommonUtil.getDateString(transferOrderBill.getBillDate(),"yyyy-MM-dd"));
-            mapcont.put("coustmer","客户:"+transferOrderBill.getDestUnitName());
+            mapcont.put("destUnitName","收货方:"+transferOrderBill.getDestUnitName());
+            mapcont.put("origUnitName","发货方:"+transferOrderBill.getOrigUnitName());
             if(CommonUtil.isNotBlank(transferOrderBill.getRemark())){
                 mapcont.put("remark","备注:"+transferOrderBill.getRemark());
             }else{
@@ -892,7 +893,8 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             User user = CacheManager.getUserById(transferOrderBill.getOprId());
             mapcont.put("handler","制单人:"+user.getName());
             mapcont.put("billDate", "日期:"+CommonUtil.getDateString(transferOrderBill.getBillDate(),"yyyy-MM-dd"));
-            mapcont.put("coustmer","客户:"+transferOrderBill.getDestUnitName());
+            mapcont.put("destUnitName","收货方:"+transferOrderBill.getDestUnitName());
+            mapcont.put("origUnitName","发货方:"+transferOrderBill.getOrigUnitName());
             if(CommonUtil.isNotBlank(transferOrderBill.getRemark())){
                 mapcont.put("remark","备注:"+transferOrderBill.getRemark());
             }else{

@@ -81,15 +81,15 @@ public class Resource implements java.io.Serializable {
   private String clientName;//小程序名
   private List<Resource> children;
   private String ename;//英文名
-  private List<ResourceButton> resourceButtonList;//buttonList权限
-  private List<ResourceButton> resourcetableList;//tableList权限
-  private List<ResourceButton> resourceDivList;//divList权限
+  private List<ResourcePrivilege> resourcePrivilegeList;//buttonList权限
+  private List<ResourcePrivilege> resourcetableList;//tableList权限
+  private List<ResourcePrivilege> resourceDivList;//divList权限
   @Transient
-  public List<ResourceButton> getResourceDivList() {
+  public List<ResourcePrivilege> getResourceDivList() {
     return resourceDivList;
   }
 
-  public void setResourceDivList(List<ResourceButton> resourceDivList) {
+  public void setResourceDivList(List<ResourcePrivilege> resourceDivList) {
     this.resourceDivList = resourceDivList;
   }
 
@@ -291,19 +291,19 @@ public class Resource implements java.io.Serializable {
     this.children = children;
   }
   @Transient
-  public List<ResourceButton> getResourceButtonList() {
-    return resourceButtonList;
+  public List<ResourcePrivilege> getResourcePrivilegeList() {
+    return resourcePrivilegeList;
   }
 
-  public void setResourceButtonList(List<ResourceButton> resourceButtonList) {
-    this.resourceButtonList = resourceButtonList;
+  public void setResourcePrivilegeList(List<ResourcePrivilege> resourcePrivilegeList) {
+    this.resourcePrivilegeList = resourcePrivilegeList;
   }
   @Transient
-  public List<ResourceButton> getResourcetableList() {
+  public List<ResourcePrivilege> getResourcetableList() {
     return resourcetableList;
   }
 
-  public void setResourcetableList(List<ResourceButton> resourcetableList) {
+  public void setResourcetableList(List<ResourcePrivilege> resourcetableList) {
     this.resourcetableList = resourcetableList;
   }
 

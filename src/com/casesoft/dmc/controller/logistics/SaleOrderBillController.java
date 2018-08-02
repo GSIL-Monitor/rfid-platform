@@ -16,7 +16,6 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
-import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
@@ -27,7 +26,7 @@ import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.GuestViewService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
@@ -66,7 +65,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Autowired
     private ResourceService resourceService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
     @Autowired
     private SettingService settingService;
 
@@ -97,8 +96,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         mv.addObject("defaultWarehId", defaultWarehId);
         String roleId = getCurrentUser().getRoleId();
         //查询当前用户对应字段
-        List<ResourceButton> resourceButtonList = this.resourceButtonService.findButtonByCodeAndRoleId("logistics/saleOrder",roleId,"div");
-        mv.addObject("fieldList", FastJSONUtil.getJSONString(resourceButtonList));
+        List<ResourcePrivilege> resourcePrivilegeList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("logistics/saleOrder",roleId,"div");
+        mv.addObject("fieldList", FastJSONUtil.getJSONString(resourcePrivilegeList));
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
@@ -596,8 +595,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @ResponseBody
     public MessageBox findResourceButton(){
         try {
-            List<ResourceButton> resourceButton = this.resourceButtonService.findButtonByCodeAndRoleId("logistics/saleOrder", this.getCurrentUser().getRoleId(),"button");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findButtonByCodeAndRoleId("logistics/saleOrder", this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");
@@ -607,8 +606,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @ResponseBody
     public MessageBox findResourceTable(){
         try {
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId("logistics/saleOrder", this.getCurrentUser().getRoleId(),"table");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId("logistics/saleOrder", this.getCurrentUser().getRoleId(),"table");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");

@@ -12,26 +12,20 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.mirror.NewProduct;
-import com.casesoft.dmc.model.product.Color;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
-import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.sys.PrintService;
 import com.casesoft.dmc.service.sys.PrintSetService;
-import com.casesoft.dmc.service.sys.ResourceButtonService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import sun.misc.Cache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -55,20 +49,19 @@ public class TransferOrderBillController extends BaseController implements ILogi
     @Autowired
     private ResourceService resourceService;
     @Autowired
-    private ResourceButtonService resourceButtonService;
+    private ResourcePrivilegeService resourcePrivilegeService;
 
 
     @Override
     public String index() {
-        return "/views/logistics/transferOrderBill";
+        return "";
     }
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillNew");
-        Resource resource = this.resourceService.get("url", "logistics/transferOrder");
-        List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"div");
-        mv.addObject("resourceButton", FastJSONUtil.getJSONString(resourceButton));
+        ModelAndView mv = new ModelAndView("views/logistics/transferOrder");
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/transferOrder", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
         mv.addObject("ownersId", unit.getOwnerids());
@@ -233,7 +226,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
             mv.addObject("userId",getCurrentUser().getId());
             return mv;
         }else{
-            ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+            ModelAndView mv = new ModelAndView("views/logistics/transferOrder");
             mv.addObject("billNo",billNo);
             mv.addObject("ownerId", getCurrentUser().getOwnerId());
             mv.addObject("userId", getCurrentUser().getId());
@@ -250,7 +243,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
         HttpSession session = request.getSession();
         session.removeAttribute("billNotransfer");
         this.transferOrderBillService.update(transferOrderBill);
-        ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBill");
+        ModelAndView mv = new ModelAndView("views/logistics/transferOrder");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         return mv;
@@ -425,8 +418,8 @@ public class TransferOrderBillController extends BaseController implements ILogi
     public MessageBox findResourceButton(){
         try {
             Resource resource = this.resourceService.get("url", "logistics/transferOrder");
-            List<ResourceButton> resourceButton = this.resourceButtonService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
-            return new MessageBox(true, "查询成功",resourceButton);
+            List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findResourceButtonByCodeAndRoleId(resource.getCode(), this.getCurrentUser().getRoleId(),"button");
+            return new MessageBox(true, "查询成功", resourcePrivilege);
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(true, "查询失败");
