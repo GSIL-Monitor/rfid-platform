@@ -1,4 +1,4 @@
-var searchUrl = basePath + "/logistics/saleOrder/page.do?filter_GTI_status=-1&userId=" + userId;
+var searchUrl = basePath + "/logistics/saleOrderBill/page.do?filter_GTI_status=-1&userId=" + userId;
 var addDetailgridiRow;//存储iRow
 var addDetailgridiCol;//存储iCol
 var allCodes; //用于拼接所有添加过的唯一码，防止重复添加
@@ -34,15 +34,14 @@ $(function () {
     initButtonGroup(pageType);
     /*初始化右侧表单验证*/
     initEditFormValid();
-
-
+    loadingButtonDivTable();
 });
 
 
 function initSearchGrid() {
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/saleOrder/page.do?filter_GTI_status=-1&userId=" + userId,
+        url: basePath + "/logistics/saleOrderBill/page.do?filter_GTI_status=-1&userId=" + userId,
         datatype: "json",
         mtype: 'POST',
         colModel: [
@@ -221,7 +220,7 @@ function initAddGrid() {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
         datatype: "local",
-        //url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + billNo,
+        //url: basePath + "/logistics/saleOrderBill/findBillDtl.do?billNo=" + billNo,
         mtype: 'POST',
         colModel: [
             {name: 'id', label: 'id', hidden: true},
@@ -556,7 +555,7 @@ function initeditGrid(billId) {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
         datatype: "json",
-        url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + billNo,
+        url: basePath + "/logistics/saleOrderBill/findBillDtl.do?billNo=" + billNo,
         mtype: 'POST',
         colModel: [
             {name: 'id', label: 'id', hidden: true},
@@ -1042,20 +1041,15 @@ function initCustomerTypeForm() {
         async: false,
         type: "POST",
         success: function (data, textStatus) {
-
             $("#edit_customerType").empty();
             $("#edit_customerType").append("<option value=''>--请选择--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#edit_customerType").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
-
             if (defalutCustomerId != "" && defalutCustomerId != undefined) {
                 $("#edit_customerType").selectpicker('val',"CT-LS");
             }
-
-
-
         }
     });
 }
@@ -1082,17 +1076,12 @@ function initSelectBusinessIdForm() {
                 $("#edit_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
                 $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
             }
-
             if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
                 $("#edit_busnissId").val(defaultSaleStaffId);
             }
-
-
         }
     });
-
 }
-
 
 function input_keydown() {
     $("#edit_discount").keydown(function (event) {
@@ -1219,13 +1208,12 @@ function setDiscount() {
             var var_totActPrice = Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
             $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
             $("#grid-table").setCell(value,"useable",0,{color:'red'});
-
         });
     }
     setAddFooterData();
 }
+
 function changeWordscolor(value,color) {
-    debugger
     $("#addDetailgrid").setCell(value,"styleId",$('#addDetailgrid').getCell(value, "styleId"),{color:color});
     $("#addDetailgrid").setCell(value,"styleName",$('#addDetailgrid').getCell(value, "styleName"),{color:color});
     $("#addDetailgrid").setCell(value,"colorId",$('#addDetailgrid').getCell(value, "colorId"),{color:color});
@@ -1245,7 +1233,6 @@ function changeWordscolor(value,color) {
 }
 /*根据权限初始化按钮*/
 function initButtonGroup(type){
-
     if (type === "add") {
         $("#buttonGroup").html("" +
             "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
@@ -1278,7 +1265,6 @@ function initButtonGroup(type){
             "    <span class='bigger-110'>打印</span>" +
             "</button>"
         );
-
         $("#search_guest_button").removeAttr("disabled");
         if (defalutCustomerId != "" && defalutCustomerId != undefined && showScanDialog) {
             addUniqCode();
@@ -1314,11 +1300,11 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='Returngoods()'>" +
+            "<button id='SODtl_wareHouseRe' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='Returngoods()'>" +
             "    <i class='ace-icon fa fa-reply'></i>" +
             "    <span class='bigger-110'>退货</span>" +
             "</button>" +
-            "<button id='SODtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='exchangeGoods()'>" +
+            "<button id='SODtl_wareHouseCh' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='exchangeGoods()'>" +
             "    <i class='ace-icon fa fa-exchange'></i>" +
             "    <span class='bigger-110'>换货</span>" +
             "</button>" +
@@ -1348,12 +1334,6 @@ function initButtonGroup(type){
             "</button>"
 
         );
-        /* $("#buttonGroupfindWxshop").html("" +
-         "<button id='CMDtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findshopMessage()'>" +
-         "    <i class='ace-icon fa fa-search'></i>" +
-         "    <span class='bigger-110'>查找商城信息</span>" +
-         "</button>"
-         );*/
         //订单状态：0，表示录入态
         if (slaeOrder_status != "0" && userId != "admin") {
             $("#search_guest_button").attr({"disabled": "disabled"});
@@ -1376,49 +1356,14 @@ function initButtonGroup(type){
         }
     }
     $("#addDetail").show();
-    loadingButton();
+    loadingButtonDivTable();
 
 }
-function loadingButton() {
-    $.ajax({
-        dataType: "json",
-        async: false,
-        url: basePath + "/logistics/saleOrder/findResourceButton.do",
-        type: "POST",
-        success: function (msg) {
-
-            if (msg.success) {
-
-                var result=msg.result;
-                for(var i=0;i<result.length;i++){
-                    if(result[i].ishow===0){
-                        if( $("#"+result[i].buttonId).length>0){
-                            $("#"+result[i].buttonId).show();
-                        }
-                    }else {
-                        if( $("#"+result[i].buttonId).length>0){
-                            $("#"+result[i].buttonId).hide();
-                        }
-
-                    }
-
-                }
-
-            } else {
-                bootbox.alert(msg.msg);
-            }
-        }
-    });
-    $.each(fieldList,function (index,value){
-        if(fieldList[index].ishow===0){
-            if( $("#"+value.buttonId).length>0){
-                $("#"+value.buttonId).show();
-            }
-        }else {
-            if( $("#"+value.buttonId).length>0){
-                $("#"+value.buttonId).hide();
-            }
-
+function loadingButtonDivTable() {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });
 }
@@ -1470,12 +1415,9 @@ function searchOrderBillInfo(billNo){
     _search();
     $("#saerch-saleOrder-dialog").modal('hide');
     autoSelect =true;
-
-
 }
 /*添加订货商品*/
 function addDetail() {
-
     var ct = $("#edit_customerType").val();
     if (ct && ct != null) {
         $("#modal-addDetail-table").modal('show').on('hidden.bs.modal', function () {
@@ -1512,22 +1454,18 @@ function updateBillDetailData(){
 }
 /*选中订货商品添加*/
 function addProductInfo(status) {
-
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
         addDetailgridiCol = null;
     }
-
     var addProductInfo = [];
     if (editcolosizeRow != null) {
-
         $('#color_size_grid').saveRow(editcolosizeRow, false, 'clientArray');//仅保存数据到grid中，而不会发送ajax请求服务器
     }
     var ct = $("#edit_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
-
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
             if (parseInt(styleRow.bargainPrice)!=0){
@@ -1598,7 +1536,6 @@ function addProductInfo(status) {
         $("#modal-addDetail-table").modal('hide');
     }
     setAddFooterData();
-
 }
 
 function saveItem(rowId) {
@@ -1614,18 +1551,13 @@ function saveItem(rowId) {
     setAddFooterData();
 }
 
-
-
 function deleteItem(rowId) {
     var value = $('#addDetailgrid').getRowData(rowId);
     $("#addDetailgrid").jqGrid("delRowData", rowId);
     setAddFooterData();
-
     var totActPrice = value.totActPrice;
-
     saveother(totActPrice);
 }
-
 
 function saveother(totActPrice) {
     cs.showProgressBar();
@@ -1633,13 +1565,11 @@ function saveother(totActPrice) {
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
     $("#edit_busnissId").removeAttr('disabled');
-
     if ($("#edit_origId").val() == $("#edit_destId").val()) {
         bootbox.alert("不能在相同的单位之间销售");
         cs.closeProgressBar();
         return;
     }
-
     $("#editForm").data('bootstrapValidator').destroy();
     $('#editForm').data('bootstrapValidator', null);
     initEditFormValid();
@@ -1648,10 +1578,6 @@ function saveother(totActPrice) {
         cs.closeProgressBar();
         return;
     }
-    /* if ($("#addDetailgrid").getDataIDs().length == 0) {
-     bootbox.alert("请添加销售商品！");
-     return;
-     }*/
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1666,15 +1592,12 @@ function saveother(totActPrice) {
         }
     }
     saveAjax();
-
-
 }
 
 /**
  * 查询左侧表格内容
  * */
 function _search() {
-
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
     $("#grid").jqGrid('setGridParam', {
@@ -1687,7 +1610,6 @@ function _search() {
 
 /*查看唯一吗明细*/
 function showCodesDetail(uniqueCodes) {
-
     $("#show-uniqueCode-list").modal('show');
     codeListReload(uniqueCodes,billNo);
 }
@@ -1724,10 +1646,7 @@ function addUniqCode() {
     allCodes = "";
 }
 
-
-
 function cancel() {
-
     var billId= $("#edit_billNo").val();
     var status = $("#edit_status").val();
     if (status != "0") {
@@ -1755,7 +1674,7 @@ function cancel() {
 function cancelAjax(billId) {
     $.ajax({
         dataType: "json",
-        url: basePath + "/logistics/saleOrder/cancel.do",
+        url: basePath + "/logistics/saleOrderBill/cancel.do",
         data: {billNo: billId},
         type: "POST",
         success: function (msg) {
@@ -1971,7 +1890,7 @@ function saveAjax() {
     $.ajax({
         dataType: "json",
         async: true,
-        url: basePath + "/logistics/saleOrder/save.do",
+        url: basePath + "/logistics/saleOrderBill/save.do",
         data: {
             saleOrderBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
             strDtlList: JSON.stringify(dtlArray),
@@ -1990,7 +1909,7 @@ function saveAjax() {
                 $("#addDetailgrid").jqGrid('setGridParam', {
                     datatype: "json",
                     page: 1,
-                    url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + msg.result.billNo,
+                    url: basePath + "/logistics/saleOrderBill/findBillDtl.do?billNo=" + msg.result.billNo,
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
                 $("#grid").trigger("reloadGrid");
@@ -2151,7 +2070,7 @@ function wareHouseOut() {
                 $.ajax({
                     async: true,
                     dataType: "json",
-                    url: basePath + "/logistics/saleOrder/convertOut.do",
+                    url: basePath + "/logistics/saleOrderBill/convertOut.do",
                     data: {
                         billNo: billNo,
                         strEpcList: JSON.stringify(epcArray),
@@ -2173,7 +2092,7 @@ function wareHouseOut() {
                             var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);  //reload前总出库数量
                             $("#addDetailgrid").jqGrid('setGridParam', {
                                 page: 1,
-                                url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + billNo
+                                url: basePath + "/logistics/saleOrderBill/findBillDtl.do?billNo=" + billNo
                             });
                             $("#addDetailgrid").trigger("reloadGrid");
 
@@ -2316,7 +2235,7 @@ function confirmWareHouseOut() {
     });
     $.ajax({
         dataType: "json",
-        url: basePath + "/logistics/saleOrder/convertOut.do",
+        url: basePath + "/logistics/saleOrderBill/convertOut.do",
         data: {
             billNo: billNo,
             strEpcList: JSON.stringify(epcArray),
@@ -2393,7 +2312,7 @@ function confirmWareHouseIn() {
     $.ajax({
         dataType: "json",
         async: true,
-        url: basePath + "/logistics/saleOrder/convertIn.do",
+        url: basePath + "/logistics/saleOrderBill/convertIn.do",
         data: {
             billNo: billNo,
             strEpcList: JSON.stringify(epcArray),
@@ -2458,7 +2377,7 @@ function Returngoods() {
         $.ajax({
             dataType: "json",
             async: true,
-            url: basePath + "/logistics/saleOrder/saveRetrun.do",
+            url: basePath + "/logistics/saleOrderBill/saveRetrun.do",
             data: {
                 billNo: $("#edit_billNo").val(),
                 strDtlList: JSON.stringify(dtlArray),
@@ -2756,20 +2675,16 @@ function loadingTableName() {
     $.ajax({
         dataType: "json",
         async: false,
-        url: basePath + "/logistics/saleOrder/findResourceTable.do",
+        url: basePath + "/logistics/saleOrderBill/findResourceTable.do",
         type: "POST",
         success: function (msg) {
-
             if (msg.success) {
-
                 var result=msg.result;
                 for(var i=0;i<result.length;i++){
                     if(result[i].ishow===1){
                         $("#addDetailgrid").setGridParam().hideCol(result[i].buttonId);
                     }
-
                 }
-
             } else {
                 bootbox.alert(msg.msg);
             }

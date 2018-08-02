@@ -103,7 +103,7 @@
                 if (msg.success) {
                     var result=msg.result;
                     for(var i=0;i<result.length;i++){
-                        if(result[i].ishow===0){
+                        if(result[i].isShow===0){
                             for (var j = 0;j<name.length;j++){
                                 if (name[j]==result[i].privilegeId){
                                     $ ("#stylegrid").setGridParam().showCol(result[i].privilegeId).trigger("reloadGrid");

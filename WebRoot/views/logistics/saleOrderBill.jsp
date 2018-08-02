@@ -30,7 +30,7 @@
         var Codes = "${Codes}";
         var groupid="${groupid}";
         var pageType = "${pageType}";
-        var fieldList = ${fieldList};
+        var resourcePrivilege =${resourcePrivilege};
 
     </script>
 
@@ -227,20 +227,20 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="widget-body">
-
                                         <div class="widget-main padding-12">
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_destUnitId">客户</label>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <input class="form-control" id="edit_destUnitId"
-                                                                   type="text"
-                                                                   name="destUnitId"
-                                                                   value="${saleOrderBill.destUnitId}" readonly/>
-                                                            <span class="input-group-btn">
+                                                    <div id="destUnitId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_destUnitId">客户</label>
+                                                        <div class="col-md-5">
+                                                            <div class="input-group">
+                                                                <input class="form-control" id="edit_destUnitId"
+                                                                       type="text"
+                                                                       name="destUnitId"
+                                                                       value="${saleOrderBill.destUnitId}" readonly/>
+                                                                <span class="input-group-btn">
 												                <button class="btn btn-sm btn-default"
                                                                         id="edit_guest_button"
                                                                         type="button"
@@ -248,96 +248,111 @@
                                                                     <i class="ace-icon fa fa-list"></i>
                                                                 </button>
 											                </span>
-                                                            <input class="form-control" id="edit_destUnitName"
-                                                                   type="text"
-                                                                   name="destUnitName"
-                                                                   value="${saleOrderBill.destUnitName}" readonly/>
+                                                                <input class="form-control" id="edit_destUnitName"
+                                                                       type="text"
+                                                                       name="destUnitName"
+                                                                       value="${saleOrderBill.destUnitName}" readonly/>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-3 control-label"
-                                                           for="edit_customerType">客户类型</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker"
-                                                                id="edit_customerType"
-                                                                name="customerTypeId"
-                                                                style="width: 100%;"
-                                                                value="${saleOrderBill.customerTypeId}" disabled>
-                                                        </select>
-                                                    </div>
-
-
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billNo">单据编号</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_billNo" name="billNo"
-                                                               type="text" readOnly
-                                                               value="${saleOrderBill.billNo}"/>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billDate">单据日期</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control date-picker" id="edit_billDate"
-                                                               name="billDate"
-                                                               type="text" value="${saleOrderBill.billDate}"/>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_payType">支付方式</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_payType" name="payType"
-                                                               type="text" value="${saleOrderBill.payType}"/>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_destId">入库仓库</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_destId" name="destId"
-                                                                style="width: 100%;" value="${saleOrderBill.destId}"
-                                                                data-live-search="true">
-                                                        </select>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="search_origId">出库仓库</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_origId" name="origId"
-                                                                style="width: 100%;" value="${saleOrderBill.origId}"
-                                                                data-live-search="true">
-                                                        </select>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_busnissId">销售员</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_busnissId"
-                                                                name="busnissId"
-                                                                style="width: 100%;" data-live-search="true">
-                                                        </select>
+                                                    <div id="customerTypeId_div">
+                                                        <label class="col-md-3 control-label"
+                                                               for="edit_customerType">客户类型</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker"
+                                                                    id="edit_customerType"
+                                                                    name="customerTypeId"
+                                                                    style="width: 100%;"
+                                                                    value="${saleOrderBill.customerTypeId}" disabled>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_pre_Balance">售前余额</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_pre_Balance"
-                                                               name="preBalance"
-                                                               value="${saleOrderBill.preBalance}" readonly>
-                                                        </input>
+                                                    <div id="billNo_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billNo">单据编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readOnly
+                                                                   value="${saleOrderBill.billNo}"/>
+                                                        </div>
                                                     </div>
-
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_after_Balance">售后余额</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_after_Balance"
-                                                               name="afterBalance"
-                                                               value="${saleOrderBill.afterBalance}" readonly>
-                                                        </input>
+                                                    <div id="billDate_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billDate">单据日期</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control date-picker" id="edit_billDate"
+                                                                   name="billDate"
+                                                                   type="text" value="${saleOrderBill.billDate}"/>
+                                                        </div>
                                                     </div>
-                                                    <div id="sale_discount_div">
+                                                    <div id="payType_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_payType">支付方式</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_payType" name="payType"
+                                                                   type="text" value="${saleOrderBill.payType}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="destId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_destId">入库仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_destId" name="destId"
+                                                                    style="width: 100%;" value="${saleOrderBill.destId}"
+                                                                    data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="origId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="search_origId">出库仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_origId" name="origId"
+                                                                    style="width: 100%;" value="${saleOrderBill.origId}"
+                                                                    data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="busnissId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_busnissId">销售员</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_busnissId"
+                                                                    name="busnissId"
+                                                                    style="width: 100%;" data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="preBalance_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_pre_Balance">售前余额</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_pre_Balance"
+                                                                   name="preBalance"
+                                                                   value="${saleOrderBill.preBalance}" readonly>
+                                                            </input>
+                                                        </div>
+                                                    </div>
+                                                    <div id="afterBalance_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_after_Balance">售后余额</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_after_Balance"
+                                                                   name="afterBalance"
+                                                                   value="${saleOrderBill.afterBalance}" readonly>
+                                                            </input>
+                                                        </div>
+                                                    </div>
+                                                    <div id="discount_div">
                                                         <label class="col-md-1 control-label"
                                                                for="edit_discount">整单折扣</label>
                                                         <div class="col-md-3">
@@ -350,41 +365,43 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_actPrice">应收金额</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
+                                                    <div id="actPrice_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_actPrice">应收金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
                                                                 <span class="input-group-addon"><i
                                                                         class="fa fa-jpy"></i></span>
-                                                            <input class="form-control" id="edit_actPrice"
-                                                                   name="actPrice"
-                                                                   type="number" step="0.01" readonly
-                                                                   value="${saleOrderBill.actPrice}"/>
+                                                                <input class="form-control" id="edit_actPrice"
+                                                                       name="actPrice"
+                                                                       type="number" step="0.01" readonly
+                                                                       value="${saleOrderBill.actPrice}"/>
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_payPrice">实收金额</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
+                                                    <div id="payPrice_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_payPrice">实收金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
                                                                 <span class="input-group-addon"><i
                                                                         class="fa fa-jpy"></i></span>
-                                                            <input class="form-control" id="edit_payPrice"
-                                                                   name="payPrice"
-                                                                   type="number" step="0.01"
-                                                                   value="${saleOrderBill.payPrice}"/>
+                                                                <input class="form-control" id="edit_payPrice"
+                                                                       name="payPrice"
+                                                                       type="number" step="0.01"
+                                                                       value="${saleOrderBill.payPrice}"/>
+                                                            </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_remark">备注</label>
-
-                                                    <div class="col-md-11 col-sm-11">
-                                            <textarea maxlength="400" class="form-control" id="edit_remark"
-                                                      name="remark">${saleOrderBill.remark}</textarea>
+                                                    <div id="remark_div">
+                                                        <label class="col-md-1 control-label" for="edit_remark">备注</label>
+                                                        <div class="col-md-11 col-sm-11">
+                                                            <textarea maxlength="400" class="form-control" id="edit_remark"
+                                                                      name="remark">${saleOrderBill.remark}
+                                                            </textarea>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div>
@@ -416,8 +433,6 @@
                                                     <div id="addDetailgrid-pager"></div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -426,16 +441,11 @@
                     </div>
                 </div>
                 <!-- /.col -->
-
             </div>
             <!-- /.row -->
             <!--/#page-content-->
-
-
         </div>
-
     </div>
-
 </div>
 <!--/.fluid-container#main-container-->
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
@@ -453,9 +463,7 @@
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
-
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
-
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>

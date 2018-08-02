@@ -45,7 +45,7 @@ import java.util.*;
  * Created by koudepei on 2017/6/18.
  */
 @Controller
-@RequestMapping("/logistics/saleOrder")
+@RequestMapping("/logistics/saleOrderBill")
 public class SaleOrderBillController extends BaseController implements ILogisticsBillController<SaleOrderBill> {
 
     @Autowired
@@ -91,13 +91,11 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             mv.addObject("defalutCustomercustomerType", unit.getType());
             mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
         }
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/saleOrderBill", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("defaultWarehId", defaultWarehId);
-        String roleId = getCurrentUser().getRoleId();
-        //查询当前用户对应字段
-        List<ResourcePrivilege> resourcePrivilegeList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("logistics/saleOrder",roleId,"div");
-        mv.addObject("fieldList", FastJSONUtil.getJSONString(resourcePrivilegeList));
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("pageType", "add");
