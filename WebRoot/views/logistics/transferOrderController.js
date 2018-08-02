@@ -7,14 +7,14 @@ $(function () {
     initGrid();
     /*初始化右侧grig*/
     initAddGrid();
-    initButtonGroup();
+    initButtonGroup(0);
     setEditFormVal();
     initForm();
     /*初始化右侧表单验证*/
     initEditFormValid();
     /*回车监事件*/
     keydown();
-    loadingButtonDivTable();
+   // loadingButtonDivTable();
 });
 function initForm() {
     initSelectOrigForm();
@@ -173,18 +173,20 @@ function initGrid() {
 function initDetailData(rowid) {
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
-    $("#edit_origId").attr('disabled', true);
-    $("#edit_destId").attr('disabled', true);
-    $("#edit_billDate").attr('readOnly', true);
-    $("#edit_orig_button").attr('disabled', true);
-    $("#edit_dest_button").attr('disabled', true);
     transferOrder_status=rowData.status;
+    if (transferOrder_status != "0") {
+        $("#edit_origId").attr('disabled', true);
+        $("#edit_destId").attr('disabled', true);
+        $("#edit_billDate").attr('readOnly', true);
+        $("#edit_orig_button").attr('disabled', true);
+        $("#edit_dest_button").attr('disabled', true);
+    }
     $(".selectpicker").selectpicker('refresh');
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
     pageType="edit";
-    initButtonGroup(pageType);
+    initButtonGroup(transferOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
 }
 function initAddGrid() {
@@ -509,95 +511,95 @@ function saveItem(rowId) {
 /**
  * 加载按钮
  */
-function initButtonGroup() {
+function initButtonGroup(billStatus) {
     editDtailRowId = null;
-
-    if (pageType === "add") {
-        $("#buttonGroup").html("" +
-            "<button id='TRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='TRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='TRDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='TRDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='TRDtl_wareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>出库</span>" +
-            "</button>"
-        );
-    }
-    if (pageType === "edit") {
-        $("#buttonGroup").html("" +
-            "<button id='TRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='TRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='TRDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='TRDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='TRDtl_wareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>出库</span>" +
-            "</button>" +
-            "<button id='TRDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseIn()'>" +
-            "    <i class='ace-icon fa fa-sign-in'></i>" +
-            "    <span class='bigger-110'>入库</span>" +
-            "</button>" +
-            "<button id='TRDtl_doPrintA4Size' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4Size()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>A4打印(有尺寸)</span>" +
-            "</button>"+
-            "<button id='TRDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>A4打印</span>" +
-            "</button>"+
-            "<button id='TRDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>三联打印</span>" +
-            "</button>"
-        );
-        loadingButtonDivTable();
-        if (transferOrder_status !== "0") {
-            $("#edit_orig_button").attr({"disabled": "disabled"});
-            $("#edit_dest_button").attr({"disabled": "disabled"});
-            $("#TRDtl_addUniqCode").attr({"disabled": "disabled"});
-            $("#TRDtl_save").attr({"disabled": "disabled"});
-            $("#TRDtl_cancel").attr({"disabled": "disabled"});
-        }
-
-    }
+    $("#buttonGroup").html("" +
+        "<button id='TRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+        "    <i class='ace-icon fa fa-plus'></i>" +
+        "    <span class='bigger-110'>新增</span>" +
+        "</button>" +
+        "<button id='TRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+        "    <i class='ace-icon fa fa-undo'></i>" +
+        "    <span class='bigger-110'>撤销</span>" +
+        "</button>" +
+        "<button id='TRDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>保存</span>" +
+        "</button>" +
+        "<button id='TRDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+        "    <i class='ace-icon fa fa-barcode'></i>" +
+        "    <span class='bigger-110'>扫码</span>" +
+        "</button>" +
+        "<button id='TRDtl_wareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
+        "    <i class='ace-icon fa fa-sign-out'></i>" +
+        "    <span class='bigger-110'>出库</span>" +
+        "</button>" +
+        "<button id='TRDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseIn()'>" +
+        "    <i class='ace-icon fa fa-sign-in'></i>" +
+        "    <span class='bigger-110'>入库</span>" +
+        "</button>" +
+        "<button id='TRDtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>打印</span>" +
+        "</button>"+
+        "<button id='TRDtl_doPrintA4Size' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4Size()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>A4打印(无尺码信息)</span>" +
+        "</button>"+
+        "<button id='TRDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>A4打印</span>" +
+        "</button>"+
+        "<button id='TRDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>打印(三联)</span>" +
+        "</button>"
+    );
+    loadingButtonDivTable(billStatus);
     $("#addDetail").show();
 
 }
 /**
+ * billStatus 单据状态新增为0
  * 动态配置按钮,div,表格列字段
  * */
-function loadingButtonDivTable() {
-    var tableFieldList = ButtonAndDivPower(resourcePrivilege);
-    $.each(tableFieldList,function(index,value){
+function loadingButtonDivTable(billStatus) {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    //初始化表格权限
+    $.each(privilegeMap['table'],function(index,value){
         if(value.isShow!==0) {
             $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["TRDtl_cancel","TRDtl_addUniqCode","TRDtl_wareHouseOut","TRDtl_wareHouseIn"];
+            break;
+        case "0" :
+            disableButtonIds = ["TRDtl_wareHouseIn"];
+            break;
+        case "1":
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save,TRDtl_addUniqCode"];
+            break;
+        case "2" :
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save","TRDtl_addUniqCode","TRDtl_wareHouseOut","TRDtl_wareHouseIn"];
+            break;
+        case "3":
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save","TRDtl_addUniqCode"];
+            break;
+        default:
+            disableButtonIds = ["TRDtl_wareHouseIn"];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
+        }
+    });
+
 }
 
 /**
@@ -615,7 +617,7 @@ function addNew(isScan){
     $(".selectpicker").selectpicker('refresh');
     $("#form_printSelect").val(0);
     pageType="add";
-    initButtonGroup(pageType);
+    initButtonGroup(0);
 }
 function setEditFormVal(){
     $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
