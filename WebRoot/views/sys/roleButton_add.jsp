@@ -83,33 +83,7 @@
 
     }
 
-    function initEditFormValid() {
-        $('#editRoleButtonForm').bootstrapValidator({
-            message: '输入值无效',
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            submitHandler: function(validator, form, submitButton) {
-                $.post(form.attr('action'), form.serialize(), function(result) {
-                    if (result.success == true || result.success == 'true') {
-                    } else {
-                        $('#editRoleButtonForm').bootstrapValidator('disableSubmitButtons', false);
-                    }
-                }, 'json');
-            },
-            fields: {
-                ownerId: {
-                    validators: {
-                        notEmpty: {
-                            message: '父菜单不能为空'
-                        }
-                    }
-                }
-            }
-        });
-    }
+
     function checkBack(isok) {
         var isok=isok;
         if(!isok){
@@ -118,6 +92,13 @@
         if($("#privilegeName").val()==""||$("#privilegeName").val()==undefined){
             $.gritter.add({
                 text: "按钮名称不能为空",
+                class_name: 'gritter-success  gritter-light'
+            });
+            return
+        }
+        if($("#privilegeId").val()==""||$("#privilegeId").val()==undefined){
+            $.gritter.add({
+                text: "按钮ID不能为空",
                 class_name: 'gritter-success  gritter-light'
             });
             return
