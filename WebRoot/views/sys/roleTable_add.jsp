@@ -121,7 +121,13 @@
             });
             return
         }
-
+        if($("#tabelId").val()==""||$("#tabelId").val()==undefined){
+            $.gritter.add({
+                text: "ID不能为空",
+                class_name: 'gritter-success  gritter-light'
+            });
+            return
+        }
         cs.showProgressBar();
         $.ajax({
             dataType:"json",

@@ -93,6 +93,13 @@
             });
             return
         }
+        if($("#divId").val()==""||$("#divId").val()==undefined){
+            $.gritter.add({
+                text: "表单ID不能为空",
+                class_name: 'gritter-success  gritter-light'
+            });
+            return
+        }
         cs.showProgressBar();
         $.ajax({
             dataType:"json",
