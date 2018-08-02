@@ -22,7 +22,7 @@
         var defalutCustomerdiscount = "${defalutCustomerdiscount}";
         var defalutCustomercustomerType = "${defalutCustomercustomerType}";
         var defalutCustomerowingValue = "${defalutCustomerowingValue}";
-
+        var resourcePrivilege = ${resourcePrivilege};
         var saleOrder_busnissId = "${saleOrderBill.busnissId}";
         var slaeOrder_status = "${saleOrderBill.status}";
         var roleid = "${roleid}";
@@ -190,15 +190,16 @@
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_origUnitId">客户</label>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <input class="form-control" id="edit_origUnitId"
-                                                                   type="text"
-                                                                   name="origUnitId"
-                                                                   value="${SaleOrderReturnBill.origUnitId}" readonly/>
-                                                            <span class="input-group-btn">
+                                                    <div id="origUnitName_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_origUnitId">客户</label>
+                                                        <div class="col-md-5">
+                                                            <div class="input-group">
+                                                                <input class="form-control" id="edit_origUnitId"
+                                                                       type="text"
+                                                                       name="origUnitId"
+                                                                       value="${SaleOrderReturnBill.origUnitId}" readonly/>
+                                                                <span class="input-group-btn">
 												                <button class="btn btn-sm btn-default"
                                                                         id="edit_guest_button"
                                                                         type="button"
@@ -206,141 +207,172 @@
                                                                     <i class="ace-icon fa fa-list"></i>
                                                                 </button>
 											                </span>
-                                                            <input class="form-control" id="edit_origUnitName"
-                                                                   type="text"
-                                                                   name="origUnitName"
-                                                                   value="${SaleOrderReturnBill.origUnitName}" readonly/>
+                                                                <input class="form-control" id="edit_origUnitName"
+                                                                       type="text"
+                                                                       name="origUnitName"
+                                                                       value="${SaleOrderReturnBill.origUnitName}" readonly/>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-3 control-label"
-                                                           for="edit_customerType">客户类型</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker"
-                                                                id="edit_customerType"
-                                                                name="customerType"
-                                                                style="width: 100%;"
-                                                                value="${SaleOrderReturnBill.customerType}" disabled>
-                                                        </select>
+                                                    <div id="customerType_div">
+                                                        <label class="col-md-3 control-label"
+                                                               for="edit_customerType">客户类型</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker"
+                                                                    id="edit_customerType"
+                                                                    name="customerType"
+                                                                    style="width: 100%;"
+                                                                    value="${SaleOrderReturnBill.customerType}" disabled>
+                                                            </select>
+                                                        </div>
                                                     </div>
+
 
 
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billNo">单据编号</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_billNo" name="billNo"
-                                                               type="text" readOnly
-                                                               value="${SaleOrderReturnBill.billNo}"/>
+                                                    <div id="billNo_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billNo">单据编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readOnly
+                                                                   value="${SaleOrderReturnBill.billNo}"/>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billDate">单据日期</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control date-picker" id="edit_billDate"
-                                                               name="billDate"
-                                                               type="text" value="${SaleOrderReturnBill.billDate}"/>
+                                                    <div id="billDate_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billDate">单据日期</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control date-picker" id="edit_billDate"
+                                                                   name="billDate"
+                                                                   type="text" value="${SaleOrderReturnBill.billDate}"/>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_payType">支付方式</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_payType" name="payType"
-                                                               type="text" value="${SaleOrderReturnBill.payType}"/>
+                                                    <div id="payType_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_payType">支付方式</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_payType" name="payType"
+                                                                   type="text" value="${SaleOrderReturnBill.payType}"/>
+                                                        </div>
                                                     </div>
+
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_destId">入库仓库</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_destId" name="destId"
-                                                                style="width: 100%;" value="${SaleOrderReturnBill.destId}"
-                                                                data-live-search="true">
-                                                        </select>
+                                                    <div id="destId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_destId">入库仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_destId" name="destId"
+                                                                    style="width: 100%;" value="${SaleOrderReturnBill.destId}"
+                                                                    data-live-search="true">
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="search_origId">出库仓库</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_origId" name="origId"
-                                                                style="width: 100%;" value="${SaleOrderReturnBill.origId}"
-                                                                data-live-search="true">
-                                                        </select>
+                                                    <div id="origId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="search_origId">出库仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_origId" name="origId"
+                                                                    style="width: 100%;" value="${SaleOrderReturnBill.origId}"
+                                                                    data-live-search="true">
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_busnissId">销售员</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_busnissId"
-                                                                name="busnissId"
-                                                                style="width: 100%;" data-live-search="true">
-                                                        </select>
+                                                    <div id="busnissId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_busnissId">销售员</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_busnissId"
+                                                                    name="busnissId"
+                                                                    style="width: 100%;" data-live-search="true">
+                                                            </select>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_actPrice">应付金额</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
+                                                    <div id="actPrice_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_actPrice">应付金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
                                                                 <span class="input-group-addon"><i
                                                                         class="fa fa-jpy"></i></span>
-                                                            <input class="form-control" id="edit_actPrice"
-                                                                   name="actPrice"
-                                                                   type="number" step="0.01" readonly
-                                                                   value="${SaleOrderReturnBill.actPrice}"/>
+                                                                <input class="form-control" id="edit_actPrice"
+                                                                       name="actPrice"
+                                                                       type="number" step="0.01" readonly
+                                                                       value="${SaleOrderReturnBill.actPrice}"/>
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_payPrice">实付金额</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
+                                                    <div id="payPrice_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_payPrice">实付金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
                                                                 <span class="input-group-addon"><i
                                                                         class="fa fa-jpy"></i></span>
-                                                            <input class="form-control" id="edit_payPrice"
-                                                                   name="payPrice"
-                                                                   type="number" step="0.01"
-                                                                   value="${SaleOrderReturnBill.payPrice}"/>
+                                                                <input class="form-control" id="edit_payPrice"
+                                                                       name="payPrice"
+                                                                       type="number" step="0.01"
+                                                                       value="${SaleOrderReturnBill.payPrice}"/>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_discount">整单折扣</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_discount"
-                                                               name="discount"
-                                                               value="${SaleOrderReturnBill.discount}"
-                                                               onblur="edit_discount_onblur()">
-                                                        </input>
+                                                    <div id="discount_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_discount">整单折扣</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_discount"
+                                                                   name="discount"
+                                                                   value="${SaleOrderReturnBill.discount}"
+                                                                   onblur="edit_discount_onblur()">
+                                                            </input>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_pre_Balance">售前余额</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_pre_Balance"
-                                                               name="preBalance"
-                                                               value="${SaleOrderReturnBill.preBalance}" readonly>
-                                                        </input>
+                                                    <div id="preBalance_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_pre_Balance">售前余额</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_pre_Balance"
+                                                                   name="preBalance"
+                                                                   value="${SaleOrderReturnBill.preBalance}" readonly>
+                                                            </input>
+                                                        </div>
+                                                    </div>
+                                                    <div id="afterBalance_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_after_Balance">售后余额</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_after_Balance"
+                                                                   name="afterBalance"
+                                                                   value="${SaleOrderReturnBill.afterBalance}" readonly>
+                                                            </input>
+                                                        </div>
                                                     </div>
 
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_after_Balance">售后余额</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_after_Balance"
-                                                               name="afterBalance"
-                                                               value="${SaleOrderReturnBill.afterBalance}" readonly>
-                                                        </input>
-                                                    </div>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_remark">备注</label>
+                                                    <div id="remark_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_remark">备注</label>
 
-                                                    <div class="col-md-11 col-sm-11">
+                                                        <div class="col-md-11 col-sm-11">
                                             <textarea maxlength="400" class="form-control" id="edit_remark"
                                                       name="remark">${SaleOrderReturnBill.remark}</textarea>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                                 <div>
                                                     <input id="edit_status" name="status"

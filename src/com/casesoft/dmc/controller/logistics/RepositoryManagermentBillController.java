@@ -7,6 +7,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -60,6 +61,8 @@ public class RepositoryManagermentBillController extends BaseController implemen
     public ModelAndView indexMV() throws Exception {
 
         ModelAndView mv = new ModelAndView("/views/logistics/repositoryAdjust");
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/repositoryAdjust", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         mv.addObject("pageType", "add");
         User user = this.getCurrentUser();
         mv.addObject("ownerId", user.getOwnerId());

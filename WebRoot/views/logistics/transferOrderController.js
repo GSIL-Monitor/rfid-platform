@@ -564,11 +564,10 @@ function initButtonGroup(billStatus) {
  * billStatus 单据状态新增为0
  * 动态配置按钮,div,表格列字段
  * */
-function loadingButtonDivTable(billStatus) {
+function loadingButtonDivTable() {
     var privilegeMap = ButtonAndDivPower(resourcePrivilege);
-    //初始化表格权限
     $.each(privilegeMap['table'],function(index,value){
-        if(value.isShow!==0) {
+        if(value.isShow!=0) {
             $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });

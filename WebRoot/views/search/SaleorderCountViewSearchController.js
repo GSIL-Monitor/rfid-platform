@@ -43,11 +43,12 @@ $(function () {
     $(".k-dropdown").css("width", "6em");
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
     var count =0;
-    for(var a=0;a<tableRole.length;a++){
+    for(var a=0;a<divRole.length;a++){
+        console.info(a);
         $(".all").hide();
-        if(tableRole[a].ishow == 0){
+        if(divRole[a].isShow == 0){
             $("#noadmin").hide();
-            $("."+tableRole[a].buttonId+"s").show();
+            $("."+divRole[a].privilegeId+"s").show();
             count++;
         }
     }
@@ -63,11 +64,10 @@ $(function () {
         $(".grossprofitss").hide();
         $("#noadmin").show();
     }
-
     var grid = $("#searchGrid").data("kendoGrid");
-    for(b in divRole){
-        if(divRole[b].ishow != 0){
-            grid.hideColumn(""+divRole[b].buttonId);
+    for(b in tableRole){
+        if(tableRole[b].isShow != 0){
+            grid.hideColumn(""+tableRole[b].privilegeId);
         }
     }
 });

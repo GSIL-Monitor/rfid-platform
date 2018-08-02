@@ -54,6 +54,8 @@ $(function () {
     initButtonGroup(pageType);
     /*初始化右侧表单验证*/
     initEditFormValid();
+    //动态加载按钮
+    loadingButtonDivTable();
 
 });
 //初始化搜索树形结构
@@ -1337,6 +1339,23 @@ function initcodeDetail(billNo) {
         shrinkToFit: true,
         sortname: 'id',
         sortorder: "asc"
+    });
+}
+/**
+ * 动态配置按钮,div,表格列字段
+ * */
+function loadingButtonDivTable() {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['div'],function(index,value){
+        if(value.isShow!=0) {
+            debugger
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    $.each(privilegeMap['button'],function(index,value){
+        if(value.isShow!=0) {
+            $("#"+value.privilegeId).hide();
+        }
     });
 }
 

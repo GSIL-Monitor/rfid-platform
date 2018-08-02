@@ -17,6 +17,7 @@
         var Codes = "${Codes}";
         var groupid="${groupid}";
         var pageType = "${pageType}";
+        var resourcePrivilege =${resourcePrivilege};
     </script>
 
 </head>
@@ -143,71 +144,86 @@
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billNo">单据编号</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_billNo" name="billNo"
-                                                               type="text" readOnly
-                                                               />
+                                                    <div id="billNo_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billNo">单据编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readOnly
+                                                            />
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billDate">单据日期</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_billDate"
-                                                               name="billDate"
-                                                               type="text" readonly/>
+                                                    <div id="billDate_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billDate">单据日期</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billDate"
+                                                                   name="billDate"
+                                                                   type="text" readonly/>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_userName">操作用户</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_userName" name="userName" readonly
-                                                               type="text" value="${user.id}"/>
+                                                    <div id="userName_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_userName">操作用户</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_userName" name="userName" readonly
+                                                                   type="text" value="${user.id}"/>
+                                                        </div>
                                                     </div>
+
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="search_origId">仓库</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_origId" name="origId"
-                                                                style="width: 100%;" value="${defaultWarehId}"
-                                                                data-live-search="true">
-                                                        </select>
+                                                    <div id="origId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="search_origId">仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_origId" name="origId"
+                                                                    style="width: 100%;" value="${defaultWarehId}"
+                                                                    data-live-search="true">
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label" for="destId"></span>库位</label>
-                                                    <div class="col-md-3" style="position:relative;z-index: 100;">
-                                                        <input class="form-control" id="destId" name="newRmId" readonly
-                                                               style="width: 100%;background-color: #abbac3 !important;color: #ffffff;border-width: 3px;">
-                                                        </input>
-                                                        <div class="widget-body" id="tree" style="display:none;height:600px;width: 93%; overflow-y:auto;text-align: left;position:absolute;z-index: 9999;!important;">
-                                                            <div class="col-sm-12" style="width: 98%;margin-top: 3%;">
-                                                                <input class="form-control" id="search_organizationName" type="text"
-                                                                       placeholder="模糊查询,回车结束"/>
-                                                            </div>
-                                                            <div class="col-sm-12" style="text-align: center;margin-top:2%;">
-                                                                <button type="button" class="btn btn-sm btn-primary" onclick="chooseCage()" style="width: 35%;border: 0;margin-right: 8%;">
-                                                                    <span class="bigger-110">确定</span>
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-warning" onclick="unChoose()" style="width: 35%;border: 0;">
-                                                                    <span class="bigger-110">取消</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="widget-main no-padding">
-                                                                <div id="jstree"></div>
+                                                    <div id="newRmId_div">
+                                                        <label class="col-md-1 control-label" for="destId"></span>库位</label>
+                                                        <div class="col-md-3" style="position:relative;z-index: 100;">
+                                                            <input class="form-control" id="destId" name="newRmId" readonly
+                                                                   style="width: 100%;background-color: #abbac3 !important;color: #ffffff;border-width: 3px;">
+                                                            </input>
+                                                            <div class="widget-body" id="tree" style="display:none;height:600px;width: 93%; overflow-y:auto;text-align: left;position:absolute;z-index: 9999;!important;">
+                                                                <div class="col-sm-12" style="width: 98%;margin-top: 3%;">
+                                                                    <input class="form-control" id="search_organizationName" type="text"
+                                                                           placeholder="模糊查询,回车结束"/>
+                                                                </div>
+                                                                <div class="col-sm-12" style="text-align: center;margin-top:2%;">
+                                                                    <button type="button" class="btn btn-sm btn-primary" onclick="chooseCage()" style="width: 35%;border: 0;margin-right: 8%;">
+                                                                        <span class="bigger-110">确定</span>
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm btn-warning" onclick="unChoose()" style="width: 35%;border: 0;">
+                                                                        <span class="bigger-110">取消</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="widget-main no-padding">
+                                                                    <div id="jstree"></div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_remark">备注</label>
+                                                    <div id="remark_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_remark">备注</label>
 
-                                                    <div class="col-md-11 col-sm-11">
+                                                        <div class="col-md-11 col-sm-11">
                                                         <textarea maxlength="400" class="form-control" id="edit_remark"
-                                                            name="remark">
+                                                                  name="remark">
                                                         </textarea>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                                 <div>
                                                     <input id="edit_status" name="status"

@@ -152,7 +152,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         mv.addObject("userId", getCurrentUser().getId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
         mv.addObject("defaultWarehId", defaultWarehId);
-        mv.addObject("resourceButton", FastJSONUtil.getJSONString(resourcePrivilege));
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
 
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
         mv.addObject("ownersId", unit.getOwnerids());

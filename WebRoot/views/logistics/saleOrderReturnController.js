@@ -22,6 +22,8 @@ $(function () {
     keydown();
     addProduct_keydown();
     input_keydown();
+    //动态加载按钮
+    loadingButtonDivTable();
 });
 
 /*
@@ -2570,6 +2572,28 @@ function setA4(id) {
             } else {
                 bootbox.alert(msg.msg);
             }
+        }
+    });
+}
+/**
+ * 动态配置按钮,div,表格列字段
+ * */
+function loadingButtonDivTable() {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['div'],function(index,value){
+        if(value.isShow!=0) {
+            debugger
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    $.each(privilegeMap['button'],function(index,value){
+        if(value.isShow!=0) {
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });
 }

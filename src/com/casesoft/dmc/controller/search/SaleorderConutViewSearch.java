@@ -210,7 +210,6 @@ public class SaleorderConutViewSearch extends BaseController {
                 }
             }
             else if("precast".equals(field.getName())){
-
                 if(precast){
                     entityList.add(new ExcelExportEntity(excel.name(),field.getName(),25));
                 }
@@ -235,7 +234,7 @@ public class SaleorderConutViewSearch extends BaseController {
         DataSourceRequest dataSourceRequest = JSON.parseObject(request, DataSourceRequest.class);
         //根据权限获得字段
         User currentUser = getCurrentUser();
-        List<ResourcePrivilege> resourceButtondivList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"div");
+        List<ResourcePrivilege> resourceButtondivList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("/search/saleorderCountView",currentUser.getRoleId(),"table");
         boolean precast= false;
         boolean gross = false;
         boolean grossprofits = false;
