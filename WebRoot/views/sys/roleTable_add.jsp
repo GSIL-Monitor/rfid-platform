@@ -141,7 +141,6 @@
                 } else {
                     cs.showAlertMsgBox(result.msg);
                 }
-                closeTableDialog();
             }
         });
 

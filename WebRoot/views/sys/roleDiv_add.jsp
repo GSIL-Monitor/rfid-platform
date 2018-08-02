@@ -113,7 +113,6 @@
                 }
             }
         });
-        closeDivDialog();
     }
     function checkDivId(checkBackDiv) {
         cs.showProgressBar();
