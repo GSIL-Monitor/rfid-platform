@@ -1215,7 +1215,7 @@
                                 <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12" >
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billNo" id="billNoSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">单号:xx</span>
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="origUnitName" id="origUnitNameSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">发货方:xx</span>
-                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="origUnitName" id="destUnitNameSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">收货方:xx</span>
+                                    <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="destUnitName" id="destUnitNameSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">收货方:xx</span>
                                     <span class="col-xs-3 col-sm-3 col-md-3 col-lg-3" data-name="billDate" id="billDateSanLianTR" style="display:table-cell;vertical-align:middle;text-align:center">日期:xx</span>
                                 </div>
                             </div>
