@@ -37,6 +37,30 @@
 
 
 </div>
+<div id="edit-dialog-TR" style="text-align: center;font-size:12px; display: none">
+
+    <table style="text-align:center;font-size:10px;" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+        <thead >
+        <tr >
+            <th align="left"  nowrap="nowrap" style="border:0px;font-size:10px;">商品</th>
+            <th align="right" nowrap="nowrap" style="border:0px;font-size:10px;">数量</th>
+            <th align="right" nowrap="nowrap"style="border:0px;font-size:10px;">原价</th>
+        </tr>
+        </thead>
+        <tbody id="loadtabTR">
+        <tr style="border-top:1px dashed black;padding-top:5px;">
+            <td align="left" style="border-top:1px dashed black;padding-top:5px;">合计:</td>
+            <td align="right"style="border-top:1px dashed black;padding-top:5px;">0</td>
+            <td style="border-top:1px dashed black;padding-top:5px;">&nbsp;</td>
+            <td style="border-top:1px dashed black;padding-top:5px;">&nbsp;</td>
+            <td align="right" style="border-top:1px dashed black;padding-top:5px;">0</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+
+</div>
 <script>
 
 </script>

@@ -262,7 +262,9 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             mapcont.put("billNo",billno);
             User user = CacheManager.getUserById(transferOrderBill.getOprId());
             mapcont.put("makeBill",user.getName());
-            mapcont.put("coustmer",transferOrderBill.getOrigUnitName());
+            //mapcont.put("coustmer",transferOrderBill.getOrigUnitName());
+            mapcont.put("origUnitName",transferOrderBill.getOrigUnitName());
+            mapcont.put("destUnitName",transferOrderBill.getDestUnitName());
             mapcont.put("billDate", CommonUtil.getDateString(transferOrderBill.getBillDate(),"yyyy-MM-dd"));
             mapcont.put("remark",transferOrderBill.getRemark());
             mapcont.put("printTime",CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
