@@ -1,5 +1,6 @@
 package com.casesoft.dmc.controller.shop;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -123,7 +124,38 @@ public class CustomerController extends BaseController implements IBaseInfoContr
         return customerById;
     }
 
-    @RequestMapping(value = {"/save", "/saveWS"})
+    @RequestMapping(value = "/saveWS")
+    @ResponseBody
+    public MessageBox saveWS(String customer, String currentUser) throws Exception {
+        try {
+            Customer entity = JSON.parseObject(customer, Customer.class);
+            User user = JSON.parseObject(currentUser, User.class);
+            String maxNo = this.customerService.getMaxNo(Constant.ScmConstant.CodePrefix.Customer);
+            Customer customerById = this.customerService.getCustomerById(entity.getId());
+            if (CommonUtil.isBlank(customerById)) {
+                entity.setId(maxNo);
+                entity.setCode(maxNo);
+                entity.setCreateTime(new Date());
+                entity.setCreatorId(user.getCode());
+                entity.setOwnerId(user.getOwnerId());
+                entity.setStoredValue(0.0);
+                entity.setOwingValue(0.0);
+                entity.setStatus(1);
+                entity.setType(6);
+                this.customerService.save(entity);
+            }else{
+                entity.setUpdaterId(user.getOwnerId());
+            }
+            return save(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return returnFailInfo("保存失败");
+        }
+
+    }
+
+
+    @RequestMapping(value = "/save")
     @ResponseBody
     @Override
     public MessageBox save(Customer entity) throws Exception {
@@ -138,33 +170,35 @@ public class CustomerController extends BaseController implements IBaseInfoContr
                 entity.setOwnerId(user.getOwnerId());
                 this.customerService.save(entity);
                 return returnSuccessInfo("保存成功");
-            }
+            } else {
                /* entity.setCode(customerById.getCode());
                 entity.setId(customerById.getId());*/
-            customerById.setBirth(entity.getBirth());
-            customerById.setName(entity.getName());
-            customerById.setCompany(entity.getCompany());
-            customerById.setEmail(entity.getEmail());
-            customerById.setSex(entity.getSex());
-            customerById.setRemark(entity.getRemark());
-            customerById.setJob(entity.getJob());
-            customerById.setSocialNo(entity.getSocialNo());
-            customerById.setCreateTime(entity.getCreateTime());
-            customerById.setStatus(entity.getStatus());
-            customerById.setLinkman(entity.getLinkman());
-            customerById.setDiscount(entity.getDiscount());
-            customerById.setTel(entity.getTel());
-            customerById.setIdCard(entity.getIdCard());
-            this.customerService.save(customerById);
+                customerById.setBirth(entity.getBirth());
+                customerById.setName(entity.getName());
+                customerById.setCompany(entity.getCompany());
+                customerById.setEmail(entity.getEmail());
+                customerById.setSex(entity.getSex());
+                customerById.setRemark(entity.getRemark());
+                customerById.setJob(entity.getJob());
+                customerById.setSocialNo(entity.getSocialNo());
+                customerById.setCreateTime(entity.getCreateTime());
+                customerById.setStatus(entity.getStatus());
+                customerById.setLinkman(entity.getLinkman());
+                customerById.setDiscount(entity.getDiscount());
+                customerById.setTel(entity.getTel());
+                customerById.setIdCard(entity.getIdCard());
+                customerById.setUpdateTime(new Date());
 
-            return returnSuccessInfo("保存成功");
-
+                this.customerService.save(customerById);
+                return returnSuccessInfo("保存成功");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return returnFailInfo("保存失败");
         }
 
     }
+
 
     @RequestMapping("/changeStatus")
     @ResponseBody
