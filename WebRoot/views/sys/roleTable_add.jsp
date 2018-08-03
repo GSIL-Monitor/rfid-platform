@@ -164,7 +164,6 @@
                         text: result.msg,
                         class_name: 'gritter-success  gritter-light'
                     });
-                    $("#edit_roleTable_dialog").modal("hide");
                 } else {
                     cs.showAlertMsgBox(result.msg);
                 }

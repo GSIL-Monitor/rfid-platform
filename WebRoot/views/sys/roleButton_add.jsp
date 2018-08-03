@@ -130,7 +130,6 @@
                 } else {
                     cs.showAlertMsgBox(result.msg);
                 }
-                closeButtonDialog();
             }
         });
 
