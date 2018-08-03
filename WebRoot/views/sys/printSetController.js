@@ -731,14 +731,19 @@ function findPrintSetA4(sum) {
                     $("#receiptTypeA4").val(result.type);
                     $("#commonTypeA4").val(result.commonType);
                     var headPrintA4="";
+                    var printTopA4="";
                     if($("#receiptTypeA4").val()=="PI"){
                         headPrintA4="headPrintA4PI"
+                        printTopA4="printTopA4PI"
                     }else if($("#receiptTypeA4").val()=="PR"){
                         headPrintA4="headPrintA4PR"
+                        printTopA4="printTopA4PR"
                     }else if($("#receiptTypeA4").val()=="TR"){
                         headPrintA4="headPrintA4TR"
+                        printTopA4="printTopA4TR"
                     }else {
                         headPrintA4="headPrintA4"
+                        printTopA4="printTopA4";
                     }
 
                     $("#"+headPrintA4).find("div").each(function (index,element) {
@@ -778,13 +783,25 @@ function findPrintSetA4(sum) {
                         var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
                              $(this).hide();
+                         }else{
+                             $(this).show();
                          }
                     });
                     $("#edit-A4-dialog").find("td").each(function (index,element) {
                         var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
                             $(this).hide();
+                         }else{
+                             $(this).show();
                          }
+                    });
+                    $("#"+printTopA4).find("span").each(function (index,element) {
+                        var name=$(this).data("name");
+                        if(!(result.printCode.indexOf(name)!= -1)){
+                            $(this).hide();
+                        }else{
+                            $(this).show();
+                        }
                     });
                 }else{
                     $("#idA4").val("");
@@ -838,14 +855,19 @@ function findPrintSetSanLian(sum) {
                     $("#footExtendWriteSanLian").val(printFootExtend);
                     $("#footExtendSanLian").find("span").html(printFootExtend);
                     var headPrintSanLian="";
+                    var printTopSanLian="";
                     if($("#receiptTypeSanLian").val()=="PI"){
                         headPrintSanLian="headPrintSanLianPI";
+                        printTopSanLian="printTopSanLianPI";
                     }else if($("#receiptTypeSanLian").val()=="PR"){
                         headPrintSanLian="headPrintSanLianPR";
+                        printTopSanLian="printTopSanLianPR";
                     }else if($("#receiptTypeSanLian").val()=="TR"){
                         headPrintSanLian="headPrintSanLianTR";
+                        printTopSanLian="printTopSanLianTR";
                     }else{
                         headPrintSanLian="headPrintSanLian";
+                        printTopSanLian="printTopSanLian";
                     }
                     $("#"+headPrintSanLian).find("div").each(function (index,element) {
                         var name=$(this).data("name");
@@ -884,13 +906,27 @@ function findPrintSetSanLian(sum) {
                          var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
                              $(this).hide();
+                         }else{
+                             $(this).show();
                          }
                     });
                     $("#edit-SanLian-dialog").find("td").each(function (index,element) {
                         var name=$(this).data("name");
                          if(!(result.printTableCode.indexOf(name)!= -1)){
                             $(this).hide();
+                         }else{
+                             $(this).show();
                          }
+                    });
+                    $("#"+printTopSanLian).find("span").each(function (index,element) {
+                        debugger
+                        var name=$(this).data("name");
+                        if(!(result.printCode.indexOf(name)!= -1)){
+                            $(this).hide();
+                        }else{
+                            $(this).show();
+                        }
+
                     });
                 }else{
                     $("#idSanLian").val("");
