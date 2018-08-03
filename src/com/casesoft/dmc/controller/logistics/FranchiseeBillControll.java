@@ -5,15 +5,18 @@ import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.stock.EpcStock;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.FranchiseeBillService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +36,9 @@ public class FranchiseeBillControll extends BaseController implements ILogistics
     @Autowired
     private FranchiseeBillService franchiseeBillService;
     @Autowired
-    private UnitService unitService;
+   private UnitService unitService;
+    @Autowired
+    private ResourcePrivilegeService resourcePrivilegeService;
     @Override
     public Page<SaleOrderBill> findPage(Page<SaleOrderBill> page) throws Exception {
         return null;
@@ -125,9 +130,11 @@ public class FranchiseeBillControll extends BaseController implements ILogistics
     }
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/franchiseeBillNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/franchiseeBill");
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/franchisee", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
         mv.addObject("deportId", unit.getDefaultWarehId());
         mv.addObject("roleid", getCurrentUser().getRoleId());
