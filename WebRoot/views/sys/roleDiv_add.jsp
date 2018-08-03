@@ -58,11 +58,13 @@
         } else {
             bootbox.alert("请选择父菜单！");
         }
+        //选择父菜单，赋值code
         var so=rowId;
         if (so==""){
             so="01";
         }
         $("#divCode").val(so);
+        initEditDivFormValid();
     }
 
     function closeEditDivDialog() {
@@ -72,6 +74,9 @@
     function closeDivDialog() {
         $("#edit_roleDiv_dialog").modal('hide');
         $("#editRoleDivForm").resetForm();
+        $("#editRoleDivForm").data('bootstrapValidator').destroy();
+        $('#editRoleDivForm').data('bootstrapValidator', null);
+
     }
 
 
@@ -86,7 +91,11 @@
         if(!isok){
             return;
         }
-        if($("#divName").val()==""||$("#divName").val()==undefined){
+        $('#editRoleDivForm').data('bootstrapValidator').validate();
+        if(!$('#editRoleDivForm').data('bootstrapValidator').isValid()){
+            return ;
+        }
+        /*if($("#divName").val()==""||$("#divName").val()==undefined){
             $.gritter.add({
                 text: "表单名称不能为空",
                 class_name: 'gritter-success  gritter-light'
@@ -99,7 +108,7 @@
                 class_name: 'gritter-success  gritter-light'
             });
             return
-        }
+        }*/
         cs.showProgressBar();
         $.ajax({
             dataType:"json",
@@ -143,6 +152,47 @@
                 } else {
                     cs.showAlertMsgBox(result.msg);
                     checkBackDiv(false)
+                }
+            }
+        });
+    }
+    function initEditDivFormValid() {
+        $('#editRoleDivForm').bootstrapValidator({
+            message: '输入值无效',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function(validator, form, submitButton) {
+                $.post(form.attr('action'), form.serialize(), function(result) {
+                    if (result.success == true || result.success == 'true') {
+                    } else {
+                        $('#editRoleButtonForm').bootstrapValidator('disableSubmitButtons', false);
+                    }
+                }, 'json');
+            },
+            fields: {
+                ownerId: {
+                    validators: {
+                        notEmpty: {
+                            message: '父菜单不能为空'
+                        }
+                    }
+                },
+                privilegeName: {
+                    validators: {
+                        notEmpty: {
+                            message: '表单字段不能为空'
+                        }
+                    }
+                },
+                privilegeId: {
+                    validators: {
+                        notEmpty: {
+                            message: '表单字段不能为空'
+                        }
+                    }
                 }
             }
         });

@@ -57,12 +57,13 @@
         } else {
             bootbox.alert("请选择父菜单！");
         }
+        //选择父菜单，赋值code
         var so=rowId;
         if (so==""){
             so="01";
         }
         $("#savetablecode").val(so);
-
+        initEditTableFormValid();
     }
 
     function closeEditTableDialog() {
@@ -72,6 +73,8 @@
     function closeTableDialog() {
         $("#edit_roleTable_dialog").modal('hide');
         $("#editRoleTableForm").resetForm();
+        $("#editRoleTableForm").data('bootstrapValidator').destroy();
+        $('#editRoleTableForm').data('bootstrapValidator', null);
     }
 
 
@@ -82,8 +85,8 @@
 
     }
 
-    /*function initEditFormValid() {
-        $('#editRoleButtonForm').bootstrapValidator({
+    function initEditTableFormValid() {
+        $('#editRoleTableForm').bootstrapValidator({
             message: '输入值无效',
             feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -105,16 +108,34 @@
                             message: '父菜单不能为空'
                         }
                     }
+                },
+                privilegeName: {
+                    validators: {
+                        notEmpty: {
+                            message: '名称不能为空'
+                        }
+                    }
+                },
+                privilegeId: {
+                    validators: {
+                        notEmpty: {
+                            message: '表列name不能为空'
+                        }
+                    }
                 }
             }
         });
-    }*/
+    }
     function checkTableBack(isok) {
         var isok=isok;
         if(!isok){
             return;
         }
-        if($("#tableName").val()==""||$("#tableName").val()==undefined){
+        $('#editRoleTableForm').data('bootstrapValidator').validate();
+        if(!$('#editRoleTableForm').data('bootstrapValidator').isValid()){
+            return ;
+        }
+       /* if($("#tableName").val()==""||$("#tableName").val()==undefined){
             $.gritter.add({
                 text: "名称不能为空",
                 class_name: 'gritter-success  gritter-light'
@@ -127,7 +148,7 @@
                 class_name: 'gritter-success  gritter-light'
             });
             return
-        }
+        }*/
         cs.showProgressBar();
         $.ajax({
             dataType:"json",
