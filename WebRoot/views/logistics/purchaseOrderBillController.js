@@ -1090,8 +1090,7 @@ function addNew() {
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
     initSelectDestForm();
-    pageType="add";
-    initButtonGroup(pageType);
+    initButtonGroup(0);
     $("#destId").empty();
     $("#destId").val("--请选择入库库位--");
 }

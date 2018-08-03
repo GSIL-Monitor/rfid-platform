@@ -199,8 +199,7 @@ function addNew(isScan){
     initCustomerTypeForm();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
-    pageType="add";
-    initButtonGroup(pageType);
+    initButtonGroup(0);
 
 }
 function setFooterData() {

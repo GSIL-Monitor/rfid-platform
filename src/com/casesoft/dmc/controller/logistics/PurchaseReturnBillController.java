@@ -7,15 +7,18 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.PurchaseReturnBillService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +43,8 @@ public class PurchaseReturnBillController extends BaseController implements ILog
     private PurchaseReturnBillService purchaseReturnBillService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    ResourcePrivilegeService resourcePrivilegeService;
 
     //@RequestMapping(value = "/index")
     @Override
@@ -49,11 +54,13 @@ public class PurchaseReturnBillController extends BaseController implements ILog
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBillNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/purchaseReturnBill");
         User user = this.getCurrentUser();
         mv.addObject("OwnerId", user.getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/purchaseReturn", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         String defaultWarehId = unit.getDefaultWarehId();
         mv.addObject("defaultWarehId", defaultWarehId);
         mv.addObject("pageType", "add");
