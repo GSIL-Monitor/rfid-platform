@@ -248,16 +248,16 @@
                                 </div>
                             </div>
                             <div id="printTopPR" style="display: none">
-                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" data-name="storeName" >
-                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="storeNamePR">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" data-name="storeName"  id="storeNamePR">
                                         <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
                                     </div>
                                     <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
                                          <span >销售单</span>
                                      </div>--%>
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" data-name="billType">
-                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8"  id="billTypePR">
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" data-name="billType" id="billTypePR">
                                         <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">单据类型</span>
                                     </div>
                                     <%-- <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8" id="billType">
