@@ -16,6 +16,7 @@ $(function () {
     initAddGrid();
     pageType="add";
     initButtonGroup(pageType);
+    loadingButtonDivTable(0);
     initEditFormValid();
     setEditFormVal();
     /*回车监事件*/
@@ -331,12 +332,6 @@ function initDetailData(rowid){
     $("#editForm").setFromData(rowData);
     slaeOrderReturn_status = rowData.status;
     slaeOrderReturn_customerType=rowData.customerType;
-    if (slaeOrderReturn_status != "0" && userId != "admin") {
-        $("#edit_origId").attr('disabled', true);
-        $("#edit_destId").attr('disabled', true);
-        $("#edit_billDate").attr('readOnly', true);
-        $("#edit_busnissId").attr('disabled', true);
-    }
     if (userId == "admin") {
         $("#edit_guest_button").removeAttr("disabled");
         $("#edit_origId").attr('disabled', true);
@@ -353,7 +348,7 @@ function initDetailData(rowid){
     $("#codegrid").trigger("reloadGrid");
     pageType="edit";
     initButtonGroup(pageType);
-
+    loadingButtonDivTable(slaeOrderReturn_status);
 }
 
 function initeditGrid(billId) {
@@ -721,50 +716,8 @@ function initCustomerTypeForm() {
 }
 /*根据权限初始化按钮*/
 function initButtonGroup(type){
-    if (pageType === "add") {
-        $("#buttonGroup").html("" +
-            "<button id='SRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='SRDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='SRDtl_save' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='SRDtl_addUniqCode' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='SRDtl_wareHouseOut' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>出库</span>" +
-            "</button>" +
-            "<button id='SRDtl_wareHouseIn' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"in\"" + ")'>" +
-            "    <i class='ace-icon fa fa-sign-in'></i>" +
-            "    <span class='bigger-110'>入库</span>" +
-            "</button>" +
-            "<button id='SRDtl_doPrint' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='doPrint()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>打印</span>" +
-            "</button>"+
-            "<button id='SRDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>三联打印</span>" +
-            "</button>"+
-            "<button id='SRDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>A4打印</span>" +
-            "</button>"
-        );
         $("#search_guest_button").removeAttr("disabled");
         $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
-    }
-    //if (pageType === "edit" && $("#returnCode").val() === "") {
-    if (pageType === "edit") {
         $("#buttonGroup").html("" +
             "<button id='SRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
@@ -812,33 +765,7 @@ function initButtonGroup(type){
             "</button>"
         );
         loadingButton();
-        if ($("#edit_status").val()!== "0" && userId !== "admin") {
-            $("#search_guest_button").attr({"disabled": "disabled"});
-            $("#SRDtl_save").attr({"disabled": "disabled"});
-            $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
-            $("#SRDtl_cancel").attr({"disabled": "disabled"});
-        }
-        if ($("#edit_origId").val() && $("#edit_origId").val() !== null && $("#edit_origId").val() !== "") {
-            $("#SRDtl_wareHouseOut").removeAttr("disabled");
-            $("#SRDtl_wareHouseIn").show();
-            $("#SRDtl_wareHouseIn_noOutHouse").hide();
-        } else {
-            $("#SRDtl_wareHouseOut").attr({"disabled": "disabled"});
-            $("#SRDtl_wareHouseIn").hide();
-            $("#SRDtl_wareHouseIn_noOutHouse").show();
-        }
-        if ($("#edit_srcBillNo").val()!= "") {
-            $("#SRDtl_addUniqCode").hide();/*
-             $("#SRDtl_wareHouseIn_noOutHouse").hide();
-             $("#SRDtl_wareHouseOut").hide();
-             $("#SRDtl_wareHouseIn").hide();*/
-        }
-        if ($("#edit_status").val()=="0"){
-            $("#SRDtl_check").removeAttr("disabled");
-        }else {
-            $("#SRDtl_check").attr({"disabled": "disabled"});
-        }
-    }
+
 
 }
 function loadingButton() {
@@ -2596,4 +2523,71 @@ function loadingButtonDivTable() {
             $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });
+}
+/**
+ * billStatus 单据状态新增为0
+ * 动态配置按钮,div,表格列字段
+ * */
+function loadingButtonDivTable(billStatus) {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
+    });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn"];
+            break;
+        case "0" :
+            disableButtonIds = [];
+            break;
+        case "1":
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save"];
+            break;
+        case "2" :
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn","SRDtl_doPrint","SRDtl_doPrintA4"];
+            break;
+        case "3":
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save"];
+            break;
+        default:
+            disableButtonIds = ["TRDtl_wareHouseIn"];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        //找对应的按钮
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
+        }
+    });
+    if ($("#edit_status").val()!== "0" && userId !== "admin") {
+        $("#search_guest_button").attr({"disabled": "disabled"});
+        $("#SRDtl_save").attr({"disabled": "disabled"});
+        $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
+        $("#SRDtl_cancel").attr({"disabled": "disabled"});
+    }
+    if ($("#edit_origId").val() && $("#edit_origId").val() !== null && $("#edit_origId").val() !== "") {
+        $("#SRDtl_wareHouseOut").removeAttr("disabled");
+        $("#SRDtl_wareHouseIn").show();
+        $("#SRDtl_wareHouseIn_noOutHouse").hide();
+    } else {
+        $("#SRDtl_wareHouseOut").attr({"disabled": "disabled"});
+        $("#SRDtl_wareHouseIn").hide();
+        $("#SRDtl_wareHouseIn_noOutHouse").show();
+    }
+    if ($("#edit_srcBillNo").val()!= "") {
+        $("#SRDtl_addUniqCode").hide();/*
+         $("#SRDtl_wareHouseIn_noOutHouse").hide();
+         $("#SRDtl_wareHouseOut").hide();
+         $("#SRDtl_wareHouseIn").hide();*/
+    }
+    if ($("#edit_status").val()=="0"){
+        $("#SRDtl_check").removeAttr("disabled");
+    }else {
+        $("#SRDtl_check").attr({"disabled": "disabled"});
+    }
 }

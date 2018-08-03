@@ -52,6 +52,7 @@ $(function () {
     /*初始化按钮*/
     pageType="add";
     initButtonGroup(pageType);
+    loadingButtonDivTable(0);
     /*初始化右侧表单验证*/
     initEditFormValid();
     //动态加载按钮
@@ -442,7 +443,7 @@ function initDetailData(rowid){
         //隐藏操作
         $("#addDetailgrid").setGridParam().hideCol("operation");
     }
-
+    loadingButtonDivTable(rm_status);
 }
 /**
  * 新增单据调用
@@ -828,55 +829,29 @@ function initEditFormValid() {
 /*根据权限初始化按钮*/
 function initButtonGroup(type){
     console.info(type);
-    if (type === "add") {
-        $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='SODtl_rmIdAdjust' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='rmIdChange()'>" +
-             "    <i class='ace-icon fa fa-sign-out'></i>" +
-             "    <span class='bigger-110'>调整</span>" +
-             "</button>" +
-            "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>"
-        );
-    }
-    if (type === "edit") {
-        $("#buttonGroup").html("" +
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='SODtl_rmIdAdjust' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='rmIdChange()'>" +
-            "    <i class='ace-icon fa fa-sign-out'></i>" +
-            "    <span class='bigger-110'>调整</span>" +
-            "</button>" +
-            "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-barcode'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>"
-        );
+    $("#buttonGroup").html("" +
+        "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
+        "    <i class='ace-icon fa fa-plus'></i>" +
+        "    <span class='bigger-110'>新增</span>" +
+        "</button>" +
+        "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>保存</span>" +
+        "</button>" +
+        "<button id='SODtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+        "    <i class='ace-icon fa fa-undo'></i>" +
+        "    <span class='bigger-110'>撤销</span>" +
+        "</button>" +
+        "<button id='SODtl_rmIdAdjust' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='rmIdChange()'>" +
+        "    <i class='ace-icon fa fa-sign-out'></i>" +
+        "    <span class='bigger-110'>调整</span>" +
+        "</button>" +
+        "<button id='SODtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+        "    <i class='ace-icon fa fa-barcode'></i>" +
+        "    <span class='bigger-110'>扫码</span>" +
+        "</button>"
+    );
 
-    }
     //未保存禁用撤销，调整，结束
     $("#SODtl_finishBill").attr({"disabled": "disabled"});
     $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
@@ -1341,10 +1316,18 @@ function initcodeDetail(billNo) {
         sortorder: "asc"
     });
 }
+
 /**
+ * billStatus 单据状态新增为0
  * 动态配置按钮,div,表格列字段
  * */
-function loadingButtonDivTable() {
+function loadingButtonDivTable(billStatus) {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
+    });
     var privilegeMap = ButtonAndDivPower(resourcePrivilege);
     $.each(privilegeMap['div'],function(index,value){
         if(value.isShow!=0) {
@@ -1357,5 +1340,35 @@ function loadingButtonDivTable() {
             $("#"+value.privilegeId).hide();
         }
     });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_rmIdAdjust","SODtl_addUniqCode"];
+            break;
+        case "0" :
+            disableButtonIds = [];
+            break;
+        case "1":
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save,TRDtl_addUniqCode"];
+            break;
+        case "2" :
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_rmIdAdjust","SODtl_addUniqCode"];
+            break;
+        case "3":
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save","TRDtl_addUniqCode"];
+            break;
+        default:
+            disableButtonIds = ["TRDtl_wareHouseIn"];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        //找对应的按钮
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
+        }
+    });
+
 }
 
