@@ -1109,6 +1109,15 @@ function receiptTypeSelectSanLian() {
         $("#headPrintSanLianPI").hide();
         $("#headPrintSanLianPR").hide();
         $("#headPrintSanLianTR").show();
+    }else{
+        $("#printTopSanLian").show();
+        $("#printTopSanLianPI").hide();
+        $("#printTopSanLianPR").hide();
+        $("#printTopSanLianTR").hide();
+        $("#headPrintSanLian").show();
+        $("#headPrintSanLianPI").hide();
+        $("#headPrintSanLianPR").hide();
+        $("#headPrintSanLianTR").hide();
     }
 }
 function receiptTypeSelectA4() {
