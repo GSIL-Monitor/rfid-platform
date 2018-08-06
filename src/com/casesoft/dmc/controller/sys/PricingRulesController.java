@@ -70,6 +70,24 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
         return pricingRules;
     }
 
+    /**
+     *根据大类系列查询定价规则
+     * @param series 系列
+     * @param class3 大类
+     * @return pr
+     */
+    @RequestMapping(value ="/findPricingRules")
+    @ResponseBody
+    public MessageBox findPricingRules(String series,String class3){
+        try {
+            PricingRules pr = this.pricingRulesService.findPricingRulesBySC(series,class3);
+            return returnSuccessInfo("查询成功",pr);
+        }catch (Exception e){
+            e.printStackTrace();
+            return returnFailInfo("查询失败");
+        }
+    }
+
     /*保存*/
     @RequestMapping(value = "/save")
     @ResponseBody
