@@ -27,6 +27,7 @@
         var defalutCustomerdiscount="${defalutCustomerdiscount}";
         var defalutCustomercustomerType="${defalutCustomercustomerType}";
         var defalutCustomerowingValue="${defalutCustomerowingValue}";
+        var resourcePrivilege =${resourcePrivilege};
     </script>
 </head>
 <body class="no-skin">
@@ -155,15 +156,16 @@
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_origUnitId">客户</label>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <input class="form-control" id="edit_origUnitId"
-                                                                   type="text"
-                                                                   name="origUnitId"
-                                                                   value="${consignmentBill.origUnitId}" readonly/>
-                                                            <span class="input-group-btn">
+                                                    <div id="origUnitId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_origUnitId">客户</label>
+                                                        <div class="col-md-5">
+                                                            <div class="input-group">
+                                                                <input class="form-control" id="edit_origUnitId"
+                                                                       type="text"
+                                                                       name="origUnitId"
+                                                                       value="${consignmentBill.origUnitId}" readonly/>
+                                                                <span class="input-group-btn">
 												                <button class="btn btn-sm btn-default"
                                                                         id="edit_guest_button"
                                                                         type="button"
@@ -171,97 +173,122 @@
                                                                     <i class="ace-icon fa fa-list"></i>
                                                                 </button>
 											                </span>
-                                                            <input class="form-control" id="edit_origUnitName"
-                                                                   type="text"
-                                                                   name="origUnitName"
-                                                                   value="${consignmentBill.origUnitName}" readonly/>
+                                                                <input class="form-control" id="edit_origUnitName"
+                                                                       type="text"
+                                                                       name="origUnitName"
+                                                                       value="${consignmentBill.origUnitName}" readonly/>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-3 control-label"
-                                                           for="edit_customerType">客户类型</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker"
-                                                                id="edit_customerType"
-                                                                name="customerType"
-                                                                style="width: 100%;"
-                                                                value="${consignmentBill.customerType}" disabled>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billNo">单据编号</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_billNo" name="billNo"
-                                                               type="text" readOnly
-                                                               value="${consignmentBill.billNo}"/>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billDate">单据日期</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control date-picker" id="edit_billDate"
-                                                               name="billDate"
-                                                               type="text" value="${consignmentBill.billDate}"/>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_payType">支付方式</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_payType" name="payType"
-                                                               type="text" value="${consignmentBill.payType}"/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_destId">入库仓库</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick"
-                                                                id="edit_destId" name="destId"
-                                                                style="width: 100%;" value="${consignmentBill.destId}"
-                                                                data-live-search="true">
-                                                        </select>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_actPrice">应付金额</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                            <input class="form-control" id="edit_actPrice" name="actPrice"
-                                                                   type="number" step="0.01" readonly
-                                                                   value='${consignmentBill.actPrice}'/>
+                                                    <div id="customerType_div">
+                                                        <label class="col-md-3 control-label"
+                                                               for="edit_customerType">客户类型</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker"
+                                                                    id="edit_customerType"
+                                                                    name="customerType"
+                                                                    style="width: 100%;"
+                                                                    value="${consignmentBill.customerType}" disabled>
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_payPrice">应付金额</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
-                                                            <input class="form-control" id="edit_payPrice" name="payPrice"
-                                                                   type="number" step="0.01"
-                                                                   value='${consignmentBill.payPrice}'/>
-                                                        </div>
-                                                    </div>
+
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_discount">整单折扣</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_discount" name="discount"
+                                                    <div id="billNo_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billNo">单据编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readOnly
+                                                                   value="${consignmentBill.billNo}"/>
+                                                        </div>
+                                                    </div>
+                                                    <div id="billDate_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billDate">单据日期</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control date-picker" id="edit_billDate"
+                                                                   name="billDate"
+                                                                   type="text" value="${consignmentBill.billDate}"/>
+                                                        </div>
+                                                    </div>
+                                                    <div id="payType_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_payType">支付方式</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_payType" name="payType"
+                                                                   type="text" value="${consignmentBill.payType}"/>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="destId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_destId">入库仓库</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick"
+                                                                    id="edit_destId" name="destId"
+                                                                    style="width: 100%;" value="${consignmentBill.destId}"
+                                                                    data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="actPrice_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_actPrice">应付金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                                <input class="form-control" id="edit_actPrice" name="actPrice"
+                                                                       type="number" step="0.01" readonly
+                                                                       value='${consignmentBill.actPrice}'/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="payPrice_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_payPrice">应付金额</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
+                                                                <input class="form-control" id="edit_payPrice" name="payPrice"
+                                                                       type="number" step="0.01"
+                                                                       value='${consignmentBill.payPrice}'/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="discount_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_discount">整单折扣</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_discount" name="discount"
                                                                    value="${consignmentBill.discount}" onblur="search_discount_onblur()">
-                                                        </input>
+                                                            </input>
 
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_busnissId">销售员</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick" id="edit_busnissId" name="busnissId"
-                                                                style="width: 100%;" data-live-search="true">
-                                                        </select>
+                                                    <div id="busnissId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_busnissId">销售员</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick" id="edit_busnissId" name="busnissId"
+                                                                    style="width: 100%;" data-live-search="true">
+                                                            </select>
 
+                                                        </div>
                                                     </div>
+
                                                 </div>
-                                                <input class="form-control" id="edit_status" name="status"
-                                                       value="${consignmentBill.status}"style="display: none">
-                                                </input>
+                                                <div id="status_div">
+                                                    <input class="form-control" id="edit_status" name="status"
+                                                           value="${consignmentBill.status}"style="display: none">
+                                                    </input>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>

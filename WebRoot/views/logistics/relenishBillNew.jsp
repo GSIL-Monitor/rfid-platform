@@ -20,6 +20,7 @@
         var userId = "${userId}";
         var billNo = "${billNo}";
         var pageType="${pageType}";
+        var resourcePrivilege =${resourcePrivilege};
     </script>
 </head>
 <body class="no-skin">
@@ -145,55 +146,70 @@
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
                                                 <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billNo">单据编号</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control" id="edit_billNo" name="billNo"
-                                                               type="text" readOnly
-                                                               value="${replenishBill.billNo}"/>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_billDate">单据日期</label>
-                                                    <div class="col-md-3">
-                                                        <input class="form-control date-picker" id="edit_billDate"
-                                                               name="billDate"
-                                                               type="text" value="${replenishBill.billDate}"/>
-                                                    </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_replenishType">类型</label>
-                                                    <div class="col-md-3">
-                                                        <div class="radio" id="edit_replenishType">
-                                                            <label><input name="replenishType" type="radio" value="1"/>购货</label>
-                                                            <label><input name="replenishType" type="radio" value="0"/>退货</label>
+                                                    <div id="billNo_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billNo">单据编号</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control" id="edit_billNo" name="billNo"
+                                                                   type="text" readOnly
+                                                                   value="${replenishBill.billNo}"/>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_buyahandId">买手</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick" id="edit_buyahandId"
-                                                                name="buyahandId"
-                                                                style="width: 100%;" data-live-search="true" onchange="changebuy()">
-                                                        </select>
+                                                    <div id="billDate_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_billDate">单据日期</label>
+                                                        <div class="col-md-3">
+                                                            <input class="form-control date-picker" id="edit_billDate"
+                                                                   name="billDate"
+                                                                   type="text" value="${replenishBill.billDate}"/>
+                                                        </div>
                                                     </div>
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_busnissId">销售员</label>
-                                                    <div class="col-md-3">
-                                                        <select class="form-control selectpicker show-tick" id="edit_busnissId"
-                                                                name="busnissId"
-                                                                style="width: 100%;" data-live-search="true">
-                                                        </select>
+                                                    <div id="replenishType_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_replenishType">类型</label>
+                                                        <div class="col-md-3">
+                                                            <div class="radio" id="edit_replenishType">
+                                                                <label><input name="replenishType" type="radio" value="1"/>购货</label>
+                                                                <label><input name="replenishType" type="radio" value="0"/>退货</label>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-1 control-label"
-                                                           for="edit_remark">备注</label>
 
-                                                    <div class="col-md-11 col-sm-11">
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="buyahandId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_buyahandId">买手</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick" id="edit_buyahandId"
+                                                                    name="buyahandId"
+                                                                    style="width: 100%;" data-live-search="true" onchange="changebuy()">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="busnissId_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_busnissId">销售员</label>
+                                                        <div class="col-md-3">
+                                                            <select class="form-control selectpicker show-tick" id="edit_busnissId"
+                                                                    name="busnissId"
+                                                                    style="width: 100%;" data-live-search="true">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="remark_div">
+                                                        <label class="col-md-1 control-label"
+                                                               for="edit_remark">备注</label>
+
+                                                        <div class="col-md-11 col-sm-11">
                                             <textarea maxlength="400" class="form-control" id="edit_remark"
                                                       name="remark">${replenishBill.remark}</textarea>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                                 <input id="edit_srcBillNo" name="srcBillNo" value="${replenishBill.srcBillNo}"
                                                        type="hidden">

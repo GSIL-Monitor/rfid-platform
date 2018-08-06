@@ -7,14 +7,17 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.ReplenishBillService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +41,8 @@ public class ReplenishBillController extends BaseController implements ILogistic
     private UnitService unitService;
     @Autowired
     private PurchaseOrderBillService purchaseOrderBillService;
+    @Autowired
+    private ResourcePrivilegeService resourcePrivilegeService;
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
@@ -47,7 +52,8 @@ public class ReplenishBillController extends BaseController implements ILogistic
         mv.addObject("ownersId", unit.getOwnerids());
         mv.addObject("userId", getCurrentUser().getId());*/
         ModelAndView mv = new ModelAndView("/views/logistics/relenishBillNew");
-
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/relenishBill", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
         String defaultWarehId = unit.getDefaultWarehId();
         mv.addObject("ownerId", getCurrentUser().getOwnerId());

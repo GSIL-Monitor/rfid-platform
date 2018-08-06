@@ -55,8 +55,7 @@ $(function () {
     loadingButtonDivTable(0);
     /*初始化右侧表单验证*/
     initEditFormValid();
-    //动态加载按钮
-    loadingButtonDivTable();
+
 
 });
 //初始化搜索树形结构
@@ -834,7 +833,7 @@ function initButtonGroup(type){
         "    <i class='ace-icon fa fa-plus'></i>" +
         "    <span class='bigger-110'>新增</span>" +
         "</button>" +
-        "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+            "<button id='SODtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>保存</span>" +
         "</button>" +

@@ -185,7 +185,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div id="newRmId_div">
+                                                        <div id="newRmId_div">
                                                         <label class="col-md-1 control-label" for="destId"></span>库位</label>
                                                         <div class="col-md-3" style="position:relative;z-index: 100;">
                                                             <input class="form-control" id="destId" name="newRmId" readonly

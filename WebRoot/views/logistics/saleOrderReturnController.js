@@ -25,6 +25,7 @@ $(function () {
     input_keydown();
     //动态加载按钮
     loadingButtonDivTable();
+    $("#SRDtl_check").hide();
 });
 
 /*
@@ -349,6 +350,7 @@ function initDetailData(rowid){
     pageType="edit";
     initButtonGroup(pageType);
     loadingButtonDivTable(slaeOrderReturn_status);
+
 }
 
 function initeditGrid(billId) {
@@ -765,7 +767,7 @@ function initButtonGroup(type){
             "</button>"
         );
         loadingButton();
-
+        $("#SRDtl_check").hide();
 
 }
 function loadingButton() {
@@ -2541,13 +2543,13 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn"];
             break;
         case "0" :
-            disableButtonIds = [];
+            disableButtonIds = ["SRDtl_check"];
             break;
         case "1":
             disableButtonIds = ["SRDtl_cancel","SRDtl_save"];
             break;
         case "2" :
-            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn","SRDtl_doPrint","SRDtl_doPrintA4"];
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn","SRDtl_doPrint","SRDtl_doPrintA4","SRDtl_check"];
             break;
         case "3":
             disableButtonIds = ["SRDtl_cancel","SRDtl_save"];

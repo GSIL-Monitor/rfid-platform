@@ -8,6 +8,8 @@ $(function () {
     /*初始化右侧grig*/
     initAddGrid();
     initButtonGroup();
+    //动态初始化页面
+    loadingButtonDivTable(0);
 });
 function initForm() {
     pageType="add";
@@ -382,7 +384,7 @@ function initDetailData(rowData){
     pageType="edit";
     initButtonGroup(pageType);
     $("#addDetailgrid").trigger("reloadGrid");*/
-
+    loadingButtonDivTable(relenish_status);
 
 }
 function initeditGrid(billNo) {
@@ -969,4 +971,60 @@ function cancelAjax(billId) {
     });
 
 }
-
+/**
+ * billStatus 单据状态新增为0
+ * 动态配置按钮,div,表格列字段
+ * */
+function loadingButtonDivTable(billStatus) {
+    console.info(resourcePrivilege);
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
+    });
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['div'],function(index,value){
+        if(value.isShow!=0) {
+            debugger
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    $.each(privilegeMap['button'],function(index,value){
+        if(value.isShow!=0) {
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["REDtl_cancel","REDtl_save","REDtl_saveAndAdd","REDtl_check","REDtl_noCheck","REDtl_changePurchase","REDtl_findPurcahse"];
+            break;
+        case "0" :
+            disableButtonIds = [];
+            break;
+        case "1":
+            disableButtonIds = ["REDtl_cancel","REDtl_save"];
+            break;
+        case "2" :
+            disableButtonIds = ["REDtl_cancel","REDtl_save","REDtl_saveAndAdd","REDtl_check","REDtl_noCheck","REDtl_changePurchase","REDtl_findPurcahse"];
+            break;
+        case "3":
+            disableButtonIds = ["REDtl_cancel","REDtl_save"];
+            break;
+        default:
+            disableButtonIds = ["TRDtl_wareHouseIn"];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        //找对应的按钮
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
+        }
+    });
+    $("#REDtl_check").hide();
+    $("#REDtl_noCheck").hide();
+    $("#REDtl_changePurchase").hide();
+}

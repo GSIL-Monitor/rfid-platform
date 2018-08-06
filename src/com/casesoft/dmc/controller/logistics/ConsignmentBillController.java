@@ -7,12 +7,14 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -20,6 +22,7 @@ import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.ConsignmentBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,11 +48,14 @@ public class ConsignmentBillController extends BaseController implements ILogist
     private ConsignmentBillService consignmentBillService;
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
-
+    @Autowired
+    private ResourcePrivilegeService resourcePrivilegeService;
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
         ModelAndView mv = new ModelAndView("/views/logistics/consignmentBillNew");
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/Consignment", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         mv.addObject("userId", getCurrentUser().getId());
         Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());

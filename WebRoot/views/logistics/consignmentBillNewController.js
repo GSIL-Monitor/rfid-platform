@@ -23,7 +23,8 @@ $(function () {
     initAddGrid();
     /*初始化右侧表单验证*/
     initEditFormValid();
-
+    //动态初始化页面
+    loadingButtonDivTable(0);
 });
 function initForm() {
     initSelectOrigForm();
@@ -276,7 +277,7 @@ function initDetailData(rowid) {
     pageType="edit";
     initButtonGroup(pageType);
     $("#addDetailgrid").trigger("reloadGrid");
-
+    loadingButtonDivTable(comsigment_status);
 
 }
 var beforsale = 0;
@@ -658,27 +659,7 @@ function initCustomerTypeForm() {
 }
 function initButtonGroup(pageType) {
     var html = "";
-    if (pageType === "add") {
-        html +=
-            "<button id='CMDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='CMDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>"+
-            "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>" +
-            "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>入库</span>" +
-            "</button>";
         $("#edit_guest_button").removeAttr("disabled");
-    }
-    if (pageType === "edit") {
         html +=
             "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
@@ -704,21 +685,7 @@ function initButtonGroup(pageType) {
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找退单</span>" +
             "</button>";
-        if ($("#edit_status").val() != "2" && $("#edit_status").val() != "3") {
-            html += "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
-                "    <i class='ace-icon fa fa-search'></i>" +
-                "    <span class='bigger-110'>入库</span>" +
-                "</button>" +
-                "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-                "    <i class='ace-icon fa fa-undo'></i>" +
-                "    <span class='bigger-110'>扫码</span>" +
-                "</button>";
-        }
-        if (userId != "admin") {
-            $("#edit_guest_button").attr({"disabled": "disabled"});
-        }
 
-    }
     $("#buttonGroup").html("" + html);
 }
 /**
@@ -1585,4 +1552,70 @@ function cancelAjax(billNo) {
             }
         }
     });
+}
+/**
+ * billStatus 单据状态新增为0
+ * 动态配置按钮,div,表格列字段
+ * */
+function loadingButtonDivTable(billStatus) {
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['table'],function(index,value){
+        if(value.isShow!=0) {
+            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
+        }
+    });
+    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
+    $.each(privilegeMap['div'],function(index,value){
+        if(value.isShow!=0) {
+            debugger
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    $.each(privilegeMap['button'],function(index,value){
+        if(value.isShow!=0) {
+            $("#"+value.privilegeId).hide();
+        }
+    });
+    var disableButtonIds = "";
+    switch (billStatus){
+        case "-1" :
+            disableButtonIds = ["CMDtl_save","CMDtl_cancel","CMDtl_wareHouseSale","CMDtl_wareHouseokSale"];
+            break;
+        case "0" :
+            disableButtonIds = [];
+            break;
+        case "1":
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save,TRDtl_addUniqCode"];
+            break;
+        case "2" :
+            disableButtonIds = ["CMDtl_save","CMDtl_cancel","CMDtl_wareHouseSale","CMDtl_wareHouseokSale"];
+            break;
+        case "3":
+            disableButtonIds = ["CMDtl_save","CMDtl_cancel"];
+            break;
+        default:
+            disableButtonIds = ["TRDtl_wareHouseIn"];
+    }
+    //根据单据状态disable按钮
+    $.each(privilegeMap['button'],function(index,value){
+        //找对应的按钮
+        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
+            $("#"+value.privilegeId).attr({"disabled": "disabled"});
+        }else{
+            $("#"+value.privilegeId).removeAttr("disabled");
+        }
+    });
+    if ($("#edit_status").val() != "2" && $("#edit_status").val() != "3") {
+        html += "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>入库</span>" +
+            "</button>" +
+            "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>扫码</span>" +
+            "</button>";
+    }
+    if (userId != "admin") {
+        $("#edit_guest_button").attr({"disabled": "disabled"});
+    }
 }
