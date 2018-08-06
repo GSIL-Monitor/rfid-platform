@@ -1,9 +1,10 @@
+var deep = null;
 $(function () {
+
     initTree();
     initSearchGridsku();
     initSearchGridcode();
     initSearchGridstyle();
-    initEditFormValid();
     var parent_column = $("#gridcode").closest('#wid');
     //resize to fit page size
     $("#gridcode").jqGrid( 'setGridWidth', parent_column.width()-52);
@@ -18,7 +19,7 @@ function initTree() {
             var nodeId = data.node.id;
             console.info(nodeId);
             $("#form_ownerId").val(nodeId);
-            var deep = data.node.original.deep;
+            deep = data.node.original.deep;
             var unitName = data.node.original.text;
             $("#form_unitName").val(unitName);
             console.info(deep);
@@ -27,16 +28,22 @@ function initTree() {
                 $(".rack").show();
                 $(".level").hide();
                 $(".allocation").hide();
+                $("#addform").bootstrapValidator('removeField','levelId');
+                $("#addform").bootstrapValidator('removeField','allocationId');
             }
             else if(deep == '1'){
                 $(".rack").hide();
                 $(".level").show();
                 $(".allocation").hide();
+                $("#addform").bootstrapValidator('removeField','rackId');
+                $("#addform").bootstrapValidator('removeField','allocationId');
             }
             else{
                 $(".rack").hide();
                 $(".level").hide();
                 $(".allocation").show();
+                $("#addform").bootstrapValidator('removeField','levelId');
+                $("#addform").bootstrapValidator('removeField','rackId');
             }
             $('#gridsku').jqGrid("clearGridData");
             $('#gridsku').jqGrid('GridUnload');
@@ -89,13 +96,16 @@ function initTree() {
         'plugins': ['search', 'wholerow', 'types']
     })
 }
-function saveOrganization() {
-    var that = this;
+function saveRmId() {
     $("#addForm").data('bootstrapValidator').destroy();
     $('#addForm').data('bootstrapValidator', null);
+
     initEditFormValid();
+
     $("#addForm").data('bootstrapValidator').validate();
+
     if (!$("#addForm").data('bootstrapValidator').isValid()) {
+        console.info($("#addForm").data('bootstrapValidator').isValid());
         return;
     }
     //进度条
@@ -275,7 +285,7 @@ function setFooterData(id) {
 function initEditFormValid() {
     $('#addForm').bootstrapValidator({
         message: '输入值无效',
-        excluded: [':disabled'],
+        excluded: [':disabled',':hidden'],
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
