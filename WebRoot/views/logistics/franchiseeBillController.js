@@ -374,7 +374,7 @@ function initeditGrid(billNo) {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
         datatype: "json",
-        url: basePath + "/logistics/saleOrder/findBillDtl.do?billNo=" + billNo,
+        url: basePath + "/logistics/saleOrderBill/findBillDtl.do?billNo=" + billNo,
         mtype: 'POST',
         colModel: [
             {name: 'id', label: 'id', hidden: true},
@@ -631,7 +631,7 @@ function confirm_warehousing(epcinArray) {
     $.ajax({
         dataType: "json",
         // async: false,
-        url: basePath + "/logistics/saleOrder/convertInfranchisee.do",
+        url: basePath + "/logistics/saleOrderBill/convertInfranchisee.do",
         data: {
             billNo: billNo,
             strEpcList: JSON.stringify(epcinArray),

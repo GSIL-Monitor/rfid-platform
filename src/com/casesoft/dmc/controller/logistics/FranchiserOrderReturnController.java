@@ -6,6 +6,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
@@ -50,9 +51,11 @@ public class FranchiserOrderReturnController extends BaseController implements I
     @Autowired
     private ResourcePrivilegeService resourcePrivilegeService;
 
-    @RequestMapping(value = "/franchiserOrderReturnNew/index")
+    @RequestMapping(value = "/franchiserOrderReturn/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/franchiserOrderReturnNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/franchiserOrderReturn");
+        List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/franchiserOrderReturn", this.getCurrentUser().getRoleId());
+        mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
         Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
         mv.addObject("name", unit.getName());
