@@ -1489,7 +1489,8 @@
     function inimultiSize() {
         var sizeSortIdValue = $("#form_sizeSortId").val();
         $.ajax({
-            url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId=${style.sizeSortId}",
+            //url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId=${style.sizeSortId}",
+            url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId="+sizeSortIdValue,
             cache: false,
             async: true,
             type: 'POST',
