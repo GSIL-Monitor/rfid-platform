@@ -69,6 +69,13 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
         List<PricingRules> pricingRules = this.pricingRulesService.find(filters);
         return pricingRules;
     }
+
+    /**
+     *根据大类系列查询定价规则
+     * @param series 系列
+     * @param class3 大类
+     * @return pr
+     */
     @RequestMapping(value ="/findPricingRules")
     @ResponseBody
     public MessageBox findPricingRules(String series,String class3){
