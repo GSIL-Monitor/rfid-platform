@@ -1047,14 +1047,14 @@
             var wsPrice;
             var preCast = $("#form_preCast").val();
             $.ajax({
-                url: basePath + "/sys/pricingRules/list.do",
+                url: basePath + "/sys/pricingRules/findPricingRules.do",
                 cache: false,
                 async: true,
                 inheritClass: true,
                 type: "POST",
                 data: {
-                    filter_EQS_series: name,
-                    filter_EQS_class3:class3
+                    series: name,
+                    class3:class3
                 },
                 success: function (date, textStatus) {
                     var json = date;
