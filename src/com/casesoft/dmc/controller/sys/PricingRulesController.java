@@ -76,7 +76,7 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
      * @param class3 大类
      * @return pr
      */
-    @RequestMapping(value ="/findPricingRules")
+    @RequestMapping(value ={"/findPricingRules","/findPricingRulesWS"})
     @ResponseBody
     public MessageBox findPricingRules(String series,String class3){
         try {
