@@ -10,10 +10,8 @@ var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 $(function () {
     //初始化左侧grid
     initGrid();
-    //初始化明细grad
-    initcodeDetail();
     //初始化右侧grad
-    initeditGrid();
+    initeditGrid(null);
     //初始化from表单
     initForm();
     //初始化按钮
