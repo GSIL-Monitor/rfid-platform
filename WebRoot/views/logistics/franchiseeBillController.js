@@ -135,7 +135,7 @@ function initSelectDestForm() {
 function initGrid() {
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/franchisee/page.do?filter_GTI_status=-1&userId=" + userId,
+        url: basePath + "/logistics/franchisee/page.do?filter_GTI_status=2,3&userId=" + userId,
         datatype: "json",
         mtype: 'POST',
         colModel: [
