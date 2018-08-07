@@ -350,13 +350,6 @@ function initDetailData(rowid) {
     pageType="edit";
     initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
-    $("#search_billDate").val(getToDay("yyyy-MM-dd"));
-    if (slaeOrder_status == "3"){
-        $("#PIDtl_save").attr('disabled',true);
-        $("#PIDtl_end").attr('disabled',false);
-    }else {
-        $("#PIDtl_end").attr('disabled',true);
-    }
 }
 function initAddGrid() {
     $("#addDetailgrid").jqGrid({
@@ -1411,13 +1404,14 @@ function end() {
     $("#return_origId").val($("#edit_destId").val());
     $("#return_destUnitId").val($("#edit_origUnitId").val());
     $("#return_destUnitName").val($("#edit_origUnitName").val());
-    $("#return_billDate").val($("#search_billDate").val());
+    $("#return_billDate").val(getToDay("yyyy-MM-dd"));
+    $("#return_billDate").val(updateTime($("#return_billDate").val()));
     $("#search_remark").val("该单由采购单据转换而来，具体请查看采购单据。");
     var PbillNo = $("#edit_billNo").val();
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
-        if (rowData.qty != rowData.printQty){
+        if (parseInt(rowData.qty) != parseInt(rowData.actPrintQty)){
             rowData.qty = rowData.printQty;
             rowData.actPrice = rowData.price;
             rowData.totPrice = -rowData.price * rowData.qty;
