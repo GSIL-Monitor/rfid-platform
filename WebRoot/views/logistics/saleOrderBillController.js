@@ -1459,7 +1459,7 @@ function addProductInfo(status) {
     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
-            if (parseInt(styleRow.bargainPrice)!=0){
+            if (parseInt(styleRow.bargainPrice)!=0||parseInt(styleRow.bargainPrice)!=""){
                 productInfo.price = styleRow.bargainPrice;
             }else {
                 if (ct == "CT-AT") {//省代价格
@@ -1475,20 +1475,30 @@ function addProductInfo(status) {
             productInfo.status = 0;
             productInfo.inStatus = 0;
             productInfo.outStatus = 0;
-            if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
-                productInfo.discount = $("#edit_discount").val();
-            } else {
+            if (parseInt(styleRow.bargainPrice)!=0||parseInt(styleRow.bargainPrice)!=""){
                 productInfo.discount = 100;
+            }else {
+                if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
+                    productInfo.discount = $("#edit_discount").val();
+                    console.log(productInfo.discount);
+                } else {
+                    productInfo.discount = 100;
+                }
             }
             productInfo.puPrice=styleRow.puPrice;
             //判断实际价格是不是小于门店批发价格
-            if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice&&isUserAbnormal){
-                productInfo.actPrice = styleRow.puPrice;
-                productInfo.discount = parseFloat(styleRow.puPrice/productInfo.price).toFixed(2)*100;
-                productInfo.abnormalStatus=1;
-            }else{
+            if (parseInt(styleRow.bargainPrice)!=0||parseInt(styleRow.bargainPrice)!="") {
                 productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                 productInfo.abnormalStatus=0;
+            }else {
+                if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice&&isUserAbnormal){
+                    productInfo.actPrice = styleRow.puPrice;
+                    productInfo.discount = parseFloat(styleRow.puPrice/productInfo.price).toFixed(2)*100;
+                    productInfo.abnormalStatus=1;
+                }else{
+                    productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                    productInfo.abnormalStatus=0;
+                }
             }
             productInfo.totPrice = productInfo.qty * productInfo.price;
             productInfo.totActPrice = productInfo.qty * productInfo.actPrice;

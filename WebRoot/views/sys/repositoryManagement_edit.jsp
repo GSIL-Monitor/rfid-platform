@@ -74,7 +74,7 @@
 
             <a href="#" class="btn" onclick="closeEditDialog()">关闭</a>
 
-            <button type="button" href="#" class="btn btn-primary" onclick="saveOrganization()">保存</button>
+            <button type="button" href="#" class="btn btn-primary" onclick="saveRmId()">保存</button>
 
         </div>
     </div>
@@ -82,8 +82,9 @@
 <script>
     $(function () {
         $("#edit-dialog").on('show.bs.modal', function () {
+            initEditFormValid();
 
-            initAddFormValid();
+            //initAddFormValid();
         });
         $("#edit-dialog").on('hide.bs.modal', function () {
             $("#addForm").data('bootstrapValidator').destroy();

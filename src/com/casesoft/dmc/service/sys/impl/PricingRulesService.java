@@ -26,7 +26,15 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
     }else{
       return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 is null");
     }
+  }
 
+  public PricingRules findPricingRulesBySC(String series,String class3){
+    PricingRules pricingRules = this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+    if (CommonUtil.isNotBlank(pricingRules)){
+      return pricingRules;
+    }else {
+      return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 is null");
+    }
   }
 
   @Transactional(readOnly = true)
