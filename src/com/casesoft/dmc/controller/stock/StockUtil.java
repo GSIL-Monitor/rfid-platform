@@ -92,7 +92,7 @@ public class StockUtil {
 		epcStock.setColorName(color.getColorName());
 		epcStock.setSizeName(size.getSizeName());
 		epcStock.setBargainPrice(style.getBargainPrice());
-		if (style.getBargainPrice()!=0){
+		if (CommonUtil.isNotBlank(style.getBargainPrice())&&style.getBargainPrice()!=0){
 			epcStock.setPrice(epcStock.getBargainPrice());
 		}else {
 			epcStock.setPrice(style.getPrice());
