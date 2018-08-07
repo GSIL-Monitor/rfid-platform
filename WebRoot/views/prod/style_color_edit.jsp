@@ -35,7 +35,7 @@
                             <div class="control-group">
                                 <div class="bootstrap-colorpicker">
                                     <!-- #section:plugins/misc.colorpicker -->
-                                    <input id="form_hex" type="text" class="input-small" name="hex"/>
+                                    <input id="form_hex" type="text" class="input-small" name="hex" readonly/>
 
                                 </div>
 
