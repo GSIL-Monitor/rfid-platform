@@ -163,6 +163,7 @@
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-jpy"></i></span>
                                                             <input class="form-control" id="form_price" name="price"
+                                                                   readonly
                                                                    required="required" type="number" placeholder=""
                                                                    value="${style.price}" step="0.01"/>
                                                         </div>
@@ -1234,7 +1235,6 @@
                         class_name: 'gritter-success  gritter-light'
                     });
                 } else {
-                    $("#form_price").attr("readonly",false);
                     $('#editStyleForm').data('bootstrapValidator').validate();
                     if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                         return;
@@ -1280,7 +1280,6 @@
                                                 text: msg.msg,
                                                 class_name: 'gritter-success  gritter-light'
                                             });
-                                            $("#form_price").attr("readonly",true);
                                         } else {
                                             bootbox.alert(msg.msg);
                                         }
@@ -1310,7 +1309,6 @@
                                                 text: msg.msg,
                                                 class_name: 'gritter-success  gritter-light'
                                             });
-                                            $("#form_price").attr("readonly",true);
                                         } else {
                                             bootbox.alert(msg.msg);
                                         }
@@ -1342,7 +1340,6 @@
                                         text: msg.msg,
                                         class_name: 'gritter-success  gritter-light'
                                     });
-                                    $("#form_price").attr("readonly",true);
                                 } else {
                                     bootbox.alert(msg.msg);
                                 }
@@ -1717,34 +1714,53 @@
                 }
             }
         });
-        if($('#isSeries_div').is(':hidden')){
+        if($('#form_isSeries').is(':hidden')){
             $('#form_isSeries').val("N");
             $("#form_price").removeAttr("readonly");
             var price = $("form_price").val();
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
-        }
-        if ('${pageType}' == 'edit') {
-            $("#form_styleId").attr("readonly", true);
-            if ('${roleId}' == '0') {
-                $("#form-group-preCast").show();
-                $("#form_price").removeAttr("readonly");
+            if ('${pageType}' == 'edit') {
+                $("#form_styleId").attr("readonly", true);
+                if ('${roleId}' == '0') {
+                    $("#form-group-preCast").show();
+                    $("#form_price").removeAttr("readonly");
+                } else {
+                    $("#form-group-preCast").hide();
+                    $("#form_price").attr("readonly", true);
+                }
+                $("#form_isSeries").val("${style.isSeries}");
             } else {
-                $("#form-group-preCast").hide();
-                $("#form_price").attr("readonly", true);
+                /*  $("#focusColor").removeAttr("onclick");*/
+                if ('${roleId}' == '0') {
+                    $("#form-group-preCast").show();
+                } else {
+                    $("#form-group-preCast").hide();
+                }
+                //$("#form_price").removeAttr("readonly");
+                $("#edit_isNotDeton").click();
+                //$("#form_bargainPrice").val(0.0);
             }
-            $("#form_isSeries").val("${style.isSeries}");
-        } else {
-            /*  $("#focusColor").removeAttr("onclick");*/
-            if ('${roleId}' == '0') {
-                $("#form-group-preCast").show();
+        }else {
+            if ('${pageType}' == 'edit') {
+                $("#form_styleId").attr("readonly", true);
+                if ('${roleId}' == '0') {
+                    $("#form-group-preCast").show();
+                } else {
+                    $("#form-group-preCast").hide();
+                }
+                $("#form_isSeries").val("${style.isSeries}");
             } else {
-                $("#form-group-preCast").hide();
+                if ('${roleId}' == '0') {
+                    $("#form-group-preCast").show();
+                } else {
+                    $("#form-group-preCast").hide();
+                }
+                $("#edit_isNotDeton").click();
+                $("#form_bargainPrice").val(0.0);
             }
-            $("#form_price").removeAttr("readonly");
-            $("#edit_isNotDeton").click();
-            $("#form_bargainPrice").val(0.0);
         }
+
     }
 </script>
 </body>
