@@ -1729,13 +1729,18 @@ function addProductsOnCode() {
                 }
                 productInfo.puPrice=productInfo.puPrice;
                 //判断实际价格是不是小于门店批发价格
-                if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice&&isUserAbnormal){
-                    productInfo.actPrice = productInfo.puPrice;
-                    productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
-                    productInfo.abnormalStatus=1;
-                }else{
+                if($('#sale_discount_div').is(':hidden')) {
                     productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                     productInfo.abnormalStatus=0;
+                }else {
+                    if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice&&isUserAbnormal){
+                        productInfo.actPrice = productInfo.puPrice;
+                        productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
+                        productInfo.abnormalStatus=1;
+                    }else{
+                        productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                        productInfo.abnormalStatus=0;
+                    }
                 }
                 productInfo.outQty = 0;
                 productInfo.inQty = 0;
