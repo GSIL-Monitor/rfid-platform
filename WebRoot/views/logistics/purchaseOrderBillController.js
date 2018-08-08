@@ -1,4 +1,4 @@
-var searchUrl = basePath + "/logistics/purchaseOrderBill/page.do";
+var searchUrl = basePath + "/logistics/purchaseOrderBill/page.do?filter_GTI_status=-1";
 var autoSelect =false;//是否自动选中
 var showScanDialog = false;
 var editDtailRowId = null;  //当前编辑行号
@@ -772,7 +772,7 @@ function openSearchVendorDialog(preId) {
 function initEditFormValid() {
     $('#editForm').bootstrapValidator({
         message: '输入值无效',
-        excluded: [':disabled'],
+        excluded: [':disabled',':hidden'],
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
