@@ -51,14 +51,23 @@ public class MultiLevelRelationService extends AbstractBaseService<MultiLevelRel
                 multiLevelRelation.setTreeSeqNo(maxSeqNo);
             }
             multiLevelRelation.setName(company.getName());
-            MultiLevelRelation parent = this.get("id", company.getOwnerId());
-            if (CommonUtil.isBlank(parent)) {
-                throw new ServiceException("父级分类不存在");
+            MultiLevelRelation parent;
+            if(multiLevelRelation.getRoot()){
+                parent = null;
+            }else {
+                parent = this.get("id", company.getOwnerId());
             }
-            multiLevelRelation.setParentId(company.getOwnerId());
-            multiLevelRelation.setTreePath(parent.getTreePath() + company.getId() + ">");
-            multiLevelRelation.setDepth(parent.getDepth() + 1);
-            this.multiLevelRelationDao.saveOrUpdate(multiLevelRelation);
+            if (CommonUtil.isBlank(parent)) {
+                multiLevelRelation.setParentId(null);
+                multiLevelRelation.setTreePath(company.getId() + ">");
+                multiLevelRelation.setDepth(0);
+                this.multiLevelRelationDao.saveOrUpdate(multiLevelRelation);
+            }else {
+                multiLevelRelation.setParentId(company.getOwnerId());
+                multiLevelRelation.setTreePath(parent.getTreePath() + company.getId() + ">");
+                multiLevelRelation.setDepth(parent.getDepth() + 1);
+                this.multiLevelRelationDao.saveOrUpdate(multiLevelRelation);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
