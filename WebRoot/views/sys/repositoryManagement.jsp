@@ -8,7 +8,7 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
-        var ownerId = ${ownerId};
+        var ownerId = "${ownerId}";
     </script>
 </head>
 <body class="no-skin">
