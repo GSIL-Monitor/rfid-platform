@@ -83,7 +83,7 @@ function GetChinese(strValue) {
  * */
 function GetNumber(strValue) {
     if(strValue!= null && strValue!= ""){
-        var reg = /[^0-9]/ig;
+        var reg = /[^0-9\.]/ig;
         return strValue.replace(reg,"");
     }else{
         return "";
