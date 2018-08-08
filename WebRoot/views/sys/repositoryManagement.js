@@ -28,22 +28,19 @@ function initTree() {
                 $(".rack").show();
                 $(".level").hide();
                 $(".allocation").hide();
-                $("#addform").bootstrapValidator('removeField','levelId');
-                $("#addform").bootstrapValidator('removeField','allocationId');
+
             }
             else if(deep == '1'){
                 $(".rack").hide();
                 $(".level").show();
                 $(".allocation").hide();
-                $("#addform").bootstrapValidator('removeField','rackId');
-                $("#addform").bootstrapValidator('removeField','allocationId');
+
             }
             else{
                 $(".rack").hide();
                 $(".level").hide();
                 $(".allocation").show();
-                $("#addform").bootstrapValidator('removeField','levelId');
-                $("#addform").bootstrapValidator('removeField','rackId');
+
             }
             $('#gridsku').jqGrid("clearGridData");
             $('#gridsku').jqGrid('GridUnload');
