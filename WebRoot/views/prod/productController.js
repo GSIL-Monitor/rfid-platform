@@ -227,3 +227,6 @@ function changeProductStatus(code, status) {
 
     });
 }
+function getTemp() {
+    window.location.href=basePath+"/prod/product/templet.do";
+}

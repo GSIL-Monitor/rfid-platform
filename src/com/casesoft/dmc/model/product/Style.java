@@ -17,7 +17,7 @@ public class Style extends BaseStyle implements java.io.Serializable {
 
     private Integer seqNo;
 
-    private String remark;
+    private String remark;//成分
 
     private String isUse;
 

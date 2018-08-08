@@ -1,8 +1,7 @@
 package com.casesoft.dmc.controller.product;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,13 +9,18 @@ import java.util.Map;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.syn.tool.SynTaskUtil;
 import com.casesoft.dmc.controller.syn.tool.TaskAdjustUtil;
+import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.FileUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.vo.TagFactory;
 import com.casesoft.dmc.model.product.ProductInfoList;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.hibernate.JDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +43,8 @@ public class ProductController extends BaseController implements IBaseInfoContro
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ResourcePrivilegeService resourcePrivilegeService;
 
     @RequestMapping(value = "/index")
     @Override
@@ -245,6 +251,104 @@ public class ProductController extends BaseController implements IBaseInfoContro
         }catch (Exception e){
             e.printStackTrace();
             return returnFailInfo("更改失败");
+        }
+    }
+    @RequestMapping(value = "/templet")
+    public void getTemplet(){
+        String path = this.request.getSession().getServletContext().getRealPath("")+"/templet/wareTemplet.xls";
+        System.out.println(path);
+        String contentType = "application/vnd.openxmlformats-officeodcument.spreadsheetml.sheet;";
+        List<ResourcePrivilege> resourcePrivileges = this.resourcePrivilegeService.findPrivilege("prod/style", this.getCurrentUser().getRoleId());
+        try {
+            File file = new File(path);
+            FileInputStream inputStream =new FileInputStream(file);
+            HSSFWorkbook workbook = new HSSFWorkbook(inputStream);// 创建对Excel工作薄文件的引用
+            HSSFSheet sheet = workbook.getSheetAt(0);// 创建对工作表的引用，也可用workbook.getSheet("sheetName");
+            int i = 0;// 从第1行开始读标题
+            HSSFRow row = sheet.getRow(i);
+            HSSFCellStyle style = workbook.createCellStyle(); // 样式对象
+            HSSFCellStyle style1 = workbook.createCellStyle(); // 样式对象
+
+            HSSFFont font=workbook.createFont();
+            font.setColor(HSSFColor.RED.index);//HSSFColor.VIOLET.index //字体颜色
+            font.setFontHeightInPoints((short)11);
+            font.setFontName("等线");
+
+            HSSFFont font1=workbook.createFont();
+            font1.setColor(HSSFColor.BLACK.index);//HSSFColor.VIOLET.index //字体颜色
+            font1.setFontHeightInPoints((short)11);
+            font1.setFontName("等线");
+            //把字体应用到当前的样式
+            style.setFont(font);
+            style1.setFont(font1);
+            for (ResourcePrivilege resourcePrivilege:resourcePrivileges){
+                if("div".equals(resourcePrivilege.getType()) && "style_price_div".equals(resourcePrivilege.getPrivilegeId())){
+                    HSSFCell dpcell = row.getCell(8);//得到列8-12
+                    if(resourcePrivilege.getIsShow() == 0){
+
+                        dpcell.setCellValue("吊牌价*");
+                        dpcell.setCellStyle(style);
+                    }
+                    else {
+                        dpcell.setCellValue("吊牌价");
+                        dpcell.setCellStyle(style1);
+                    }
+                }
+                if("div".equals(resourcePrivilege.getType()) && "style_preCase_div".equals(resourcePrivilege.getPrivilegeId())){
+                    HSSFCell cgcell = row.getCell(9);//得到列8-12
+                    if(resourcePrivilege.getIsShow() == 0){
+
+                        cgcell.setCellValue("采购价*");
+                        cgcell.setCellStyle(style);
+                    }
+                    else{
+                        cgcell.setCellValue("采购价");
+                        cgcell.setCellStyle(style1);
+                    }
+                }
+                if("div".equals(resourcePrivilege.getType()) && "style_wsPrice_div".equals(resourcePrivilege.getPrivilegeId())){
+                    HSSFCell mdcell = row.getCell(10);//得到列8-12
+                    if(resourcePrivilege.getIsShow() == 0){
+
+                        mdcell.setCellValue("门店价*");
+                        mdcell.setCellStyle(style);
+                    }
+                    else {
+                        mdcell.setCellValue("门店价");
+                        mdcell.setCellStyle(style1);
+                    }
+                }
+                if("div".equals(resourcePrivilege.getType()) && "style_puPrice_div".equals(resourcePrivilege.getPrivilegeId())){
+                    HSSFCell dlcell = row.getCell(11);//得到列8-12
+                    if(resourcePrivilege.getIsShow() == 0){
+
+                        dlcell.setCellValue("代理价*");
+                        dlcell.setCellStyle(style);
+                    }
+                    else {
+                        dlcell.setCellValue("代理价");
+                        dlcell.setCellStyle(style1);
+                    }
+                }
+                if("div".equals(resourcePrivilege.getType()) && "style_bargainPrice_div".equals(resourcePrivilege.getPrivilegeId())){
+                    HSSFCell tjcell = row.getCell(12);//得到列8-12
+                    if(resourcePrivilege.getIsShow() == 0){
+
+                        tjcell.setCellValue("特价*");
+                        tjcell.setCellStyle(style);
+                    }
+                    else {
+                        tjcell.setCellValue("特价");
+                        tjcell.setCellStyle(style1);
+                    }
+                }
+            }
+            FileOutputStream fos = new FileOutputStream(path);
+            workbook.write(fos);
+            fos.close();
+            this.outFile("商品模板.xls", file, contentType);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

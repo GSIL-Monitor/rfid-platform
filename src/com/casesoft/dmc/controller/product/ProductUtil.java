@@ -1184,11 +1184,12 @@ public class ProductUtil {
         String sizeNo = getStringFormCell(row.getCell(4));
         String sizeName = getStringFormCell(row.getCell(5));
         String sizeSort = getStringFormCell(row.getCell(6));
-        String sizeSortName = getStringFormCell(row.getCell(7));
+        String sizeSortName = getStringFormCell(row.getCell(7));//尺寸分组名称
         Double price;
         Double preCast;
         Double wsPrice;
         Double purPrice;
+        Double bargainPrice;
         String sku = styleNo + colorNo + sizeNo;
         try {
             String priceString = getStringFormCell(row.getCell(8));
@@ -1205,27 +1206,34 @@ public class ProductUtil {
             } else {
                 wsPrice = Double.parseDouble(strWsPrice);
             }
-            String strPurPrice = CommonUtil.isBlank(getStringFormCell(row.getCell(11))) ? "0" : getStringFormCell(row.getCell(11));
+            String strPurPrice = CommonUtil.isBlank(getStringFormCell(row.getCell(11))) ? "0" : getStringFormCell(row.getCell(11));//省代价格
             if (CommonUtil.isBlank(strPurPrice)) {
                 purPrice = 0.0;
             } else {
                 purPrice = Double.parseDouble(strPurPrice);
+            }
+            String strBarPrice = CommonUtil.isBlank(getStringFormCell(row.getCell(12))) ? "0" : getStringFormCell(row.getCell(12));//特价
+            if (CommonUtil.isBlank(strPurPrice)) {
+                bargainPrice = 0.0;
+            } else {
+                bargainPrice = Double.parseDouble(strBarPrice);
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("第" + (i + 1) + "行，I,J,K,L列格式应该为文本类型");
         }
 
-        String code = getStringFormCell(row.getCell(12));
-        String barcode = getStringFormCell(row.getCell(13));
-        String ean = getStringFormCell(row.getCell(14));
-        String epcPre = getStringFormCell(row.getCell(15));
-        String styleEname = getStringFormCell(row.getCell(16));
-        String remark = getStringFormCell(row.getCell(17));
-        String deton = getStringFormCell(row.getCell(18));
-        String brandCode = getStringFormCell(row.getCell(19));
-        String brand = getStringFormCell(row.getCell(20));
-        String rules = getStringFormCell(row.getCell(21));
+        String code = getStringFormCell(row.getCell(13));//sku
+        String barcode = getStringFormCell(row.getCell(14));//单品条码
+        String ean = getStringFormCell(row.getCell(15)); //国际条码
+        String epcPre = getStringFormCell(row.getCell(16)); //EPC前缀
+        String styleEname = getStringFormCell(row.getCell(17));//英文名
+        String remark = getStringFormCell(row.getCell(18));//产品描述(成分)
+        String deton = getStringFormCell(row.getCell(19));//店长推荐
+        String brandCode = getStringFormCell(row.getCell(20));//品牌编码
+        String brand = getStringFormCell(row.getCell(21));//品牌名称
+        //String rules = getStringFormCell(row.getCell(21));
+
 
         int isDeton = 0;
         Map<String, Product> pMap = new HashMap<String, Product>();
@@ -1254,7 +1262,7 @@ public class ProductUtil {
 
             produceNewStyle(styleMap, styleNo, styleNo, isDeton, sizeSort,
                     styleName, styleEname, price, preCast, wsPrice, purPrice, brandCode,
-                    brand,rules, row);
+                    brand, row,bargainPrice);
             if (CommonUtil.isBlank(colorNo)) {
                 throw new Exception("第" + (i + 1) + "行，色号列为空请完善信息");
             }
@@ -1376,18 +1384,24 @@ public class ProductUtil {
                     } else {
                         purPrice = Double.parseDouble(strPurPrice);
                     }
+                    String strBarPrice = CommonUtil.isBlank(getStringFormCell(row.getCell(12))) ? "0" : getStringFormCell(row.getCell(12));//特价
+                    if (CommonUtil.isBlank(strPurPrice)) {
+                        bargainPrice = 0.0;
+                    } else {
+                        bargainPrice = Double.parseDouble(strBarPrice);
+                    }
                 } catch (java.lang.IllegalStateException e) {
                     throw new Exception("第" + (i + 1) + "行，I,J,K列格式应该为文本类型");
                 }
-                code = getStringFormCell(row.getCell(12));
-                barcode = getStringFormCell(row.getCell(13));
-                ean = getStringFormCell(row.getCell(14));
-                epcPre = getStringFormCell(row.getCell(15));
-                styleEname = getStringFormCell(row.getCell(16));
-                remark = getStringFormCell(row.getCell(17));
-                deton = getStringFormCell(row.getCell(18));
-                brandCode = getStringFormCell(row.getCell(19));
-                brand = getStringFormCell(row.getCell(20));
+                code = getStringFormCell(row.getCell(13));
+                barcode = getStringFormCell(row.getCell(14));
+                ean = getStringFormCell(row.getCell(15));
+                epcPre = getStringFormCell(row.getCell(16));
+                styleEname = getStringFormCell(row.getCell(17));
+                remark = getStringFormCell(row.getCell(18));
+                deton = getStringFormCell(row.getCell(19));
+                brandCode = getStringFormCell(row.getCell(20));
+                brand = getStringFormCell(row.getCell(21));
 
             } else {
                 break;
@@ -1407,8 +1421,8 @@ public class ProductUtil {
 
     private static void newProperty(Map<String, PropertyKey> propertyKeyMap,
                                     HSSFRow row, Integer index) throws Exception {
-        String brandCode = getStringFormCell(row.getCell(19));
-        String brandName = getStringFormCell(row.getCell(20));
+        String brandCode = getStringFormCell(row.getCell(20));
+        String brandName = getStringFormCell(row.getCell(21));
         if (CommonUtil.isNotBlank(brandCode)) {
             if (!propertyKeyMap.containsKey(brandCode)) {
                 PropertyKey p = new PropertyKey();
@@ -1429,15 +1443,15 @@ public class ProductUtil {
         }
 
         for (int i = 0; i < styleClassNum + 1; i++) {
-            String classCode = getStringFormCell(row.getCell(21 + i * 2));
-            String className = getStringFormCell(row.getCell(22 + i * 2));
+            String classCode = getStringFormCell(row.getCell(22 + i * 2));
+            String className = getStringFormCell(row.getCell(23 + i * 2));
             if (CommonUtil.isBlank(classCode)) {
                 continue;
             }
             if (!propertyKeyMap.containsKey(classCode)) {
                 PropertyKey p = new PropertyKey();
                 if (CommonUtil.isBlank(className)) {
-                    throw new Exception("第" + (index) + "行，第" + (22 + i * 2)
+                    throw new Exception("第" + (index) + "行，第" + (23 + i * 2)
                             + "列为空请添加对应名称");
                 }
                 p.setCode(classCode);
@@ -1460,7 +1474,7 @@ public class ProductUtil {
         HSSFRow row = sheet.getRow(0);
 
         for (int i = 0; i < styleClassNum; i++) {
-            String classType = getStringFormCell(row.getCell(21 + i * 2));
+            String classType = getStringFormCell(row.getCell(22 + i * 2));
             if (CommonUtil.isNotBlank(classType)) {
                 PropertyType p = new PropertyType("C" + (i + 1), "C" + (i + 1),
                         classType, "商品代码分类", "*");
@@ -1513,7 +1527,7 @@ public class ProductUtil {
     private static void produceNewStyle(Map<String, Style> styleMap,
                                         String styleId, String styleNo, int isDeton, String sizeSort,
                                         String styleName, String styleEname, Double price, Double preCast,
-                                        Double wsPrice, Double purPrice, String brandCode, String brand, String rules, HSSFRow row) {
+                                        Double wsPrice, Double purPrice, String brandCode, String brand, HSSFRow row,double barginPrice) {
         Style s = new Style(styleId, styleNo, isDeton, sizeSort, styleName,
                 styleEname, price, preCast, wsPrice, purPrice, brandCode, brand,
                 getStringFormCell(row.getCell(22)),
@@ -1526,7 +1540,8 @@ public class ProductUtil {
                 getStringFormCell(row.getCell(36)),
                 getStringFormCell(row.getCell(38)),
                 getStringFormCell(row.getCell(40)));
-        s.setRemark(getStringFormCell(row.getCell(17)));
+        s.setRemark(getStringFormCell(row.getCell(18)));
+        s.setBargainPrice(barginPrice);
         styleMap.put(styleNo, s);
         CacheManager.getStyleMap().put(styleNo, s); // TODO Auto-generated
         // method stub

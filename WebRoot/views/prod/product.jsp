@@ -135,6 +135,13 @@
 
 <div id="progressDialog"></div>
 <div id="uploadDialog">
+    <div class="k-widget k-upload k-header k-upload-sync k-upload-empty">
+        <div class="k-button k-upload-button" onclick="getTemp()">
+            <input name="button" id="buttons" type="button" />
+            <span>下载模板</span>
+        </div>
+    </div>
+
     <form method="post"  enctype="multipart/form-data" id="taskFileForm">
         <input name="files" id="files" type="file" />
         <div class="alert alert-danger" role="alert" hidden id="result"> </div>
