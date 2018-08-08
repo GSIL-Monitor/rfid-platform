@@ -3960,10 +3960,87 @@ public class BillConvertUtil {
     /*add by czf
      *把一个字符串的第一个字母大写、效率是最高的
      */
+    private static String getMethodName(String fildeName) throws Exception{
+        byte[] items = fildeName.getBytes();
+        items[0] = (byte) ((char) items[0] - 'a' + 'A');
+        return new String(items);
+    }
+    /*add by czf
+     *销售单转成调拨申请单
+     */
+    public static Map<String,Object> saleChangeTr(List<SaleOrderBillDtl> billDtlByBillNo,SaleOrderBill saleOrderBill,Unit unit,User user){
+        Map<String,Object> map=new HashMap<String,Object>();
+        TransferOrderBill transferOrderBill=new TransferOrderBill();
+        List<TransferOrderBillDtl> saveList=new ArrayList<TransferOrderBillDtl>();
+        String prefix = BillConstant.BillPrefix.Transfer
+                + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+        //填充调拨申请单详情的数据
+        Long totQty=0L;
+        for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
+            if(CommonUtil.isNotBlank(saleOrderBillDtl.getChangeTRqty())&&saleOrderBillDtl.getChangeTRqty()>0){
+                TransferOrderBillDtl transferOrderBillDtl=new TransferOrderBillDtl();
+                transferOrderBillDtl.setId((new GuidCreator().toString()));
+                transferOrderBillDtl.setQty(Long.parseLong(saleOrderBillDtl.getChangeTRqty()+""));
+                transferOrderBillDtl.setActQty(Long.parseLong(saleOrderBillDtl.getChangeTRqty()+""));
+                transferOrderBillDtl.setActPrice(0D);
+                transferOrderBillDtl.setBillId(prefix);
+                transferOrderBillDtl.setBillNo(prefix);
+                transferOrderBillDtl.setSizeId(saleOrderBillDtl.getSizeId());
+                transferOrderBillDtl.setStyleId(saleOrderBillDtl.getStyleId());
+                transferOrderBillDtl.setColorId(saleOrderBillDtl.getColorId());
+                transferOrderBillDtl.setPrice(saleOrderBillDtl.getPrice());
+                transferOrderBillDtl.setInQty(0);
+                transferOrderBillDtl.setManualQty(0L);
+                transferOrderBillDtl.setPreManualQty(0L);
+                transferOrderBillDtl.setScanQty(0L);
+                transferOrderBillDtl.setSku(saleOrderBillDtl.getSku());
+                transferOrderBillDtl.setTotActPrice(0D);
+                transferOrderBillDtl.setTotPrice(0D);
+                transferOrderBillDtl.setOutVal(0D);
+                transferOrderBillDtl.setOutQty(0);
+                transferOrderBillDtl.setInQty(0);
+                transferOrderBillDtl.setInVal(0D);
+                transferOrderBillDtl.setInStatus(0);
+                transferOrderBillDtl.setOutStatus(0);
+                transferOrderBillDtl.setDiscount(100D);
+                totQty+=Long.parseLong(saleOrderBillDtl.getChangeTRqty()+"");
+                saveList.add(transferOrderBillDtl);
+            }
+        }
+        map.put("billDel",saveList);
+        //填充调拨申请单详情的数据
+        if(saveList.size()>0){
+            transferOrderBill.setId(prefix);
+            transferOrderBill.setActPrice(0D);
+            transferOrderBill.setActQty(0L);
+            transferOrderBill.setBillDate(new Date());
+            transferOrderBill.setBillNo(prefix);
+            transferOrderBill.setDestId(saleOrderBill.getOrigId());
+            transferOrderBill.setDestName(saleOrderBill.getOrigName());
+            transferOrderBill.setDestUnitId(saleOrderBill.getOrigUnitId());
+            transferOrderBill.setDestUnitName(saleOrderBill.getOrigUnitName());
+            transferOrderBill.setOrigId(unit.getId());
+            transferOrderBill.setOrigName(unit.getName());
+            transferOrderBill.setOrigUnitId(unit.getOwnerId());
+            if(CommonUtil.isNotBlank(CacheManager.getUnitById(unit.getOwnerId()))) {
+                transferOrderBill.setOrigUnitName(CacheManager.getUnitById(unit.getOwnerId()).getName());
+            }
+            transferOrderBill.setOwnerId(user.getOwnerId());
+            transferOrderBill.setOprId(user.getId());
+            transferOrderBill.setPayPrice(0D);
+            transferOrderBill.setStatus(BillConstant.BillStatus.Enter);
+            transferOrderBill.setTotQty(totQty);
+            transferOrderBill.setTotOutVal(0D);
+            transferOrderBill.setTotOutQty(0L);
+            transferOrderBill.setTotInQty(0L);
+            transferOrderBill.setTotInVal(0D);
+            transferOrderBill.setInStatus(0);
+            transferOrderBill.setOutStatus(0);
+            transferOrderBill.setSrcBillNo(saleOrderBill.getId());
+        }
+        map.put("bill",transferOrderBill);
+        return map;
+    }
 
-       private static String getMethodName(String fildeName) throws Exception{
-          byte[] items = fildeName.getBytes();
-          items[0] = (byte) ((char) items[0] - 'a' + 'A');
-            return new String(items);
-       }
+
 }

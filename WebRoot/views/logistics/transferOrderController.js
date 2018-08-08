@@ -491,6 +491,7 @@ function openSearchDestDialog(preId) {
  *查询code明细
  */
 function showCodesDetail(uniqueCodes) {
+    debugger;
 
     $("#show-uniqueCode-list").modal('show');
     initUniqueCodeList(uniqueCodes);

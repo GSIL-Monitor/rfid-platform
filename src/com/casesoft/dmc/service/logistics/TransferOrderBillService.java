@@ -202,6 +202,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
     }
 
+
     public List<BillRecord> getBillRecod(String billNo) {
         return  this.transferOrderBillDao.find("from BillRecord where billNo=?",new Object[]{billNo});
     }

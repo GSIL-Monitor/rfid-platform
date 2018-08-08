@@ -51,6 +51,16 @@ public class SaleOrderBillDtl extends BaseBillDtl {
     private Double puPrice;//门店批发价
     @Column()
     private String delRemark;//详情备注
+    @Column()
+    private Integer ChangeTRqty;//转换成调拨单的数量
+
+    public Integer getChangeTRqty() {
+        return ChangeTRqty;
+    }
+
+    public void setChangeTRqty(Integer changeTRqty) {
+        ChangeTRqty = changeTRqty;
+    }
 
     public SaleOrderBillDtl() {
     }

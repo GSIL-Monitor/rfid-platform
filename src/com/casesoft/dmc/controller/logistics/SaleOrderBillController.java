@@ -611,5 +611,29 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             return new MessageBox(true, "查询失败");
         }
     }
+    /**
+     * czf
+     * 用于销售单转调拨申请单
+     ** @param billNo 销售单号
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/changeTr")
+    @ResponseBody
+    public MessageBox changeTr(String billNo){
+        SaleOrderBill saleOrderBill = this.saleOrderBillService.get("id", billNo);
+        List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(billNo);
+        List<BillRecord> billRecordList = this.saleOrderBillService.getBillRecod(billNo);
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderBillService.findAbnormalCodeMessageByBillNo(billNo);
+        User user = this.getCurrentUser();
+        Map<String, Object> map = this.saleOrderBillService.changeTr(saleOrderBill, billDtlByBillNo, billRecordList, abnormalCodeMessageByBillNo, user);
+        Boolean isok =(Boolean) map.get("isok");
+        if(isok){
+            return new MessageBox(true, (String) map.get("message"));
+        }else{
+            return new MessageBox(false, (String) map.get("message"));
+        }
+
+    }
 }
 

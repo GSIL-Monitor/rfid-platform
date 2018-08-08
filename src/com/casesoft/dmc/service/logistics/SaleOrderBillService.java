@@ -9,16 +9,14 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.dao.logistics.AbnormalCodeMessageDao;
-import com.casesoft.dmc.dao.logistics.MonthAccountStatementDao;
-import com.casesoft.dmc.dao.logistics.SaleOrderBillDao;
-import com.casesoft.dmc.dao.logistics.SaleOrderReturnBillDao;
+import com.casesoft.dmc.dao.logistics.*;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -51,6 +49,10 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private AbnormalCodeMessageDao  abnormalCodeMessageDao;
     @Autowired
     private SaleOrderReturnBillDao saleOrderReturnBillDao;
+    @Autowired
+    private TransferOrderBillDao transferOrderBillDao;
+    @Autowired
+    private TransferOrderBillService transferOrderBillService;
 
     @Autowired
     private PropertyService propertyService;
@@ -645,6 +647,129 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo){
         return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?",new Object[]{billNo});
+    }
+    /*add by czf
+        *销售单转成调拨申请单
+        */
+    public Map<String,Object> changeTr(SaleOrderBill saleOrderBill,List<SaleOrderBillDtl> billDtlByBillNo,List<BillRecord> billRecordList, List<AbnormalCodeMessage> abnormalCodeMessageByBillNo,User user){
+        Map<String,Object> map =new HashMap<String,Object>();
+        Map<String, String> codeMap = new HashMap<>();
+        Map<String, String> abnormalCodeMap = new HashMap<>();
+        boolean issave=false;//是否能保存
+        try {
+            //1.判断单据状态是否是录入状态
+
+            //List<SaleOrderBillDtl> newList=new ArrayList<SaleOrderBillDtl>();//根据code筛选后保存的list
+            for (BillRecord r : billRecordList) {
+                if (codeMap.containsKey(r.getSku())) {
+                    String code = codeMap.get(r.getSku());
+                    code += "," + r.getCode();
+                    codeMap.put(r.getSku(), code);
+                } else {
+                    codeMap.put(r.getSku(), r.getCode());
+                }
+            }
+            for (AbnormalCodeMessage a : abnormalCodeMessageByBillNo) {
+                if (abnormalCodeMap.containsKey(a.getSku())) {
+                    String code = abnormalCodeMap.get(a.getSku());
+                    code += "," + a.getCode();
+                    abnormalCodeMap.put(a.getSku(), code);
+                } else {
+                    abnormalCodeMap.put(a.getSku(), a.getCode());
+                }
+            }
+            if(saleOrderBill.getStatus().equals(BillConstant.BillStatus.Enter)){
+                //2.根据详情单sku来看
+                for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
+                    //查询对应的sku是否有code和异常的code
+                    String sku=saleOrderBillDtl.getSku();
+                    String codeMaps = codeMap.get(sku);
+                    String abnormalCodeMaps = abnormalCodeMap.get(sku);
+                    Integer codeMapslength=0;
+                    Integer abnormalCodeMapslength=0;
+                    Integer lastchangeQty=0;
+                    if(CommonUtil.isNotBlank(saleOrderBillDtl.getChangeTRqty())){
+                        lastchangeQty=saleOrderBillDtl.getChangeTRqty();
+                    }
+                    if(CommonUtil.isNotBlank(codeMaps)){
+                        codeMapslength=Integer.parseInt(""+codeMaps.split(",").length);
+                    }
+                    if(CommonUtil.isNotBlank(abnormalCodeMaps)){
+                        abnormalCodeMapslength=Integer.parseInt(""+abnormalCodeMaps.split(",").length);
+                    }
+
+                    Integer changeQty=Integer.parseInt(""+saleOrderBillDtl.getQty())-codeMapslength-abnormalCodeMapslength-lastchangeQty;
+                    //SaleOrderBillDtl newSaleOrderBillDtl=new SaleOrderBillDtl();
+                    if(changeQty>0){
+                        saleOrderBillDtl.setChangeTRqty(changeQty+lastchangeQty);
+                        issave=true;
+                    }else{
+                        saleOrderBillDtl.setChangeTRqty(0);
+                    }
+                }
+                //查询总部仓库
+                if(issave){
+                    Unit unitById = CacheManager.getUnitById("1");
+                    Unit unit = CacheManager.getUnitById(unitById.getDefaultWarehId());
+                    if(CommonUtil.isNotBlank(unit)&&!unit.getId().equals(saleOrderBill.getOrigId())) {
+                        //转调拨申请单
+                        Map<String, Object> saleChangeTrMap = BillConvertUtil.saleChangeTr(billDtlByBillNo, saleOrderBill, unit, user);
+                        TransferOrderBill transferOrderBill = (TransferOrderBill) saleChangeTrMap.get("bill");
+                        List<TransferOrderBillDtl> list = (List<TransferOrderBillDtl>) saleChangeTrMap.get("billDel");
+                        //查出对应的EpcList
+                        List<Epc> epcList = new ArrayList<Epc>();
+                        List<BillRecord> billRecordLists = new ArrayList<>();
+                        for (TransferOrderBillDtl transferOrderBillDtl : list) {
+                            String hql = "from EpcStock epcStock where epcStock.warehouseId=? and epcStock.sku=? and epcStock.inStock=1";
+                            List<EpcStock> epcStockList = this.saleOrderBillDao.find(hql, new Object[]{transferOrderBill.getOrigId(), transferOrderBillDtl.getSku()});
+
+                            if(epcStockList.size()>0) {
+                                for (int i = 0; i < transferOrderBillDtl.getQty(); i++) {
+                                    Epc epc = new Epc();
+                                    epc.setCode(epcStockList.get(i).getCode());
+                                    epc.setStyleId(epcStockList.get(i).getStyleId());
+                                    epc.setSizeId(epcStockList.get(i).getSizeId());
+                                    epc.setColorId(epcStockList.get(i).getColorId());
+                                    epc.setSku(epcStockList.get(i).getSku());
+                                    epcList.add(epc);
+                                    BillRecord billRecord = new BillRecord(transferOrderBillDtl.getBillNo() + "-" + epcStockList.get(i).getCode(), epcStockList.get(i).getCode(), transferOrderBillDtl.getBillNo(), transferOrderBillDtl.getSku());
+                                    billRecordLists.add(billRecord);
+                                }
+                            }
+                        }
+                        if(epcList.size()>0){
+                            transferOrderBill.setBillRecordList(billRecordLists);
+                            Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, list, epcList, user);
+                            this.transferOrderBillDao.doBatchInsert(transferOrderBill.getBillRecordList());
+                            MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, list, business);
+                        }else{
+                            this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
+                            this.transferOrderBillDao.doBatchInsert(list);
+                        }
+
+                        map.put("isok", true);
+                        map.put("message", "转调拨申请单成功");
+
+                    }else{
+                        map.put("isok",false);
+                        map.put("message","不能用总部仓库转调拨单");
+                    }
+                }else{
+                    map.put("isok",false);
+                    map.put("message","所有SKU都有唯一码");
+                }
+            }else{
+                map.put("isok",false);
+                map.put("message","单据不是录入状态");
+            }
+            return map;
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("isok",false);
+            map.put("message",e.getMessage());
+            return map;
+        }
+
     }
 }
 

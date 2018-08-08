@@ -466,6 +466,7 @@ function initAddGrid() {
             },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
             {name: 'puPrice', label: '门店批发价', hidden: true},
+            {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {name:'stylePriceMap',label:'价格表',hidden:true},
             {name:'abnormalStatus',label:'异常单状态',hidden:true}
@@ -832,6 +833,7 @@ function initeditGrid(billId) {
                 }
             },
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
+            {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
             {name: 'puPrice', label: '门店批发价', hidden: true},
             {name: 'returnbillNo', label: '退货单号', hidden: true},
             {name:'stylePriceMap',label:'价格表',hidden:true},
@@ -1263,6 +1265,10 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-reply'></i>" +
             "    <span class='bigger-110'>退货</span>" +
             "</button>" +
+            "<button id='SODtl_wareHouseTr' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='changeTr()'>" +
+            "    <i class='ace-icon fa fa-reply'></i>" +
+            "    <span class='bigger-110'>调拨</span>" +
+            "</button>" +
             "<button id='SODtl_wareHouseCh' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='exchangeGoods()'>" +
             "    <i class='ace-icon fa fa-exchange'></i>" +
             "    <span class='bigger-110'>换货</span>" +
@@ -1350,7 +1356,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = [];
     }
     //根据单据状态disable按钮
-    $.each(privilegeMap['button'],function(index,value){
+   $.each(privilegeMap['button'],function(index,value){
         if($.inArray(value.privilegeId,disableButtonIds)!= -1){
             $("#"+value.privilegeId).attr({"disabled": "disabled"});
         }else{
@@ -1445,6 +1451,7 @@ function updateBillDetailData(){
 }
 /*选中订货商品添加*/
 function addProductInfo(status) {
+    debugger
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1457,9 +1464,10 @@ function addProductInfo(status) {
     var ct = $("#edit_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
+        debugger
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
-            if (parseInt(styleRow.bargainPrice)!=0||parseInt(styleRow.bargainPrice)!=""){
+            if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!=""){
                 productInfo.price = styleRow.bargainPrice;
             }else {
                 if (ct == "CT-AT") {//省代价格
@@ -1475,7 +1483,7 @@ function addProductInfo(status) {
             productInfo.status = 0;
             productInfo.inStatus = 0;
             productInfo.outStatus = 0;
-            if (parseInt(styleRow.bargainPrice)!=0||parseInt(styleRow.bargainPrice)!=""){
+            if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!=""){
                 productInfo.discount = 100;
             }else {
                 if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
@@ -1487,7 +1495,7 @@ function addProductInfo(status) {
             }
             productInfo.puPrice=styleRow.puPrice;
             //判断实际价格是不是小于门店批发价格
-            if (parseInt(styleRow.bargainPrice)!=0||parseInt(styleRow.bargainPrice)!="") {
+            if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!="") {
                 productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                 productInfo.abnormalStatus=0;
             }else {
@@ -2913,4 +2921,37 @@ function setA4(id) {
             }
         }
     });
+}
+/**
+ * 转调拨申请单
+ */
+function changeTr() {
+    cs.closeProgressBar();
+    var billNo=$("#edit_billNo").val();
+    if(billNo!=""&&billNo!=undefined){
+        $.ajax({
+            dataType: "json",
+            url: basePath + "/logistics/saleOrderBill/changeTr.do",
+            type: "POST",
+            data: {
+                billNo:billNo
+            },
+            success: function (msg) {
+                cs.closeProgressBar();
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#addDetailgrid").trigger("reloadGrid");
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }else{
+        bootbox.alert("单号不能为空");
+        cs.closeProgressBar();
+    }
+
 }
