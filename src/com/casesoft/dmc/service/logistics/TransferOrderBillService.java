@@ -10,14 +10,14 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.dao.logistics.SaleOrderBillDao;
 import com.casesoft.dmc.dao.logistics.TransferOrderBillDao;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.BillRecord;
-import com.casesoft.dmc.model.logistics.TransferOrderBill;
-import com.casesoft.dmc.model.logistics.TransferOrderBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
+import com.casesoft.dmc.model.sys.Setting;
 import com.casesoft.dmc.model.sys.Unit;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
@@ -38,6 +38,10 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
     @Autowired
     private TransferOrderBillDao transferOrderBillDao;
+    @Autowired
+    private SaleOrderBillDao saleOrderBillDao;
+    @Autowired
+    private SaleOrderBillService saleOrderBillService;
 
     @Override
     public Page<TransferOrderBill> findPage(Page<TransferOrderBill> page, List<PropertyFilter> filters) {
@@ -193,6 +197,62 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
             this.taskService.webSave(business);
             if(styleList.size() > 0){
                 this.transferOrderBillDao.doBatchInsert(styleList);
+            }
+            return messageBox;
+        }else{
+            return messageBox;
+        }
+
+
+    }
+    /**
+     * web调拨转换出入库任务(SrcBillNo有销售单时)
+     * */
+    public MessageBox saveBusinessOnHaveSaleNo(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business,List<Epc> epcList, User user, Setting setting) throws Exception {
+        List<Style> styleList = new ArrayList<>();
+        for(TransferOrderBillDtl dtl : transferOrderBillDtlList){
+            if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore){
+                Style s = CacheManager.getStyleById(dtl.getStyleId());
+                s.setClass6(BillConstant.InStockType.BackOrder);
+                styleList.add(s);
+            }
+        }
+        MessageBox messageBox = this.taskService.checkEpcStock(business);
+        if(messageBox.getSuccess()){
+            this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
+            this.transferOrderBillDao.doBatchInsert(transferOrderBillDtlList);
+            //记录第一次入库时间
+            if(business.getType().equals(Constant.TaskType.Inbound)){
+                List<Record> recordList = business.getRecordList();
+                ArrayList<CodeFirstTime> list=new ArrayList<CodeFirstTime>();
+                for(Record r : recordList){
+                    CodeFirstTime codeFirstTime =this.transferOrderBillDao.findUnique("from CodeFirstTime where code=? and warehouseId=?",new Object[]{r.getCode(),transferOrderBill.getDestId()});
+                    BillConvertUtil.setEpcStockPrice(codeFirstTime,r,list,transferOrderBill.getDestId());
+                }
+                if(list.size()!=0){
+                    this.transferOrderBillDao.doBatchInsert(list);
+                }
+            }else{
+
+            }
+            this.taskService.webSave(business);
+            if(styleList.size() > 0){
+                this.transferOrderBillDao.doBatchInsert(styleList);
+            }
+            SaleOrderBill saleOrderBill = this.saleOrderBillDao.get(transferOrderBill.getSrcBillNo());
+            List<SaleOrderBillDtl> billDtlByBillNo = this.saleOrderBillService.findBillDtlByBillNo(transferOrderBill.getSrcBillNo());
+            List<BillRecord> billRecordList = new ArrayList<>();
+             if(epcList.size()>0){
+                 for (Epc epc : epcList) {
+                    BillRecord billRecord = new BillRecord(saleOrderBill.getBillNo() + "-" + epc.getCode(), epc.getCode(), saleOrderBill.getBillNo(), epc.getSku());
+                    billRecordList.add(billRecord);
+                }
+            }
+            this.transferOrderBillDao.doBatchInsert(billRecordList);
+            //是否开启了调拨单入库销售单自动出库
+            if(CommonUtil.isNotBlank(setting)&&CommonUtil.isNotBlank(setting.getValue())&&setting.getValue().equals("true")) {
+                Business businessSale = BillConvertUtil.covertToSaleOrderBusinessOut(saleOrderBill, billDtlByBillNo, epcList, user);
+                messageBox = this.saleOrderBillService.saveBusinessout(saleOrderBill, billDtlByBillNo, businessSale, epcList, null);
             }
             return messageBox;
         }else{
