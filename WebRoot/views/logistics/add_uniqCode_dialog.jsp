@@ -220,6 +220,7 @@
                                 allCodes = allCodes + "," + code;
                                 var scanCodeQty = $('#uniqueCodeGrid').getDataIDs().length;
                                 $("#codeQty").text(scanCodeQty);
+                                progressDialog.modal('hide');
                             }
                         } else {
                             $.gritter.add({
@@ -229,7 +230,9 @@
                             var result=data.result;
                             if(data.result!=""&&data.result!=undefined) {
                                 addProductsNoOutPutCode(result);
+                                progressDialog.modal('hide');
                             }
+                            progressDialog.modal('hide');
                         }
                         $('#uniqCode-editForm').clearForm();
                         progressDialog.modal('hide');
