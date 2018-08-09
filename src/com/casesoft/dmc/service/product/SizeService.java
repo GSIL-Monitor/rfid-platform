@@ -18,6 +18,8 @@ import com.casesoft.dmc.dao.product.SizeSortDao;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.SizeSort;
 
+import javax.persistence.Id;
+
 @Service
 @Transactional
 public class SizeService implements IBaseService<Size, Serializable> {
@@ -92,6 +94,12 @@ public class SizeService implements IBaseService<Size, Serializable> {
     }
     @Override
     public void save(Size size) {
+        this.sizeDao.saveOrUpdate(size);
+    }
+    public void saveAndDelete(Size size,String oldId){
+        if (oldId!=null&&!oldId.equals("")){
+            this.sizeDao.delete(oldId);
+        }
         this.sizeDao.saveOrUpdate(size);
     }
 

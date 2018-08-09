@@ -163,6 +163,8 @@ public class SizeController extends BaseController implements
     @Override
     public MessageBox save(Size size) throws Exception {
         this.logAllRequestParams();
+        String oldId = size.getId();
+        size.setSizeId(size.getSizeName());
         Size s = CacheManager.getSizeById(size.getSizeId());
         if (CommonUtil.isBlank(s)) {
             s = new Size();
@@ -177,7 +179,7 @@ public class SizeController extends BaseController implements
         s.setSizeId(size.getSizeId());
         s.setSortId(size.getSortId());
         s.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        this.sizeService.save(s);
+        this.sizeService.saveAndDelete(s,oldId);
         CacheManager.refreshSizeCache();
         return returnSuccessInfo("ok",s);
     }

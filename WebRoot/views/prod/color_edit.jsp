@@ -12,12 +12,14 @@
         <div class="modal-content">
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="editColorForm">
+                    <input id="id" name="id" hidden/>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_colorId">颜色编码</label>
-
-                        <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="form_colorId" name="colorId"
-                                   type="text" onkeyup="this.value=this.value.toUpperCase()"/>
+                        <div id="colorId_div" hidden="hidden">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_colorId">颜色编码</label>
+                            <div class="col-xs-10 col-sm-5">
+                                <input class="form-control" id="form_colorId" name="colorId"
+                                       type="text"/>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -68,6 +70,7 @@
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 数据上传中...</p>'
         });
+        $("#form_colorId").val($("#form_colorName").val());
         $.post(basePath+"/prod/color/save.do",
                 $("#editColorForm").serialize(),
                 function(result) {

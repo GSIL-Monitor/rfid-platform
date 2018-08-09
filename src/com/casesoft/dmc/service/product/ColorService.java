@@ -41,6 +41,13 @@ public class ColorService implements IBaseService<Color, String>{
 		 this.colorDao.saveOrUpdate(color);
 	}
 
+	public void saveAndDelete(Color color , String oldId){
+    	if (oldId!=null&&!oldId.equals("")){
+			this.colorDao.delete(oldId);
+		}
+    	this.colorDao.saveOrUpdate(color);
+	}
+
 	public String findMaxColorId(){
     	String hql="select count(*) from Color";
 		Long noof = this.colorDao.findUnique(hql);

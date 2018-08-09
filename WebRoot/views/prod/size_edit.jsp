@@ -12,17 +12,18 @@
         <div class="modal-content">
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="editSizeForm">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_sizeId"><span class="text-danger">* </span>尺寸编码</label>
-
-                        <div class="col-xs-10 col-sm-5">
-                            <input class="form-control" id="form_sizeId" name="sizeId"
-                                   type="text" onkeyup="this.value=this.value.toUpperCase()"/>
+                    <input id="id" name="id" hidden/>
+                    <div class="form-group" hidden="hidden">
+                        <div id="sizeId_div">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_sizeId"><span class="text-danger">* </span>尺寸编码</label>
+                            <div class="col-xs-10 col-sm-5">
+                                <input class="form-control" id="form_sizeId" name="sizeId"
+                                       type="text" readonly/>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_sizeName"><span class="text-danger">* </span>尺寸</label>
-
                         <div class="col-xs-10 col-sm-5">
                             <input class="form-control" id="form_sizeName" name="sizeName"
                                    type="text"/>
@@ -54,6 +55,11 @@
 </div>
 <script>
     initSelect();
+    function changeSizeId() {
+        var value =  $("#form_sizeName").val();
+        $("#form_sizeName").val(value.toUpperCase());
+        $("#form_sizeId").val(value.toUpperCase());
+    }
 
     function initSelect() {
         $.ajax({
@@ -75,6 +81,7 @@
     }
 
     function saveSize() {
+
         $('#editSizeForm').data('bootstrapValidator').validate();
         if (!$('#editSizeForm').data('bootstrapValidator').isValid()) {
             return;
@@ -84,6 +91,7 @@
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 数据上传中...</p>'
         });
+        $("#form_sizeId").val($("#form_sizeName").val());
         $.post(basePath + "/prod/size/save.do",
             $("#editSizeForm").serialize(),
             function (result) {
@@ -122,25 +130,6 @@
                 }, 'json');
             },
             fields: {
-                sizeId: {
-                    validators: {
-                        notEmpty: {
-                            message: '尺寸编码不能为空'
-                        },
-                        remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
-                            url: basePath + "/prod/size/checkBySizeId.do",//验证地址
-                            message: '编码已存在',//提示消息
-                            delay: 2000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
-                            type: 'POST',//请求方式
-                            data: function (validator) {
-                                return {
-                                    //  password: $('[name="passwordNameAttributeInYourForm"]').val(),
-                                    //  whatever: $('[name="whateverNameAttributeInYourForm"]').val()
-                                };
-                            }
-                        }
-                    }
-                },
                 sizeName: {
                     validators: {
                         notEmpty: {

@@ -65,7 +65,8 @@ public class ColorController extends BaseController implements IBaseInfoControll
     public MessageBox save(Color color) {
         try {
             this.logAllRequestParams();
-            Color col = CacheManager.getColorById(color.getColorId());
+            String oldId = color.getId();
+            Color col =this.colorService.findById(color.getId());
             if (CommonUtil.isBlank(col)) {
                 col = new Color(color.getColorName(),color.getColorName(),color.getColorName());
                 col.setIsUse("Y");
@@ -76,7 +77,7 @@ public class ColorController extends BaseController implements IBaseInfoControll
             //col.setColorId(color.getColorId());
             col.setHex(color.getHex());
             col.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-            this.colorService.save(col);
+            this.colorService.saveAndDelete(col,oldId);
             CacheManager.refreshColorCache();
             return returnSuccessInfo("ok",col);
         }catch (Exception e){
