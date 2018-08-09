@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "SYS_RESOURCEPRIVILEGE")
 public class ResourcePrivilege {
     @Id
-    @Column()
+    @Column(length = 500)
     private String id;
     @Column()
     private String code;//页面code sys_resource中code
@@ -26,6 +26,18 @@ public class ResourcePrivilege {
     private String roleId;//角色ID
     @Column()
     private String type;//元素类型 div,table,button
+
+    public ResourcePrivilege(){
+
+    }
+    public ResourcePrivilege(String code,String privilegeId,String privilegeName,Integer isShow,String roleId,String type){
+        this.code=code;
+        this.privilegeId=privilegeId;
+        this.privilegeName=privilegeName;
+        this.isShow=isShow;
+        this.roleId=roleId;
+        this.type=type;
+    }
 
     public String getId() {
         return id;

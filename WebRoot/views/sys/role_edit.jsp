@@ -149,6 +149,14 @@
 
         function saveRole() {
             $('#editForm').data('bootstrapValidator').validate();
+
+            var code = $("#editForm input[name='code']").val();
+            if(code != null && code != ""){
+                $('#editForm').bootstrapValidator('enableFieldValidators', 'code', false);
+            } else {
+                $('#editForm').bootstrapValidator('enableFieldValidators', 'code', true);
+            }
+
             if(!$('#editForm').data('bootstrapValidator').isValid()){
                 return ;
             }
