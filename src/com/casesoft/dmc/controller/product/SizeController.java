@@ -55,6 +55,17 @@ public class SizeController extends BaseController implements
         return sizeSort;
 
     }
+    @RequestMapping(value = "/listSort")
+    @ResponseBody
+    public List<SizeSort> getSizeSort(){
+        try {
+            List<SizeSort> sizeSortList = this.sizeService.findSizeSort();
+            return sizeSortList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @RequestMapping(value = "/list")
     @ResponseBody

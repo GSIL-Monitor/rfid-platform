@@ -984,7 +984,7 @@
             }
         });
         $.ajax({
-            url: basePath + "/prod/size/listSizeSort.do?",
+            url: basePath + "/prod/size/listSort.do?",
             cache: false,
             async: false,
             type: "POST",

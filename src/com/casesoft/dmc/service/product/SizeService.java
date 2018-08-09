@@ -28,6 +28,9 @@ public class SizeService implements IBaseService<Size, Serializable> {
     @Autowired
     private SizeSortDao sizesortDao;
 
+    public List<SizeSort> findSizeSort (){
+        return this.sizesortDao.find("from SizeSort where isUse='Y' order by seqNo asc");
+    }
 
     @Transactional(readOnly = true)
     public Page<SizeSort> find(Page<SizeSort> page, List<PropertyFilter> filters) {
