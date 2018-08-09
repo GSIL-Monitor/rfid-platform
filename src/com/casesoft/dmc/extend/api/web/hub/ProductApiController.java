@@ -7,6 +7,7 @@ import com.casesoft.dmc.controller.product.ProductUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.tag.InitUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
+import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.FileUtil;
@@ -269,7 +270,7 @@ public class ProductApiController extends ApiBaseController {
 			ProductUtil.convertToPageVo(page.getRows());
 		}
 		FileUtil.writeStringToFile(JSON.toJSONString(prodPage.getRows()),
-				"C:\\casesoft_temp\\sku\\casesoft_sku_1.json");
+				Constant.rootPath+File.separator+"casesoft_temp"+File.separator+"sku"+File.separator+"casesoft_sku_1.json");
 		long totPageNum = (prodPage.getTotal() + pageSize - 1) / pageSize;//总页数
 		System.out.println("第1页：" + prodPage.getRows().size());
 		for (int i = 2; i <= totPageNum; i++) {
@@ -282,12 +283,12 @@ public class ProductApiController extends ApiBaseController {
 				ProductUtil.convertToPageVo(page.getRows());
 			}
 			FileUtil.writeStringToFile(JSON.toJSONString(prodPage.getRows()),
-					"C:\\casesoft_temp\\sku\\casesoft_sku_" + i + ".json");
+					Constant.rootPath+File.separator+"casesoft_temp"+File.separator+"sku"+File.separator+"casesoft_sku_" + i + ".json");
 			System.out.println("第" + i + "页：" + prodPage.getRows().size());
 		}
 
-		String zipFileName = "C:\\casesoft_temp\\casesoft_sku.zip";
-		String sourcePath = "C:\\casesoft_temp\\sku\\";
+		String zipFileName = Constant.rootPath+File.separator+"casesoft_temp"+File.separator+"casesoft_sku.zip";
+		String sourcePath = Constant.rootPath+File.separator+"casesoft_temp"+File.separator+"sku"+File.separator;
 		File skuDir = new File(sourcePath);
 		if (!skuDir.exists()) {
 			skuDir.mkdir();

@@ -793,7 +793,7 @@ public class InitUtil {
 		String taskId = details.get(0).getBillNo();
 
 		String sTime = CommonUtil.getDateString(new Date(), "yyyyMMddHHmmss");
-		String path = Constant.Folder.Epc_Init_File_Folder + sTime + "\\";// 创建目录
+		String path = Constant.Folder.Epc_Init_File_Folder + sTime + File.separator;// 创建目录
 		new File(path).mkdirs();
 		for (InitDtl detail : details) {
 			writeZdhTextFile(detail, path, isRfid);
@@ -812,7 +812,7 @@ public class InitUtil {
 		String taskId = details.get(0).getBillNo();
 
 		String sTime = CommonUtil.getDateString(new Date(), "yyyyMMddHHmmss");
-		String path = Constant.Folder.Epc_Init_File_Folder + sTime + "\\";// 创建目录
+		String path = Constant.Folder.Epc_Init_File_Folder + sTime + File.separator;// 创建目录
 		new File(path).mkdirs();
 		if (CommonUtil.isBlank(epcs)) {
 			for (InitDtl detail : details) {

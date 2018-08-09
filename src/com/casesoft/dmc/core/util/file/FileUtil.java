@@ -21,11 +21,11 @@ public class FileUtil {
     initFolder(Constant.Folder.Report_File_Folder);
 
     try {
-      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUpload"));
-      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUploadHistory"));
+      initFolder(Constant.rootPath+File.separator+PropertyUtil.getValue("MilanUpload"));
+      initFolder(Constant.rootPath+File.separator+PropertyUtil.getValue("MilanUploadHistory"));
       //增加云上传目录
-      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUpload")+File.separator+"Cloud");
-      initFolder(Constant.rootPath+PropertyUtil.getValue("MilanUploadHistory")+File.separator+"Cloud");
+      initFolder(Constant.rootPath+File.separator+PropertyUtil.getValue("MilanUpload")+File.separator+"Cloud");
+      initFolder(Constant.rootPath+File.separator+PropertyUtil.getValue("MilanUploadHistory")+File.separator+"Cloud");
     } catch (Exception e) {
       e.printStackTrace();
     }
