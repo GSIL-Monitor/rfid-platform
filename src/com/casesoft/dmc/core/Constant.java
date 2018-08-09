@@ -3,6 +3,8 @@ package com.casesoft.dmc.core;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import io.swagger.models.auth.In;
 
+import java.io.File;
+
 public class Constant {
     public static Boolean isWindows;
     static {
@@ -17,7 +19,7 @@ public class Constant {
         if(isWindows){
             rootPath ="C:";
         }else{
-            rootPath="\\hone";
+            rootPath= File.separatorChar+"tmp";
         }
     }
     public final static class LogType {
@@ -101,10 +103,10 @@ public class Constant {
   }
 
   public  static final class Folder {
-    public static final  String Epc_Init_File_Folder=rootPath+"\\casesoft_temp\\initFile\\";
-    public final static String Epc_Init_Zip_File_Folder=rootPath+"\\casesoft_temp\\initFileZip\\";
-    public final static String Report_File_Folder=rootPath+"\\casesoft_temp\\report\\";
-    public final static String Product_File_Folder=rootPath+"\\casesoft_temp\\productZip\\";
+    public static final  String Epc_Init_File_Folder=rootPath+File.separator+"casesoft_temp"+File.separator+"initFile"+File.separator;
+    public final static String Epc_Init_Zip_File_Folder=rootPath+File.separator+"casesoft_temp"+File.separator+"initFileZip"+File.separator;
+    public final static String Report_File_Folder=rootPath+File.separator+"casesoft_temp"+File.separator+"report"+File.separator;
+    public final static String Product_File_Folder=rootPath+File.separator+"casesoft_temp"+File.separator+"productZip"+File.separator;
   }
   public final static class TagSerial {
       public final static int EPC_Prefix_Length = 6;

@@ -690,6 +690,7 @@ function save() {
                     url: basePath + "/logistics/transferOrder/findBillDtl.do?billNo=" + $("#edit_billNo").val(),
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                $("#grid").trigger("reloadGrid");
                 addNew();
                 _search();
             } else {
@@ -853,6 +854,7 @@ function wareHouseOut() {
             text: '已全部出库',
             class_name: 'gritter-success  gritter-light'
         });
+        $("#addDetailgrid").trigger("reloadGrid");
         $("#TRDtl_wareHouseOut").removeAttr("disabled");
         return;
     }
@@ -922,6 +924,8 @@ function wareHouseOut() {
                         url: basePath + "/logistics/transferOrder/findBillDtl.do?billNo=" + billNo,
                     });
                     $("#addDetailgrid").trigger("reloadGrid");
+                    $("#grid").trigger("reloadGrid");
+                    initButtonGroup(transferOrder_status);
                     setFooterData();
                     bootbox.alert("已出库" + epcArray.length + "件商品");
                 } else {
@@ -998,6 +1002,8 @@ function confirmWareHouseIn() {
                 });
                 $("#modal-addEpc-table").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
+                $("#grid").trigger("reloadGrid");
+                initButtonGroup(transferOrder_status);
             } else {
                 bootbox.alert(msg.msg);
             }

@@ -26,7 +26,7 @@ public class ResourcePrivilegeService implements IBaseService<ResourcePrivilege,
 
     @Override
     public void save(ResourcePrivilege entity) {
-
+        this.resourcePrivilegeDao.save(entity);
     }
     public void saveAll(List<ResourcePrivilege> saveLists){
         this.resourcePrivilegeDao.doBatchInsert(saveLists);

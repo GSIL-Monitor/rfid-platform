@@ -169,19 +169,18 @@ public class RoleController extends BaseController implements IBaseInfoControlle
             List<ResourcePrivilege> allResourcePrivilege = this.resourcePrivilegeService.find(filters);
             for(ResourcePrivilege resourcePrivilege : allResourcePrivilege){
                 ResourcePrivilege newresourcePrivilege =new ResourcePrivilege();
-                ResourcePrivilege newresourceTable=new ResourcePrivilege();
                 BeanUtils.copyProperties(resourcePrivilege, newresourcePrivilege);
-                newresourcePrivilege.setId(resourcePrivilege.getCode()+"-"+ resourcePrivilege.getPrivilegeId()+"-"+role.getId()+"-button");
+
+                newresourcePrivilege.setId(resourcePrivilege.getCode()+"-"+ resourcePrivilege.getPrivilegeId()+"-"+role.getId()+"-"+resourcePrivilege.getType());
                 newresourcePrivilege.setRoleId(role.getId());
                 newresourcePrivilege.setIsShow(1);
-                newresourcePrivilege.setType("button");
-                BeanUtils.copyProperties(resourcePrivilege,newresourceTable);
-                newresourceTable.setId(resourcePrivilege.getCode()+"-"+ resourcePrivilege.getPrivilegeId()+"-"+role.getId()+"-table");
-                newresourceTable.setRoleId(role.getId());
-                newresourceTable.setIsShow(1);
-                newresourceTable.setType("table");
-                saveList.add(newresourceTable);
+                newresourcePrivilege.setType(resourcePrivilege.getType());
+
+
+                saveList.add(newresourcePrivilege);
             }
+
+
         } else {
             Role dto = this.roleService.getRole(role.getId());
             dto.setName(role.getName());
@@ -192,7 +191,6 @@ public class RoleController extends BaseController implements IBaseInfoControlle
         this.roleService.saveOrUpdateAndList(role,saveList);
         return this.returnSuccessInfo("保存成功", role);
 	}
-
 	@Override
 	public MessageBox edit(String roleId) throws Exception {
 

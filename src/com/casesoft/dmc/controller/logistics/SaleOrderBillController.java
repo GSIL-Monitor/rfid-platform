@@ -286,9 +286,19 @@ public class SaleOrderBillController extends BaseController implements ILogistic
                 }
             }
             List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderBillDtlList,0,code);
-            this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,list);
+            //判断是否开启了销售单自动转调拨单
+            Setting setting = this.settingService.get("id", "isAutochangeTr");
+            if(CommonUtil.isNotBlank(setting)&&CommonUtil.isNotBlank(setting.getValue())&&setting.getValue().equals("true")){
+                this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,list);
+                List<BillRecord> billRecordList = saleOrderBill.getBillRecordList();
+                User user = this.getCurrentUser();
+                Map<String, Object> map = this.saleOrderBillService.changeTr(saleOrderBill, saleOrderBillDtlList, billRecordList, list, user);
+                return new MessageBox(true, "保存成功,"+(String) map.get("message"), saleOrderBill);
+            }else{
+                this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,list);
+                return new MessageBox(true, "保存成功", saleOrderBill);
+            }
 
-            return new MessageBox(true, "保存成功", saleOrderBill);
         } catch (Exception e) {
             e.printStackTrace();
             return new MessageBox(false, e.getMessage());

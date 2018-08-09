@@ -53,7 +53,7 @@ public class TaskApiController extends ApiBaseController {
     @RequestMapping(value = "/uploadTask")
     @ResponseBody
     public MessageBox uploadTaskFileFormDevice(MultipartFile file) throws Exception {
-        String inputPath = Constant.rootPath+PropertyUtil.getValue("MilanUpload");//上传的目录
+        String inputPath = Constant.rootPath+File.separator+PropertyUtil.getValue("MilanUpload");//上传的目录
         String fileName = file.getOriginalFilename();
         File targetFile = new File(inputPath, fileName);
         inputStreamToFile(file.getInputStream(), targetFile);
@@ -79,8 +79,8 @@ public class TaskApiController extends ApiBaseController {
         this.logAllRequestParams();
         
         Assert.notNull(file, "file不可为空");
-        String inputPath = PropertyUtil.getValue("MilanUpload") + "\\" + PropertyUtil.getValue("tag_name");
-        String successFilePath=PropertyUtil.getValue("MilanUploadHistory") + "\\" + PropertyUtil.getValue("tag_name");
+        String inputPath = PropertyUtil.getValue("MilanUpload") + File.separator + PropertyUtil.getValue("tag_name");
+        String successFilePath=PropertyUtil.getValue("MilanUploadHistory") +  File.separator + PropertyUtil.getValue("tag_name");
         File uploadFile = new File(inputPath);
         File fileHistory = new File(successFilePath);
 
@@ -120,7 +120,7 @@ public class TaskApiController extends ApiBaseController {
 
             } catch (Exception e) {
                 // 解析文件失败，将其存入C:\\MiLanUpload
-                FileUtil.moveFile(file, inputPath + "\\" + fileName);
+                FileUtil.moveFile(file, inputPath +  File.separator + fileName);
                 logger.error(e.getMessage());
                 e.printStackTrace();
                 return this.returnFailInfo("服务器处理失败！"+e.getMessage());
@@ -128,7 +128,7 @@ public class TaskApiController extends ApiBaseController {
 
             FileUtil.moveFile(file,
                     inputPath.replace("MilanUpload", "MilanUploadHistory")
-                            + "\\" + fileName);
+                            +  File.separator + fileName);
         }else{
             return this.returnFailInfo("文件为空！");
         }

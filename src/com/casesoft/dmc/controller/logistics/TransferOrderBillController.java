@@ -20,6 +20,7 @@ import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.sys.PrintService;
 import com.casesoft.dmc.service.sys.PrintSetService;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
+import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,6 +51,8 @@ public class TransferOrderBillController extends BaseController implements ILogi
     private ResourceService resourceService;
     @Autowired
     private ResourcePrivilegeService resourcePrivilegeService;
+    @Autowired
+    private SettingService settingService;
 
 
     @Override
@@ -335,7 +338,16 @@ public class TransferOrderBillController extends BaseController implements ILogi
         User currentUser = CacheManager.getUserById(userId);
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
         Business business = BillConvertUtil.covertToTransferOrderBusinessIn(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
-        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        //MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        MessageBox messageBox =null;
+        //判断单据是否有销售单和判断
+        Setting setting = this.settingService.get("id", "isAutoSaleOut");
+        if(CommonUtil.isNotBlank(transferOrderBill.getSrcBillNo())&&transferOrderBill.getSrcBillNo().indexOf("SO")!=-1){
+            User user = this.getCurrentUser();
+            messageBox = this.transferOrderBillService.saveBusinessOnHaveSaleNo(transferOrderBill, transferOrderBillDtlList, business,epcList,user,setting);
+        }else{
+            messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        }
         if(messageBox.getSuccess()){
             return new MessageBox(true,"入库成功");
         }else{

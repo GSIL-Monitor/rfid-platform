@@ -766,7 +766,7 @@ function initButtonGroup(type){
             "    <span class='bigger-110'>A4打印</span>" +
             "</button>"
         );
-        loadingButton();
+        loadingButtonDivTable(type);
         $("#SRDtl_check").hide();
 
 }
@@ -2060,8 +2060,11 @@ function addNew(){
     initCustomerTypeForm();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
+    $("#edit_origId").removeAttr("disabled");
+    $("#edit_destId").removeAttr("disabled");
+
     pageType="add";
-    initButtonGroup(pageType);
+    initButtonGroup(0);
     if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
         $("#edit_busnissId").selectpicker('val',defaultSaleStaffId);
     }

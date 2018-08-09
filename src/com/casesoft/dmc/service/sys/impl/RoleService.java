@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.dao.sys.ResourcePrivilegeDao;
 import com.casesoft.dmc.model.sys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,9 @@ public class RoleService implements IRoleService {
 
   @Autowired
   private ResourceDao resourceDao;
+
+  @Autowired
+  private ResourcePrivilegeDao resourcePrivilegeDao;
   
   
   public Page<Role> findPage(Page<Role> page, List<PropertyFilter> filters) {
@@ -88,6 +92,7 @@ public class RoleService implements IRoleService {
   }
   public String saveOrUpdateAndList(Role role, List<ResourcePrivilege> saveList) {
     this.roleDao.saveOrUpdate(role);
+
     if(CommonUtil.isNotBlank(role.getAuthIds())) {
       List<RoleRes> rrList = new ArrayList<RoleRes>();
       String[] authIds = role.getAuthIds().split(",");

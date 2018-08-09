@@ -1212,5 +1212,17 @@ public class CacheManager {
 		Integer maxId=Integer.parseInt(maxProductId)+1;
 		return maxId;
 	}
+	/*public static void initRmCache() {
+		userService = (UserService) SpringContextUtil
+				.getBean("userService");
+		Map<String, User> userMap = new HashMap<String, User>();
+		List<User> userList = userService.getAllUser();
+		for (User u : userList) {
+			userMap.put(u.getId(), u);
+		}
+		cache.put(new Element("User", userMap));
+		//
+
+	}*/
 
 }
