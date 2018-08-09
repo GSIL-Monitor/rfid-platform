@@ -2060,6 +2060,9 @@ function addNew(){
     initCustomerTypeForm();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
+    $("#edit_origId").removeAttr("disabled");
+    $("#edit_destId").removeAttr("disabled");
+
     pageType="add";
     initButtonGroup(pageType);
     if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {

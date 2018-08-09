@@ -284,6 +284,7 @@ function saveproperty() {
                 });
                 $("#edit-dialog-detailed").modal('hide');
                 $('#grid').trigger("reloadGrid");
+                $('#propertyGrid').trigger("reloadGrid");
             }else{
                 $.gritter.add({
                     text : result.msg,
