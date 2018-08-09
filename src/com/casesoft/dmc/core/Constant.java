@@ -19,7 +19,7 @@ public class Constant {
         if(isWindows){
             rootPath ="C:";
         }else{
-            rootPath= File.separatorChar+"home";
+            rootPath= File.separatorChar+"tmp";
         }
     }
     public final static class LogType {
