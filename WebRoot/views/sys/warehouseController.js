@@ -9,7 +9,7 @@ function refresh() {
 }
 function initSearchType() {
     $.ajax({
-        url: basePath + "/sys/property/searchByType.do?type=WT",
+        url: basePath + "/sys/property/searchType.do?type=WT",
         cache: false,
         async: false,
         type: "POST",
