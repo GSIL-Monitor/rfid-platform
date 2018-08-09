@@ -78,7 +78,7 @@
                                                 <div class="col-md-4">
                                                     <select class="form-control selectpicker show-tick"
                                                             id="search_origId"
-                                                            name="filter_LIKES_origId"
+                                                            name="filter_EQS_origId"
                                                             style="width: 100%;" data-live-search="true">
                                                     </select>
                                                 </div>
@@ -176,7 +176,7 @@
                                                 <div class="form-group">
                                                     <div id="origId_div">
                                                         <label class="col-md-1 control-label"
-                                                               for="search_origId">仓库</label>
+                                                               for="edit_origId">仓库</label>
                                                         <div class="col-md-3">
                                                             <select class="form-control selectpicker show-tick"
                                                                     id="edit_origId" name="origId"

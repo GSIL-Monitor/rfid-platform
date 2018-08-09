@@ -52,7 +52,6 @@ $(function () {
     /*初始化按钮*/
     pageType="add";
     initButtonGroup(pageType);
-    loadingButtonDivTable(0);
     /*初始化右侧表单验证*/
     initEditFormValid();
 
@@ -391,8 +390,8 @@ function initDetailData(rowid){
     console.info(rowData);
     rm_status = rowData.status;
     pageType="edit";
-    initButtonGroup(pageType);
-    $(".selectpicker").selectpicker('refresh');
+    //initButtonGroup(rm_status);
+    //$("#edit_origId").selectpicker('refresh');惊天bug
 
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
@@ -410,7 +409,7 @@ function initDetailData(rowid){
         $("#SODtl_cancel").removeAttr("disabled");
         $("#SODtl_addUniqCode").removeAttr("disabled");
         //可编辑表单
-        $("#edit_origId").removeAttr("disabled");
+        $("#edit_origId").attr('disabled', false);
         //入库选择点击事件
         $("#destId").click(function () {
             $("#tree").css("display","block");
@@ -442,7 +441,7 @@ function initDetailData(rowid){
         //隐藏操作
         $("#addDetailgrid").setGridParam().hideCol("operation");
     }
-    loadingButtonDivTable(rm_status);
+
 }
 /**
  * 新增单据调用
@@ -460,7 +459,7 @@ function addNew(isScan){
     setEditFormVal();
     $("#addDetailgrid").trigger("reloadGrid");
     $("#codedetaillgrid").trigger("reloadGrid");
-    $(".selectpicker").selectpicker('refresh');
+    //$("#edit_origId").selectpicker('refresh');
     pageType="add";
     initButtonGroup(pageType);
 }
@@ -851,6 +850,9 @@ function initButtonGroup(type){
         "</button>"
     );
 
+
+    //loadingButton();
+    loadingButtonDivTable(type)
     //未保存禁用撤销，调整，结束
     $("#SODtl_finishBill").attr({"disabled": "disabled"});
     $("#SODtl_rmIdAdjust").attr({"disabled": "disabled"});
@@ -860,7 +862,6 @@ function initButtonGroup(type){
     $("#destId").click(function () {
         $("#tree").css("display","block");
     });
-    loadingButton();
 
 }
 function loadingButton() {
