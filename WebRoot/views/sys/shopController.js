@@ -117,7 +117,7 @@ function initGrid() {
 
 function initSearchType() {
     $.ajax({
-        url : basePath + "/sys/property/searchByType.do?type=ST",
+        url : basePath + "/sys/property/searchType.do?type=ST",
         cache : false,
         async : false,
         type : "POST",

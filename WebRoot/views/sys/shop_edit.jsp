@@ -59,12 +59,10 @@
                                        type="text" name="unitName" readonly/>
                             </div>
                         </div>
-
                     </div>
                     <!-- #section:elements.form -->
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="from_tel">联系电话</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="from_tel" name="tel"
                                    type="text"
@@ -73,7 +71,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_linkman">联系人</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_linkman" name="linkman"
                                    type="text" placeholder=""/>
@@ -81,7 +78,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_email">邮箱</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_email" name="email"
                                    type="text" placeholder=""/>
@@ -89,7 +85,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_provinceId">所在省份</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_provinceId" name="provinceId"
                                    type="text" placeholder=""/>
@@ -97,7 +92,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_cityId">所在城市</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_cityId" name="cityId"
                                    type="text" placeholder=""/>
@@ -105,7 +99,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_address">街道地址</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_address" name="address"
                                    type="text" placeholder=""/>
@@ -113,28 +106,29 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_remark">备注</label>
-
                         <div class="col-xs-14 col-sm-7">
                             <input class="form-control" id="form_remark" name="remark"
                                    type="text" placeholder=""/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_areasId">区域</label>
-
-                        <div class="col-xs-14 col-sm-7">
-                            <select class="form-control selectpicker show-tick" data-live-search="true" id="form_areasId" name="areasId">
-                                <option value="">请选择</option>
-                            </select>
+                        <div id="areasId_div" hidden="hidden">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_areasId">区域</label>
+                            <div class="col-xs-14 col-sm-7">
+                                <select class="form-control selectpicker show-tick" data-live-search="true" id="form_areasId" name="areasId">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_ownerids">加盟商(供应商)</label>
-
-                        <div class="col-xs-14 col-sm-7">
-                            <select class="form-control selectpicker show-tick" data-live-search="true" id="form_ownerids" name="ownerids">
-                                <option value="">请选择</option>
-                            </select>
+                        <div id="ownerids_div" hidden="hidden">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_ownerids">加盟商(供应商)</label>
+                            <div class="col-xs-14 col-sm-7">
+                                <select class="form-control selectpicker show-tick" data-live-search="true" id="form_ownerids" name="ownerids">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -244,15 +238,7 @@
                             message: '联系人不能为空'
                         }
                     }
-                },
-                address:{
-                    validators:{
-                        notEmpty:{
-                            message:'街道地址不能为空'
-                        }
-                    }
                 }
-
             }
         });
     }

@@ -59,6 +59,10 @@ public class PropertyService implements IBaseService<PropertyType, String> {
         return this.propertyKeyDao.find(hql, new Object[]{type});
 
     }
+    public List<PropertyKey>getPKByType(String type){
+        String hql="from PropertyKey where type=? and ynuse='Y'";
+        return this.propertyKeyDao.find(hql,new Object[]{type});
+    }
 
 
     public PropertyType findPropertyTypebyid(String id) {

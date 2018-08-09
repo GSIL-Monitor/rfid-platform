@@ -69,6 +69,17 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         List<PropertyKey> pkList = this.propertyService.getPropertyKeyByType(type);
         return pkList;
     }
+    @RequestMapping(value = "/searchType")
+    @ResponseBody
+    public List<PropertyKey> searchType(String type){
+        try {
+            List<PropertyKey> propertyKeyList = this.propertyService.getPKByType(type);
+            return propertyKeyList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     @Override

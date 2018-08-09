@@ -175,15 +175,7 @@
                             message: '联系人不能为空'
                         }
                     }
-                },
-                address: {
-                    validators: {
-                        notEmpty: {
-                            message: '街道地址不能为空'
-                        }
-                    }
                 }
-
             }
         });
     }
