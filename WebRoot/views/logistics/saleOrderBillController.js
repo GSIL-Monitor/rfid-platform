@@ -154,6 +154,9 @@ function initSearchGrid() {
                 $("#grid").setSelection(rowIds[0]);
                 autoSelect =false;
             }
+            if($("#edit_billNo").val()!=null&&$("#edit_billNo").val()!=""&&$("#edit_billNo").val()!=undefined){
+                initDetailData($("#edit_billNo").val());
+            }
         },
         onSelectRow: function (rowid, status) {
             initDetailData(rowid)
@@ -162,6 +165,7 @@ function initSearchGrid() {
 }
 
 function initDetailData(rowid){
+    debugger
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     slaeOrder_status = rowData.status;
@@ -1266,7 +1270,7 @@ function initButtonGroup(billStatus){
             "    <span class='bigger-110'>退货</span>" +
             "</button>" +
             "<button id='SODtl_wareHouseTr' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='changeTr()'>" +
-            "    <i class='ace-icon fa fa-reply'></i>" +
+            "    <i class='ace-icon fa fa-share'></i>" +
             "    <span class='bigger-110'>调拨</span>" +
             "</button>" +
             "<button id='SODtl_wareHouseCh' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='exchangeGoods()'>" +
@@ -1699,6 +1703,7 @@ function cancel() {
             if (result) {
                 cancelAjax(billId);
                 addNew(false)
+                _search();
             } else {
             }
         }
@@ -1952,6 +1957,7 @@ function saveAjax() {
                 $("#addDetailgrid").trigger("reloadGrid");
                 $("#grid").trigger("reloadGrid");
                 $("#SODtl_adddoPrint1").show();
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -2133,7 +2139,7 @@ function wareHouseOut() {
                                 url: basePath + "/logistics/saleOrderBill/findBillDtl.do?billNo=" + billNo
                             });
                             $("#addDetailgrid").trigger("reloadGrid");
-
+                            _search();
                             var all_outQty = sum_outQty + epcArray.length;
                             var diff_qty = sum_qty - all_outQty;
                             if (pageType === "edit") {
@@ -2173,6 +2179,7 @@ function wareHouseOut() {
                                     }
                                 });
                             }
+
                         } else {
                             bootbox.alert(msg.msg);
                         }
@@ -2291,6 +2298,7 @@ function confirmWareHouseOut() {
                 });
                 $("#modal-addEpc-table").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -2367,6 +2375,7 @@ function confirmWareHouseIn() {
                 });
                 $("#modal-addEpc-table").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
