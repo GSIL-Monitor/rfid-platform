@@ -746,7 +746,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                             this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
                             this.transferOrderBillDao.doBatchInsert(list);
                         }
-
+                        this.saleOrderBillDao.doBatchInsert(billDtlByBillNo);
                         map.put("isok", true);
                         map.put("message", "转调拨申请单成功");
 
