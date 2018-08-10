@@ -771,5 +771,13 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         }
 
     }
+
+    public void deletenoOutPutCode(String billNo,String noOutPutCode) throws Exception{
+        List<AbnormalCodeMessage> list = this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and code in (?) and billNo=?", new Object[]{noOutPutCode, billNo});
+        for(AbnormalCodeMessage abnormalCodeMessage:list){
+            abnormalCodeMessage.setStatus(0);
+        }
+        this.abnormalCodeMessageDao.doBatchInsert(list);
+    }
 }
 

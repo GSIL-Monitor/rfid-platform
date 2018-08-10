@@ -1565,7 +1565,31 @@ function deleteItem(rowId) {
     $("#addDetailgrid").jqGrid("delRowData", rowId);
     setAddFooterData();
     var totActPrice = value.totActPrice;
-    saveother(totActPrice);
+    //判断是否有异常的code
+    if(value.noOutPutCode!=null&&value.noOutPutCode!=""&&value.noOutPutCode!=undefined){
+        deletenoOutPutCode(value.noOutPutCode,totActPrice);
+    }else{
+        saveother(totActPrice);
+    }
+
+}
+function deletenoOutPutCode(noOutPutCode,totActPrice) {
+    cs.showProgressBar();
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/saleOrderBill/deletenoOutPutCode.do",
+        data: { billNo:$("#edit_billNo").val(),noOutPutCode:noOutPutCode},
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                saveother(totActPrice);
+
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
 
 function saveother(totActPrice) {

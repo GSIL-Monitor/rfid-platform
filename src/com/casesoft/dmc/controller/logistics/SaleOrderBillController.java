@@ -645,5 +645,23 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         }
 
     }
+    /**
+     * czf
+     * 用于销售单删除异常code
+     ** @param billNo 销售单号
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/deletenoOutPutCode")
+    @ResponseBody
+    public MessageBox deletenoOutPutCode(String billNo,String noOutPutCode){
+        try {
+            this.saleOrderBillService.deletenoOutPutCode(billNo,noOutPutCode);
+            return new MessageBox(false, "删除成功");
+        }catch (Exception e){
+            return new MessageBox(false, "删除失败");
+        }
+
+    }
 }
 
