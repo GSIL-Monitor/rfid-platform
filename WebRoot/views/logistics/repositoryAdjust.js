@@ -390,9 +390,9 @@ function initDetailData(rowid){
     console.info(rowData);
     rm_status = rowData.status;
     pageType="edit";
-    //initButtonGroup(rm_status);
+    initButtonGroup(rm_status);
     //$("#edit_origId").selectpicker('refresh');惊天bug
-
+    loadingButtonDivTable(rm_status);
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     $('#codeDetailgrid').jqGrid("clearGridData");
@@ -462,6 +462,7 @@ function addNew(isScan){
     //$("#edit_origId").selectpicker('refresh');
     pageType="add";
     initButtonGroup(pageType);
+    loadingButtonDivTable(0);
 }
 function setFooterData() {
 
