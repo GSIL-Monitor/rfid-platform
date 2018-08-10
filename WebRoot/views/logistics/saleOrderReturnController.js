@@ -2570,7 +2570,7 @@ function loadingButtonDivTable(billStatus) {
         }
     });
     if ($("#edit_status").val()!== "0" && userId !== "admin") {
-        $("#search_guest_button").attr({"disabled": "disabled"});
+        $("#edit_guest_button").attr({"disabled": "disabled"});
         $("#SRDtl_save").attr({"disabled": "disabled"});
         $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
         $("#SRDtl_cancel").attr({"disabled": "disabled"});

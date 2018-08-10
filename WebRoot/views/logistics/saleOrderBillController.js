@@ -1305,7 +1305,7 @@ function initButtonGroup(billStatus){
         );
         //订单状态：0，表示录入态
         if (slaeOrder_status != "0" && userId != "admin") {
-            $("#search_guest_button").attr({"disabled": "disabled"});
+            $("#edit_guest_button").attr({"disabled": "disabled"});
             $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
             $("#SODtl_save").attr({"disabled": "disabled"});
             $("#SODtl_cancel").attr({"disabled": "disabled"});
