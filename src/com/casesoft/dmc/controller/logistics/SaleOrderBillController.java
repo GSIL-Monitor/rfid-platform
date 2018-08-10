@@ -657,7 +657,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     public MessageBox deletenoOutPutCode(String billNo,String noOutPutCode){
         try {
             this.saleOrderBillService.deletenoOutPutCode(billNo,noOutPutCode);
-            return new MessageBox(false, "删除成功");
+            return new MessageBox(true, "删除成功");
         }catch (Exception e){
             return new MessageBox(false, "删除失败");
         }

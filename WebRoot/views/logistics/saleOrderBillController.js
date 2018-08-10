@@ -974,6 +974,7 @@ function initAllCodesList() {
             allCodeStrInDtl = allCodeStrInDtl.substr(1);
         }
     }
+    console.log(allCodeStrInDtl);
 }
 
 
