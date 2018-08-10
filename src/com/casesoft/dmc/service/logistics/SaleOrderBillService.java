@@ -717,9 +717,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                         TransferOrderBill transferOrderBill = (TransferOrderBill) saleChangeTrMap.get("bill");
                         List<TransferOrderBillDtl> list = (List<TransferOrderBillDtl>) saleChangeTrMap.get("billDel");
                         //查出对应的EpcList
-                        List<Epc> epcList = new ArrayList<Epc>();
-                        List<BillRecord> billRecordLists = new ArrayList<>();
-                        for (TransferOrderBillDtl transferOrderBillDtl : list) {
+                        //List<Epc> epcList = new ArrayList<Epc>();
+                        //List<BillRecord> billRecordLists = new ArrayList<>();
+                        /*for (TransferOrderBillDtl transferOrderBillDtl : list) {
                             String hql = "from EpcStock epcStock where epcStock.warehouseId=? and epcStock.sku=? and epcStock.inStock=1";
                             List<EpcStock> epcStockList = this.saleOrderBillDao.find(hql, new Object[]{transferOrderBill.getOrigId(), transferOrderBillDtl.getSku()});
 
@@ -736,16 +736,19 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                                     billRecordLists.add(billRecord);
                                 }
                             }
-                        }
-                        if(epcList.size()>0){
-                            transferOrderBill.setBillRecordList(billRecordLists);
-                            Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, list, epcList, user);
+                        }*/
+                       /* if(epcList.size()>0){
+                            //transferOrderBill.setBillRecordList(billRecordLists);
+                            //由于需求销售单转调拨单不能出库屏蔽这两段代码
+                            //Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, list, epcList, user);
                             this.transferOrderBillDao.doBatchInsert(transferOrderBill.getBillRecordList());
-                            MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, list, business);
-                        }else{
                             this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
                             this.transferOrderBillDao.doBatchInsert(list);
-                        }
+                            //MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, list, business);
+                        }else{*/
+                            this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
+                            this.transferOrderBillDao.doBatchInsert(list);
+                      /*  }*/
                         this.saleOrderBillDao.doBatchInsert(billDtlByBillNo);
                         map.put("isok", true);
                         map.put("message", "转调拨申请单成功");
