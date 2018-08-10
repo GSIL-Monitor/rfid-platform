@@ -145,6 +145,7 @@ function addProductsOnCode() {
                         text: data.msg,
                         class_name: 'gritter-success  gritter-light'
                     });
+                    $("#grid").trigger("reloadGrid");
 
                 } else {
                     $.gritter.add({

@@ -360,19 +360,19 @@ function initeditGrid(billId) {
         datatype: "json",
         url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + billNo,
         colModel: [
-            {name: 'id', label: 'id', hidden: true},
+            //{name: 'id', label: 'id', hidden: true},
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
-            {
+            /*{
                 name: "operation", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
                         + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteRow('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                 }
-            },
+            },*/
             {
                 label: '状态', width: 20, hidden: true, sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -564,7 +564,7 @@ function initeditGrid(billId) {
         pager: '#addDetailgrid-pager',
         multiselect: false,
         shrinkToFit: true,
-        sortname: 'id',
+        sortname: 'billNo',
         sortorder: "asc",
         footerrow: true,
         cellEdit: true,
@@ -599,7 +599,7 @@ function initeditGrid(billId) {
         }
     });
 
-    if (pageType === "edit" &&  $("#edit_status").val()!== "0" || $("#edit_srcBillNo").val() !== "") {
+    if (pageType === "edit" &&  $("#edit_status").val()!== "0" || $("#edit_BillNo").val() !== "") {
         $("#addDetailgrid").setGridParam().hideCol("operation");
     } else {
         $("#addDetailgrid").setGridParam().showCol("operation");
@@ -865,19 +865,19 @@ function initAddGrid() {
         height: "auto",
         datatype: "local",
         colModel: [
-            {name: 'id', label: 'id', hidden: true},
+            //{name: 'id', label: 'id', hidden: true},
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
-            {
+            /*{
                 name: "operation", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
                         + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteRow('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                 }
-            },
+            },*/
             {
                 label: '状态', width: 20, hidden: true, sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -1057,7 +1057,7 @@ function initAddGrid() {
         pager: '#addDetailgrid-pager',
         multiselect: false,
         shrinkToFit: true,
-        sortname: 'id',
+        sortname: 'billNo',
         sortorder: "asc",
         footerrow: true,
         cellEdit: true,
@@ -1517,9 +1517,14 @@ function addProductsOnCode() {
                     dtlRow.totPrice = -Math.abs(dtlRow.qty * dtlRow.price);
                     dtlRow.totActPrice = -Math.abs(dtlRow.qty * dtlRow.actPrice);
                     alltotActPrice += -Math.abs(dtlRow.qty * dtlRow.actPrice);
-                    dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                    if(dtlRow.uniqueCodes == null || dtlRow.uniqueCodes ==undefined || dtlRow.uniqueCodes ==''){
+                        dtlRow.uniqueCodes = value.code;
+                    }
+                    else {
+                        dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                    }
                     if (dtlRow.id) {
-                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);//bug，应该写行号
                     } else {
                         $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
                     }
@@ -1533,12 +1538,13 @@ function addProductsOnCode() {
         });
         $("#so_savecode_button").removeAttr("disabled");
         $("#add-uniqCode-dialog").modal('hide');
-        setFooterData();
+        setAddFooterData();
         var check = false;
         saveother(0 - alltotActPrice,check);
     }
 }
 function addProductsNoOutPutCode(productInfo) {
+    debugger;
     if (!$('#so_savecode_button').prop('disabled')) {
         $("#so_savecode_button").attr({"disabled": "disabled"});
         var productListInfo = [];
@@ -1612,7 +1618,7 @@ function addProductsNoOutPutCode(productInfo) {
         });
         $("#so_savecode_button").removeAttr("disabled");
         $("#add-uniqCode-dialog").modal('hide');
-        setFooterData();
+        setAddFooterData();
         var check = false;
         saveother(0 - alltotActPrice,check);
     }
@@ -1709,6 +1715,7 @@ function saveother(totActPrice,check) {
                     initCodeGrid({billNo: $("#edit_billNo").val(), warehId: $("#edit_origId").val()});
                     checkAjax($("#edit_billNo").val());
                 }
+                $("#grid").trigger("reloadGrid");
             } else {
                 bootbox.alert(msg.msg);
             }

@@ -1898,8 +1898,11 @@ public class BillConvertUtil {
         Unit dest = CacheManager.getUnitByCode(bill.getDestId());
         bill.setDestName(dest.getName());
         bill.setDestUnitId(dest.getOwnerId());
-        Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
-        bill.setDestUnitName(destUnit.getName());
+        if(CommonUtil.isNotBlank(dest.getOwnerId())){
+            Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
+            bill.setDestUnitName(destUnit.getName());
+        }
+
         if(CommonUtil.isNotBlank(bill.getOrigId())){
             Unit origUnit = CacheManager.getUnitByCode(bill.getOrigId());
             bill.setOrigName(origUnit.getName());
