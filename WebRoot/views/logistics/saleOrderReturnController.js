@@ -2584,7 +2584,7 @@ function loadingButtonDivTable(billStatus) {
         $("#SRDtl_wareHouseIn").hide();
         $("#SRDtl_wareHouseIn_noOutHouse").show();
     }
-    if ($("#edit_srcBillNo").val()!= "") {
+    if ($("#edit_billNo").val()!= "") {
         $("#SRDtl_addUniqCode").hide();/*
          $("#SRDtl_wareHouseIn_noOutHouse").hide();
          $("#SRDtl_wareHouseOut").hide();
