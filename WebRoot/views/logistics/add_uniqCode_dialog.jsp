@@ -229,7 +229,16 @@
                             });
                             var result=data.result;
                             if(data.result!=""&&data.result!=undefined) {
-                                addProductsNoOutPutCode(result);
+                                try {
+                                    if(typeof addProductsNoOutPutCode === "function") { //是函数    其中 FunName 为函数名称
+                                        addProductsNoOutPutCode(result);
+                                        //alert("is function");
+                                    } else { //不是函数
+                                        //alert("not is function");
+
+                                    }
+                                } catch(e) {console.info(e);}
+                                //addProductsNoOutPutCode(result);
                                 progressDialog.modal('hide');
                             }
                             progressDialog.modal('hide');
