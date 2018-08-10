@@ -163,12 +163,14 @@ public class DetailStockDaoImpl implements DetailStockDao {
     }
 
     public DataSourceRequest valueNew(DataSourceRequest request){
-        Object value = request.getFilter().getFilters().get(0).getValue();
-        if (value.equals("DG")){
-            request.getFilter().getFilters().get(0).setField("groupId");
-        }
-        if (value.equals("JMS")){
-            request.getFilter().getFilters().get(0).setField("groupId");
+        if(request.getFilter().getFilters().size()>0) {
+            Object value = request.getFilter().getFilters().get(0).getValue();
+            if (value.equals("DG")) {
+                request.getFilter().getFilters().get(0).setField("groupId");
+            }
+            if (value.equals("JMS")) {
+                request.getFilter().getFilters().get(0).setField("groupId");
+            }
         }
         return request;
     }

@@ -73,7 +73,7 @@ public class WarehouseService implements IBaseService<Unit, String> {
 	@Override
 	public List<Unit> find(List<PropertyFilter> filters) {
 
-		return null;
+		return this.warehouseDao.find(filters);
 	}
 
 	/**

@@ -33,8 +33,10 @@ function refresh() {
     resetData();
 }
 function resetData() {
-    var gridData = $("#stockGrid").data("kendoGrid");
+   /* var gridData = $("#stockGrid").data("kendoGrid");
     gridData.dataSource.filter({});
+    _reset();*/
+    search
 }
 var exportExcelid = "";
 function exportExcel() {
