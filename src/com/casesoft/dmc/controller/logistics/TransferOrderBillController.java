@@ -425,6 +425,14 @@ public class TransferOrderBillController extends BaseController implements ILogi
             return new MessageBox(false,"获取数据失败"+e.getMessage());
         }
     }
+    @RequestMapping(value = "/findFloorallocationAndSku")
+    @ResponseBody
+    public List<FloorallocationAndSku> findFloorallocationAndSku(String billNo){
+        List<TransferOrderBillDtl> transferOrderBillDtls = this.transferOrderBillService.findBillDtlByBillNo(billNo);
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("id", billNo);
+        List<FloorallocationAndSku> floorallocationAndSku = this.transferOrderBillService.findFloorallocationAndSku(transferOrderBillDtls, transferOrderBill);
+        return floorallocationAndSku;
+    }
     @RequestMapping(value = "/findResourceButton")
     @ResponseBody
     public MessageBox findResourceButton(){

@@ -539,6 +539,10 @@ function initButtonGroup(billStatus) {
         "    <i class='ace-icon fa fa-sign-in'></i>" +
         "    <span class='bigger-110'>入库</span>" +
         "</button>" +
+        "<button id='TRDtl_floorallocation' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='floorallocation()'>" +
+        "    <i class='ace-icon fa fa-sign-in'></i>" +
+        "    <span class='bigger-110'>库位详情</span>" +
+        "</button>" +
         "<button id='TRDtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
         "    <i class='ace-icon fa fa-print'></i>" +
         "    <span class='bigger-110'>打印</span>" +
@@ -1476,4 +1480,9 @@ function set(id) {
             }
         }
     });
+}
+function floorallocation() {
+    $("#show-floorallocation-list").modal('show');
+    initFloorallocationList();
+    FloorallocationListReload();
 }

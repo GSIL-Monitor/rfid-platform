@@ -381,6 +381,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_epc_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
+<jsp:include page="uniqueCode_floorallocation.jsp"></jsp:include>
 <jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>

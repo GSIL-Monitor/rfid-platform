@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.dao.logistics.FloorallocationDao;
 import com.casesoft.dmc.dao.logistics.SaleOrderBillDao;
 import com.casesoft.dmc.dao.logistics.TransferOrderBillDao;
 import com.casesoft.dmc.model.logistics.*;
@@ -42,6 +43,8 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
     private SaleOrderBillDao saleOrderBillDao;
     @Autowired
     private SaleOrderBillService saleOrderBillService;
+    @Autowired
+    private FloorallocationDao floorallocationDao;
 
     @Override
     public Page<TransferOrderBill> findPage(Page<TransferOrderBill> page, List<PropertyFilter> filters) {
@@ -321,5 +324,21 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
     public Integer findBillStatus(String billNo) {
         return this.transferOrderBillDao.findUnique("select status from TransferOrderBill where id = ?",billNo);
+    }
+
+    public List<FloorallocationAndSku> findFloorallocationAndSku(List<TransferOrderBillDtl> transferOrderBillDtls,TransferOrderBill transferOrderBill){
+        //得到入库数量小于数量的sku
+        String skus=null;
+        for(TransferOrderBillDtl transferOrderBillDtl:transferOrderBillDtls){
+            if(transferOrderBillDtl.getInQty()<transferOrderBillDtl.getQty()){
+                if(CommonUtil.isBlank(skus)){
+                    skus="'"+transferOrderBillDtl.getSku()+"'";
+                }else{
+                    skus+=",'"+transferOrderBillDtl.getSku()+"'";
+                }
+            }
+        }
+        String sql="select sku,Floorallocation,count(code) as sum from STOCK_EPCSTOCK t where t.warehouseid='"+transferOrderBill.getDestId()+"' and t.instock='1' and t.sku in("+skus+") group by t.sku,t.floorallocation";
+        return this.floorallocationDao.findBySQl(FloorallocationAndSku.class,sql,null);
     }
 }
