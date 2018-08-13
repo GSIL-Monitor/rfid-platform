@@ -494,9 +494,27 @@ function initAddGrid() {
         },
         afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
             if (cellname === "discount") {
-                var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+             /*   var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
                 var var_totActPrice = Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
                 $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);*/
+                //判断实际价格是不是小于门店批发价格
+                var var_actPrice;
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "puPrice")&&isUserAbnormal){
+                    $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "puPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
+                    var_actPrice =  $('#addDetailgrid').getCell(rowid, "puPrice");
+                    $('#addDetailgrid').setCell(rowid, "actPrice", $('#addDetailgrid').getCell(rowid, "puPrice"));
+                    $('#addDetailgrid').setCell(rowid, "abnormalStatus",1);
+                    changeWordscolor(rowid,"blue");
+                }else{
+                    $('#addDetailgrid').setCell(rowid, "discount", value);
+                    var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                    $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                    $('#addDetailgrid').setCell(rowid, "abnormalStatus", 0);
+                    changeWordscolor(rowid,"black");
+                }
+
+                var var_totActPrice = Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
                 $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
             } else if (cellname === "actPrice") {
                 var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
