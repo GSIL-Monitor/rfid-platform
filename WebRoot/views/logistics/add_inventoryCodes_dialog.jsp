@@ -179,7 +179,7 @@
                  ajax_data = {warehId: wareHouse, code: code, type: taskType};
                  }*/
                 ajax_url = basePath + "/logistics/inventoryBillController/checkinventoryEpcStock.do";
-                ajax_data = { code: code};
+                ajax_data = { code: code,ownerId: ownerId};
                 $.ajax({
                     async: false,
                     url: ajax_url,

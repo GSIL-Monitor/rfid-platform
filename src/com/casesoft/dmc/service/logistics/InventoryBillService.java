@@ -92,6 +92,14 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
         EpcStock epcStock =this.inventoryBillDao.findUnique(hql,new Object[]{code});
         return epcStock;
     }
+    /*
+    add by lly
+     */
+    public EpcStock checkEpcStockNew(String code,String ownerId){
+        String hql="from EpcStock t where t.code=? and ownerId=?";
+        EpcStock epcStock =this.inventoryBillDao.findUnique(hql,new Object[]{code,ownerId});
+        return epcStock;
+    }
 
     public List<EpcStock> findEpcStockListBycodes(String codes){
         //String hql="from EpcStock t where t.code in (?)";
@@ -182,9 +190,9 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
             inventoryBill.setActQty(1L);
             Style style = CacheManager.getStyleById(epcStock.getStyleId());
             inventoryBill.setActPrice(style.getPrice());
-            inventoryBill.setOrigId(epcStock.getOwnerId());
+            inventoryBill.setOrigId(epcStock.getWarehouseId());
             inventoryBill.setOrigUnitId(epcStock.getOwnerId());
-            inventoryBill.setOwnerId(epcStock.getWarehouseId());
+            inventoryBill.setOwnerId(epcStock.getOwnerId());
             inventoryBill.setCode(epcStock.getCode());
             inventoryBill.setState(Constant.Token.Storage_Adjust_Inbound+"");
             Inventorylistno.add(inventoryBill);

@@ -42,6 +42,7 @@ import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class CacheManager {
 	private static int maxProductId;
 	public static Unit company = null;
 //add170119
+
 
 	public static List<PropertyKey> getCodeDetailListByType(String typeCode) {
 		Element result = cache.get("propertyKey");

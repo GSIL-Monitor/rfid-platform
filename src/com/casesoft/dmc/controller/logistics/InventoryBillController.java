@@ -120,11 +120,19 @@ public class InventoryBillController extends BaseController implements ILogistic
     public MessageBox convert(String strDtlList, String recordList) throws Exception {
         return null;
     }
-    @RequestMapping(value = "/index")
+    //@RequestMapping(value = "/index")
     @Override
     public String index() {
 
         return "/views/logistics/InventoryBill";
+    }
+    @RequestMapping(value = "/index")
+    public ModelAndView indexMV() throws Exception {
+
+        ModelAndView mv = new ModelAndView("/views/logistics/InventoryBill");
+        User user = this.getCurrentUser();
+        mv.addObject("ownerId", user.getOwnerId());
+        return mv;
     }
     @RequestMapping(value = "/checkEpcStock")
     @ResponseBody
@@ -166,6 +174,7 @@ public class InventoryBillController extends BaseController implements ILogistic
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
         }
         EpcStock epcStock = this.inventoryBillService.checkEpcStock(code);
+
         if (CommonUtil.isBlank(epcStock)) {
             Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
             if (CommonUtil.isNotBlank(tagEpc)) {
@@ -182,7 +191,7 @@ public class InventoryBillController extends BaseController implements ILogistic
                 StockUtil.convertEpcStock(epcStock);
                 this.epcStockService.save(epcStock);
             } else {
-                return new MessageBox(false, "唯一码:" + code + "不能入库");
+                return new MessageBox(false, "唯一码:" + code + "不能入库,或不在所属仓库");
             }
         }else{
             if(0==epcStock.getInStock()){
@@ -197,14 +206,14 @@ public class InventoryBillController extends BaseController implements ILogistic
     }
     @RequestMapping(value = "/checkinventoryEpcStock")
     @ResponseBody
-    public MessageBox checkinventoryEpcStock(String code){
+    public MessageBox checkinventoryEpcStock(String code,String ownerId){
         if (code.length() != 13) {
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
         }
-        EpcStock epcStock = this.inventoryBillService.checkEpcStock(code);
+        EpcStock epcStock = this.inventoryBillService.checkEpcStockNew(code,ownerId);
         if (CommonUtil.isBlank(epcStock)) {
-            Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
+            Epc tagEpc = this.epcStockService.findTagEpcByCodeNew(code,ownerId);
             if (CommonUtil.isNotBlank(tagEpc)) {
                 epcStock = new EpcStock();
                 epcStock.setId(code);
