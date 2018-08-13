@@ -550,8 +550,9 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @RequestMapping(value = {"/convertIn","/convertInWS"})
     @ResponseBody
     public MessageBox convertIn(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
-//        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = this.saleOrderReturnBillService.findDtlByBillNo(billNo);
-        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = JSON.parseArray(strDtlList, SaleOrderReturnBillDtl.class);
+        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = this.saleOrderReturnBillService.findDtlByBillNo(billNo);
+        //不能用前端传的，没id，后台重新查,lly
+        //List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = JSON.parseArray(strDtlList, SaleOrderReturnBillDtl.class);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         //入库校验
         List<EpcStock> EpcStockList = epcStockService.findInStockByEpcList(epcList);
