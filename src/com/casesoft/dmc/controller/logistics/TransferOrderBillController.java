@@ -430,8 +430,16 @@ public class TransferOrderBillController extends BaseController implements ILogi
     public List<FloorallocationAndSku> findFloorallocationAndSku(String billNo){
         List<TransferOrderBillDtl> transferOrderBillDtls = this.transferOrderBillService.findBillDtlByBillNo(billNo);
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("id", billNo);
-        List<FloorallocationAndSku> floorallocationAndSku = this.transferOrderBillService.findFloorallocationAndSku(transferOrderBillDtls, transferOrderBill);
-        return floorallocationAndSku;
+        List<FloorallocationAndSku> floorallocationAndSkus = this.transferOrderBillService.findFloorallocationAndSku(transferOrderBillDtls, transferOrderBill);
+        for(FloorallocationAndSku floorallocationAndSku:floorallocationAndSkus){
+            String floorallocation = floorallocationAndSku.getFloorallocation();
+            if(CommonUtil.isNotBlank(floorallocation)){
+                String[] floorallocationArray = floorallocation.split("-");
+                String unitname=CacheManager.getUnitById(floorallocationArray[0]).getName();
+                floorallocationAndSku.setFloorallocation(unitname+"仓库-"+floorallocationArray[1]+"货架-"+floorallocationArray[2]+"货层-"+floorallocationArray[2]+"货位");
+            }
+        }
+        return floorallocationAndSkus;
     }
     @RequestMapping(value = "/findResourceButton")
     @ResponseBody
