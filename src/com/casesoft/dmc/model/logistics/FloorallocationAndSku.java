@@ -10,4 +10,27 @@ public class FloorallocationAndSku {
     private String Floorallocation;
     private BigDecimal sum;
 
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public String getFloorallocation() {
+        return Floorallocation;
+    }
+
+    public void setFloorallocation(String floorallocation) {
+        Floorallocation = floorallocation;
+    }
+
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
+    }
 }
