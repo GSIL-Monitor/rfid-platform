@@ -459,7 +459,17 @@ function addNew(isScan){
     setEditFormVal();
     $("#addDetailgrid").trigger("reloadGrid");
     $("#codedetaillgrid").trigger("reloadGrid");
-    //$("#edit_origId").selectpicker('refresh');
+    //录入状态可以所有操作
+    $("#SODtl_rmIdAdjust").removeAttr("disabled");
+    $("#SODtl_cancel").removeAttr("disabled");
+    $("#SODtl_addUniqCode").removeAttr("disabled");
+    //可编辑表单
+    $("#edit_origId").attr('disabled', false);
+    //入库选择点击事件
+    $("#destId").click(function () {
+        $("#tree").css("display","block");
+    });
+    $(".selectpicker").selectpicker('refresh');
     initButtonGroup(0);
 }
 function setFooterData() {
@@ -717,7 +727,7 @@ function initSearchAndEditForm(){
 function initSelectDestForm() {
 
     $.ajax({
-        url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#edit_destUnitId").val(),
+        url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
         cache: false,
         async: false,
         type: "POST",
