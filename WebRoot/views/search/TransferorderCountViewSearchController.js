@@ -28,6 +28,12 @@ $(function () {
     $(".k-grid-toolbar").css("display", "none");//隐藏toolbar
     $('.selectpicker').selectpicker('refresh');
 });
+
+function refresh() {
+    resetData();
+}
+
+
 function inttitledata() {
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
@@ -1185,6 +1191,7 @@ function search() {
 function resetData() {
     var gridData = $("#" + exportExcelid).data("kendoGrid");
     gridData.dataSource.filter({});
+    _reset();
 }
 function exportExcelPOI() {
     var filters = serializeToFilter($("#searchForm"));
