@@ -12,6 +12,7 @@ var sizeArry="S,XS,M,L,XL,XXL,XXXL,F,other";
 var autoSelect =false;//是否自动选中
 var showScanDialog = false;
 var isCheckWareHouse=false;//是否检测出库仓库
+var slaeOrder_status = "0";
 $(function () {
     console.log(isUserAbnormal)
     /*初始化左侧grig*/
@@ -165,7 +166,6 @@ function initSearchGrid() {
 }
 
 function initDetailData(rowid){
-    debugger
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     slaeOrder_status = rowData.status;
@@ -203,8 +203,8 @@ function addNew(isScan){
     initCustomerTypeForm();
     $("#addDetailgrid").trigger("reloadGrid");
     $(".selectpicker").selectpicker('refresh');
+    slaeOrder_status ="0";
     initButtonGroup(0);
-
 }
 function setFooterData() {
 
@@ -1308,8 +1308,8 @@ function initButtonGroup(billStatus){
         if (slaeOrder_status != "0" && userId != "admin") {
             $("#edit_guest_button").attr({"disabled": "disabled"});
             $("#SODtl_addUniqCode").attr({"disabled": "disabled"});
-            $("#SODtl_save").attr({"disabled": "disabled"});
-            $("#SODtl_cancel").attr({"disabled": "disabled"});
+        }else {
+            $("#edit_guest_button").removeAttr("disabled");
         }
         //如果入库仓库为空，禁止入库按钮
         if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
