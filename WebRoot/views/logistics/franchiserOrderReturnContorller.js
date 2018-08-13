@@ -1035,6 +1035,9 @@ function addProductInfo(status) {
             addProductInfo.push(productInfo);
         }
     });
+
+    jQuery("#color_size_grid").trigger("reloadGrid");  //清空数据重新加载
+
     var isAdd = true;
     $.each(addProductInfo, function (index, value) {
         isAdd = true;
