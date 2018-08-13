@@ -2,7 +2,7 @@ var searchUrl = basePath + "/logistics/transferOrder/page.do?filter_GTI_status=-
 var billNo;
 var taskType; //用于判断出入库类型 1入库 0 出库
 var wareHouse;
-var isCheckWareHouse=false;//是否检测出库仓库
+var isCheckWareHouse=true;//是否检测出库仓库
 $(function () {
     initGrid();
     /*初始化右侧grig*/
