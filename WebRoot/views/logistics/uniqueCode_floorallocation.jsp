@@ -36,7 +36,7 @@
             mtype: "POST",
             colModel: [
                 {name: 'sku', label: 'SKU', width: 150},
-                {name: 'Floorallocation', label: '库位'},
+                {name: 'floorallocation', label: '库位',width: 150},
                 {name: 'sum',label:'数量',width:150},
             ],
             rownumbers: true,

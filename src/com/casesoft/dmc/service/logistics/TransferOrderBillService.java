@@ -338,7 +338,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
                 }
             }
         }
-        String sql="select sku,Floorallocation,count(code) as sum from STOCK_EPCSTOCK t where t.warehouseid='"+transferOrderBill.getDestId()+"' and t.instock='1' and t.sku in("+skus+") group by t.sku,t.floorallocation";
+        String sql="select sku,Floorallocation,count(code) as sum from STOCK_EPCSTOCK t where t.warehouseid='"+transferOrderBill.getOrigId()+"' and t.instock='1' and t.sku in("+skus+") group by t.sku,t.floorallocation";
         return this.floorallocationDao.findBySQl(FloorallocationAndSku.class,sql,null);
     }
 }

@@ -2,7 +2,7 @@ var searchUrl = basePath + "/logistics/transferOrder/page.do?filter_GTI_status=-
 var billNo;
 var taskType; //用于判断出入库类型 1入库 0 出库
 var wareHouse;
-var isCheckWareHouse=false;//是否检测出库仓库
+var isCheckWareHouse=true;//是否检测出库仓库
 $(function () {
     initGrid();
     /*初始化右侧grig*/
@@ -542,6 +542,10 @@ function initButtonGroup(billStatus) {
         "<button id='TRDtl_floorallocation' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='floorallocation()'>" +
         "    <i class='ace-icon fa fa-sign-in'></i>" +
         "    <span class='bigger-110'>库位详情</span>" +
+        "</button>" +
+        "<button id='TRDtl_wareHouseInAll' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseInAll()'>" +
+        "    <i class='ace-icon fa fa-sign-in'></i>" +
+        "    <span class='bigger-110'>全部入库</span>" +
         "</button>" +
         "<button id='TRDtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
         "    <i class='ace-icon fa fa-print'></i>" +
@@ -1485,4 +1489,58 @@ function floorallocation() {
     $("#show-floorallocation-list").modal('show');
     initFloorallocationList();
     FloorallocationListReload();
+}
+function wareHouseInAll() {
+    var billNo  = $("#edit_billNo").val();
+    $("#modal-addTransfer-table").modal('show').on('hidden.bs.modal', function () {
+        $("#epcTransfergrid").clearGridData();
+    });
+    $("#epcTransfergrid").jqGrid('setGridParam', {
+        page: 1,
+        url: basePath + '/stock/warehStock/findNotInTransfer.do',
+        postData: {billNo: billNo}
+    }).trigger("reloadGrid");
+}
+
+function saveTransferEpc() {
+    cs.showProgressBar();
+    var ids = $("#epcTransfergrid").jqGrid("getGridParam", "selarrrow");
+    if (ids.length == 0) {
+        cs.closeProgressBar();
+        bootbox.alert("请选择要入库的唯一码信息");
+    } else {
+        var epcArray = [];
+        $.each(ids, function (index, value) {
+            var rowData = $("#epcTransfergrid").getRowData(value);
+            epcArray.push(rowData);
+        });
+        $.ajax({
+            dataType: "json",
+            // async:false,
+            url: basePath + "/logistics/transferOrder/convertIn.do",
+            data: {
+                billNo: $("#edit_billNo").val(),
+                strEpcList: JSON.stringify(epcArray),
+                userId: userId
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+                $("#WareHouseIn_dialog_buttonGroup").removeAttr("disabled");
+                if (msg.success) {
+                    $.gritter.add({
+                        text: msg.msg,
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    $("#modal-addEpc-table").modal('hide');
+                    $("#addDetailgrid").trigger("reloadGrid");
+                    $("#grid").trigger("reloadGrid");
+                    initButtonGroup(transferOrder_status);
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+        $("#modal-addTransfer-table").modal('hide');
+    }
 }
