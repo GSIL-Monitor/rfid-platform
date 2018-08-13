@@ -71,7 +71,10 @@ function initGrid() {
                     }
                 }
             },
-            {name:'reason',label: '原因', editable: true, width: 40}
+            {name:'reason',label: '原因', editable: true, width: 40,hidden: true},
+            {name:'origId',label: '出库仓库', editable: true, width: 40},
+            {name:'destId',label: '入库仓库', editable: true, width: 40}
+
             /*{name: 'sizeName', label: '尺码', editable: true, width: 40},*/
         ],
 

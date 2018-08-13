@@ -460,9 +460,7 @@ function addNew(isScan){
     $("#addDetailgrid").trigger("reloadGrid");
     $("#codedetaillgrid").trigger("reloadGrid");
     //$("#edit_origId").selectpicker('refresh');
-    pageType="add";
-    initButtonGroup(pageType);
-    loadingButtonDivTable(0);
+    initButtonGroup(0);
 }
 function setFooterData() {
 
