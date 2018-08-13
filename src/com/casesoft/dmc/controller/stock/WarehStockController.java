@@ -5,7 +5,8 @@ import java.util.List;
 
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.cfg.PropertyKey;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.EpcStock;
@@ -22,8 +23,6 @@ import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.DetailStockDao;
 import com.casesoft.dmc.model.erp.BillDtl;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
 import com.casesoft.dmc.model.search.DetailStockView;
@@ -34,6 +33,7 @@ import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
@@ -78,6 +78,9 @@ public class WarehStockController extends BaseController {
     private WarehouseService warehouseService;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private TransferOrderBillService transferOrderBillService;
+
 
     @RequestMapping(value = "/index")
     public String index() {
@@ -660,7 +663,53 @@ public class WarehStockController extends BaseController {
 
     }
 
+    @RequestMapping(value = "/findNotInTransfer")
+    @ResponseBody
+    public List<Epc> findNotInTransfer(String billNo){
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("id", billNo);
+        List<TransferOrderBillDtl> transferOrderBillDtls = this.transferOrderBillService.findBillDtlByBillNo(billNo);
+        Map<String,String> codeMap = new HashMap<>();
+        List<BillRecord> billRecordList = this.transferOrderBillService.getBillRecod(billNo);
+     /*   String code="";
+        for(BillRecord r : billRecordList){
+           if(CommonUtil.isBlank(code)){
+               code+=r.getCode();
+           }else{
+               code+=","+r.getCode();
+           }
+        }*/
+        for(BillRecord r : billRecordList){
+            if(codeMap.containsKey(r.getSku())){
+                String code = codeMap.get(r.getSku());
+                code += ","+r.getCode();
+                codeMap.put(r.getSku(),code);
+            }else{
+                codeMap.put(r.getSku(),r.getCode());
+            }
+        }
+        ArrayList<Epc> list=new ArrayList<Epc>();
+        for (TransferOrderBillDtl dtl : transferOrderBillDtls) {
+            if(codeMap.containsKey(dtl.getSku())){
+                String[] split=codeMap.get(dtl.getSku()).split(",");
+                if(CommonUtil.isNotBlank(split)){
+                    for(int i=0;i<split.length;i++){
+                        MessageBox messageBox = checkEpcStock(transferOrderBill.getDestId(), split[i], 1, billNo, false);
+                        if(messageBox.getSuccess()){
+                            Epc epc=new Epc();
+                            epc.setCode(split[i]);
+                            epc.setSku(dtl.getSku());
+                            epc.setColorId(dtl.getColorId());
+                            epc.setSizeId(dtl.getSizeId());
+                            epc.setStyleId(dtl.getStyleId());
+                            list.add(epc);
+                        }
+                    }
 
+                }
+            }
+        }
+        return list;
+    }
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param codes   唯一码

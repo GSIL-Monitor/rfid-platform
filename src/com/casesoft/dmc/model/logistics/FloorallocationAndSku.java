@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  */
 public class FloorallocationAndSku {
     private String sku;
-    private String Floorallocation;
+    private String floorallocation;
     private BigDecimal sum;
 
     public String getSku() {
@@ -19,11 +19,11 @@ public class FloorallocationAndSku {
     }
 
     public String getFloorallocation() {
-        return Floorallocation;
+        return floorallocation;
     }
 
     public void setFloorallocation(String floorallocation) {
-        Floorallocation = floorallocation;
+        this.floorallocation = floorallocation;
     }
 
     public BigDecimal getSum() {
