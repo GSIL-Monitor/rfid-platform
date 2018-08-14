@@ -167,6 +167,29 @@ function initSearchGrid() {
 
 function initDetailData(rowid){
     var rowData = $("#grid").getRowData(rowid);
+    if(rowData.ownerId!=""&&rowData.ownerId!=undefined){
+        var url = basePath + "/sys/user/list.do?filter_EQI_type=4&filter_EQS_ownerId=" + rowData.ownerId;
+        $.ajax({
+            url: url,
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#edit_busnissId").empty();
+                $("#edit_busnissId").append("<option value='' >--请选择--</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#edit_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
+                }
+                fullDetailData(rowData)
+            }
+        });
+    }else{
+        fullDetailData(rowData);
+    }
+
+}
+function fullDetailData(rowData) {
     $("#editForm").setFromData(rowData);
     slaeOrder_status = rowData.status;
     if (slaeOrder_status != "0" && userId != "admin") {
@@ -186,8 +209,6 @@ function initDetailData(rowid){
     initeditGrid(rowData.billNo);
     initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
-
-
 }
 /**
  * 新增单据调用
@@ -205,6 +226,7 @@ function addNew(isScan){
     $(".selectpicker").selectpicker('refresh');
     slaeOrder_status ="0";
     initButtonGroup(0);
+    initSelectBusinessIdFormOnAddNew();
 }
 function setFooterData() {
 
@@ -1104,7 +1126,34 @@ function initSelectBusinessIdForm() {
         }
     });
 }
+function initSelectBusinessIdFormOnAddNew() {
+    var url;
+    if (curOwnerId == "1") {
+        url = basePath + "/sys/user/list.do?filter_EQI_type=4";
+    } else {
+        url = basePath + "/sys/user/list.do?filter_EQI_type=4&filter_EQS_ownerId=" + curOwnerId;
+    }
+    $.ajax({
+        url: url,
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            debugger
+            $("#edit_busnissId").empty();
+            $("#edit_busnissId").append("<option value='' >--请选择--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#edit_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
 
+            }
+            if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
+                $("#edit_busnissId").val(defaultSaleStaffId);
+            }
+            $(".selectpicker").selectpicker('refresh');
+        }
+    });
+}
 function input_keydown() {
     $("#edit_discount").keydown(function (event) {
         if (event.keyCode == 13) {
