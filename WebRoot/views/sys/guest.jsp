@@ -102,17 +102,6 @@
                                                type="text" name="unitName" readonly/>
                                     </div>
                             </div>
-
-                            <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_status">客户状态</label>
-                            <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                <select id="search_status" class="chosen-select form-control" name="filter_EQI_status">
-                                    <option value="">--请选择--</option>
-                                    <option value="1">已启用</option>
-                                    <option value="0">已废除</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_rank">客户等级</label>
                             <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                 <select id="search_rank" class="chosen-select form-control selectpicker show-tick" data-live-search="true" name="filter_EQS_idCard">
