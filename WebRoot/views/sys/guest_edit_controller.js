@@ -179,7 +179,7 @@ function initEditFormValid() {
                         message: '请输入11位电话号码'
                     },
                     regexp: {
-                        regexp: /^1[3|5|7|8]{1}[0-9]{9}$/,
+                        regexp: /^1[2|3|4|5|6|7|8]{1}[0-9]{9}$/,
                         message: '请输入正确的电话号码'
                     }
                 }
