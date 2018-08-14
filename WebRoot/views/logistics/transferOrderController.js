@@ -593,7 +593,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["TRDtl_cancel","TRDtl_save,TRDtl_addUniqCode"];
             break;
         case "2" :
-            disableButtonIds = ["TRDtl_cancel","TRDtl_save","TRDtl_addUniqCode","TRDtl_wareHouseOut","TRDtl_wareHouseIn"];
+            disableButtonIds = ["TRDtl_cancel","TRDtl_save","TRDtl_addUniqCode","TRDtl_wareHouseOut","TRDtl_wareHouseIn","TRDtl_floorallocation","TRDtl_wareHouseInAll"];
             break;
         case "3":
             disableButtonIds = ["TRDtl_cancel","TRDtl_save","TRDtl_addUniqCode"];
@@ -875,8 +875,8 @@ function wareHouseOut() {
         var epcArray = [];
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             var rowData = $("#addDetailgrid").getRowData(value);
-            var codes = rowData.uniqueCodes.split(",");
-            if (codes && codes !== null && codes !== "") {
+            if (rowData.uniqueCodes && rowData.uniqueCodes !== null && rowData.uniqueCodes !== "") {
+                var codes = rowData.uniqueCodes.split(",");
                 $.each((codes), function (index, value) {
                     // if (uniqueCodes_inHouse.indexOf(value) !== -1) {
                     var epc = {};
@@ -898,6 +898,7 @@ function wareHouseOut() {
             });
             cs.closeProgressBar();
             $("#TRDtl_wareHouseOut").removeAttr("disabled");
+            edit_wareHouseOut();
             return;
         }
 
@@ -1543,4 +1544,133 @@ function saveTransferEpc() {
         });
         $("#modal-addTransfer-table").modal('hide');
     }
+}
+/**
+ * 扫码出库
+ * */
+function edit_wareHouseOut() {
+    inOntWareHouseValid = 'addPage_scanUniqueCode';
+    var origId = $("#edit_origId").val();
+    taskType = 0;
+    wareHouse = origId;
+    billNo = $("#edit_billNo").val();
+    if (origId && origId !== null) {
+        $("#dialog_buttonGroup").html("" +
+            "<button type='button' id='so_savecode_button' class='btn btn-primary' onclick='confirmWareHouseOut()'>确认出库</button>"
+        );
+        $("#add-uniqCode-dialog").modal('show').on('hidden.bs.modal', function () {
+            $("#uniqueCodeGrid").clearGridData();
+        });
+        initUniqeCodeGridColumn("showStockPrice");
+        $("#codeQty").text(0);
+    } else {
+        bootbox.alert("发货仓库不能为空！");
+    }
+    allCodes = "";
+}
+
+/*
+ * 扫码出库确认
+ * */
+function confirmWareHouseOut() {
+    cs.showProgressBar();
+    //$("#so_comfirmout_button").attr({"disabled": "disabled"});
+    var billNo = $("#edit_billNo").val();
+    var epcArray = [];
+    $.each($("#uniqueCodeGrid").getDataIDs(), function (index, value) {
+        var rowData = $("#uniqueCodeGrid").getRowData(value);
+        epcArray.push(rowData);
+    });
+    if (epcArray.length == 0) {
+        bootbox.alert("请添加唯一码!");
+        $("#so_comfirmout_button").removeAttr("disabled");
+        cs.closeProgressBar();
+        return;
+    }
+    $.each(epcArray, function (index, value) {
+        $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.sku === dtlRow.sku) {
+                if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+                    $.gritter.add({
+                        text: value.code + "不能重复添加",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    return true;
+                }
+                dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                if (dtlRow.id) {
+                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                } else {
+                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                }
+            }
+        });
+    });
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    $.ajax({
+        dataType: "json",
+        // async:false,
+        url: basePath + "/logistics/transferOrder/convertOut.do",
+        data: {
+            billNo: billNo,
+            strEpcList: JSON.stringify(epcArray),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            $("#TRDtl_wareHouseOut").removeAttr("disabled");
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#modal-addEpc-table").modal('hide');
+                $("#addDetailgrid").jqGrid('setGridParam', {
+                    page: 1,
+                    url: basePath + "/logistics/transferOrder/findBillDtl.do?billNo=" + billNo,
+                });
+                $("#addDetailgrid").trigger("reloadGrid");
+                $("#grid").trigger("reloadGrid");
+                initButtonGroup(transferOrder_status);
+                setFooterData();
+                bootbox.alert("已出库" + epcArray.length + "件商品");
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+    /*$.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/saleOrderBill/convertOut.do",
+        data: {
+            billNo: billNo,
+            strEpcList: JSON.stringify(epcArray),
+            strDtlList: JSON.stringify(dtlArray),
+            userId: userId
+        },
+        type: "POST",
+        success: function (msg) {
+            $("#so_comfirmout_button").removeAttr("disabled");
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#modal-addEpc-table").modal('hide');
+                $("#addDetailgrid").trigger("reloadGrid");
+                _search();
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });*/
+    $("#add-uniqCode-dialog").modal('hide');
 }
