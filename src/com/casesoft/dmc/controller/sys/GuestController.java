@@ -6,16 +6,19 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.GuestView;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.sys.GuestViewService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +51,8 @@ public class GuestController extends BaseController implements IBaseInfoControll
     private SaleOrderBillService saleOrderBillService;
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
+    @Autowired
+    private ResourcePrivilegeService resourcePrivilegeService;
 
     //@RequestMapping(value = "/index")
     @Override
@@ -184,6 +189,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
         mav.addObject("pageType", "add");
         mav.addObject("ownerId", getCurrentUser().getOwnerId());
         mav.addObject("userId", getCurrentUser().getId());
+        String roleId = getCurrentUser().getRoleId();
+        List<ResourcePrivilege> resourcePrivilegeList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("sys/guest",roleId,"div");
+        mav.addObject("fieldList", FastJSONUtil.getJSONString(resourcePrivilegeList));
         return mav;
     }
 
@@ -207,6 +215,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
             }
             mav.addObject("guest", gst);
         }
+        String roleId = getCurrentUser().getRoleId();
+        List<ResourcePrivilege> resourcePrivilegeList = this.resourcePrivilegeService.findButtonByCodeAndRoleId("sys/guest",roleId,"div");
+        mav.addObject("fieldList", FastJSONUtil.getJSONString(resourcePrivilegeList));
         return mav;
     }
 

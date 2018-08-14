@@ -177,14 +177,15 @@
                                     <input class="form-control" name="depositBank" value="${guest.depositBank}"
                                            id="edit_depositBank"/>
                                 </div>
-
-                                <label class="col-xs-4 col-sm-4 col-md-3 col-lg-3 control-label text-right"
-                                       for="edit_discount">
-                                    <span style="color: #ff0000;">*</span>
-                                    默认折扣(%)</label>
-                                <div class="col-xs-8 col-sm-8 col-md-1 col-lg-1">
-                                    <input class="form-control" id="edit_discount" name="discount"
-                                           value="${guest.discount}"/>
+                                <div id="discount_div">
+                                    <label class="col-xs-4 col-sm-4 col-md-3 col-lg-3 control-label text-right"
+                                           for="edit_discount">
+                                        <span style="color: #ff0000;">*</span>
+                                        默认折扣(%)</label>
+                                    <div class="col-xs-8 col-sm-8 col-md-1 col-lg-1">
+                                        <input class="form-control" id="edit_discount" name="discount"
+                                               value="${guest.discount}"/>
+                                    </div>
                                 </div>
                             </div>
 
@@ -277,12 +278,6 @@
                             </div>
                             <div class="form-group">
                                 <div id="guest_edit_buttongroup" class="col-sm-offset-5 col-sm-12">
-                                    <%--<button id="save_guest_button" class="btn btn-primary" type="button" onclick="saveGuest()">
-                                        <i class="ace-icon fa fa-save"></i> <span class="bigger-110">保存</span>
-                                    </button>
-                                    <button id ="upadate_guest_button"class="btn btn-primary" type="button" onclick="updateGuest()">
-                                        <i class="ace-icon fa fa-save"></i> <span class="bigger-110">保存</span>
-                                    </button>--%>
                                 </div>
                             </div>
                         </form>
@@ -297,7 +292,19 @@
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>
 <script>
     var pageType = "${pageType}";
+    var fieldList = ${fieldList};
     $(function () {
+        $.each(fieldList,function (index,value) {
+            if(fieldList[index].isShow===0){
+                if( $("#"+fieldList[index].privilegeId).length>0){
+                    $("#"+fieldList[index].privilegeId).show();
+                }
+            }else {
+                if( $("#"+fieldList[index].privilegeId).length>0){
+                    $("#"+fieldList[index].privilegeId).hide();
+                }
+            }
+        });
         keydowns();
         if (userId=="admin"){
         }else {

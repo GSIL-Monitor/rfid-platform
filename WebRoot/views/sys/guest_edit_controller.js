@@ -37,6 +37,9 @@ function initButtonGroup(){
     }
 }
 function updateGuest(){
+    if($('#edit_discount').is(':hidden')){
+        $('#edit_discount').val(100);
+    }
     $("#edit_type").attr("disabled",false);
     $('#editForm').data('bootstrapValidator').validate();
     if ($("#edit_ownerId").val() == "") {
@@ -90,6 +93,9 @@ function initSelectBusinessIdForm() {
 
 
 function saveGuest() {
+    if($('#edit_discount').is(':hidden')){
+        $('#edit_discount').val(100);
+    }
     $("#edit_type").attr("disabled",false);
     $('#editForm').data('bootstrapValidator').validate();
     if ($("#edit_ownerId").val() == "") {
