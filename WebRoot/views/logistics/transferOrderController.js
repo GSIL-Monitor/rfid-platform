@@ -184,8 +184,8 @@ function initDetailData(rowid) {
     $(".selectpicker").selectpicker('refresh');
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
-    initeditGrid(rowData.billNo);
     pageType="edit";
+    initeditGrid(rowData.billNo);
     initButtonGroup(transferOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
 }

@@ -36,11 +36,19 @@ public class SettingController extends BaseController {
         List<Setting> settingList = this.settingService.getAll();
         List<Setting> operateList = this.settingService.find(filters);
         Iterator sListIterator = settingList.iterator();
-        int i=1;
+
         while(sListIterator.hasNext()){
-            sListIterator.next();
-            if(i>6){
+            Setting setting = (Setting) sListIterator.next();
+            if("sys".equals(setting.getValueType())){
                 sListIterator.remove();
+            }
+        }
+        Iterator sListIterator1 = settingList.iterator();
+        int i= 1;
+        while (sListIterator1.hasNext()){
+            sListIterator1.next();
+            if(i>6){
+                sListIterator1.remove();
             }
             i++;
         }
