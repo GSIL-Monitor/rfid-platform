@@ -24,7 +24,6 @@ $(function () {
     addProduct_keydown();
     input_keydown();
     //动态加载按钮
-    loadingButtonDivTable();
     $("#SRDtl_check").hide();
 });
 
@@ -333,11 +332,9 @@ function initDetailData(rowid){
     $("#editForm").setFromData(rowData);
     slaeOrderReturn_status = rowData.status;
     slaeOrderReturn_customerType=rowData.customerType;
-    if (userId == "admin") {
-        $("#edit_guest_button").removeAttr("disabled");
-        $("#edit_origId").attr('disabled', true);
-        $("#edit_destId").attr('disabled', true);
-    }
+    $("#edit_guest_button").removeAttr("disabled");
+    $("#edit_origId").attr('disabled', true);
+    $("#edit_destId").attr('disabled', true);
     $(".selectpicker").selectpicker('refresh');
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
@@ -348,8 +345,7 @@ function initDetailData(rowid){
     initCodeGrid({billNo: rowData.billNo, warehId: rowData.origId});
     $("#codegrid").trigger("reloadGrid");
     pageType="edit";
-    initButtonGroup(pageType);
-    loadingButtonDivTable(slaeOrderReturn_status);
+    initButtonGroup(slaeOrderReturn_status);
 
 }
 
@@ -2571,7 +2567,7 @@ function loadingButtonDivTable(billStatus) {
             $("#"+value.privilegeId).removeAttr("disabled");
         }
     });
-    if ($("#edit_status").val()!== "0" && userId !== "admin") {
+    if ($("#edit_status").val() != "0") {
         $("#edit_guest_button").attr({"disabled": "disabled"});
         $("#SRDtl_save").attr({"disabled": "disabled"});
         $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
@@ -2586,7 +2582,7 @@ function loadingButtonDivTable(billStatus) {
         $("#SRDtl_wareHouseIn").hide();
         $("#SRDtl_wareHouseIn_noOutHouse").show();
     }
-    if ($("#edit_billNo").val()!= "") {
+    if ($("#edit_billNo").val()!= "" && $("#edit_status").val() == "2") {
         $("#SRDtl_addUniqCode").hide();/*
          $("#SRDtl_wareHouseIn_noOutHouse").hide();
          $("#SRDtl_wareHouseOut").hide();
