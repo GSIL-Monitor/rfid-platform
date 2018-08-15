@@ -1135,6 +1135,12 @@ function initTransByStyleIdandSizeIdKendoUIGrid() {
 
                 },
                 {
+                    field: "XS",
+                    title: "XS",
+                    width: "180px",
+
+                },
+                {
                     field: "M",
                     title: "M",
                     width: "180px",
@@ -1155,6 +1161,18 @@ function initTransByStyleIdandSizeIdKendoUIGrid() {
                 {
                     field: "XXL",
                     title: "XXL",
+                    width: "180px",
+
+                },
+                {
+                    field: "XXXL",
+                    title: "XXXL",
+                    width: "180px",
+
+                },
+                {
+                    field: "F",
+                    title: "F",
                     width: "180px",
 
                 }

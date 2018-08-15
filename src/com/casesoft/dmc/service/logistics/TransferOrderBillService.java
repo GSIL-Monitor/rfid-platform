@@ -291,6 +291,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
 
             String styleid="";
             String colorid="";
+            String billno="";
             Iterator it = map.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
@@ -302,6 +303,9 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
                 if(key.equals("colorid")){
                     colorid=(String) entry.getValue();
                 }
+                if(key.equals("billno")){
+                    billno=(String) entry.getValue();
+                }
 
             }
             String url = StyleUtil.returnImageUrl(styleid, rootPath);
@@ -311,11 +315,15 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
             for(int b=0;b<sizeArrays.length;b++){
                 map.put(sizeArrays[b],0);
             }
-            String hql="select t.sizeId,sum(t.qty) as qty from TransferOrderBillDtl t where t.styleId=? and t.colorId=? group by t.sizeId";
-            List<Object> objects = this.transferOrderBillDao.find(hql, new Object[]{styleid, colorid});
+            String hql="select t.sizeId,sum(t.qty) as qty from TransferOrderBillDtl t where t.billNo=? and t.styleId=? and t.colorId=? group by t.sizeId";
+            List<Object> objects = this.transferOrderBillDao.find(hql, new Object[]{billno,styleid, colorid});
             for(int a=0;a<objects.size();a++){
                 Object[] object=(Object[])objects.get(a);
-                map.put(object[0]+"",object[1]);
+                if(sizeArray.indexOf(object[0]+"")!=-1) {
+                    map.put(object[0] + "", object[1]);
+                }else{
+                    map.put("F", Integer.parseInt(map.get("F")+"")+Integer.parseInt(object[1]+""));
+                }
             }
         }
         return list;
