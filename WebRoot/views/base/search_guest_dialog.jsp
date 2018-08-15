@@ -444,22 +444,24 @@
             initSelectDestForm();
             $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_customerType").val(rowData.unitType);
-            if($('#sale_discount_div').is(':hidden')){
-                $("#edit_discount").val(100);
-            }else {
-                if(rowData.discount) {
-                    $("#edit_discount").val(rowData.discount);
-                }else{
+            if (!$('#edit_discount').is(':hidden')){
+                if($('#edit_discount').is(':hidden')){
                     $("#edit_discount").val(100);
+                }else {
+                    if(rowData.discount) {
+                        $("#edit_discount").val(rowData.discount);
+                    }else{
+                        $("#edit_discount").val(100);
+                    }
                 }
-            }
-            $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
-            updateBillDetailData();
-            setDiscount();
-            if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
-                $("#SODtl_wareHouseIn").removeAttr("disabled");
-            } else {
-                $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+                $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
+                updateBillDetailData();
+                setDiscount();
+                if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
+                    $("#SODtl_wareHouseIn").removeAttr("disabled");
+                } else {
+                    $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+                }
             }
         }
         $(".selectpicker").selectpicker('refresh');

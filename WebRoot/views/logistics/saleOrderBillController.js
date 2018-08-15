@@ -1253,6 +1253,7 @@ function initEditFormValid() {
 }
 //将整单折扣设置到明细中
 function setDiscount() {
+
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1523,7 +1524,6 @@ function updateBillDetailData(){
 }
 /*选中订货商品添加*/
 function addProductInfo(status) {
-    debugger
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1536,7 +1536,6 @@ function addProductInfo(status) {
     var ct = $("#edit_customerType").val();
     var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
     $.each($("#color_size_grid").getDataIDs(), function (index, value) {
-        debugger
         var productInfo = $("#color_size_grid").getRowData(value);
         if (productInfo.qty > 0) {
             if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!=""){
@@ -2817,7 +2816,6 @@ function setSanLian(id) {
         type: "POST",
         success: function (msg) {
             if (msg.success) {
-
                 var print = msg.result.print;
                 var cont = msg.result.cont;
                 var contDel = msg.result.contDel;
@@ -2830,12 +2828,11 @@ function setSanLian(id) {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
