@@ -164,6 +164,10 @@ function save(){
     if(!$('#editForm').data('bootstrapValidator').isValid()){
         return ;
     }
+    if ($("#form_ownerId").val()==""||$("#form_unitName").val()==""){
+        bootbox.alert("所属方不能为空");
+        return;
+    }
     var progressDialog = bootbox.dialog({
         message: '<p><i class="fa fa-spin fa-spinner"></i> 数据上传中...</p>'
     });

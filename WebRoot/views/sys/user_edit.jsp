@@ -155,13 +155,6 @@
                         }
                     }
                 },
-                ownerId: {
-                    validators: {
-                        notEmpty: {
-                            message: '所属方不能为空'
-                        }
-                    }
-                },
                 roleId: {
                     validators: {
                         notEmpty: {
