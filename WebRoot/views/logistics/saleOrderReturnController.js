@@ -346,7 +346,6 @@ function initDetailData(rowid){
     $("#codegrid").trigger("reloadGrid");
     pageType="edit";
     initButtonGroup(slaeOrderReturn_status);
-
 }
 
 function initeditGrid(billId) {
