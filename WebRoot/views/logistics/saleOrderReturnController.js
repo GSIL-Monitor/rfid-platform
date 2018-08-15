@@ -1728,6 +1728,7 @@ function saveother(totActPrice,check) {
                     checkAjax($("#edit_billNo").val());
                 }
                 $("#grid").trigger("reloadGrid");
+                addNew();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1890,6 +1891,7 @@ function wareHouseInOut(type) {
                                         class_name: 'gritter-success  gritter-light'
                                     });
                                 }
+                                _search();
                             } else if (pageType === "add") {
                                 var alertMessage;
                                 if (sum_qty > epcArray.length) {
@@ -1902,8 +1904,8 @@ function wareHouseInOut(type) {
                                     message: alertMessage,
                                     callback: function () {
                                         quitback();
-
-                                    },
+                                        _search();
+                                    }
                                 });
                             }
                         } else {
