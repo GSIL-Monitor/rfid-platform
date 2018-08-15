@@ -699,20 +699,16 @@ function initCustomerTypeForm() {
         async: false,
         type: "POST",
         success: function (data, textStatus) {
-
             $("#edit_customerType").empty();
             $("#edit_customerType").append("<option value=''>--请选择--</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#edit_customerType").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
             }
-
+            $(".selectpicker").selectpicker('refresh');
             if (defalutCustomerId != "" && defalutCustomerId != undefined) {
                 $("#edit_customerType").selectpicker('val',"CT-LS");
             }
-
-
-
         }
     });
 }
@@ -2067,19 +2063,16 @@ function addNew(){
     initAddGrid();
     $("#editForm").clearForm();
     setEditFormVal();
-    initCustomerTypeForm();
-    $("#addDetailgrid").trigger("reloadGrid");
-    $(".selectpicker").selectpicker('refresh');
     $("#edit_origId").removeAttr("disabled");
     $("#edit_destId").removeAttr("disabled");
-
-    pageType="add";
+    $("#edit_busnissId").removeAttr("disabled");
+    initCustomerTypeForm();
+    $("#addDetailgrid").trigger("reloadGrid");
     initButtonGroup(0);
     if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
         $("#edit_busnissId").selectpicker('val',defaultSaleStaffId);
     }
     addUniqCode();
-
 }
 function cancel() {
 
@@ -2524,7 +2517,6 @@ function loadingButtonDivTable() {
     var privilegeMap = ButtonAndDivPower(resourcePrivilege);
     $.each(privilegeMap['div'],function(index,value){
         if(value.isShow!=0) {
-            debugger
             $("#"+value.privilegeId).hide();
         }
     });
