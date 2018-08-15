@@ -18,6 +18,7 @@ public class PropertyKey implements Serializable {
 	private String name;
 	private String ownerId;// 所属方Id
 	private String code;//属性编码
+	private String isDefault;//是否默认 取值0：否，1：是
 	// john code_list
 	// private String cd_brand;
 	// private String cd_codeType;
@@ -138,5 +139,13 @@ public class PropertyKey implements Serializable {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
+
+	@Column(length = 5)
+	public String getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(String isDefault) {
+		this.isDefault = isDefault;
+	}
 }

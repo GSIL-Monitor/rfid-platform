@@ -170,7 +170,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
     /**
      * web调拨转换出入库任务
      * */
-    public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business) throws Exception {
+    public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business,List<BillRecord> billRecordList) throws Exception {
         List<Style> styleList = new ArrayList<>();
         for(TransferOrderBillDtl dtl : transferOrderBillDtlList){
             if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore){
@@ -200,6 +200,9 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
             this.taskService.webSave(business);
             if(styleList.size() > 0){
                 this.transferOrderBillDao.doBatchInsert(styleList);
+            }
+            if(CommonUtil.isNotBlank(billRecordList)&&billRecordList.size()!=0){
+                this.transferOrderBillDao.doBatchInsert(billRecordList);
             }
             return messageBox;
         }else{
