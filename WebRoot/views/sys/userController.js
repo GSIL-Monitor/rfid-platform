@@ -78,7 +78,7 @@ function initGrid(){
             {name:'unitName',label:"所属方名称",editable:true,width:200},
             {name: 'createDate', label: '创建时间', editable:true,width: 200},
             {name: 'roleId', label: '角色',editable:true, width: 200},
-            {name: 'isAdmin', label: '管理员',editable:true, width: 100,formatter:isAdmin}
+            {name: 'isAdmin', label: '管理员',editable:true, width: 100,formatter:isAdmin,hidden:true}
 
         ],
         viewrecords: true,

@@ -79,18 +79,18 @@
                         </div>
 
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_isAdmin">管理员</label>
+                    <div id="isAdmin_div" hidden>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_isAdmin">管理员</label>
 
-                        <div class="col-xs-14 col-sm-7">
-                            <select class="chosen-select form-control" id="form_isAdmin" name="isAdmin">
-                                <option value="0">否</option>
-                                <option value="1">是</option>
-                            </select>
+                            <div class="col-xs-14 col-sm-7">
+                                <select class="chosen-select form-control" id="form_isAdmin" name="isAdmin">
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
                         </div>
-
                     </div>
-
                 </form>
 
             </div>
