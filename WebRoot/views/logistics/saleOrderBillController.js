@@ -557,19 +557,21 @@ function initAddGrid() {
         }
     });
     $("#addDetailgrid").setGridParam().showCol("operation");
-    $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
-        {
-            edit: false,
-            add: true,
-            addicon: "ace-icon fa fa-plus",
-            addfunc: function () {
-                addDetail();
-            },
-            del: false,
-            search: false,
-            refresh: false,
-            view: false
-        });
+    if (userId!="admin"){
+        $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
+            {
+                edit: false,
+                add: true,
+                addicon: "ace-icon fa fa-plus",
+                addfunc: function () {
+                    addDetail();
+                },
+                del: false,
+                search: false,
+                refresh: false,
+                view: false
+            });
+    }
     $("#addDetailgrid-pager_center").html("");
     //$("#addDetailgrid").setGridParam().hideCol("styleName");
     loadingTableName();
@@ -961,7 +963,7 @@ function initeditGrid(billId) {
 
         }
     });
-    if (slaeOrder_status != "0") {
+    if (slaeOrder_status != "0"||userId=="admin") {
         $("#addDetailgrid").setGridParam().hideCol("operation");
     } else {
         $("#addDetailgrid").setGridParam().showCol("operation");
@@ -2033,6 +2035,7 @@ function saveAjax() {
             }
         }
     });
+    $("#edit_customerType").attr({"disabled": "disabled"});
     window.isTrue = true;
 }
 

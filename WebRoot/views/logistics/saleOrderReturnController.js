@@ -599,19 +599,21 @@ function initeditGrid(billId) {
         $("#addDetailgrid").setGridParam().hideCol("operation");
     } else {
         $("#addDetailgrid").setGridParam().showCol("operation");
-        $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
-            {
-                edit: false,
-                add: true,
-                addicon: "ace-icon fa fa-plus",
-                addfunc: function () {
-                    addDetail();
-                },
-                del: false,
-                search: false,
-                refresh: false,
-                view: false
-            });
+        if (userId!="admin"){
+            $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
+                {
+                    edit: false,
+                    add: true,
+                    addicon: "ace-icon fa fa-plus",
+                    addfunc: function () {
+                        addDetail();
+                    },
+                    del: false,
+                    search: false,
+                    refresh: false,
+                    view: false
+                });
+        }
     }
     $("#addDetailgrid-pager_center").html("");
 
@@ -1085,19 +1087,21 @@ function initAddGrid() {
     });
 
     $("#addDetailgrid").setGridParam().showCol("operation");
-    $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
-        {
-            edit: false,
-            add: true,
-            addicon: "ace-icon fa fa-plus",
-            addfunc: function () {
-                addDetail();
-            },
-            del: false,
-            search: false,
-            refresh: false,
-            view: false
-        });
+    if (userId!="admin"){
+        $("#addDetailgrid").jqGrid('navGrid', "#addDetailgrid-pager",
+            {
+                edit: false,
+                add: true,
+                addicon: "ace-icon fa fa-plus",
+                addfunc: function () {
+                    addDetail();
+                },
+                del: false,
+                search: false,
+                refresh: false,
+                view: false
+            });
+    }
     $("#addDetailgrid-pager_center").html("");
 }
 function edit_discount_onblur() {
@@ -1166,6 +1170,19 @@ function save() {
         addDetailgridiCol = null;
     }
     $("#edit_billDate").val(updateTime($("#edit_billDate").val()));
+    var totActPrice = $("#edit_actPrice").val();
+    var payPrice = $("#edit_payPrice").val();
+    if (parseFloat(payPrice) < 0) {
+        var summun = parseFloat(payPrice) - parseFloat(totActPrice);
+        if (summun < 0) {
+            $("#edit_payPrice").val(summun.toFixed(2));
+        }
+    }
+    var actPrice = parseFloat($("#edit_actPrice").val());
+    var payPrice = parseFloat($("#edit_payPrice").val());
+    var preBalance = parseFloat($("#edit_pre_Balance").val());
+    var afterBalance = parseFloat(preBalance + payPrice - actPrice).toFixed(2);
+    $("#edit_after_Balance").val(afterBalance);
     var purchaseReturnBill = JSON.stringify(array2obj($("#editForm").serializeArray()));
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
@@ -1205,7 +1222,7 @@ function save() {
             }
         }
     });
-
+    $("#edit_customerType").attr({"disabled": "disabled"});
 }
 function initEditFormValid() {
     $('#editForm').bootstrapValidator({
@@ -1716,6 +1733,7 @@ function saveother(totActPrice,check) {
             }
         }
     });
+    $("#edit_customerType").attr({"disabled": "disabled"});
 }
 // @param: type     出入库类型，"in"入库；"out"出库
 function wareHouseInOut(type) {
@@ -1850,9 +1868,6 @@ function wareHouseInOut(type) {
 
                             var diff_qty = sum_qty - epcArray.length;
                             if (pageType === "edit") {
-                                // $("#addDetailgrid").setColProp('qty',{editable:{value:"True:False"}});
-                                // $("#addDetailgrid-pager_left").hide();
-                                $("#edit_guest_button").attr({"disabled": "disabled"});
                                 $("#SRDtl_save").attr({"disabled": "disabled"});
                                 $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
                                 $("#edit_origId").attr('disabled', true);
@@ -2567,12 +2582,6 @@ function loadingButtonDivTable(billStatus) {
             $("#"+value.privilegeId).removeAttr("disabled");
         }
     });
-    if ($("#edit_status").val() != "0") {
-        $("#edit_guest_button").attr({"disabled": "disabled"});
-        $("#SRDtl_save").attr({"disabled": "disabled"});
-        $("#SRDtl_addUniqCode").attr({"disabled": "disabled"});
-        $("#SRDtl_cancel").attr({"disabled": "disabled"});
-    }
     if ($("#edit_origId").val() && $("#edit_origId").val() !== null && $("#edit_origId").val() !== "") {
         $("#SRDtl_wareHouseOut").removeAttr("disabled");
         $("#SRDtl_wareHouseIn").show();
@@ -2583,10 +2592,7 @@ function loadingButtonDivTable(billStatus) {
         $("#SRDtl_wareHouseIn_noOutHouse").show();
     }
     if ($("#edit_billNo").val()!= "" && $("#edit_status").val() == "2") {
-        $("#SRDtl_addUniqCode").hide();/*
-         $("#SRDtl_wareHouseIn_noOutHouse").hide();
-         $("#SRDtl_wareHouseOut").hide();
-         $("#SRDtl_wareHouseIn").hide();*/
+        $("#SRDtl_addUniqCode").hide();
     }
     if ($("#edit_status").val()=="0"){
         $("#SRDtl_check").removeAttr("disabled");
