@@ -312,8 +312,27 @@ public class TransferOrderBillController extends BaseController implements ILogi
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         User currentUser = CacheManager.getUserById(userId);
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
+        List<BillRecord> billRecodlist = this.transferOrderBillService.getBillRecod(billNo);
+        //得到所有的code
+        String codes="";
+        if(billRecodlist.size()!=0){
+            for(BillRecord billRecord:billRecodlist){
+                if(CommonUtil.isBlank(codes)){
+                    codes+=billRecord.getCode();
+                }else{
+                    codes+=","+billRecord.getCode();
+                }
+            }
+        }
+        List<BillRecord> billRecordList = new ArrayList<>();
+        for(Epc epc:epcList){
+            if(!(codes.indexOf(epc.getCode())!=-1)){
+                BillRecord billRecord = new BillRecord(billNo + "-" + epc.getCode(), epc.getCode(), billNo, epc.getSku());
+                billRecordList.add(billRecord);
+            }
+        }
         Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
-        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business,billRecordList);
         if(messageBox.getSuccess()){
             return new MessageBox(true,"出库成功");
         }else{
@@ -346,7 +365,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
             User user = this.getCurrentUser();
             messageBox = this.transferOrderBillService.saveBusinessOnHaveSaleNo(transferOrderBill, transferOrderBillDtlList, business,epcList,user,setting);
         }else{
-            messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business);
+            messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business,null);
         }
         if(messageBox.getSuccess()){
             return new MessageBox(true,"入库成功");
