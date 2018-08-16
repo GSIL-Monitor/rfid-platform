@@ -1113,6 +1113,10 @@
         }else {
             $("#form_bargainPrice").val(0);
         }
+        var bargainPrice = $("#form_bargainPrice").val();
+        if (bargainPrice==""){
+            return false;
+        }
         var isSeries = $("#form_isSeries").val();
         var re = $("#tags_3").val();
         $("#form_remark").val(re);
@@ -1606,6 +1610,12 @@
                             regexp: /^[0-9]\d*$/,
                             message: '退货周期应为正整数'
                         }
+                    }
+                },
+                bargainPrice:{
+                    validators: {
+                        notEmpty: {message: '特价不能为空'},
+                        numeric: {message: '特价只能输入数字'}
                     }
                 }
             }
