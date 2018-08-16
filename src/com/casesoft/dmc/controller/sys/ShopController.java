@@ -49,8 +49,8 @@ public class ShopController extends BaseController implements IBaseInfoControlle
         page = this.shopService.findPage(page,filters);
         for(Unit u: page.getRows()){
             if(CommonUtil.isNotBlank(u.getGroupId())){
-                if(CommonUtil.isNotBlank(CacheManager.getPropertyKey("ST-B-"+u.getGroupId())))
-                    u.setGroupName(CacheManager.getPropertyKey("ST-B-"+u.getGroupId()).getName());
+                if(CommonUtil.isNotBlank(CacheManager.getPropertyKey("ST-"+u.getGroupId())))
+                    u.setGroupName(CacheManager.getPropertyKey("ST-"+u.getGroupId()).getName());
             }
             u.setUnitName(CacheManager.getUnitById(u.getOwnerId()).getName());
         }
