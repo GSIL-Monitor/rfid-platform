@@ -333,12 +333,12 @@
                             </div>
                             <div class="data-container">
                                 <span class="title">调入仓库数</span>
-                                <span class="title pressAll" id="destids" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <span class="title pressAll" id="origids" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
                                 <%--<span class="text" ng-bind = "sumGrossProfit|currency:'￥'" ng-show="!sumDataLoading"></span>--%>
                             </div>
                             <div class="data-container last-container">
                                 <span class="title">调出仓库数</span>
-                                <span class="title grossprofits" id="origids" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
+                                <span class="title grossprofits" id="destids" ng-show="sumDataLoading">&nbsp;&nbsp;查询中...</span>
                                 <%--<span class="text" ng-bind = "avgGrossProfitRate" ng-show="!sumDataLoading"></span>--%>
                             </div>
                         </div>
