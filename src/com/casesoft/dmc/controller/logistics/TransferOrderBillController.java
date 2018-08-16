@@ -472,4 +472,14 @@ public class TransferOrderBillController extends BaseController implements ILogi
             return new MessageBox(true, "查询失败");
         }
     }
+    @RequestMapping(value = "/findTransferBillNo")
+    @ResponseBody
+    public List<TransferOrderBill> findTransferBillNo(String billno){
+        try{
+            List<TransferOrderBill> transferBillNo = this.transferOrderBillService.findTransferBillNo(billno);
+            return transferBillNo;
+        }catch (Exception e){
+            return null;
+        }
+    }
 }

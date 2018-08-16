@@ -26,6 +26,8 @@ import com.casesoft.dmc.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -351,5 +353,10 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
         }
         String sql="select sku,Floorallocation,count(code) as sum from STOCK_EPCSTOCK t where t.warehouseid='"+transferOrderBill.getOrigId()+"' and t.instock='1' and t.sku in("+skus+") group by t.sku,t.floorallocation";
         return this.floorallocationDao.findBySQl(FloorallocationAndSku.class,sql,null);
+    }
+    public List<TransferOrderBill> findTransferBillNo(String billno){
+        String hql="from TransferOrderBill where  srcBillNo = ?";
+        List<TransferOrderBill> transferOrderBillList = this.transferOrderBillDao.find(hql, new Object[]{billno});
+        return transferOrderBillList;
     }
 }
