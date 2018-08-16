@@ -1170,6 +1170,7 @@
                                             text: msg.msg,
                                             class_name: 'gritter-success  gritter-light'
                                         });
+                                        toIndex();
                                     } else {
                                         bootbox.alert(msg.msg);
                                     }
@@ -1198,6 +1199,7 @@
                                             text: msg.msg,
                                             class_name: 'gritter-success  gritter-light'
                                         });
+                                        toIndex();
                                     } else {
                                         bootbox.alert(msg.msg);
                                     }
@@ -1228,6 +1230,7 @@
                                     text: msg.msg,
                                     class_name: 'gritter-success  gritter-light'
                                 });
+                                toIndex();
                             } else {
                                 bootbox.alert(msg.msg);
                             }
@@ -1286,6 +1289,7 @@
                                                 text: msg.msg,
                                                 class_name: 'gritter-success  gritter-light'
                                             });
+                                            toIndex();
                                         } else {
                                             bootbox.alert(msg.msg);
                                         }
@@ -1315,6 +1319,7 @@
                                                 text: msg.msg,
                                                 class_name: 'gritter-success  gritter-light'
                                             });
+                                            toIndex();
                                         } else {
                                             bootbox.alert(msg.msg);
                                         }
@@ -1346,6 +1351,7 @@
                                         text: msg.msg,
                                         class_name: 'gritter-success  gritter-light'
                                     });
+                                    toIndex();
                                 } else {
                                     bootbox.alert(msg.msg);
                                 }
