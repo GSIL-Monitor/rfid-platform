@@ -100,8 +100,7 @@ public class UserController extends BaseController implements IBaseInfoControlle
 
         return page;
     }
-
-    @RequestMapping("/list")
+    @RequestMapping(value = {"/list","/listWS"})
     @ResponseBody
 	@Override
 	public List<User> list() throws Exception {

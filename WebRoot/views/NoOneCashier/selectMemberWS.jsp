@@ -81,22 +81,24 @@
                      <div class="row1 col-lg-4 col-md-4 col-sm-4">
                          <label class="col-lg-3 col-md-3 col-sm-3 center-vertical-bottom text-info" for="search_origId">默认仓库:</label>
                          <div class="col-lg-9 col-md-9 col-sm-9 center-vertical-bottom">
-                             <input class="form-control" id="search_origId" >
+                             <input class="form-control" id="search_origId" value="">
                              </input>
                          </div>
                      </div>
                      <div class="row1 col-lg-4 col-md-4 col-sm-4">
-                         <label class="col-lg-3 col-md-3 col-sm-3 center-vertical-bottom text-info" >默认店铺:</label>
+                         <label class="col-lg-3 col-md-3 col-sm-3 center-vertical-bottom text-info"  for="search_unitName">默认店铺:</label>
                          <div class="col-lg-9 col-md-9 col-sm-9 center-vertical-bottom">
-                             <input class="form-control"  >
+                             <input class="form-control"   id="search_unitName">
                              </input>
                          </div>
                      </div>
                      <div class="row1 col-lg-4 col-md-4 col-sm-4">
                          <label class="col-lg-3 col-md-3 col-sm-3 center-vertical-bottom text-info" for="search_origId">销售员:</label>
                          <div class="col-lg-9 col-md-9 col-sm-9 center-vertical-bottom">
-                             <input class="form-control" id="search_busnissId" >
-                             </input>
+                             <select class="form-control selectpicker show-tick" id="search_busnissId"
+                                     name="busnissId"
+                                     style="width: 100%;" data-live-search="true">
+                             </select>
                          </div>
                      </div>
                  </div>
@@ -125,9 +127,66 @@
             $("#ordinary").css("height", vipHeight);
             $("#ordinary").css("width", vipHeight);
         }
-
+        findOrigIdByUser();
     });
+  function findOrigIdByUser() {
+      $.ajax({
+          dataType: "json",
+          url: basePath + "/api/hub/base/getDefaultwarehouseWs.do",
+          cache: false,
+          async: false,
+          data:{
+              userId:"admin"
+          },
+          type: "POST",
+          success: function (msg) {
+              if(msg.success){
+                  localStorage.setItem("defaultSaleStaffId", msg.result.defaultSaleStaffId);
+                  localStorage.setItem("defalutCustomerId", msg.result.defalutCustomerId);
+                  localStorage.setItem("owingValue", msg.result.owingValue);
+                  localStorage.setItem("defaultWarehId",msg.result.defaultWarehId);
+                  localStorage.setItem("unitName",msg.result.name);
+                  localStorage.setItem("ownerId",msg.result.ownerId);
+                  $("#search_origId").val(msg.result.defaultWarehouseName);
+                  $("#search_origId").attr("readOnly",true);
+                  $("#search_unitName").val(msg.result.name);
+                  $("#search_unitName").attr("readOnly",true);
+                  findBusinessName(msg.result.ownerId)
+              }
+          }
+      });
+  }
+  function findBusinessName(ownerId) {
+      var url;
+      if (ownerId == "1") {
+          url = basePath + "/sys/user/listWS.do?filter_EQI_type=4";
+      } else {
+          url = basePath + "/sys/user/listWS.do?filter_EQI_type=4&filter_EQS_ownerId=" + ownerId;
+      }
+      $.ajax({
+          url: url,
+          cache: false,
+          async: false,
+          type: "POST",
+          success: function (data, textStatus) {
 
+              $("#search_busnissId").empty();
+              $("#search_busnissId").append("<option value='' >--请选择销售员--</option>");
+              var json = data;
+              for (var i = 0; i < json.length; i++) {
+                  $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
+              }
+
+              var defaultSaleStaffId=localStorage.getItem("defaultSaleStaffId");
+              console.log(defaultSaleStaffId);
+              if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined&&defaultSaleStaffId != "undefined") {
+                  $("#search_busnissId").val(defaultSaleStaffId);
+              }
+
+          }
+      });
+
+  }
 </script>
 </body>
 </html>
