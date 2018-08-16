@@ -33,7 +33,7 @@
                 </script>
 
                 <ul class="breadcrumb">
-                    <li><a href="#" onclick="history.back(-1);">收银员信息</a></li>
+                    <li><a href="#" onclick="history.back(-1);">销售员信息</a></li>
                     <li class="active">
 
                     </li>
