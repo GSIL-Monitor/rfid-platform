@@ -638,6 +638,8 @@ function setEditFormVal(){
 }
 
 function save() {
+    var ownerId = curOwnerId;
+    console.log(userId);
     cs.showProgressBar();
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
@@ -647,6 +649,15 @@ function save() {
         cs.closeProgressBar();
         return;
     }
+
+    if(userId !== 'admin'){
+        if($("#edit_origUnitId").val() !== curOwnerId && $("#edit_destUnitId").val() !== curOwnerId){
+            bootbox.alert("发货方或出货方必须有一个是本店");
+            cs.closeProgressBar();
+            return;
+        }
+    }
+
 
     $("#editForm").data('bootstrapValidator').destroy();
     $('#editForm').data('bootstrapValidator', null);
