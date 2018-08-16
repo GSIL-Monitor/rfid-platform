@@ -157,8 +157,12 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
             inventoryBill.setActQty(1L);
             Style style = CacheManager.getStyleById(epcStock.getStyleId());
             inventoryBill.setActPrice(style.getPrice());
-            inventoryBill.setDestId(epcStock.getWarehouseId());
-            inventoryBill.setDestUnitId(epcStock.getOwnerId());
+            inventoryBill.setOrigId(epcStock.getWarehouseId());
+            inventoryBill.setOrigUnitId(epcStock.getOwnerId());
+
+            inventoryBill.setOrigId(epcStock.getWarehouseId());
+            inventoryBill.setOrigUnitId(epcStock.getOwnerId());
+
             inventoryBill.setOwnerId(epcStock.getOwnerId());
             inventoryBill.setCode(epcStock.getCode());
             inventoryBill.setState(Constant.Token.Storage_Adjust_Outbound+"");
@@ -190,8 +194,11 @@ public class InventoryBillService implements IBaseService<InventoryBill, String>
             inventoryBill.setActQty(1L);
             Style style = CacheManager.getStyleById(epcStock.getStyleId());
             inventoryBill.setActPrice(style.getPrice());
-            inventoryBill.setOrigId(epcStock.getWarehouseId());
-            inventoryBill.setOrigUnitId(epcStock.getOwnerId());
+
+
+            inventoryBill.setDestId(epcStock.getWarehouseId());
+            inventoryBill.setDestUnitId(epcStock.getOwnerId());
+
             inventoryBill.setOwnerId(epcStock.getOwnerId());
             inventoryBill.setCode(epcStock.getCode());
             inventoryBill.setState(Constant.Token.Storage_Adjust_Inbound+"");
