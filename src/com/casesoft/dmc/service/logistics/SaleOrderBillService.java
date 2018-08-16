@@ -663,7 +663,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             for (BillRecord r : billRecordList) {
                 if (codeMap.containsKey(r.getSku())) {
                     String code = codeMap.get(r.getSku());
-                    code += "," + r.getCode();
+                    if(CommonUtil.isNotBlank(code)) {
+                        code += "," + r.getCode();
+                    }
                     codeMap.put(r.getSku(), code);
                 } else {
                     codeMap.put(r.getSku(), r.getCode());

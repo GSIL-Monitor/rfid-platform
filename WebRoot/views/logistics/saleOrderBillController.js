@@ -1364,6 +1364,10 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找退单</span>" +
             "</button>" +
+            "<button id='SODtl_findTransferOrder' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findTransferOrder()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>查找调拨单</span>" +
+            "</button>" +
             "<button id='SODtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findshopMessage()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找商城信息</span>" +
@@ -2549,6 +2553,17 @@ function findRetrunno() {
     initUniqueretrunList();
     retrunListReload();
     $("#findRetrunNoListGrid").trigger("reloadGrid");
+}
+/**
+ * 查找调拨单
+ * */
+function findTransferOrder() {
+    $("#show-findTransferOrder-list").modal('show');
+    $('#findTransferOrderGrid').jqGrid("clearGridData");
+    $('#findTransferOrderGrid').jqGrid('GridUnload');
+    initUniqueTransferOrderList();
+    retrunTransferOrderListReload();
+    $("#findTransferOrderGrid").trigger("reloadGrid");
 }
 
 /**

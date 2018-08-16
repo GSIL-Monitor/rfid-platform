@@ -459,8 +459,10 @@ public class BillConvertUtil {
             outVal += dtl.getOutQty() * dtl.getActPrice();
             if (CommonUtil.isNotBlank(dtl.getUniqueCodes())) {
                 for (String code : dtl.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
-                    billRecordList.add(billRecord);
+                    if(CommonUtil.isNotBlank(code)) {
+                        BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
+                        billRecordList.add(billRecord);
+                    }
                 }
             }
         }
@@ -1326,8 +1328,10 @@ public class BillConvertUtil {
             }
             if (CommonUtil.isNotBlank(dtl.getUniqueCodes())) {
                 for (String code : dtl.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
-                    billRecordList.add(billRecord);
+                    if(CommonUtil.isNotBlank(code)) {
+                        BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
+                        billRecordList.add(billRecord);
+                    }
                 }
             }
 
@@ -1406,8 +1410,10 @@ public class BillConvertUtil {
             }
             if (CommonUtil.isNotBlank(dtl.getUniqueCodes())) {
                 for (String code : dtl.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
-                    billRecordList.add(billRecord);
+                    if(CommonUtil.isNotBlank(code)) {
+                        BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
+                        billRecordList.add(billRecord);
+                    }
                 }
             }
 
@@ -2070,8 +2076,10 @@ public class BillConvertUtil {
             totInVal = totInQty * dtl.getPrice();
             if (CommonUtil.isNotBlank(dtl.getUniqueCodes())) {
                 for (String code : dtl.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
-                    billRecordList.add(billRecord);
+                    if(CommonUtil.isNotBlank(code)) {
+                        BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
+                        billRecordList.add(billRecord);
+                    }
                 }
             }
         }
@@ -3699,8 +3707,10 @@ public class BillConvertUtil {
             dtl.setBillNo(labelChangeBill.getBillNo());
             if (CommonUtil.isNotBlank(dtl.getUniqueCodes())) {
                 for (String code : dtl.getUniqueCodes().split(",")) {
-                    BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
-                    billRecordList.add(billRecord);
+                    if(CommonUtil.isNotBlank(code)) {
+                        BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + code, code, dtl.getBillNo(), dtl.getSku());
+                        billRecordList.add(billRecord);
+                    }
                 }
             }
         }
