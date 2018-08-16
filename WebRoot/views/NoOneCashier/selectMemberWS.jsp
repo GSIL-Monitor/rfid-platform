@@ -73,10 +73,10 @@
              <div class="panel-body">
                  <div class="widget-body">
                      <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
-                         <button class="btn1  center-vertical" id="ordinary" type="button"></button>
+                         <button class="btn1  center-vertical" id="ordinary" type="button" onclick="onOrdinary()"></button>
                      </div>
                      <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
-                         <button class="btn2  center-vertical" id="vip" type="button" ></button>
+                         <button class="btn2  center-vertical" id="vip" type="button" onclick="onVip()"></button>
                      </div>
                      <div class="row1 col-lg-4 col-md-4 col-sm-4">
                          <label class="col-lg-3 col-md-3 col-sm-3 center-vertical-bottom text-info" for="search_origId">默认仓库:</label>
@@ -182,10 +182,17 @@
               if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined&&defaultSaleStaffId != "undefined") {
                   $("#search_busnissId").val(defaultSaleStaffId);
               }
-
           }
       });
-
+  }
+  function onOrdinary() {
+      var busnissId=$("#search_busnissId").val();
+      localStorage.setItem("busnissId",busnissId);
+      if(busnissId!=""&&busnissId!=undefined){
+          window.location.href=basePath+'/views/NoOneCashier/selectSaleOrSaleRetrunWS.jsp';
+      }else{
+          bootbox.alert("请选择销售员");
+      }
   }
 </script>
 </body>
