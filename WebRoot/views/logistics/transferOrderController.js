@@ -638,8 +638,6 @@ function setEditFormVal(){
 }
 
 function save() {
-    var ownerId = curOwnerId;
-    console.log(userId);
     cs.showProgressBar();
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
