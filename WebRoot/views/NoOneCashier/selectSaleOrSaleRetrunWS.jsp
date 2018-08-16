@@ -48,6 +48,15 @@
         .row3{
             height: 80%;
         }
+        .bottom-button{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            border-color:#307a3c
+        }
     </style>
 </head>
 <body style="height: 100% ; width: 100%">
@@ -65,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 " style="color:white;background-color:#307a3c;height:8%;position: fixed;right: 10px; bottom: 10px;border-color:#307a3c">上一页</button>
+        <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button" onclick="onBack()">上一页</button>
     </div>
 
 </div>
@@ -92,6 +101,9 @@
         }
 
     });
+    function onBack() {
+        window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.jsp';
+    }
 </script>
 </body>
 </html>
