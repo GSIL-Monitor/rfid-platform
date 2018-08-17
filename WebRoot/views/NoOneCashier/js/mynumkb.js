@@ -1,9 +1,24 @@
 /**
  * 数字键盘插件 js（基于jquery)
- * Date:2018-02-02
- * author:wanglei
- * email:717554579@qq.com
+ * Date:2018-08-15
+ * author:lly
+ * email:853692043@qq.com
  */
+
+//jQuery.proxy( function, context )
+/**function将要改变上下文语境的函数。
+ ** context函数的上下文语境(`this`)会被设置成这个 object 对象。
+ **/
+
+/*比如我们要开发一个插件，做一个特殊的编辑框，当它被点击时，便alert 当前编辑框里的内容。可以这么做：
+$.fn.extend({
+    alertWhileClick:function(){
+        $(this).click(function(){
+            alert($(this).val());
+        });
+    }
+});
+$("#input1").alertWhileClick();*/
 
 (function($){
     var _count = 0;
@@ -12,9 +27,9 @@
         this.count = _count;
         this.$element = $(element);
         this.$element.attr("data-count",this.count);
-		this.options = $.extend({},$.fn.mynumkb.defaults, options);
+		this.options = $.extend({},$.fn.mynumkb.defaults, options);//合并对象
 		this.init();
-	}
+	};
 	Mynumkb.prototype = {
 	    constructor: Mynumkb, 
 		init:function(){
@@ -43,23 +58,23 @@
                         '<li class="num">1</li>',
                         '<li class="num">2</li>',
                         '<li class="num">3</li>',
-                        '<li class="func exit">退出</li>',
+                        '<li class="func del">←</li>',
                         '<li class="num">4</li>',
                         '<li class="num">5</li>',
                         '<li class="num">6</li>',
-                        '<li class="func del">退格</li>',
+                        //'<li class="func clearall">清除</li>',
                         '<li class="num">7</li>',
                         '<li class="num">8</li>',
                         '<li class="num">9</li>',
                         '<li class="func clearall">清除</li>',
                         '<li class="num">0</li>',
                         '<li class="num">.</li>',
-                        '<li class="func sure">确定</li>',
+                        '<li class="num two">00</li>',
                     '</ul>',
                 '</div>',
             ].join("");
             
-            $("body").append(_html);
+            $(".right-foot").append(_html);
             me.setPosition();
         },
         setPosition:function(){
@@ -74,19 +89,22 @@
             var ulWidth = $keyboard.outerWidth();
             var ulHeight = $keyboard.outerHeight();
             var left = position.left;
-            $keyboard.css({
+            /*$keyboard.css({
                 top:position.top+height+30+"px",
                 left:left+width+30+"px"
-            });
+            });*/
+            $keyboard.fadeIn(100).siblings(".mykb-box").hide();
         },
-        _eClick:function(e){
+        /*_eClick:function(e){
             var me = this;
+            console.info("11");
             var count = me.$element.data("count");
             var $keyboard = $("#mykeyboard"+count);
             $keyboard.fadeIn(100).siblings(".mykb-box").hide();
-        },
+        },*/
         _liclick:function(e){
             var me = this;
+            console.info("22");
             var $target = $(e.target);
             if($target.hasClass("del")){//退格
                 me.setValue("del");
@@ -94,6 +112,9 @@
                 me.close();
             }else if($target.hasClass("clearall")){//清除
                 me.$element.val("");
+            }else if($target.hasClass("two")){//00
+                var str = $target.text();
+                me.setValue("addtwo",str);
             }else{//输入其他数字
                 var str = $target.text();
                 me.setValue("add",str);
@@ -101,17 +122,20 @@
         },
 		_limousedown:function(e){
             var me = this;
+            console.info("33");
             var val = $(e.target).html();
             $(e.target).addClass("active").siblings().removeClass("active");
         },
 		_limouseup:function(e){
             var me = this;
+            console.info("44");
             var val = $(e.target).html();
             $(e.target).removeClass("active");
             
         },
         setValue:function(type,str){
             var me = this;
+            console.info("55");
             var curpos = me.getCursorPosition();
             var val = me.$element.val();
             var newstr = "";
@@ -119,6 +143,10 @@
                 newstr = me.insertstr(val,str,curpos);
                 me.$element.val(newstr);
                 me.$element.textFocus(curpos+1);
+            }else if(type == 'addtwo'){
+                newstr = me.insertstr(val,str,curpos);
+                me.$element.val(newstr);
+                me.$element.textFocus(curpos+2);
             }else if(type == 'del'){
                 newstr = me.delstr(val,curpos);
                 me.$element.val(newstr);
@@ -143,6 +171,7 @@
         },
         getCursorPosition:function(){
             var me = this;
+            console.info("66");
             var $element = me.$element[0];
             var cursurPosition=-1;
             if($element.selectionStart!=undefined && $element.selectionStart!=null){//非IE浏览器
@@ -156,6 +185,7 @@
         },
         close:function(){
             var me = this;
+            console.info("77");
             var count = me.$element.data("count");
             var $keyboard = $("#mykeyboard"+count);
             $keyboard.fadeOut(100);
@@ -167,7 +197,7 @@
             var options = typeof option == 'object' ? option : {};
 	        var data = new Mynumkb(this, options);
 	    })
-    }
+    };
 	$.fn.mynumkb.defaults = {
 		
 	};

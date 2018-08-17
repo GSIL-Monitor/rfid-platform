@@ -148,7 +148,7 @@ function _search() {
 function add() {
     var ownerId = $("#form_ownerId").val();
     var unitName = $("#form_unitName").val();
-    if (ownerId && ownerId !== null) {
+    if (ownerId && ownerId !== null && deep !="3") {
         $("#addForm").resetForm();
         $("#form_ownerId").val(ownerId);
         $("#form_unitName").val(unitName);
