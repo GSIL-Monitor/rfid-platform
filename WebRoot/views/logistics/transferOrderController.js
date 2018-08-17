@@ -194,15 +194,26 @@ function initGrid() {
 }
 function initDetailData(rowid) {
     var rowData = $("#grid").getRowData(rowid);
+    //add by yushen  选择其他调拨单时，下拉框重新加载所有仓库，否则其他单据有可能显示不出来仓库
+    $("#edit_origUnitId").val('');
+    $("#edit_destUnitId").val('');
+    initSelectOrigEditForm();
+    initSelectDestEditForm();
+
     $("#editForm").setFromData(rowData);
     transferOrder_status=rowData.status;
+
+    //modify by yushen  在选择不同单据时，根据单据状态禁用表单内容，录入单不允许修改入库仓库，但是如果改变了入库方，则可以修改入库仓库
     if (transferOrder_status != "0") {
-        $("#edit_origId").attr('disabled', true);
-        $("#edit_destId").attr('disabled', true);
         $("#edit_billDate").attr('readOnly', true);
-        $("#edit_orig_button").attr('disabled', true);
         $("#edit_dest_button").attr('disabled', true);
+    }else {
+        $("#edit_billDate").attr('readOnly', false);
+        $("#edit_dest_button").attr('disabled', false);
     }
+    $("#edit_destId").attr('disabled', true);
+    $("#edit_origId").attr('disabled', true);
+    $("#edit_orig_button").attr('disabled', true);
     $(".selectpicker").selectpicker('refresh');
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
@@ -265,9 +276,9 @@ function initAddGrid() {
             },
             {name: 'styleId', label: '款号', width: 40},
             {name: 'styleName', label: '款名', width: 40},
-            {name: 'colorId', label: '色码', width: 40},
+            {name: 'colorId', label: '色码', width: 40, hidden: true},
             {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
+            {name: 'sizeId', label: '尺码', width: 30, hidden: true},
             {name: 'sizeName', label: '尺码', width: 40},
             {
                 name: 'qty', label: '数量', editable: true, width: 40,
@@ -374,9 +385,9 @@ function initeditGrid(billNo) {
             },
             {name: 'styleId', label: '款号', width: 40},
             {name: 'styleName', label: '款名', width: 40},
-            {name: 'colorId', label: '色码', width: 40},
+            {name: 'colorId', label: '色码', width: 40, hidden: true},
             {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
+            {name: 'sizeId', label: '尺码', width: 30, hidden: true},
             {name: 'sizeName', label: '尺码', width: 40},
             {
                 name: 'qty', label: '数量', editable: true, width: 40,
@@ -492,6 +503,7 @@ var prefixId;
 function openSearchOrigDialog(preId) {
     dialogOpenPage = "transferOrderOrig";
     prefixId =preId;
+    origIdVal = $("#edit_origId").val();
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
         initGuestSelect_Grid();
     });
@@ -502,12 +514,35 @@ function openSearchOrigDialog(preId) {
 function openSearchDestDialog(preId) {
     dialogOpenPage = "transferOrderUnit";
     prefixId =preId;
+    destIdVal = $("#edit_destId").val();
     $("#modal_guest_search_table").modal('show').on('shown.bs.modal', function () {
         initGuestSelect_Grid();
     });
     $("#searchGuestDialog_buttonGroup").html("" +
         "<button type='button'  class='btn btn-primary' onclick='confirm_selected_DestUnit()'>确认</button>"
     );
+}
+
+//add by yushen 未保存前如果发货仓库发生改变清空调拨明细
+var origIdVal;
+function origIdChange(){
+    var preOrigId = origIdVal;
+    var afterOrigId = $("#edit_origId").val();
+
+    if(preOrigId !== afterOrigId){
+        $("#addDetailgrid").jqGrid("clearGridData");
+    }
+}
+//如果入库方发生改变，取消入库仓库的选择禁用
+var destIdVal;
+function destIdChange() {
+    var preDestId = destIdVal;
+    var afterDestId = $("#edit_destId").val();
+
+    if(preDestId !== afterDestId){
+        $("#edit_destId").removeAttr('disabled');
+        $(".selectpicker").selectpicker('refresh');
+    }
 }
 /*
  *查询code明细
@@ -650,6 +685,9 @@ function addNew(isScan){
     $("#form_printSelect").val(0);
     pageType="add";
     initButtonGroup(0);
+    $("#edit_origId").attr('disabled', false);
+    $("#edit_orig_button").attr('disabled', false);
+
 }
 function setEditFormVal(){
     $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
@@ -669,6 +707,15 @@ function save() {
         cs.closeProgressBar();
         return;
     }
+
+    if(userId !== 'admin'){
+        if($("#edit_origUnitId").val() !== curOwnerId && $("#edit_destUnitId").val() !== curOwnerId){
+            bootbox.alert("发货方或出货方必须有一个是本店");
+            cs.closeProgressBar();
+            return;
+        }
+    }
+
 
     $("#editForm").data('bootstrapValidator').destroy();
     $('#editForm').data('bootstrapValidator', null);
