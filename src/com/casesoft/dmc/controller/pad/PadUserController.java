@@ -169,7 +169,31 @@ public class PadUserController extends BaseController implements IBaseInfoContro
         }
         return page;
     }
-
+    /**
+     * 客户查询
+     * @param page 分页
+     * @return page
+     * @throws Exception
+     */
+    @RequestMapping("customerOnCashier/pageWS")
+    @ResponseBody
+    public Page<GuestView> findPageViewOnCashier(Page<GuestView> page) throws Exception {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        page.setPageProperty();
+        page = this.guestViewService.findPage(page, filters);
+        if (page.getRows().size() > 0) {
+            for (GuestView g : page.getRows()) {
+                if (CommonUtil.isNotBlank(CacheManager.getUserById(g.getUpdaterId()))) {
+                    g.setUpdaterName(CacheManager.getUserById(g.getUpdaterId()).getName());
+                }
+                if (CommonUtil.isNotBlank(CacheManager.getUnitById(g.getOwnerId()))) {
+                    g.setUnitName(CacheManager.getUnitById(g.getOwnerId()).getName());
+                }
+            }
+        }
+        return page;
+    }
 
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
