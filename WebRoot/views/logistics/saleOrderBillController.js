@@ -14,34 +14,50 @@ var showScanDialog = false;
 var isCheckWareHouse=false;//是否检测出库仓库
 var slaeOrder_status = "0";
 $(function () {
-    console.log(isUserAbnormal)
-    /*初始化左侧grig*/
-    initSearchGrid();
-    /*初始化右侧grig*/
-    initAddGrid();
-    /*初始化from表单*/
-    initSearchAndEditForm();
-    if (billNo) {
-        bootbox.alert("单据" + billNo + "正在编辑中");
-    } else {
-        sessionStorage.removeItem("billNosale");
-    }
-    /*回车监事件*/
-    keydown();
-    addProduct_keydown();
-    input_keydown();
-    /*初始化按钮*/
-    initButtonGroup(0);
-    /*初始化右侧表单验证*/
-    initEditFormValid();
-    loadingButtonDivTable();
+    load().then(function (data) {
+        /*初始化左侧grig*/
+        initSearchGrid();
+    });
+
+
 });
+
+function load() {
+    var promise = new Promise(function(resolve, reject){
+        /*初始化右侧grig*/
+        initAddGrid();
+        /*初始化from表单*/
+        initSearchAndEditForm();
+        if (billNo) {
+            bootbox.alert("单据" + billNo + "正在编辑中");
+        } else {
+            sessionStorage.removeItem("billNosale");
+        }
+        /*回车监事件*/
+        keydown();
+        addProduct_keydown();
+        input_keydown();
+        /*初始化按钮*/
+        initButtonGroup(0);
+        /*初始化右侧表单验证*/
+        initEditFormValid();
+        loadingButtonDivTable();
+        resolve("success");
+    });
+    return promise;
+}
 
 
 function initSearchGrid() {
+    var url="";
+    if (cargoTrack=="cargoTracking"){
+        url= basePath + "/logistics/saleOrderBill/findBill.do?billNo="+cTbillNo;
+    }else {
+        url = basePath + "/logistics/saleOrderBill/page.do?filter_GTI_status=-1&userId=" + userId;
+    }
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/saleOrderBill/page.do?filter_GTI_status=-1&userId=" + userId,
+        url:url,
         datatype: "json",
         mtype: 'POST',
         colModel: [
@@ -161,6 +177,12 @@ function initSearchGrid() {
         },
         onSelectRow: function (rowid, status) {
             initDetailData(rowid)
+        },
+        loadComplete:function () {
+            if (cargoTrack=="cargoTracking"){
+                initDetailData(cTbillNo);
+                $("#search_billId").val(cTbillNo);
+            }
         }
     });
 }

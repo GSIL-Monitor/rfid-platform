@@ -29,6 +29,8 @@
         var Codes = "${Codes}";
         var groupid="${groupid}";
         var pageType = "${pageType}";
+        var cargoTrack = "${cargoTracking}";
+        var cTbillNo = "${cTbillNo}";
     </script>
 
 </head>

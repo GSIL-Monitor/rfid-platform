@@ -12,20 +12,30 @@ var billNo;
 var comsigment_status;
 var comsigment_customerType;
 $(function () {
-    /*初始化左侧grig*/
-    initSearchGrid();
-    /*初始化右侧grig*/
-    initAddGrid();
-    /*回车监事件*/
-    keydown();
-    initForm();
-    /*初始化右侧grig*/
-    initAddGrid();
-    /*初始化右侧表单验证*/
-    initEditFormValid();
-    //动态初始化页面
-    loadingButtonDivTable(0);
+    load().then(function (data) {
+        /*初始化左侧grig*/
+        initSearchGrid();
+    });
+
 });
+function load() {
+    var promise = new Promise(function(resolve, reject){
+        /*初始化右侧grig*/
+        initAddGrid();
+        /*回车监事件*/
+        keydown();
+        initForm();
+        /*初始化右侧grig*/
+        initAddGrid();
+        /*初始化右侧表单验证*/
+        initEditFormValid();
+        //动态初始化页面
+        loadingButtonDivTable(0);
+        resolve("success");
+    });
+    return promise;
+}
+
 function initForm() {
     initSelectOrigForm();
     initSelectDestForm();
@@ -124,10 +134,16 @@ function initSelectDestEditForm() {
 
 }
 function initSearchGrid() {
+    var url="";
+    if (cargoTrack=="cargoTracking"){
+        url= basePath + "/logistics/Consignment/findBill.do?billNo="+cTbillNo;
+    }else {
+        url = basePath + "/logistics/Consignment/page.do?filter_GTI_status=-1&userId="+userId;
+    }
     $("#grid").jqGrid({
         height: 'auto',
         datatype: 'json',
-        url: basePath + "/logistics/Consignment/page.do?filter_GTI_status=-1&userId="+userId,
+        url: url,
         mtype: 'POST',
         colModel: [
             {name: 'billNo', label: "单号", width: 50},
@@ -263,6 +279,12 @@ function initSearchGrid() {
         },
         onSelectRow: function (rowid, status) {
             initDetailData(rowid)
+        },
+        loadComplete:function () {
+            if (cargoTrack=="cargoTracking"){
+                initDetailData(cTbillNo);
+                $("#search_billId").val(cTbillNo);
+            }
         }
     });
 }
@@ -661,14 +683,22 @@ function initButtonGroup(pageType) {
     var html = "";
         $("#edit_guest_button").removeAttr("disabled");
         html +=
-            "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+            "<button id='CMDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
+            "</button>" +
+            "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
+            "    <i class='ace-icon fa fa-undo'></i>" +
+            "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
             "<button id='CMDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>保存</span>" +
             "</button>"+
+            "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
+            "    <i class='ace-icon fa fa-search'></i>" +
+            "    <span class='bigger-110'>入库</span>" +
+            "</button>" +
             "<button id='CMDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>撤销</span>" +
@@ -1310,6 +1340,7 @@ function save() {
                 $("#edit_billNo").val(msg.result);
                 billNo = msg.result;
                 issaleretrun = true;
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1567,7 +1598,6 @@ function loadingButtonDivTable(billStatus) {
     var privilegeMap = ButtonAndDivPower(resourcePrivilege);
     $.each(privilegeMap['div'],function(index,value){
         if(value.isShow!=0) {
-            debugger
             $("#"+value.privilegeId).hide();
         }
     });
@@ -1585,7 +1615,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = [];
             break;
         case "1":
-            disableButtonIds = ["TRDtl_cancel","TRDtl_save,TRDtl_addUniqCode"];
+            disableButtonIds = ["CMDtl_cancel","CMDtl_save,TRDtl_addUniqCode"];
             break;
         case "2" :
             disableButtonIds = ["CMDtl_save","CMDtl_cancel","CMDtl_wareHouseSale","CMDtl_wareHouseokSale"];
@@ -1594,7 +1624,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["CMDtl_save","CMDtl_cancel"];
             break;
         default:
-            disableButtonIds = ["TRDtl_wareHouseIn"];
+            disableButtonIds = ["CMDtl_wareHouseIn"];
     }
     //根据单据状态disable按钮
     $.each(privilegeMap['button'],function(index,value){
@@ -1605,16 +1635,6 @@ function loadingButtonDivTable(billStatus) {
             $("#"+value.privilegeId).removeAttr("disabled");
         }
     });
-    if ($("#edit_status").val() != "2" && $("#edit_status").val() != "3") {
-        html += "<button id='CMDtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='confirmWareHouseIn()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>入库</span>" +
-            "</button>" +
-            "<button id='CMDtl_addUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>扫码</span>" +
-            "</button>";
-    }
     if (userId != "admin") {
         $("#edit_guest_button").attr({"disabled": "disabled"});
     }

@@ -28,6 +28,8 @@
         var defalutCustomercustomerType="${defalutCustomercustomerType}";
         var defalutCustomerowingValue="${defalutCustomerowingValue}";
         var resourcePrivilege =${resourcePrivilege};
+        var cargoTrack = "${cargoTracking}";
+        var cTbillNo = "${cTbillNo}";
     </script>
 </head>
 <body class="no-skin">

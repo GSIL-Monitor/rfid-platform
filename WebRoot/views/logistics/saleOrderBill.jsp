@@ -31,7 +31,8 @@
         var groupid="${groupid}";
         var pageType = "${pageType}";
         var resourcePrivilege =${resourcePrivilege};
-
+        var cargoTrack = "${cargoTracking}";
+        var cTbillNo = "${cTbillNo}";
     </script>
 
 </head>

@@ -8,24 +8,33 @@ var isCheckWareHouse=false;//是否检测出库仓库
 var slaeOrderReturn_customerType;
 var allCodeStrInDtl;
 var allCodes;
-$(function () {
-    /*初始化左侧grig*/
-    initSearchGrid();
-    initSearchAndEditForm();
-    /*初始化右侧grig*/
-    initAddGrid();
-    pageType="add";
-    initButtonGroup(pageType);
-    loadingButtonDivTable(0);
-    initEditFormValid();
-    setEditFormVal();
-    /*回车监事件*/
-    keydown();
-    addProduct_keydown();
-    input_keydown();
-    //动态加载按钮
-    $("#SRDtl_check").hide();
+$(function (){
+    load().then(function (data) {
+        /*初始化左侧grig*/
+        initSearchGrid();
+    });
 });
+
+function load() {
+    var promise = new Promise(function(resolve, reject){
+        initSearchAndEditForm();
+        /*初始化右侧grig*/
+        initAddGrid();
+        pageType="add";
+        initButtonGroup(pageType);
+        loadingButtonDivTable(0);
+        initEditFormValid();
+        setEditFormVal();
+        /*回车监事件*/
+        keydown();
+        addProduct_keydown();
+        input_keydown();
+        //动态加载按钮
+        $("#SRDtl_check").hide();
+        resolve("success");
+    });
+    return promise;
+}
 
 /*
  *@param preId id前缀 search/edit 区分回调框id
@@ -175,10 +184,16 @@ function initSearchAndEditForm(){
     $(".selectpicker").selectpicker('refresh');
 }
 function initSearchGrid() {
+    var url="";
+    if (cargoTrack=="cargoTracking"){
+        url= basePath + "/logistics/saleOrderReturn/findBill.do?billNo="+cTbillNo;
+    }else {
+        url = basePath +  "/logistics/saleOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId;
+    }
     $("#grid").jqGrid({
         height: 'auto',
         datatype: 'json',
-        url: basePath + "/logistics/saleOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId,
+        url:url,
         mtype: 'POST',
         colModel: [
             {name: 'billNo', label: "单号", width: 45, sortable: true},
@@ -323,6 +338,12 @@ function initSearchGrid() {
         },
         onSelectRow: function (rowid, status) {
             initDetailData(rowid)
+        },
+        loadComplete:function () {
+            if (cargoTrack=="cargoTracking"){
+                initDetailData(cTbillNo);
+                $("#search_billId").val(cTbillNo);
+            }
         }
     });
 }
