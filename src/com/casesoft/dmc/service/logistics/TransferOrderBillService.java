@@ -72,6 +72,9 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
     public List<TransferOrderBill> find(List<PropertyFilter> filters) {
         return this.transferOrderBillDao.find(filters);
     }
+    public List<TransferOrderBill>find(String billNo){
+        return this.transferOrderBillDao.find("from TransferOrderBill where billNo=?", new Object[]{billNo});
+    }
 
     @Override
     public List<TransferOrderBill> getAll() {

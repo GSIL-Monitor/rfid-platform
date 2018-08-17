@@ -4,18 +4,28 @@ var taskType; //用于判断出入库类型 1入库 0 出库
 var wareHouse;
 var isCheckWareHouse=true;//是否检测出库仓库
 $(function () {
-    initGrid();
-    /*初始化右侧grig*/
-    initAddGrid();
-    initButtonGroup(0);
-    setEditFormVal();
-    initForm();
-    /*初始化右侧表单验证*/
-    initEditFormValid();
-    /*回车监事件*/
-    keydown();
-   // loadingButtonDivTable();
+    load().then(function (data) {
+        /*初始化左侧grig*/
+        initGrid();
+    });
 });
+
+function load() {
+    var promise = new Promise(function(resolve, reject){
+        /*初始化右侧grig*/
+        initAddGrid();
+        initButtonGroup(0);
+        setEditFormVal();
+        initForm();
+        /*初始化右侧表单验证*/
+        initEditFormValid();
+        /*回车监事件*/
+        keydown();
+        resolve("success");
+    });
+    return promise;
+}
+
 function initForm() {
     initSelectOrigForm();
     initSelectDestForm();
@@ -92,9 +102,15 @@ function initSelectDestForm() {
     });
 }
 function initGrid() {
+    var url="";
+    if (cargoTrack=="cargoTracking"){
+        url= basePath + "/logistics/transferOrder/list.do?billNo="+cTbillNo;
+    }else {
+        url = basePath + "/logistics/transferOrder/page.do?filter_GTI_status=-1";
+    }
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/transferOrder/page.do?filter_GTI_status=-1",
+        url:url,
         datatype: "json",
         mtype: 'POST',
         colModel: [
@@ -167,6 +183,12 @@ function initGrid() {
         },
         onSelectRow: function (rowid, status) {
             initDetailData(rowid)
+        },
+        loadComplete:function () {
+            if (cargoTrack=="cargoTracking"){
+                initDetailData(cTbillNo);
+                $("#search_billId").val(cTbillNo);
+            }
         }
     });
 }

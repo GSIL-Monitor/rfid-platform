@@ -13,6 +13,8 @@
         var userId = "${userId}";
         var ownersId = "${ownersId}";
         var resourcePrivilege =${resourcePrivilege};
+        var cargoTrack = "${cargoTracking}";
+        var cTbillNo = "${cTbillNo}";
     </script>
 
 </head>

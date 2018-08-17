@@ -95,6 +95,12 @@ public class TransferOrderBillController extends BaseController implements ILogi
         return null;
     }
 
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public List<TransferOrderBill> list(String billNo) throws Exception {
+        return this.transferOrderBillService.find(billNo);
+    }
+
     @RequestMapping(value = "/findBillDtl")
     @ResponseBody
     public List<TransferOrderBillDtl> findBillDtl(String billNo) throws Exception {
