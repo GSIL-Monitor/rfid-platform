@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <script>
-        var basePathAll=window.location.href;
-        var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
+       // var basePathAll=window.location.href;
+        //var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
+        var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+        console.log(basePath);
     </script>
     <meta charset="UTF-8">
     <script src="../../Olive/assets/js/jquery.js"></script>
