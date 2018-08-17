@@ -25,6 +25,8 @@
         var userId = "${userId}";
         var defaultWarehId = "${defaultWarehId}";
         var resourcePrivilege =${resourcePrivilege};
+        var cargoTrack = "${cargoTracking}";
+        var cTbillNo = "${cTbillNo}";
     </script>
 </head>
 <body>

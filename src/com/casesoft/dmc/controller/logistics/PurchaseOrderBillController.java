@@ -105,6 +105,13 @@ public class    PurchaseOrderBillController extends BaseController implements IL
         return purchaseOrderBillList;
     }
 
+    @RequestMapping(value = "/findBill")
+    @ResponseBody
+    public List<PurchaseOrderBill> findBill(String billNo)throws Exception{
+        List<PurchaseOrderBill> orderBillList =this.purchaseOrderBillService.find(billNo);
+        return orderBillList;
+    }
+
     @RequestMapping(value = "/findBillDtl")
     @ResponseBody
     public List<PurchaseOrderBillDtl> findBillDtl(String billNo) throws Exception {

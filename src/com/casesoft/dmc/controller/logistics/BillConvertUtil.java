@@ -47,6 +47,7 @@ public class BillConvertUtil {
     public static void covertToPurchaseBill(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, User curUser) {
         if (CommonUtil.isNotBlank(curUser)) {
             purchaseOrderBill.setOprId(curUser.getCode());
+            purchaseOrderBill.setOwnerId(curUser.getOwnerId());
         }
         Long totQty = 0L;
         Long actQty = 0L;
@@ -4043,7 +4044,7 @@ public class BillConvertUtil {
             transferOrderBill.setOwnerId(user.getOwnerId());
             transferOrderBill.setOprId(user.getId());
             transferOrderBill.setPayPrice(0D);
-            transferOrderBill.setStatus(BillConstant.BillStatus.Enter);
+            transferOrderBill.setStatus(BillConstant.BillStatus.Doing);
             transferOrderBill.setTotQty(totQty);
             transferOrderBill.setTotOutVal(0D);
             transferOrderBill.setTotOutQty(0L);

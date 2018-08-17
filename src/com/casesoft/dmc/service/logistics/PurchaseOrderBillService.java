@@ -77,6 +77,10 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
         return this.purchaseBillOrderDao.find(filters);
     }
 
+    public List<PurchaseOrderBill>find(String billNo){
+        return this.purchaseBillOrderDao.find("from PurchaseOrderBill where billNo=?", new Object[]{billNo});
+    }
+
     @Override
     public List<PurchaseOrderBill> getAll() {
         return this.purchaseBillOrderDao.getAll();

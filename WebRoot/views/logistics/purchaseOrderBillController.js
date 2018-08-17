@@ -1,51 +1,60 @@
 var searchUrl = basePath + "/logistics/purchaseOrderBill/page.do?filter_GTI_status=-1";
-var autoSelect =false;//是否自动选中
+var autoSelect = false;//是否自动选中
 var showScanDialog = false;
 var editDtailRowId = null;  //当前编辑行号
 var editDtailColumn = null; //当前编辑列名
 var addDetailgridiRow;//存储iRow
 var addDetailgridiCol;//存储iCol
-var allocationId =null;//货位
+var allocationId = null;//货位
 var levelId = null;//货层
 var rackId = null;//货架
 var cageId = null;//仓库
 var deep = null;//深度
 $(function () {
-    /*初始化左侧grig*/
-    initSearchGrid();
-    /*初始化右侧grig*/
-    initAddGrid();
-    /*初始化from表单*/
-    initForm();
-    /*初始化jstree*/
-    $("#destId").empty();
-    $("#destId").val("--请选择入库库位--");
-    if(billNo){
-        bootbox.alert("单据"+billNo+"正在编辑中");
-    }else{
-        sessionStorage.removeItem("billNopurchase");
-    }
-    pageType="add";
-    initButtonGroup(0);
-    loadingButtonDivTable();
-    initEditFormValid();
-    initSelectbuyahandIdForm();
-    $.ajax({
-        url: basePath + "/unit/list.do?filter_EQI_type=9",
-        cache: false,
-        async: false,
-        type: "POST",
-        success: function (data, textStatus) {
-            $("#search_destId").empty();
-            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
-            var json = data;
-            for (var i = 0; i < json.length; i++) {
-                $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-            }
-            $(".selectpicker").selectpicker('refresh');
-        }
+    load().then(function (data) {
+        /*初始化左侧grig*/
+        initSearchGrid();
     });
 });
+function load() {
+    var promise = new Promise(function(resolve, reject){
+        /*初始化右侧grig*/
+        initAddGrid();
+        /*初始化from表单*/
+        initForm();
+        /*初始化jstree*/
+        $("#destId").empty();
+        $("#destId").val("--请选择入库库位--");
+        if(billNo){
+            bootbox.alert("单据"+billNo+"正在编辑中");
+        }else{
+            sessionStorage.removeItem("billNopurchase");
+        }
+        pageType="add";
+        initButtonGroup(0);
+        loadingButtonDivTable();
+        initEditFormValid();
+        initSelectbuyahandIdForm();
+        $.ajax({
+            url: basePath + "/unit/list.do?filter_EQI_type=9",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#search_destId").empty();
+                $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                }
+                $(".selectpicker").selectpicker('refresh');
+            }
+        });
+        resolve("success");
+    });
+    return promise;
+}
+
 //初始化树形结构
 function initTree(id) {
     cageId = $("#edit_destId").val();
@@ -59,19 +68,19 @@ function initTree(id) {
             var allocationName = "请选择";
             var levelName = "请选择";
             var rackName = "请选择";
-            if(deep == "3"){
+            if (deep == "3") {
                 allocationId = data.node.id;
                 levelId = data.node.parents[0];
                 rackId = data.node.parents[1];
                 allocationName = data.node.text;
-                levelName = $("#"+allocationId+"_anchor").parent().parent().prev().text();
-                rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
+                levelName = $("#" + allocationId + "_anchor").parent().parent().prev().text();
+                rackName = $("#" + levelId + "_anchor").parent().parent().prev().text();
             }
-            else if(deep == "2"){
+            else if (deep == "2") {
                 levelId = data.node.id;
                 rackId = data.node.parents[0];
                 levelName = data.node.text;
-                rackName = $("#"+levelId+"_anchor").parent().parent().prev().text();
+                rackName = $("#" + levelId + "_anchor").parent().parent().prev().text();
             }
             else {
                 rackId = data.node.id;
@@ -81,7 +90,7 @@ function initTree(id) {
             console.info(rackId);
             console.info(levelId);
             console.info(allocationId);
-            $("#destId").val(rackName+"-"+levelName+"-"+allocationName);
+            $("#destId").val(rackName + "-" + levelName + "-" + allocationName);
 
         }
 
@@ -93,12 +102,12 @@ function initTree(id) {
                 'data': {
                     'url': basePath + "/sys/repositoryController/unitListById.do",
                     "data": function (node) {
-                        if(node.id == "#"){//第一次加载
+                        if (node.id == "#") {//第一次加载
                             return {
                                 "id": cageId
                             }
                         }
-                        else{
+                        else {
                             return {
                                 "id": node.id
                             }
@@ -115,22 +124,22 @@ function initTree(id) {
                 }
             },
             'types': {
-                "default" : {
+                "default": {
                     "icon": "fa fa-university"
                 }
             },
             'plugins': ['search', 'wholerow', 'types']
         })
         //双击  确定jstree.js中已经添加双击事件
-        .bind('dblclick.jstree',function(event){
-            if(deep != "3"){
+        .bind('dblclick.jstree', function (event) {
+            if (deep != "3") {
                 $.gritter.add({
                     text: "请选择具体货位！",
                     class_name: 'gritter-success  gritter-light'
                 });
             }
-            else{
-                $("#tree").css("display","none");
+            else {
+                $("#tree").css("display", "none");
             }
         })
         .on("loaded.jstree", function (event, data) {
@@ -140,8 +149,9 @@ function initTree(id) {
 
         })
 }
+
 //入库仓库改变事件
-$("#edit_destId").on("change",function () {
+$("#edit_destId").on("change", function () {
     /*初始化jstree*/
     initTree();
     $("#destId").val("--请选择入库库位--");
@@ -149,54 +159,67 @@ $("#edit_destId").on("change",function () {
 
 //入库选择点击事件
 $("#destId").click(function () {
-    $("#tree").css("display","block");
+    $("#tree").css("display", "block");
+    initTree();
 });
+
 //确定搜索
 function chooseCage() {
-    if(deep != "3"){
+    if (deep != "3") {
         $.gritter.add({
             text: "请选择具体货位！",
             class_name: 'gritter-success  gritter-light'
         });
     }
-    else{
-        $("#tree").css("display","none");
+    else {
+        $("#tree").css("display", "none");
     }
 }
+
 //取消
 function unChoose() {
     rackId = null;
     levelId = null;
     allocationId = null;
     $("#destId").val("--请选择入库库位--");
-    $("#tree").css("display","none");
+    $("#tree").css("display", "none");
 }
+
 //jstree搜索
 $("#search_organizationName").keydown(function (event) {
     if (event.keyCode == 13) {
         searchTree();
     }
 });
+
 function searchTree() {
     var searchResult = $("#jstree").jstree('search', $("#search_organizationName").val());
     //var searchResult = $('#jstree').jstree(true).search($("#search_organizationName"));
     $(searchResult).find('.jstree-search').focus();
 
 }
+
 function initForm() {
     initSelectDestForm();
 
 }
+
 function initSearchGrid() {
+    var url="";
+    if (cargoTrack=="cargoTracking"){
+        url= basePath + "/logistics/purchaseOrderBill/findBill.do?billNo="+cTbillNo;
+    }else {
+        url = basePath + "/logistics/purchaseOrderBill/page.do?filter_GTI_status=-1";
+    }
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/purchaseOrderBill/page.do?filter_GTI_status=-1",
+        url:url,
         datatype: "json",
         sortorder: 'desc',
         colModel: [
             {name: 'billNo', label: '单据编号', sortable: true, width: 45},
             {
-                name: "", label: "操作", width: 60, editable: false, align: "center",hidden:true,
+                name: "", label: "操作", width: 60, editable: false, align: "center", hidden: true,
                 formatter: function (cellvalue, options, rowObject) {
                     var billNo = rowObject.billNo;
                     var html;
@@ -242,7 +265,7 @@ function initSearchGrid() {
                 }
             },
             {
-                name: 'inStatusImg', label: '入态', width: 20, align: 'center',hidden:true,
+                name: 'inStatusImg', label: '入态', width: 20, align: 'center', hidden: true,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.inStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
@@ -257,7 +280,7 @@ function initSearchGrid() {
             },
             {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {name: 'origUnitId', label: '供应商ID', hidden: true},
-            {name: 'origUnitName', label: '供应商', width: 40,hidden:true},
+            {name: 'origUnitName', label: '供应商', width: 40, hidden: true},
             {name: 'origId', label: '出库仓ID', hidden: true},
             {name: 'origName', label: '出库仓', hidden: true, width: 40},
             {name: 'destUnitId', label: '收货方ID', hidden: true},
@@ -265,27 +288,29 @@ function initSearchGrid() {
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 35},
             {name: 'totQty', label: '单据数量', sortable: false, width: 20},
-            {name: 'totInQty', label: '已入库数', width: 30,hidden:true},
-            {name: 'totInVal', label: '总入库金额', width: 30,hidden:true,
+            {name: 'totInQty', label: '已入库数', width: 30, hidden: true},
+            {
+                name: 'totInVal', label: '总入库金额', width: 30, hidden: true,
                 formatter: function (cellValue, options, rowObject) {
-                    var totInVal=parseFloat(cellValue).toFixed(2);
+                    var totInVal = parseFloat(cellValue).toFixed(2);
                     return totInVal;
-                }},
-            {name: 'remark', label: '备注', sortable: false, width: 40,hidden:true},
+                }
+            },
+            {name: 'remark', label: '备注', sortable: false, width: 40, hidden: true},
             {name: 'cageId', hidden: true},
             {name: 'rackId', hidden: true},
             {name: 'levelId', hidden: true},
             {name: 'allocationId', hidden: true},
             {name: 'id', hidden: true},
-            {name:'buyahandId',hidden:true},
-            {name:'payPrice',hidden:true},
-            {name:'payType',hidden:true},
-            {name:'orderWarehouseId',hidden:true},
-            {name:'discount',hidden:true},
-            {name:'srcBillNo',hidden:true},
-            {name: 'arrival',hidden:true },
-            {name:'remark',hidden:true},
-            {name:'returnBillNo',hidden:true}
+            {name: 'buyahandId', hidden: true},
+            {name: 'payPrice', hidden: true},
+            {name: 'payType', hidden: true},
+            {name: 'orderWarehouseId', hidden: true},
+            {name: 'discount', hidden: true},
+            {name: 'srcBillNo', hidden: true},
+            {name: 'arrival', hidden: true},
+            {name: 'remark', hidden: true},
+            {name: 'returnBillNo', hidden: true}
         ],
         viewrecords: true,
         autowidth: true,
@@ -301,20 +326,27 @@ function initSearchGrid() {
         footerrow: true,
         gridComplete: function () {
             setFooterData();
-            if(autoSelect){
+            if (autoSelect) {
                 var rowIds = $("#grid").getDataIDs();
                 $("#grid").setSelection(rowIds[0]);
-                autoSelect =false;
+                autoSelect = false;
             }
         },
         onSelectRow: function (rowid, status) {
             initDetailData(rowid)
+        },
+        loadComplete:function () {
+            if (cargoTrack=="cargoTracking"){
+                initDetailData(cTbillNo);
+                $("#search_billId").val(cTbillNo);
+            }
         }
     });
 }
+
 function setFooterData() {
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
-    var sum_totInQty = $("#grid").getCol('totInQty',false,'sum');
+    var sum_totInQty = $("#grid").getCol('totInQty', false, 'sum');
     var sum_totInVal = $("#grid").getCol('totInVal', false, 'sum');
     $("#grid").footerData('set', {
         billNo: "合计",
@@ -323,12 +355,13 @@ function setFooterData() {
         totInVal: sum_totInVal
     });
 }
+
 function initDetailData(rowid) {
-    $("#PIDtl_save").attr('disabled',false);
+    $("#PIDtl_save").attr('disabled', false);
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     console.info(rowData);
-    if(rowData.allocationId == "" || rowData.allocationId == undefined || rowData.allocationId == null){
+    if (rowData.allocationId == "" || rowData.allocationId == undefined || rowData.allocationId == null) {
         $("#destId").empty();
         $("#destId").val("--请选择入库库位--");
     }
@@ -347,10 +380,11 @@ function initDetailData(rowid) {
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
-    pageType="edit";
+    pageType = "edit";
     initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
 }
+
 function initAddGrid() {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
@@ -427,19 +461,19 @@ function initAddGrid() {
                     }
 
                 }, formatter: function (cellValue, options, rowObject) {
-                switch (rowObject.inStockType) {
-                    case 'XK':
-                        return "新款";
-                    case 'BH':
-                        return "补货";
-                    case 'PH':
-                        return "供应商配货";
-                    case 'JS':
-                        return "寄售";
-                    default :
-                        return "";
+                    switch (rowObject.inStockType) {
+                        case 'XK':
+                            return "新款";
+                        case 'BH':
+                            return "补货";
+                        case 'PH':
+                            return "供应商配货";
+                        case 'JS':
+                            return "寄售";
+                        default :
+                            return "";
+                    }
                 }
-            }
             },
             {name: 'styleId', label: '款号', width: 16},
             {name: 'colorId', label: '色码', width: 16},
@@ -459,7 +493,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name:'arrival',hidden:true},
+            {name: 'arrival', hidden: true},
             {name: 'actPrintQty', label: '已打数', width: 16},
             {name: 'inQty', label: '已入数', width: 16},
             {name: 'sku', label: 'SKU', width: 20},
@@ -548,10 +582,12 @@ function initAddGrid() {
     );
     $("#addDetailgrid-pager_center").html("");
 }
+
 var arrival = 0;
 var isfrist = true;
 var editDtailiRow = null;
 var editDtailiCol = null;
+
 function initeditGrid(billNo) {
     $("#addDetailgrid").jqGrid({
         height: 'auto',
@@ -637,30 +673,38 @@ function initeditGrid(billNo) {
             },
             {name: 'inQty', label: '已入库数量', width: 20},
             {name: 'sku', label: 'SKU', width: 20},
-            {name: 'price', label: '采购价格', width: 20,
+            {
+                name: 'price', label: '采购价格', width: 20,
                 formatter: function (cellValue, options, rowObject) {
-                    var price=parseFloat(cellValue).toFixed(2);
+                    var price = parseFloat(cellValue).toFixed(2);
                     return price;
-                }},
-            {name: 'totPrice', label: '采购金额', width: 20,
+                }
+            },
+            {
+                name: 'totPrice', label: '采购金额', width: 20,
                 formatter: function (cellValue, options, rowObject) {
-                    var totPrice=parseFloat(cellValue).toFixed(2);
+                    var totPrice = parseFloat(cellValue).toFixed(2);
                     return totPrice;
-                }},
-            {name: 'actPrice', label: '实际价格', width: 20,
+                }
+            },
+            {
+                name: 'actPrice', label: '实际价格', width: 20,
                 formatter: function (cellValue, options, rowObject) {
-                    var actPrice=parseFloat(cellValue).toFixed(2);
+                    var actPrice = parseFloat(cellValue).toFixed(2);
                     return actPrice;
-                }},
-            {name: 'totActPrice', label: '实际金额', width: 20,
+                }
+            },
+            {
+                name: 'totActPrice', label: '实际金额', width: 20,
                 formatter: function (cellValue, options, rowObject) {
-                    var actPrice=parseFloat(cellValue).toFixed(2);
+                    var actPrice = parseFloat(cellValue).toFixed(2);
                     return actPrice;
-                }},
+                }
+            },
 
-            {name:'actQty', hidden: true},
-            {name:"billId", hidden: true},
-            {name:"billNo", hidden: true},
+            {name: 'actQty', hidden: true},
+            {name: "billId", hidden: true},
+            {name: "billNo", hidden: true},
             {name: "inStockType", hidden: true},
             {
                 name: '', label: '唯一码明细', width: 20, align: "center",
@@ -707,7 +751,7 @@ function initeditGrid(billNo) {
 
             if (parseInt(value) > parseInt(printQty)) {
                 $.gritter.add({
-                    text: "已超过"+styleId+"的待打印总数量",
+                    text: "已超过" + styleId + "的待打印总数量",
                     class_name: 'gritter-success  gritter-light'
                 });
                 $('#addDetailgrid').setCell(rowid, "arrival", arrival);
@@ -723,7 +767,7 @@ function initeditGrid(billNo) {
         gridComplete: function () {
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 var printStatus = $('#addDetailgrid').getCell(value, "printStatus");
-                if (printStatus==2){
+                if (printStatus == 2) {
                     $("#addDetailgrid").jqGrid('setCell', value, 17, '', 'not-editable-cell');
                 }
             });
@@ -731,13 +775,13 @@ function initeditGrid(billNo) {
         }
     });
 
-    if(curOwnerId !== "1"){
+    if (curOwnerId !== "1") {
         $("#addDetailgrid").setGridParam().hideCol("price");
         $("#addDetailgrid").setGridParam().hideCol("totPrice");
         $("#addDetailgrid").setGridParam().hideCol("actPrice");
         $("#addDetailgrid").setGridParam().hideCol("totActPrice");
         $("#addDetailgrid").setGridParam().hideCol("discount");
-    }else {
+    } else {
         $("#addDetailgrid").setGridParam().showCol("price");
         $("#addDetailgrid").setGridParam().showCol("totPrice");
         $("#addDetailgrid").setGridParam().showCol("actPrice");
@@ -745,6 +789,7 @@ function initeditGrid(billNo) {
         $("#addDetailgrid").setGridParam().showCol("discount");
     }
 }
+
 function setAddFooterData() {
     var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
     var sum_totPrice = $("#addDetailgrid").getCol('totPrice', false, 'sum');
@@ -756,11 +801,13 @@ function setAddFooterData() {
         totActPrice: sum_totActPrice
     });
 }
+
 var prefixId;
 var dialogOpenPage;
+
 function openSearchVendorDialog(preId) {
     dialogOpenPage = "purchaseOrder";
-    prefixId =preId;
+    prefixId = preId;
     $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
         initVendorSelect_Grid();
     });
@@ -769,10 +816,11 @@ function openSearchVendorDialog(preId) {
         "<button type='button'  class='btn btn-primary' onclick='confirm_selected_VendorId_purchaseOrder(prefixId)'>确认</button>"
     );
 }
+
 function initEditFormValid() {
     $('#editForm').bootstrapValidator({
         message: '输入值无效',
-        excluded: [':disabled',':hidden'],
+        excluded: [':disabled', ':hidden'],
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
@@ -866,6 +914,7 @@ function addDetail() {
         $("#color_size_grid").clearGridData();
     });
 }
+
 function showCodesDetail(sku) {
     var billNo = $("#edit_billNo").val();
     var uniqueCodes = "";
@@ -893,6 +942,7 @@ function showCodesDetail(sku) {
     initUniqueCodeList(uniqueCodes);
     codeListReload(uniqueCodes);
 }
+
 function initSelectbuyahandIdForm() {
     var url;
     url = basePath + "/sys/user/list.do?filter_EQS_roleId=BUYER";
@@ -913,8 +963,9 @@ function initSelectbuyahandIdForm() {
         }
     });
 }
+
 function initSelectDestForm() {
-    if(userId==="admin"){
+    if (userId === "admin") {
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9",
             cache: false,
@@ -932,9 +983,9 @@ function initSelectDestForm() {
                 initTree();
             }
         });
-    }else{
+    } else {
         $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + $("#findOwnerId").val(),
+            url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
             cache: false,
             async: false,
             type: "POST",
@@ -991,6 +1042,7 @@ function _resetForm() {
 function search_discount_onblur() {
     setDiscount();
 }
+
 function setDiscount() {
     var discount = $("#search_discount").val();
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
@@ -1044,11 +1096,12 @@ function addProductInfo(status) {
             $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
         }
     });
-    if(status){
+    if (status) {
         $("#modal-addDetail-table").modal('hide');
     }
     setEditFooterData();
 }
+
 function setEditFooterData() {
     var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
     var sum_totPrice = $("#addDetailgrid").getCol('totPrice', false, 'sum');
@@ -1069,6 +1122,7 @@ function saveItem(rowId) {
     $("#addDetailgrid").setRowData(rowId, value);
     setEditFooterData();
 }
+
 function deleteItem(rowId) {
     $("#addDetailgrid").jqGrid("delRowData", rowId);
     setEditFooterData();
@@ -1120,7 +1174,7 @@ function save() {
     $("#search_billDate").val(updateTime($("#search_billDate").val()));
     $.ajax({
         dataType: "json",
-        async:true,
+        async: true,
         url: basePath + "/logistics/purchaseOrderBill/save.do",
         data: {
             purchaseBillStr: JSON.stringify(array2obj($("#editForm").serializeArray())),
@@ -1151,32 +1205,34 @@ function save() {
     $("#destId").empty();
     $("#destId").val("--请选择入库库位--");
 }
+
 function quitback() {
     $.ajax({
-        url: basePath +"/logistics/purchaseOrderBill/quit.do?billNo=" +$("#edit_billNo").val(),
+        url: basePath + "/logistics/purchaseOrderBill/quit.do?billNo=" + $("#edit_billNo").val(),
         cache: false,
         async: true,
         type: "POST",
         success: function (data, textStatus) {
-            if(textStatus=="success"){
+            if (textStatus == "success") {
                 $.gritter.add({
-                    text: billNo+"可以修改",
+                    text: billNo + "可以修改",
                     class_name: 'gritter-success  gritter-light'
                 });
             }
         }
     });
 }
+
 function convertToTagBirth() {
     var sum = 0;
     $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
-        sum+=parseInt(rowData.arrival);
+        sum += parseInt(rowData.arrival);
         dtlArray.push(rowData);
     });
-    if (sum==0){
+    if (sum == 0) {
         $.gritter.add({
             text: "无初始化标签的商品！",
             class_name: 'gritter-success  gritter-light'
@@ -1203,8 +1259,9 @@ function convertToTagBirth() {
         }
     });
 }
+
 function openAddEpcDialog() {
-    var billNo  = $("#edit_billNo").val();
+    var billNo = $("#edit_billNo").val();
     $("#modal-addEpc-table").modal('show').on('hidden.bs.modal', function () {
         $("#epcgrid").clearGridData();
     });
@@ -1267,7 +1324,7 @@ function doPrint() {
         url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
         data: {
-            type:"PI"
+            type: "PI"
         },
         success: function (msg) {
             if (msg.success) {
@@ -1362,7 +1419,7 @@ function set(id) {
 
 function cancel() {
     var billId = $("#edit_billNo").val();
-    if($("#search_status").val()!=0){
+    if ($("#search_status").val() != 0) {
         bootbox.alert("不是录入状态，无法撤销");
         return;
     }
@@ -1380,6 +1437,7 @@ function cancel() {
         }
     });
 }
+
 function cancelAjax(billId) {
     $.ajax({
         dataType: "json",
@@ -1411,7 +1469,7 @@ function end() {
     var dtlArray = [];
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
-        if (parseInt(rowData.qty) != parseInt(rowData.actPrintQty)){
+        if (parseInt(rowData.qty) != parseInt(rowData.actPrintQty)) {
             rowData.qty = rowData.printQty;
             rowData.actPrice = rowData.price;
             rowData.totPrice = -rowData.price * rowData.qty;
@@ -1421,13 +1479,13 @@ function end() {
     });
     $.ajax({
         dataType: "json",
-        async:true,
+        async: true,
         url: basePath + "/logistics/purchaseOrderBill/endNb.do",
         data: {
             purchaseBillStr: JSON.stringify(array2obj($("#ReturnEditForm").serializeArray())),
             strDtlList: JSON.stringify(dtlArray),
             userId: userId,
-            PbillNo:PbillNo
+            PbillNo: PbillNo
         },
         type: "POST",
         success: function (msg) {
@@ -1446,60 +1504,60 @@ function end() {
     });
 }
 
-function initButtonGroup(billStatus){
-        $("#buttonGroup").html("" +
-            "<button id='PIDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
-            "    <i class='ace-icon fa fa-plus'></i>" +
-            "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
-            "<button id='PIDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
-            "    <i class='ace-icon fa fa-save'></i>" +
-            "    <span class='bigger-110'>保存</span>" +
-            "</button>" +
-            "<button id='PIDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
-            "    <i class='ace-icon fa fa-undo'></i>" +
-            "    <span class='bigger-110'>撤销</span>" +
-            "</button>" +
-            "<button id='PIDtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>打印</span>" +
-            "</button>" +
-            "<button id='PIDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>三联打印</span>" +
-            "</button>"+
-            "<button id='PIDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
-            "    <i class='ace-icon fa fa-print'></i>" +
-            "    <span class='bigger-110'>A4打印</span>" +
-            "</button>" +
-            "<button id='PIDtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='convertToTagBirth()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>标签初始化</span>" +
-            "</button>" +
-            "<button id='PIDtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='openAddEpcDialog()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>采购入库单</span>" +
-            "</button>"+
-            "<button id='PIDtl_end' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='end()'>" +
-            "    <i class='ace-icon fa fa-search'></i>" +
-            "    <span class='bigger-110'>结束订单</span>" +
-            "</button>"
-        );
+function initButtonGroup(billStatus) {
+    $("#buttonGroup").html("" +
+        "<button id='PIDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
+        "    <i class='ace-icon fa fa-plus'></i>" +
+        "    <span class='bigger-110'>新增</span>" +
+        "</button>" +
+        "<button id='PIDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
+        "    <i class='ace-icon fa fa-save'></i>" +
+        "    <span class='bigger-110'>保存</span>" +
+        "</button>" +
+        "<button id='PIDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
+        "    <i class='ace-icon fa fa-undo'></i>" +
+        "    <span class='bigger-110'>撤销</span>" +
+        "</button>" +
+        "<button id='PIDtl_doPrint' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>打印</span>" +
+        "</button>" +
+        "<button id='PIDtl_doPrintSanLian' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintSanLian()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>三联打印</span>" +
+        "</button>" +
+        "<button id='PIDtl_doPrintA4' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrintA4()'>" +
+        "    <i class='ace-icon fa fa-print'></i>" +
+        "    <span class='bigger-110'>A4打印</span>" +
+        "</button>" +
+        "<button id='PIDtl_findRetrunno' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='convertToTagBirth()'>" +
+        "    <i class='ace-icon fa fa-search'></i>" +
+        "    <span class='bigger-110'>标签初始化</span>" +
+        "</button>" +
+        "<button id='PIDtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='openAddEpcDialog()'>" +
+        "    <i class='ace-icon fa fa-search'></i>" +
+        "    <span class='bigger-110'>采购入库单</span>" +
+        "</button>" +
+        "<button id='PIDtl_end' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='end()'>" +
+        "    <i class='ace-icon fa fa-search'></i>" +
+        "    <span class='bigger-110'>结束订单</span>" +
+        "</button>"
+    );
     $("#addDetail").show();
     loadingButtonDivTable(billStatus);
 }
 
 function loadingButtonDivTable(billStatus) {
     var privilegeMap = ButtonAndDivPower(resourcePrivilege);
-    $.each(privilegeMap['table'],function(index,value){
-        if(value.isShow!=0) {
+    $.each(privilegeMap['table'], function (index, value) {
+        if (value.isShow != 0) {
             $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
         }
     });
     var disableButtonIds = "";
-    switch (billStatus){
+    switch (billStatus) {
         case "-1" :
-            disableButtonIds = ["PIDtl_save","PIDtl_cancel","PIDtl_findRetrunno","PIDtl_findshopMessage","PIDtl_end"];
+            disableButtonIds = ["PIDtl_save", "PIDtl_cancel", "PIDtl_findRetrunno", "PIDtl_findshopMessage", "PIDtl_end"];
             break;
         case "0" :
             disableButtonIds = [];
@@ -1508,7 +1566,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = [];
             break;
         case "2" :
-            disableButtonIds = ["PIDtl_save","PIDtl_cancel","PIDtl_findRetrunno","PIDtl_findshopMessage","PIDtl_end"];
+            disableButtonIds = ["PIDtl_save", "PIDtl_cancel", "PIDtl_findRetrunno", "PIDtl_findshopMessage", "PIDtl_end"];
             break;
         case "3":
             disableButtonIds = [];
@@ -1517,11 +1575,11 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = [];
     }
     //根据单据状态disable按钮
-    $.each(privilegeMap['button'],function(index,value){
-        if($.inArray(value.privilegeId,disableButtonIds)!= -1){
-            $("#"+value.privilegeId).attr({"disabled": "disabled"});
-        }else{
-            $("#"+value.privilegeId).removeAttr("disabled");
+    $.each(privilegeMap['button'], function (index, value) {
+        if ($.inArray(value.privilegeId, disableButtonIds) != -1) {
+            $("#" + value.privilegeId).attr({"disabled": "disabled"});
+        } else {
+            $("#" + value.privilegeId).removeAttr("disabled");
         }
     });
 }
@@ -1537,8 +1595,8 @@ function doPrintSanLian() {
         url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
         data: {
-            type:"PI",
-            ruleReceipt:"SanLian"
+            type: "PI",
+            ruleReceipt: "SanLian"
         },
         success: function (msg) {
             if (msg.success) {
@@ -1559,6 +1617,7 @@ function doPrintSanLian() {
         }
     });
 }
+
 function setSanLian(id) {
     $.ajax({
         dataType: "json",
@@ -1577,39 +1636,38 @@ function setSanLian(id) {
                 var LODOP = getLodop();
                 //eval(print.printCont);
                 $("#edit-dialogSanLian").html(print.printTableTh);
-                var printCode=print.printCode;
-                var printCodeArray=printCode.split(",");
-                for(var i=0;i<printCodeArray.length;i++){
+                var printCode = print.printCode;
+                var printCodeArray = printCode.split(",");
+                for (var i = 0; i < printCodeArray.length; i++) {
                     debugger
                     var plp = printCodeArray[i];
                     var message = cont[plp];
-                    $("#edit-dialogSanLian").find("#"+plp).text(message);
+                    $("#edit-dialogSanLian").find("#" + plp).text(message);
                 }
-                var tbodyCont=""
-                for(var a=0;a<contDel.length;a++){
-                    var del=contDel[a];
-                    var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
-                    for(var b=0;b<printTableCode.length;b++){
-                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                var tbodyCont = ""
+                for (var a = 0; a < contDel.length; a++) {
+                    var del = contDel[a];
+                    var printTableCode = print.printTableCode.split(",");
+                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>"
+                    for (var b = 0; b < printTableCode.length; b++) {
+                        if (printTableCode[b] == "styleId" || printTableCode[b] == "styleName" || printTableCode[b] == "colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
-                        }else if(printParameter.sizeArrySanLian.indexOf(printTableCode[b])!=-1){
+                        } else if (printParameter.sizeArrySanLian.indexOf(printTableCode[b]) != -1) {
                             tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
-                        }else{
+                        } else {
                             tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
                         }
 
                     }
-                    tbodyCont+="</tr>"
+                    tbodyCont += "</tr>"
                 }
                 $("#loadtabSanLian").html(tbodyCont);
                 console.log($("#edit-dialogSanLian").html());
                 //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
-                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthSanLian,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100, 1, printParameter.receiptWidthSanLian, printParameter.receiptheightSanLian, $("#edit-dialogSanLian").html());
                 //LODOP.PREVIEW();
                 LODOP.PRINT();
                 $("#edit-dialog-print").hide();
-
 
 
             } else {
@@ -1618,6 +1676,7 @@ function setSanLian(id) {
         }
     });
 }
+
 /**
  * A4打印
  * */
@@ -1633,8 +1692,8 @@ function doPrintA4() {
         url: basePath + "/sys/printset/findPrintSetListByOwnerId.do",
         type: "POST",
         data: {
-            type:"SR",
-            ruleReceipt:"A4"
+            type: "SR",
+            ruleReceipt: "A4"
         },
         success: function (msg) {
             if (msg.success) {
@@ -1655,6 +1714,7 @@ function doPrintA4() {
         }
     });
 }
+
 function setA4(id) {
     $.ajax({
         dataType: "json",
@@ -1673,41 +1733,40 @@ function setA4(id) {
                 var LODOP = getLodop();
                 //eval(print.printCont);
                 $("#edit-dialogSanLian").html(print.printTableTh);
-                var printCode=print.printCode;
-                var printCodeArray=printCode.split(",");
-                for(var i=0;i<printCodeArray.length;i++){
+                var printCode = print.printCode;
+                var printCodeArray = printCode.split(",");
+                for (var i = 0; i < printCodeArray.length; i++) {
                     debugger
                     var plp = printCodeArray[i];
                     var message = cont[plp];
-                    $("#edit-dialogSanLian").find("#"+plp).text(message);
+                    $("#edit-dialogSanLian").find("#" + plp).text(message);
                 }
-                var tbodyCont=""
-                for(var a=0;a<contDel.length;a++){
-                    var del=contDel[a];
-                    var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
-                    for(var b=0;b<printTableCode.length;b++){
-                        if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
+                var tbodyCont = ""
+                for (var a = 0; a < contDel.length; a++) {
+                    var del = contDel[a];
+                    var printTableCode = print.printTableCode.split(",");
+                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>"
+                    for (var b = 0; b < printTableCode.length; b++) {
+                        if (printTableCode[b] == "styleId" || printTableCode[b] == "styleName" || printTableCode[b] == "colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
-                        }else if(printParameter.sizeArry.indexOf(printTableCode[b])!=-1){
+                        } else if (printParameter.sizeArry.indexOf(printTableCode[b]) != -1) {
                             tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
-                        } else if(printTableCode[b]=="other"){
+                        } else if (printTableCode[b] == "other") {
                             tbodyCont += "<td align='middle' colspan='1' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
-                        }else{
+                        } else {
                             tbodyCont += "<td align='middle' colspan='2' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
                         }
 
                     }
-                    tbodyCont+="</tr>"
+                    tbodyCont += "</tr>"
                 }
                 $("#loadtabA4").html(tbodyCont);
                 console.log($("#edit-dialogSanLian").html());
                 //LODOP.SET_PRINT_STYLEA("baseHtml", 'Content', $("#edit-dialogSanLian").html());
-                LODOP.ADD_PRINT_TABLE(100,1,printParameter.receiptWidthA4,printParameter.receiptheightSanLian,$("#edit-dialogSanLian").html());
+                LODOP.ADD_PRINT_TABLE(100, 1, printParameter.receiptWidthA4, printParameter.receiptheightSanLian, $("#edit-dialogSanLian").html());
                 //LODOP.PREVIEW();
                 LODOP.PRINT();
                 $("#edit-dialog-print").hide();
-
 
 
             } else {
