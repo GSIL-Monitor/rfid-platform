@@ -404,7 +404,11 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         this.guestValueChangeService.saveValueBackoff(saleOrderBill.getId(), preDestUnitId, this.guestService.getOwingValue(preUnit, preCustomer), Constant.ChangeRecordStatus.SaleOrderCancel);
         //更新客户欠款金额和积分
         this.guestService.resetPreGust(saleOrderBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
-
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("srcBillNo",saleOrderBill.getId());
+        if (CommonUtil.isNotBlank(transferOrderBill)){
+            transferOrderBill.setStatus(BillConstant.BillStatus.Cancel);
+            this.transferOrderBillService.update(transferOrderBill);
+        }
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
     }
 
