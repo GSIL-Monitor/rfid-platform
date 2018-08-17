@@ -97,7 +97,8 @@ function initSearchShopType() {
                         {name: 'id', label: 'id',hidden:true, width: 40},
                         {name: 'code', label: '编号',editable:true, width: 20},
                         {name: 'name', label: '名称', editable:true,width: 40},
-                        {name: 'groupId', label: '分类', editable:true,width: 20},
+                        {name: 'groupId', label: '分类', editable:true,width: 20,hidden:true},
+                        {name:'groupName',label:"分类",editable:true,width: 20},
                         {name: 'createTime', label: '创建时间', width: 30}
                     ],
                     viewrecords: true,

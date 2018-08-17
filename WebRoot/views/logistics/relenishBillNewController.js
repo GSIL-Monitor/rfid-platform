@@ -636,6 +636,7 @@ function save() {
                 });
                 $("#edit_billNo").val(msg.result);
                 $("#REDtl_check").show();
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
