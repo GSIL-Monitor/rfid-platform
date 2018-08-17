@@ -178,6 +178,7 @@
     function onOrdinary() {
         var busnissId=$("#search_busnissId").val();
         localStorage.setItem("busnissId",busnissId);
+        localStorage.setItem("memberType","ordinary");
         if(busnissId!=""&&busnissId!=undefined){
             window.location.href=basePath+'/views/NoOneCashier/selectSaleOrSaleRetrunWS.html';
         }else{
@@ -187,6 +188,7 @@
     function onVip() {
         var busnissId=$("#search_busnissId").val();
         localStorage.setItem("busnissId",busnissId);
+        localStorage.setItem("memberType","vip");
         if(busnissId!=""&&busnissId!=undefined){
             window.location.href=basePath+'/views/NoOneCashier/selectCustomWS.html';
         }else{

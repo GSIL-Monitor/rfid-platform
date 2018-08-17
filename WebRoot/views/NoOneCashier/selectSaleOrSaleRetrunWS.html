@@ -92,7 +92,13 @@
 
     });
     function onBack() {
-        window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
+
+        if( localStorage.getItem("memberType")=="vip"){
+            window.location.href=basePath+'/views/NoOneCashier/selectCustomWS.html';
+        }else{
+            window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
+        }
+
     }
 </script>
 </body>
