@@ -11,41 +11,50 @@ var rackId = null;//货架
 var cageId = null;//仓库
 var deep = null;//深度
 $(function () {
-    /*初始化左侧grig*/
-    initSearchGrid();
-    /*初始化右侧grig*/
-    initAddGrid();
-    /*初始化from表单*/
-    initForm();
-    /*初始化jstree*/
-    $("#destId").empty();
-    $("#destId").val("--请选择入库库位--");
-    if(billNo){
-        bootbox.alert("单据"+billNo+"正在编辑中");
-    }else{
-        sessionStorage.removeItem("billNopurchase");
-    }
-    pageType="add";
-    initButtonGroup(0);
-    loadingButtonDivTable();
-    initEditFormValid();
-    initSelectbuyahandIdForm();
-    $.ajax({
-        url: basePath + "/unit/list.do?filter_EQI_type=9",
-        cache: false,
-        async: false,
-        type: "POST",
-        success: function (data, textStatus) {
-            $("#search_destId").empty();
-            $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
-            var json = data;
-            for (var i = 0; i < json.length; i++) {
-                $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-            }
-            $(".selectpicker").selectpicker('refresh');
-        }
+    load().then(function (data) {
+        /*初始化左侧grig*/
+        initSearchGrid();
     });
 });
+function load() {
+    var promise = new Promise(function(resolve, reject){
+        /*初始化右侧grig*/
+        initAddGrid();
+        /*初始化from表单*/
+        initForm();
+        /*初始化jstree*/
+        $("#destId").empty();
+        $("#destId").val("--请选择入库库位--");
+        if(billNo){
+            bootbox.alert("单据"+billNo+"正在编辑中");
+        }else{
+            sessionStorage.removeItem("billNopurchase");
+        }
+        pageType="add";
+        initButtonGroup(0);
+        loadingButtonDivTable();
+        initEditFormValid();
+        initSelectbuyahandIdForm();
+        $.ajax({
+            url: basePath + "/unit/list.do?filter_EQI_type=9",
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#search_destId").empty();
+                $("#search_destId").append("<option value=''>--请选择入库仓库--</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#search_destId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                }
+                $(".selectpicker").selectpicker('refresh');
+            }
+        });
+        resolve("success");
+    });
+    return promise;
+}
+
 //初始化树形结构
 function initTree(id) {
     cageId = $("#edit_destId").val();
@@ -188,9 +197,15 @@ function initForm() {
 
 }
 function initSearchGrid() {
+    var url="";
+    if (cargoTrack=="cargoTracking"){
+        url= basePath + "/logistics/purchaseOrderBill/findBill.do?billNo="+cTbillNo;
+    }else {
+        url = basePath + "/logistics/purchaseOrderBill/page.do?filter_GTI_status=-1";
+    }
     $("#grid").jqGrid({
         height: "auto",
-        url: basePath + "/logistics/purchaseOrderBill/page.do?filter_GTI_status=-1",
+        url: url,
         datatype: "json",
         sortorder: 'desc',
         colModel: [
@@ -308,7 +323,13 @@ function initSearchGrid() {
             }
         },
         onSelectRow: function (rowid, status) {
-            initDetailData(rowid)
+            initDetailData(rowid);
+        },
+        loadComplete:function () {
+            if (cargoTrack=="cargoTracking"){
+                initDetailData(cTbillNo);
+                $("#search_billId").val(cTbillNo);
+            }
         }
     });
 }
@@ -324,32 +345,37 @@ function setFooterData() {
     });
 }
 function initDetailData(rowid) {
-    $("#PIDtl_save").attr('disabled',false);
     var rowData = $("#grid").getRowData(rowid);
-    $("#editForm").setFromData(rowData);
-    console.info(rowData);
-    if(rowData.allocationId == "" || rowData.allocationId == undefined || rowData.allocationId == null){
-        $("#destId").empty();
-        $("#destId").val("--请选择入库库位--");
+    console.log(rowData);
+    if (JSON.stringify(rowData) != "{}"){
+        $("#PIDtl_save").attr('disabled',false);
+        $("#editForm").setFromData(rowData);
+        console.info(rowData);
+        if(rowData.allocationId == "" || rowData.allocationId == undefined || rowData.allocationId == null){
+            $("#destId").empty();
+            $("#destId").val("--请选择入库库位--");
+        }
+        else {
+            initTree(rowData.allocationId);
+        }
+        slaeOrder_status = rowData.status;
+        if (slaeOrder_status != "0" && userId != "admin") {
+            $("#edit_origId").attr('disabled', true);
+        }
+        if (userId == "admin") {
+            $("#edit_guest_button").removeAttr("disabled");
+            $("#edit_origId").attr('disabled', true);
+        }
+        $(".selectpicker").selectpicker('refresh');
+        $('#addDetailgrid').jqGrid("clearGridData");
+        $('#addDetailgrid').jqGrid('GridUnload');
+        initeditGrid(rowData.billNo);
+        pageType="edit";
+        initButtonGroup(slaeOrder_status);
+        $("#addDetailgrid").trigger("reloadGrid");
+    }else {
+        bootbox.alert("未查询到该单信息");
     }
-    else {
-        initTree(rowData.allocationId);
-    }
-    slaeOrder_status = rowData.status;
-    if (slaeOrder_status != "0" && userId != "admin") {
-        $("#edit_origId").attr('disabled', true);
-    }
-    if (userId == "admin") {
-        $("#edit_guest_button").removeAttr("disabled");
-        $("#edit_origId").attr('disabled', true);
-    }
-    $(".selectpicker").selectpicker('refresh');
-    $('#addDetailgrid').jqGrid("clearGridData");
-    $('#addDetailgrid').jqGrid('GridUnload');
-    initeditGrid(rowData.billNo);
-    pageType="edit";
-    initButtonGroup(slaeOrder_status);
-    $("#addDetailgrid").trigger("reloadGrid");
 }
 function initAddGrid() {
     $("#addDetailgrid").jqGrid({

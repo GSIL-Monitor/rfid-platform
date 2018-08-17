@@ -4043,7 +4043,7 @@ public class BillConvertUtil {
             transferOrderBill.setOwnerId(user.getOwnerId());
             transferOrderBill.setOprId(user.getId());
             transferOrderBill.setPayPrice(0D);
-            transferOrderBill.setStatus(BillConstant.BillStatus.Enter);
+            transferOrderBill.setStatus(BillConstant.BillStatus.Doing);
             transferOrderBill.setTotQty(totQty);
             transferOrderBill.setTotOutVal(0D);
             transferOrderBill.setTotOutQty(0L);
