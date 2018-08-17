@@ -18,6 +18,7 @@ public class PropertyKey implements Serializable {
 	private String name;
 	private String ownerId;// 所属方Id
 	private String code;//属性编码
+	private String iconCode;//图标编码
 	private String isDefault;//是否默认 取值0：否，1：是
 	// john code_list
 	// private String cd_brand;
@@ -147,5 +148,14 @@ public class PropertyKey implements Serializable {
 
 	public void setIsDefault(String isDefault) {
 		this.isDefault = isDefault;
+	}
+
+	@Column(length = 20)
+	public String getIconCode() {
+		return iconCode;
+	}
+
+	public void setIconCode(String iconCode) {
+		this.iconCode = iconCode;
 	}
 }

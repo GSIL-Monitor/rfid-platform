@@ -1,9 +1,6 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
@@ -62,7 +59,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         return page;
     }
 
-    @RequestMapping(value = "/searchByType")
+    @RequestMapping(value = {"/searchByType","/searchByTypeWS"})
     @ResponseBody
     public List<PropertyKey> searchByType(String type) throws Exception {
         this.logAllRequestParams();
@@ -133,7 +130,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
                     entity.setOwnerId(getCurrentUser().getCreatorId());
                     entity.setRegisterId(getCurrentUser().getId());
                 }
-
+                entity.setIsDefault("0");
                 entity.setCode(entity.getSeqNo() + "");
                 entity.setType(entity.getId());
                 entity.setId(entity.getId() + "-" + entity.getCode());
@@ -246,6 +243,32 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         } catch (Exception e) {
             e.printStackTrace();
             return returnFailInfo("更改失败");
+        }
+    }
+    @RequestMapping("/setDefault")
+    @ResponseBody
+    public MessageBox setDefault(String id) {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = new ArrayList<>();
+        PropertyFilter filter = new PropertyFilter("EQS_isDefault", "1");
+        PropertyFilter filter1 = new PropertyFilter("EQS_type", "PT");
+        filters.add(filter);
+        filters.add(filter1);
+        List<PropertyKey> propertyKeys = this.propertyKeyService.find(filters);
+        if(CommonUtil.isNotBlank(propertyKeys)){
+            for (PropertyKey propertyKey:propertyKeys){
+                propertyKey.setIsDefault("0");
+                this.propertyService.saveKey(propertyKey);
+            }
+        }
+        PropertyKey propertyKeybyid = this.propertyService.findPropertyKeybyid(id);
+        propertyKeybyid.setIsDefault("1");
+        try {
+            this.propertyService.saveKey(propertyKeybyid);
+            return returnSuccessInfo("设置默认支付成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return returnFailInfo("设置默认支付失败");
         }
     }
 

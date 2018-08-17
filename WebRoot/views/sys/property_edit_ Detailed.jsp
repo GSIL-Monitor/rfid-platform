@@ -12,14 +12,26 @@
         <div class="modal-content">
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="editFormdetailed">
-                    <div class="form-group" style="display: none">
-                        <label class="col-sm-2 control-label no-padding-right" for="form_ids">编号</label>
-                        <div class="col-xs-14 col-sm-7">
-                             <input type="text" id="form_ids" name='id'>
+                    <div class="zf" style="display: none">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_ids">编号</label>
+                            <div class="col-xs-14 col-sm-7">
+                                <input class="form-control" type="text" id="form_ids" name='id'>
+                            </div>
                         </div>
-                        <label class="col-sm-2 control-label no-padding-right" for="form_types">属性</label>
-                        <div class="col-xs-14 col-sm-7">
-                            <input type="text"  id="form_types" name='type'>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_types">属性</label>
+                            <div class="col-xs-14 col-sm-7">
+                                <input class="form-control" type="text"  id="form_types" name='type' readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="icon" style="display: none">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label no-padding-right" for="form_ids">编号</label>
+                            <div class="col-xs-14 col-sm-7">
+                                <input class="form-control" type="text" id="form_iconCode" name='iconCode' placeholder="请输入icon编码">
+                            </div>
                         </div>
                     </div>
 

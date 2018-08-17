@@ -1,6 +1,6 @@
+var selectType = null;
 $(function () {
     initGrid();
-
     var type_parent_column = $("#typeGrid").closest('.widget-main');
     var property_parent_column = $("#propertyGrid").closest('.widget-main');
     //resize to fit page size
@@ -65,14 +65,14 @@ function initGrid() {
             minusicon: 'ace-icon fa fa-minus'
         },
         onSelectRow: function(rowid){
-        	 var selectdata=$("#typeGrid").getRowData(rowid);   //获取选中一行的数据
-   	
+            var selectdata=$("#typeGrid").getRowData(rowid);   //获取选中一行的数据
+            selectType = selectdata.id;
         	//查询数据并设置到右边表格
         	 $("#propertyGrid").jqGrid('setGridParam',{
         		 url:basePath + "/sys/property/searchByType.do?type="+selectdata.id
         		 //postData:{id:selectdata.id}
         	 }).trigger("reloadGrid");   //刷新
-        	
+
         	
         }
         
@@ -111,10 +111,14 @@ function initGrid() {
     		{name: 'name', label: '代码名称', editable:true,width: 40},
             {name:'type',hidden:true},
             {
-                name: "", label: "操作", width: 40, editable: false, align: "center",
+                name: "", label: "操作", width: 60, editable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
+                    console.info(rowObject);
                     var id = rowObject.id;
                     var html =  "<a style='margin-left: 20px' href='#' onclick=editproperty('"+id+"')><i class='ace-icon fa fa-check-square-o' title='编辑'></i></a>";
+                    if(rowObject.type=="PT"){
+                        html +="<a style='margin-left: 20px' href='#' onclick=setDefault('"+id+"')><i class='ace-icon fa fa-cog' title='设为默认支付'></i></a>";
+                    }
                     if(rowObject.ynuse=="N"){
                         html += "<a style='margin-left: 20px' href='#' onclick=changepropertyStatus('"+id+"','Y')><i class='ace-icon fa fa-check' title='启用'></i></a>";
                     }else{
@@ -123,10 +127,24 @@ function initGrid() {
                     return html;
                 }
             },
-    		{name: 'ownerId', label: '品牌商',editable:true, width: 40},
+    		{name: 'ownerId', label: '品牌商',editable:true, width: 30},
     		{name: 'registerId', label: '创建者',editable:true, width: 40},
     		{name: 'registerDate', label: '创建时间',editable:true, width: 60},
-    		{name: 'ynuse', label: '是否使用',editable:true, width: 40},           
+    		{name: 'ynuse', label: '是否使用',editable:true, width: 25},
+            {
+                name: 'isDefault', label: '是否默认',editable:true, width: 25,
+                formatter: function (cellvalue, options, rowObject) {
+
+                        if(rowObject.isDefault=='0'){
+                            return "否";
+                        }else{
+                            return "是";
+                        }
+
+
+                }
+
+            }
     		
     		
     		
@@ -191,10 +209,17 @@ function editproperty(rowId) {
     pagetype="edit";
     $("#editFormdetailed").resetForm();
     if (rowId) {
+
         var rowData = $("#propertyGrid").jqGrid("getRowData", rowId);
         $("#edit-dialog-detailed").modal("show");
         $("#form_code").attr("readOnly",true);
         $("#editFormdetailed").loadData(rowData);
+        if(selectType != "" && selectType!= null && selectType =="PT"){
+            $(".icon").css("display","block");
+        }
+        else{
+            $(".icon").css("display","none");
+        }
     } else {
         bootbox.alert("请选择一项进行修改!");
     }
@@ -210,15 +235,21 @@ function addtype() {
 }
 
 function addproperty() {
-    debugger;
     pagetype="add";
     var rowId = $("#typeGrid").jqGrid("getGridParam", 'selrow');
     if (rowId) {
+
         $("#editFormdetailed").resetForm();
         $("#edit-dialog-detailed").modal('show');
         $("#form_code").removeAttr("readOnly");
         $("#form_types").val(rowId);
         $("#form_ids").val(rowId);
+        if(selectType != "" && selectType!= null && selectType =="PT"){
+            $(".icon").css("display","block");
+        }
+        else{
+            $(".icon").css("display","none");
+        }
 
     }else {
         bootbox.alert("请选择一项进行修改!");
@@ -304,7 +335,6 @@ function changetypeStatus(rowId,status) {
             status: status
         },
         success: function (result) {
-            debugger;
             if (result.success) {
                 $.gritter.add({
                     text: result.msg,
@@ -330,7 +360,29 @@ function changepropertyStatus(rowId,status) {
             status: status
         },
         success: function (result) {
-            debugger;
+            if (result.success) {
+                $.gritter.add({
+                    text: result.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#propertyGrid").trigger('reloadGrid');
+            } else {
+                $.gritter.add({
+                    text: result.msg,
+                    class_name: 'gritter-fail  gritter-light'
+                });
+            }
+        }
+    });
+}
+function setDefault(rowId) {
+    $.ajax({
+        url: basePath + '/sys/property/setDefault.do',
+        dataType: 'json',
+        data: {
+            id: rowId
+        },
+        success: function (result) {
             if (result.success) {
                 $.gritter.add({
                     text: result.msg,
