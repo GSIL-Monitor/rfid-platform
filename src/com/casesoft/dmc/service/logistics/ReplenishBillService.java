@@ -190,23 +190,24 @@ public class ReplenishBillService implements IBaseService<ReplenishBill, String>
 
             String jmsunit = "from Unit t where t.groupId ='JMS'";
             List<Unit> Units = this.replenishBillDao.find(jmsunit);
-            String ownerids = "";
-            for (int i = 0; i < Units.size(); i++) {
-                if (i == 0) {
-                    ownerids += "'" + Units.get(i).getId() + "'";
+            if(Units.size()!=0){
+                String ownerids = "";
+                for (int i = 0; i < Units.size(); i++) {
+                    if (i == 0) {
+                        ownerids += "'" + Units.get(i).getId() + "'";
+                    } else {
+                        ownerids += ",'" + Units.get(i).getId() + "'";
+                    }
+                }
+                String hqljmssum = "select count(t.code) from EpcStock t where t.inStock=1 and t.sku=? and t.ownerId in (" + ownerids + ")";
+
+                Object jmssum = this.replenishBillDao.findUnique(hqljmssum, replenishBillDtl.getSku());
+                if (CommonUtil.isNotBlank(jmssum)) {
+                    replenishBillDtl.setFranchiseeStockQty(Long.parseLong(jmssum + ""));
                 } else {
-                    ownerids += ",'" + Units.get(i).getId() + "'";
+                    replenishBillDtl.setFranchiseeStockQty(Long.parseLong(0 + ""));
                 }
             }
-            String hqljmssum = "select count(t.code) from EpcStock t where t.inStock=1 and t.sku=? and t.ownerId in (" + ownerids + ")";
-
-            Object jmssum = this.replenishBillDao.findUnique(hqljmssum, replenishBillDtl.getSku());
-            if (CommonUtil.isNotBlank(jmssum)) {
-                replenishBillDtl.setFranchiseeStockQty(Long.parseLong(jmssum + ""));
-            } else {
-                replenishBillDtl.setFranchiseeStockQty(Long.parseLong(0 + ""));
-            }
-
         }
 
         replenishBill.setBusnissName(user.getName());
