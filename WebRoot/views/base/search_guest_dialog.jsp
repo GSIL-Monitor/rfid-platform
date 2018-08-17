@@ -132,7 +132,6 @@
                 sortname: 'id',
                 sortorder: "desc",
                 loadComplete: function(data) {
-                    debugger;
                     var length=data.rows.length;
                     if(length==1){
                         $("#guestSelect_Grid").setSelection(data.rows[0].id, true);
@@ -217,7 +216,6 @@
                 sortname: 'id',
                 sortorder: "desc",
                 loadComplete: function(data) {
-                      debugger;
                       var length=data.rows.length;
                       if(length==1){
                           $("#guestSelect_Grid").setSelection(data.rows[0].id, true);
@@ -296,7 +294,6 @@
                 sortname: 'id',
                 sortorder: "desc",
                 loadComplete: function(data) {
-                    debugger;
                     var length=data.rows.length;
                     if(length==1){
                         $("#guestSelect_Grid").setSelection(data.rows[0].id, true);
@@ -337,7 +334,6 @@
             if(curOwnerId=="1"){
                 url= basePath + "/sys/guest/page.do?filter_EQI_status=1";
             }else{
-                debugger;
                 url = basePath + "/sys/guest/page.do?filter_EQI_status=1&filter_EQS_ownerids="+ownersId;
             }
 
@@ -383,7 +379,6 @@
                 sortname: 'id',
                 sortorder: "desc",
                 loadComplete: function(data) {
-                    debugger;
                     var length=data.rows.length;
                     if(length==1){
                         $("#guestSelect_Grid").setSelection(data.rows[0].id, true);
@@ -615,6 +610,9 @@
             $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_origId").selectpicker('refresh');
             $("#modal_guest_search_table").modal('hide');
+            if(dialogOpenPage === "transferOrderOrig"){
+                origIdChange();
+            }
         }
 
     }
@@ -639,11 +637,13 @@
             $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_destId").selectpicker('refresh');
             $("#modal_guest_search_table").modal('hide');
+            if(dialogOpenPage === "transferOrderUnit"){
+                destIdChange();
+            }
         }
 
     }
     function confirm_selected_businessAccount() {
-        debugger
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
         $("#search_destunitid").val(rowData.id);
