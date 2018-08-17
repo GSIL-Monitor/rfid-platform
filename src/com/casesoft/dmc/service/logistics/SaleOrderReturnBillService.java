@@ -169,6 +169,10 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         return this.saleOrderReturnBillDao.find(filters);
     }
 
+    public List<SaleOrderReturnBill>find(String billNo){
+        return this.saleOrderReturnBillDao.find("from SaleOrderReturnBill where billNo=?", new Object[]{billNo});
+    }
+
     @Override
     public List<SaleOrderReturnBill> getAll() {
         return this.saleOrderReturnBillDao.getAll();

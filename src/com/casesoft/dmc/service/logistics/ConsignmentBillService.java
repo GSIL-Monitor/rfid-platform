@@ -81,6 +81,11 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
         return this.consignmentBillDao.find(filters);
     }
 
+
+    public List<ConsignmentBill>find(String billNo){
+        return this.consignmentBillDao.find("from ConsignmentBill where billNo=?", new Object[]{billNo});
+    }
+
     @Override
     public List<ConsignmentBill> getAll() {
         return this.consignmentBillDao.getAll();

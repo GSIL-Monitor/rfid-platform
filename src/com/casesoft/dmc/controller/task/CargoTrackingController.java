@@ -7,13 +7,21 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
+import com.casesoft.dmc.model.sys.Setting;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.service.logistics.*;
+import com.casesoft.dmc.service.shop.CustomerService;
+import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
+import com.casesoft.dmc.service.sys.SettingService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.task.CargoTrackingService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,57 +130,141 @@ public class CargoTrackingController extends BaseController implements IBaseInfo
     @Autowired
     private ConsignmentBillService consignmentBillService;
 
+    @Autowired
+    private SettingService settingService;
+
+    @Autowired
+    private ResourcePrivilegeService resourcePrivilegeService;
+
+    @Autowired
+    private UnitService unitService;
+
+    @Autowired
+    private CustomerService customerService;
+
     @RequestMapping(value = "/billDetail")
     @ResponseBody
     public ModelAndView billDetail(String billNo) throws Exception {
-
         String billType = billNo.substring(0, 2);
+        switch (billType) {
+            case "PI": {
+                ModelAndView mv = new ModelAndView("/views/logistics/purchaseOrderBill");
+                Setting setting = this.settingService.get("id", "repositoryManagement");
+                mv.addObject("pageType", "add");
+                List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/purchaseOrderBill", this.getCurrentUser().getRoleId());
+                mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
+                User user = this.getCurrentUser();
+                mv.addObject("ownerId", user.getOwnerId());
+                mv.addObject("userId", getCurrentUser().getId());
+                Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
+                String defaultWarehId = unit.getDefaultWarehId();
+                mv.addObject("defaultWarehId", defaultWarehId);
+                this.getRequest().setAttribute("rm", setting);
+                mv.addObject("cargoTracking", "cargoTracking");
+                mv.addObject("cTbillNo", billNo);
+                return mv;
+            }
+            case "TR": {
+                ModelAndView mv = new ModelAndView("views/logistics/transferOrder");
+                List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/transferOrder", this.getCurrentUser().getRoleId());
+                mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
+                mv.addObject("ownerId", getCurrentUser().getOwnerId());
+                Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("userId", getCurrentUser().getId());
+                mv.addObject("pageType", "add");
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("cargoTracking", "cargoTracking");
+                mv.addObject("cTbillNo", billNo);
+                return mv;
+            }
+            case "SO": {
+                ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBill");
+                Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+                String defaultWarehId = unit.getDefaultWarehId();
+                String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+                String defalutCustomerId = unit.getDefalutCustomerId();
+                if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+                    Customer customer = this.customerService.load(defalutCustomerId);
+                    mv.addObject("defalutCustomerId", defalutCustomerId);
+                    mv.addObject("defalutCustomerName", customer.getName());
+                    mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+                    mv.addObject("defalutCustomercustomerType", unit.getType());
+                    mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+                }
+                List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/saleOrderBill", this.getCurrentUser().getRoleId());
+                mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
+                mv.addObject("userId", getCurrentUser().getId());
+                mv.addObject("roleid", getCurrentUser().getRoleId());
+                mv.addObject("defaultWarehId", defaultWarehId);
+                mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("pageType", "add");
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("userId", getCurrentUser().getId());
+                Setting setting = this.settingService.get("id", "isUserAbnormal");
+                mv.addObject("isUserAbnormal", setting.getValue());
+                mv.addObject("cargoTracking", "cargoTracking");
+                mv.addObject("cTbillNo", billNo);
+                return mv;
+            }
+            case "SR": {
+                ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturn");
+                mv.addObject("ownerId", getCurrentUser().getOwnerId());
+                Unit unit = this.unitService.getunitbyId(getCurrentUser().getOwnerId());
+                List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/saleOrderReturn", this.getCurrentUser().getRoleId());
+                String defaultWarehId = unit.getDefaultWarehId();
+                String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+                String defalutCustomerId = unit.getDefalutCustomerId();
+                if(CommonUtil.isNotBlank(defalutCustomerId)&&defalutCustomerId!=null){
+                    Customer customer = this.customerService.load(defalutCustomerId);
+                    mv.addObject("defalutCustomerId", defalutCustomerId);
+                    mv.addObject("defalutCustomerName", customer.getName());
+                    mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+                    mv.addObject("defalutCustomercustomerType", unit.getType());
+                    mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+                }
+                mv.addObject("userId", getCurrentUser().getId());
+                mv.addObject("roleid", getCurrentUser().getRoleId());
+                mv.addObject("defaultWarehId", defaultWarehId);
+                mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
 
-        if(billType.equals("PI")){
-            PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBillService.get("billNo",billNo);
-            ModelAndView mv = new ModelAndView("views/logistics/purchaseOrderBillDetail");
-            mv.addObject("pageType","view");
-            mv.addObject("purchaseOrderBill", purchaseOrderBill);
-            mv.addObject("mainUrl","/task/cargoTracking/index.do");
-            mv.addObject("ownerId",getCurrentUser().getOwnerId());
-            Unit unit = CacheManager.getUnitByCode(getCurrentUser().getOwnerId());
-            String defaultWarehId = unit.getDefaultWarehId();
-            mv.addObject("defaultWarehId",defaultWarehId);
-            return mv;
-        } else if (billType.equals("TR")) {
-            TransferOrderBill transferOrderBill = this.transferOrderBillService.get("billNo", billNo);
-            ModelAndView mv = new ModelAndView("/views/logistics/transferOrderBillDetail");
-            mv.addObject("pageType", "view");
-            mv.addObject("transferOrderBill", transferOrderBill);
-            mv.addObject("mainUrl", "/task/cargoTracking/index.do");
-            mv.addObject("ownerId", getCurrentUser().getOwnerId());
-            return mv;
-        } else if (billType.equals("SO")) {
-            SaleOrderBill saleOrderBill = this.saleOrderBillService.get("billNo", billNo);
-            ModelAndView mv = new ModelAndView("/views/logistics/saleOrderBillDetail");
-            mv.addObject("ownerId", getCurrentUser().getOwnerId());
-            mv.addObject("pageType", "view");
-            mv.addObject("saleOrderBill", saleOrderBill);
-            mv.addObject("mainUrl", "/task/cargoTracking/index.do");
-            return mv;
-        } else if (billType.equals("SR")) {
-            SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.findBillByBillNo(billNo);
-            ModelAndView mv = new ModelAndView("/views/logistics/saleOrderReturnDetail");
-            mv.addObject("ownerId", getCurrentUser().getOwnerId());
-            mv.addObject("saleOrderReturn", saleOrderReturnBill);
-            mv.addObject("pageType", "view");
-            mv.addObject("mainUrl", "/task/cargoTracking/index.do");
-            return mv;
-        } else if (billType.equals("CM")) {
-            ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
-            ModelAndView mv = new ModelAndView("/views/logistics/consignmentBillDetail");
-            mv.addObject("ownerId", getCurrentUser().getOwnerId());
-            mv.addObject("consignmentBill", consignmentBill);
-            mv.addObject("pageType", "edit");
-            mv.addObject("mainUrl", "/task/cargoTracking/index.do");
-            return mv;
+                mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("pageType", "add");
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("userId", getCurrentUser().getId());
+                mv.addObject("cargoTracking", "cargoTracking");
+                mv.addObject("cTbillNo", billNo);
+                return mv;
+            }
+            case "CM": {
+                ModelAndView mv = new ModelAndView("/views/logistics/consignmentBillNew");
+                List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/Consignment", this.getCurrentUser().getRoleId());
+                mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
+                mv.addObject("ownerId", getCurrentUser().getOwnerId());
+                mv.addObject("userId", getCurrentUser().getId());
+                Unit unit = CacheManager.getUnitById(getCurrentUser().getOwnerId());
+                mv.addObject("ownersId", unit.getOwnerids());
+                mv.addObject("pageType","add");
+                String defaultWarehId = unit.getDefaultWarehId();
+                String defaultSaleStaffId = unit.getDefaultSaleStaffId();
+                String defalutCustomerId = unit.getDefalutCustomerId();
+                if (CommonUtil.isNotBlank(defalutCustomerId)) {
+                    Customer customer = CacheManager.getCustomerById(defalutCustomerId);
+                    mv.addObject("defaultWarehId", defaultWarehId);
+                    mv.addObject("defalutCustomerId", defalutCustomerId);
+                    mv.addObject("defalutCustomerName", customer.getName());
+                    mv.addObject("defalutCustomerdiscount", customer.getDiscount());
+                    mv.addObject("defalutCustomercustomerType", unit.getType());
+                    mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
+                }
+                mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
+                mv.addObject("cargoTracking", "cargoTracking");
+                mv.addObject("cTbillNo", billNo);
+                return mv;
+            }
         }
-
         return new ModelAndView();
     }
 }

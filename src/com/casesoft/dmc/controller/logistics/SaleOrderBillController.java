@@ -139,6 +139,11 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         return saleOrderBillList;
     }
 
+    @RequestMapping(value = "/findBill")
+    public List<SaleOrderBill> findBill(String billNo){
+        return this.saleOrderBillService.find(billNo);
+    }
+
     @RequestMapping(value = "/copyAdd")
     @ResponseBody
     public ModelAndView copyAdd(String billNo) throws Exception {

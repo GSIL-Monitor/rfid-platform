@@ -207,6 +207,14 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         return saleOrderReturnBillList;
     }
 
+    @RequestMapping(value = "/findBill")
+    @ResponseBody
+    public List<SaleOrderReturnBill> findBill(String billNo) throws Exception {
+        return this.saleOrderReturnBillService.find(billNo);
+    }
+
+
+
     @RequestMapping(value = "/add")
     @ResponseBody
     @Override

@@ -98,6 +98,10 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         return this.saleOrderBillDao.find(filters);
     }
 
+    public List<SaleOrderBill> find(String billNo) {
+        return this.saleOrderBillDao.find("from SaleOrderBill where billNo=?", new Object[]{billNo});
+    }
+
     @Override
     public List<SaleOrderBill> getAll() {
         return this.saleOrderBillDao.getAll();
