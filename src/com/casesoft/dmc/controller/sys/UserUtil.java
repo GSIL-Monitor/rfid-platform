@@ -43,13 +43,13 @@ public class UserUtil {
 
 
 	public static void convertToVo1(List<Employee> userList) {
-		// List<User> userList = beansPage.getRows();
+		/*// List<User> userList = beansPage.getRows();
 		for (Employee user : userList) {
 //			user.setRoleName(CacheManager.getRoleNameById(user.getRoleId()));
 			Department u = CacheManager.getDepartmentByCode(user.getOwnerId());
 			if (null != u)
 				user.setUnitName(u.getName());
-		}
+		}*/
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class UserUtil {
 	public static void convertToTreeVo(List<Unit> rows) {
 		// String id = "1";//品牌商初始化时Id为1
 		for (Unit u : rows) {
-			// if(u.getType() != 1) {
+			/*// if(u.getType() != 1) {
 			// u.set_parentId(id);
 			// u.setState("closed");
 			// }
@@ -218,7 +218,7 @@ public class UserUtil {
 			}
 			if(!CommonUtil.isBlank(u.getGroupId())&!CommonUtil.isBlank(CacheManager.getPropertyKey(u.getGroupId()))){
 				u.setGroupName(CacheManager.getPropertyKey(u.getGroupId()).getName());
-            }																	// 20140607
+            }	*/																// 20140607
 																				// 父组织名称
 		}
 

@@ -25,7 +25,7 @@ public class FactoryUtil {
 
         while (startDay.compareTo(endDay) < 0) {
 
-            WorkCalendar calendar = CacheManager.getWorkCalendarByDay(CommonUtil.getDateString(startDate, "yyyy-MM-dd"));
+           /* WorkCalendar calendar = CacheManager*//**//*.getWorkCalendarByDay(CommonUtil.getDateString(startDate, "yyyy-MM-dd"));
             if(CommonUtil.isNotBlank(calendar)){
                 switch (calendar.getStatus()) {
                     case FactoryConstant.WorkCalendarStatus.WorkAllDay:
@@ -51,6 +51,7 @@ public class FactoryUtil {
             }
             startDay.setDate(startDay.getDate() + 1);
 
+        }*/
         }
 
         return totTime / 3600000;
@@ -70,7 +71,7 @@ public class FactoryUtil {
 
         while (startDay.compareTo(endDay) < 0) {
 
-            WorkCalendar calendar = CacheManager.getWorkCalendarByDay(CommonUtil.getDateString(startDate, "yyyy-MM-dd"));
+            /*WorkCalendar calendar = CacheManager.getWorkCalendarByDay(CommonUtil.getDateString(startDate, "yyyy-MM-dd"));
             if(CommonUtil.isNotBlank(calendar)){
                 switch (calendar.getStatus()) {
                     case FactoryConstant.WorkCalendarStatus.WorkAllDay:
@@ -92,7 +93,7 @@ public class FactoryUtil {
                 } else {
                     totTime += workTime.getDayTotalTime() * 3600 * 1000;
                 }
-            }
+            }*/
             startDay.setDate(startDay.getDate() + 1);
 
         }
@@ -196,7 +197,7 @@ public class FactoryUtil {
         startDate.setDate(startDate.getDate() + 1);
         while (startDate.compareTo(endDate) < 0) {
 
-            WorkCalendar day = CacheManager.getWorkCalendarByDay(CommonUtil.getDateString(startDate, "yyyy-MM-dd"));
+            /*WorkCalendar day = CacheManager.getWorkCalendarByDay(CommonUtil.getDateString(startDate, "yyyy-MM-dd"));
             if(CommonUtil.isNotBlank(day)){
                 if (CommonUtil.isBlank(day.getStatus())){
                     day.setStatus(0);
@@ -208,7 +209,7 @@ public class FactoryUtil {
                 if ((startDate.getDay() != 0)) {
                     totDay += 1;
                 }
-            }
+            }*/
             startDate.setDate(startDate.getDate() + 1);
 
         }

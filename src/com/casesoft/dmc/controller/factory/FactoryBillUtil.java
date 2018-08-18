@@ -22,14 +22,14 @@ public class FactoryBillUtil {
         for(FactoryBriefBill bill:billList){
             List<FactoryRecord> recordList = factoryBillSearchService.findRecordListByCode(bill.getCode());
             for(FactoryRecord r:recordList){
-                Token t = CacheManager.getFactoryTokenByToken(r.getToken());
-                String tokenName=t.getName();
+               /* Token t = CacheManager.getFactoryTokenByToken(r.getToken());*/
+               /* String tokenName=t.getName();
                 r.setTokenName(tokenName+((r.getIsOutSource().equals("Y"))?"外包  ":" "));
                 if(t.getTypes().split(",").length == 1){
 
                 }else{
                     r.setTokenName(r.getTokenName()+findTypeName(r.getType()));
-                }
+                }*/
                 User opertor = CacheManager.getUserById(r.getOperator());
                 if(CommonUtil.isNotBlank(opertor)){
                     r.setOperatorName(opertor.getName());
@@ -70,13 +70,13 @@ public class FactoryBillUtil {
             if(CommonUtil.isNotBlank(f.getProgress())){
                 Integer token = Integer.parseInt(f.getProgress().split("-")[0]);
                 String type = f.getProgress().split("-")[1];
-                String tokenName = CacheManager.getFactoryTokenByToken(token).getName();
-                f.setProgressName(tokenName);
-                if((CacheManager.getFactoryTokenByToken(token).getIsLast().equals("N"))){
+               /* String tokenName = CacheManager.getFactoryTokenByToken(token).getName();*/
+               /* f.setProgressName(tokenName);*/
+               /* if((CacheManager.getFactoryTokenByToken(token).getIsLast().equals("N"))){
                     f.setProgressName(tokenName + findTypeName(type));
-                }
+                }*/
                 if(type.equals(FactoryConstant.TaskType.Back)){
-                    f.setProgressName(tokenName + findTypeName(type));
+                   /* f.setProgressName(tokenName + findTypeName(type));*/
                 }
                 if(CommonUtil.isNotBlank(f.getOutDate())){
                     String startDay="";
@@ -319,15 +319,15 @@ public class FactoryBillUtil {
         if (CommonUtil.isNotBlank(bill.getProgress())) {
             Integer token = Integer.parseInt(bill.getProgress().split("-")[0]);
             String type = bill.getProgress().split("-")[1];
-            String tokenName = CacheManager.getFactoryTokenByToken(token).getName();
-            String progress = tokenName;
-            if ((CacheManager.getFactoryTokenByToken(token).getTypes()).split(",").length > 1) {
+           /* String tokenName = CacheManager.getFactoryTokenByToken(token).getName();*/
+          /*  String progress = tokenName;*/
+            /*if ((CacheManager.getFactoryTokenByToken(token).getTypes()).split(",").length > 1) {
                 progress = tokenName + findTypeName(type);
             }
             if (type.equals(FactoryConstant.TaskType.Back)) {
                 progress = tokenName + findTypeName(type);
-            }
-            cell.setCellValue(progress);
+            }*/
+          /*  cell.setCellValue(progress);*/
         }
 
         cell.setCellStyle(style);
@@ -354,11 +354,11 @@ public class FactoryBillUtil {
                 billSchedule.setUploadNo(bill.getUploadNo());
                 billSchedule.setUpdateId(user.getCode());
                 billSchedule.setUpdateTime(updateDate);
-               if( CacheManager.getFactoryTokenByToken(schedule.getToken()).getIsLast().equals("Y")){
+              /* if( CacheManager.getFactoryTokenByToken(schedule.getToken()).getIsLast().equals("Y")){
                    billSchedule.setType("I");
                }else{
                    billSchedule.setType("O");
-               }
+               }*/
                list.add(billSchedule);
             }
         }
@@ -525,7 +525,7 @@ public class FactoryBillUtil {
 
             cell = row.createCell(19);
             cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-            cell.setCellValue(CacheManager.getFactoryTokenByToken(billSchedule.getToken()).getName());
+           /* cell.setCellValue(CacheManager.getFactoryTokenByToken(billSchedule.getToken()).getName());*/
             cell.setCellStyle(style);
 
             cell = row.createCell(20);
@@ -679,9 +679,9 @@ public class FactoryBillUtil {
 
     public static void coverToScehdule(List<BillSchedule> billScheduleList) {
         for(BillSchedule s : billScheduleList){
-            Token t = CacheManager.getFactoryTokenByToken(s.getToken());
+            /*Token t = CacheManager.getFactoryTokenByToken(s.getToken());
             s.setTokenName(t.getName());
-            s.setTokenIndex(t.getSortIndex());
+            s.setTokenIndex(t.getSortIndex());*/
         }
         Collections.sort(billScheduleList,new Comparator<BillSchedule>() {
             @Override

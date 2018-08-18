@@ -53,13 +53,13 @@ public class BorrowBackController extends BaseController {
 					htdv.setUnitName("[" + htdv.getOwnerId() + "]");
 				}
 
-				if (CommonUtil.isNotBlank(CacheManager.getUnitById(htdv.getCustomerId()))) {
+			/*	if (CommonUtil.isNotBlank(CacheManager.getUnitById(htdv.getCustomerId()))) {
 					htdv.setCustomerName(CacheManager.getUnitById(htdv.getCustomerId()).getName());
 				} else if (CommonUtil.isNotBlank(CacheManager.getEmployeeById(htdv.getCustomerId()))) {
 					htdv.setCustomerName(CacheManager.getEmployeeById(htdv.getCustomerId()).getName());
 				} else {
 					htdv.setCustomerName("[" + htdv.getCustomerId() + "]");
-				}
+				}*/
 				if(CommonUtil.isNotBlank(CacheManager.getUnitById(htdv.getBackOwnerId()))){
 					htdv.setBackUnitName(CacheManager.getUnitByCode(htdv.getBackOwnerId()).getName());
 				} else {
@@ -71,11 +71,11 @@ public class BorrowBackController extends BaseController {
 					htdv.setStyleName("[" + htdv.getStyleId() + "]");
 				}
 
-				if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(htdv.getFloor()))) {
+				/*if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(htdv.getFloor()))) {
 					htdv.setFloorName(CacheManager.getFloorByCode(htdv.getFloor()).getName());
 				} else {
 					htdv.setFloorName("[" + htdv.getFloor() + "]");
-				}
+				}*/
 
 			}
 		}

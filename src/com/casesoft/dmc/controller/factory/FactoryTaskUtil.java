@@ -37,12 +37,12 @@ public class FactoryTaskUtil {
                 FactoryRecord pasuseRecord = taskService.findUniqueRecord(r.getCode(),epc.getTaskId());
                 FactoryBill bill = taskService.findUniqueFactoryBill(epc.getBillNo(), epc.getBillDate(), epc.getEndDate(), epc.getUploadNo());
                 if(CommonUtil.isNotBlank(bill.getFactory())){
-                    FactoryWorkTime workTime = CacheManager.getFactoryWorkTime(bill.getFactory(), task.getToken());
+                   /* FactoryWorkTime workTime = CacheManager.getFactoryWorkTime(bill.getFactory(), task.getToken());
                     if(CommonUtil.isNotBlank(workTime)){
                         pasuseRecord.setTotalTime(FactoryUtil.getDutyDaysHoursByFactory(epc.getTaskTime(), task.getTaskTime(), workTime));
                     }else{
                         pasuseRecord.setTotalTime(FactoryUtil.getDutyDaysHours(epc.getTaskTime(), task.getTaskTime()));
-                    }
+                    }*/
                 }else{
                     pasuseRecord.setTotalTime(FactoryUtil.getDutyDaysHours(epc.getTaskTime(), task.getTaskTime()));
                 }
@@ -52,12 +52,12 @@ public class FactoryTaskUtil {
 
                 FactoryBill bill = taskService.findUniqueFactoryBill(epc.getBillNo(), epc.getBillDate(), epc.getEndDate(), epc.getUploadNo());
                 if(CommonUtil.isNotBlank(bill.getFactory())){
-                    FactoryWorkTime workTime = CacheManager.getFactoryWorkTime(bill.getFactory(), task.getToken());
+                    /*FactoryWorkTime workTime = CacheManager.getFactoryWorkTime(bill.getFactory(), task.getToken());
                     if(CommonUtil.isNotBlank(workTime)){
                         r.setTotalTime(epc.getTotalTime() + FactoryUtil.getDutyDaysHoursByFactory(epc.getTaskTime(), task.getTaskTime(), workTime));
                     }else{
                         r.setTotalTime(epc.getTotalTime()+ FactoryUtil.getDutyDaysHours(epc.getTaskTime(), task.getTaskTime()));
-                    }
+                    }*/
                 }else{
                     r.setTotalTime(epc.getTotalTime()+ FactoryUtil.getDutyDaysHours(epc.getTaskTime(), task.getTaskTime()));
                 }
@@ -81,7 +81,7 @@ public class FactoryTaskUtil {
 		for(FactoryOutSorceBill b:billList){
 			
 			User operator = CacheManager.getUserById(b.getOperator());
-			b.setTokenName(CacheManager.getFactoryTokenByToken(b.getToken()).getName()+" 外包");
+			/*b.setTokenName(CacheManager.getFactoryTokenByToken(b.getToken()).getName()+" 外包");*/
 			b.setOperatorName(CommonUtil.isBlank(operator)?"":operator.getName());
 			List<FactoryRecord> recordList = taskService.getOuSourceRecordAndBill(b.getTaskId());
             Map<String,String> billMap = new HashMap<String,String>();

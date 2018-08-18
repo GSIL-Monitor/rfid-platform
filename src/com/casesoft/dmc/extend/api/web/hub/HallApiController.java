@@ -305,7 +305,7 @@ public class HallApiController extends ApiBaseController {
 		} catch (Exception e) {
 			return returnFailInfo("该箱已装箱");
 		}
-		CacheManager.refreshHallFloor();
+		/*CacheManager.refreshHallFloor();*/
 		return returnSuccessInfo(inv.getFloor() + "装箱成功");
 	}
 
@@ -585,7 +585,7 @@ public class HallApiController extends ApiBaseController {
 		this.logAllRequestParams();
 		Sample sample = this.sampleService.findByCode(code);
 		if (CommonUtil.isNotBlank(sample)) {
-			sample.setFloorName(CacheManager.getFloorByCode(sample.getFloor()).getName());
+			/*sample.setFloorName(CacheManager.getFloorByCode(sample.getFloor()).getName());*/
 			String imagePath = TagFactory.getCurrentTag()
 					.getImagePath(sample.getStyleId(), sample.getColorId(), sample.getSizeId());
 			sample.setImage(imagePath);
@@ -612,12 +612,12 @@ public class HallApiController extends ApiBaseController {
 
 		Sample sample = this.hallTaskService.findSample(code, ownerId);
 		if (CommonUtil.isNotBlank(sample)) {
-			HallFloor floor = CacheManager.getFloorByCode(sample.getFloor());
+			/*HallFloor floor = CacheManager.getFloorByCode(sample.getFloor());
 			if (CommonUtil.isNotBlank(floor)) {
 				sample.setFloorName(CacheManager.getFloorByCode(sample.getFloor()).getName());
 			} else {
 				sample.setFloorName("test01");
-			}
+			}*/
 			String imagePath = TagFactory.getCurrentTag().getImagePath(sample.getStyleId(), sample.getColorId(), sample.getSizeId());
 			sample.setImage(imagePath);
 		}

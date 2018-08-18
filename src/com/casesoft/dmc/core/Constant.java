@@ -259,7 +259,10 @@ public class Constant {
 
         public final static int Else = -1;
     }    
-    
+    public class InStock{
+        public final static int InStore = 1;
+        public final static int NotInStore = 0;
+    }
     public class TaskStatus {
         public final static int Scanning = -1;//扫描中
         public final static int Submitted = 0;//已提交，任务数据已保存

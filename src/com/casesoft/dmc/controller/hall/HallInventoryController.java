@@ -72,9 +72,9 @@ public class HallInventoryController extends BaseController {
 			}
 		}
 		if(CommonUtil.isNotBlank(hallInventory.getFloor())){
-			if(CommonUtil.isNotBlank(CacheManager.getFloorByCode(hallInventory.getFloor()))){
+			/*if(CommonUtil.isNotBlank(CacheManager.getFloorByCode(hallInventory.getFloor()))){
 				hallInventory.setFloorName(CacheManager.getFloorByCode(hallInventory.getFloor()).getName());
-			}
+			}*/
 		}
 		ModelAndView mav=new ModelAndView("/views/hall/sampleInventoryDetail");
 		mav.addObject("HallInventory",hallInventory);
@@ -100,12 +100,12 @@ public class HallInventoryController extends BaseController {
 					}
 				}
 				if (CommonUtil.isNotBlank(HI.getFloor())) {
-					if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(HI.getFloor()))) {
+					/*if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(HI.getFloor()))) {
 						HI.setFloorName(CacheManager.getFloorByCode(HI.getFloor()).getName());
 					} else {
 						String floorName = "[" + HI.getFloor() + "]";
 						HI.setFloorName(floorName);
-					}
+					}*/
 				}
 			}
 		}
