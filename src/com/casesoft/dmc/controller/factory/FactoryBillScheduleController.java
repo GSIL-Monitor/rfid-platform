@@ -82,11 +82,11 @@ public class FactoryBillScheduleController extends BaseController {
             billSchedule.setUploadNo(factoryBill.getUploadNo());
             billSchedule.setUpdateId(getCurrentUser().getCode());
             billSchedule.setUpdateTime(CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
-            if( CacheManager.getFactoryTokenByToken(billSchedule.getToken()).getIsLast()=="Y"){
+            /*if( CacheManager.getFactoryTokenByToken(billSchedule.getToken()).getIsLast()=="Y"){
                 billSchedule.setType("I");
             }else{
                 billSchedule.setType("O");
-            }
+            }*/
             this.factoryBillScheduleService.save(billSchedule);
 
             return returnSuccessInfo("ok");

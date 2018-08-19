@@ -4058,5 +4058,49 @@ public class BillConvertUtil {
         return map;
     }
 
-
+    /**
+     * 将Bill转为调拨单
+     * 客户端生成单据上传时调用
+     * @param transferOrderBill //转换后单据信息
+     * @param transferOrderBillDtlList  //转换后单据明细信息
+     * @param bill //转换前单据信息
+     * @param billDtlList //转换前单据明细信息
+     * @param bus 任务单信息
+     * **/
+    public static void convertBillTransferOrderBill(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Bill bill, List<BillDtl> billDtlList,Business bus) {
+        Double totPrice = 0D;
+        transferOrderBill = new TransferOrderBill();
+        transferOrderBill.setId(bill.getBillNo());
+        transferOrderBill.setBillDate(bill.getBillDate());
+        transferOrderBill.setBillType("S");
+        transferOrderBill.setStatus(BillConstant.BillStatus.Enter);
+        transferOrderBill.setTotQty(bill.getTotQty());
+        transferOrderBill.setActQty(bill.getActQty());
+        transferOrderBill.setSkuQty(bill.getSkuQty());
+        transferOrderBill.setOrigId(bill.getOrigId());
+        Unit orig = CacheManager.getUnitByCode(bill.getOrigUnitId());
+        if(CommonUtil.isNotBlank(orig)){
+            transferOrderBill.setOrigName(orig.getName());
+        }
+        transferOrderBill.setOrigUnitId(bill.getOrigUnitId());
+        transferOrderBill.setDestId(bill.getDestId());
+        transferOrderBill.setDestUnitId(bill.getDestUnitId());
+        transferOrderBill.setOprId(bus.getOperator());
+        transferOrderBill.setRemark(bill.getRemark());
+        for(BillDtl billDtl : billDtlList){
+            TransferOrderBillDtl trDtl = new TransferOrderBillDtl();
+            trDtl.setId(new GuidCreator().toString());
+            trDtl.setBillId(transferOrderBill.getId());
+            trDtl.setBillNo(transferOrderBill.getBillNo());
+            trDtl.setStyleId(billDtl.getStyleId());
+            trDtl.setColorId(billDtl.getColorId());
+            trDtl.setSizeId(billDtl.getSizeId());
+            Style style = CacheManager.getStyleById(billDtl.getStyleId());
+            trDtl.setPrice(style.getPrice());
+            trDtl.setTotPrice(billDtl.getQty()*trDtl.getPrice());
+            totPrice+= trDtl.getTotPrice();
+            trDtl.setSku(billDtl.getSku());
+        }
+        transferOrderBill.setTotPrice(totPrice);
+    }
 }

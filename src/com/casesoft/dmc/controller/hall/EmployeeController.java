@@ -46,10 +46,10 @@ public class EmployeeController extends BaseController implements IBaseInfoContr
 
 		page=this.employeeService.findPage(page,filters);
 
-		for(Employee employee:page.getRows()){
+		/*for(Employee employee:page.getRows()){
 			if(CommonUtil.isNotBlank(employee.getOwnerId()))
-			employee.setUnitName(CacheManager.getDepartmentByCode(employee.getOwnerId()).getName());
-		}
+			*//*employee.setUnitName(CacheManager.getDepartmentByCode(employee.getOwnerId()).getName());*//*
+		}*/
 		return page;
 	}
 
@@ -59,12 +59,12 @@ public class EmployeeController extends BaseController implements IBaseInfoContr
 	public List<Employee> list() throws Exception {
 		this.logAllRequestParams();
 		List<Employee> employeeList=this.employeeService.findAll();
-		if (CommonUtil.isNotBlank(employeeList)){
-			for(Employee employee:employeeList){
+		/*if (CommonUtil.isNotBlank(employeeList)){
+			*//*for(Employee employee:employeeList){
 				if(CommonUtil.isNotBlank(employee.getOwnerId()))
-					employee.setUnitName(CacheManager.getDepartmentByCode(employee.getOwnerId()).getName());
+					*//**//*employee.setUnitName(CacheManager.getDepartmentByCode(employee.getOwnerId()).getName());*//**//*
 			}
-		}
+		}*/
 		return employeeList;
 	}
 
@@ -92,7 +92,7 @@ public class EmployeeController extends BaseController implements IBaseInfoContr
 
 		try{
 			this.employeeService.save(employ);
-			CacheManager.refreshEmployee();
+			/*CacheManager.refreshEmployee();*/
 			return returnSuccessInfo("保存成功");
 		}catch(Exception e){
 			return returnFailInfo("保存失败");
@@ -124,7 +124,7 @@ public class EmployeeController extends BaseController implements IBaseInfoContr
 			this.userService.save(u);
 			this.employeeService.setAsUser(u.getCode());
 			CacheManager.refreshUserCache();
-			CacheManager.refreshEmployee();
+			/*CacheManager.refreshEmployee();*/
 			return returnSuccessInfo("设置成功");
 		}catch(Exception e){
 			return returnFailInfo("设置失败");

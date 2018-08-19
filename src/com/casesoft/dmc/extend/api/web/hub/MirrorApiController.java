@@ -126,7 +126,7 @@ public class MirrorApiController extends ApiBaseController {
         String sku = filter_EQS_code;
         Product mainProduct = CacheManager.getProductByCode(sku);
         List<Product> collocaProdList = new ArrayList<>();
-        Collection<Collocat> collocatCollection = CacheManager.getCollocatMap().values();
+       /* *//*Collection<Collocat> collocatCollection = CacheManager.getCollocatMap().values();*//*
 
         for(Collocat collocat : collocatCollection) {
             if(collocat.getStyleIds().contains(mainProduct.getStyleId())) {
@@ -136,12 +136,12 @@ public class MirrorApiController extends ApiBaseController {
                     if(styleId.equals(mainProduct.getStyleId())) {
                         continue;
                     }
-                    NewProduct newProduct = CacheManager.getNewProductByStyleId(styleId);
-                    List<Product> cacheProdList = this.getProductListFormCache(newProduct);
-                    collocaProdList.addAll(cacheProdList);
+                *//*  *//**//* *//**//**//**//* NewProduct newProduct = CacheManager.getNewProductByStyleId(styleId);*//**//**//**//*
+                    List<Product> cacheProdList = this.getProductListFormCache(newProduct);*//**//*
+                    collocaProdList.addAll(cacheProdList);*//*
                 }
             }
-        }
+        }*/
 
         OldProduct oldProduct = new OldProduct();
         BeanUtils.copyProperties(mainProduct,oldProduct);
@@ -288,11 +288,11 @@ public class MirrorApiController extends ApiBaseController {
                         String[] styleIds = collocat.getStyleIds().split(",");
                         List<NewProduct> newProductList = new ArrayList<NewProduct>();
                         for (String styleId : styleIds) {
-                            NewProduct newProduct = CacheManager.getNewProductByStyleId(styleId);
+                          /*  NewProduct newProduct = CacheManager.getNewProductByStyleId(styleId);
                             if (null != newProduct) {
                                 convertNewUrl(newProduct);
                                 newProductList.add(newProduct);
-                            }
+                            }*/
                         }
                         collocat.setStyleList(newProductList);
                     }
@@ -403,11 +403,12 @@ public class MirrorApiController extends ApiBaseController {
     }
 
     private Collection<NewProduct> getAllNewProduct() {
-        Collection<NewProduct> newProducts = CacheManager.getNewProductMap().values();//this.newProductService.getAll();
+       /* Collection<NewProduct> newProducts = CacheManager.getNewProductMap().values();//this.newProductService.getAll();
         for (NewProduct product : newProducts) {
             convertNewUrl(product);
         }
-        return newProducts;
+        return newProducts;*/
+        return null;
     }
 
     private NewProduct convertNewUrl(NewProduct product) {

@@ -15,7 +15,8 @@ http://www.springframework.org/schema/cache http://www.springframework.org/schem
 	<!-- AOP -->
 	<aop:config proxy-target-class="true" />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
-
+	<context:property-placeholder ignore-unresolvable="true"
+								  location="classpath:redis.properties"/>
 	<import resource="classpath*:/applicationContext-quartz.xml"></import>
 	<import resource="classpath*:/applicationContext-security.xml" />
 	   <import resource="classpath*:/applicationContext-websocket.xml" />
@@ -23,6 +24,7 @@ http://www.springframework.org/schema/cache http://www.springframework.org/schem
  -->
 
 	<import resource="classpath*:/applicationContext-paris.xml"/>
+	<import resource="classpath*:/applicationContext-redis.xml"/>
 	<!--<import resource="classpath*:/applicationContext-db-gelaimei.xml"/>-->
 
 	<!--<import resource="classpath*:/applicationContext-db-gelaimei.xml"/>-->

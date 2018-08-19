@@ -74,7 +74,7 @@ public class DepartmentController extends BaseController implements IBaseInfoCon
 		depart.setUpdateTime(new Date());
 		try{
 			this.departmentService.save(depart);
-			CacheManager.refreshDepartment();
+			/*CacheManager.refreshDepartment();*/
 			return returnSuccessInfo("保存成功");
 		}catch(Exception e){
 			return returnFailInfo("保存失败");

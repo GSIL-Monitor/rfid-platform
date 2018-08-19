@@ -72,7 +72,7 @@ public class WorkCalendarController extends BaseController implements IBaseInfoC
         workCalendar.setUpdateId(getCurrentUser().getCode());
         workCalendar.setUpdateTime(CommonUtil.getDateString(new Date(),"yyyy-MM-dd HH:mm:ss"));
         this.workCalendarService.save(workCalendar);
-        CacheManager.refreshWorkCalendar();
+        /*CacheManager.refreshWorkCalendar();*/
         return returnSuccessInfo("ok");
     }
 
