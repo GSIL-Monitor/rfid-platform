@@ -30,7 +30,6 @@ function load() {
         }else{
             sessionStorage.removeItem("billNopurchase");
         }
-        pageType="add";
         initButtonGroup(0);
         loadingButtonDivTable();
         initEditFormValid();
@@ -380,7 +379,6 @@ function initDetailData(rowid) {
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
-    pageType = "edit";
     initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
 }
