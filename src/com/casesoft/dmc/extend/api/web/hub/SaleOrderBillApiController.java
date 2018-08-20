@@ -3,6 +3,7 @@ package com.casesoft.dmc.extend.api.web.hub;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -37,6 +38,7 @@ public class SaleOrderBillApiController extends ApiBaseController{
 
     @Autowired
     private SaleOrderBillService saleOrderBillService;
+    private static RedisUtils redisUtils;
     @Override
     public String index() {
         return null;
@@ -80,14 +82,21 @@ public class SaleOrderBillApiController extends ApiBaseController{
         }
         while(CommonUtil.isNotBlank(objectQueue.peek())){
             Object object = objectQueue.peek();
+            SaleOrderBill saleOrderBill=null;
             try {
-                SaleOrderBill saleOrderBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderBill.class);
+                 saleOrderBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderBill.class);
                 List<SaleOrderBillDtl> saleOrderBillDtlList = saleOrderBill.getDtlList();
                 this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList, null);
+                boolean sHasKey = redisUtils.sHasKey("saleOrderBill", saleOrderBill.getId());
+                if(sHasKey){
+                    redisUtils.setRemove("saleOrderBill",saleOrderBill.getId());
+                }
                 objectQueue.poll();
             }catch (Exception e){
                 this.logger.error("保存失败");
                 objectQueue.add(object);
+                saleOrderBill.setErrorMessage(e.getMessage());
+                redisUtils.hset("saleOrderBill", saleOrderBill.getId(), JSON.toJSONString(saleOrderBill));
             }
         }
     }
