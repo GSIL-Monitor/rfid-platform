@@ -45,7 +45,7 @@ $("#input1").alertWhileClick();*/
 		bind:function(){
             var me = this;
             me.$element.on("click",$.proxy(me['_eClick'],me));
-          
+
             $(document).on("mousedown","#mykeyboard"+me.count+" li",$.proxy(me['_limousedown'],me));
             $(document).on("mouseup","#mykeyboard"+me.count+" li",$.proxy(me['_limouseup'],me));
             $(document).on("click","#mykeyboard"+me.count+" li",$.proxy(me['_liclick'],me));
@@ -117,8 +117,12 @@ $("#input1").alertWhileClick();*/
                 me.setValue("addtwo",str);
             }else{//输入其他数字
                 var str = $target.text();
+                console.info(me.$element);
                 me.setValue("add",str);
             }
+            //js键盘输入绑定
+            console.info(me.$element.val());
+            changeValue();
         },
 		_limousedown:function(e){
             var me = this;
