@@ -270,13 +270,13 @@ public class FactoryApiController extends ApiBaseController {
             inEndDate = CommonUtil.getSqlStrByList(endDateStrList, BillSchedule.class, "endDate");
             inUploadNo = CommonUtil.getSqlStrByList(uploadNoStrList, BillSchedule.class, "uploadNo");
             this.taskService.updateBillSchedule(inBillNo, inBillDate, inEndDate, inUploadNo, task.getToken(), task.getType(), task.getTaskTime());
-            if (CacheManager.getFactoryTokenByToken(task.getToken()).getIsLast().equals("Y")) {
+            /*if (CacheManager.getFactoryTokenByToken(task.getToken()).getIsLast().equals("Y")) {
                 inBillNo = CommonUtil.getSqlStrByList(billNoStrList, FactoryBill.class, "billNo");
                 inBillDate = CommonUtil.getSqlStrByList(billDateStrList, FactoryBill.class, "billDate");
                 inEndDate = CommonUtil.getSqlStrByList(endDateStrList, FactoryBill.class, "endDate");
                 inUploadNo = CommonUtil.getSqlStrByList(uploadNoStrList, FactoryBill.class, "uploadNo");
                 this.taskService.updateBill(inBillNo, inBillDate, inEndDate, inUploadNo, task.getTaskTime());
-            }
+            }*/
         }
     }
 
@@ -303,16 +303,17 @@ public class FactoryApiController extends ApiBaseController {
 
 
     private MessageBox checkOperatorTask(FactoryTask task) {
-        Employee operator = CacheManager.getEmployeeById(task.getOperator());
+       /* Employee operator = CacheManager.getEmployeeById(task.getOperator());
         if (CommonUtil.isBlank(operator)) {
             return new MessageBox(false, "错误的员工卡!");
         }else {
             return new MessageBox(true, "ok");
-        }
+        }*/
+        return new MessageBox(true, "ok");
     }
 
     private MessageBox checkLastTaskIsDo(FactoryTask task, List<String> codeList) {
-        List<FactoryRecord> recordList = this.factoryBillSearchService.findRecordByCodeLastTask(
+       /* List<FactoryRecord> recordList = this.factoryBillSearchService.findRecordByCodeLastTask(
                 TaskUtil.getSqlStrByList(codeList, InitEpc.class, "code"));
         StringBuffer errorCodeStr = null;
         String backCodeStr="";
@@ -534,7 +535,7 @@ public class FactoryApiController extends ApiBaseController {
 
         if (CommonUtil.isNotBlank(errorCodeStr)) {
             return new MessageBox(false, errorCodeStr.append("无法上传").toString());
-        }
+        }*/
         return new MessageBox(true, "ok");
     }
 

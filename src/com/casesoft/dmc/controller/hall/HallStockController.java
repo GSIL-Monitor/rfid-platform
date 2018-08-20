@@ -73,11 +73,11 @@ public class HallStockController extends BaseController {
 					s.setStyleName("["+s.getStyleId()+"]");
 				}
 				if (CommonUtil.isNotBlank(s.getFloor())) {
-					if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(s.getFloor()))) {
+					/*if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(s.getFloor()))) {
 						s.setFloorName(CacheManager.getFloorByCode(s.getFloor()).getName());
 					} else {
 						s.setFloorName("[" + s.getFloor() + "]");
-					}
+					}*/
 				}
 			}
 		}

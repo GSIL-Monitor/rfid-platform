@@ -55,13 +55,13 @@ public class SampleTransferController extends BaseController {
 					}
 				}
 				if (CommonUtil.isNotBlank(htdv.getCustomerId())) {
-					if (CommonUtil.isNotBlank(CacheManager.getUnitById(htdv.getCustomerId()))) {
+					/*if (CommonUtil.isNotBlank(CacheManager.getUnitById(htdv.getCustomerId()))) {
 						htdv.setCustomerName(CacheManager.getUnitById(htdv.getCustomerId()).getName());
 					} else if (CommonUtil.isNotBlank(CacheManager.getEmployeeById(htdv.getCustomerId()))) {
 						htdv.setCustomerName(CacheManager.getEmployeeById(htdv.getCustomerId()).getName());
 					} else {
 						htdv.setCustomerName("[" + htdv.getCustomerId() + "]");
-					}
+					}*/
 				}
 				if(CommonUtil.isNotBlank(htdv.getStyleId())){
 					if(CommonUtil.isNotBlank(CacheManager.getStyleById(htdv.getStyleId()))){
@@ -72,11 +72,11 @@ public class SampleTransferController extends BaseController {
 				}
 
 				if (CommonUtil.isNotBlank(htdv.getFloor())) {
-					if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(htdv.getFloor()))) {
+					/*if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(htdv.getFloor()))) {
 						htdv.setFloorName(CacheManager.getFloorByCode(htdv.getFloor()).getName());
 					} else {
 						htdv.setFloorName("[" + htdv.getFloor() + "]");
-					}
+					}*/
 				}
 			}
 		}

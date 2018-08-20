@@ -149,6 +149,6 @@ public class PlWmsShopBindingRelationService extends BaseService<PlWmsShopBindin
     @Override
     public void delete(String id) {
         this.plShopBindingRelationDao.delete(id);
-        CacheManager.refreshWmsPlRackBindingRelationCache();
+        /*CacheManager.refreshWmsPlRackBindingRelationCache();*/
     }
 }

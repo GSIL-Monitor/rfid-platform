@@ -57,6 +57,7 @@ import java.text.SimpleDateFormat;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by WingLi on 2017-01-03.
@@ -87,13 +88,13 @@ public class WarehStockController extends BaseController {
         String ownerId = this.getCurrentUser().getOwnerId();
         User currentUser = this.getCurrentUser();
         Unit unitById = CacheManager.getUnitById(currentUser.getOwnerId());
-        if(CommonUtil.isBlank(unitById)){
-            unitById=this.unitService.getunitbyId(currentUser.getOwnerId());
+        if (CommonUtil.isBlank(unitById)) {
+            unitById = this.unitService.getunitbyId(currentUser.getOwnerId());
         }
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
-        if(CommonUtil.isNotBlank(unitById.getGroupId())){
-            if(unitById.getGroupId().equals("JMS")){
+        if (CommonUtil.isNotBlank(unitById.getGroupId())) {
+            if (unitById.getGroupId().equals("JMS")) {
                 PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
                 filters.add(filter);
                 List<Unit> units = this.warehouseService.find(filters);
@@ -109,13 +110,13 @@ public class WarehStockController extends BaseController {
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     @ResponseBody
     public DataSourceResult read(@RequestBody DataSourceRequest request) {
-        return detailStockDao.getList(request,this.session);
+        return detailStockDao.getList(request, this.session);
     }
 
     @RequestMapping(value = "/pageCode", method = RequestMethod.POST)
     @ResponseBody
     public DataSourceResult readCode(@RequestBody DataSourceRequest request) {
-        return detailStockDao.getCodeList(request,this.session);
+        return detailStockDao.getCodeList(request, this.session);
     }
 
     @RequestMapping(value = "/pageStyle", method = RequestMethod.POST)
@@ -148,8 +149,8 @@ public class WarehStockController extends BaseController {
             DataSourceResult sourceResultSaleDtl = this.detailStockDao.getStyleList(dataSourceRequest, this.session);
             List<DetailStockChatView> resultList = (List<DetailStockChatView>) sourceResultSaleDtl.getData();
             String rootPath = session.getServletContext().getRealPath("/");
-            for (DetailStockChatView dsc :resultList){
-                String url = StyleUtil.returnImageUrl(dsc.getStyleId(),rootPath);
+            for (DetailStockChatView dsc : resultList) {
+                String url = StyleUtil.returnImageUrl(dsc.getStyleId(), rootPath);
                 dsc.setUrl(url);
             }
             ExportParams params = new ExportParams("库存，按款汇总", "sheet1", ExcelType.XSSF);
@@ -192,8 +193,8 @@ public class WarehStockController extends BaseController {
             List<DetailStockCodeView> detailStockCodeViews = (List<DetailStockCodeView>) sourceResultSaleDtl.getData();
             ExportParams params = new ExportParams("库存，按Code汇总", "sheet1", ExcelType.XSSF);
             String rootPath = session.getServletContext().getRealPath("/");
-            for (DetailStockCodeView detailStockCodeView :detailStockCodeViews){
-                String url = StyleUtil.returnImageUrl(detailStockCodeView.getStyleId(),rootPath);
+            for (DetailStockCodeView detailStockCodeView : detailStockCodeViews) {
+                String url = StyleUtil.returnImageUrl(detailStockCodeView.getStyleId(), rootPath);
                 detailStockCodeView.setUrl(url);
             }
             String path = Constant.Folder.Report_File_Folder;
@@ -225,12 +226,12 @@ public class WarehStockController extends BaseController {
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param code    唯一码
-     * @param type 出库入库类型 0,出库,1入库
+     * @param type    出库入库类型 0,出库,1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
      */
     @RequestMapping("checkEpcStockAndFindDate")
     @ResponseBody
-    public MessageBox checkEpcStockAndFindDate(String warehId, String code, String billNo,Integer type,boolean isCheckWareHouse){
+    public MessageBox checkEpcStockAndFindDate(String warehId, String code, String billNo, Integer type, boolean isCheckWareHouse) {
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -264,22 +265,22 @@ public class WarehStockController extends BaseController {
 
             List<EpcStock> epcStockList = new ArrayList<>();
             if (Constant.TaskType.Outbound == type) {
-                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
+                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId, 1);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
-                }else{
+                    epcStock = this.epcStockService.findEpcInCode(warehId, code, isCheckWareHouse);
+                } else {
                     epcStock = epcStockList.get(0);
-                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    Long cycle = Long.parseLong("" + CommonUtil.daysBetween(epcStock.getLastSaleTime(), new Date()));
                     epcStock.setSaleCycle(cycle);
                 }
 
             } else {
-                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
+                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId, 0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code,isCheckWareHouse);
-                }else{
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code, isCheckWareHouse);
+                } else {
                     epcStock = epcStockList.get(0);
-                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    Long cycle = Long.parseLong("" + CommonUtil.daysBetween(epcStock.getLastSaleTime(), new Date()));
                     epcStock.setSaleCycle(cycle);
                 }
             }
@@ -291,7 +292,7 @@ public class WarehStockController extends BaseController {
                     //查询这个不在库唯一码的epcStock
                     EpcStock epcAllowInCode = this.epcStockService.findEpcAllowInCode(code);
                     StockUtil.convertEpcStock(epcAllowInCode);
-                    return new MessageBox(false, "唯一码:" + code + "不能出库",epcAllowInCode);
+                    return new MessageBox(false, "唯一码:" + code + "不能出库", epcAllowInCode);
                 } else {
                     return new MessageBox(false, "唯一码:" + code + "不能入库");
                 }
@@ -302,15 +303,18 @@ public class WarehStockController extends BaseController {
         }
 
     }
-    /**标签管理code检验是否入库
+
+    /**
+     * 标签管理code检验是否入库
+     *
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param code    唯一码
-     * @param type 出库入库类型 0,出库,1入库
+     * @param type    出库入库类型 0,出库,1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
      */
     @RequestMapping("checkLaberEpcStockAndFindDate")
     @ResponseBody
-    public MessageBox checkLaberEpcStockAndFindDate(String warehId, String code, String billNo,Integer type,String class9){
+    public MessageBox checkLaberEpcStockAndFindDate(String warehId, String code, String billNo, Integer type, String class9) {
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -319,7 +323,7 @@ public class WarehStockController extends BaseController {
 
             EpcStock epcAllowInCode = this.epcStockService.findEpcAllowInCode(code);
             Style style = CacheManager.getStyleById(epcAllowInCode.getStyleId());
-            if(!style.getClass9().equals(class9)){
+            if (!style.getClass9().equals(class9)) {
                 return new MessageBox(false, "唯一码:" + code + "系列不对");
             }
             if (CommonUtil.isNotBlank(billNo)) {
@@ -349,22 +353,22 @@ public class WarehStockController extends BaseController {
 
             List<EpcStock> epcStockList = new ArrayList<>();
             if (Constant.TaskType.Outbound == type) {
-                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId,1);
+                epcStockList = this.epcStockService.findSaleReturnFilterByDestIdDtl(code, warehId, 1);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcInCode(warehId, code,false);
-                }else{
+                    epcStock = this.epcStockService.findEpcInCode(warehId, code, false);
+                } else {
                     epcStock = epcStockList.get(0);
-                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    Long cycle = Long.parseLong("" + CommonUtil.daysBetween(epcStock.getLastSaleTime(), new Date()));
                     epcStock.setSaleCycle(cycle);
                 }
 
             } else {
-                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
+                epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId, 0);
                 if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code,false);
-                }else{
+                    epcStock = this.epcStockService.findEpcNotInCode(warehId, code, false);
+                } else {
                     epcStock = epcStockList.get(0);
-                    Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                    Long cycle = Long.parseLong("" + CommonUtil.daysBetween(epcStock.getLastSaleTime(), new Date()));
                     epcStock.setSaleCycle(cycle);
                 }
             }
@@ -451,13 +455,13 @@ public class WarehStockController extends BaseController {
                 }
             }
 
-            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId,0);
+            List<EpcStock> epcStockList = this.epcStockService.findSaleReturnFilterByOriginIdDtl(code, warehId, 0);
             EpcStock epcStock;
             if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
                 epcStock = this.epcStockService.findEpcAllowInCode(code);
             } else {
                 epcStock = epcStockList.get(0);
-                Long cycle = Long.parseLong(""+CommonUtil.daysBetween(epcStock.getLastSaleTime(),new Date()));
+                Long cycle = Long.parseLong("" + CommonUtil.daysBetween(epcStock.getLastSaleTime(), new Date()));
                 epcStock.setSaleCycle(cycle);
             }
             if (CommonUtil.isNotBlank(epcStock)) {
@@ -560,15 +564,16 @@ public class WarehStockController extends BaseController {
 
     /**
      * add by lly
+     *
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param code    唯一码
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
-     *
+     * <p>
      * 获取当前在库唯一码信息
      */
     @RequestMapping("getEpcStock")
     @ResponseBody
-    public MessageBox getEpcStock(String warehId, String code,boolean isCheckWareHouse) {
+    public MessageBox getEpcStock(String warehId, String code, boolean isCheckWareHouse) {
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -576,7 +581,7 @@ public class WarehStockController extends BaseController {
             }
 
             EpcStock epcStock;
-            epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
+            epcStock = this.epcStockService.findEpcInCode(warehId, code, isCheckWareHouse);
             //得到款名
             Style style = CacheManager.getStyleById(epcStock.getStyleId());
             epcStock.setStyleName(style.getStyleName());
@@ -584,7 +589,7 @@ public class WarehStockController extends BaseController {
                 StockUtil.convertEpcStock(epcStock);
                 return new MessageBox(true, "", epcStock);
             } else {
-                    return new MessageBox(false, "唯一码:" + code + "不在当前选中仓库");
+                return new MessageBox(false, "唯一码:" + code + "不在当前选中仓库");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -598,12 +603,12 @@ public class WarehStockController extends BaseController {
      * @param code    唯一码
      * @param type    出入库类型 0出库，1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
-     *
+     * <p>
      * 扫描检测唯一吗是否可以出/入库(存在库存表中)
      */
     @RequestMapping("checkEpcStock")
     @ResponseBody
-    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo,boolean isCheckWareHouse) {
+    public MessageBox checkEpcStock(String warehId, String code, Integer type, String billNo, boolean isCheckWareHouse) {
         try {
             if (code.length() != 13) {
                 String epcCode = code.toUpperCase();
@@ -635,9 +640,9 @@ public class WarehStockController extends BaseController {
 
             EpcStock epcStock;
             if (Constant.TaskType.Outbound == type) {
-                epcStock = this.epcStockService.findEpcInCode(warehId, code,isCheckWareHouse);
+                epcStock = this.epcStockService.findEpcInCode(warehId, code, isCheckWareHouse);
             } else {
-                epcStock = this.epcStockService.findEpcNotInCode(warehId, code,isCheckWareHouse);
+                epcStock = this.epcStockService.findEpcNotInCode(warehId, code, isCheckWareHouse);
             }
             if (CommonUtil.isNotBlank(epcStock)) {
                 StockUtil.convertEpcStock(epcStock);
@@ -646,10 +651,10 @@ public class WarehStockController extends BaseController {
                 if (Constant.TaskType.Outbound == type) {
                     //查询这个不在库唯一码的epcStock
                     EpcStock epcAllowInCode = this.epcStockService.findEpcAllowInCode(code);
-                    if(CommonUtil.isNotBlank(epcAllowInCode)) {
+                    if (CommonUtil.isNotBlank(epcAllowInCode)) {
                         StockUtil.convertEpcStock(epcAllowInCode);
                         return new MessageBox(false, "唯一码:" + code + "不能出库", epcAllowInCode);
-                    }else{
+                    } else {
                         return new MessageBox(false, "唯一码:" + code + "不存在");
                     }
                 } else {
@@ -665,10 +670,10 @@ public class WarehStockController extends BaseController {
 
     @RequestMapping(value = "/findNotInTransfer")
     @ResponseBody
-    public List<Epc> findNotInTransfer(String billNo){
+    public List<Epc> findNotInTransfer(String billNo) {
         TransferOrderBill transferOrderBill = this.transferOrderBillService.get("id", billNo);
         List<TransferOrderBillDtl> transferOrderBillDtls = this.transferOrderBillService.findBillDtlByBillNo(billNo);
-        Map<String,String> codeMap = new HashMap<>();
+        Map<String, String> codeMap = new HashMap<>();
         List<BillRecord> billRecordList = this.transferOrderBillService.getBillRecod(billNo);
      /*   String code="";
         for(BillRecord r : billRecordList){
@@ -678,24 +683,24 @@ public class WarehStockController extends BaseController {
                code+=","+r.getCode();
            }
         }*/
-        for(BillRecord r : billRecordList){
-            if(codeMap.containsKey(r.getSku())){
+        for (BillRecord r : billRecordList) {
+            if (codeMap.containsKey(r.getSku())) {
                 String code = codeMap.get(r.getSku());
-                code += ","+r.getCode();
-                codeMap.put(r.getSku(),code);
-            }else{
-                codeMap.put(r.getSku(),r.getCode());
+                code += "," + r.getCode();
+                codeMap.put(r.getSku(), code);
+            } else {
+                codeMap.put(r.getSku(), r.getCode());
             }
         }
-        ArrayList<Epc> list=new ArrayList<Epc>();
+        ArrayList<Epc> list = new ArrayList<Epc>();
         for (TransferOrderBillDtl dtl : transferOrderBillDtls) {
-            if(codeMap.containsKey(dtl.getSku())){
-                String[] split=codeMap.get(dtl.getSku()).split(",");
-                if(CommonUtil.isNotBlank(split)){
-                    for(int i=0;i<split.length;i++){
+            if (codeMap.containsKey(dtl.getSku())) {
+                String[] split = codeMap.get(dtl.getSku()).split(",");
+                if (CommonUtil.isNotBlank(split)) {
+                    for (int i = 0; i < split.length; i++) {
                         MessageBox messageBox = checkEpcStock(transferOrderBill.getDestId(), split[i], 1, billNo, false);
-                        if(messageBox.getSuccess()){
-                            Epc epc=new Epc();
+                        if (messageBox.getSuccess()) {
+                            Epc epc = new Epc();
                             epc.setCode(split[i]);
                             epc.setSku(dtl.getSku());
                             epc.setColorId(dtl.getColorId());
@@ -710,13 +715,14 @@ public class WarehStockController extends BaseController {
         }
         return list;
     }
+
     /**
      * @param warehId 仓库id 出库为发货仓，入库为收货仓
      * @param codes   唯一码
      * @param type    出入库类型 0出库，1入库
      * @return Messbox true ,允许操作，false允许出，入库提示msg信息
      */
-    @RequestMapping({"/checkCodes","/checkCodesWS"})
+    @RequestMapping({"/checkCodes", "/checkCodesWS"})
     @ResponseBody
     public MessageBox checkCodes(String warehId, String codes, Integer type, String billNo) {
         //判断单据单据是否是商城
@@ -822,37 +828,36 @@ public class WarehStockController extends BaseController {
      *
      * @param uniqueCodes 单据明细中，唯一码拼接起来的字符串
      * @return 唯一码明细
-     *
      */
     @RequestMapping(value = "/findCodeSaleReturnList")
     @ResponseBody
     public List<EpcStock> findCodeSaleReturnList(String uniqueCodes, String billNo) {
         List<String> codeList = new ArrayList<>();
         if (CommonUtil.isNotBlank(uniqueCodes)) {
-            for(String code : uniqueCodes.split(",")){
+            for (String code : uniqueCodes.split(",")) {
                 codeList.add(code);
             }
         }
-        Map<String,BillRecord> billRecordMap = new HashMap<>();
-        if(CommonUtil.isNotBlank(billNo) && CommonUtil.isNotBlank(uniqueCodes)){
-            List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(TaskUtil.getSqlStrByList(codeList,BillRecord.class,"code"),billNo);
-            for(BillRecord b : billRecordList){
-                billRecordMap.put(b.getCode(),b);
+        Map<String, BillRecord> billRecordMap = new HashMap<>();
+        if (CommonUtil.isNotBlank(billNo) && CommonUtil.isNotBlank(uniqueCodes)) {
+            List<BillRecord> billRecordList = this.saleOrderReturnBillService.getBillRecordForCycle(TaskUtil.getSqlStrByList(codeList, BillRecord.class, "code"), billNo);
+            for (BillRecord b : billRecordList) {
+                billRecordMap.put(b.getCode(), b);
             }
         }
         List<EpcStock> epcStockList = new ArrayList<>();
-        if(CommonUtil.isNotBlank(uniqueCodes)) {
-            epcStockList = this.epcStockService.findSaleReturnEpcByCodes(TaskUtil.getSqlStrByList(codeList,EpcStock.class,"code"));
-            for(EpcStock epc : epcStockList){
+        if (CommonUtil.isNotBlank(uniqueCodes)) {
+            epcStockList = this.epcStockService.findSaleReturnEpcByCodes(TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code"));
+            for (EpcStock epc : epcStockList) {
                 BillRecord billRecord = billRecordMap.get(epc.getCode());
-                if(CommonUtil.isNotBlank(billRecord)){
-                    if(CommonUtil.isNotBlank(billRecord.getLastSaleTime())){
+                if (CommonUtil.isNotBlank(billRecord)) {
+                    if (CommonUtil.isNotBlank(billRecord.getLastSaleTime())) {
                         epc.setLastSaleTime(billRecord.getLastSaleTime());
                     }
-                    if(CommonUtil.isNotBlank(billRecord.getOriginBillNo())){
+                    if (CommonUtil.isNotBlank(billRecord.getOriginBillNo())) {
                         epc.setOriginBillNo(billRecord.getOriginBillNo());
                     }
-                    if(CommonUtil.isNotBlank(billRecord.getSaleCycle())){
+                    if (CommonUtil.isNotBlank(billRecord.getSaleCycle())) {
                         epc.setSaleCycle(billRecord.getSaleCycle());
                     }
                 }
@@ -1035,6 +1040,65 @@ public class WarehStockController extends BaseController {
             return new MessageBox(false, "查询不到唯一码：" + code + " 对应的商品");
         }
 
+    }
+
+    /**
+     * @param codes  唯一码信息多个,分割
+     * @param userId 当前登陆用户ID
+     * @param type   0,校验不在库,1 检验在库
+     * @return 判断唯一码是否在同一仓库
+     **/
+    @RequestMapping("/findScanCodeInfoWS")
+    @ResponseBody
+    public MessageBox findScanCodeInfo(String codes, String userId,Integer type) {
+        String ownerId = CacheManager.getUserById(userId).getOwnerId();
+        List<String> codeList = new ArrayList<>();
+        List<EpcStock> errorList = new ArrayList<>();
+        if (CommonUtil.isNotBlank(codes)) {
+            for (String code : codes.split(",")) {
+                codeList.add(code);
+            }
+            List<EpcStock> epcStockList = this.epcStockService.findEpcCodes(CommonUtil.getSqlStrByList(codeList, EpcStock.class, "code"),type);
+            for(EpcStock epcStock : epcStockList){
+                Unit u = CacheManager.getUnitByCode(epcStock.getWarehouseId());
+                if(CommonUtil.isNotBlank(u)){
+                    epcStock.setStorage(u.getName());
+                }
+                epcStock.setStyleName(CacheManager.getStyleNameById(epcStock.getStyleId()));
+                epcStock.setColorName(CacheManager.getColorNameById(epcStock.getColorId()));
+                epcStock.setSizeName(CacheManager.getSizeNameById(epcStock.getSizeId()));
+                if(!ownerId.equals(epcStock.getOwnerId())){
+                    errorList.add(epcStock);
+                }
+            }
+            if(errorList.size()>0){
+                return new MessageBox(false,"不是本店的唯一码",errorList);
+            }
+            //按照是否在库分组
+            Map<Integer,List<EpcStock>> epcStockMap  = epcStockList.stream().collect(Collectors.groupingBy(EpcStock::getInStock));
+            //按照仓库分组
+            Map<String,List<EpcStock>> epcWarehouseMap  = epcStockList.stream().collect(Collectors.groupingBy(EpcStock::getWarehouseId));
+            if( type == Constant.InStock.InStore) {
+                //校验唯一码在库时候（出库，调整等用到）
+                if (epcWarehouseMap.size() > 1) {
+                    return new MessageBox(false, "存在多个仓库", epcWarehouseMap.values());
+                } else if (CommonUtil.isNotBlank(epcStockMap.get(Constant.InStock.NotInStore))) {
+                    return new MessageBox(false, "存在不在库的唯一码", epcStockMap.get(Constant.InStock.NotInStore));
+                } else {
+                    return new MessageBox(true, "ok", epcStockList);
+                }
+            }else{
+                //校验唯一码不在库时候（入库用到）
+                if(CommonUtil.isNotBlank(epcStockMap.get(Constant.InStock.InStore))){
+                    return new MessageBox(false, "存在不能入库唯一码", epcStockMap.get(Constant.InStock.InStore));
+                }else {
+                    return new MessageBox(true, "ok", epcStockList);
+                }
+            }
+
+        }else{
+            return new MessageBox(false,"没有唯一码信息");
+        }
     }
 
 }

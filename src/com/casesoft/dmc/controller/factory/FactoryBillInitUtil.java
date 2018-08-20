@@ -303,7 +303,7 @@ public class FactoryBillInitUtil {
         Map<String, Integer> skuCountMap = new HashMap<String, Integer>();
         Map<String, Long> skuBillCountMap = new HashMap<String, Long>();
         Map<String,FactoryCategory> categoryMap = new HashMap<String, FactoryCategory>();
-        int categorySize = CacheManager.getFactoryCategory().size();
+        /*int categorySize = CacheManager.getFactoryCategory().size();*/
         int index = CacheManager.getMaxProductId();
         int dtlIndex = 0;
         String productId = getNewProductId(index);
@@ -446,13 +446,13 @@ public class FactoryBillInitUtil {
                 factoryInitMap.put(initDtl.getBillNo() + master.getBillNo(), factoryInit);
 
                 if(CommonUtil.isNotBlank(initDtl.getCategory())){
-                    if(!CacheManager.isHaveFactoryCategory(initDtl.getCategory())){
+                    /*if(!CacheManager.isHaveFactoryCategory(initDtl.getCategory())){
                         if(!categoryMap.containsKey(initDtl.getCategory())){
                             categorySize++;
                             FactoryCategory c = new FactoryCategory(intToStr(categorySize), initDtl.getCategory());
                             categoryMap.put(initDtl.getCategory(),c);
                         }
-                    }
+                    }*/
                 }
 
             }

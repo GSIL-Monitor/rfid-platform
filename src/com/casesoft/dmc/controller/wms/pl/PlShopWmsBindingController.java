@@ -184,7 +184,7 @@ public class PlShopWmsBindingController extends BaseController{
             try{
                 this.plWmsShopBindingRelationService.save(wprbr);
                 this.plWmsShopBindingRelationService.saveShopBindingRecord(plWmsShopBindingRecord);
-                CacheManager.refreshWmsPlRackBindingRelationCache();
+               /* CacheManager.refreshWmsPlRackBindingRelationCache();*/
                 return  returnSuccessInfo("绑定成功");
             }catch (Exception e){
                 return returnFailInfo("绑定保存失败");
@@ -198,7 +198,7 @@ public class PlShopWmsBindingController extends BaseController{
     @ResponseBody
     public MessageBox unbind(String id) {
         this.plWmsShopBindingRelationService.delete(id);
-        CacheManager.refreshWmsPlRackBindingRelationCache();
+       /* CacheManager.refreshWmsPlRackBindingRelationCache();*/
         return returnSuccessInfo("ok");
     }
 

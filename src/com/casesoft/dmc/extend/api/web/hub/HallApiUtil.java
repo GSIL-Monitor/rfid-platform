@@ -202,8 +202,8 @@ public class HallApiUtil {
 		dtl.setSizeName(p.getSizeName());
 		dtl.setUnitName(CacheManager.getUnitById(dtl.getOwnerId()).getName());
 		if (CommonUtil.isNotBlank(dtl.getFloor())) {
-			dtl.setFloor(CacheManager.getFloorByCode(dtl.getFloor())
-					.getName());
+			/*dtl.setFloor(CacheManager.getFloorByCode(dtl.getFloor())
+					.getName());*/
 		}
 		if (CommonUtil.isNotBlank(dtl.getBackOwnerId())) {
 			dtl.setBackUnitName(CacheManager.getUnitById(dtl.getBackOwnerId()).getName());
@@ -278,8 +278,8 @@ public class HallApiUtil {
 		dtl.setSizeName(p.getSizeName());
 		dtl.setUnitName(CacheManager.getUnitById(dtl.getOwnerId()).getName());
 		if (CommonUtil.isNotBlank(dtl.getFloorId())) {
-			dtl.setFloorName(CacheManager.getFloorByCode(dtl.getFloorId())
-					.getName());
+			/*dtl.setFloorName(CacheManager.getFloorByCode(dtl.getFloorId())
+					.getName());*/
 		}
 
 //		ITag tag = TagFactory.getTag(PropertyUtil.getValue("tag_name"));

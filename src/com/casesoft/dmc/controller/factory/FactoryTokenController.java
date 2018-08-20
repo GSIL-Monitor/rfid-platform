@@ -46,7 +46,7 @@ public class FactoryTokenController extends BaseController implements IBaseInfoC
     @RequestMapping("/findTokenById")
     @ResponseBody
     public MessageBox findTokenById(Integer token) throws Exception{
-       return returnSuccessInfo("ok",CacheManager.getFactoryTokenByToken(token));
+       return returnSuccessInfo("ok"/*CacheManager.getFactoryTokenByToken(token)*/);
     }
 
     @RequestMapping("/page")
@@ -58,10 +58,10 @@ public class FactoryTokenController extends BaseController implements IBaseInfoC
         page.setPageProperty();
         page=this.factoryTokenService.findPage(page,filters);
         for (Token t:page.getRows()){
-            Token lastToken=CacheManager.getFactoryTokenByToken(t.getLastToken());
+           /* Token lastToken=CacheManager.getFactoryTokenByToken(t.getLastToken());
             if (CommonUtil.isNotBlank(lastToken)){
                 t.setLastTokenName(lastToken.getName());
-            }
+            }*/
         }
         return page;
     }
@@ -129,13 +129,13 @@ public class FactoryTokenController extends BaseController implements IBaseInfoC
             token.setSortIndex(this.factoryTokenService.findMaxSortIndex()+1);
             token.setLocked(0);
         }else{
-            token.setSortIndex(CacheManager.getFactoryTokenByToken(token.getToken()).getSortIndex());
-            token.setLocked(CacheManager.getFactoryTokenByToken(token.getToken()).getLocked());
+            /*token.setSortIndex(CacheManager.getFactoryTokenByToken(token.getToken()).getSortIndex());
+            token.setLocked(CacheManager.getFactoryTokenByToken(token.getToken()).getLocked());*/
         }
         try{
             token.setName(token.getName().trim());
             this.factoryTokenService.save(token);
-            CacheManager.refreshFactoryToken();
+           /* CacheManager.refreshFactoryToken();*/
             return returnSuccessInfo("ok");
         }catch (Exception e){
             return returnFailInfo("error");
