@@ -96,7 +96,9 @@ public class SaleOrderBillApiController extends ApiBaseController{
                 this.logger.error("保存失败");
                 objectQueue.add(object);
                 saleOrderBill.setErrorMessage(e.getMessage());
-                redisUtils.hset("saleOrderBill", saleOrderBill.getId(), JSON.toJSONString(saleOrderBill));
+                if(CommonUtil.isNotBlank(saleOrderBill)) {
+                    redisUtils.hset("saleOrderBill", saleOrderBill.getId(), JSON.toJSONString(saleOrderBill));
+                }
             }
         }
     }
