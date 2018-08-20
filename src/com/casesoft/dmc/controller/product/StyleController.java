@@ -112,6 +112,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId,String pageType) throws Exception {
 		try {
 			Style style = JSON.parseObject(styleStr,Style.class);
+
 			Style sty = CacheManager.getStyleById(style.getStyleId());
 			//判断是 add（）的请求还是 edit（）的请求
 			if ("add".equals(pageType)){
@@ -120,6 +121,10 @@ public class StyleController extends BaseController implements IBaseInfoControll
 					//赋值
 					sty=new Style();
 					sty.setId(style.getStyleId());
+					//查询当前款最新的版本号
+					Style style1 = styleService.fundByStyleId(style.getStyleId());
+					sty.setVersion(style1.getVersion()+1);
+
 					sty.setStyleId(style.getStyleId());
 					sty.setIsUse("Y");
 				}else {

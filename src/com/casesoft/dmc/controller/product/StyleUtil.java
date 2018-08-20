@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,6 +48,8 @@ import java.util.regex.Pattern;
 import static javax.swing.plaf.basic.BasicHTML.propertyKey;
 
 public class StyleUtil {
+    @Autowired
+    private static ProductService productService;
 
   static List<Style> processStyleFile(InputStream inputStream) throws Exception {
     List<Style> styleList = new ArrayList<Style>();
@@ -316,10 +319,13 @@ public class StyleUtil {
         int index = CacheManager.getMaxProductId();
         for(int i =0 ; i < productList.size(); i++){
             Product p = productList.get(i);
-            Product product = CacheManager.getProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());
+            Product product = CacheManager.getProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());//by sku
             if(CommonUtil.isBlank(product)){
+                //缓存里没有，查最新的版本号+1
+                Product product1 = productService.findProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());
                 String id = ProductUtil.getNewProductId(index+i);
                 p.setId(id);
+                p.setVersion(product1.getVersion()+1);
             }else{
                 p.setId(product.getId());
             }

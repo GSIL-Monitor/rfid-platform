@@ -28,7 +28,7 @@ public class Product extends BaseProduct implements java.io.Serializable {
 	private String sizeSortId;
 	private String image;
 	
-	private Long version;
+	private Long version;//版本号
 
 	private Integer boxQty;//规格
 	

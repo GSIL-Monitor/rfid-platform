@@ -21,6 +21,8 @@ public class Style extends BaseStyle implements java.io.Serializable {
 
     private String isUse;
 
+    private Long version;//版本号
+
     @Column()
     private String ispush;
 
@@ -198,5 +200,14 @@ public class Style extends BaseStyle implements java.io.Serializable {
 
     public void setIsUse(String isUse) {
         this.isUse = isUse;
+    }
+
+    @Column()
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }
