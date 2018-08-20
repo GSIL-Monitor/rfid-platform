@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -70,6 +71,8 @@ public class CacheManager {
 	private static String PREFIX_PLAYLOUNGEPROPERTYKEY = "playloungePropertyKey";
 
 	private static String PREFIX_SIZESORT = "SizeSort";
+
+	private static String PREFIX_ACCESSTOKEN = "AccessToken";
 	//--------------------------新增redis缓存数据-------------------------------------------------
 	private static String PREFIX_UNIT = "unit";
 
@@ -668,11 +671,26 @@ public class CacheManager {
 	public static void iniAccessToken(AccessToken accessToken){
 		Map<String,AccessToken> accessTokenMap  = new HashMap<>();
 		accessTokenMap.put("AccessToken",accessToken);
-		cache.put(new Element("AccessToken",accessTokenMap));
+		redisUtils.hset(PREFIX_ACCESSTOKEN,"AccessToken", JSON.toJSONString(accessTokenMap));
+		/*cache.put(new Element("AccessToken",accessTokenMap));*/
 	}
 
 	public static AccessToken getAccessToken(){
-		Element result = cache.get("AccessToken");
+		String accessTokenStr = null;
+		AccessToken accessToken = null;
+		Map<Object,Object> accessTokenMap = redisUtils.hmget(PREFIX_ACCESSTOKEN);
+		if (CommonUtil.isNotBlank(accessTokenMap)){
+			for (Entry<Object, Object> entry : accessTokenMap.entrySet()){
+				accessTokenStr = (String) entry.getValue();
+				accessToken = JSONObject.parseObject(accessTokenStr, AccessToken.class);
+			}
+			return accessToken;
+		}else {
+			AccessToken token = new AccessToken();
+			iniAccessToken(token);
+			return token;
+		}
+		/*Element result = cache.get("AccessToken");
 		if (result==null){
 			AccessToken accessToken = new AccessToken();
 			iniAccessToken(accessToken);
@@ -682,11 +700,13 @@ public class CacheManager {
 		}else {
 			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) result.getValue();
 			return accessTokenMap.get("AccessToken");
-		}
+		}*/
+
 	}
 
 	public static void remove(){
-		cache.remove("AccessToken");
+		redisUtils.del(PREFIX_ACCESSTOKEN);
+		/*cache.remove("AccessToken");*/
 	}
 
 
