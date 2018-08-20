@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -110,6 +111,7 @@ public class CacheManager {
 		initSysSetting();
 		initCustomerCache();
 		initCheckWarehouse();
+		initMaxVersionId();
 	}
 
 	public static void refresh() throws Exception {
@@ -128,7 +130,7 @@ public class CacheManager {
 		refreshResourceCache();
 		refreshRoleCache();
 		refreshSizeSortCache();
-
+		refreshMaxVersionId();
 	}
 
 	public static void initUserCache() {
@@ -283,14 +285,22 @@ public class CacheManager {
 			redisUtils.hset(PREFIX_DEVICE, device.getCode(), JSON.toJSONString(device));
 		}
 	}
-
+	public static void initMaxVersionId(){
+		ProductService productService = (ProductService) SpringContextUtil
+				.getBean("productService");
+		StyleService styleService = (StyleService) SpringContextUtil
+				.getBean("styleService");
+		//得到当前商品最大版本号放进redis
+		long productMaxVersionId = productService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","productMaxVersionId",JSON.toJSONString(productMaxVersionId));
+		long styleMaxVersionId = styleService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId));
+	}
 	public static void initProductCache() {
 		long startTime = System.currentTimeMillis();   //获取开始时间
 		ProductService productService = (ProductService) SpringContextUtil
 				.getBean("productService");
-		//得到当前商品最大版本号放进redis
-		long maxVersionId = productService.getMaxVersionId();
-		redisUtils.set("maxVersionId",JSON.toJSONString(maxVersionId));
+
 		List<Product> list = productService.getAll();
 		Collections.sort(list, new Comparator<Product>() {
 
@@ -409,6 +419,10 @@ public class CacheManager {
 	public static void refreshPropertyCache() {
 		redisUtils.del(PREFIX_PROPERTYKEY);
 		initPropertyCache();
+	}
+	public static void refreshMaxVersionId(){
+		redisUtils.del("maxVersionId");
+		initMaxVersionId();
 	}
 
 	public static void refreshPropertyCache(List<PropertyKey> propertyKeyList) {
@@ -1143,8 +1157,12 @@ public class CacheManager {
 		return maxId;
 	}
 
-	public static Long getMaxVersionId(){
-		Long maxVersionId = (Long)redisUtils.get("maxVersionId");
+	public static Long getproductMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","productMaxVersionId");
+		return maxVersionId;
+	}
+	public static Long getStyleMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","styleMaxVersionId");
 		return maxVersionId;
 	}
 }

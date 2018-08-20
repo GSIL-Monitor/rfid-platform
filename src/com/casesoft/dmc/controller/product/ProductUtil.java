@@ -2,6 +2,8 @@ package com.casesoft.dmc.controller.product;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.Constant.Session;
 import com.casesoft.dmc.core.Constant.Sys;
@@ -46,7 +48,7 @@ import javax.persistence.Cache;
 
 public class ProductUtil {
     public final static int styleClassNum = 10;
-
+    private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
     public static void initProductList(List<Product> list) {
         for (Product p : list) {
             p.setId(p.getCode());
@@ -1314,6 +1316,8 @@ public class ProductUtil {
                 } else {
                     p.setId(productId);
                 }
+                long productMaxVersionId = CacheManager.getproductMaxVersionId();
+                p.setVersion(productMaxVersionId+1);
                 p.setCode(pCode);
                 p.setStyleId(styleNo);
                 p.setStyleName(styleName);
@@ -1542,6 +1546,10 @@ public class ProductUtil {
                 getStringFormCell(row.getCell(40)));
         s.setRemark(getStringFormCell(row.getCell(18)));
         s.setBargainPrice(barginPrice);
+        //得到最新style版本号
+        long styleMaxVersionId = CacheManager.getStyleMaxVersionId();
+        s.setVersion(styleMaxVersionId+1);
+        //应该在保存数据库成功后再设置缓存
         styleMap.put(styleNo, s);
         CacheManager.getStyleMap().put(styleNo, s); // TODO Auto-generated
         // method stub

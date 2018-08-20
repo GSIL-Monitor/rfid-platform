@@ -1,5 +1,6 @@
 package com.casesoft.dmc.controller.product;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 
 import com.casesoft.dmc.cache.RedisUtils;
@@ -49,8 +50,9 @@ import java.util.regex.Pattern;
 import static javax.swing.plaf.basic.BasicHTML.propertyKey;
 
 public class StyleUtil {
+    private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
-  static List<Style> processStyleFile(InputStream inputStream) throws Exception {
+    static List<Style> processStyleFile(InputStream inputStream) throws Exception {
     List<Style> styleList = new ArrayList<Style>();
     HSSFWorkbook workbook = new HSSFWorkbook(inputStream);// 创建对Excel工作薄文件的引用
     HSSFSheet sheet = workbook.getSheetAt(0);// 创建对工作表的引用，也可用workbook.getSheet("sheetName");
@@ -320,14 +322,19 @@ public class StyleUtil {
             Product p = productList.get(i);
             Product product = CacheManager.getProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());//by sku
             if(CommonUtil.isBlank(product)){
-                //缓存里没有，查最新的版本号+1
-                Long maxVersionId = CacheManager.getMaxVersionId();
+
                 String id = ProductUtil.getNewProductId(index+i);
                 p.setId(id);
+                //查最新的版本号+1
+                Long maxVersionId = CacheManager.getproductMaxVersionId();
                 p.setVersion(maxVersionId+1);
+
             }else{
                 p.setId(product.getId());
             }
+            //查最新的版本号+1
+            Long maxVersionId = CacheManager.getproductMaxVersionId();
+            p.setVersion(maxVersionId+1);
             p.setStyleId(style.getStyleId());
             p.setStyleName(style.getStyleName());
             p.setColorName(CacheManager.getColorNameById(p.getColorId()));

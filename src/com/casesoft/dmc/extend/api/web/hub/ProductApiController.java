@@ -3,6 +3,8 @@ package com.casesoft.dmc.extend.api.web.hub;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.product.ProductUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.tag.InitUtil;
@@ -80,6 +82,8 @@ public class ProductApiController extends ApiBaseController {
 
 	@Autowired
 	private PhotoService photoService;
+
+	private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
 	@Override
 	public String index() {
@@ -497,15 +501,24 @@ public class ProductApiController extends ApiBaseController {
 
 		Style style = JSON.parseObject(styleStr,Style.class);
 		Style sty = CacheManager.getStyleById(style.getStyleId());
+		//查询当前最新的版本号
+		Long productMaxVersionId = CacheManager.getproductMaxVersionId();
+		Long maxVersionId = CacheManager.getStyleMaxVersionId();
+		sty.setVersion(maxVersionId+1);
 		if(CommonUtil.isBlank(sty)){
 			sty=new Style();
 			sty.setId(style.getStyleId());
 			sty.setStyleId(style.getStyleId());
+			sty.setVersion(maxVersionId+1);
 		}
 		List<Product> productList = JSON.parseArray(productStr,Product.class);
 		List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 		try {
 			this.styleService.saveStyleAndProducts(sty,saveList);
+			//保存成功更新缓存
+			redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
+			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
+			CacheManager.refreshMaxVersionId();
 			CacheManager.refreshStyleCache();
 			if(saveList.size() > 0){
 				CacheManager.refreshProductCache();
