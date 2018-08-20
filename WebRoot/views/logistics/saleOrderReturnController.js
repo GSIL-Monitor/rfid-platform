@@ -376,7 +376,7 @@ function initeditGrid(billId) {
         datatype: "json",
         url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + billNo,
         colModel: [
-            //{name: 'id', label: 'id', hidden: true},
+            {name: 'id', label: 'id', hidden: true},
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
@@ -580,7 +580,7 @@ function initeditGrid(billId) {
         pager: '#addDetailgrid-pager',
         multiselect: false,
         shrinkToFit: true,
-        sortname: 'billNo',
+        sortname: 'id',
         sortorder: "asc",
         footerrow: true,
         cellEdit: true,
@@ -879,7 +879,7 @@ function initAddGrid() {
         height: "auto",
         datatype: "local",
         colModel: [
-            //{name: 'id', label: 'id', hidden: true},
+            {name: 'id', label: 'id', hidden: true},
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
@@ -1071,7 +1071,7 @@ function initAddGrid() {
         pager: '#addDetailgrid-pager',
         multiselect: false,
         shrinkToFit: true,
-        sortname: 'billNo',
+        sortname: 'id',
         sortorder: "asc",
         footerrow: true,
         cellEdit: true,
@@ -2105,7 +2105,6 @@ function addNew(){
     if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
         $("#edit_busnissId").selectpicker('val',defaultSaleStaffId);
     }
-    addUniqCode();
 }
 function cancel() {
 
