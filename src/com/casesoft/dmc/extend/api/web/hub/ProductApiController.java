@@ -39,6 +39,7 @@ import com.casesoft.dmc.service.tag.InitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 
+import jdk.nashorn.internal.objects.annotations.Property;
 import org.apache.shiro.config.Ini;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,7 +262,7 @@ public class ProductApiController extends ApiBaseController {
 	}
 
 	@RequestMapping(value = "/downloadProductZipFileWS.do")
-	public void downloadProductZipFileWS() throws IOException {
+	public void downloadProductZipFileWS(Long version) throws IOException {
 		int pageSize = 10000;
 		Page<Product> page = new Page<Product>();
 		page.setOrderBy("code");
@@ -269,6 +270,10 @@ public class ProductApiController extends ApiBaseController {
 		page.setPageNo(1);
 		page.setPageSize(pageSize);
 		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
+		if(CommonUtil.isNotBlank(version)){
+			PropertyFilter filter = new PropertyFilter("GTL_version",version.toString());//比version大的
+			filters.add(filter);
+		}
 		Page<Product> prodPage = productService.findPage(page, filters);
 		if(CommonUtil.isNotBlank(page.getRows())){
 			ProductUtil.convertToPageVo(page.getRows());
