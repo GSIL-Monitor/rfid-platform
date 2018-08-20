@@ -3,8 +3,10 @@
  */
 var payhtml = "";//支付金额页面
 var paywayhtml = "";//支付方式页面
-var defaultPayType =null;
-var payNum = 0;
+var defaultPayType =null;//默认支付方式
+var payNum = 0;//选择支付个数，不能超过三个
+var price = 0;//应收
+var actpayPrice = 0;//实收
 $(function () {
     $.ajax({
         url: basePath + "/sys/property/searchByTypeWS.do?type=PT",
@@ -12,12 +14,16 @@ $(function () {
         async:false,//同步
         success: function (result) {
             payhtml += "<li>"
+                        +"<span id='Price'>应收金额</span>"
+                        +"<input id='Priced' type='text' readonly value='1000' name='payPrice'>"
+                        +"</li>";
+            payhtml += "<li>"
                         +"<span id='payPrice'>待收金额</span>"
-                        +"<input id='payPriced' type='text' readonly value='0.00'>"
+                        +"<input id='payPriced' type='text' readonly placeholder='0.00'>"
                         +"</li>";
             payhtml += "<li>"
                     +"<span id='actPayPrice'>实收金额</span>"
-                    +"<input id='actPayPriced' type='text' readonly value='0.00'>"
+                    +"<input id='actPayPriced' type='text' readonly placeholder='0.00' name='actPayPrice'>"
                     +"</li>";
             $.each(result,function(index,value){
                 paywayhtml  +="<li class="+result[index].iconCode+">"
@@ -27,19 +33,20 @@ $(function () {
                             +"<span>"+result[index].name+"</span>"
                             +"</li>";
                 if(result[index].isDefault == "1"){
-                    payhtml += "<li>"
+                    payhtml +="<li class="+result[index].iconCode+">"
                             +"<span id="+result[index].iconCode+">"+result[index].name+"</span>"
-                            +"<input id="+result[index].iconCode+"d"+" type='text'  value='0.00'>"
+                            +"<input id="+result[index].iconCode+"d"+" type='text' placeholder='0.00'>"
                             +"</li>";
                     defaultPayType = result[index].iconCode;
                     payNum += 1;
                 }
             });
-
             $(".pay-settlement-input").html(payhtml);
             $(".paywaylist").html(paywayhtml);
-            $("."+defaultPayType).addClass("active");//默认变色
+            $(".paywaylist").find("."+defaultPayType).addClass("active");//默认变色
             $("#"+defaultPayType+"d").mynumkb();//input框id加d
+            $("#"+defaultPayType+"d").focus();
+            price =  Number($("#Priced").val());//得到应收金额
             //绑定事件
             $(".paywaylist").find("li").each(function () {
                 //默认付款方式
@@ -49,29 +56,110 @@ $(function () {
                 //付款方式点击方法
                 $(this).bind("click",function () {
                     if($(this).hasClass("active")){
-                        $(this).css("background","#fff");
-                        $(this).removeClass("active");
-                        console.info($(this));
-                        payNum -= 1;
+                        if(payNum ==1){
+                            return;//至少有一个付款方式
+                        }
+                        else {
+                            $(this).css("background","#fff");
+                            $(this).removeClass("active");
+
+                            $("#payPriced").attr("value",Number($("#payPriced").val())+Number($("#"+$(this).attr("class")+"d").val()));//代收加
+                            $("#actPayPriced").attr("value",Number($("#actPayPriced").val())-Number($("#"+$(this).attr("class")+"d").val()));//实收减
+
+                            $(".pay-settlement-input").find("."+$(this).attr("class")).remove();
+                            payNum -= 1;
+                        }
                     }
                     else {
                         if(payNum <3){
+                            var html = "<li class="+$(this).attr("class")+">"
+                                +"<span id="+$(this).attr("class")+">"+$(this).text()+"</span>"
+                                +"<input id="+$(this).attr("class")+"d"+" type='text'  placeholder='0.00'>"
+                                +"</li>";
+                            $(".pay-settlement-input").append(html);
+                            $("#"+$(this).attr("class")+"d").mynumkb();
+                            $("#"+$(this).attr("class")+"d").focus();
+                            //绑定左侧键盘点击事件
+                            $("."+$(this).attr("class")).bind("click",function () {
+                                $("#"+$(this).attr("class")+"d").mynumkb();
+                            });
+                            //绑定输入事件
+                            $("#"+$(this).attr("class")+"d").bind("input propertychange",function () {
+                                changeValue();
+                            });
                             $(this).css("background","#31c17b");
                             $(this).addClass("active");
                             payNum += 1;
-                            payhtml += "<li>"
-                                    +"<span id='actPayPrice'>+"$(this).i</span>"
-                                    +"<input id='actPayPriced' type='text' readonly value='0.00'>"
-                                    +"</li>";
                         }
                         else {
-                            return;
+                            return;//最多三个付款方式
                         }
                     }
                 });
+            });
+
+        }
+    });
+    //绑定左侧默认键盘事件
+    $(".pay-settlement-input").find("li").each(function () {
+        $(this).bind("click",function () {
+            $("#"+$(this).attr("class")+"d").mynumkb();
+        });
+        //绑定输入事件
+        $(this).bind("input propertychange",function () {
+            changeValue();
+        });
+    });
+
+});
+//获得当前选中的付款方式
+function changeValue() {
+    actpayPrice =0;
+    $(".paywaylist").find("li").each(function () {
+        if($(this).hasClass("active")){
+            $(this).removeClass("active");//移除active方便取值
+            actpayPrice += Number($("#"+$(this).attr("class")+"d").val());
+            $("#actPayPriced").attr("value",actpayPrice);//所有支付方式之和
+            $("#payPriced").attr("value",price-Number($("#actPayPriced").val()));//代收金额=应收-实收
+            $(this).addClass("active");//加回来
+        }
+    });
+}
+function savePayPrice() {
+    var payPrice = $("#Priced").val();
+    var actPayPrice = $("#actPayPriced").val();
+    var billNo = "TESTLLY";
+    var shop = "LLY";
+    var returnBillNo = "TESTRETURNLLY";
+    var customerId = "admin";
+    $(".paywaylist").find("li").each(function () {
+        cs.showProgressBar();
+        if($(this).hasClass("active")){
+            $(this).removeClass("active");//移除active方便取值
+            var payType = $(this).attr("class");
+            $.ajax({
+                url:basePath + "/sys/property/savePayPriceWS.do",
+                dataType: 'json',
+                data:{
+                    billNo : billNo,
+                    shop: shop,
+                    returnBillNo:returnBillNo,
+                    customerId : customerId,
+                    payPrice : payPrice,
+                    actPayPrice :actPayPrice,
+                    payType : payType
+                },
+                success:function (result) {
+                    cs.closeProgressBar();
+                    if(result.msg){
+                        //bootbox.alert("请先选择上级仓库");
+                    }
+                    else {
+                        bootbox.alert("结算失败");
+                    }
+                }
             })
         }
     });
+}
 
-
-});

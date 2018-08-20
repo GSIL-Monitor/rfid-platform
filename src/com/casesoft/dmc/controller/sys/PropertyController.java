@@ -1,12 +1,15 @@
 package com.casesoft.dmc.controller.sys;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.sys.impl.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +40,8 @@ public class PropertyController extends BaseController implements IBaseInfoContr
     private PropertyService propertyService;
     @Autowired
     private VendorService vendorService;
+    @Autowired
+    private payDetailService payDetailService;
 
 
     @Override
@@ -270,6 +275,22 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             e.printStackTrace();
             return returnFailInfo("设置默认支付失败");
         }
+    }
+    @RequestMapping("/savePayPriceWS")
+    @ResponseBody
+    public MessageBox savePayPrice(payDetail payDetail) {
+        this.logAllRequestParams();
+        try{
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+            payDetail.setPayDate(df.format(new Date()));
+            payDetail.setId(payDetail.getBillNo()+payDetail.getPayType());
+            payDetailService.save(payDetail);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false,"结算失败");
+        }
+        return new MessageBox(true,"结算成功");
     }
 
     @Override

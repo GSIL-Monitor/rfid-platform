@@ -17,7 +17,7 @@ public class payDetail implements Serializable{
 
     @Id
     @Column
-    private String id;//销售单号+支付编码
+    private String id;//销售单号+支付方式
 
     @Column
     private String payDate;//支付时间

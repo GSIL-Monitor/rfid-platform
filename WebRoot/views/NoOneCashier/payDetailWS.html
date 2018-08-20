@@ -18,54 +18,18 @@
             <div class="col-md-12 head">
                 <div class="col-md-6  left">
                     <div class="col-md-12">
-                        <ul class="pay-settlement-input">
-                            <!--<li>
-                                <span id="payPrice">待收金额</span>
-                                <input id="payPriced" type="text" readonly value="0.00">
-                            </li>
-                            <li>
-                                <span id="xianjin">现金</span>
-                                <input id="xianjind" type="text"  value="0.00">
-                            </li>
-                            <li>
-                                <span id="zhifubao">支付宝</span>
-                                <input id="zhifubaod" type="text"  value="0.00">
-                            </li>
-                            <li>
-                                <span id="actPayPrice">实收金额</span>
-                                <input id="actPayPriced" type="text" readonly value="0.00">
-                            </li>-->
-                        </ul>
+                        <form id="payForm">
+                            <ul class="pay-settlement-input">
+
+                            </ul>
+                        </form>
                     </div>
                 </div>
                 <div class="col-md-6  right">
                     <div class="col-md-12">
                         <div class="right-head">
                             <ul class="paywaylist">
-                                <!--<li class="selectpaytype">
-                                    <svg class="icon" aria-hidden="true">
-                                        <use xlink:href="#icon-xianjinzhifu"></use>
-                                    </svg>
-                                    <span>现金支付</span>
-                                </li>
-                                <li class="selectpaytype">
-                                    <svg class="icon" aria-hidden="true">
-                                        <use xlink:href="#icon-zhifubaozhifu"></use>
-                                    </svg>
-                                    <span>支付宝支付</span>
-                                </li>
-                                <li class="selectpaytype">
-                                    <svg class="icon" aria-hidden="true">
-                                        <use xlink:href="#icon-ziyuanxiawu"></use>
-                                    </svg>
-                                    <span>微信支付</span>
-                                </li>
-                                <li class="selectpaytype">
-                                    <svg class="icon" aria-hidden="true">
-                                        <use xlink:href="#icon-xinyongqiazhifu"></use>
-                                    </svg>
-                                    <span>刷卡支付</span>
-                                </li>-->
+
                             </ul>
                         </div>
                         <div class="right-foot">
@@ -76,21 +40,32 @@
             </div>
             <div class="col-md-12 foot">
                 <div class="col-sm-12 button">
-                    <button type="button" class="btn bottom-button" onclick="_search()">
+                    <button type="button" class="btn bottom-button" onclick="">
                         <span class="bigger-110">打印</span>
                     </button>
-                    <button type="reset" class="btn bottom-button" onclick="_resetForm()">
+                    <button type="button" class="btn bottom-button" onclick="savePayPrice()">
                         <span class="bigger-110">结算</span>
                     </button>
                 </div>
             </div>
         </div>
 
+        <div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="imgModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index: 9990; display: none;">
+            <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+                <div class="progress progress-striped active" style="margin-bottom: 0;">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <h5>服务器请求中...</h5>
+            </div>
+        </div>
 
-    <script src="js/jquery.min.js"></script>
-    <script src="../../Olive/assets/js/bootstrap.js"></script>
-    <script src="js/mynumkb.js"></script>
-    <script src="js/iconfont.js"></script>
-    <script src="payDetail.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="../../Olive/assets/js/bootstrap.js"></script>
+        <script src="../../jslib2/constant.js"></script>
+        <script src="../../Olive/assets/js/bootbox.js"></script>
+        <script src="js/mynumkb.js"></script>
+        <script src="js/iconfont.js"></script>
+        <script src="payDetail.js"></script>
+
 </body>
 </html>
