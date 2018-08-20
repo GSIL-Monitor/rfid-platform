@@ -57,7 +57,7 @@
             <div class="panel-body">
                 <div class="widget-body">
                     <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
-                        <button class="btn1  center-vertical" id="sale" type="button" ></button>
+                        <button class="btn1  center-vertical" id="sale" type="button"  onclick="selectSale()"></button>
                     </div>
                     <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
                         <button class="btn2  center-vertical" id="saleRetrun" type="button" ></button>
@@ -99,7 +99,9 @@
         }else{
             window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
         }
-
+    }
+    function selectSale() {
+        window.location.href=basePath+'/views/NoOneCashier/saleDelWS.html';
     }
 </script>
 </body>
