@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -38,7 +39,9 @@ public class SaleOrderBillApiController extends ApiBaseController{
 
     @Autowired
     private SaleOrderBillService saleOrderBillService;
-    private static RedisUtils redisUtils;
+
+    private static  Queue<Object> objectQueue = new LinkedList<>();
+
     @Override
     public String index() {
         return null;
@@ -76,7 +79,8 @@ public class SaleOrderBillApiController extends ApiBaseController{
     @ResponseBody
     public void saveSaleOrderBill(JSONArray saleOrderArray){
         this.logAllRequestParams();
-        Queue<Object> objectQueue = new LinkedList<>();
+        RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
+        //Queue<Object> objectQueue = new LinkedList<>();
         for(Object o : saleOrderArray){
             objectQueue.offer(o);
         }
