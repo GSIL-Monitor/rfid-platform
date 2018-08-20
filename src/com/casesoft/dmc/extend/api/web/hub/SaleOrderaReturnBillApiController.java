@@ -3,6 +3,8 @@ package com.casesoft.dmc.extend.api.web.hub;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -33,7 +35,7 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 
 	@Autowired
 	private SaleOrderReturnBillService saleOrderReturnBillService;
-
+	private static  Queue<Object> objectQueue = new LinkedList<>();
 	@RequestMapping(value = "/listWS.do")
 	@ResponseBody
 	public MessageBox listWS(){
@@ -85,20 +87,30 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 	@ResponseBody
 	public void saveSaleOrderBill(JSONArray saleOrderReturnArray){
 		this.logAllRequestParams();
-		Queue<Object> objectQueue = new LinkedList<>();
+		RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
+		//Queue<Object> objectQueue = new LinkedList<>();
 		for(Object o : saleOrderReturnArray){
 			objectQueue.offer(o);
 		}
 		while(CommonUtil.isNotBlank(objectQueue.peek())){
 			Object object = objectQueue.peek();
+			SaleOrderReturnBill saleOrderReturnBill=null;
 			try {
-				SaleOrderReturnBill saleOrderReturnBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderReturnBill.class);
+				 saleOrderReturnBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderReturnBill.class);
 				List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls = saleOrderReturnBill.getDtlList();
 				this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls,null);
+				boolean sHasKey = redisUtils.sHasKey("saleOrderReturnBill", saleOrderReturnBill.getId());
+				if(sHasKey){
+					redisUtils.setRemove("saleOrderReturnBill",saleOrderReturnBill.getId());
+				}
 				objectQueue.poll();
 			}catch (Exception e){
 				this.logger.error("保存失败");
 				objectQueue.add(object);
+				saleOrderReturnBill.setErrorMessage(e.getMessage());
+				if(CommonUtil.isNotBlank(saleOrderReturnBill)) {
+					redisUtils.hset("saleOrderBill", saleOrderReturnBill.getId(), JSON.toJSONString(saleOrderReturnBill));
+				}
 			}
 		}
 	}
