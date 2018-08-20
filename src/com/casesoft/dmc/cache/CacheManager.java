@@ -288,6 +288,9 @@ public class CacheManager {
 		long startTime = System.currentTimeMillis();   //获取开始时间
 		ProductService productService = (ProductService) SpringContextUtil
 				.getBean("productService");
+		//得到当前商品最大版本号放进redis
+		long maxVersionId = productService.getMaxVersionId();
+		redisUtils.set("maxVersionId",JSON.toJSONString(maxVersionId));
 		List<Product> list = productService.getAll();
 		Collections.sort(list, new Comparator<Product>() {
 
@@ -1140,4 +1143,8 @@ public class CacheManager {
 		return maxId;
 	}
 
+	public static Long getMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.get("maxVersionId");
+		return maxVersionId;
+	}
 }

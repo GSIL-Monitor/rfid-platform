@@ -2,6 +2,7 @@ package com.casesoft.dmc.controller.product;
 
 import com.casesoft.dmc.cache.CacheManager;
 
+import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -48,8 +49,6 @@ import java.util.regex.Pattern;
 import static javax.swing.plaf.basic.BasicHTML.propertyKey;
 
 public class StyleUtil {
-    @Autowired
-    private static ProductService productService;
 
   static List<Style> processStyleFile(InputStream inputStream) throws Exception {
     List<Style> styleList = new ArrayList<Style>();
@@ -322,10 +321,10 @@ public class StyleUtil {
             Product product = CacheManager.getProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());//by sku
             if(CommonUtil.isBlank(product)){
                 //缓存里没有，查最新的版本号+1
-                Product product1 = productService.findProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());
+                Long maxVersionId = CacheManager.getMaxVersionId();
                 String id = ProductUtil.getNewProductId(index+i);
                 p.setId(id);
-                p.setVersion(product1.getVersion()+1);
+                p.setVersion(maxVersionId+1);
             }else{
                 p.setId(product.getId());
             }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.model.cfg.PropertyKey;
@@ -56,6 +57,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ResourcePrivilegeService resourcePrivilegeService;
 	@Autowired
 	private UserService userService;
+
+	private static RedisUtils redisUtils;
 
 	@RequestMapping("/page")
 	@ResponseBody
@@ -122,8 +125,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 					sty=new Style();
 					sty.setId(style.getStyleId());
 					//查询当前款最新的版本号
-					Style style1 = styleService.fundByStyleId(style.getStyleId());
-					sty.setVersion(style1.getVersion()+1);
+					Long maxVersionId = CacheManager.getMaxVersionId();
+					sty.setVersion(maxVersionId+1);
 
 					sty.setStyleId(style.getStyleId());
 					sty.setIsUse("Y");
@@ -136,6 +139,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
+			//保存成功更新缓存
+			redisUtils.set("maxVersionId",JSON.toJSONString(sty.getVersion()));
 			CacheManager.refreshStyleCache();
 			/*if(saveList.size() > 0){*/
 				CacheManager.refreshProductCache();

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.controller.syn.tool.SynTaskUtil;
 import com.casesoft.dmc.controller.syn.tool.TaskAdjustUtil;
 import com.casesoft.dmc.core.Constant;
