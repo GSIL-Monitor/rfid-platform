@@ -124,7 +124,7 @@ public class HallFloorController extends BaseController implements IBaseInfoCont
 				this.hallFloorService.update(defaultFloor);//确保默认库位的唯一性
 			}
 			this.hallFloorService.save(hallFloor);
-			CacheManager.refreshHallFloor();
+			/*CacheManager.refreshHallFloor();*/
 			return returnSuccessInfo("保存成功");
 		} catch (Exception e) {
 			return returnFailInfo("保存失败");

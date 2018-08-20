@@ -109,11 +109,11 @@ public class SampleUtil {
 				dtl.setUnitName(CacheManager.getUnitById(dtl.getOwnerId()).getName());//样衣间
 			}
 		}
-		if(CommonUtil.isBlank(CacheManager.getFloorByCode(dtl.getFloor()))){
+		/*if(CommonUtil.isBlank(CacheManager.getFloorByCode(dtl.getFloor()))){
 			dtl.setFloorName(dtl.getFloor());
 		}else{
 			dtl.setFloorName(CacheManager.getFloorByCode(dtl.getFloor()).getName());
-		}
+		}*/
 //		String imagePath = TagFactory.getCurrentTag()
 //				.getImagePath(dtl.getStyleId(), dtl.getColorId(), dtl.getSizeId());
 //		dtl.setImage(imagePath);

@@ -203,7 +203,7 @@ public class NewProductController extends BaseController implements IBaseInfoCon
             ImageCutUtil.commpressPic(f.getPath(), f.getPath());
         }
         String url=styleid+"/"+fileName;
-        CacheManager.refreshNewProductCache();
+       /* CacheManager.refreshNewProductCache();*/
         return returnSuccessInfo(url,fileParant+fileName);
     }
     @RequestMapping(value = "/save")
@@ -218,7 +218,7 @@ public class NewProductController extends BaseController implements IBaseInfoCon
         }catch (Exception e){
            return returnFailInfo("保存失败");
         }
-        CacheManager.refreshNewProductCache();
+        /*CacheManager.refreshNewProductCache();*/
         return returnSuccessInfo("保存成功");
     }
 
@@ -232,7 +232,7 @@ public class NewProductController extends BaseController implements IBaseInfoCon
             newProduct.setIsDet("N");
         }
         this.newProductService.save(newProduct);
-        CacheManager.refreshNewProductCache();
+        /*CacheManager.refreshNewProductCache();*/
         return returnSuccessInfo("设置成功");
     }
 
@@ -271,7 +271,7 @@ public class NewProductController extends BaseController implements IBaseInfoCon
        }
 
         this.newProductService.save(newProduct);
-        CacheManager.refreshNewProductCache();
+        /*CacheManager.refreshNewProductCache();*/
         return returnSuccessInfo(imgs);
     }
 
@@ -289,7 +289,7 @@ public class NewProductController extends BaseController implements IBaseInfoCon
 
         //删除数据库数据
         this.newProductService.delete(styleId);
-        CacheManager.refreshNewProductCache();
+       /* CacheManager.refreshNewProductCache();*/
         return  returnSuccessInfo("删除成功");
     }
 

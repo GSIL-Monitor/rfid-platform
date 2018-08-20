@@ -54,7 +54,7 @@ public class FactoryWorkTimeController extends BaseController implements IBaseIn
         page.setPageProperty();
         page=this.factoryWorkTimeService.findPage(page,filters);
         for (FactoryWorkTime f:page.getRows()){
-            f.setTokenName(CacheManager.getFactoryTokenByToken(f.getToken()).getName());
+           /* f.setTokenName(CacheManager.getFactoryTokenByToken(f.getToken()).getName());*/
             f.setCodeName(CacheManager.getUnitByCode(f.getCode()).getName());
         }
         return page;
@@ -109,7 +109,7 @@ public class FactoryWorkTimeController extends BaseController implements IBaseIn
         }
 
         this.factoryWorkTimeService.saveList(factoryWorkTimeList);
-        CacheManager.refreshFactoryWorkTime();
+        /*CacheManager.refreshFactoryWorkTime();*/
         return returnSuccessInfo("ok");
     }
 
@@ -130,7 +130,7 @@ public class FactoryWorkTimeController extends BaseController implements IBaseIn
     @ResponseBody
     public MessageBox delete(String code,Integer token) throws Exception {
         this.factoryWorkTimeService.deleteWorkTime(code,token);
-        CacheManager.refreshFactoryWorkTime();
+       /* CacheManager.refreshFactoryWorkTime();*/
         return returnSuccessInfo("ok");
     }
 

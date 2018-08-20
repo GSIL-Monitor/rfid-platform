@@ -46,10 +46,10 @@ public class PauseReasonController extends BaseController implements IBaseInfoCo
         page.setPageProperty();
         page=this.pauseReasonService.findPage(page,filters);
         for (PauseReason p:page.getRows()){
-            Token t= CacheManager.getFactoryTokenByToken(p.getToken());
+            /*Token t= CacheManager.getFactoryTokenByToken(p.getToken());
             if (CommonUtil.isNotBlank(t)){
                 p.setTokenName(t.getName());
-            }
+            }*/
         }
         return page;
     }

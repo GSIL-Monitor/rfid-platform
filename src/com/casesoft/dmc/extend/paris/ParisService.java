@@ -500,8 +500,16 @@ public class ParisService implements IBillWSService {
                         break;
                     case Constant.Token.Storage_Transfer_Outbound:
                         transferOrderBill = this.transferOrderBillService.get("billNo", bus.getBillNo());
-                        List<TransferOrderBillDtl> dtlListTRO = this.transferOrderBillService.findBillDtlByBillNo(bus.getBillNo());
-                        transferOrderBillDtlList = this.copyNewTRBillDtl(dtlListTRO);
+                        //transferOrderBill 为空表示改单是在客户端生成单据
+                        if(CommonUtil.isBlank(transferOrderBill)){
+                            Bill bill = bus.getBill();
+                            List<BillDtl> billDtlList = bill.getDtlList();
+                            transferOrderBillDtlList = new ArrayList<>();
+                            BillConvertUtil.convertBillTransferOrderBill(transferOrderBill,transferOrderBillDtlList,bill,billDtlList,bus);
+                        }else{
+                            List<TransferOrderBillDtl> dtlListTRO = this.transferOrderBillService.findBillDtlByBillNo(bus.getBillNo());
+                            transferOrderBillDtlList = this.copyNewTRBillDtl(dtlListTRO);
+                        }
                         BillConvertUtil.covertToTransferOrderBusiness(transferOrderBill, transferOrderBillDtlList, bus, Constant.Token.Storage_Transfer_Outbound);
                         this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList);
                         break;

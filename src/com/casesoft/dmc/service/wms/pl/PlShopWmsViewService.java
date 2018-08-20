@@ -57,14 +57,14 @@ public class PlShopWmsViewService extends BaseService<PlShopWmsView, String> {
 
     public Boolean findRaBarcode(String barcode, String shopId) {
         String hql = "select fv.rackBarcode from PlShopWmsView fv where fv.floorAreaParentCode=?";
-        List list = this.plShopWmsViewDao.find(hql, new Object[]{shopId});
+        List list = this.plShopWmsViewDao.find(hql, shopId);
         return list.contains(barcode);
     }
 
 
     public Boolean findFaBarcode(String barcode, String shopId) {
         String hql = "select fv.floorAreaBarcode from PlShopWmsView fv where fv.floorAreaParentCode=?";
-        List list = this.plShopWmsViewDao.find(hql, new Object[]{shopId});
+        List list = this.plShopWmsViewDao.find(hql, shopId);
         return list.contains(barcode);
     }
 
@@ -184,7 +184,7 @@ public class PlShopWmsViewService extends BaseService<PlShopWmsView, String> {
     public void unbindingShopSku(String ids) {
         StringBuffer hql = new StringBuffer("delete  PlWmsShopBindingRelation relation ")
                 .append(" where relation.id in (").append(ids).append(")");
-        this.plWmsRackDao.batchExecute(hql.toString(), new Object[]{});
+        this.plWmsRackDao.batchExecute(hql.toString());
     }
 
     /**
@@ -194,7 +194,7 @@ public class PlShopWmsViewService extends BaseService<PlShopWmsView, String> {
         if (CommonUtil.isNotBlank(wmsPlRackBindingRelations)) {
             this.plWmsRackDao.doBatchInsert(wmsPlRackBindingRelations);
             this.plWmsRackDao.doBatchInsert(records);
-            CacheManager.refreshWmsPlRackBindingRelationCache();
+           /* CacheManager.refreshWmsPlRackBindingRelationCache();*/
         }
     }
     /**
@@ -238,8 +238,8 @@ public class PlShopWmsViewService extends BaseService<PlShopWmsView, String> {
      */
     public void saveOrUpdatePlWmsRack(PlWmsRack plWmsRack) {
         if (!plWmsRack.getEnabled()) {
-            this.plWmsRackDao.batchExecute("delete PlWmsShopBindingRelation relation where relation.rackId=?", new Object[]{plWmsRack.getId()});
-            CacheManager.refreshWmsPlRackBindingRelationCache();
+            this.plWmsRackDao.batchExecute("delete PlWmsShopBindingRelation relation where relation.rackId=?", plWmsRack.getId());
+          /*  CacheManager.refreshWmsPlRackBindingRelationCache();*/
         }
         this.plWmsRackDao.saveOrUpdateX(plWmsRack);
     }
@@ -255,7 +255,7 @@ public class PlShopWmsViewService extends BaseService<PlShopWmsView, String> {
 
     public void deleteFloorArea(String id) {
         String floorareaHql = "update PlShopWmsFloorArea f set f.enabled =0 where f.id=?";
-        this.plShopWmsFloorAreaDao.batchExecute(floorareaHql, new Object[]{id});
+        this.plShopWmsFloorAreaDao.batchExecute(floorareaHql, id);
         String findHql = "from PlWmsRack f where f.parentId=?";
         List<PlWmsRack> plWmsRackList = this.plWmsRackDao.find(findHql, new Object[]{id});
         for (PlWmsRack plWmsRack : plWmsRackList) {
@@ -267,8 +267,8 @@ public class PlShopWmsViewService extends BaseService<PlShopWmsView, String> {
 
     public void deleteRack(String id) {
         String rackHql = "update PlWmsRack  set enabled = 0 where id=?";
-        this.plWmsRackDao.batchExecute(rackHql, new Object[]{id});
-        CacheManager.refreshWmsPlRackBindingRelationCache();
+        this.plWmsRackDao.batchExecute(rackHql, id);
+       /* CacheManager.refreshWmsPlRackBindingRelationCache();*/
     }
     @Override
     public DataResult find(RequestPageData<?> request) {

@@ -53,11 +53,11 @@ public class BadOutboundController extends BaseController {
 					}
 				}
 				if (CommonUtil.isNotBlank(htdv.getFloor())) {
-					if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(htdv.getFloor()))) {
+					/*if (CommonUtil.isNotBlank(CacheManager.getFloorByCode(htdv.getFloor()))) {
 						htdv.setFloorName(CacheManager.getFloorByCode(htdv.getFloor()).getName());
 					} else {
 						htdv.setFloorName("[" + htdv.getFloor() + "]");
-					}
+					}*/
 				}
 				if(CommonUtil.isNotBlank(htdv.getStyleId())){
 					if(CommonUtil.isNotBlank(CacheManager.getStyleById(htdv.getStyleId()))){
