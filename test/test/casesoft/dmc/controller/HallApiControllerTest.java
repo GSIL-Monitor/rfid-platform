@@ -105,8 +105,8 @@ public class HallApiControllerTest extends AbstractTestCase {
 		this.hallFloorService.save(hallFloor);
 		CacheManager.refreshUnitCache();
 		CacheManager.refreshDeviceCache();
-		CacheManager.refreshHallFloor();
-
+		/*CacheManager.refreshHallFloor();
+*/
 	}
 
 	@Test

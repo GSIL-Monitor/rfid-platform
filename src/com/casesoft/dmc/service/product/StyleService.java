@@ -240,4 +240,9 @@ public class StyleService extends AbstractBaseService<Style, String> {
 			this.styleDao.doBatchInsert(saveList);
 		}
 	}
+	public Long getMaxVersionId(){
+		String hql="select max(version) from Style";
+		long maxVersionId = this.styleDao.findUnique(hql);
+		return maxVersionId;
+	}
 }
