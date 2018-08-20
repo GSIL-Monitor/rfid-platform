@@ -1,15 +1,14 @@
 package com.casesoft.dmc.extend.api.web.hub;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBillDtl;
+import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import io.swagger.annotations.Api;
@@ -19,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Session on 2017-07-11.
@@ -76,6 +77,32 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 		List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls =this.saleOrderReturnBillService.findDtlByBillNo(billNo);
 		return returnSuccessInfo("获取成功",saleOrderReturnBillDtls);
 	}
+
+	/**
+	 * @param saleOrderReturnArray 上传JSON Array数据
+	 * */
+	@RequestMapping(value="/saveJSONWS")
+	@ResponseBody
+	public void saveSaleOrderBill(JSONArray saleOrderReturnArray){
+		this.logAllRequestParams();
+		Queue<Object> objectQueue = new LinkedList<>();
+		for(Object o : saleOrderReturnArray){
+			objectQueue.offer(o);
+		}
+		while(CommonUtil.isNotBlank(objectQueue.peek())){
+			Object object = objectQueue.peek();
+			try {
+				SaleOrderReturnBill saleOrderReturnBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderReturnBill.class);
+				List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls = saleOrderReturnBill.getDtlList();
+				this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls,null);
+				objectQueue.poll();
+			}catch (Exception e){
+				this.logger.error("保存失败");
+				objectQueue.add(object);
+			}
+		}
+	}
+
 
 	@RequestMapping(value = "/saveWS.do")
 	@ResponseBody

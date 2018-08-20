@@ -1,6 +1,7 @@
 package com.casesoft.dmc.extend.api.web.hub;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by koudepei on 2017/6/2.
@@ -64,6 +65,30 @@ public class SaleOrderBillApiController extends ApiBaseController{
         }catch (Exception e){
             e.printStackTrace();
             return new MessageBox(false,e.getMessage());
+        }
+    }
+    /**
+     * @param saleOrderArray 上传JSON Array数据
+     * */
+    @RequestMapping(value="/saveJSONWS")
+    @ResponseBody
+    public void saveSaleOrderBill(JSONArray saleOrderArray){
+        this.logAllRequestParams();
+        Queue<Object> objectQueue = new LinkedList<>();
+        for(Object o : saleOrderArray){
+            objectQueue.offer(o);
+        }
+        while(CommonUtil.isNotBlank(objectQueue.peek())){
+            Object object = objectQueue.peek();
+            try {
+                SaleOrderBill saleOrderBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderBill.class);
+                List<SaleOrderBillDtl> saleOrderBillDtlList = saleOrderBill.getDtlList();
+                this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList, null);
+                objectQueue.poll();
+            }catch (Exception e){
+                this.logger.error("保存失败");
+                objectQueue.add(object);
+            }
         }
     }
 

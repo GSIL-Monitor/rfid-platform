@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Session on 2017-06-28.
@@ -157,5 +158,16 @@ public class SaleOrderReturnBill extends BaseBill{
 
 	public void setAfterBalance(Double afterBalance) {
 		this.afterBalance = afterBalance;
+	}
+
+	@Transient
+	private List<SaleOrderReturnBillDtl> dtlList;
+
+	public List<SaleOrderReturnBillDtl> getDtlList() {
+		return dtlList;
+	}
+
+	public void setDtlList(List<SaleOrderReturnBillDtl> dtlList) {
+		this.dtlList = dtlList;
 	}
 }

@@ -111,9 +111,7 @@ public class BaseInfoApiController extends ApiBaseController {
     @ResponseBody
     public MessageBox findGuestWS(String pageSize,String pageNo,String sortIds,String  orders,String userId) {
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
-        Page<GuestView> page = new Page<>(Integer.parseInt(pageSize));
 
-        page.setPage(Integer.parseInt(pageNo));
         if(CommonUtil.isNotBlank(userId)){
             User user = CacheManager.getUserById(userId);
             if(CommonUtil.isNotBlank(user)){
@@ -128,22 +126,31 @@ public class BaseInfoApiController extends ApiBaseController {
         }
         PropertyFilter filter = new PropertyFilter("EQI_status", "1");
         filters.add(filter);
-        if(CommonUtil.isNotBlank(sortIds)){
-            if(sortIds.split(",").length != orders.split(",").length){
-                return new MessageBox(false,"排序字段与排序方向的个数不相等");
+        Page<GuestView> page = new Page<>(Integer.parseInt(pageSize));
+        List<GuestView> guestViewList = new ArrayList<>();
+        if(Integer.parseInt(pageSize)>0) {
+            page.setPage(Integer.parseInt(pageNo));
+            if (CommonUtil.isNotBlank(sortIds)) {
+                if (sortIds.split(",").length != orders.split(",").length) {
+                    return new MessageBox(false, "排序字段与排序方向的个数不相等");
+                }
+                page.setOrderBy(sortIds);
+                page.setOrder(orders);
             }
-            page.setOrderBy(sortIds);
-            page.setOrder(orders);
+            page.setPageProperty();
+            page = this.guestViewService.findPage(page, filters);
+            guestViewList = page.getRows();
+        }else{
+            //不分页调用
+            guestViewList = this.guestViewService.find(filters);
         }
-        page.setPageProperty();
-        page = this.guestViewService.findPage(page,filters);
-        for(GuestView guest : page.getRows()){
+        for(GuestView guest : guestViewList){
             Unit defaultWareh = CacheManager.getUnitByCode(guest.getDefaultWarehId());
             if(CommonUtil.isNotBlank(defaultWareh)){
                 guest.setDefaultWarehouseName(defaultWareh.getName());
             }
         }
-        return this.returnSuccessInfo("获取成功",page.getRows());
+        return this.returnSuccessInfo("获取成功",guestViewList);
     }
     @RequestMapping(value = "/findBusinessWS.do")
     @ResponseBody
@@ -397,23 +404,31 @@ public class BaseInfoApiController extends ApiBaseController {
      * sortIds:排序字段 多个,分割
      * orders:排序顺序 多个,分割
      */
-    @RequestMapping(value="/findUnitServiceWs")
+    @RequestMapping(value="/findUnitServiceWS")
     @ResponseBody
-    public MessageBox findUnitService(String pageSize,String pageNo,String sortIds,String  orders){
+    public MessageBox findUnitService(String pageSize,String pageNo,String sortIds,String  orders,String userId){
+        this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
-        Page<Unit> page = new Page<>(Integer.parseInt(pageSize));
-        page.setPage(Integer.parseInt(pageNo));
-        if(CommonUtil.isNotBlank(sortIds)){
-            if(sortIds.split(",").length != orders.split(",").length){
-                return new MessageBox(false,"排序字段与排序方向的个数不相等");
+        List<Unit> unitList = new ArrayList<>();
+        if(Integer.parseInt(pageSize) > 0) {
+            Page<Unit> page = new Page<>(Integer.parseInt(pageSize));
+            page.setPage(Integer.parseInt(pageNo));
+            if (CommonUtil.isNotBlank(sortIds)) {
+                if (sortIds.split(",").length != orders.split(",").length) {
+                    return new MessageBox(false, "排序字段与排序方向的个数不相等");
+                }
+                page.setOrderBy(sortIds);
+                page.setOrder(orders);
             }
-            page.setOrderBy(sortIds);
-            page.setOrder(orders);
+            page.setPageProperty();
+            page = this.unitService.findPage(page, filters);
+            unitList = page.getRows();
+        }else{
+            //不分页调用
+            unitList = this.unitService.find(filters);
         }
-        page.setPageProperty();
-        page = this.unitService.findPage(page,filters);
-        return new MessageBox(true,"ok",page.getRows());
+        return new MessageBox(true,"ok",unitList);
     }
 
 

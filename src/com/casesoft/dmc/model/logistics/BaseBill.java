@@ -71,6 +71,8 @@ public abstract class BaseBill {
     @Column(length = 2)
     @Excel(name="状态",replace = {  "撤销_-1","录入_0", "审核_1" , "结束_2", "操作中_3", "申请撤销_4"})
     protected Integer status ; //单据状态
+    @Column(length = 1)
+    protected String uploadStatus ="N";// 单据上传状态 Y 表示已上传服务器，N表示未上传
     @Column(length = 50)
     protected String oprId;// 操作者Id
     @Column()
@@ -251,7 +253,13 @@ public abstract class BaseBill {
     public void setStatus(Integer status) {
         this.status = status;
     }
+    public String getUploadStatus() {
+        return uploadStatus;
+    }
 
+    public void setUploadStatus(String uploadStatus) {
+        this.uploadStatus = uploadStatus;
+    }
     public String getOprId() {
         return oprId;
     }
