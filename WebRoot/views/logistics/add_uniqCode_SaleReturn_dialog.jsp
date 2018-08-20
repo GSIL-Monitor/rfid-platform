@@ -242,8 +242,8 @@
                                 text: data.msg,
                                 class_name: 'gritter-success  gritter-light'
                             });
-                            debugger
                             if(data.result!=undefined&&data.result!=""){
+                                delete data.result["id"];
                                 addProductsNoOutPutCode(data.result);
                             }
                         }

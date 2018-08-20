@@ -1612,6 +1612,7 @@ function addProductsNoOutPutCode(productInfo) {
         }
         var isAdd = true;
         var alltotActPrice = 0;
+        debugger;
         $.each(productListInfo, function (index, value) {
             isAdd = true;
             $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
