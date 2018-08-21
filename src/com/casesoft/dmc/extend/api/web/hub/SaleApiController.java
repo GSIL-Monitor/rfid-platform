@@ -79,11 +79,6 @@ public class SaleApiController extends ApiBaseController {
     @ResponseBody
     public List<User> listCashierWS(String filter_EQI_isAdmin,String filter_EQS_ownerId) {
         this.logAllRequestParams();
-        if(filter_EQI_isAdmin.equals("3")) {
-            HallApiController hallApiController = (HallApiController) SpringContextUtil.getBean("hallApiController");
-            return hallApiController.listBorrowerWS();
-        }
-
         List<PropertyFilter> filters = new ArrayList<>();
 
         PropertyFilter filter = new PropertyFilter("EQI_type", "" + 4);
