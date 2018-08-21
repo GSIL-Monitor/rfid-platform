@@ -6,6 +6,7 @@ import java.util.*;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -338,5 +339,63 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         return propertyKeys;
     }
 
+    @RequestMapping(value = "/listPropertyTree")
+    @ResponseBody
+    public List<TreeVO> listPropertyTree() {
+        List<TreeVO> treeVOS = this.propertyService.listPropertyTree(Constant.MultiLevelType.C3);
+        return treeVOS;
+    }
+
+    @RequestMapping("/loadPropertyDetail")
+    @ResponseBody
+    public PropertyKey loadPropertyDetail(String id){
+        return this.propertyService.findPropertyKeybyid(id);
+    }
+
+    /**
+     * 保存属性信息
+     */
+    @RequestMapping(value = {"/savePropertyInTree", "/savePropertyInTreeWS"})
+    @ResponseBody
+    public MessageBox saveproperty(PropertyKey entity, String userId, String parentId) {
+        try {
+            PropertyKey propertyKey = this.propertyService.findPropertyKeybyid(entity.getId());
+            if (CommonUtil.isBlank(propertyKey)) {
+                PropertyKey propertyKeyByNameAndType = this.propertyService.findPropertyKeyByNameAndType(entity.getName(), entity.getType());
+                if(CommonUtil.isNotBlank(propertyKeyByNameAndType) && propertyKeyByNameAndType.getName().equals(entity.getName())){
+                    return returnFailInfo("保存失败,名称已存在不能重复添加");
+                }
+                propertyKey = new PropertyKey();
+                Integer num = this.propertyService.findtkeyNum(entity.getType());
+                propertyKey.setSeqNo((num + 1));
+                if (getCurrentUser() == null) {     //小程序增加商品，userId传值
+                    User CurrentUser = CacheManager.getUserById(userId);
+                    propertyKey.setOwnerId(CurrentUser.getCreatorId());
+                    propertyKey.setRegisterId(CurrentUser.getId());
+                }else {       //web增加商品,session传值
+                    propertyKey.setOwnerId(getCurrentUser().getCreatorId());
+                    propertyKey.setRegisterId(getCurrentUser().getId());
+                }
+                propertyKey.setIsDefault("0");
+                propertyKey.setCode(propertyKey.getSeqNo() + "");
+                propertyKey.setId(entity.getType() + "-" + propertyKey.getCode());
+                propertyKey.setLocked(0);
+                propertyKey.setRegisterDate(new Date());
+            }
+            propertyKey.setName(entity.getName());
+            propertyKey.setYnuse(entity.getYnuse());
+            propertyKey.setType(entity.getType());
+            if("C3".equals(entity.getType())){
+                this.propertyService.saveKey(propertyKey, parentId, Constant.MultiLevelType.C3);
+            }
+            CacheManager.refreshUnitCache();
+            CacheManager.refreshPropertyCache();
+            return returnSuccessInfo("保存成功", entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.logger.error(e.getMessage());
+            return returnFailInfo("保存失败");
+        }
+    }
 
 }

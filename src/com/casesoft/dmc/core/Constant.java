@@ -364,6 +364,7 @@ public class Constant {
         public final static String Color = "COLOR";
         public final static String Size = "SIZE";
         public final static String Product = "PRODUCT";
+        public final static String C3 = "C3";
     }
     public final static class RepositoryType{
         public final static String root = "0";

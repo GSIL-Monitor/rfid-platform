@@ -98,27 +98,7 @@ public class OrganizationService implements IBaseService<Unit, String> {
 
     //add by yushen 获取组织信息的树形结构list
     public List<TreeVO> listOrganizationTree() {
-        List<MultiLevelRelation> relationList = this.multiLevelRelationService.listByType(Constant.MultiLevelType.Company);
-        return treeRelationList(relationList, null);
-    }
-
-    private List<TreeVO> treeRelationList(List<MultiLevelRelation> relationList, String parentId) {
-        List<TreeVO> result = new ArrayList<>();
-        for (MultiLevelRelation relation : relationList) {
-            String pid = relation.getParentId();
-            if ((parentId == null && pid == null) || (parentId != null && parentId.equals(pid))) {
-                TreeVO treeVO = new TreeVO();
-                treeVO.setId(relation.getId());
-                treeVO.setText(relation.getName());
-                if (relation.getOpenedState()) {
-                    treeVO.setState(new State(true));
-                }
-                List<TreeVO> childrenTreeVO = treeRelationList(relationList, relation.getId());
-                treeVO.setChildren(childrenTreeVO);
-                result.add(treeVO);
-            }
-        }
-        return result;
+        return this.multiLevelRelationService.listTree(Constant.MultiLevelType.Company);
     }
 
     public void move(String id, String parentId, String position, String sourceParentId, String sourcePosition) {

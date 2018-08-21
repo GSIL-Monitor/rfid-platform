@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.casesoft.dmc.dao.sys.VendorDao;
+import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.sys.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
-import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.cfg.PropertyKeyDao;
 import com.casesoft.dmc.dao.cfg.PropertyTypeDao;
@@ -32,6 +32,8 @@ public class PropertyService implements IBaseService<PropertyType, String> {
 
     @Autowired
     private VendorDao vendorDao;
+    @Autowired
+    private MultiLevelRelationService multiLevelRelationService;
 
 
     //模糊查詢成分
@@ -94,6 +96,12 @@ public class PropertyService implements IBaseService<PropertyType, String> {
         // TODO Auto-generated method stub
         //this.propertyTypeDao.saveOrUpdate(entity);
         this.propertyKeyDao.saveOrUpdate(entity);
+    }
+
+    //add by yushen 添加多级分类
+    public void saveKey(PropertyKey entity, String parentId, String multiLevelType){
+        saveKey(entity);
+        this.multiLevelRelationService.save(entity, parentId, multiLevelType);
     }
 
     public Integer findtypeNum(String type) {
@@ -175,5 +183,9 @@ public class PropertyService implements IBaseService<PropertyType, String> {
 
     public PropertyKey findPropertyKeyByNameAndType(String name, String type) {
         return this.propertyKeyDao.findUnique("from PropertyKey t where t.name=? and t.type=?", new Object[]{name, type});
+    }
+
+    public List<TreeVO> listPropertyTree(String multiLevelType) {
+        return this.multiLevelRelationService.listTree(multiLevelType);
     }
 }

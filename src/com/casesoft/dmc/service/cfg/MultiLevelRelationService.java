@@ -9,11 +9,15 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.cfg.MultiLevelRelationDao;
 import com.casesoft.dmc.model.cfg.MultiLevelRelation;
+import com.casesoft.dmc.model.cfg.PropertyKey;
+import com.casesoft.dmc.model.cfg.VO.State;
+import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.sys.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,35 +40,45 @@ public class MultiLevelRelationService extends AbstractBaseService<MultiLevelRel
         this.multiLevelRelationDao.save(entity);
     }
 
-    public void save(Unit company, String MultiLevelType) {
+    //组织架构的多级关系保存
+    public void save(Unit company, String multiLevelType) {
+        this.save(company.getId(), company.getName(), company.getOwnerId(), multiLevelType);
+    }
+
+    //商品分类多级关系保存
+    public void save(PropertyKey entity, String parentId, String multiLevelType) {
+        this.save(entity.getId(), entity.getName(), parentId, multiLevelType);
+    }
+
+    public void save(String id, String name, String parentId, String multiLevelType) {
         try {
-            MultiLevelRelation multiLevelRelation = this.get("relatedId", company.getId());
+            MultiLevelRelation multiLevelRelation = this.get("relatedId", id);
             if (CommonUtil.isBlank(multiLevelRelation)) {
                 multiLevelRelation = new MultiLevelRelation();
-                multiLevelRelation.setId(company.getId());
-                multiLevelRelation.setRelatedId(company.getId());
-                multiLevelRelation.setMultiLevelType(MultiLevelType);
+                multiLevelRelation.setId(id);
+                multiLevelRelation.setRelatedId(id);
+                multiLevelRelation.setMultiLevelType(multiLevelType);
                 multiLevelRelation.setRoot(false);
                 multiLevelRelation.setArchive(false);
                 multiLevelRelation.setOpenedState(true);
-                Integer maxSeqNo = this.getMaxSeqNo(company.getOwnerId());
+                Integer maxSeqNo = this.getMaxSeqNo(parentId);
                 multiLevelRelation.setTreeSeqNo(maxSeqNo);
             }
-            multiLevelRelation.setName(company.getName());
+            multiLevelRelation.setName(name);
             MultiLevelRelation parent;
             if(multiLevelRelation.getRoot()){
                 parent = null;
             }else {
-                parent = this.get("id", company.getOwnerId());
+                parent = this.get("id", parentId);
             }
             if (CommonUtil.isBlank(parent)) {
                 multiLevelRelation.setParentId(null);
-                multiLevelRelation.setTreePath(company.getId() + ">");
+                multiLevelRelation.setTreePath(id + ">");
                 multiLevelRelation.setDepth(0);
                 this.multiLevelRelationDao.saveOrUpdate(multiLevelRelation);
             }else {
-                multiLevelRelation.setParentId(company.getOwnerId());
-                multiLevelRelation.setTreePath(parent.getTreePath() + company.getId() + ">");
+                multiLevelRelation.setParentId(parentId);
+                multiLevelRelation.setTreePath(parent.getTreePath() + id + ">");
                 multiLevelRelation.setDepth(parent.getDepth() + 1);
                 this.multiLevelRelationDao.saveOrUpdate(multiLevelRelation);
             }
@@ -127,6 +141,31 @@ public class MultiLevelRelationService extends AbstractBaseService<MultiLevelRel
     public List<MultiLevelRelation> listByType(String multiLevelType) {
         return this.multiLevelRelationDao.find("from MultiLevelRelation where multiLevelType = ? order by treeSeqNo", multiLevelType);
     }
+
+    public List<TreeVO> listTree(String multiLevelType) {
+        List<MultiLevelRelation> relationList = this.listByType(multiLevelType);
+        return treeRelationList(relationList, null);
+    }
+
+    private List<TreeVO> treeRelationList(List<MultiLevelRelation> relationList, String parentId) {
+        List<TreeVO> result = new ArrayList<>();
+        for (MultiLevelRelation relation : relationList) {
+            String pid = relation.getParentId();
+            if ((parentId == null && pid == null) || (parentId != null && parentId.equals(pid))) {
+                TreeVO treeVO = new TreeVO();
+                treeVO.setId(relation.getId());
+                treeVO.setText(relation.getName());
+                if (relation.getOpenedState()) {
+                    treeVO.setState(new State(true));
+                }
+                List<TreeVO> childrenTreeVO = treeRelationList(relationList, relation.getId());
+                treeVO.setChildren(childrenTreeVO);
+                result.add(treeVO);
+            }
+        }
+        return result;
+    }
+
 
     public List<MultiLevelRelation> listByParentId(String parentId) {
         return this.multiLevelRelationDao.find("from MultiLevelRelation where parentId = ? ", parentId);

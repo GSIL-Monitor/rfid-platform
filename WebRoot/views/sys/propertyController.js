@@ -68,12 +68,19 @@ function initGrid() {
             var selectdata=$("#typeGrid").getRowData(rowid);   //获取选中一行的数据
             selectType = selectdata.id;
         	//查询数据并设置到右边表格
-        	 $("#propertyGrid").jqGrid('setGridParam',{
-        		 url:basePath + "/sys/property/searchByType.do?type="+selectdata.id
-        		 //postData:{id:selectdata.id}
-        	 }).trigger("reloadGrid");   //刷新
-
-        	
+            if('C3' === selectType){
+                $("#property-grid").hide();
+                $("#property-tree").show();
+                //右边加载树形结构
+                initTree(selectType);
+            }else {
+                $("#property-grid").show();
+                $("#property-tree").hide();
+                //右边加载表明细
+                $("#propertyGrid").jqGrid('setGridParam',{
+                    url:basePath + "/sys/property/searchByType.do?type="+selectType
+                }).trigger("reloadGrid");   //刷新
+            }
         }
         
         
@@ -190,7 +197,6 @@ function fullScreen(){
 }
 
 function edittype (rowId) {
-    debugger;
    $("#form_id").attr("disabled","disabled");
     pagetype="edit";
     $("#editForm").resetForm();
@@ -205,7 +211,6 @@ function edittype (rowId) {
 }
 
 function editproperty(rowId) {
-    debugger;
     pagetype="edit";
     $("#editFormdetailed").resetForm();
     if (rowId) {
@@ -399,4 +404,93 @@ function setDefault(rowId) {
     });
 }
 
-	
+var nodeId = "";
+var parentId = "";
+//add by yushen 隐藏右边表明细，加载树形结构
+function initTree(type) {
+    $("#jstree").jstree('destroy');
+    $("#jstree").on("changed.jstree", function (e, data) {
+        if (data.selected.length) {
+            // 点击节点，显示节点信息
+            nodeId = data.node.id;
+            parentId = data.node.parent;
+        }
+    }).jstree({
+        'core': {
+            'animation': 0,
+            'check_callback': true,
+            'data': {
+                'url': basePath + "/sys/property/listPropertyTree.do?multiLevelType=" + type,
+                "data": function (node) {
+                    return {"id": node.id};
+                }
+            }
+        },
+        'types': {
+            "#": {
+                "max_children": 1
+            }
+        },
+        'plugins': ['search', 'wholerow', 'types']
+    })
+}
+
+function savePropertyInTree() {
+    $("#editFormTree").data('bootstrapValidator').validate();
+    if(!$("#editFormTree").data('bootstrapValidator').isValid()){
+        return ;
+    }
+    var progressDialog = bootbox.dialog({
+        message: '<p><i class="fa fa-spin fa-spinner"></i>数据上传中...</p>'
+    });
+    $.post(basePath+'/sys/property/savePropertyInTree.do',
+        $("#editFormTree").serialize(),
+        function(result){
+            progressDialog.modal('hide');
+            if(result.success==true||result.success=='true'){
+                $.gritter.add({
+                    text : result.msg,
+                    class_name : 'gritter-success  gritter-light'
+                });
+                $("#edit-dialog-tree").modal('hide');
+                $("#jstree").jstree('refresh');
+            }else{
+                $.gritter.add({
+                    text : result.msg,
+                    class_name : 'gritter-success  gritter-light'
+                });
+            }
+        },'json');
+}
+
+function addPropertyTree() {
+    pagetype="add";
+    if (nodeId) {
+        $("#editFormTree").resetForm();
+        $("#edit-dialog-tree").modal('show');
+        $("#form_tree_parentId").val(nodeId);
+        $("#form_tree_type").val(selectType);
+    }else {
+        bootbox.alert("请先选择上级分类");
+    }
+}
+
+function editPropertyTree() {
+    pagetype="edit";
+    var rowData;
+    if (nodeId) {
+        $.ajax({
+            url: basePath + "/sys/property/loadPropertyDetail.do?id=" + nodeId,
+            async: false,
+            success: function (data, textStatus) {
+                rowData = data
+            }
+        });
+        $("#editFormTree").resetForm();
+        $("#edit-dialog-tree").modal("show");
+        $("#form_tree_parentId").val(parentId);
+        $("#editFormTree").loadData(rowData);
+    } else {
+        bootbox.alert("请选择一项进行修改!");
+    }
+}
