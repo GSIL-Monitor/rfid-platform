@@ -132,7 +132,7 @@
                     var html="";
                     if(rows!=""&&rows!=undefined){
                         for(var i=0;i<rows.length;i++){
-                            html+="<div data-name='"+rows[i].name+"' data-id='"+rows[i].id+"'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
+                            html+="<div data-unitType='"+rows[i].unitType+"' data-name='"+rows[i].name+"' data-id='"+rows[i].id+"'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
                         }
                         $("#scrollCustmerDiv").append(html)
                     }
@@ -166,7 +166,7 @@
                var html="";
                if(rows!=""&&rows!=undefined){
                    for(var i=0;i<rows.length;i++){
-                       html+="<div data-name='"+rows[i].name+"' data-id='"+rows[i].id+"' onclick='selectthisDIV(this)'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
+                       html+="<div data-unitType='"+rows[i].unitType+"' data-name='"+rows[i].name+"' data-id='"+rows[i].id+"' onclick='selectthisDIV(this)'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
                    }
                    $("#scrollCustmerDiv").html(html)
                }
@@ -179,6 +179,7 @@
        console.log($(t).data("name"))
        localStorage.setItem("custmerName",$(t).data("name"));
        localStorage.setItem("custmerId",$(t).data("id"));
+       localStorage.setItem("unitType",$(t).data("unittype"))
        $("#writeinput").val($(t).data("name"))
        $("#writeinput").show();
        $("#changinput").hide();

@@ -82,7 +82,7 @@ public class ProductController extends BaseController implements IBaseInfoContro
     /**
      * add by yushen 订单中选择商品接口，显示商品按颜色尺寸排序。颜色按颜色名首字母排序，尺寸按XS,S,M,L,XL,XXL排序(seqNo)
      */
-    @RequestMapping(value="/listOrderByColorAndSize")
+    @RequestMapping(value={"/listOrderByColorAndSize","/listOrderByColorAndSizeWS"})
     @ResponseBody
     public List<Product> listOrderByColorAndSize(String styleId) throws Exception {
        List<Product> products = this.productService.listOrderByColorAndSize(styleId);

@@ -60,7 +60,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 
 	private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
-	@RequestMapping("/page")
+	@RequestMapping(value={"/page","/pageWS"})
 	@ResponseBody
 	@Override
 	public Page<Style> findPage(Page<Style> page) throws Exception {
