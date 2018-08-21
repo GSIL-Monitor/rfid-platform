@@ -511,9 +511,11 @@ public class ProductApiController extends ApiBaseController {
 			redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
 			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
 			CacheManager.refreshMaxVersionId();
-			CacheManager.refreshStyleCache();
+			List<Style> styleList = new ArrayList<>();
+			styleList.add(sty);
+			CacheManager.refreshStyleCache(styleList);
 			if(saveList.size() > 0){
-				CacheManager.refreshProductCache();
+				CacheManager.refreshProductCache(saveList);
 			}
 			return this.returnSuccessInfo("保存成功", style);
 		} catch (Exception e){

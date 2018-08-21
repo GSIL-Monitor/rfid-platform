@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +79,12 @@ public class ColorController extends BaseController implements IBaseInfoControll
             col.setHex(color.getHex());
             col.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
             this.colorService.saveAndDelete(col,oldId);
-            CacheManager.refreshColorCache();
+            if (oldId!=null&&!oldId.equals("")){
+                CacheManager.delColorCache(col.getId());
+            }
+            List<Color> colorList = new ArrayList<>();
+            colorList.add(col);
+            CacheManager.refreshColorCache(colorList);
             return returnSuccessInfo("ok",col);
         }catch (Exception e){
             e.printStackTrace();

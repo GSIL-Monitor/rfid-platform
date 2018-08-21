@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -105,7 +106,9 @@ public class DeviceController extends BaseController implements IBaseInfoControl
         device.setLocked(0);
        try {
             this.deviceService.save(dev);
-            CacheManager.refreshDeviceCache();
+            List<Device> deviceList = new ArrayList<>();
+            deviceList.add(dev);
+            CacheManager.refreshDeviceCache(deviceList);
             return returnSuccessInfo("保存成功");
         }catch (Exception e){
             return returnFailInfo("保存失败");

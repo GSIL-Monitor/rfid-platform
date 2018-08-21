@@ -346,6 +346,9 @@ public class CacheManager {
 
 	}
 
+	public static void delColorCache(String item){
+		redisUtils.hdel(PREFIX_COLOR,item);
+	}
 
 	public static void refreshColorCache() {
 		redisUtils.del(PREFIX_COLOR);
@@ -366,6 +369,10 @@ public class CacheManager {
 			redisUtils.hset(PREFIX_SIZE, s.getId(), JSON.toJSONString(s));
 		}
 
+	}
+
+	public static void delSizeCache(String item){
+		redisUtils.hdel(PREFIX_SIZE,item);
 	}
 
 	public static void refreshSizeCache() {
@@ -392,6 +399,7 @@ public class CacheManager {
 		redisUtils.del(PREFIX_STYLE);
 		initStyleCache();
 	}
+
 
 	public static void refreshStyleCache(List<Style> styleList) {
 		for (Style style : styleList) {

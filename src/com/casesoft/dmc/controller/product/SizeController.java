@@ -132,7 +132,6 @@ public class SizeController extends BaseController implements
         } else {
             json.put("valid", true);
         }
-        CacheManager.refreshSizeSortCache();
         return json;
     }
 
@@ -153,7 +152,9 @@ public class SizeController extends BaseController implements
         ss.setRemark(sizeSort.getRemark());
         ss.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         this.sizeService.saveSort(ss);
-        CacheManager.refreshSizeSortCache();
+        List<SizeSort> sizeSortList = new ArrayList<>();
+        sizeSortList.add(ss);
+        CacheManager.refreshSizeSortCache(sizeSortList);
         return returnSuccessInfo("ok");
     }
 
@@ -179,7 +180,12 @@ public class SizeController extends BaseController implements
         s.setSortId(size.getSortId());
         s.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         this.sizeService.saveAndDelete(s,oldId);
-        CacheManager.refreshSizeCache();
+        if (oldId!=null&&!oldId.equals("")){
+           CacheManager.delSizeCache(s.getId());
+        }
+        List<Size> sizeList = new ArrayList<>();
+        sizeList.add(size);
+        CacheManager.refreshSizeCache(sizeList);
         return returnSuccessInfo("ok",s);
     }
 

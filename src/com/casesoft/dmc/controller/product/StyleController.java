@@ -100,7 +100,9 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			this.styleService.save(sty);
 			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId+1));
 			CacheManager.refreshMaxVersionId();
-			CacheManager.refreshStyleCache();
+			List<Style> styleList = new ArrayList<>();
+			styleList.add(sty);
+			CacheManager.refreshStyleCache(styleList);
 			return this.returnSuccessInfo("保存成功", style);
 		}catch(Exception e ){
 			e.printStackTrace();
@@ -149,9 +151,11 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
 			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
 			CacheManager.refreshMaxVersionId();
-			CacheManager.refreshStyleCache();
+			List<Style> styleList = new ArrayList<>();
+			styleList.add(sty);
+			CacheManager.refreshStyleCache(styleList);
 			/*if(saveList.size() > 0){*/
-			CacheManager.refreshProductCache();
+			CacheManager.refreshProductCache(saveList);
 			/*}*/
 			//推送微信商城
 			//读取congif.properties文件
@@ -237,7 +241,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 		try {
 			List<Style> styleList = StyleUtil.uploadNewExcel(in,file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
 			this.styleService.saveList(styleList);
-			CacheManager.refreshStyleCache();
+			CacheManager.refreshStyleCache(styleList);
 			return this.returnSuccessInfo("保存成功");
 		}catch(Exception e){
 			logger.error(e.getMessage());

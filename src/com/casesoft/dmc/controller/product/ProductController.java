@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +124,7 @@ public class ProductController extends BaseController implements IBaseInfoContro
                 redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
                 CacheManager.refreshMaxVersionId();
             }
-            CacheManager.refreshProductCache();
+            CacheManager.refreshProductCache(products);
             return returnSuccessInfo("添加成功");
         }catch(Exception e){
             return returnFailInfo("添加失败");
@@ -153,7 +154,9 @@ public class ProductController extends BaseController implements IBaseInfoContro
         }
         try {
             this.productService.delete(product);
-            CacheManager.refreshProductCache();
+            List<Product> productList = new ArrayList<>();
+            productList.add(product);
+            CacheManager.refreshProductCache(productList);
             return returnSuccessInfo("删除成功");
         }catch(Exception e){
             return this.returnFailInfo("删除失败");
