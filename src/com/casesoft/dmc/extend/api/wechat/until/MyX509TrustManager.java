@@ -1,8 +1,8 @@
 package com.casesoft.dmc.extend.api.wechat.until;
 
+import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import javax.net.ssl.X509TrustManager;
 
 /**
  * 类名: MyX509TrustManager </br>

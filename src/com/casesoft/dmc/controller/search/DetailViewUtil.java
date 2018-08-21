@@ -1,18 +1,5 @@
 package com.casesoft.dmc.controller.search;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.NumberFormat;
-import java.util.Date;
-import java.util.List;
-
-import com.casesoft.dmc.model.search.SaleBillDtlView;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.search.temp.SaleAndFittingStatistics;
@@ -24,8 +11,16 @@ import com.casesoft.dmc.model.product.Color;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.DetailFittingView;
+import com.casesoft.dmc.model.search.SaleBillDtlView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.cfg.PropertyKeyService;
+import org.apache.poi.hssf.usermodel.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.List;
 
 
 

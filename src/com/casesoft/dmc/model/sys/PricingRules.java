@@ -1,8 +1,7 @@
 package com.casesoft.dmc.model.sys;
+
 import com.alibaba.fastjson.annotation.JSONField;
-import com.casesoft.dmc.cache.CacheManager;
 import org.hibernate.annotations.GenericGenerator;
-import springfox.documentation.service.ApiListing;
 
 import javax.persistence.*;
 import java.util.Date;

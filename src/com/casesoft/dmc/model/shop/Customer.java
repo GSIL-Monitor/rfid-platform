@@ -3,7 +3,6 @@ package com.casesoft.dmc.model.shop;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
-
 import java.util.Date;
 import java.util.List;
 @Entity

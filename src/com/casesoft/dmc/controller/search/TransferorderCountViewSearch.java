@@ -4,16 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
-
 import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.TransferorderCountDao;
-
 import com.casesoft.dmc.model.logistics.TransferOrderBill;
 import com.casesoft.dmc.model.search.TransByOrig;
 import com.casesoft.dmc.model.search.TransByStyleId;
@@ -22,7 +19,6 @@ import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -36,10 +32,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Created by Administrator on 2018/3/1.

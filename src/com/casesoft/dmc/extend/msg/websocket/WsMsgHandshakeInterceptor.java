@@ -1,10 +1,9 @@
 package com.casesoft.dmc.extend.msg.websocket;
 
-import java.util.Date;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
+import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.extend.msg.websocket.entity.PushUser;
+import com.casesoft.dmc.model.sys.User;
 import org.apache.log4j.Logger;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -12,11 +11,9 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
-import com.casesoft.dmc.core.Constant;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.extend.msg.websocket.entity.PushUser;
-import com.casesoft.dmc.model.sys.User;
-import org.springframework.web.socket.WebSocketSession;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.Map;
 
 //@Component
 public class WsMsgHandshakeInterceptor implements HandshakeInterceptor {

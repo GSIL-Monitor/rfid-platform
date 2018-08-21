@@ -1,11 +1,9 @@
 package com.casesoft.dmc.model.tag;
 
-import java.util.Date;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
-
-
-import com.alibaba.fastjson.annotation.JSONField;
+import java.util.Date;
 
 @Entity
 @Table(name = "TAG_EPCBINDBARCODE")

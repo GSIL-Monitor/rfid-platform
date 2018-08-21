@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.RecordsizeDao;
 import com.casesoft.dmc.model.logistics.Recordsize;
-import com.casesoft.dmc.model.logistics.ReplenishBill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,12 +1,9 @@
 package com.casesoft.dmc.controller.product;
 
-import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.core.Constant;
-import com.casesoft.dmc.core.Constant.Session;
-import com.casesoft.dmc.core.Constant.Sys;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.FileUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
@@ -17,34 +14,16 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.shop.Collocation;
 import com.casesoft.dmc.model.tag.EpcBindBarcode;
-import com.casesoft.dmc.model.task.Business;
-import com.casesoft.dmc.model.task.BusinessDtl;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.tools.ant.taskdefs.Zip;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import javax.persistence.Cache;
 
 public class ProductUtil {
     public final static int styleClassNum = 10;

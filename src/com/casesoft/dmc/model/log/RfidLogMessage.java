@@ -3,7 +3,6 @@ package com.casesoft.dmc.model.log;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.util.Date;
 

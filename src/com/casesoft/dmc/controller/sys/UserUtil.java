@@ -1,14 +1,5 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -18,6 +9,13 @@ import com.casesoft.dmc.model.sys.Resource;
 import com.casesoft.dmc.model.sys.Role;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserUtil {
 

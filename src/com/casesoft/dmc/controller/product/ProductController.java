@@ -1,26 +1,20 @@
 package com.casesoft.dmc.controller.product;
 
-import java.io.*;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.cache.SpringContextUtil;
-import com.casesoft.dmc.controller.syn.tool.SynTaskUtil;
-import com.casesoft.dmc.controller.syn.tool.TaskAdjustUtil;
-import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.FileUtil;
-import com.casesoft.dmc.core.util.file.PropertyUtil;
-import com.casesoft.dmc.core.vo.TagFactory;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.ProductInfoList;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.ResourcePrivilege;
-import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -30,15 +24,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.service.product.ProductService;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/prod/product")

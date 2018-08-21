@@ -1,13 +1,9 @@
 package com.casesoft.dmc.model.product;
 
-import java.util.List;
-
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.product.Color;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.model.product.Size;
-import com.casesoft.dmc.model.product.Style;
+
+import java.util.List;
 
 /**
  * Created by WingLi on 2014/11/18.

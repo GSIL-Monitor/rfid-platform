@@ -1,7 +1,6 @@
 package com.casesoft.dmc.model.task;
 
 import javax.persistence.*;
-
 import java.util.Date;
 import java.util.List;
 

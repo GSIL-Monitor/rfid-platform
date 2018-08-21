@@ -2,7 +2,6 @@ package com.casesoft.dmc.extend.api.web.hub;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.shop.CustomerUtil;
 import com.casesoft.dmc.controller.shop.SaleBillUtil;
 import com.casesoft.dmc.controller.sys.UserUtil;

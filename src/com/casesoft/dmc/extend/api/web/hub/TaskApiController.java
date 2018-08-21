@@ -1,10 +1,7 @@
 package com.casesoft.dmc.extend.api.web.hub;
 
-import com.alibaba.fastjson.JSON;
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.syn.tool.SynTaskUtil;
 import com.casesoft.dmc.controller.syn.tool.TaskAdjustUtil;
-import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.FileUtil;
@@ -13,13 +10,10 @@ import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.core.vo.TagFactory;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
-import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.task.TaskService;
-
 import io.swagger.annotations.Api;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -30,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

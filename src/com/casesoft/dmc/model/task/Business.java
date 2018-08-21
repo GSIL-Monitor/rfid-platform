@@ -5,7 +5,6 @@ import com.casesoft.dmc.model.erp.Bill;
 import com.casesoft.dmc.model.stock.InventoryRecord;
 
 import javax.persistence.*;
-
 import java.util.Date;
 import java.util.List;
 

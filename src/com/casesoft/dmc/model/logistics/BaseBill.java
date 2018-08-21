@@ -6,7 +6,6 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import java.util.Date;
 import java.util.List;
 

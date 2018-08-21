@@ -1,10 +1,10 @@
 package com.casesoft.dmc.core.util.reflection;
 
+import org.apache.commons.beanutils.Converter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.commons.beanutils.Converter;
 
 public class UtilDateConverter implements Converter {
 	   

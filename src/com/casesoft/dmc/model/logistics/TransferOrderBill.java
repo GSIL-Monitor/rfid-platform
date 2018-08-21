@@ -2,8 +2,10 @@ package com.casesoft.dmc.model.logistics;
 
 import org.jeecgframework.poi.excel.annotation.Excel;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created by yushen on 2017/7/3.

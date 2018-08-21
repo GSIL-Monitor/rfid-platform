@@ -1,19 +1,16 @@
 package com.casesoft.dmc.extend.third.service.pl;
 
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.dao.wms.pl.*;
+import com.casesoft.dmc.dao.wms.pl.PlShopBindingRecordDao;
+import com.casesoft.dmc.dao.wms.pl.PlShopBindingRelationDao;
+import com.casesoft.dmc.dao.wms.pl.PlShopWmsFloorAreaDao;
+import com.casesoft.dmc.dao.wms.pl.PlWmsRackDao;
 import com.casesoft.dmc.extend.third.descriptor.DataResult;
-import com.casesoft.dmc.extend.third.model.WmsPlRackBindingRelation;
 import com.casesoft.dmc.extend.third.model.pl.PlWmsShopBindingRecord;
 import com.casesoft.dmc.extend.third.model.pl.PlWmsShopBindingRelation;
-import com.casesoft.dmc.extend.third.model.pl.PlWmsWarehouseBindingRecord;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.extend.third.request.RequestPageData;
-import com.casesoft.dmc.model.wms.WmsFloor;
-import com.casesoft.dmc.model.wms.WmsFloorArea;
-import com.casesoft.dmc.model.wms.WmsRack;
 import com.casesoft.dmc.model.wms.pl.PlShopWmsFloorArea;
 import com.casesoft.dmc.model.wms.pl.PlWmsRack;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,6 @@ package com.casesoft.dmc.controller.search;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.mock.WebMockUtil;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.PurchaseSaleStock;

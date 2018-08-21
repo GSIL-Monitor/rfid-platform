@@ -1,7 +1,5 @@
 package com.casesoft.dmc.service.search;
 
-import com.casesoft.dmc.core.controller.DataSourceRequest;
-import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -10,7 +8,6 @@ import com.casesoft.dmc.dao.search.SaleNodeatilViewsDao;
 import com.casesoft.dmc.model.logistics.SaleBybusinessname;
 import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.Salebystyleid;
-import com.casesoft.dmc.model.search.SaleorderCountView;
 import oracle.jdbc.driver.OracleTypes;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

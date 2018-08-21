@@ -7,7 +7,6 @@ import com.casesoft.dmc.dao.wms.pl.PlWarehouseBindingRelationDao;
 import com.casesoft.dmc.dao.wms.pl.PlWarehouseWmsFloorAreaDao;
 import com.casesoft.dmc.dao.wms.pl.PlWmsFloorDao;
 import com.casesoft.dmc.extend.third.descriptor.DataResult;
-import com.casesoft.dmc.extend.third.model.pl.PlWmsShopBindingRecord;
 import com.casesoft.dmc.extend.third.model.pl.PlWmsWarehouseBindingRecord;
 import com.casesoft.dmc.extend.third.model.pl.PlWmsWarehouseBindingRelation;
 import com.casesoft.dmc.extend.third.request.BaseService;

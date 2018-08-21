@@ -1,10 +1,8 @@
 package com.casesoft.dmc.extend.api.web;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.validation.Valid;
-
+import com.casesoft.dmc.extend.api.dto.RequestEntity;
+import com.casesoft.dmc.extend.api.dto.RespMessage;
+import com.casesoft.dmc.extend.api.dto.RespStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -14,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.casesoft.dmc.extend.api.dto.RequestEntity;
-import com.casesoft.dmc.extend.api.dto.RespMessage;
-import com.casesoft.dmc.extend.api.dto.RespStatus;
+import javax.servlet.ServletException;
+import javax.validation.Valid;
+import java.io.IOException;
 
 /**
  * Created by john on 2017/1/3.

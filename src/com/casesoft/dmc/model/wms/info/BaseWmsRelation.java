@@ -1,6 +1,9 @@
 package com.casesoft.dmc.model.wms.info;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  * Created by john on 2017-03-08.

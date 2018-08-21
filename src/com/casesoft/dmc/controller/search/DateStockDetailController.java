@@ -1,18 +1,13 @@
 package com.casesoft.dmc.controller.search;
 
-import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-
 import com.casesoft.dmc.model.search.DateStockDetail;
-import com.casesoft.dmc.model.search.DetailStockView;
-import com.casesoft.dmc.model.stock.InventoryMergeBillDtl;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.search.DateStockDetailService;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -26,7 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.swing.filechooser.FileSystemView;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.Date;
 import java.util.List;
 

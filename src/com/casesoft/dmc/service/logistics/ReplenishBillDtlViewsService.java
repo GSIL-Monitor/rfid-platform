@@ -4,7 +4,6 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.ReplenishBillDtlViewsDao;
-import com.casesoft.dmc.model.logistics.ReplenishBillDtl;
 import com.casesoft.dmc.model.logistics.ReplenishBillDtlViews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -4,7 +4,6 @@ import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.dao.search.TransferorderCountDao;
-
 import com.casesoft.dmc.model.logistics.TransferOrderBill;
 import com.casesoft.dmc.model.search.TransByOrig;
 import com.casesoft.dmc.model.search.TransByStyleId;
@@ -15,7 +14,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.CallableStatement;

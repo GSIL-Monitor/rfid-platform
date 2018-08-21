@@ -1,37 +1,19 @@
 package com.casesoft.dmc.core.listener;
 
-import java.util.Date;
-
-import javax.servlet.ServletContextAttributeEvent;
-import javax.servlet.ServletContextAttributeListener;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestAttributeEvent;
-import javax.servlet.ServletRequestAttributeListener;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionActivationListener;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
 import com.casesoft.dmc.core.Constant;
-
+import com.casesoft.dmc.core.model.Tonline;
+import com.casesoft.dmc.core.service.OnlineServiceI;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.resource.ResourceUtil;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.service.logistics.*;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-
-import com.casesoft.dmc.core.model.Tonline;
-import com.casesoft.dmc.core.service.OnlineServiceI;
-import com.casesoft.dmc.core.util.resource.ResourceUtil;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.Date;
 
 
 /**

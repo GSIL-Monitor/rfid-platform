@@ -1,6 +1,5 @@
 package com.casesoft.dmc.core.util.secret;
 
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 

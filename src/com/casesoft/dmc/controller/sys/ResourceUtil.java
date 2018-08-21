@@ -1,15 +1,10 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.casesoft.dmc.core.vo.SidebarMenu;
 import com.casesoft.dmc.core.vo.TreeNode;
 import com.casesoft.dmc.model.sys.Resource;
+
+import java.util.*;
 
 public class ResourceUtil {
 

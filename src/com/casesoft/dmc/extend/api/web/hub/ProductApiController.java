@@ -19,13 +19,7 @@ import com.casesoft.dmc.extend.api.dto.RespMessage;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.product.Color;
-import com.casesoft.dmc.model.product.Photo;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.model.product.Size;
-import com.casesoft.dmc.model.product.SizeSort;
-import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.search.DetailStockView;
+import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.model.tag.Init;
@@ -35,23 +29,16 @@ import com.casesoft.dmc.service.log.SysLogService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.tag.BindService;
 import com.casesoft.dmc.service.tag.InitService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-
-import jdk.nashorn.internal.objects.annotations.Property;
-import org.apache.shiro.config.Ini;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.util.ExceptionTypeFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

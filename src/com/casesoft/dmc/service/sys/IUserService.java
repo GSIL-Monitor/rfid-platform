@@ -1,13 +1,13 @@
 package com.casesoft.dmc.service.sys;
 
-import java.util.List;
-
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.ServiceException;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.UserDao;
 import com.casesoft.dmc.model.sys.Role;
 import com.casesoft.dmc.model.sys.User;
+
+import java.util.List;
 
 public interface IUserService {
 

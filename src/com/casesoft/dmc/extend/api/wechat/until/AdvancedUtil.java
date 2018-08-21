@@ -4,7 +4,6 @@ package com.casesoft.dmc.extend.api.wechat.until;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.extend.api.wechat.model.SNSUserInfo;
 import com.casesoft.dmc.extend.api.wechat.model.WeixinOauth2Token;
-import com.casesoft.dmc.model.logistics.ConsignmentBill;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;

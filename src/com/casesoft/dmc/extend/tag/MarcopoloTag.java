@@ -1,8 +1,6 @@
 package com.casesoft.dmc.extend.tag;
 
 
-import java.util.Map;
-
 /**
  * Created by pc on 2015/3/10.
  */

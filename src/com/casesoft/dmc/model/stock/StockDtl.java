@@ -1,15 +1,10 @@
 package com.casesoft.dmc.model.stock;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.alibaba.fastjson.annotation.JSONField;
 
 @Entity
 @Table(name = "STOCK_STOCKDTL")

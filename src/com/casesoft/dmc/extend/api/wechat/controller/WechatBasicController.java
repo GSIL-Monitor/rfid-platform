@@ -1,19 +1,13 @@
 package com.casesoft.dmc.extend.api.wechat.controller;
 
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
-import com.casesoft.dmc.extend.api.web.epay.fepay.wechat.WechatConfigure;
 import com.casesoft.dmc.extend.api.wechat.WechatConfig;
 import com.casesoft.dmc.extend.api.wechat.model.SNSUserInfo;
 import com.casesoft.dmc.extend.api.wechat.model.WeixinOauth2Token;
-import com.casesoft.dmc.extend.api.wechat.model.WeixinUserInfo;
 import com.casesoft.dmc.extend.api.wechat.until.AdvancedUtil;
-import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import com.casesoft.dmc.service.wechat.SNSUserInfoService;
 import io.swagger.annotations.Api;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by admin on 2018/3/6.

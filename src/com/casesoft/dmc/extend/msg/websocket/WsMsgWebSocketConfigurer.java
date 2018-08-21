@@ -1,6 +1,5 @@
 package com.casesoft.dmc.extend.msg.websocket;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 

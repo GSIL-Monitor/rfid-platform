@@ -1,12 +1,11 @@
 package com.casesoft.dmc.dao.task;
 
-import java.util.List;
-
+import com.casesoft.dmc.core.dao.BaseHibernateDao;
+import com.casesoft.dmc.model.task.Business;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import com.casesoft.dmc.core.dao.BaseHibernateDao;
-import com.casesoft.dmc.model.task.Business;
+import java.util.List;
 
 @Repository
 public class TaskDao extends BaseHibernateDao<Business, String> {

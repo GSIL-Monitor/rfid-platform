@@ -5,17 +5,18 @@
 package com.casesoft.dmc.core.util;
 
 import com.casesoft.dmc.core.Constant;
-import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
-import com.casesoft.dmc.extend.api.wechat.until.AdvancedUtil;
 import com.casesoft.dmc.extend.api.wechat.until.MyX509TrustManager;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -25,8 +26,6 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.URL;
 import java.security.MessageDigest;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

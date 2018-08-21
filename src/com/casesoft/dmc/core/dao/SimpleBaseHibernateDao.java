@@ -1,19 +1,8 @@
 package com.casesoft.dmc.core.dao;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.model.logistics.LabelChangeBill;
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.casesoft.dmc.core.util.reflection.ReflectionUtils;
+import org.hibernate.*;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -26,7 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.util.Assert;
 
-import com.casesoft.dmc.core.util.reflection.ReflectionUtils;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class SimpleBaseHibernateDao<T, PK extends Serializable> implements ISimpleBaseDao<T, PK> {

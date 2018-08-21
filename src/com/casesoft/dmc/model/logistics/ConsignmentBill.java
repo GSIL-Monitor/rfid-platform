@@ -1,7 +1,6 @@
 package com.casesoft.dmc.model.logistics;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/14.

@@ -7,8 +7,6 @@ import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.shop.FittingRecord;
 import com.casesoft.dmc.model.sys.*;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

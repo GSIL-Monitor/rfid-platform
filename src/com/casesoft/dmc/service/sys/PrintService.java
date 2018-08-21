@@ -1,12 +1,10 @@
 package com.casesoft.dmc.service.sys;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
-
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PrintDao;
 import com.casesoft.dmc.model.sys.Print;
-import com.casesoft.dmc.model.sys.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

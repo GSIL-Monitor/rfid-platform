@@ -1,19 +1,13 @@
 package com.casesoft.dmc.model.erp;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.casesoft.dmc.model.task.Record;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import com.casesoft.dmc.model.task.Record;
 
 @Entity
 @Table(name = "ERP_BILL")

@@ -9,7 +9,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.dao.search.DetailStockDao;
 import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.model.sys.Unit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
-
 import java.io.IOException;
 import java.util.List;
 

@@ -4,7 +4,6 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.MergeReplenishBill;
 import com.casesoft.dmc.model.logistics.MergeReplenishBillDtl;
 import com.casesoft.dmc.service.logistics.MergeReplenishBillDtlService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,7 +8,6 @@ import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.stock.GuardingRecordDao;
 import com.casesoft.dmc.model.cfg.Device;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.stock.GuardingRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yushen on 2017/9/13.

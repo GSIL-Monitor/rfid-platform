@@ -13,8 +13,6 @@ import com.casesoft.dmc.model.sys.PrintSet;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.*;
 import com.casesoft.dmc.service.sys.impl.UserService;
-import org.codehaus.jackson.mrbean.BeanUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

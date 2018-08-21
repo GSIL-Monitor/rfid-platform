@@ -1,7 +1,6 @@
 package com.casesoft.dmc.model.sys;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Date;

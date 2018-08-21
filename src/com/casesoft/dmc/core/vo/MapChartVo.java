@@ -1,15 +1,7 @@
 package com.casesoft.dmc.core.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.apache.cxf.binding.corba.wsdl.Array;
+import java.util.*;
 
 
 public class MapChartVo<N, D> implements Serializable {

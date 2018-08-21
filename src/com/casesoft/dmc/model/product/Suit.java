@@ -1,13 +1,10 @@
 package com.casesoft.dmc.model.product;
+
 import com.alibaba.fastjson.annotation.JSONField;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 @Entity
 @Table(name = "PRODUCT_SUIT")
 public class Suit  {

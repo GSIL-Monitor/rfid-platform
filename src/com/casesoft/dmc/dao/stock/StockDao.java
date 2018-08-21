@@ -1,12 +1,11 @@
 package com.casesoft.dmc.dao.stock;
 
-import java.util.List;
-
-import org.springframework.stereotype.Repository;
-
 import com.casesoft.dmc.core.dao.BaseHibernateDao;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.stock.InventoryDto;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class StockDao extends BaseHibernateDao<InventoryDto, String> {
