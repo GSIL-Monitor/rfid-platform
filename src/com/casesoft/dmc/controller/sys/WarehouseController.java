@@ -133,7 +133,9 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 	 		unit.setRemark(entity.getRemark());
 		try{
 			this.warehouseService.save(unit);
-			CacheManager.refreshUnitCache();
+			List<Unit> unitList = new ArrayList<>();
+			unitList.add(unit);
+			CacheManager.refreshUnitCache(unitList);
 			return returnSuccessInfo("保存成功");
 		}catch(Exception e){
 			return returnFailInfo("保存失败");
@@ -146,7 +148,9 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 		Unit unit = CacheManager.getUnitByCode(ownerId);
 		unit.setDefaultWarehId(warehId);
 		this.warehouseService.save(unit);
-		CacheManager.refreshUnitCache();
+		List<Unit> unitList = new ArrayList<>();
+		unitList.add(unit);
+		CacheManager.refreshUnitCache(unitList);
 		return returnSuccessInfo("设置默认仓库成功");
 	}
 

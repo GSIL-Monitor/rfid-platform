@@ -191,25 +191,25 @@ public class ProductController extends BaseController implements IBaseInfoContro
                         redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId+1));
                         CacheManager.refreshMaxVersionId();
                         if (CommonUtil.isNotBlank(list.getProductList())) {
-                            CacheManager.refreshProductCache();
+                            CacheManager.refreshProductCache(list.getProductList());
                         }
                         if (CommonUtil.isNotBlank(list.getStyleList())) {
-                            CacheManager.refreshStyleCache();
+                            CacheManager.refreshStyleCache(list.getStyleList());
                         }
                         if (CommonUtil.isNotBlank(list.getColorList())) {
-                            CacheManager.refreshColorCache();
+                            CacheManager.refreshColorCache(list.getColorList());
                         }
                         if (CommonUtil.isNotBlank(list.getSizeList())) {
-                            CacheManager.refreshSizeCache();
+                            CacheManager.refreshSizeCache(list.getSizeList());
                         }
                         if (CommonUtil.isNotBlank(list.getSizeSort())) {
-                            CacheManager.refreshSizeSortCache();
+                            CacheManager.refreshSizeSortCache(list.getSizeSort());
                         }
                         if (CommonUtil.isNotBlank(list.getPropertyKeyList())) {
-                            CacheManager.refreshPropertyCache();
+                            CacheManager.refreshPropertyCache(list.getPropertyKeyList());
                         }
                         if (CommonUtil.isNotBlank(list.getPropertyTypeList())) {
-                            CacheManager.refreshPropertyTypeCache();
+                            CacheManager.refreshPropertyTypeCache(list.getPropertyTypeList());
                         }
                     }
                 }

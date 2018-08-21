@@ -158,7 +158,9 @@ public class UserController extends BaseController implements IBaseInfoControlle
         }
            try {
                this.userService.save(u);
-               CacheManager.refreshUserCache();
+               List<User> userList = new ArrayList<>();
+               userList.add(u);
+               CacheManager.refreshUserCache(userList);
                return returnSuccessInfo("保存成功");
            }catch (Exception e){
                 /*将异常打印到日志*/

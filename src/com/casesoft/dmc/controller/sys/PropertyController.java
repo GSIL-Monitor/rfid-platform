@@ -105,7 +105,9 @@ public class PropertyController extends BaseController implements IBaseInfoContr
                 propertyTypebyid.setValue(entity.getValue());
                 this.propertyService.save(propertyTypebyid);
             }
-            CacheManager.refreshPropertyTypeCache();
+            List<PropertyType> propertyTypeList = new ArrayList<>();
+            propertyTypeList.add(propertyTypebyid);
+            CacheManager.refreshPropertyTypeCache(propertyTypeList);
             return returnSuccessInfo("保存成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,8 +182,9 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             } else {
                 return returnFailInfo("保存失败,名称已存在不能重复添加");
             }
-            CacheManager.refreshUnitCache();
-            CacheManager.refreshPropertyCache();
+            List<PropertyKey> propertyKeyList  = new ArrayList<>();
+            propertyKeyList.add(entity);
+            CacheManager.refreshPropertyCache(propertyKeyList);
             return returnSuccessInfo("保存成功", entity);
         } catch (Exception e) {
             e.printStackTrace();

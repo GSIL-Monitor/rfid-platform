@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -272,7 +273,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
             guest.setStoreDate(entity.getStoreDate());*/
             try {
                 this.guestService.save(guest);
-                CacheManager.refreshUnitCache();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(guest);
+                CacheManager.refreshUnitCache(unitList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -325,11 +328,11 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setUpdateTime(new Date());
 		/*	guest.setStoredValue(entity.getStoredValue());
 			guest.setStoreDate(entity.getStoreDate());*/
-
                 try {
                     this.customerService.save(guest);
-                    CacheManager.refreshUnitCache();
-                    CacheManager.refreshCustomer();
+                    List<Customer> customerList = new ArrayList<>();
+                    customerList.add(guest);
+                    CacheManager.refreshCustomer(customerList);
                     return returnSuccessInfo("保存成功");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -401,12 +404,16 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         preCustomer.setStatus(1);
                     }
                     this.guestService.updateUnit(guest,preCustomer);
-                    CacheManager.refreshCustomer();
+                    List<Customer> customerList = new ArrayList<>();
+                    customerList.add(preCustomer);
+                    CacheManager.refreshCustomer(customerList);
                 }else{
                     this.guestService.save(guest);
 
                 }
-                CacheManager.refreshUnitCache();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(guest);
+                CacheManager.refreshUnitCache(unitList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -480,8 +487,12 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         this.customerService.save(guest);
                     }
                 }
-                CacheManager.refreshUnitCache();
-                CacheManager.refreshCustomer();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(preUnit);
+                CacheManager.refreshUnitCache(unitList);
+                List<Customer> customerList = new ArrayList<>();
+                customerList.add(guest);
+                CacheManager.refreshCustomer(customerList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();

@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -190,7 +191,9 @@ public class LogisticsController extends ApiBaseController {
                    this.sNSUserInfoService.sendtourk(entity,sNSUserInfo,request);
 
                 }
-                CacheManager.refreshUnitCache();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(guest);
+                CacheManager.refreshUnitCache(unitList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -242,8 +245,9 @@ public class LogisticsController extends ApiBaseController {
                     this.sNSUserInfoService.sendCustomertourk(guest,sNSUserInfo,request);
 
                 }
-                CacheManager.refreshUnitCache();
-                CacheManager.refreshCustomer();
+                List<Customer> customerList = new ArrayList<>();
+                customerList.add(guest);
+                CacheManager.refreshCustomer(customerList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e){
                 e.printStackTrace();
@@ -293,7 +297,9 @@ public class LogisticsController extends ApiBaseController {
 			guest.setStoreDate(entity.getStoreDate());*/
             try {
                 this.guestService.save(guest);
-                CacheManager.refreshUnitCache();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(guest);
+                CacheManager.refreshUnitCache(unitList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -338,8 +344,9 @@ public class LogisticsController extends ApiBaseController {
 
             try{
                 this.customerService.save(guest);
-                CacheManager.refreshUnitCache();
-                CacheManager.refreshCustomer();
+                List<Customer> customerList = new ArrayList<>();
+                customerList.add(guest);
+                CacheManager.refreshCustomer(customerList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e){
                 e.printStackTrace();

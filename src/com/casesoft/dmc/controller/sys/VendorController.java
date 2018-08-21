@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/sys/vendor")
@@ -124,7 +121,9 @@ public class VendorController extends BaseController implements IBaseInfoControl
             ut.setSrc(Constant.DataSrc.SYS);
 
             this.vendorService.save(ut);
-            CacheManager.refreshUnitCache();
+            List<Unit> unitList = new ArrayList<>();
+            unitList.add(ut);
+            CacheManager.refreshUnitCache(unitList);
             return this.returnSuccessInfo("保存成功");
         }catch (Exception e){
             e.printStackTrace();
