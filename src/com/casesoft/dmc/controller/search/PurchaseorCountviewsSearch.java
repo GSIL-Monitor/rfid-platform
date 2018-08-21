@@ -1,21 +1,21 @@
 package com.casesoft.dmc.controller.search;
 
 import com.alibaba.fastjson.JSON;
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.PurchaseorCountDao;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.PurchaseBydestunitid;
 import com.casesoft.dmc.model.logistics.PurchaseBystyleid;
-import com.casesoft.dmc.model.search.*;
+import com.casesoft.dmc.model.search.PurchaseNodeatilViews;
+import com.casesoft.dmc.model.search.PurchaseorCountviews;
+import com.casesoft.dmc.model.search.purchaseCount;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;

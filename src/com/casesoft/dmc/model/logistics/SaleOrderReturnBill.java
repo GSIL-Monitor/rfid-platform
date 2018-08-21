@@ -163,11 +163,22 @@ public class SaleOrderReturnBill extends BaseBill{
 	@Transient
 	private List<SaleOrderReturnBillDtl> dtlList;
 
+	@Transient
+	private String errorMessage;//redis记录单据保存的错误信息
+
 	public List<SaleOrderReturnBillDtl> getDtlList() {
 		return dtlList;
 	}
 
 	public void setDtlList(List<SaleOrderReturnBillDtl> dtlList) {
 		this.dtlList = dtlList;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 }

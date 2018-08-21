@@ -1,18 +1,17 @@
 package com.casesoft.dmc.service.cfg;
 
-import java.util.List;
-
-import com.casesoft.dmc.model.cfg.DeviceConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.cfg.DeviceDao;
 import com.casesoft.dmc.model.cfg.Device;
+import com.casesoft.dmc.model.cfg.DeviceConfig;
 import com.casesoft.dmc.model.cfg.DeviceLog;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional

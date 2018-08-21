@@ -1,8 +1,7 @@
 package com.casesoft.dmc.extend.third.model;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by john on 2017-02-22.

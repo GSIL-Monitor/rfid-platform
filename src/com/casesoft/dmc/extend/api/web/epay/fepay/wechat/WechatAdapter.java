@@ -1,8 +1,6 @@
 package com.casesoft.dmc.extend.api.web.epay.fepay.wechat;
 
 import com.casesoft.dmc.core.vo.MessageBox;
-
-
 import com.casesoft.dmc.extend.api.web.epay.fepay.base.EPayConstant;
 import com.casesoft.dmc.extend.api.web.epay.fepay.base.EPayInfo;
 import com.casesoft.dmc.extend.api.web.epay.fepay.base.EPayInfoRefult;

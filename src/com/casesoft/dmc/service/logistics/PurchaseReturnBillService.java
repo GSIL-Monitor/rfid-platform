@@ -10,8 +10,10 @@ import com.casesoft.dmc.dao.logistics.PurchaseBillOrderDao;
 import com.casesoft.dmc.dao.logistics.PurchaseReturnBillDao;
 import com.casesoft.dmc.dao.logistics.PurchaseReturnBillDtlDao;
 import com.casesoft.dmc.dao.sys.UnitDao;
-
-import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.logistics.PurchaseReturnBill;
+import com.casesoft.dmc.model.logistics.PurchaseReturnBillDtl;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.tag.Epc;

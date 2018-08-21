@@ -1,12 +1,8 @@
 package com.casesoft.dmc.model.stock;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.alibaba.fastjson.annotation.JSONField;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "STOCK_INVENTORYDTO")

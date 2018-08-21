@@ -10,7 +10,6 @@ import com.casesoft.dmc.dao.sys.UnitDao;
 import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

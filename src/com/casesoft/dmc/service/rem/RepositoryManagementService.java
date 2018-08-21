@@ -2,7 +2,6 @@ package com.casesoft.dmc.service.rem;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
-import com.casesoft.dmc.core.service.ServiceException;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.rem.RepositoryManagementDao;
 import com.casesoft.dmc.model.rem.RepositoryManagement;

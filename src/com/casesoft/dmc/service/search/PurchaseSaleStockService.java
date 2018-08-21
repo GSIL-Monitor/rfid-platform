@@ -1,23 +1,15 @@
 package com.casesoft.dmc.service.search;
 
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.search.PurchaseSaleStockDao;
 import com.casesoft.dmc.model.search.PurchaseSaleStock;
-import com.casesoft.dmc.model.search.SaleorderCountView;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
-import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.util.Date;
 import java.util.List;
 
 /**

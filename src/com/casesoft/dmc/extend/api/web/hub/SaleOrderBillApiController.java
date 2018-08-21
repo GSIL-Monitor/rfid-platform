@@ -4,12 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
-import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.logistics.SaleOrderBill;
+import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import io.swagger.annotations.Api;
@@ -20,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by koudepei on 2017/6/2.
@@ -38,7 +39,9 @@ public class SaleOrderBillApiController extends ApiBaseController{
 
     @Autowired
     private SaleOrderBillService saleOrderBillService;
-    private static RedisUtils redisUtils;
+
+    private static  Queue<Object> objectQueue = new LinkedList<>();
+
     @Override
     public String index() {
         return null;
@@ -76,7 +79,8 @@ public class SaleOrderBillApiController extends ApiBaseController{
     @ResponseBody
     public void saveSaleOrderBill(JSONArray saleOrderArray){
         this.logAllRequestParams();
-        Queue<Object> objectQueue = new LinkedList<>();
+        RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
+        //Queue<Object> objectQueue = new LinkedList<>();
         for(Object o : saleOrderArray){
             objectQueue.offer(o);
         }

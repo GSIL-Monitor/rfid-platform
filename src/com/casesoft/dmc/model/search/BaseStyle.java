@@ -1,14 +1,10 @@
 package com.casesoft.dmc.model.search;
 
 
-
-
-
 import org.jeecgframework.poi.excel.annotation.Excel;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-
 import java.io.Serializable;
 
 /**

@@ -1,9 +1,9 @@
 package com.casesoft.dmc.extend.api.web.epay.alipay.util.httpClient;
 
-import java.io.UnsupportedEncodingException;
-
 import com.casesoft.dmc.extend.api.web.epay.alipay.config.AlipayConfig;
 import org.apache.commons.httpclient.Header;
+
+import java.io.UnsupportedEncodingException;
 
 
 /* *

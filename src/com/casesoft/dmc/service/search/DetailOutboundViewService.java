@@ -4,7 +4,6 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.search.DetailOutboundViewDao;
 import com.casesoft.dmc.model.search.DetailOutboundView;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

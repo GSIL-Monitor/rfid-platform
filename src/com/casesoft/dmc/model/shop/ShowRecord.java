@@ -1,15 +1,14 @@
 package com.casesoft.dmc.model.shop;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.casesoft.dmc.model.product.BaseProductInfo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.alibaba.fastjson.annotation.JSONField;
-import com.casesoft.dmc.model.product.BaseProductInfo;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "SHOP_SHOWRECORD")

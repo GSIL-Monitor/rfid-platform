@@ -1,36 +1,22 @@
 package com.casesoft.dmc.core.dao;
 
+import com.casesoft.dmc.core.dao.PropertyFilter.MatchType;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.util.reflection.ReflectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
+import org.hibernate.impl.CriteriaImpl;
+import org.hibernate.transform.ResultTransformer;
+import org.springframework.util.Assert;
+
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import javassist.expr.NewArray;
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.*;
-import org.hibernate.criterion.AggregateProjection;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.impl.CriteriaImpl;
-import org.hibernate.transform.ResultTransformer;
-import org.springframework.util.Assert;
-
-import com.casesoft.dmc.core.dao.PropertyFilter.MatchType;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.util.reflection.ReflectionUtils;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class BaseHibernateDao<T, PK extends Serializable> extends SimpleBaseHibernateDao<T, PK>

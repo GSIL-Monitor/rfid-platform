@@ -8,7 +8,6 @@ import com.casesoft.dmc.dao.search.DetailStockChatViewDao;
 import com.casesoft.dmc.dao.search.DetailStockViewDao;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
-import com.casesoft.dmc.model.search.DetailStockView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

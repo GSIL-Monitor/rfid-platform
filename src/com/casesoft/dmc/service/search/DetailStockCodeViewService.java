@@ -4,8 +4,6 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.search.DetailStockCodeViewDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
-import com.casesoft.dmc.model.logistics.SaleOrderReturnBill;
-import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

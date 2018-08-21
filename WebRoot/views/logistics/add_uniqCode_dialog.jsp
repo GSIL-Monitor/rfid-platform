@@ -227,6 +227,7 @@
                                 text: data.msg,
                                 class_name: 'gritter-success  gritter-light'
                             });
+                            delete data.result["id"];
                             var result=data.result;
                             if(data.result!=""&&data.result!=undefined) {
                                 try {

@@ -1,7 +1,6 @@
 package com.casesoft.dmc.service.task;
 
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;

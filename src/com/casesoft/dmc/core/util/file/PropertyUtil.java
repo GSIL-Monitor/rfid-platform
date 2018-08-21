@@ -1,22 +1,16 @@
 package com.casesoft.dmc.core.util.file;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.resource.DefaultPropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.resource.DefaultPropertyUtil;
 
 public class PropertyUtil {
   protected static Logger logger = LoggerFactory.getLogger(PropertyUtil.class);

@@ -1,21 +1,27 @@
 package com.casesoft.dmc.controller.product;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.product.Term;
 import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.ProductService;
+import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UserService;
@@ -29,15 +35,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.service.product.StyleService;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/prod/style")
@@ -58,7 +58,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@Autowired
 	private UserService userService;
 
-	private static RedisUtils redisUtils;
+	private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
 	@RequestMapping("/page")
 	@ResponseBody
@@ -87,14 +87,19 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@Override
 	public MessageBox save(Style style) throws Exception {
 		Style sty =this.styleService.fundByStyleId(style.getStyleId());
+		long styleMaxVersionId = CacheManager.getStyleMaxVersionId();
+		sty.setVersion(styleMaxVersionId);
 		if(CommonUtil.isBlank(sty)){
 			sty=new Style();
 			sty.setId(style.getStyleId());
 			sty.setStyleId(style.getStyleId());
+			sty.setVersion(styleMaxVersionId);
 		}
 		StyleUtil.copyStyleInfo(sty,style);
 		try {
 			this.styleService.save(sty);
+			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId+1));
+			CacheManager.refreshMaxVersionId();
 			CacheManager.refreshStyleCache();
 			return this.returnSuccessInfo("保存成功", style);
 		}catch(Exception e ){
@@ -114,9 +119,13 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	@ResponseBody
 	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId,String pageType) throws Exception {
 		try {
-			Style style = JSON.parseObject(styleStr,Style.class);
 
+			Style style = JSON.parseObject(styleStr,Style.class);
 			Style sty = CacheManager.getStyleById(style.getStyleId());
+			Long productMaxVersionId = CacheManager.getproductMaxVersionId();
+			//查询当前款最新的版本号
+			Long maxVersionId = CacheManager.getStyleMaxVersionId();
+			sty.setVersion(maxVersionId+1);
 			//判断是 add（）的请求还是 edit（）的请求
 			if ("add".equals(pageType)){
 				//判断sytleId在数据库中是否存在
@@ -124,11 +133,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 					//赋值
 					sty=new Style();
 					sty.setId(style.getStyleId());
-					//查询当前款最新的版本号
-					Long maxVersionId = CacheManager.getMaxVersionId();
-					sty.setVersion(maxVersionId+1);
-
 					sty.setStyleId(style.getStyleId());
+					sty.setVersion(maxVersionId+1);
 					sty.setIsUse("Y");
 				}else {
 					return this.returnFailInfo("保存失败!"+sty.getId()+"款号已存在请重新输入");
@@ -140,10 +146,12 @@ public class StyleController extends BaseController implements IBaseInfoControll
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
 			//保存成功更新缓存
-			redisUtils.set("maxVersionId",JSON.toJSONString(sty.getVersion()));
+			redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
+			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
+			CacheManager.refreshMaxVersionId();
 			CacheManager.refreshStyleCache();
 			/*if(saveList.size() > 0){*/
-				CacheManager.refreshProductCache();
+			CacheManager.refreshProductCache();
 			/*}*/
 			//推送微信商城
 			//读取congif.properties文件

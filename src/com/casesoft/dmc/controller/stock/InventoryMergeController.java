@@ -2,7 +2,6 @@ package com.casesoft.dmc.controller.stock;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.syn.tool.BillUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
@@ -34,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;

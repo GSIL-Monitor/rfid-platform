@@ -1,28 +1,30 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.*;
-
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.core.vo.SidebarMenu;
-import com.casesoft.dmc.model.sys.*;
+import com.casesoft.dmc.model.sys.Resource;
+import com.casesoft.dmc.model.sys.ResourcePrivilege;
+import com.casesoft.dmc.model.sys.Role;
+import com.casesoft.dmc.model.sys.RoleRes;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
+import com.casesoft.dmc.service.sys.impl.RoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.service.sys.impl.RoleService;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/sys/role")

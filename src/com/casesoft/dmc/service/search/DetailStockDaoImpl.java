@@ -3,10 +3,13 @@ package com.casesoft.dmc.service.search;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
+import com.casesoft.dmc.core.controller.DataSourceRequest;
+import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.dao.search.DetailStockDao;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
+import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.sys.impl.UnitService;
@@ -15,13 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.casesoft.dmc.core.controller.DataSourceRequest;
-import com.casesoft.dmc.core.controller.DataSourceResult;
-import com.casesoft.dmc.dao.search.DetailStockDao;
-import com.casesoft.dmc.model.search.DetailStockView;
-
 import javax.servlet.http.HttpSession;
-import java.io.File;
 import java.util.*;
 
 @Transactional

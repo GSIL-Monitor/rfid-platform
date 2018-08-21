@@ -12,36 +12,23 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.sys.Email;
 import com.casesoft.dmc.service.sys.impl.EmailService;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.cxf.wsdl.http.UrlEncoded;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 @Controller
 @RequestMapping("email")

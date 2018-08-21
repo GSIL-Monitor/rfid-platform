@@ -1,7 +1,5 @@
 package com.casesoft.dmc.model.tag;
 
-import com.casesoft.dmc.cache.CacheManager;
-
 import javax.persistence.*;
 
 /**

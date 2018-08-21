@@ -4,9 +4,7 @@ package com.casesoft.dmc.model.search;
 import com.alibaba.fastjson.annotation.JSONField;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
-
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 /**
  * Created by Administrator on 2017/9/4.

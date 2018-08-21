@@ -1,12 +1,10 @@
 package com.casesoft.dmc.model.stock;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import io.swagger.models.auth.In;
-
-import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 
 @Entity

@@ -17,14 +17,11 @@ import com.casesoft.dmc.extend.api.web.epay.alipay.util.httpClient.HttpResponse;
 import com.casesoft.dmc.extend.api.web.epay.alipay.util.httpClient.HttpResultType;
 import com.casesoft.dmc.model.product.NoPushProduct;
 import com.casesoft.dmc.model.product.NoPushStyle;
-
 import org.apache.commons.httpclient.NameValuePair;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

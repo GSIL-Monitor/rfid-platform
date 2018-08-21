@@ -1,7 +1,6 @@
 package com.casesoft.dmc.controller.product;
 
 import com.casesoft.dmc.cache.CacheManager;
-
 import com.casesoft.dmc.cache.RedisUtils;
 import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -9,16 +8,13 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.FileUtil;
 import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.vo.TagFactory;
-import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.BillConstant;
-import com.casesoft.dmc.model.logistics.ConsignmentBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBill;
 import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
 import com.casesoft.dmc.model.product.Color;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.Style;
-
 import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
@@ -31,26 +27,17 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import static javax.swing.plaf.basic.BasicHTML.propertyKey;
-
 public class StyleUtil {
+    private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
-  static List<Style> processStyleFile(InputStream inputStream) throws Exception {
+    static List<Style> processStyleFile(InputStream inputStream) throws Exception {
     List<Style> styleList = new ArrayList<Style>();
     HSSFWorkbook workbook = new HSSFWorkbook(inputStream);// 创建对Excel工作薄文件的引用
     HSSFSheet sheet = workbook.getSheetAt(0);// 创建对工作表的引用，也可用workbook.getSheet("sheetName");
@@ -320,14 +307,19 @@ public class StyleUtil {
             Product p = productList.get(i);
             Product product = CacheManager.getProductByCode(style.getStyleId()+p.getColorId()+p.getSizeId());//by sku
             if(CommonUtil.isBlank(product)){
-                //缓存里没有，查最新的版本号+1
-                Long maxVersionId = CacheManager.getMaxVersionId();
+
                 String id = ProductUtil.getNewProductId(index+i);
                 p.setId(id);
+                //查最新的版本号+1
+                Long maxVersionId = CacheManager.getproductMaxVersionId();
                 p.setVersion(maxVersionId+1);
+
             }else{
                 p.setId(product.getId());
             }
+            //查最新的版本号+1
+            Long maxVersionId = CacheManager.getproductMaxVersionId();
+            p.setVersion(maxVersionId+1);
             p.setStyleId(style.getStyleId());
             p.setStyleName(style.getStyleName());
             p.setColorName(CacheManager.getColorNameById(p.getColorId()));

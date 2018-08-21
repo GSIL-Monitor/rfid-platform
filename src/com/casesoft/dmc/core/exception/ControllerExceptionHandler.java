@@ -1,6 +1,5 @@
 package com.casesoft.dmc.core.exception;
 
-import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.dto.RespMessage;
 import com.casesoft.dmc.extend.api.dto.RespStatus;
 import org.springframework.web.bind.annotation.ResponseBody;

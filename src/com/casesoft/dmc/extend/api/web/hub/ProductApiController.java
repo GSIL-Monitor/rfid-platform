@@ -3,6 +3,8 @@ package com.casesoft.dmc.extend.api.web.hub;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.product.ProductUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.tag.InitUtil;
@@ -17,13 +19,7 @@ import com.casesoft.dmc.extend.api.dto.RespMessage;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.product.Color;
-import com.casesoft.dmc.model.product.Photo;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.model.product.Size;
-import com.casesoft.dmc.model.product.SizeSort;
-import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.search.DetailStockView;
+import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.EpcBindBarcode;
 import com.casesoft.dmc.model.tag.Init;
@@ -33,22 +29,16 @@ import com.casesoft.dmc.service.log.SysLogService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.tag.BindService;
 import com.casesoft.dmc.service.tag.InitService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-
-import org.apache.shiro.config.Ini;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.util.ExceptionTypeFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -80,6 +70,8 @@ public class ProductApiController extends ApiBaseController {
 
 	@Autowired
 	private PhotoService photoService;
+
+	private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
 	@Override
 	public String index() {
@@ -257,7 +249,7 @@ public class ProductApiController extends ApiBaseController {
 	}
 
 	@RequestMapping(value = "/downloadProductZipFileWS.do")
-	public void downloadProductZipFileWS() throws IOException {
+	public void downloadProductZipFileWS(Long version) throws IOException {
 		int pageSize = 10000;
 		Page<Product> page = new Page<Product>();
 		page.setOrderBy("code");
@@ -265,6 +257,10 @@ public class ProductApiController extends ApiBaseController {
 		page.setPageNo(1);
 		page.setPageSize(pageSize);
 		List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
+		if(CommonUtil.isNotBlank(version)){
+			PropertyFilter filter = new PropertyFilter("GTL_version",version.toString());//比version大的
+			filters.add(filter);
+		}
 		Page<Product> prodPage = productService.findPage(page, filters);
 		if(CommonUtil.isNotBlank(page.getRows())){
 			ProductUtil.convertToPageVo(page.getRows());
@@ -497,15 +493,24 @@ public class ProductApiController extends ApiBaseController {
 
 		Style style = JSON.parseObject(styleStr,Style.class);
 		Style sty = CacheManager.getStyleById(style.getStyleId());
+		//查询当前最新的版本号
+		Long productMaxVersionId = CacheManager.getproductMaxVersionId();
+		Long maxVersionId = CacheManager.getStyleMaxVersionId();
+		sty.setVersion(maxVersionId+1);
 		if(CommonUtil.isBlank(sty)){
 			sty=new Style();
 			sty.setId(style.getStyleId());
 			sty.setStyleId(style.getStyleId());
+			sty.setVersion(maxVersionId+1);
 		}
 		List<Product> productList = JSON.parseArray(productStr,Product.class);
 		List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 		try {
 			this.styleService.saveStyleAndProducts(sty,saveList);
+			//保存成功更新缓存
+			redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
+			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
+			CacheManager.refreshMaxVersionId();
 			CacheManager.refreshStyleCache();
 			if(saveList.size() > 0){
 				CacheManager.refreshProductCache();

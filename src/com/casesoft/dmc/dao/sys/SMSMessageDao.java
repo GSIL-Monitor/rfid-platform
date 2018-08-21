@@ -2,7 +2,6 @@ package com.casesoft.dmc.dao.sys;
 
 import com.casesoft.dmc.core.dao.BaseHibernateDao;
 import com.casesoft.dmc.model.sys.SMSMessage;
-import com.casesoft.dmc.model.sys.SMSModule;
 import org.springframework.stereotype.Repository;
 
 /**

@@ -1,8 +1,5 @@
 package com.casesoft.dmc.extend.api.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * Created john  on 2016-12-27.
  * 接口存储

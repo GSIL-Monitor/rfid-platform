@@ -1,13 +1,14 @@
 package com.casesoft.dmc.core.tag.util;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class LogUtil {
 

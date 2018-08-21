@@ -4,7 +4,6 @@ import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.json.JSONUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.SaleorderCountDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
@@ -17,16 +16,13 @@ import com.casesoft.dmc.service.sys.impl.UnitService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/22 0022.

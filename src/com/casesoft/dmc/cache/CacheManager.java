@@ -9,17 +9,12 @@ import com.casesoft.dmc.extend.third.model.pl.PlWmsShopBindingRelation;
 import com.casesoft.dmc.model.cfg.Device;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.mirror.Collocat;
-import com.casesoft.dmc.model.mirror.NewProduct;
 import com.casesoft.dmc.model.pad.AccessToken;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.service.cfg.DeviceService;
 import com.casesoft.dmc.service.cfg.PropertyKeyService;
-
-import com.casesoft.dmc.service.mirror.CollocatService;
-import com.casesoft.dmc.service.product.ColorService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.shop.CustomerService;
@@ -29,7 +24,6 @@ import com.casesoft.dmc.service.sys.impl.RoleService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +64,8 @@ public class CacheManager {
 	private static String PREFIX_PLAYLOUNGEPROPERTYKEY = "playloungePropertyKey";
 
 	private static String PREFIX_SIZESORT = "SizeSort";
+
+	private static String PREFIX_ACCESSTOKEN = "AccessToken";
 	//--------------------------新增redis缓存数据-------------------------------------------------
 	private static String PREFIX_UNIT = "unit";
 
@@ -110,6 +106,7 @@ public class CacheManager {
 		initSysSetting();
 		initCustomerCache();
 		initCheckWarehouse();
+		initMaxVersionId();
 	}
 
 	public static void refresh() throws Exception {
@@ -128,7 +125,7 @@ public class CacheManager {
 		refreshResourceCache();
 		refreshRoleCache();
 		refreshSizeSortCache();
-
+		refreshMaxVersionId();
 	}
 
 	public static void initUserCache() {
@@ -283,14 +280,22 @@ public class CacheManager {
 			redisUtils.hset(PREFIX_DEVICE, device.getCode(), JSON.toJSONString(device));
 		}
 	}
-
+	public static void initMaxVersionId(){
+		ProductService productService = (ProductService) SpringContextUtil
+				.getBean("productService");
+		StyleService styleService = (StyleService) SpringContextUtil
+				.getBean("styleService");
+		//得到当前商品最大版本号放进redis
+		long productMaxVersionId = productService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","productMaxVersionId",JSON.toJSONString(productMaxVersionId));
+		long styleMaxVersionId = styleService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId));
+	}
 	public static void initProductCache() {
 		long startTime = System.currentTimeMillis();   //获取开始时间
 		ProductService productService = (ProductService) SpringContextUtil
 				.getBean("productService");
-		//得到当前商品最大版本号放进redis
-		long maxVersionId = productService.getMaxVersionId();
-		redisUtils.set("maxVersionId",JSON.toJSONString(maxVersionId));
+
 		List<Product> list = productService.getAll();
 		Collections.sort(list, new Comparator<Product>() {
 
@@ -409,6 +414,10 @@ public class CacheManager {
 	public static void refreshPropertyCache() {
 		redisUtils.del(PREFIX_PROPERTYKEY);
 		initPropertyCache();
+	}
+	public static void refreshMaxVersionId(){
+		redisUtils.del("maxVersionId");
+		initMaxVersionId();
 	}
 
 	public static void refreshPropertyCache(List<PropertyKey> propertyKeyList) {
@@ -668,11 +677,26 @@ public class CacheManager {
 	public static void iniAccessToken(AccessToken accessToken){
 		Map<String,AccessToken> accessTokenMap  = new HashMap<>();
 		accessTokenMap.put("AccessToken",accessToken);
-		cache.put(new Element("AccessToken",accessTokenMap));
+		redisUtils.hset(PREFIX_ACCESSTOKEN,"AccessToken", JSON.toJSONString(accessTokenMap));
+		/*cache.put(new Element("AccessToken",accessTokenMap));*/
 	}
 
 	public static AccessToken getAccessToken(){
-		Element result = cache.get("AccessToken");
+		String accessTokenStr = null;
+		AccessToken accessToken = null;
+		Map<Object,Object> accessTokenMap = redisUtils.hmget(PREFIX_ACCESSTOKEN);
+		if (CommonUtil.isNotBlank(accessTokenMap)){
+			for (Entry<Object, Object> entry : accessTokenMap.entrySet()){
+				accessTokenStr = (String) entry.getValue();
+				accessToken = JSONObject.parseObject(accessTokenStr, AccessToken.class);
+			}
+			return accessToken;
+		}else {
+			AccessToken token = new AccessToken();
+			iniAccessToken(token);
+			return token;
+		}
+		/*Element result = cache.get("AccessToken");
 		if (result==null){
 			AccessToken accessToken = new AccessToken();
 			iniAccessToken(accessToken);
@@ -682,11 +706,13 @@ public class CacheManager {
 		}else {
 			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) result.getValue();
 			return accessTokenMap.get("AccessToken");
-		}
+		}*/
+
 	}
 
 	public static void remove(){
-		cache.remove("AccessToken");
+		redisUtils.del(PREFIX_ACCESSTOKEN);
+		/*cache.remove("AccessToken");*/
 	}
 
 
@@ -1143,8 +1169,12 @@ public class CacheManager {
 		return maxId;
 	}
 
-	public static Long getMaxVersionId(){
-		Long maxVersionId = (Long)redisUtils.get("maxVersionId");
+	public static Long getproductMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","productMaxVersionId");
+		return maxVersionId;
+	}
+	public static Long getStyleMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","styleMaxVersionId");
 		return maxVersionId;
 	}
 }

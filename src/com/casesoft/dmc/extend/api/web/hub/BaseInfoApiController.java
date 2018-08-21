@@ -5,7 +5,6 @@ import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.sys.UserUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.service.ServiceException;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -14,7 +13,10 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.location.Area;
 import com.casesoft.dmc.model.location.City;
 import com.casesoft.dmc.model.location.Province;
-import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.AccountStatementView;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.MonthAccountStatement;
+import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.service.cfg.PropertyService;
@@ -30,9 +32,6 @@ import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-import net.sf.json.JSONObject;
-import org.jboss.logging.Param;
-import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**

@@ -2,11 +2,9 @@ package com.casesoft.dmc.service.search;
 
 import com.casesoft.dmc.controller.search.temp.SaleAndFittingStatistics;
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.search.DetailFittingViewDao;
 import com.casesoft.dmc.model.search.DetailFittingView;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

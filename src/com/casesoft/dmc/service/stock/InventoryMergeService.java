@@ -1,6 +1,5 @@
 package com.casesoft.dmc.service.stock;
 
-import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
@@ -9,7 +8,6 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.InventoryBillDao;
 import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.dao.stock.InventoryMergeDao;
-import com.casesoft.dmc.dao.task.BusinessDtlDao;
 import com.casesoft.dmc.dao.task.TaskDao;
 import com.casesoft.dmc.model.erp.Bill;
 import com.casesoft.dmc.model.logistics.InventoryBill;

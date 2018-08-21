@@ -8,22 +8,22 @@ import com.casesoft.dmc.model.logistics.SaleByOrignames;
 import com.casesoft.dmc.model.logistics.SaleBybusinessname;
 import com.casesoft.dmc.model.search.SaleNodeatilViews;
 import com.casesoft.dmc.model.search.SaleorderCountView;
-import com.sun.deploy.security.ValidationState;
 import oracle.jdbc.driver.OracleTypes;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.SessionFactory;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/23.

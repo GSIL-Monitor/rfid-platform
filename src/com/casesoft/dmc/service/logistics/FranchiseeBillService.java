@@ -1,6 +1,5 @@
 package com.casesoft.dmc.service.logistics;
 
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;

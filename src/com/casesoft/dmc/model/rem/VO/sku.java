@@ -1,6 +1,5 @@
 package com.casesoft.dmc.model.rem.VO;
 
-import javax.persistence.Entity;
 import java.math.BigDecimal;
 
 /**

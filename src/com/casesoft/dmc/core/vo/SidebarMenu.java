@@ -3,7 +3,6 @@ package com.casesoft.dmc.core.vo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by WingLi on 2016-12-09.

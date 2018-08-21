@@ -2,7 +2,6 @@ package com.casesoft.dmc.controller.logistics;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
@@ -11,8 +10,10 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.PropertyKey;
-import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.BillRecord;
+import com.casesoft.dmc.model.logistics.LabelChangeBill;
+import com.casesoft.dmc.model.logistics.LabelChangeBillDel;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
@@ -25,14 +26,15 @@ import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import com.casesoft.dmc.service.tag.InitService;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/5/9.

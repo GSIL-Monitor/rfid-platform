@@ -1,7 +1,6 @@
 package com.casesoft.dmc.dao.task;
 
 import com.casesoft.dmc.core.dao.BaseHibernateDao;
-import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.BusinessDtl;
 import org.springframework.stereotype.Repository;
 

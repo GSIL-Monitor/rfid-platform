@@ -1,9 +1,7 @@
 package com.casesoft.dmc.service.logistics;
 
-import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
-import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -14,9 +12,7 @@ import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
-import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
@@ -33,9 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-
-import static oracle.net.aso.C05.e;
 
 
 /**

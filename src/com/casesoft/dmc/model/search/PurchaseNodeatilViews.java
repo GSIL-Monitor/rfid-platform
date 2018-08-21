@@ -3,7 +3,10 @@ package com.casesoft.dmc.model.search;
 import com.alibaba.fastjson.annotation.JSONField;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**

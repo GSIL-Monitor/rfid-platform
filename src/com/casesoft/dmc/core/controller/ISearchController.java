@@ -1,8 +1,8 @@
 package com.casesoft.dmc.core.controller;
 
-import java.util.List;
-
 import com.casesoft.dmc.core.util.page.Page;
+
+import java.util.List;
 
 public interface ISearchController<T> {
 

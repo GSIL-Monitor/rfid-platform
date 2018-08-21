@@ -1,25 +1,5 @@
 package com.casesoft.dmc.core.tag.util;
 
-import java.beans.XMLDecoder;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -28,6 +8,18 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.HTMLWriter;
 import org.dom4j.io.OutputFormat;
+
+import java.beans.XMLDecoder;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtil {
 	private static Pattern numericPattern = Pattern.compile("^[0-9\\-]+$");

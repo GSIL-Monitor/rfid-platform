@@ -1,7 +1,10 @@
 package com.casesoft.dmc.model.rem;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import javax.persistence.*;
 /**
  * Created by lly on 2018/7/20.
  */

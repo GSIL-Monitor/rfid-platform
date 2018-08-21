@@ -1,11 +1,11 @@
 package com.casesoft.dmc.model.stock;
 
+import com.casesoft.dmc.core.util.CommonUtil;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.casesoft.dmc.core.util.CommonUtil;
 
 public class StockCache {
 

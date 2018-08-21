@@ -1,10 +1,6 @@
 package com.casesoft.dmc.model.shop;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 @Entity
 @Table(name="Shop_PromotionBillDtl")
 public class PromotionBillDtl {

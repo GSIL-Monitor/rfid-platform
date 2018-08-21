@@ -1,6 +1,5 @@
 package com.casesoft.dmc.controller.cfg;
 
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;

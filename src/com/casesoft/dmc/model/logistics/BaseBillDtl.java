@@ -7,8 +7,6 @@ package com.casesoft.dmc.model.logistics;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import java.util.List;
-import java.util.Map;
 
 @MappedSuperclass
 public abstract class BaseBillDtl {

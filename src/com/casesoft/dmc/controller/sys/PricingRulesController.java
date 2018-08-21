@@ -2,7 +2,6 @@ package com.casesoft.dmc.controller.sys;
 
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.controller.BaseController;
-
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -12,8 +11,6 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.sys.User;
-import com.casesoft.dmc.service.cfg.PropertyKeyService;
-import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

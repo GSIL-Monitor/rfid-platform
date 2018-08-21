@@ -1,10 +1,10 @@
 package com.casesoft.dmc.service.sys;
 
-import java.util.List;
-
 import com.casesoft.dmc.dao.sys.RoleDao;
 import com.casesoft.dmc.model.sys.Role;
 import com.casesoft.dmc.model.sys.User;
+
+import java.util.List;
 
 public interface IRoleService {
 

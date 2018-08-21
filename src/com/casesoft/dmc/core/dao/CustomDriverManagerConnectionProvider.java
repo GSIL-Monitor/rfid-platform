@@ -1,10 +1,10 @@
 package com.casesoft.dmc.core.dao;
 
-import java.util.Properties;    
+import org.hibernate.HibernateException;
+import org.hibernate.cfg.Environment;
+import org.hibernate.connection.DriverManagerConnectionProvider;
 
-import org.hibernate.HibernateException;    
-import org.hibernate.cfg.Environment;    
-import org.hibernate.connection.DriverManagerConnectionProvider;  
+import java.util.Properties;
 
 public class CustomDriverManagerConnectionProvider extends
 		DriverManagerConnectionProvider {

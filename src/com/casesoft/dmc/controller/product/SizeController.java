@@ -1,24 +1,23 @@
 package com.casesoft.dmc.controller.product;
 
-import java.util.*;
-
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.product.Size;
+import com.casesoft.dmc.model.product.SizeSort;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.product.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.product.Size;
-import com.casesoft.dmc.model.product.SizeSort;
-import com.casesoft.dmc.service.product.SizeService;
+import java.util.*;
 
 @Controller
 @RequestMapping("/prod/size")

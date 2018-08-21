@@ -1,17 +1,10 @@
 package com.casesoft.dmc.core.controller;
 
-import java.io.*;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
-
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.core.exception.ExceptionCode;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.mock.WebMockUtil;
+import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.sys.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +14,16 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.mock.WebMockUtil;
-import com.casesoft.dmc.core.vo.MessageBox;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
 
 /**
  * Created by WingLi on 2015-09-07.

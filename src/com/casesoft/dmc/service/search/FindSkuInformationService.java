@@ -5,8 +5,6 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.search.FindSkuInformationDao;
-import com.casesoft.dmc.model.logistics.ReplenishBill;
-import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.FindSkuInformation;
 import oracle.jdbc.driver.OracleTypes;
 import org.hibernate.Session;

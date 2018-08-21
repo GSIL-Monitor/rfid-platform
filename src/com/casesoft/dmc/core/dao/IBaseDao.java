@@ -1,13 +1,12 @@
 package com.casesoft.dmc.core.dao;
 
+import com.casesoft.dmc.core.dao.PropertyFilter.MatchType;
+import com.casesoft.dmc.core.util.page.Page;
+import org.hibernate.criterion.Criterion;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import org.hibernate.criterion.Criterion;
-
-import com.casesoft.dmc.core.dao.PropertyFilter.MatchType;
-import com.casesoft.dmc.core.util.page.Page;
 
 public interface IBaseDao<T, PK extends Serializable> {
 
