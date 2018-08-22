@@ -293,9 +293,13 @@
         }*/
     }
     function onMessage(evt) {
+        var uniCodes = [];
         var res = JSON.parse(evt.data);
         if (res.cmd == "10006") {
-            console.log(res.data);
+            $.each(res.data,function (index,value) {
+                uniCodes.push(value.unicode);
+            });
+            console.log(uniCodes);
            /* for (var i = 0; i < res.data.length; i++) {
                 addToEpcTable(res.data[i]);
             }
@@ -339,7 +343,8 @@
             return false;
         }
         console.log(websocket);
-        websocket.send(JSON.stringify(message));
+        var data = websocket.send(JSON.stringify(message));
+        console.log(data);
     }
     function save() {
         window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrAccountWS.html';
