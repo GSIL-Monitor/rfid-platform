@@ -147,8 +147,12 @@ function changeValue() {
         $("#actPayPriced").attr("value",price);//实收为应收
         $("#returnPriced").attr("value",actpayPrice-price);//数据实收-应收
     }
+    else {
+        $("#returnPriced").attr("value",0);//找零0
+    }
 }
 function savePayPrice() {
+    var returnPrice = $("#returnPriced").val();
     var payPrice = $("#Priced").val();
     var actPayPrice = $("#actPayPriced").val();
     var billNo = "TESTLLY";
@@ -170,6 +174,7 @@ function savePayPrice() {
                     customerId : customerId,
                     payPrice : payPrice,
                     actPayPrice :actPayPrice,
+                    returnPrice :returnPrice,
                     payType : payType
                 },
                 success:function (result) {

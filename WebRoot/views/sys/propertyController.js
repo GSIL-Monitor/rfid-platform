@@ -110,6 +110,7 @@ function initGrid() {
                 }},
     		{name: 'name', label: '代码名称', editable:true,width: 40},
             {name:'type',hidden:true},
+            {name:'iconCode',hidden:true},
             {
                 name: "", label: "操作", width: 60, editable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
@@ -205,7 +206,6 @@ function edittype (rowId) {
 }
 
 function editproperty(rowId) {
-    debugger;
     pagetype="edit";
     $("#editFormdetailed").resetForm();
     if (rowId) {

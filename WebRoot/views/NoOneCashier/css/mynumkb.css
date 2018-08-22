@@ -148,4 +148,10 @@ body{
     right: 10px;
     border-color:#4CAF50
 }
+#Priced,#actPayPriced{
+    color: red;
+}
+#payPriced,#returnPriced{
+    color: #00b0ff;
+}
 
