@@ -5,6 +5,8 @@
         //var basePathAll=window.location.href;
         //var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
         var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+        var timeout;
+        var websocket;
     </script>
     <script src="../../Olive/assets/js/jquery.js"></script>
     <script src="../../Olive/assets/js/bootstrap.js"></script>
@@ -112,6 +114,12 @@
   </div>
 <script>
     $(function () {
+        var wsUri ="ws://127.0.0.1:4649/csreader";
+        websocket = new WebSocket(wsUri);
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
         loadTable();
         //得到表格的宽度
         var tableWith=$("#sale").width();
@@ -265,11 +273,73 @@
             container : 'body'
         });
     }
+    /*
+    扫描
+     */
     function onScanning() {
+        var msg={
+            "cmd":"10002"
+        };
+        sendMessgeToServer(msg);
+    }
+    function onOpen(evt) {
+        /*showMessage("连接 Reader Server成功");*/
+    }
+    function onClose(evt) {
+        /*if(evt.code == 1005){
+            /!*showMessage('与服务器连接已断开');*!/
+        }else if(evt.code == 1006){
+            /!*showMessage('连接服务器失败',true);*!/
+        }*/
+    }
+    function onMessage(evt) {
+        var res = JSON.parse(evt.data);
+        if (res.cmd == "10006") {
+            console.log(res.data);
+           /* for (var i = 0; i < res.data.length; i++) {
+                addToEpcTable(res.data[i]);
+            }
+            total+=res.data.length;
+            console.log('recive '+res.data.length+' total:'+total);*/
+        } else {
+            /*showMessage(res.cmd+ '->' + res.msg , !res.success);*/
+        }
+    }
+    function onError(evt) {
+        /*showMessage('发生错误' + evt.data,true);*/
+    }
+    /*
+    停止
+     */
+    function stop() {
+        if (timeout != null) {
+            window.clearInterval(timeout);
+        }
+        var msg={
+            "cmd":"10003"
+        };
+        sendMessgeToServer(msg)
+    }
 
+
+    function start() {
+        timeout = window.setInterval("moniterTotalChange()", 250);
     }
     function addCommodity() {
         
+    }
+    function sendMessgeToServer(message) {
+
+        if (typeof websocket==="undefined"){
+           /* showMessage('websocket还没有连接，或者连接失败，请检测',true);*/
+            return false;
+        }
+        if (websocket.readyState==3) {
+            /*showMessage('websocket已经关闭，请重新连接',true);*/
+            return false;
+        }
+        console.log(websocket);
+        websocket.send(JSON.stringify(message));
     }
     function save() {
         window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrAccountWS.html';
