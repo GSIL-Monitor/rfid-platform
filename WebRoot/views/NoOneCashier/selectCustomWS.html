@@ -108,6 +108,8 @@
 <script>
     var page=1;
     $(function () {
+        //判断是否有选择的数据
+        isHaveCustomer();
         changeWrite();
         $("#scrollCustmerDiv").scroll(function(){
             if($("#scrollCustmerDiv")[0].scrollTop >= ($("#scrollCustmerDiv")[0].scrollHeight - $("#scrollCustmerDiv").height()))
@@ -195,6 +197,15 @@
            window.location.href=basePath+'/views/NoOneCashier/selectSaleOrSaleRetrunWS.html';
        }else{
            bootbox.alert("请选择客户");
+       }
+   }
+   function isHaveCustomer() {
+       var custmerId = localStorage.getItem("custmerId");
+       var custmerName = localStorage.getItem("custmerName");
+       if (custmerName != "" && custmerName != undefined) {
+           $("#writeinput").val(custmerName)
+           $("#writeinput").show();
+           $("#changinput").hide();
        }
    }
 </script>
