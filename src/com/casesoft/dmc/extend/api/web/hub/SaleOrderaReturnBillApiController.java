@@ -86,31 +86,27 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 	 * */
 	@RequestMapping(value="/saveJSONWS")
 	@ResponseBody
-	public void saveSaleOrderBill(JSONArray saleOrderReturnArray){
+	public void saveSaleOrderBill(String saleOrderReturnArray){
 		this.logAllRequestParams();
+		JSONArray jsonArray = JSON.parseArray(saleOrderReturnArray);
 		RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 		//Queue<Object> objectQueue = new LinkedList<>();
-		for(Object o : saleOrderReturnArray){
-			objectQueue.offer(o);
-		}
-		while(CommonUtil.isNotBlank(objectQueue.peek())){
-			Object object = objectQueue.peek();
+		for(Object o : jsonArray){
 			SaleOrderReturnBill saleOrderReturnBill=null;
 			try {
-				 saleOrderReturnBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderReturnBill.class);
+				saleOrderReturnBill = JSON.parseObject(JSON.toJSON(o).toString(),SaleOrderReturnBill.class);
 				List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls = saleOrderReturnBill.getDtlList();
 				this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls,null);
 				boolean sHasKey = redisUtils.sHasKey("saleOrderReturnBill", saleOrderReturnBill.getId());
 				if(sHasKey){
 					redisUtils.setRemove("saleOrderReturnBill",saleOrderReturnBill.getId());
 				}
-				objectQueue.poll();
 			}catch (Exception e){
 				this.logger.error("保存失败");
-				objectQueue.add(object);
+				objectQueue.add(o);
 				saleOrderReturnBill.setErrorMessage(e.getMessage());
 				if(CommonUtil.isNotBlank(saleOrderReturnBill)) {
-					redisUtils.hset("saleOrderBill", saleOrderReturnBill.getId(), JSON.toJSONString(saleOrderReturnBill));
+					redisUtils.hset("saleOrderReturnBill", saleOrderReturnBill.getId(), JSON.toJSONString(saleOrderReturnBill));
 				}
 			}
 		}

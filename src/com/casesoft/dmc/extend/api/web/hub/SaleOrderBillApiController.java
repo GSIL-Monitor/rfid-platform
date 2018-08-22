@@ -77,34 +77,32 @@ public class SaleOrderBillApiController extends ApiBaseController{
      * */
     @RequestMapping(value="/saveJSONWS")
     @ResponseBody
-    public void saveSaleOrderBill(JSONArray saleOrderArray){
+    public void saveSaleOrderBill(String saleOrderArray){
         this.logAllRequestParams();
+        JSONArray jsonArray = JSON.parseArray(saleOrderArray);
         RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
         //Queue<Object> objectQueue = new LinkedList<>();
-        for(Object o : saleOrderArray){
-            objectQueue.offer(o);
-        }
-        while(CommonUtil.isNotBlank(objectQueue.peek())){
-            Object object = objectQueue.peek();
+        for(Object o : jsonArray){
             SaleOrderBill saleOrderBill=null;
             try {
-                 saleOrderBill = JSON.parseObject(JSON.toJSON(object).toString(),SaleOrderBill.class);
+                saleOrderBill = JSON.parseObject(JSON.toJSON(o).toString(),SaleOrderBill.class);
                 List<SaleOrderBillDtl> saleOrderBillDtlList = saleOrderBill.getDtlList();
                 this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList, null);
                 boolean sHasKey = redisUtils.sHasKey("saleOrderBill", saleOrderBill.getId());
                 if(sHasKey){
                     redisUtils.setRemove("saleOrderBill",saleOrderBill.getId());
                 }
-                objectQueue.poll();
             }catch (Exception e){
                 this.logger.error("保存失败");
-                objectQueue.add(object);
+                e.printStackTrace();
+                objectQueue.add(o);
                 saleOrderBill.setErrorMessage(e.getMessage());
                 if(CommonUtil.isNotBlank(saleOrderBill)) {
                     redisUtils.hset("saleOrderBill", saleOrderBill.getId(), JSON.toJSONString(saleOrderBill));
                 }
             }
         }
+
     }
 
     @RequestMapping(value="/listWS")
