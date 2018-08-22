@@ -167,14 +167,12 @@
                         number: true
                     },
                     formatter: function (cellValue, options, rowObject) {
-                        var price = parseFloat(cellValue).toFixed(2);
-                        return price;
+                        return parseFloat(cellValue).toFixed(2);
                     }
                 },
                 {name: 'totPrice', label: '销售金额',width: 40,
                     formatter: function (cellValue, options, rowObject) {
-                        var totPrice = parseFloat(cellValue).toFixed(2);
-                        return totPrice;
+                        return parseFloat(cellValue).toFixed(2);
                     }
                 },
                 {
@@ -192,14 +190,12 @@
                         minValue: 0
                     },
                     formatter: function (cellValue, options, rowObject) {
-                        var actPrice = parseFloat(cellValue).toFixed(2);
-                        return actPrice;
+                        return parseFloat(cellValue).toFixed(2);
                     }
                 },
                 {name: 'totActPrice', label: '实际金额', width:40,
                     formatter: function (cellValue, options, rowObject) {
-                        var totActPrice = parseFloat(cellValue).toFixed(2);
-                        return totActPrice;
+                        return parseFloat(cellValue).toFixed(2);
                     }
                 },
                 {name: 'uniqueCodes', label: '唯一码', hidden: true}
@@ -295,7 +291,7 @@
     function onMessage(evt) {
         var uniCodes = [];
         var res = JSON.parse(evt.data);
-        if (res.cmd == "10006") {
+        if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
                 uniCodes.push(value.unicode);
             });
@@ -316,7 +312,7 @@
     停止
      */
     function stop() {
-        if (timeout != null) {
+        if (timeout !== null) {
             window.clearInterval(timeout);
         }
         var msg={
@@ -325,10 +321,6 @@
         sendMessgeToServer(msg)
     }
 
-
-    function start() {
-        timeout = window.setInterval("moniterTotalChange()", 250);
-    }
     function addCommodity() {
         
     }
@@ -338,7 +330,7 @@
            /* showMessage('websocket还没有连接，或者连接失败，请检测',true);*/
             return false;
         }
-        if (websocket.readyState==3) {
+        if (websocket.readyState===3) {
             /*showMessage('websocket已经关闭，请重新连接',true);*/
             return false;
         }
