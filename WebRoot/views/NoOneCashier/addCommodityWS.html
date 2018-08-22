@@ -39,8 +39,17 @@
             color:white;
             background-color:#307a3c;
             height:8%;
-            right: 40px;
             position: fixed;
+            right: 20%;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+        .bottom-button1{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            right: 10px;
             bottom: 10px;
             border-color:#307a3c
         }
@@ -65,7 +74,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-11 btnPosition">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 btnPosition">
                                         <button type="button" class="btn btn-sm btn-primary" onclick="searcheditStyle()">
                                             <i class="ace-icon fa fa-search"></i>
                                             <span class="bigger-110">查询</span>
@@ -98,6 +107,7 @@
             </div>
         </div>
         <button id="save" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button" onclick="addProductInfo()">保存</button>
+        <button id="saveClose" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button1" onclick="addProductInfo('close')">保存并关闭</button>
     </div>
 <script>
     var searchStyleUrl = basePath +  "/prod/style/pageWS.do";
@@ -111,12 +121,12 @@
             datatype: "local",
             colModel: [
                 {name: 'id', label:'编号',editable:true,hidden:true},
-                {name: 'styleId', label: '款号',editable:true, width: 100,sortable: true},
-                {name: 'styleName', label: '款名', editable:true,width: 200},
-                {name: 'preCast', label: '采购价', editable:true,width: 80},
-                {name: 'puPrice', label: '销售价', editable:true,hidden:true},
-                {name: 'wsPrice', label: '销售价', editable:true,hidden:true},
-                {name: 'price', label: '吊牌价', editable:true,width: 80},
+                {name: 'styleId', label: '款号',editable:true, sortable: true},
+                {name: 'styleName', label: '款名', editable:true},
+                {name: 'preCast', label: '采购价', editable:true},
+                {name: 'puPrice', label: '销售价', editable:true},
+                {name: 'wsPrice', label: '销售价', editable:true},
+                {name: 'price', label: '吊牌价', editable:true},
                 {name: 'class6', label: '入库类型',hidden:true},
                 {name:'bargainPrice',label:'特价',editable:true,hidden:true}
             ],
@@ -173,11 +183,11 @@
                 {name: 'wsPrice', label: '采购价',hidden:true},
                 {name:'bargainPrice',label:'特价',hidden:true},
                 {name: 'price', label: '吊牌价',hidden:true},
-                {name: 'colorId', label: '色码',width: 80,sortable: true},
-                {name: 'colorName', label: '颜色', width: 100,sortable: true},
-                {name: 'sizeId', label: '尺码', width: 80,sortable: true},
-                {name: 'sizeName', label: '尺寸', width: 100,sortable: true},
-                {name: 'qty', label: '数量',editable:true, width: 100,sortable: true,
+                {name: 'colorId', label: '色码',sortable: true},
+                {name: 'colorName', label: '颜色',sortable: true},
+                {name: 'sizeId', label: '尺码',sortable: true},
+                {name: 'sizeName', label: '尺寸',sortable: true},
+                {name: 'qty', label: '数量',editable:true,sortable: true,
 
                     editoptions: {
                         dataInit: function (e) {
@@ -207,7 +217,7 @@
         });
     }
     /*选中订货商品添加*/
-    function addProductInfo() {
+    function addProductInfo(type) {
         var addProductInfo = [];
         if (editcolosizeRow != null) {
             $('#color_size_grid').saveRow(editcolosizeRow, false, 'clientArray');//仅保存数据到grid中，而不会发送ajax请求服务器
@@ -272,8 +282,9 @@
         });
         localStorage.setItem("addProductInfo",JSON.stringify(addProductInfo));
         console.log(localStorage.getItem("addProductInfo"))
-        var jsObject = JSON.parse(localStorage.getItem("addProductInfo")); //转换为json对象
-        console.log(jsObject);
+        if(type == "close"){
+            location.href = basePath+'/views/NoOneCashier/saleDelWS.html';
+        }
     }
 </script>
 </body>
