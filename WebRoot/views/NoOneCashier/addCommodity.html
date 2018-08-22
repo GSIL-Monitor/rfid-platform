@@ -110,15 +110,15 @@
         $("#stylegrid").jqGrid({
             datatype: "local",
             colModel: [
-                {name: 'id', label:'编号',editable:true,width: 100,hidden:true},
+                {name: 'id', label:'编号',editable:true,hidden:true},
                 {name: 'styleId', label: '款号',editable:true, width: 100,sortable: true},
                 {name: 'styleName', label: '款名', editable:true,width: 200},
                 {name: 'preCast', label: '采购价', editable:true,width: 80},
-                {name: 'puPrice', label: '销售价', editable:true,width: 80,hidden:true},
-                {name: 'wsPrice', label: '销售价', editable:true,width: 80,hidden:true},
+                {name: 'puPrice', label: '销售价', editable:true,hidden:true},
+                {name: 'wsPrice', label: '销售价', editable:true,hidden:true},
                 {name: 'price', label: '吊牌价', editable:true,width: 80},
                 {name: 'class6', label: '入库类型',hidden:true},
-                {name:'bargainPrice',label:'特价',editable:true,width:80,hidden:true}
+                {name:'bargainPrice',label:'特价',editable:true,hidden:true}
             ],
             viewrecords: true,
             rownumbers: true,
@@ -165,14 +165,14 @@
         $("#color_size_grid").jqGrid({
             datatype:"local",
             colModel: [
-                {name: 'code', label:'code',width: 100,hidden:true},
-                {name: 'styleId', label: '款号', width: 100,sortable: true,hidden:true},
-                {name: 'styleName', label: '款名',width: 100,hidden:true},
-                {name: 'preCast', label: '采购价',width: 80,hidden:true},
-                {name: 'puPrice', label: '采购价', width: 80,hidden:true},
-                {name: 'wsPrice', label: '采购价', width: 80,hidden:true},
-                {name:'bargainPrice',label:'特价',hidden:true,width:80},
-                {name: 'price', label: '吊牌价',width: 80,hidden:true},
+                {name: 'code', label:'code',hidden:true},
+                {name: 'styleId', label: '款号', sortable: true,hidden:true},
+                {name: 'styleName', label: '款名',hidden:true},
+                {name: 'preCast', label: '采购价',hidden:true},
+                {name: 'puPrice', label: '采购价',hidden:true},
+                {name: 'wsPrice', label: '采购价',hidden:true},
+                {name:'bargainPrice',label:'特价',hidden:true},
+                {name: 'price', label: '吊牌价',hidden:true},
                 {name: 'colorId', label: '色码',width: 80,sortable: true},
                 {name: 'colorName', label: '颜色', width: 100,sortable: true},
                 {name: 'sizeId', label: '尺码', width: 80,sortable: true},
@@ -270,7 +270,6 @@
                 addProductInfo.push(productInfo);
             }
         });
-        debugger
         localStorage.setItem("addProductInfo",JSON.stringify(addProductInfo));
         console.log(localStorage.getItem("addProductInfo"))
         var jsObject = JSON.parse(localStorage.getItem("addProductInfo")); //转换为json对象
