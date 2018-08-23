@@ -63,7 +63,8 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
             } else {
                 hql += "where groupId = '" + groupIdFilter + "' ";
             }
-            hql += "and (styleId like '%" + styleIdFilter + "%' or styleName like '%" + styleNameFilter + "%') " +
+            hql += "and styleId like '%" + styleIdFilter + "%' " +
+                    "and styleName like '%" + styleNameFilter + "%' " +
                     "group by class1,precast,price,puprice,styleId,styleName,wsprice " +
                     "order by " + sortName + " " + order;
             page.setAutoCount(false);

@@ -73,6 +73,13 @@ public class DetailStockChatView {
     @Column()
     private String groupId;
 
+    @Column()
+    private Long inStockTime;
+
+    public Long getInStockTime() { return inStockTime; }
+
+    public void setInStockTime(Long inStockTime) { this.inStockTime = inStockTime; }
+
     public String getGroupId() {
         return groupId;
     }
