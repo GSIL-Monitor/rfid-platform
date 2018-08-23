@@ -8,11 +8,9 @@ import com.casesoft.dmc.core.util.file.ImgUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
-import com.casesoft.dmc.extend.api.web.epay.alipay.util.httpClient.HttpRequest;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
 import com.casesoft.dmc.model.search.DetailStockView;
-import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.search.DetailStockCodeViewService;
 import com.casesoft.dmc.service.search.DetailStockViewChatService;
@@ -26,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/12/7.
@@ -78,6 +78,7 @@ public class WxwarehStockController extends ApiBaseController {
 
         return returnSuccessInfo("保存成功",warehouse);
     }
+
     @RequestMapping(value = "/findwerahStock.do")
     @ResponseBody
     public MessageBox findwerahStock(String pageSize,String pageNo,String sortName,String order){
@@ -92,24 +93,38 @@ public class WxwarehStockController extends ApiBaseController {
         if(CommonUtil.isNotBlank(order)){
             page.setOrder(order);
         }
-        page = this.detailStockViewChatService.findPage(page,filters);
+        page = this.detailStockViewChatService.findPageList(page,filters);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         for(DetailStockChatView d : page.getRows()){
-           /* File file =  new File(rootPath + "/product/photo/" + d.getStyleId());
-            if(file.exists()){
-                File[] files = file.listFiles();
-                if(files.length > 0){
-                    File[] photos = files[0].listFiles();
-                    if(photos.length > 0){
-                        d.setUrl("/product/photo/" + d.getStyleId()+"/"+files[0].getName()+"/"+photos[0].getName());
-                    }
-                }
-            }*/
             String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
             d.setUrl(url);
         }
         return this.returnSuccessInfo("获取成功",page.getRows());
     }
+
+    @RequestMapping(value = "/findwerahStockListWS.do")
+    @ResponseBody
+    public MessageBox findwerahStockListWS(String pageSize,String pageNo,String sortName,String order){
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        Page<DetailStockChatView> page = new Page<DetailStockChatView>(Integer.parseInt(pageSize));
+        page.setPage(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        if(CommonUtil.isNotBlank(sortName)){
+            page.setOrderBy(sortName);
+        }
+        if(CommonUtil.isNotBlank(order)){
+            page.setOrder(order);
+        }
+        page = this.detailStockViewChatService.findPage(page,filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        for(DetailStockChatView d : page.getRows()){
+            String url = StyleUtil.returnImageUrl(d.getStyleId(), rootPath);
+            d.setUrl(url);
+        }
+        return this.returnSuccessInfo("获取成功",page.getRows());
+    }
+
     @RequestMapping(value = "/findtitleMessage.do")
     @ResponseBody
     public MessageBox findtitleMessage(String warehId,String styleid,String groupId){
