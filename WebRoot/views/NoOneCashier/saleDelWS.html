@@ -330,20 +330,23 @@
         }*/
     }
     function onMessage(evt) {
-        var uniCodes = [];
+        var skuInfo = [];
         var res = JSON.parse(evt.data);
+        var unicodes = [];
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
-                uniCodes.push(value.unicode);
+                skuInfo.push(value.skuInfo);
+                var rowData = value.skuInfo;
+                if (rowData!==null) {
+                    console.log(rowData.unicode);
+                    unicodes.push(rowData.unicode);
+                    $("#addDetailgrid").setRowData(rowData.unicode, value.skuInfo);
+                }
             });
-            console.log(uniCodes);
-           /* for (var i = 0; i < res.data.length; i++) {
-                addToEpcTable(res.data[i]);
-            }
-            total+=res.data.length;
-            console.log('recive '+res.data.length+' total:'+total);*/
+            //所有唯一码unicodes
+            console.log(unicodes);
+            console.log(skuInfo);
         } else {
-            /*showMessage(res.cmd+ '->' + res.msg , !res.success);*/
         }
     }
     function onError(evt) {
