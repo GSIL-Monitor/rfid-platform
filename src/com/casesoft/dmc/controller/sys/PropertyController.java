@@ -6,10 +6,12 @@ import java.util.*;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.model.cfg.MultiLevelRelation;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.cfg.MultiLevelRelationService;
 import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.sys.impl.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class PropertyController extends BaseController implements IBaseInfoContr
     private VendorService vendorService;
     @Autowired
     private payDetailService payDetailService;
+    @Autowired
+    private MultiLevelRelationService multiLevelRelationService;
 
 
     @Override
@@ -341,8 +345,8 @@ public class PropertyController extends BaseController implements IBaseInfoContr
 
     @RequestMapping(value = "/listPropertyTree")
     @ResponseBody
-    public List<TreeVO> listPropertyTree() {
-        List<TreeVO> treeVOS = this.propertyService.listPropertyTree(Constant.MultiLevelType.C3);
+    public List<TreeVO> listPropertyTree(String multiLevelType) {
+        List<TreeVO> treeVOS = this.propertyService.listPropertyTree(multiLevelType);
         return treeVOS;
     }
 
@@ -398,4 +402,11 @@ public class PropertyController extends BaseController implements IBaseInfoContr
         }
     }
 
+    @RequestMapping(value = {"/listMultiLevel","/listMultiLevelWS"})
+    @ResponseBody
+    public List<MultiLevelRelation> listMultiLevel(String type) {
+        this.logAllRequestParams();
+        List<MultiLevelRelation> multiLevelList = this.multiLevelRelationService.listMultiLevelByType(type);
+        return multiLevelList;
+    }
 }

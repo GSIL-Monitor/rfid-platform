@@ -67,7 +67,7 @@
                                         </div>
                                         <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="search_class3">大类</label>
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
-                                            <select class="form-control" id="search_class3" name="filter_EQS_class3">
+                                            <select class="form-control selectpicker"  data-live-search="true" id="search_class3" name="filter_EQS_class3">
                                                 <option value="">请选择大类</option>
                                             </select>
                                         </div>

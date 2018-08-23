@@ -18,14 +18,14 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right">定价规则名</label>
-                        <div class="col-xs-10 col-sm-5">
+                        <div class="col-xs-8 col-sm-8">
                             <input class="form-control" id="name" name="name"
                                    type="text"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="rule1_name"><span class="text-danger"></span>吊牌价与采购价的关系</label>
-                        <div class="col-xs-10 col-sm-5">
+                        <div class="col-xs-8 col-sm-8">
                             <input class="form-control" id="rule1_name" name="rule1"
                                    type="text"/>
                         </div>
@@ -33,7 +33,7 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="rule2_name"><span class="text-danger"></span>吊牌价与门店价的关系</label>
-                        <div class="col-xs-10 col-sm-5">
+                        <div class="col-xs-8 col-sm-8">
                             <input class="form-control" id="rule2_name" name="rule2"
                                    type="text"/>
                         </div>
@@ -41,7 +41,7 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="rule3_name"><span class="text-danger"></span>吊牌价与代理价的关系</label>
-                        <div class="col-xs-10 col-sm-5">
+                        <div class="col-xs-8 col-sm-8">
                             <input class="form-control" id="rule3_name" name="rule3"
                                    type="text"/>
                         </div>
@@ -49,7 +49,7 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_series">系列</label>
-                        <div class="col-xs-10 col-sm-5">
+                        <div class="col-xs-8 col-sm-8">
                             <select class="chosen-select form-control" id="form_series" name="series">
                                 <option value="">请选择系列</option>
                             </select>
@@ -57,8 +57,8 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_class3">大类</label>
-                        <div class="col-xs-10 col-sm-5">
-                            <select class="chosen-select form-control" id="form_class3" name="class3">
+                        <div class="col-xs-8 col-sm-8">
+                            <select class="chosen-select form-control selectpicker"  data-live-search="true" id="form_class3" name="class3">
                                 <option value="">请选择大类</option>
                             </select>
                         </div>

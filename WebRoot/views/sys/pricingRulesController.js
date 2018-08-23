@@ -95,6 +95,7 @@ function edit() {
         var row = $("#grid").jqGrid('getRowData', rowId);
         $("#edit_pricingRules_dialog").modal("show");
         $("#editPricingRulesForm").loadData(row);
+        $(".selectpicker").selectpicker('refresh');
     } else {
         bootbox.alert("请选择一项进行修改！");
     }
@@ -144,7 +145,7 @@ function initadd() {
 }
 function initClass3() {
     $.ajax({
-        url:basePath+"/sys/property/searchByType.do?type=C3",
+        url:basePath+"/sys/property/listMultiLevel.do?type=C3",
         cache:false,
         async:false,
         inheritClass: true,
@@ -152,13 +153,38 @@ function initClass3() {
         success:function (data,textStatus) {
             var json=data;
             for (var i = 0; i < json.length; i++) {
-                $("#form_class3").append("<option value='" + json[i].code + "'>" + json[i].name+"</option>");
+                var subLevelHeader = "";
+                var depth = json[i].depth;
+                if(depth > 1){
+                    while (depth > 1){
+                        subLevelHeader += "&nbsp&nbsp&nbsp&nbsp";
+                        depth = depth - 1;
+                    }
+                }
+                $("#form_class3").append("<option value='" + json[i].id + "'>" + subLevelHeader+ json[i].name+"</option>");
                 $("#form_class3").trigger('chosen:updated');
-                $("#search_class3").append("<option value='" + json[i].code + "'>" + json[i].name+"</option>");
+                $("#search_class3").append("<option value='" + json[i].id + "'>" + subLevelHeader + json[i].name+"</option>");
                 $("#search_class3").trigger('chosen:updated');
             }
         }
     });
+    $(".selectpicker").selectpicker('refresh');
 }
-	
+
+$("#form_class3").change(function () {
+    var a = $("#form_class3").find("option:selected").text();
+    a = $.trim(a);
+    $("#form_class3").find("option:selected").text(a);
+});
+$("#search_class3").change(function () {
+    var a = $("#search_class3").find("option:selected").text();
+    a = $.trim(a);
+    $("#search_class3").find("option:selected").text(a);
+});
+$("#form_class3").click(function () {
+    initClass3();
+});
+$("#search_class3").click(function () {
+    initClass3();
+});
 	

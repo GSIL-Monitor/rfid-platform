@@ -89,7 +89,7 @@ public class MultiLevelRelationService extends AbstractBaseService<MultiLevelRel
 
     @Override
     public MultiLevelRelation load(String id) {
-        return null;
+        return this.get("id", id);
     }
 
     @Override
@@ -210,5 +210,10 @@ public class MultiLevelRelationService extends AbstractBaseService<MultiLevelRel
         for (MultiLevelRelation child : childList) {
             updateTreePath(child);
         }
+    }
+
+    public List<MultiLevelRelation> listMultiLevelByType(String type) {
+        String hql = "from MultiLevelRelation where multiLevelType = ? and depth > 0 order by treePath,treeSeqNo";
+        return this.multiLevelRelationDao.find(hql, type);
     }
 }

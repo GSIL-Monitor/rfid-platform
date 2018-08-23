@@ -4,8 +4,10 @@ import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PricingRulesDao;
+import com.casesoft.dmc.model.cfg.MultiLevelRelation;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.sys.PricingRules;
+import com.casesoft.dmc.service.cfg.MultiLevelRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,8 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
 
   @Autowired
   private PricingRulesDao pricingRulesDao;
+  @Autowired
+  private MultiLevelRelationService multiLevelRelationService;
 
   public PricingRules findBySC(String series,String class3){
     if(CommonUtil.isNotBlank(class3)){
@@ -30,10 +34,19 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
 
   public PricingRules findPricingRulesBySC(String series,String class3){
     PricingRules pricingRules = this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+    String parentId = "";
+    Integer depth = 0;
+    MultiLevelRelation currentLevelClass3 = this.multiLevelRelationService.load(class3);
+    if(CommonUtil.isNotBlank(currentLevelClass3)) {
+      parentId = currentLevelClass3.getParentId();
+      depth = currentLevelClass3.getDepth();
+    }
     if (CommonUtil.isNotBlank(pricingRules)){
       return pricingRules;
+    }else if(depth > 1 && CommonUtil.isNotBlank(parentId)) {
+      return findPricingRulesBySC(series, parentId);
     }else {
-      return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 is null");
+        return this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 is null");
     }
   }
 

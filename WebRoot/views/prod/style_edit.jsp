@@ -696,7 +696,7 @@
             }
         });
         $.ajax({
-            url: basePath + "/sys/property/searchByType.do?type=C3",
+            url: basePath + "/sys/property/listMultiLevel.do?type=C3",
             cache: false,
             async: true,
             type: "POST",
@@ -705,14 +705,15 @@
                 $("#form_class3").empty();
                 $("#form_class3").multiselect({
                     inheritClass: true,
-                    includeSelectAllOption: true,
-                    selectAllNumber: true,
+                    // includeSelectAllOption: true,
+                    // selectAllNumber: true,
                     enableFiltering: true,
-                    filterPlaceholder: "请选择大类",
+                    // filterPlaceholder: "请选择大类",
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
                         //console.log(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
                         var a = option[0].text;
+                        a = $.trim(a);
                         if (a.length > 5) {
                             $("#form_class3").next().children("button").text(a.substr(0, 5) + "...");
                         }
@@ -720,8 +721,17 @@
 
                     }
                 });
+                $("#form_class3").append(" <option value='' style='background-color: #eeeeee'>请选择大类</option>");
                 for (var i = 0; i < json.length; i++) {
-                    $("#form_class3").append("<option value='" + json[i].code + "' style='background-color: #eeeeee'>" + json[i].name + "</option>");
+                    var subLevelHeader = "";
+                    var depth = json[i].depth;
+                    if(depth > 1){
+                        while (depth > 1){
+                            subLevelHeader += "&nbsp&nbsp&nbsp&nbsp";
+                            depth = depth - 1;
+                        }
+                    }
+                    $("#form_class3").append("<option value='" + json[i].id + "' style='background-color: #eeeeee'>" + subLevelHeader +json[i].name + "</option>");
                 }
                 if ("${pageType}" == "edit") {
                     $("#form_class3").find("option[value='${style.class3}']").attr("selected", true);
