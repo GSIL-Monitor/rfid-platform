@@ -134,16 +134,25 @@ public class WXProductApiController extends ApiBaseController {
 
     @RequestMapping("/saveStyleWS.do")
     @ResponseBody
-    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId) throws Exception {
+    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId, String pageType) throws Exception {
         logAllRequestParams();
         try {
             Style styleDTO = JSON.parseObject(styleStr, Style.class);
             Style sty = CacheManager.getStyleById(styleDTO.getStyleId());
-            if (CommonUtil.isBlank(sty)) {
-                sty = new Style();
-                sty.setId(styleDTO.getStyleId());
-                sty.setStyleId(styleDTO.getStyleId());
-                sty.setIsUse("Y");
+            if ("add".equals(pageType)){
+                //判断sytleId在数据库中是否存在
+                if(CommonUtil.isBlank(sty)){
+                    sty = new Style();
+                    sty.setId(styleDTO.getStyleId());
+                    sty.setStyleId(styleDTO.getStyleId());
+                    sty.setIsUse("Y");
+                }else {
+                    return this.returnFailInfo("新增保存失败!"+sty.getId()+"款号已存在，请换一个款号保存");
+                }
+            }else {
+                if(CommonUtil.isBlank(sty)){
+                    return this.returnFailInfo("编辑失败!"+sty.getId()+"款号不存在");
+                }
             }
             List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
             List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
