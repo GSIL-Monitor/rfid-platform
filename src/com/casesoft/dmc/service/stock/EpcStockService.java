@@ -321,4 +321,12 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         String codeListStr = TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code");
         return this.findEpcInCodes(codeListStr);
     }
+
+    /**
+     * 用于判断某个款是否曾经入过库，返回值大于0说明曾经入过库
+     * @param styleId
+     */
+    public long countAllByStyleId(String styleId) {
+        return this.epcStockDao.findUnique("select count(id) from EpcStock where styleId = ?", styleId);
+    }
 }

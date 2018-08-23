@@ -16,11 +16,13 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
+import com.casesoft.dmc.model.sys.KeyInfoChange;
 import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.KeyInfoChangeService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,8 @@ public class WXProductApiController extends ApiBaseController {
 
     @Autowired
     private PricingRulesService pricingRulesService;
+    @Autowired
+    private KeyInfoChangeService keyInfoChangeService;
 
     @Override
     public String index() {
@@ -144,9 +148,10 @@ public class WXProductApiController extends ApiBaseController {
      */
     @RequestMapping("/saveStyleWS.do")
     @ResponseBody
-    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId, String pageType) {
+    public MessageBox saveStyleWS(HttpServletRequest request, String styleStr, String colorStr, String sizeStr, String userId, String pageType) {
         logAllRequestParams();
         try {
+            HashMap<String, Object> prePriceMap = new HashMap<>();
             Style styleDTO = JSON.parseObject(styleStr, Style.class);
             Style sty = CacheManager.getStyleById(styleDTO.getStyleId());
             if ("add".equals(pageType)){
@@ -163,6 +168,10 @@ public class WXProductApiController extends ApiBaseController {
                 if(CommonUtil.isBlank(sty)){
                     return this.returnFailInfo("编辑失败!"+sty.getId()+"款号不存在");
                 }
+                prePriceMap.put("price", sty.getPrice());
+                prePriceMap.put("puPrice", sty.getPuPrice());
+                prePriceMap.put("wsPrice", sty.getWsPrice());
+                prePriceMap.put("preCast", sty.getPreCast());
             }else {
                 throw new RuntimeException("保存类型只能传字符串：'add' or 'edit'");
             }
@@ -182,6 +191,23 @@ public class WXProductApiController extends ApiBaseController {
             List<Product> saveList = StyleUtil.covertToProductInfo(sty, styleDTO, productList);
 
             this.styleService.saveStyleAndProducts(sty, saveList);
+
+            //如果价格发生变动，记录变动信息
+            String infoChangeRemark = "";
+            if(CommonUtil.isNotBlank(prePriceMap)){
+                HashMap<String, Object> aftPriceMap = new HashMap<>();
+                aftPriceMap.put("price", sty.getPrice());
+                aftPriceMap.put("puPrice", sty.getPuPrice());
+                aftPriceMap.put("wsPrice", sty.getWsPrice());
+                aftPriceMap.put("preCast", sty.getPreCast());
+
+                long countValue = this.epcStockService.countAllByStyleId(sty.getId());
+                //大于0说明入过库
+                if(countValue > 0){
+                    infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), prePriceMap, aftPriceMap);
+                }
+            }
+
             long time1 = System.currentTimeMillis();
             CacheManager.refreshStyleCache();
             long time2 = System.currentTimeMillis();
@@ -189,9 +215,9 @@ public class WXProductApiController extends ApiBaseController {
             CacheManager.refreshProductCache();
             long time3 = System.currentTimeMillis();
             System.out.println("刷新商品缓存时间：" + (time3 - time2) + "ms");
-
-            return this.returnSuccessInfo("保存成功", styleStr);
+            return this.returnSuccessInfo("保存成功", infoChangeRemark);
         } catch (Exception e) {
+            logger.error("保存失败", e);
             return this.returnFailInfo("保存失败");
         }
     }
