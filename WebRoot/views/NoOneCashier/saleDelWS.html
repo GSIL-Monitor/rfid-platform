@@ -7,6 +7,7 @@
         var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
         var timeout;
         var websocket;
+        var isAdd = true;
     </script>
     <script src="../../Olive/assets/js/jquery.js"></script>
     <script src="../../Olive/assets/js/bootstrap.js"></script>
@@ -335,20 +336,74 @@
         var skuInfo = [];
         var res = JSON.parse(evt.data);
         var unicodes = [];
+        var productListInfo = [];
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
                 skuInfo.push(value.skuInfo);
-                var rowData = value.skuInfo;
-                if (rowData!==null) {
-                    console.log(rowData.unicode);
-                    unicodes.push(rowData.unicode);
-                    $("#addDetailgrid").setRowData(rowData.unicode, value.skuInfo);
-                }
             });
+            if (skuInfo!==null) {
+                console.log(skuInfo.unicode);
+                unicodes.push(skuInfo.unicode);
+                $.each(skuInfo, function (index, value) {
+                    var productInfo = value;
+                    if(productInfo.unicode!==""&&productInfo.unicode!==undefined){
+                        productInfo.qty = 1;
+                        var ct = localStorage.getItem("unitType");
+                        productInfo.sku=productInfo.code;
+                        productInfo.puPrice=productInfo.price;
+                        productInfo.wsPrice=productInfo.price;
+                        productInfo.actPrice=productInfo.price;
+                        productInfo.stockPrice = productInfo.price;
+                        productInfo.discount=100;
+                        productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                        productInfo.abnormalStatus=0;
+                        productInfo.outQty = 0;
+                        productInfo.inQty = 0;
+                        productInfo.status = 0;
+                        productInfo.inStatus = 0;
+                        productInfo.outStatus = 0;
+                        productInfo.uniqueCodes = productInfo.unicode;
+                        productInfo.totPrice = productInfo.price;
+                        productInfo.totActPrice = productInfo.actPrice;
+                        var stylePriceMap={};
+                        stylePriceMap['price']=productInfo.price;
+                        stylePriceMap['wsPrice']=productInfo.wsPrice;
+                        stylePriceMap['puPrice']=productInfo.puPrice;
+                        productInfo.stylePriceMap=JSON.stringify(stylePriceMap);
+                        delete productInfo.id;
+                        productListInfo.push(productInfo);
+                    }
+                });
+                var alltotActPrice = 0;
+                $.each(productListInfo, function (index, value) {
+                    isAdd = true;
+                    value.sku=value.code;
+                    $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+                        var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+                        if (value.sku === dtlRow.sku) {
+                            dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                            dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                            dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                            alltotActPrice += dtlRow.qty * dtlRow.actPrice;
+                            dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                            if (dtlRow.id) {
+                                $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                            } else {
+                                $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                            }
+                            isAdd = false;
+                        }
+                    });
+                    if (isAdd) {
+                        $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+                    }
+                });
+                setFooterData();
+            }
             //所有唯一码unicodes
-            console.log(unicodes);
             console.log(skuInfo);
         } else {
+
         }
     }
     function onError(evt) {

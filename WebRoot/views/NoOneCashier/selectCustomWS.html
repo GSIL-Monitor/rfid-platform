@@ -177,12 +177,13 @@
        });
    }
    function selectthisDIV(t) {
-       console.log($(t).data("id"))
-       console.log($(t).data("name"))
+       console.log($(t).data("id"));
+       console.log($(t).data("name"));
        localStorage.setItem("custmerName",$(t).data("name"));
        localStorage.setItem("custmerId",$(t).data("id"));
-       localStorage.setItem("unitType",$(t).data("unittype"))
-       $("#writeinput").val($(t).data("name"))
+       localStorage.setItem("unitType",$(t).data("unittype"));
+
+       $("#writeinput").val($(t).data("name"));
        $("#writeinput").show();
        $("#changinput").hide();
    }
