@@ -132,9 +132,19 @@ public class WXProductApiController extends ApiBaseController {
         return this.returnSuccessInfo("获取成功", page.getRows());
     }
 
+    /**
+     *
+     * @param styleStr
+     * @param colorStr
+     * @param sizeStr
+     * @param userId
+     * @param pageType  保存类型： add edit
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/saveStyleWS.do")
     @ResponseBody
-    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId, String pageType) throws Exception {
+    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId, String pageType) {
         logAllRequestParams();
         try {
             Style styleDTO = JSON.parseObject(styleStr, Style.class);
@@ -149,10 +159,12 @@ public class WXProductApiController extends ApiBaseController {
                 }else {
                     return this.returnFailInfo("新增保存失败!"+sty.getId()+"款号已存在，请换一个款号保存");
                 }
-            }else {
+            }else if("edit".equals(pageType)){
                 if(CommonUtil.isBlank(sty)){
                     return this.returnFailInfo("编辑失败!"+sty.getId()+"款号不存在");
                 }
+            }else {
+                throw new RuntimeException("保存类型只能传字符串：'add' or 'edit'");
             }
             List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
             List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
