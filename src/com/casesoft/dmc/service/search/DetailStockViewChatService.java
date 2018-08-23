@@ -34,8 +34,7 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
 
     public Page<DetailStockChatView> findPageList(Page<DetailStockChatView> page, List<PropertyFilter> filters) {
         String groupIdFilter = "";
-        String styleIdFilter = "";
-        String styleNameFilter = "";
+        String styleFilter = "";
         Boolean isWarehIdNull = true;
         for (int i = 0; i < filters.size(); i++) {
             PropertyFilter propertyFilter = filters.get(i);
@@ -44,10 +43,8 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
             String name = matchType.name();
             if (propertyName.equals("groupId")) {
                 groupIdFilter = propertyFilter.getMatchValue().toString();
-            } else if (propertyName.equals("styleId")) {
-                styleIdFilter = propertyFilter.getMatchValue().toString();
-            } else if (propertyName.equals("styleName")) {
-                styleNameFilter = propertyFilter.getMatchValue().toString();
+            } else if (propertyName.equals("styleId")||propertyName.equals("styleName")) {
+                styleFilter = propertyFilter.getMatchValue().toString();
             } else if (propertyName.equals("warehId") && propertyFilter.getMatchValue().toString() != null) {
                 isWarehIdNull = false;
             }
@@ -63,8 +60,7 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
             } else {
                 hql += "where groupId = '" + groupIdFilter + "' ";
             }
-            hql += "and styleId like '%" + styleIdFilter + "%' " +
-                    "and styleName like '%" + styleNameFilter + "%' " +
+            hql += "and (styleId like '%" + styleFilter + "%' or styleName like '%" + styleFilter + "%') " +
                     "group by class1,precast,price,puprice,styleId,styleName,wsprice " +
                     "order by " + sortName + " " + order;
             page.setAutoCount(false);
