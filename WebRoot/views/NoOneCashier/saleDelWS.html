@@ -339,7 +339,9 @@
         var productListInfo = [];
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
-                skuInfo.push(value.skuInfo);
+                if (value!==null&&value.skuInfo!==null){
+                    skuInfo.push(value.skuInfo);
+                }
             });
             if (skuInfo!==null) {
                 console.log(skuInfo.unicode);
@@ -381,17 +383,21 @@
                     $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
                         var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
                         if (value.sku === dtlRow.sku) {
-                            dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                            dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-                            dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
-                            alltotActPrice += dtlRow.qty * dtlRow.actPrice;
-                            dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
-                            if (dtlRow.id) {
-                                $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
-                            } else {
-                                $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                            if (dtlRow.uniqueCodes.indexOf(value.unicode) !== -1) {
+                                isAdd = false;
+                            }else {
+                                dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                                dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                                dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                                alltotActPrice += dtlRow.qty * dtlRow.actPrice;
+                                dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.unicode;
+                                if (dtlRow.id) {
+                                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                                } else {
+                                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                                }
+                                isAdd = false;
                             }
-                            isAdd = false;
                         }
                     });
                     if (isAdd) {
