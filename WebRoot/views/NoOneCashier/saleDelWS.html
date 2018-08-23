@@ -141,38 +141,40 @@
         console.log(addProductInfo);
         var isAdd = true;
         var alltotActPrice = 0;
-        $.each(addProductInfo, function (index, value) {
-            console.info(value);
-            isAdd = true;
-            $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
-                var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
-                if (value.sku === dtlRow.sku) {
-                    if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+        if(addProductInfo != null && addProductInfo!= "" && addProductInfo!=undefined){
+            $.each(addProductInfo, function (index, value) {
+                console.info(value);
+                isAdd = true;
+                $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+                    var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+                    if (value.sku === dtlRow.sku) {
+                        if (dtlRow.uniqueCodes.indexOf(value.code) != -1) {
+                            isAdd = false;
+                            $.gritter.add({
+                                text: value.code + "不能重复添加",
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                            return true;
+                        }
+                        dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                        dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                        dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                        alltotActPrice += dtlRow.qty * dtlRow.actPrice;
+                        dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
+                        console.info(dtlRow);
+                        if (dtlRow.id) {
+                            $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                        } else {
+                            $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                        }
                         isAdd = false;
-                        $.gritter.add({
-                            text: value.code + "不能重复添加",
-                            class_name: 'gritter-success  gritter-light'
-                        });
-                        return true;
                     }
-                    dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                    dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-                    dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
-                    alltotActPrice += dtlRow.qty * dtlRow.actPrice;
-                    dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
-                    console.info(dtlRow);
-                    if (dtlRow.id) {
-                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
-                    } else {
-                        $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
-                    }
-                    isAdd = false;
+                });
+                if (isAdd) {
+                    $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
                 }
             });
-            if (isAdd) {
-                $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
-            }
-        });
+        }
         setFooterData();
 
     }
