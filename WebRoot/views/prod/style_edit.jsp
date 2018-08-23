@@ -1006,29 +1006,31 @@
             var wsPrice;
             var preCast = $("#form_preCast").val();
             $.ajax({
-                url: basePath + "/sys/pricingRules/list.do",
+                url: basePath + "/sys/pricingRules/findPricingRules.do",
                 cache: false,
                 async: true,
                 inheritClass: true,
                 type: "POST",
                 data: {
-                    filter_EQS_series: name,
-                    filter_EQS_class3:class3
+                    series: name,
+                    class3:class3
                 },
-                success: function (date, textStatus) {
-                    var json = date;
-                    for (var i = 0; i < json.length; i++) {
-                        checkNum = date.rule1;
-                        price = Math.floor(preCast * (json[i].rule1) /10) * 10 +9;
+                success: function (msg) {
+                    if (msg.success) {
+                        var json = msg.result;
+                        checkNum = msg.rule1;
+                        price = Math.floor(preCast * (json.rule1) /10) * 10 +9;
                         /*规则1 表示吊牌价与采购价之间关系*/
-                        purPrice = Math.round(price * (json[i].rule3) * 10) / 10.0;
+                        purPrice = Math.round(price * (json.rule3) * 10) / 10.0;
                         /*规则3 代理商价与吊牌价之间关系*/
-                        wsPrice = Math.round(price * (json[i].rule2) * 10) / 10.0;
+                        wsPrice = Math.round(price * (json.rule2) * 10) / 10.0;
                         /*规则2 门店价与吊牌价直接关系*/
+                        $("#form_price").val(price);
+                        $("#form_puPrice").val(purPrice);
+                        $("#form_wsPrice").val(wsPrice);
+                    } else {
+                        bootbox.alert(msg.msg);
                     }
-                    $("#form_price").val(price);
-                    $("#form_puPrice").val(purPrice);
-                    $("#form_wsPrice").val(wsPrice);
                 }
             });
         }
@@ -1218,7 +1220,7 @@
     function inimultiSize() {
         var sizeSortIdValue = $("#form_sizeSortId").val();
         $.ajax({
-            url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId=${style.sizeSortId}",
+            url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId="+sizeSortIdValue,
             cache: false,
             async: true,
             type: 'POST',
