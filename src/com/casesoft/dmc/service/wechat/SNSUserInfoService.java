@@ -17,20 +17,17 @@ import com.casesoft.dmc.extend.api.web.epay.alipay.util.httpClient.HttpResponse;
 import com.casesoft.dmc.extend.api.web.epay.alipay.util.httpClient.HttpResultType;
 import com.casesoft.dmc.extend.api.wechat.model.SNSUserInfo;
 import com.casesoft.dmc.extend.third.request.BaseService;
-import com.casesoft.dmc.model.logistics.ConsignmentBill;
 import com.casesoft.dmc.model.product.CustomerPhoto;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.Unit;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.NameValuePair;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 

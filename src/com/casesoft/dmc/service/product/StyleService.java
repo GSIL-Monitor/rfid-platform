@@ -1,19 +1,17 @@
 package com.casesoft.dmc.service.product;
 
-import java.util.List;
-
-import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.product.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.product.StyleCollocationDao;
 import com.casesoft.dmc.dao.product.StyleDao;
+import com.casesoft.dmc.model.cfg.PropertyType;
+import com.casesoft.dmc.model.product.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -239,5 +237,10 @@ public class StyleService extends AbstractBaseService<Style, String> {
 		if(saveList.size() > 0){
 			this.styleDao.doBatchInsert(saveList);
 		}
+	}
+	public Long getMaxVersionId(){
+		String hql="select max(version) from Style";
+		long maxVersionId = this.styleDao.findUnique(hql);
+		return maxVersionId;
 	}
 }

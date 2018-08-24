@@ -11,16 +11,13 @@ import com.casesoft.dmc.model.cfg.MultiLevelRelation;
 import com.casesoft.dmc.model.cfg.VO.State;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.model.sys.VO.UnitTreeVO;
 import com.casesoft.dmc.service.cfg.MultiLevelRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yushen on 2018/5/18.

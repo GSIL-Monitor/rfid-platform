@@ -2,9 +2,11 @@ package com.casesoft.dmc.extend.msg.websocket.entity;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 /**

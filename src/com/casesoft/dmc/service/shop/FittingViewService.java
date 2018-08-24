@@ -1,7 +1,6 @@
 package com.casesoft.dmc.service.shop;
 
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.shop.FittingViewDao;
 import com.casesoft.dmc.extend.third.request.BaseService;

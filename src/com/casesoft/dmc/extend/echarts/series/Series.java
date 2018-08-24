@@ -24,7 +24,6 @@
 
 package com.casesoft.dmc.extend.echarts.series;
 
-import com.casesoft.dmc.extend.echarts.code.SeriesType;
 import com.casesoft.dmc.extend.echarts.AbstractData;
 import com.casesoft.dmc.extend.echarts.Chart;
 import com.casesoft.dmc.extend.echarts.Tooltip;

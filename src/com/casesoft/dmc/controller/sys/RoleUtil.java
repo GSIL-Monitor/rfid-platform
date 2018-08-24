@@ -1,12 +1,12 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.List;
-
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.model.sys.Resource;
 import com.casesoft.dmc.model.sys.Role;
 import com.casesoft.dmc.model.sys.RoleRes;
+
+import java.util.List;
 
 public class RoleUtil {
 

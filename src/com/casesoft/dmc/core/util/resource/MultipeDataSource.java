@@ -1,9 +1,9 @@
 package com.casesoft.dmc.core.util.resource;
 
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 public class MultipeDataSource extends AbstractRoutingDataSource {
 	static Logger log=Logger.getLogger("MultipeDataSource");

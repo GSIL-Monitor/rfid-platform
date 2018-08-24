@@ -1,7 +1,5 @@
 package com.casesoft.dmc.extend.api.dto;
 
-import java.lang.reflect.Method;
-
 /**
  * Created by pc on 2016-12-27.
  *

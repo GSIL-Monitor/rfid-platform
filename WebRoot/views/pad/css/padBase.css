@@ -58,5 +58,5 @@
     bottom: 0;
 }
 
-.ui-jqgrid .ui-jqgrid-sdiv {position: relative; margin: 0; padding:0; overflow: auto; text-align:left;}
+.ui-jqgrid .ui-jqgrid-sdiv {position: relative; margin: 0; padding:0; overflow: hidden; text-align:left;}
 

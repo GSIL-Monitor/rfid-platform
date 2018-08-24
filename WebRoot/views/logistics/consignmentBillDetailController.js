@@ -453,7 +453,7 @@ function initGrid() {
                 $('#addDetailgrid').setCell(rowid, "totPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100));
                 $('#addDetailgrid').setCell(rowid, "totActPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100));
             } else if (cellname === "outMonyQty") {
-                debugger;
+
                 var isok = true;
                 var outQty = $('#addDetailgrid').getCell(rowid, "outQty");
                 /* var sale=$('#addDetailgrid').getCell(rowid, "sale");*/

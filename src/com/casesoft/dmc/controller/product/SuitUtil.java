@@ -1,29 +1,18 @@
 package com.casesoft.dmc.controller.product;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.file.FileUtil;
+import com.casesoft.dmc.model.product.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.FileUtil;
-import com.casesoft.dmc.model.product.Color;
-import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.product.StyleCombine;
-import com.casesoft.dmc.model.product.StyleDescription;
-import com.casesoft.dmc.model.product.Suit;
-import com.casesoft.dmc.model.product.SuitDtl;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
 
 public class SuitUtil {
 

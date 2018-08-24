@@ -1,0 +1,291 @@
+<html lang="en" style="height: 100% ;width: 100%">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        //var basePathAll=window.location.href;
+        //var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
+        var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+    </script>
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="../pad/css/padBase.css">
+    <!--grid.locale-en.js这个文件必须在jquery.jqGrid.min.js之前加载，否则会出问题-->
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+    <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+    <script src="../../jslib2/constant.js"></script>
+    <script src="../../Olive/plugin/dateFormatUtil.js"></script>
+    <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+    <script src="../../Olive/assets/js/qrcode.min.js"></script>
+    <script src="../../Olive/assets/js/qrcode.js"></script>
+    <style>
+        .bottom-button{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            right: 20%;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+        .bottom-button1{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+    </style>
+</head>
+<body style="height: 100% ; width: 100%">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div class="center">
+            <div class="panel panel-default left-panel">
+                <div class="panel-body">
+                    <div class="widget-body">
+                        <div class=" col-lg-12 col-md-12 col-sm-12" style="height:75% " id="style">
+                            <h5 class="text-info">商品款式</h5>
+                            <form class="form-horizontal" role="form" id="StyleSearchForm" onkeydown="if(event.keyCode==13)return false;">
+                                <!--<form class="form-horizontal" role="search" id="StyleSearchForm">-->
+                                <div class="form-group">
+                                    <label class="col-xs-2 control-label text-right" for="filter_LIKES_styleId">款号</label>
+                                    <div class="col-xs-9">
+                                        <input class="form-control" id="filter_LIKES_styleId" name="filter_LIKES_styleId"
+                                               type="text"
+                                               placeholder="模糊查询"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 btnPosition">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="searcheditStyle()">
+                                            <i class="ace-icon fa fa-search"></i>
+                                            <span class="bigger-110">查询</span>
+                                        </button>
+                                        <button type="reset" class="btn btn-sm btn-warning">
+                                            <i class="ace-icon fa fa-undo"></i>
+                                            <span class="bigger-110">清空</span></button>
+                                    </div>
+                                </div>
+                            </form>
+                            <table id="stylegrid"></table>
+                            <div id="grid-pager" ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div class="center">
+            <div class="panel panel-default left-panel">
+                <div class="panel-body">
+                    <div class="widget-body">
+                        <div class=" col-lg-12 col-md-12 col-sm-12" style="height:75% " id="size">
+                            <h5 class="text-info">颜色尺码</h5>
+                            <table id="color_size_grid"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="save" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button" onclick="addProductInfo()">保存</button>
+        <button id="saveClose" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button1" onclick="addProductInfo('close')">保存并关闭</button>
+    </div>
+<script>
+    var searchStyleUrl = basePath +  "/prod/style/pageWS.do";
+    var editcolosizeRow = null;
+    $(function () {
+        loadStyleTable();
+        initColorSizeGrid();
+    });
+    function loadStyleTable() {
+        $("#stylegrid").jqGrid({
+            datatype: "local",
+            colModel: [
+                {name: 'id', label:'编号',editable:true,hidden:true},
+                {name: 'styleId', label: '款号',editable:true, sortable: true},
+                {name: 'styleName', label: '款名', editable:true},
+                {name: 'preCast', label: '采购价', editable:true},
+                {name: 'puPrice', label: '销售价', editable:true},
+                {name: 'wsPrice', label: '销售价', editable:true},
+                {name: 'price', label: '吊牌价', editable:true},
+                {name: 'class6', label: '入库类型',hidden:true},
+                {name:'bargainPrice',label:'特价',editable:true,hidden:true}
+            ],
+            viewrecords: true,
+            rownumbers: true,
+            altRows: true,
+            autowidth:true,
+            shrinkToFit: true,
+            rowNum: 20,
+            rowList: [10,20, 50, 100],
+            pager: "#stylegrid-pager",
+            multiselect: false,
+            sortname : 'id',
+            sortorder : "desc",
+            onSelectRow : function(rowid,status) {
+                var row = $("#stylegrid").getRowData(rowid);
+                $("#color_size_grid").jqGrid("setGridParam",{
+                    datatype: "json",
+                    url: basePath+"/prod/product/listOrderByColorAndSizeWS.do?styleId="+row.styleId
+                }).trigger('reloadGrid');
+            }
+
+        });
+       /* $("#stylegrid").jqGrid( 'setGridWidth', parent_dialog.width()*0.6/2);*/
+    }
+    function array2obj(array) {
+        var params = $({});
+        $.each(array, function(i) {
+            var $param = $(this)[0];
+            params.attr($param.name, $param.value);
+        });
+        return params[0];
+    }
+    function searcheditStyle(){
+        var serializeArray = $("#StyleSearchForm").serializeArray();
+        var params = array2obj(serializeArray);
+
+        $("#stylegrid").jqGrid("setGridParam",{
+            url: searchStyleUrl,
+            page : 1,
+            datatype: "json",
+            postData : params
+        }).trigger('reloadGrid');
+    }
+    function initColorSizeGrid() {
+        $("#color_size_grid").jqGrid({
+            datatype:"local",
+            colModel: [
+                {name: 'code', label:'code',hidden:true},
+                {name: 'styleId', label: '款号', sortable: true,hidden:true},
+                {name: 'styleName', label: '款名',hidden:true},
+                {name: 'preCast', label: '采购价',hidden:true},
+                {name: 'puPrice', label: '采购价',hidden:true},
+                {name: 'wsPrice', label: '采购价',hidden:true},
+                {name:'bargainPrice',label:'特价',hidden:true},
+                {name: 'price', label: '吊牌价',hidden:true},
+                {name: 'colorId', label: '色码',sortable: true},
+                {name: 'colorName', label: '颜色',sortable: true},
+                {name: 'sizeId', label: '尺码',sortable: true},
+                {name: 'sizeName', label: '尺寸',sortable: true},
+                {name: 'qty', label: '数量',editable:true,sortable: true,
+
+                    editoptions: {
+                        dataInit: function (e) {
+                            $(e).spinner();
+                        }
+                    }
+                }
+
+            ],
+            viewrecords: true,
+            rownumbers: true,
+            altRows: true,
+            autowidth:true,
+            shrinkToFit: true,
+            rowNum: -1,
+            multiselect: false,
+            sortname : 'sku',
+            sortorder : "desc",
+            onSelectRow: function (rowid, status) {
+                if(editcolosizeRow!=null){
+                    $('#color_size_grid').saveRow(editcolosizeRow);
+                }
+                editcolosizeRow = rowid;
+                $('#color_size_grid').editRow(rowid);
+            }
+
+        });
+    }
+    /*选中订货商品添加*/
+    function addProductInfo(type) {
+        var addProductInfo = [];
+        if (editcolosizeRow != null) {
+            $('#color_size_grid').saveRow(editcolosizeRow, false, 'clientArray');//仅保存数据到grid中，而不会发送ajax请求服务器
+        }
+        var ct =localStorage.getItem("unitType");
+        var styleRow = $("#stylegrid").getRowData($("#stylegrid").jqGrid("getGridParam", "selrow"));
+        $.each($("#color_size_grid").getDataIDs(), function (index, value) {
+            var productInfo = $("#color_size_grid").getRowData(value);
+            if (productInfo.qty > 0) {
+                if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!=""){
+                    productInfo.price = styleRow.bargainPrice;
+                }else {
+                    if (ct == "CT-AT") {//省代价格
+                        productInfo.price = styleRow.puPrice;
+                    } else if (ct == "CT-ST") {//门店价格
+                        productInfo.price = styleRow.wsPrice;
+                    } else if (ct == "CT-LS") {//吊牌价格
+                        productInfo.price = styleRow.price;
+                    }
+                }
+                productInfo.outQty = 0;
+                productInfo.inQty = 0;
+                productInfo.status = 0;
+                productInfo.inStatus = 0;
+                productInfo.outStatus = 0;
+                if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!=""){
+                    productInfo.discount = 100;
+                }else {
+                    if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
+                        productInfo.discount = $("#edit_discount").val();
+                        console.log(productInfo.discount);
+                    } else {
+                        productInfo.discount = 100;
+                    }
+                }
+                productInfo.puPrice=styleRow.puPrice;
+                //判断实际价格是不是小于门店批发价格
+                if (parseInt(styleRow.bargainPrice)!=0&&styleRow.bargainPrice!="") {
+                    productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                    productInfo.abnormalStatus=0;
+                }else {
+                    if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice&&isUserAbnormal){
+                        productInfo.actPrice = styleRow.puPrice;
+                        productInfo.discount = parseFloat(styleRow.puPrice/productInfo.price).toFixed(2)*100;
+                        productInfo.abnormalStatus=1;
+                    }else{
+                        productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                        productInfo.abnormalStatus=0;
+                    }
+                }
+                productInfo.totPrice = productInfo.qty * productInfo.price;
+                productInfo.totActPrice = productInfo.qty * productInfo.actPrice;
+                productInfo.sku = productInfo.code;
+                productInfo.inStockType = styleRow.class6;
+                var stylePriceMap={};
+                stylePriceMap['price']=styleRow.price;
+                stylePriceMap['wsPrice']=styleRow.wsPrice;
+                stylePriceMap['puPrice']=styleRow.puPrice;
+                productInfo.stylePriceMap=JSON.stringify(stylePriceMap);
+                addProductInfo.push(productInfo);
+            }
+        });
+        localStorage.setItem("addProductInfo",JSON.stringify(addProductInfo));
+        console.log(localStorage.getItem("addProductInfo"))
+        if(type == "close"){
+            location.href = basePath+'/views/NoOneCashier/saleDelWS.html';
+        }
+    }
+</script>
+</body>
+</html>

@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.product.NoPushStyleDao;
 import com.casesoft.dmc.model.product.NoPushStyle;
-import com.casesoft.dmc.model.product.Style;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

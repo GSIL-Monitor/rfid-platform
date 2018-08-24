@@ -1,7 +1,6 @@
 package com.casesoft.dmc.controller.logistics;
 
 import com.alibaba.fastjson.JSON;
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
@@ -9,10 +8,9 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.search.DetailStockChatView;
+import com.casesoft.dmc.model.logistics.MergeReplenishBill;
+import com.casesoft.dmc.model.logistics.Recordsize;
 import com.casesoft.dmc.model.sys.Unit;
-import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.MergeReplenishBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.apache.poi.ss.usermodel.Workbook;

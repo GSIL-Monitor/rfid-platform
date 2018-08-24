@@ -1,9 +1,6 @@
 package com.casesoft.dmc.service.cfg;
 
-import com.casesoft.dmc.core.controller.DataSourceRequest;
-import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.cfg.DeviceRunLogDao;
 import com.casesoft.dmc.model.cfg.DeviceRunLog;

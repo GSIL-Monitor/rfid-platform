@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.SMSMessageDao;
 import com.casesoft.dmc.model.sys.SMSMessage;
-import com.casesoft.dmc.model.sys.SMSModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

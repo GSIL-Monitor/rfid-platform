@@ -5,7 +5,6 @@ import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.sys.UserUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.service.ServiceException;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -14,7 +13,10 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.location.Area;
 import com.casesoft.dmc.model.location.City;
 import com.casesoft.dmc.model.location.Province;
-import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.logistics.AccountStatementView;
+import com.casesoft.dmc.model.logistics.BillConstant;
+import com.casesoft.dmc.model.logistics.MonthAccountStatement;
+import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.service.cfg.PropertyService;
@@ -30,9 +32,6 @@ import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-import net.sf.json.JSONObject;
-import org.jboss.logging.Param;
-import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -111,9 +109,7 @@ public class BaseInfoApiController extends ApiBaseController {
     @ResponseBody
     public MessageBox findGuestWS(String pageSize,String pageNo,String sortIds,String  orders,String userId) {
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
-        Page<GuestView> page = new Page<>(Integer.parseInt(pageSize));
 
-        page.setPage(Integer.parseInt(pageNo));
         if(CommonUtil.isNotBlank(userId)){
             User user = CacheManager.getUserById(userId);
             if(CommonUtil.isNotBlank(user)){
@@ -128,22 +124,31 @@ public class BaseInfoApiController extends ApiBaseController {
         }
         PropertyFilter filter = new PropertyFilter("EQI_status", "1");
         filters.add(filter);
-        if(CommonUtil.isNotBlank(sortIds)){
-            if(sortIds.split(",").length != orders.split(",").length){
-                return new MessageBox(false,"排序字段与排序方向的个数不相等");
+        Page<GuestView> page = new Page<>(Integer.parseInt(pageSize));
+        List<GuestView> guestViewList = new ArrayList<>();
+        if(Integer.parseInt(pageSize)>0) {
+            page.setPage(Integer.parseInt(pageNo));
+            if (CommonUtil.isNotBlank(sortIds)) {
+                if (sortIds.split(",").length != orders.split(",").length) {
+                    return new MessageBox(false, "排序字段与排序方向的个数不相等");
+                }
+                page.setOrderBy(sortIds);
+                page.setOrder(orders);
             }
-            page.setOrderBy(sortIds);
-            page.setOrder(orders);
+            page.setPageProperty();
+            page = this.guestViewService.findPage(page, filters);
+            guestViewList = page.getRows();
+        }else{
+            //不分页调用
+            guestViewList = this.guestViewService.find(filters);
         }
-        page.setPageProperty();
-        page = this.guestViewService.findPage(page,filters);
-        for(GuestView guest : page.getRows()){
+        for(GuestView guest : guestViewList){
             Unit defaultWareh = CacheManager.getUnitByCode(guest.getDefaultWarehId());
             if(CommonUtil.isNotBlank(defaultWareh)){
                 guest.setDefaultWarehouseName(defaultWareh.getName());
             }
         }
-        return this.returnSuccessInfo("获取成功",page.getRows());
+        return this.returnSuccessInfo("获取成功",guestViewList);
     }
     @RequestMapping(value = "/findBusinessWS.do")
     @ResponseBody
@@ -397,23 +402,31 @@ public class BaseInfoApiController extends ApiBaseController {
      * sortIds:排序字段 多个,分割
      * orders:排序顺序 多个,分割
      */
-    @RequestMapping(value="/findUnitServiceWs")
+    @RequestMapping(value="/findUnitServiceWS")
     @ResponseBody
-    public MessageBox findUnitService(String pageSize,String pageNo,String sortIds,String  orders){
+    public MessageBox findUnitService(String pageSize,String pageNo,String sortIds,String  orders,String userId){
+        this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
-        Page<Unit> page = new Page<>(Integer.parseInt(pageSize));
-        page.setPage(Integer.parseInt(pageNo));
-        if(CommonUtil.isNotBlank(sortIds)){
-            if(sortIds.split(",").length != orders.split(",").length){
-                return new MessageBox(false,"排序字段与排序方向的个数不相等");
+        List<Unit> unitList = new ArrayList<>();
+        if(Integer.parseInt(pageSize) > 0) {
+            Page<Unit> page = new Page<>(Integer.parseInt(pageSize));
+            page.setPage(Integer.parseInt(pageNo));
+            if (CommonUtil.isNotBlank(sortIds)) {
+                if (sortIds.split(",").length != orders.split(",").length) {
+                    return new MessageBox(false, "排序字段与排序方向的个数不相等");
+                }
+                page.setOrderBy(sortIds);
+                page.setOrder(orders);
             }
-            page.setOrderBy(sortIds);
-            page.setOrder(orders);
+            page.setPageProperty();
+            page = this.unitService.findPage(page, filters);
+            unitList = page.getRows();
+        }else{
+            //不分页调用
+            unitList = this.unitService.find(filters);
         }
-        page.setPageProperty();
-        page = this.unitService.findPage(page,filters);
-        return new MessageBox(true,"ok",page.getRows());
+        return new MessageBox(true,"ok",unitList);
     }
 
 

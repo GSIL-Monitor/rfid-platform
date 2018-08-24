@@ -1,14 +1,5 @@
 package com.casesoft.dmc.service.product;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-import com.casesoft.dmc.extend.echarts.code.Sort;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -17,8 +8,13 @@ import com.casesoft.dmc.dao.product.SizeDao;
 import com.casesoft.dmc.dao.product.SizeSortDao;
 import com.casesoft.dmc.model.product.Size;
 import com.casesoft.dmc.model.product.SizeSort;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Id;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional

@@ -8,7 +8,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.Device;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.stock.GuardingRecord;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;

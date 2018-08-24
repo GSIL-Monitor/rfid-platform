@@ -1,9 +1,9 @@
 package com.casesoft.dmc.extend.msg.websocket.entity;
 
-import java.util.Date;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.util.Date;
 
 /**
  * 访客

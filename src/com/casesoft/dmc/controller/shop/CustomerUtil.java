@@ -1,20 +1,16 @@
 package com.casesoft.dmc.controller.shop;
 
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.casesoft.dmc.model.shop.*;
-import org.hibernate.transform.ToListResultTransformer;
-
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.product.ProductUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
-
 import com.casesoft.dmc.model.cfg.PropertyKey;
+import com.casesoft.dmc.model.shop.*;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerUtil {
 

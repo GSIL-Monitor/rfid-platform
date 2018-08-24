@@ -1,14 +1,11 @@
 package com.casesoft.dmc.service.shop;
 
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.shop.GuestValueChangeDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
-import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.shop.GuestValueChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

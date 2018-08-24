@@ -1,20 +1,14 @@
 
 package com.casesoft.dmc.core.util.json;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 import net.sf.json.util.CycleDetectionStrategy;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 @SuppressWarnings({"unchecked","rawtypes"})
 public class JSONUtil {
 

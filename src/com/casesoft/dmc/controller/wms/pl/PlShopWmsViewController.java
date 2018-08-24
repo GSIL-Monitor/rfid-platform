@@ -1,7 +1,6 @@
 package com.casesoft.dmc.controller.wms.pl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;

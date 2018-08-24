@@ -6,7 +6,6 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.ChangeReplenishBillDtlDao;
 import com.casesoft.dmc.dao.logistics.ReplenishBillDtlDao;
 import com.casesoft.dmc.model.logistics.ChangeReplenishBillDtl;
-import com.casesoft.dmc.model.logistics.ReplenishBill;
 import com.casesoft.dmc.model.logistics.ReplenishBillDtl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

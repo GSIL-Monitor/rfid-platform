@@ -1,12 +1,10 @@
 package com.casesoft.dmc.model.search;
 
-import java.util.Date;
-
-
-import javax.persistence.*;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.casesoft.dmc.model.shop.BaseModelDtl;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Wing Li on 2014/6/21.

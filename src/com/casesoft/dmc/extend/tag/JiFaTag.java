@@ -1,13 +1,8 @@
 package com.casesoft.dmc.extend.tag;
 
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.model.product.Size;
-import com.casesoft.dmc.model.product.Style;
 
 public class JiFaTag extends AbstractBaseTag {
 

@@ -1,16 +1,9 @@
 package com.casesoft.dmc.model.log;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import com.alibaba.fastjson.annotation.JSONField;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="LOG_SYSLOG")

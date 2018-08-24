@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.product.CustomerPhotoDao;
 import com.casesoft.dmc.model.product.CustomerPhoto;
-import com.casesoft.dmc.model.product.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

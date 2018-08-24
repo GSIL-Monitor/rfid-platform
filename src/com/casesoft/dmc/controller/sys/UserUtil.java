@@ -1,15 +1,5 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.casesoft.dmc.model.hall.Department;
-import com.casesoft.dmc.model.hall.Employee;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -19,6 +9,13 @@ import com.casesoft.dmc.model.sys.Resource;
 import com.casesoft.dmc.model.sys.Role;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserUtil {
 
@@ -40,17 +37,6 @@ public class UserUtil {
 		}
 	}
 
-
-
-	public static void convertToVo1(List<Employee> userList) {
-		/*// List<User> userList = beansPage.getRows();
-		for (Employee user : userList) {
-//			user.setRoleName(CacheManager.getRoleNameById(user.getRoleId()));
-			Department u = CacheManager.getDepartmentByCode(user.getOwnerId());
-			if (null != u)
-				user.setUnitName(u.getName());
-		}*/
-	}
 
 	/**
 	 * 权限字符串实例:Section1~weather1,weather.news1,news|Section2~ie1,ie.video1,video

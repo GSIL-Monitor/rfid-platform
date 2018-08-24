@@ -1,8 +1,6 @@
 package com.casesoft.dmc.extend.api.wechat;
 
 import com.casesoft.dmc.controller.product.StyleUtil;
-import com.casesoft.dmc.core.controller.DataSourceRequest;
-import com.casesoft.dmc.core.controller.DataSourceResult;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.json.JSONUtil;
@@ -12,7 +10,10 @@ import com.casesoft.dmc.dao.search.SaleorderCountDao;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.SaleBybusinessname;
-import com.casesoft.dmc.model.search.*;
+import com.casesoft.dmc.model.search.SaleNodeatilViews;
+import com.casesoft.dmc.model.search.Salebystyleid;
+import com.casesoft.dmc.model.search.SaleorderCountView;
+import com.casesoft.dmc.model.search.saleorderCount;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.search.SaleNodeatilViewsService;
 import com.casesoft.dmc.service.search.SaleOrderCountViewService;
@@ -20,15 +21,16 @@ import com.casesoft.dmc.service.sys.impl.UnitService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/12/18.

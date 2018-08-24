@@ -1,12 +1,7 @@
 package com.casesoft.dmc.model.product;
 
+import javax.persistence.*;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * Sku entity. @author
@@ -28,7 +23,7 @@ public class Product extends BaseProduct implements java.io.Serializable {
 	private String sizeSortId;
 	private String image;
 	
-	private Long version;
+	private Long version;//版本号
 
 	private Integer boxQty;//规格
 	

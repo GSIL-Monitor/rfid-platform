@@ -2,8 +2,6 @@ package com.casesoft.dmc.extend.third.model;
 
 import com.casesoft.dmc.core.util.CommonUtil;
 
-import java.util.Date;
-
 /**
  * Created by GuoJunwen on 2017/3/14 0014.
  */

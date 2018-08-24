@@ -1,29 +1,28 @@
 package com.casesoft.dmc.controller.cfg;
 
-import java.util.Date;
-import java.util.List;
-
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.mock.GuidCreator;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.Device;
 import com.casesoft.dmc.model.cfg.DeviceConfig;
 import com.casesoft.dmc.model.sys.Unit;
-
+import com.casesoft.dmc.service.cfg.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.cfg.Device; 
-import com.casesoft.dmc.service.cfg.DeviceService;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/data/device")
@@ -107,7 +106,9 @@ public class DeviceController extends BaseController implements IBaseInfoControl
         device.setLocked(0);
        try {
             this.deviceService.save(dev);
-            CacheManager.refreshDeviceCache();
+            List<Device> deviceList = new ArrayList<>();
+            deviceList.add(dev);
+            CacheManager.refreshDeviceCache(deviceList);
             return returnSuccessInfo("保存成功");
         }catch (Exception e){
             return returnFailInfo("保存失败");

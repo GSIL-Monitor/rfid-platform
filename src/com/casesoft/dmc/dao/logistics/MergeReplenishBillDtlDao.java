@@ -1,7 +1,6 @@
 package com.casesoft.dmc.dao.logistics;
 
 import com.casesoft.dmc.core.dao.BaseHibernateDao;
-
 import com.casesoft.dmc.model.logistics.MergeReplenishBillDtl;
 import org.springframework.stereotype.Repository;
 

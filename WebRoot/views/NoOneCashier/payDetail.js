@@ -6,6 +6,7 @@ var paywayhtml = "";//支付方式页面
 var defaultPayType =null;//默认支付方式
 var payNum = 0;//选择支付个数，不能超过三个
 var price = 0;//应收
+var payPrice = 0;//控制变量
 var actpayPrice = 0;//实收
 $(function () {
     $.ajax({
@@ -18,13 +19,17 @@ $(function () {
                         +"<input id='Priced' type='text' readonly value='1000' name='payPrice'>"
                         +"</li>";
             payhtml += "<li>"
+                        +"<span id='actPayPrice'>实收金额</span>"
+                        +"<input id='actPayPriced' type='text' readonly placeholder='0.00' name='actPayPrice'>"
+                        +"</li>";
+            payhtml += "<li>"
                         +"<span id='payPrice'>待收金额</span>"
                         +"<input id='payPriced' type='text' readonly placeholder='0.00'>"
                         +"</li>";
             payhtml += "<li>"
-                    +"<span id='actPayPrice'>实收金额</span>"
-                    +"<input id='actPayPriced' type='text' readonly placeholder='0.00' name='actPayPrice'>"
-                    +"</li>";
+                        +"<span id='returnPrice'>找零</span>"
+                        +"<input id='returnPriced' type='text' readonly placeholder='0.00'>"
+                        +"</li>";
             $.each(result,function(index,value){
                 paywayhtml  +="<li class="+result[index].iconCode+">"
                             +"<svg class='icon' aria-hidden='true'>"
@@ -45,16 +50,28 @@ $(function () {
             $(".paywaylist").html(paywayhtml);
             $(".paywaylist").find("."+defaultPayType).addClass("active");//默认变色
             $("#"+defaultPayType+"d").mynumkb();//input框id加d
-            $("#"+defaultPayType+"d").focus();
             price =  Number($("#Priced").val());//得到应收金额
+            $("#"+defaultPayType+"d").val(price);
+            $("#actPayPriced").attr("value",price);
+            $("#"+defaultPayType+"d").focus();
+
             //绑定事件
             $(".paywaylist").find("li").each(function () {
                 //默认付款方式
                 if($(this).hasClass("active")){
                     $(this).css("background","#31c17b");
+                    payPrice += Number($("#"+$(this).attr("class")+"d").val());
+                    if(payPrice - Number($("#Priced").val()) > 0){
+                        console.info("2222");
+                        return;
+                    }
                 }
                 //付款方式点击方法
                 $(this).bind("click",function () {
+                    //待收为0不让添加
+                    if($("#payPriced").val() == 0){
+                        return;
+                    }
                     if($(this).hasClass("active")){
                         if(payNum ==1){
                             return;//至少有一个付款方式
@@ -123,9 +140,19 @@ function changeValue() {
             $("#payPriced").attr("value",price-Number($("#actPayPriced").val()));//代收金额=应收-实收
             $(this).addClass("active");//加回来
         }
+
     });
+    if(actpayPrice - Number($("#Priced").val()) > 0){
+        $("#payPriced").attr("value",0);//代收金额0
+        $("#actPayPriced").attr("value",price);//实收为应收
+        $("#returnPriced").attr("value",actpayPrice-price);//数据实收-应收
+    }
+    else {
+        $("#returnPriced").attr("value",0);//找零0
+    }
 }
 function savePayPrice() {
+    var returnPrice = $("#returnPriced").val();
     var payPrice = $("#Priced").val();
     var actPayPrice = $("#actPayPriced").val();
     var billNo = "TESTLLY";
@@ -147,6 +174,7 @@ function savePayPrice() {
                     customerId : customerId,
                     payPrice : payPrice,
                     actPayPrice :actPayPrice,
+                    returnPrice :returnPrice,
                     payType : payType
                 },
                 success:function (result) {

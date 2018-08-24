@@ -4,14 +4,12 @@ import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
-import com.casesoft.dmc.model.sys.VO.UnitTreeVO;
 import com.casesoft.dmc.service.sys.impl.OrganizationService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -80,7 +79,9 @@ public class OrganizationController extends BaseController implements IBaseInfoC
         organization.setRemark(entity.getRemark());
         try {
             this.organizationService.save(organization);
-            CacheManager.refreshUnitCache();
+            List<Unit> unitList = new ArrayList<>();
+            unitList.add(organization);
+            CacheManager.refreshUnitCache(unitList);
             return this.returnSuccessInfo("保存成功");
         } catch (Exception e) {
             e.printStackTrace();

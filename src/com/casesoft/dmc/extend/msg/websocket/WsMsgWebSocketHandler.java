@@ -1,25 +1,17 @@
 package com.casesoft.dmc.extend.msg.websocket;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.extend.msg.websocket.entity.*;
 import org.apache.log4j.Logger;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.TextMessage;
-
-
-import com.alibaba.fastjson.JSON;
-import com.casesoft.dmc.core.Constant;
+import org.springframework.web.socket.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class WsMsgWebSocketHandler implements WebSocketHandler {
     private static final Logger logger = Logger

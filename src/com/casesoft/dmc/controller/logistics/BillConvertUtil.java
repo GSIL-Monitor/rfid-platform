@@ -22,11 +22,9 @@ import com.casesoft.dmc.model.tag.InitDtl;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.BusinessDtl;
 import com.casesoft.dmc.model.task.Record;
-import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
+import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.tag.InitService;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,18 +1,6 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.model.cfg.PropertyKey;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
@@ -20,9 +8,17 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.sys.impl.VendorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/sys/vendor")
@@ -125,7 +121,9 @@ public class VendorController extends BaseController implements IBaseInfoControl
             ut.setSrc(Constant.DataSrc.SYS);
 
             this.vendorService.save(ut);
-            CacheManager.refreshUnitCache();
+            List<Unit> unitList = new ArrayList<>();
+            unitList.add(ut);
+            CacheManager.refreshUnitCache(unitList);
             return this.returnSuccessInfo("保存成功");
         }catch (Exception e){
             e.printStackTrace();

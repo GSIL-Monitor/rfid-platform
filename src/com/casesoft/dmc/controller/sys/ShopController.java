@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by WingLi on 2016-12-20.
@@ -114,7 +111,9 @@ public class ShopController extends BaseController implements IBaseInfoControlle
 
         try{
             this.shopService.save(u);
-            CacheManager.refreshUnitCache();
+            List<Unit> unitList = new ArrayList<>();
+            unitList.add(u);
+            CacheManager.refreshUnitCache(unitList);
             return this.returnSuccessInfo("保存成功");
         } catch(Exception e){
             return this.returnFailInfo("保存失败");

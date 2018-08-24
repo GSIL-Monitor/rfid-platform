@@ -44,6 +44,9 @@ public class payDetail implements Serializable{
     private String actPayPrice;//实付金额
 
     @Column
+    private String returnPrice;//找零
+
+    @Column
     private String status;//脏数据处理字段
 
 
@@ -125,5 +128,13 @@ public class payDetail implements Serializable{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getReturnPrice() {
+        return returnPrice;
+    }
+
+    public void setReturnPrice(String returnPrice) {
+        this.returnPrice = returnPrice;
     }
 }

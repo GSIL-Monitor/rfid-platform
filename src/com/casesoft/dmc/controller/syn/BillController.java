@@ -8,7 +8,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.model.erp.Bill;
 import com.casesoft.dmc.model.erp.BillDtl;
-import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.service.syn.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

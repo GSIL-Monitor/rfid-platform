@@ -1,26 +1,13 @@
 package com.casesoft.dmc.core.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.model.sys.User;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
-import com.alibaba.fastjson.JSON;
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.Constant;
-import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.sys.User;
+import java.io.IOException;
 
 @Deprecated
 public class AuthFilter implements Filter {

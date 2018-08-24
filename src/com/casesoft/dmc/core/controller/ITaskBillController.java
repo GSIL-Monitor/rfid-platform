@@ -1,8 +1,8 @@
 package com.casesoft.dmc.core.controller;
 
-import java.util.List;
-
 import com.casesoft.dmc.core.vo.MessageBox;
+
+import java.util.List;
 
 /**
  * 任务单据的状态维护： 保存后的状态为已扫描，已扫描的可以废除

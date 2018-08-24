@@ -9,7 +9,6 @@ import com.casesoft.dmc.model.shop.SaleBill;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IBillWSService {

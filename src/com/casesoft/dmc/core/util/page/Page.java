@@ -1,15 +1,13 @@
 package com.casesoft.dmc.core.util.page;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.annotation.JSONField;
+import com.casesoft.dmc.core.util.CommonUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 
-import com.casesoft.dmc.core.util.CommonUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Page<T> {
 

@@ -2,7 +2,8 @@ package com.casesoft.dmc.model.wms;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
 /*@Entity

@@ -1,36 +1,33 @@
 package com.casesoft.dmc.controller.sys;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.core.controller.BaseController;
+import com.casesoft.dmc.core.controller.IBaseInfoController;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.core.util.page.Page;
+import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.PropertyKey;
+import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.cfg.MultiLevelRelation;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.cfg.PropertyKeyService;
+import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.cfg.MultiLevelRelationService;
 import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.sys.impl.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.casesoft.dmc.core.controller.BaseController;
-import com.casesoft.dmc.core.controller.IBaseInfoController;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.core.util.page.Page;
-import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.cfg.PropertyKey;
-import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.product.Size;
-import com.casesoft.dmc.service.cfg.PropertyKeyService;
-import com.casesoft.dmc.service.cfg.PropertyService;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @Controller
@@ -113,7 +110,9 @@ public class PropertyController extends BaseController implements IBaseInfoContr
                 propertyTypebyid.setValue(entity.getValue());
                 this.propertyService.save(propertyTypebyid);
             }
-            CacheManager.refreshPropertyTypeCache();
+            List<PropertyType> propertyTypeList = new ArrayList<>();
+            propertyTypeList.add(propertyTypebyid);
+            CacheManager.refreshPropertyTypeCache(propertyTypeList);
             return returnSuccessInfo("保存成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,8 +187,9 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             } else {
                 return returnFailInfo("保存失败,名称已存在不能重复添加");
             }
-            CacheManager.refreshUnitCache();
-            CacheManager.refreshPropertyCache();
+            List<PropertyKey> propertyKeyList  = new ArrayList<>();
+            propertyKeyList.add(entity);
+            CacheManager.refreshPropertyCache(propertyKeyList);
             return returnSuccessInfo("保存成功", entity);
         } catch (Exception e) {
             e.printStackTrace();

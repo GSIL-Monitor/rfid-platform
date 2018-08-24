@@ -1,10 +1,10 @@
 package com.casesoft.dmc.core.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Service层的父接口，提供基本的分页，增删查改的模板函数

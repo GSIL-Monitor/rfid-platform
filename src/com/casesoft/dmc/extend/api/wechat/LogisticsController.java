@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.stock.StockUtil;
-import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
-import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
@@ -22,7 +20,6 @@ import com.casesoft.dmc.extend.api.wechat.model.SNSUserInfo;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.SaleOrderBill;
 import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
-import com.casesoft.dmc.model.product.CustomerPhoto;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
@@ -30,7 +27,6 @@ import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
-import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.shop.CustomerService;
 import com.casesoft.dmc.service.stock.EpcStockService;
@@ -49,9 +45,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -198,7 +191,9 @@ public class LogisticsController extends ApiBaseController {
                    this.sNSUserInfoService.sendtourk(entity,sNSUserInfo,request);
 
                 }
-                CacheManager.refreshUnitCache();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(guest);
+                CacheManager.refreshUnitCache(unitList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -250,8 +245,9 @@ public class LogisticsController extends ApiBaseController {
                     this.sNSUserInfoService.sendCustomertourk(guest,sNSUserInfo,request);
 
                 }
-                CacheManager.refreshUnitCache();
-                CacheManager.refreshCustomer();
+                List<Customer> customerList = new ArrayList<>();
+                customerList.add(guest);
+                CacheManager.refreshCustomer(customerList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e){
                 e.printStackTrace();
@@ -301,7 +297,9 @@ public class LogisticsController extends ApiBaseController {
 			guest.setStoreDate(entity.getStoreDate());*/
             try {
                 this.guestService.save(guest);
-                CacheManager.refreshUnitCache();
+                List<Unit> unitList = new ArrayList<>();
+                unitList.add(guest);
+                CacheManager.refreshUnitCache(unitList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -346,8 +344,9 @@ public class LogisticsController extends ApiBaseController {
 
             try{
                 this.customerService.save(guest);
-                CacheManager.refreshUnitCache();
-                CacheManager.refreshCustomer();
+                List<Customer> customerList = new ArrayList<>();
+                customerList.add(guest);
+                CacheManager.refreshCustomer(customerList);
                 return returnSuccessInfo("保存成功");
             } catch (Exception e){
                 e.printStackTrace();

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by GuoJunwen on 2017/4/6 0006.

@@ -9,17 +9,12 @@ import com.casesoft.dmc.extend.third.model.pl.PlWmsShopBindingRelation;
 import com.casesoft.dmc.model.cfg.Device;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
-import com.casesoft.dmc.model.mirror.Collocat;
-import com.casesoft.dmc.model.mirror.NewProduct;
 import com.casesoft.dmc.model.pad.AccessToken;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.service.cfg.DeviceService;
 import com.casesoft.dmc.service.cfg.PropertyKeyService;
-
-import com.casesoft.dmc.service.mirror.CollocatService;
-import com.casesoft.dmc.service.product.ColorService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.shop.CustomerService;
@@ -29,7 +24,6 @@ import com.casesoft.dmc.service.sys.impl.RoleService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +64,8 @@ public class CacheManager {
 	private static String PREFIX_PLAYLOUNGEPROPERTYKEY = "playloungePropertyKey";
 
 	private static String PREFIX_SIZESORT = "SizeSort";
+
+	private static String PREFIX_ACCESSTOKEN = "AccessToken";
 	//--------------------------新增redis缓存数据-------------------------------------------------
 	private static String PREFIX_UNIT = "unit";
 
@@ -110,6 +106,7 @@ public class CacheManager {
 		initSysSetting();
 		initCustomerCache();
 		initCheckWarehouse();
+		initMaxVersionId();
 	}
 
 	public static void refresh() throws Exception {
@@ -128,7 +125,7 @@ public class CacheManager {
 		refreshResourceCache();
 		refreshRoleCache();
 		refreshSizeSortCache();
-
+		refreshMaxVersionId();
 	}
 
 	public static void initUserCache() {
@@ -143,6 +140,15 @@ public class CacheManager {
 	public static void refreshUserCache() {
 		redisUtils.del(PREFIX_USER);
 		initUserCache();
+	}
+
+	/**
+	 * 增量更新Usr缓存
+	 * */
+	public static void refreshUserCache(List<User> userList){
+		for (User u : userList) {
+			redisUtils.hset(PREFIX_USER, u.getId(), JSON.toJSONString(u));
+		}
 	}
 
 	private static void initRoleCache() {
@@ -161,10 +167,30 @@ public class CacheManager {
 		initRoleCache();
 	}
 
+	/**
+	 * 增量更新Role缓存
+	 * */
+	public static void refreshRoleCache(List<Role> roleList) {
+		for (Role r : roleList) {
+			redisUtils.hset(PREFIX_ROLE, r.getId(), JSON.toJSONString(r));
+
+		}
+	}
+
 	private static void initResourceCache() {
 		ResourceService resourceService = (ResourceService) SpringContextUtil
 				.getBean("resourceService");
 		List<Resource> resList = resourceService.getResourceList();
+		for (Resource r : resList) {//
+			redisUtils.hset(PREFIX_RESOURCE, r.getCode(), JSON.toJSONString(r));
+		}
+
+	}
+
+	/**
+	 * 增量更新Resource缓存
+	 * */
+	public static void refreshResourceCache(List<Resource> resList) {
 		for (Resource r : resList) {//
 			redisUtils.hset(PREFIX_RESOURCE, r.getCode(), JSON.toJSONString(r));
 		}
@@ -218,6 +244,21 @@ public class CacheManager {
 		}
 	}
 
+	public static void refreshUnitCache() throws Exception {
+		redisUtils.del(PREFIX_UNIT);
+		initUnitMap();
+	}
+
+	public static void refreshUnitCache(List<Unit> unitList) throws Exception {
+		for (Unit unit : unitList) {
+			if (unit.getType() == 1) {
+				company = unit;
+			}
+			redisUtils.hset(PREFIX_UNIT, unit.getCode(), JSON.toJSONString(unit));
+			redisUtils.hset(PREFIX_UNIT, unit.getId(), JSON.toJSONString(unit));//
+		}
+	}
+
 	private static void initDeviceMap() {
 		DeviceService deviceService = (DeviceService) SpringContextUtil
 				.getBean("deviceService");
@@ -228,15 +269,33 @@ public class CacheManager {
 
 	}
 
+
 	public static void refreshDeviceCache() {
 		redisUtils.del(PREFIX_DEVICE);
 		initDeviceMap();
 	}
 
+	public static void refreshDeviceCache(List<Device> deviceList) {
+		for (Device device : deviceList) {
+			redisUtils.hset(PREFIX_DEVICE, device.getCode(), JSON.toJSONString(device));
+		}
+	}
+	public static void initMaxVersionId(){
+		ProductService productService = (ProductService) SpringContextUtil
+				.getBean("productService");
+		StyleService styleService = (StyleService) SpringContextUtil
+				.getBean("styleService");
+		//得到当前商品最大版本号放进redis
+		long productMaxVersionId = productService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","productMaxVersionId",JSON.toJSONString(productMaxVersionId));
+		long styleMaxVersionId = styleService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId));
+	}
 	public static void initProductCache() {
 		long startTime = System.currentTimeMillis();   //获取开始时间
 		ProductService productService = (ProductService) SpringContextUtil
 				.getBean("productService");
+
 		List<Product> list = productService.getAll();
 		Collections.sort(list, new Comparator<Product>() {
 
@@ -270,6 +329,12 @@ public class CacheManager {
 		initProductCache();
 	}
 
+	public static void refreshProductCache(List<Product> productList) {
+		for (Product p : productList) {
+			redisUtils.hset(PREFIX_PRODUCT, p.getCode(), JSON.toJSONString(p));
+			redisUtils.hset(PREFIX_PRODUCT, p.getId(), JSON.toJSONString(p));
+		}
+	}
 
 	private static void initColorCache() {
 		StyleService styleService = (StyleService) SpringContextUtil
@@ -281,12 +346,20 @@ public class CacheManager {
 
 	}
 
+	public static void delColorCache(String item){
+		redisUtils.hdel(PREFIX_COLOR,item);
+	}
 
 	public static void refreshColorCache() {
 		redisUtils.del(PREFIX_COLOR);
 		initColorCache();
 	}
 
+	public static void refreshColorCache(List<Color> colorList) {
+		for (Color c : colorList) {
+			redisUtils.hset(PREFIX_COLOR, c.getId(), JSON.toJSONString(c));
+		}
+	}
 
 	private static void initSizeCache() {
 		StyleService styleService = (StyleService) SpringContextUtil
@@ -298,15 +371,19 @@ public class CacheManager {
 
 	}
 
-	public static void refreshSizeSortCache() {
-		redisUtils.del(PREFIX_SIZESORT);
-		initSizeSortCache();
+	public static void delSizeCache(String item){
+		redisUtils.hdel(PREFIX_SIZE,item);
 	}
-
 
 	public static void refreshSizeCache() {
 		redisUtils.del(PREFIX_SIZE);
 		initSizeCache();
+	}
+
+	public static void refreshSizeCache(List<Size> sizeList) {
+		for (Size s : sizeList) {
+			redisUtils.hset(PREFIX_SIZE, s.getId(), JSON.toJSONString(s));
+		}
 	}
 
 	private static void initStyleCache() {
@@ -321,6 +398,13 @@ public class CacheManager {
 	public static void refreshStyleCache() {
 		redisUtils.del(PREFIX_STYLE);
 		initStyleCache();
+	}
+
+
+	public static void refreshStyleCache(List<Style> styleList) {
+		for (Style style : styleList) {
+			redisUtils.hset(PREFIX_STYLE, style.getId(), JSON.toJSONString(style));
+		}
 	}
 
 	public static void initPropertyCache() {
@@ -339,6 +423,17 @@ public class CacheManager {
 		redisUtils.del(PREFIX_PROPERTYKEY);
 		initPropertyCache();
 	}
+	public static void refreshMaxVersionId(){
+		redisUtils.del("maxVersionId");
+		initMaxVersionId();
+	}
+
+	public static void refreshPropertyCache(List<PropertyKey> propertyKeyList) {
+		for (PropertyKey key : propertyKeyList) {
+			redisUtils.hset(PREFIX_PROPERTYKEY, key.getId(), JSON.toJSONString(key));
+			redisUtils.hset(PREFIX_PLAYLOUNGEPROPERTYKEY, key.getCode() + "-" + key.getType(), JSON.toJSONString(key));
+		}
+	}
 
 	public static void initPropertyTypeCache() {
 		PropertyKeyService propertyKeyService = (PropertyKeyService) SpringContextUtil
@@ -352,6 +447,12 @@ public class CacheManager {
 	public static void refreshPropertyTypeCache() {
 		redisUtils.del(PREFIX_PROPERTYTYPE);
 		initPropertyTypeCache();
+	}
+
+	public static void refreshPropertyTypeCache(List<PropertyType> propertyTypeList) {
+		for (PropertyType type : propertyTypeList) {
+			redisUtils.hset(PREFIX_PROPERTYTYPE, type.getKeyId(), JSON.toJSONString(type));
+		}
 	}
 
 	private static void initSizeSortCache() {
@@ -394,6 +495,20 @@ public class CacheManager {
 			redisUtils.lSet(PREFIX_SIZESORT, JSON.toJSONString(ss));
 		}
 	}
+
+
+	public static void refreshSizeSortCache() {
+		redisUtils.del(PREFIX_SIZESORT);
+		initSizeSortCache();
+	}
+
+
+	public static void refreshSizeSortCache(List<SizeSort> sizeSortList) {
+		for (SizeSort ss : sizeSortList) {
+			redisUtils.lSet(PREFIX_SIZESORT, JSON.toJSONString(ss));
+		}
+	}
+
 	public static void initSysSetting() {
 		SettingService settingService = (SettingService) SpringContextUtil
 				.getBean("settingService");
@@ -406,6 +521,12 @@ public class CacheManager {
 	public static void refreshSysSetting() {
 		redisUtils.del(PREFIX_SYSSITTING);
 		initSysSetting();
+	}
+
+	public static void refreshSysSetting(List<Setting> settingList) {
+		for (Setting s : settingList) {
+			redisUtils.hset(PREFIX_SYSSITTING, s.getId(), JSON.toJSONString(s));
+		}
 	}
 
 	public static void initCustomerCache() {
@@ -422,6 +543,12 @@ public class CacheManager {
 	public static void refreshCustomer() {
 		redisUtils.del(PREFIX_CUSTOMER);
 		initCustomerCache();
+	}
+
+	public static void refreshCustomer(List<Customer> customerList) {
+		for (Customer s : customerList) {
+			redisUtils.hset(PREFIX_CUSTOMER, s.getId(), JSON.toJSONString(s));
+		}
 	}
 
 	public static List<PropertyKey> getCodeDetailListByType(String typeCode) {
@@ -558,11 +685,26 @@ public class CacheManager {
 	public static void iniAccessToken(AccessToken accessToken){
 		Map<String,AccessToken> accessTokenMap  = new HashMap<>();
 		accessTokenMap.put("AccessToken",accessToken);
-		cache.put(new Element("AccessToken",accessTokenMap));
+		redisUtils.hset(PREFIX_ACCESSTOKEN,"AccessToken", JSON.toJSONString(accessTokenMap));
+		/*cache.put(new Element("AccessToken",accessTokenMap));*/
 	}
 
 	public static AccessToken getAccessToken(){
-		Element result = cache.get("AccessToken");
+		String accessTokenStr = null;
+		AccessToken accessToken = null;
+		Map<Object,Object> accessTokenMap = redisUtils.hmget(PREFIX_ACCESSTOKEN);
+		if (CommonUtil.isNotBlank(accessTokenMap)){
+			for (Entry<Object, Object> entry : accessTokenMap.entrySet()){
+				accessTokenStr = (String) entry.getValue();
+				accessToken = JSONObject.parseObject(accessTokenStr, AccessToken.class);
+			}
+			return accessToken;
+		}else {
+			AccessToken token = new AccessToken();
+			iniAccessToken(token);
+			return token;
+		}
+		/*Element result = cache.get("AccessToken");
 		if (result==null){
 			AccessToken accessToken = new AccessToken();
 			iniAccessToken(accessToken);
@@ -572,11 +714,13 @@ public class CacheManager {
 		}else {
 			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) result.getValue();
 			return accessTokenMap.get("AccessToken");
-		}
+		}*/
+
 	}
 
 	public static void remove(){
-		cache.remove("AccessToken");
+		redisUtils.del(PREFIX_ACCESSTOKEN);
+		/*cache.remove("AccessToken");*/
 	}
 
 
@@ -902,11 +1046,6 @@ public class CacheManager {
 		return json.toString();
 	}
 
-	public static void refreshUnitCache() throws Exception {
-		redisUtils.del(PREFIX_UNIT);
-		initUnitMap();
-	}
-
 	public static Unit getUnitById(String id) {
 		Unit unit = null;
 		String unitJSON = redisUtils.hgetString(PREFIX_UNIT, id);
@@ -1038,4 +1177,12 @@ public class CacheManager {
 		return maxId;
 	}
 
+	public static Long getproductMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","productMaxVersionId");
+		return maxVersionId;
+	}
+	public static Long getStyleMaxVersionId(){
+		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","styleMaxVersionId");
+		return maxVersionId;
+	}
 }

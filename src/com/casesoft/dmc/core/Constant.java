@@ -1,7 +1,6 @@
 package com.casesoft.dmc.core;
 
 import com.casesoft.dmc.core.util.file.PropertyUtil;
-import io.swagger.models.auth.In;
 
 import java.io.File;
 

@@ -11,12 +11,12 @@
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 
 	<!-- jax-ws endpoint定义  -->
-	<jaxws:endpoint implementor="com.casesoft.dmc.extend.webservice.sample.WebServiceSampleImpl" address="/serviceSample">
+	<!--<jaxws:endpoint implementor="com.casesoft.dmc.extend.webservice.sample.WebServiceSampleImpl" address="/serviceSample">-->
 
-	</jaxws:endpoint>
-	<!-- jax-ws endpoint定义  -->
+	<!--</jaxws:endpoint>
+	&lt;!&ndash; jax-ws endpoint定义  &ndash;&gt;
 	<jaxws:endpoint implementor="com.casesoft.dmc.extend.webservice.pos.PosServiceImpl" address="/posService">
 
-	</jaxws:endpoint>
+	</jaxws:endpoint>-->
 
 </beans>

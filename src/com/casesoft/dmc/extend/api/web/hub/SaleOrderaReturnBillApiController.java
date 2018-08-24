@@ -1,9 +1,11 @@
 package com.casesoft.dmc.extend.api.web.hub;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Session on 2017-07-11.
@@ -32,7 +36,7 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 
 	@Autowired
 	private SaleOrderReturnBillService saleOrderReturnBillService;
-
+	private static  Queue<Object> objectQueue = new LinkedList<>();
 	@RequestMapping(value = "/listWS.do")
 	@ResponseBody
 	public MessageBox listWS(){
@@ -76,6 +80,38 @@ public class SaleOrderaReturnBillApiController extends BaseInfoApiController{
 		List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls =this.saleOrderReturnBillService.findDtlByBillNo(billNo);
 		return returnSuccessInfo("获取成功",saleOrderReturnBillDtls);
 	}
+
+	/**
+	 * @param saleOrderReturnArray 上传JSON Array数据
+	 * */
+	@RequestMapping(value="/saveJSONWS")
+	@ResponseBody
+	public void saveSaleOrderBill(String saleOrderReturnArray){
+		this.logAllRequestParams();
+		JSONArray jsonArray = JSON.parseArray(saleOrderReturnArray);
+		RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
+		//Queue<Object> objectQueue = new LinkedList<>();
+		for(Object o : jsonArray){
+			SaleOrderReturnBill saleOrderReturnBill=null;
+			try {
+				saleOrderReturnBill = JSON.parseObject(JSON.toJSON(o).toString(),SaleOrderReturnBill.class);
+				List<SaleOrderReturnBillDtl> saleOrderReturnBillDtls = saleOrderReturnBill.getDtlList();
+				this.saleOrderReturnBillService.saveReturnBatch(saleOrderReturnBill,saleOrderReturnBillDtls,null);
+				boolean sHasKey = redisUtils.sHasKey("saleOrderReturnBill", saleOrderReturnBill.getId());
+				if(sHasKey){
+					redisUtils.setRemove("saleOrderReturnBill",saleOrderReturnBill.getId());
+				}
+			}catch (Exception e){
+				this.logger.error("保存失败");
+				objectQueue.add(o);
+				saleOrderReturnBill.setErrorMessage(e.getMessage());
+				if(CommonUtil.isNotBlank(saleOrderReturnBill)) {
+					redisUtils.hset("saleOrderReturnBill", saleOrderReturnBill.getId(), JSON.toJSONString(saleOrderReturnBill));
+				}
+			}
+		}
+	}
+
 
 	@RequestMapping(value = "/saveWS.do")
 	@ResponseBody

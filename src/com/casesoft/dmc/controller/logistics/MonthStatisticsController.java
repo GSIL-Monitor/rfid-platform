@@ -6,7 +6,6 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.extend.echarts.data.Data;
 import com.casesoft.dmc.model.logistics.MonthStatisticsInandOut;
 import com.casesoft.dmc.model.search.DetailStockView;
 import com.casesoft.dmc.service.logistics.MonthStatisticsService;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

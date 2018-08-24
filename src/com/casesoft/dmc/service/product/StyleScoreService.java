@@ -1,17 +1,16 @@
 package com.casesoft.dmc.service.product;
 
-import java.util.List;
-
-import com.casesoft.dmc.model.product.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.product.StyleScoreDao;
+import com.casesoft.dmc.model.product.CountResult;
+import com.casesoft.dmc.model.product.StyleScore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service

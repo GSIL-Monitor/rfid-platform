@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.search.DetailStockViewDao;
 import com.casesoft.dmc.model.search.DetailStockView;
-import com.casesoft.dmc.model.stock.EpcStock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

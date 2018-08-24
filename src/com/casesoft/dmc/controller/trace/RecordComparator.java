@@ -1,8 +1,8 @@
 package com.casesoft.dmc.controller.trace;
 
-import java.util.Comparator;
-
 import com.casesoft.dmc.model.task.Record;
+
+import java.util.Comparator;
 
 public class RecordComparator implements Comparator<Record> {
 

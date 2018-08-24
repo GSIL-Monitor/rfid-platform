@@ -1,41 +1,33 @@
 package com.casesoft.dmc.controller.stock;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.casesoft.dmc.controller.product.StyleUtil;
-import com.casesoft.dmc.core.dao.PropertyFilter;
-import com.casesoft.dmc.model.cfg.PropertyKey;
-import com.casesoft.dmc.model.logistics.*;
-import com.casesoft.dmc.model.product.Product;
-import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.stock.EpcStock;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.DataSourceRequest;
 import com.casesoft.dmc.core.controller.DataSourceResult;
+import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.DetailStockDao;
-import com.casesoft.dmc.model.erp.BillDtl;
+import com.casesoft.dmc.model.logistics.*;
+import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
-import com.casesoft.dmc.model.search.DetailStockView;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
-
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
+import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
-import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.WarehouseService;
 import com.casesoft.dmc.service.task.TaskService;
@@ -51,10 +43,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.DatatypeConverter;
-import java.text.SimpleDateFormat;
-
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,5 @@
 package com.casesoft.dmc.controller.sys;
 
-import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
@@ -9,16 +8,13 @@ import com.casesoft.dmc.core.tag.util.StringUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.cfg.VO.State;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
 import com.casesoft.dmc.model.rem.RepositoryManagement;
-import com.casesoft.dmc.model.rem.RepositoryManagementBill;
 import com.casesoft.dmc.model.rem.VO.TreeChildVO;
 import com.casesoft.dmc.model.rem.VO.code;
 import com.casesoft.dmc.model.rem.VO.sku;
 import com.casesoft.dmc.model.rem.VO.styled;
-import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.rem.RepositoryManagementService;
@@ -33,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

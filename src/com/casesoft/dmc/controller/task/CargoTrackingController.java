@@ -1,8 +1,6 @@
 package com.casesoft.dmc.controller.task;
 
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.logistics.ConsignmentBillController;
-import com.casesoft.dmc.controller.logistics.SaleOrderReturnBillController;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -10,7 +8,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Setting;
@@ -23,7 +20,6 @@ import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.task.CargoTrackingService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

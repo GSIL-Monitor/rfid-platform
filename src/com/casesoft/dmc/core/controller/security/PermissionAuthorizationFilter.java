@@ -1,15 +1,14 @@
 package com.casesoft.dmc.core.controller.security;
 
+import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.model.sys.User;
+import org.apache.shiro.web.filter.authz.AuthorizationFilter;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.shiro.web.filter.authz.AuthorizationFilter;
-
-import com.casesoft.dmc.core.Constant;
-import com.casesoft.dmc.model.sys.User;
 
 /**
  * Shiro框架中自定义权限过滤器

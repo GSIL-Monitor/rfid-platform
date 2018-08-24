@@ -256,6 +256,11 @@ public class ProductService extends AbstractBaseService<Product, String> {
         String maxId = this.productDao.findUnique(hql);
         return maxId;
     }
+    public Long getMaxVersionId(){
+        String hql="select max(version) from Product";
+        long maxVersionId = this.productDao.findUnique(hql);
+        return maxVersionId;
+    }
 
     /**
      * add by yushen 订单中选择商品时，商品先按颜色尺寸排序。颜色按颜色名首字母排序，尺寸按XS,S,M,L,XL,XXL排序(seqNo)

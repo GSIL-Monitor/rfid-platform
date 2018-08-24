@@ -1,11 +1,7 @@
 package com.casesoft.dmc.extend.api.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * Created by john on 2016/12/29.

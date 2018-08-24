@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Session on 2017-06-28.
@@ -157,5 +158,27 @@ public class SaleOrderReturnBill extends BaseBill{
 
 	public void setAfterBalance(Double afterBalance) {
 		this.afterBalance = afterBalance;
+	}
+
+	@Transient
+	private List<SaleOrderReturnBillDtl> dtlList;
+
+	@Transient
+	private String errorMessage;//redis记录单据保存的错误信息
+
+	public List<SaleOrderReturnBillDtl> getDtlList() {
+		return dtlList;
+	}
+
+	public void setDtlList(List<SaleOrderReturnBillDtl> dtlList) {
+		this.dtlList = dtlList;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 }

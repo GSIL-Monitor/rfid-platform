@@ -138,50 +138,54 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label"
-                                                       for="search_origId">出库仓库</label>
-                                                <div class="col-md-4">
-                                                    <select class="form-control selectpicker show-tick"
-                                                            id="search_origId"
-                                                            name="filter_LIKES_origId"
-                                                            style="width: 100%;" data-live-search="true">
-                                                    </select>
-                                                </div>
-                                                <label class="col-md-2 control-label"
-                                                       for="select_outStatus">出库状态</label>
-                                                <div class="col-md-4">
-                                                    <select class="form-control selectpicker show-tick"
-                                                            id="select_outStatus"
-                                                            name="filter_INI_outStatus" data-live-search="true">
-                                                        <option value="">--请选择--</option>
-                                                        <option value="0,3">订单状态</option>
-                                                        <option value="2">已出库</option>
-                                                        <option value="3">出库中</option>
-                                                    </select>
+                                            <div id="search_origId_div">
+                                                <div class="form-group">
+                                                    <label class="col-md-2 control-label"
+                                                           for="search_origId">出库仓库</label>
+                                                    <div class="col-md-4">
+                                                        <select class="form-control selectpicker show-tick"
+                                                                id="search_origId"
+                                                                name="filter_LIKES_origId"
+                                                                style="width: 100%;" data-live-search="true">
+                                                        </select>
+                                                    </div>
+                                                    <label class="col-md-2 control-label"
+                                                           for="select_outStatus">出库状态</label>
+                                                    <div class="col-md-4">
+                                                        <select class="form-control selectpicker show-tick"
+                                                                id="select_outStatus"
+                                                                name="filter_INI_outStatus" data-live-search="true">
+                                                            <option value="">--请选择--</option>
+                                                            <option value="0,3">订单状态</option>
+                                                            <option value="2">已出库</option>
+                                                            <option value="3">出库中</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label"
-                                                       for="search_destId">入库仓库</label>
-                                                <div class="col-md-4">
-                                                    <select class="form-control selectpicker show-tick"
-                                                            id="search_destId"
-                                                            name="filter_LIKES_destId"
-                                                            style="width: 100%;" data-live-search="true">
-                                                    </select>
-                                                </div>
-                                                <label class="col-md-2 control-label"
-                                                       for="select_inStatus">入库状态</label>
-                                                <div class="col-md-4">
-                                                    <select class="form-control selectpicker show-tick"
-                                                            id="select_inStatus"
-                                                            name="filter_INI_inStatus" data-live-search="true">
-                                                        <option value="">--请选择--</option>
-                                                        <option value="0">订单状态</option>
-                                                        <option value="1">已入库</option>
-                                                        <option value="4">入库中</option>
-                                                    </select>
+                                            <div id="search_destId_div">
+                                                <div class="form-group">
+                                                    <label class="col-md-2 control-label"
+                                                           for="search_destId">入库仓库</label>
+                                                    <div class="col-md-4">
+                                                        <select class="form-control selectpicker show-tick"
+                                                                id="search_destId"
+                                                                name="filter_LIKES_destId"
+                                                                style="width: 100%;" data-live-search="true">
+                                                        </select>
+                                                    </div>
+                                                    <label class="col-md-2 control-label"
+                                                           for="select_inStatus">入库状态</label>
+                                                    <div class="col-md-4">
+                                                        <select class="form-control selectpicker show-tick"
+                                                                id="select_inStatus"
+                                                                name="filter_INI_inStatus" data-live-search="true">
+                                                            <option value="">--请选择--</option>
+                                                            <option value="0">订单状态</option>
+                                                            <option value="1">已入库</option>
+                                                            <option value="4">入库中</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">

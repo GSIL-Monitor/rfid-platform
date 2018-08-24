@@ -9,7 +9,6 @@ import com.casesoft.dmc.dao.shop.ScoreDao;
 import com.casesoft.dmc.model.shop.FittingRecord;
 import com.casesoft.dmc.model.shop.Score;
 import com.casesoft.dmc.model.shop.ShowRecord;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

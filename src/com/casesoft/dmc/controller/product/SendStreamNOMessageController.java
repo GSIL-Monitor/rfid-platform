@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
-
 import com.casesoft.dmc.model.product.SendStreamNOMessage;
 import com.casesoft.dmc.service.product.SendStreamNOMessageService;
 import org.springframework.beans.factory.annotation.Autowired;

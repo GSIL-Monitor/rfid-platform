@@ -5,7 +5,6 @@ import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.SettingDao;
 import com.casesoft.dmc.model.sys.Setting;
-import com.casesoft.dmc.model.task.Box;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

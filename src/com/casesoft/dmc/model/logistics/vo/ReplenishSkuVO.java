@@ -1,8 +1,5 @@
 package com.casesoft.dmc.model.logistics.vo;
 
-import com.casesoft.dmc.core.util.reflection.ConvertUtils;
-import io.swagger.models.auth.In;
-
 import java.io.Serializable;
 import java.util.List;
 

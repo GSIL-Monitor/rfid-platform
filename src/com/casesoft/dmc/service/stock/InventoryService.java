@@ -7,7 +7,6 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.stock.InventoryDao;
 import com.casesoft.dmc.model.product.Style;
-import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.stock.InventoryRecord;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.BusinessDtl;

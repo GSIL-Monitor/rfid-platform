@@ -9,7 +9,8 @@ public class SpringContextUtil implements ApplicationContextAware {
 	private static ApplicationContext applicationContext; //Spring应用上下文环境   
 
 	/**  
-	 * 实现ApplicationContextAware接口的回调方法，设置上下文环境     
+	 * 实现ApplicationContextAware接口的回调方法，设置上下文环境
+	 * 实现该接口的setApplicationContext(ApplicationContext context)方法，并保存ApplicationContext 对象。Spring初始化时，会通过该方法将ApplicationContext对象注入。
 	 * @param applicationContext  
 	 * @throws BeansException  
 	 */
@@ -99,4 +100,5 @@ public class SpringContextUtil implements ApplicationContextAware {
 			throws NoSuchBeanDefinitionException {
 		return applicationContext.getAliases(name);
 	}
+
 }

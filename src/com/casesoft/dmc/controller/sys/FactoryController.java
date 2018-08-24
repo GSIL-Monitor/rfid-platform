@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by GuoJunwen on 2017-05-08.
@@ -77,7 +79,9 @@ public class FactoryController extends BaseController implements IBaseInfoContro
         }
         unit.setType(Constant.UnitType.Factory);
         this.factoryService.save(unit);
-        CacheManager.refreshUnitCache();
+        List<Unit> unitList = new ArrayList<>();
+        unitList.add(unit);
+        CacheManager.refreshUnitCache(unitList);
         return returnSuccessInfo("ok");
     }
 

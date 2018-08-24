@@ -1,10 +1,7 @@
 package com.casesoft.dmc.service.cfg;
 
-import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
-import com.casesoft.dmc.core.service.ServiceException;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.cfg.MultiLevelRelationDao;

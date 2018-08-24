@@ -16,7 +16,6 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
-import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
@@ -32,7 +31,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.*;
 
 @Controller
@@ -168,16 +168,15 @@ public class WXProductApiController extends ApiBaseController {
             }
             sty.setOprId(userId);
             List<Product> saveList = StyleUtil.covertToProductInfo(sty, styleDTO, productList);
-
             this.styleService.saveStyleAndProducts(sty, saveList);
-            long time1 = System.currentTimeMillis();
-            CacheManager.refreshStyleCache();
-            long time2 = System.currentTimeMillis();
-            System.out.println("刷新款式缓存时间：" + (time2 - time1) + "ms");
-            CacheManager.refreshProductCache();
-            long time3 = System.currentTimeMillis();
-            System.out.println("刷新商品缓存时间：" + (time3 - time2) + "ms");
-
+            List<Style> styleList = new ArrayList<>();
+            styleList.add(sty);
+            if(saveList.size() > 0){
+                CacheManager.refreshStyleCache(styleList);
+            }
+            List<Style> styles = new ArrayList<>();
+            styles.add(sty);
+            CacheManager.refreshStyleCache(styles);
             return this.returnSuccessInfo("保存成功", styleStr);
         } catch (Exception e) {
             return this.returnFailInfo("保存失败");
@@ -270,7 +269,9 @@ public class WXProductApiController extends ApiBaseController {
         s.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         try {
             this.sizeService.save(s);
-            CacheManager.refreshSizeCache();
+            List<Size> sizeList = new ArrayList<>();
+            sizeList.add(s);
+            CacheManager.refreshSizeCache(sizeList);
             return returnSuccessInfo("ok");
         } catch (Exception e) {
             e.printStackTrace();
@@ -316,7 +317,9 @@ public class WXProductApiController extends ApiBaseController {
         col.setHex(color.getHex());
         col.setUpdateTime(CommonUtil.getDateString(new Date(), "yyyy-MM-dd HH:mm:ss"));
         this.colorService.save(col);
-        CacheManager.refreshColorCache();
+        List<Color> colorList = new ArrayList<>();
+        colorList.add(col);
+        CacheManager.refreshColorCache(colorList);
         return returnSuccessInfo("ok");
     }
 
