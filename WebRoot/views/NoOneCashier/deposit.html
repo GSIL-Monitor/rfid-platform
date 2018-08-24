@@ -5,7 +5,6 @@
         var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
         var timeout;
         var websocket;
-        var isAdd = true;
     </script>
     <script src="../../Olive/assets/js/jquery.js"></script>
     <script src="../../Olive/assets/js/bootstrap.js"></script>
@@ -53,18 +52,14 @@
               <div class="panel-body">
                   <div class="widget-body">
                       <div class=" col-lg-12 col-md-12 col-sm-12" style="height:75% " id="sale">
-                          <h5 class="text-info">明细列表</h5>
+                          <h5 class="text-info">核销寄存</h5>
                           <table id="addDetailgrid"></table>
-                          <div id="grid-pager" ></div>
                       </div>
                   </div>
               </div>
           </div>
-          <button id="scanning" class=" bottom-button" onclick="onScanning()">扫描</button>
-          <button id="stop" class="bottom-button" onclick="stop()">停止</button>
-          <button id="save" class="bottom-button" onclick="save()">保存</button>
-          <button id="addCommodity" class="bottom-button" onclick="addCommodity()">添加商品</button>
-          <button id="back" class="bottom-button" onclick="onBack()">上一页</button>
+
+          <button id="back" class="bottom-button" onclick="onBack()">上一步</button>
       </div>
   </div>
   <div style="display:none">
@@ -113,12 +108,6 @@
   </div>
 <script>
     $(function () {
-        var wsUri ="ws://127.0.0.1:4649/csreader";
-        websocket = new WebSocket(wsUri);
-        websocket.onopen = function(evt) { onOpen(evt) };
-        websocket.onclose = function(evt) { onClose(evt) };
-        websocket.onmessage = function(evt) { onMessage(evt) };
-        websocket.onerror = function(evt) { onError(evt) };
         loadTable();
         //得到表格的宽度
         var tableWith=$("#sale").width();
@@ -174,8 +163,6 @@
                 }
             });
         }
-        setFooterData();
-
     }
     function loadTable() {
         $("#addDetailgrid").jqGrid({
@@ -185,25 +172,28 @@
             colModel: [
                 {name: 'id', label: 'id', hidden: true},
                 {name: 'billId', label: 'billId', hidden: true},
-                {name: 'billNo', label: 'billNo', hidden: true},
+                {name: 'billNo', label: '单号'},
+                {name: 'billDate', label: '日期'},
+                {name: 'statusImg', label: '状态'},
+                {name: 'customer', label: '客户'},
+                {name: 'shop', label: '店铺'},
                 {name: 'status', hidden: true},
                 {name: 'inStatus', hidden: true},
                 {name: 'outStatus', hidden: true},
                 {name: "operation", label: "操作",hidden:true},
-                {name: 'statusImg', label: '状态',hidden:true},
                 {name: 'inStatusImg', label: '入库状态',hidden:true},
                 {name: 'outStatusImg', label: '出库状态',hidden:true},
-                {name: 'styleId', label: '款号',width: 40},
+                {name: 'styleId', label: '款号',width: 40, hidden:true},
                 {name: 'styleName', label: '款名', hidden:true},
-                {name: 'colorId', label: '色码', width: 40},
+                {name: 'colorId', label: '色码', width: 40, hidden:true},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
-                {name: 'sizeName', label: '尺码', width: 40},
+                {name: 'sizeName', label: '尺码', width: 40, hidden:true},
                 {name: 'qty', label: '数量', width: 40},
                 {name: 'outQty', label: '已出库数量',hidden:true},
                 {name: 'inQty', label: '已入库数量',hidden:true},
-                {name: 'sku', label: 'SKU', width: 50},
-                {
+                {name: 'sku', label: 'SKU', width: 50,hidden:true}
+                /*{
                     name: 'price', label: '销售价格', width: 40,
                     editrules: {
                         number: true
@@ -240,7 +230,7 @@
                         return parseFloat(cellValue).toFixed(2);
                     }
                 },
-                {name: 'uniqueCodes', label: '唯一码', hidden: true}
+                {name: 'uniqueCodes', label: '唯一码', hidden: true}*/
             ],
             autowidth: true,
             rownumbers: true,
@@ -256,60 +246,9 @@
             afterEditCell: function (rowid, celname, value, iRow, iCol) {
                 addDetailgridiRow = iRow;
                 addDetailgridiCol = iCol;
-            },
-            gridComplete: function () {
-                setFooterData();
-            },
-            loadComplete : function(){
-                var table = this;
-                setTimeout(function(){
-
-                    //加载完成后，替换分页按钮图标
-                    updatePagerIcons(table);
-                    enableTooltips(table);
-                }, 0)
             }
         });
 
-    }
-    function setFooterData() {
-        var sum_qtymin = $("#addDetailgrid").getCol('qty', false, 'sum');
-        var sum_totActPricemin = $("#addDetailgrid").getCol('totActPrice', false, 'sum');
-        var sum_totPrice = $("#addDetailgrid").getCol('totPrice',false,'sum');
-        sum_totActPrice = sum_totActPricemin.toFixed(0);
-        $("#addDetailgrid").footerData('set', {
-            styleId: "合计",
-            qty: sum_qtymin,
-            totPrice:Math.abs(sum_totPrice),
-            totActPrice: Math.abs(sum_totActPricemin)
-        });
-        $("#discount_Amount").val(sum_totActPrice);
-        localStorage.setItem("search_actPrice",sum_totActPrice);
-        $("#sum_totPrice").val(sum_totPrice);
-    }
-    function updatePagerIcons(table) {
-        //ui-icon ui-icon-circlesmall-minus
-        var replacement =
-            {
-                'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
-                'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
-                'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
-                'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
-            };
-        $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
-            var icon = $(this);
-            var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
-
-            if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
-        });
-    }
-    function enableTooltips(table) {
-        $('.navtable .ui-pg-button').tooltip({
-            container : 'body'
-        });
-        $(table).find('.ui-pg-div').tooltip({
-            container : 'body'
-        });
     }
     /*
     扫描
@@ -334,80 +273,20 @@
         var skuInfo = [];
         var res = JSON.parse(evt.data);
         var unicodes = [];
-        var productListInfo = [];
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
-                if (value!==null&&value.skuInfo!==null){
-                    skuInfo.push(value.skuInfo);
+                skuInfo.push(value.skuInfo);
+                var rowData = value.skuInfo;
+                if (rowData!==null) {
+                    console.log(rowData.unicode);
+                    unicodes.push(rowData.unicode);
+                    $("#addDetailgrid").setRowData(rowData.unicode, value.skuInfo);
                 }
             });
-            if (skuInfo!==null) {
-                console.log(skuInfo.unicode);
-                unicodes.push(skuInfo.unicode);
-                $.each(skuInfo, function (index, value) {
-                    var productInfo = value;
-                    if(productInfo.unicode!==""&&productInfo.unicode!==undefined){
-                        productInfo.qty = 1;
-                        var ct = localStorage.getItem("unitType");
-                        productInfo.sku=productInfo.code;
-                        productInfo.puPrice=productInfo.price;
-                        productInfo.wsPrice=productInfo.price;
-                        productInfo.actPrice=productInfo.price;
-                        productInfo.stockPrice = productInfo.price;
-                        productInfo.discount=100;
-                        productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
-                        productInfo.abnormalStatus=0;
-                        productInfo.outQty = 0;
-                        productInfo.inQty = 0;
-                        productInfo.status = 0;
-                        productInfo.inStatus = 0;
-                        productInfo.outStatus = 0;
-                        productInfo.uniqueCodes = productInfo.unicode;
-                        productInfo.totPrice = productInfo.price;
-                        productInfo.totActPrice = productInfo.actPrice;
-                        var stylePriceMap={};
-                        stylePriceMap['price']=productInfo.price;
-                        stylePriceMap['wsPrice']=productInfo.wsPrice;
-                        stylePriceMap['puPrice']=productInfo.puPrice;
-                        productInfo.stylePriceMap=JSON.stringify(stylePriceMap);
-                        delete productInfo.id;
-                        productListInfo.push(productInfo);
-                    }
-                });
-                var alltotActPrice = 0;
-                $.each(productListInfo, function (index, value) {
-                    isAdd = true;
-                    value.sku=value.code;
-                    $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
-                        var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
-                        if (value.sku === dtlRow.sku) {
-                            if (dtlRow.uniqueCodes.indexOf(value.unicode) !== -1) {
-                                isAdd = false;
-                            }else {
-                                dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                                dtlRow.totPrice = dtlRow.qty * dtlRow.price;
-                                dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
-                                alltotActPrice += dtlRow.qty * dtlRow.actPrice;
-                                dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.unicode;
-                                if (dtlRow.id) {
-                                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
-                                } else {
-                                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
-                                }
-                                isAdd = false;
-                            }
-                        }
-                    });
-                    if (isAdd) {
-                        $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
-                    }
-                });
-                setFooterData();
-            }
             //所有唯一码unicodes
+            console.log(unicodes);
             console.log(skuInfo);
         } else {
-
         }
     }
     function onError(evt) {
@@ -445,6 +324,9 @@
     }
     function save() {
         window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrAccountWS.html';
+    }
+    function onBack() {
+        window.location.href=basePath+'/views/NoOneCashier/saleReturnDelWS.html';
     }
 </script>
 </body>

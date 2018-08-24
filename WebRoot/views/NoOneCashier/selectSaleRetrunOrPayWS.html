@@ -2,8 +2,6 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        //var basePathAll=window.location.href;
-        //var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
         var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
     </script>
     <script src="../../Olive/assets/js/jquery.js"></script>
@@ -18,7 +16,7 @@
         .btn1 {
             width:50%;
             height:90%;
-            background:url('/images/pad/retreat.png')  no-repeat left top;
+            background:url('/images/pad/onAccount.png')  no-repeat left top;
             background-size:contain;
             border:none;
             color:#0a0a0a;
@@ -26,7 +24,7 @@
         .btn2 {
             width:50%;
             height:90%;
-            background:url('/images/pad/onAccount.png')  no-repeat left top;
+            background:url('/images/pad/retreat.png')  no-repeat left top;
             background-size:contain;
             border:none;
             color:#0a0a0a;
@@ -57,10 +55,10 @@
             <div class="panel-body">
                 <div class="widget-body">
                     <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
-                        <button class="btn1  center-vertical" id="saleRetrun" type="button"></button>
+                        <button class="btn1  center-vertical" id="sale" type="button" onclick="pay()"></button>
                     </div>
                     <div class=" row3 col-lg-6 col-md-6 col-sm-6" style="text-align:center">
-                        <button class="btn2  center-vertical" id="account" type="button" onclick="onAccount()"></button>
+                        <button class="btn2  center-vertical" id="saleRetrun" type="button" onclick="jumpReturn()"></button>
                     </div>
                 </div>
             </div>
@@ -71,7 +69,7 @@
 </div>
 <script>
     $(function () {
-        //会员客户和普通客户的正方形
+       /* //会员客户和普通客户的正方形
         var vipWidth=$("#sale").width();
         var vipHeight=$("#sale").height();
         if(vipWidth<=vipHeight) {
@@ -89,19 +87,22 @@
         }else{
             $("#saleRetrun").css("height", vipHeight);
             $("#saleRetrun").css("width", vipHeight);
-        }
+        }*/
 
     });
     function onBack() {
-        window.location.href=basePath+'/views/NoOneCashier/saleDelWS.html';
-      /*  if( localStorage.getItem("memberType")=="vip"){
+
+        if( localStorage.getItem("memberType")=="vip"){
             window.location.href=basePath+'/views/NoOneCashier/selectCustomWS.html';
         }else{
             window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
-        }*/
+        }
     }
-    function onAccount() {
+    function pay() {
         window.location.href=basePath+'/views/NoOneCashier/payDetailWS.html';
+    }
+    function jumpReturn() {
+        window.location.href=basePath+'/views/NoOneCashier/saleReturnDelWS.html';
     }
 </script>
 </body>
