@@ -76,7 +76,7 @@ public class KeyInfoChangeService extends BaseService<KeyInfoChange, String> {
      *
      * @return 返回分析的结果
      */
-    public String commonSave(String userId, String method, Map<String, Object> preInfoMap, Map<String, Object> aftInfoMap){
+    public String commonSave(String userId, String method, String objectId,  Map<String, Object> preInfoMap, Map<String, Object> aftInfoMap){
         boolean valueChange = false;
         StringBuilder sb = new StringBuilder();
         sb.append("以下价格发生变动：");
@@ -93,6 +93,7 @@ public class KeyInfoChangeService extends BaseService<KeyInfoChange, String> {
             infoChange.setOprId(userId);
             infoChange.setCreatedDate(new Date());
             infoChange.setMethod(method);
+            infoChange.setObjectId(objectId);
             infoChange.setPreInfo(JSON.toJSONString(preInfoMap));
             infoChange.setAftInfo(JSON.toJSONString(aftInfoMap));
             infoChange.setRemarks(sb.toString());
