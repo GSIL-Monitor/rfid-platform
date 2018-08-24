@@ -26,6 +26,8 @@ public class KeyInfoChange implements java.io.Serializable{
     @Column
     private String method;//记录操作的方法
     @Column
+    private String objectId; //唯一识别变动对象的
+    @Column
     private String preInfo;//记录操作前信息
     @Column
     private String aftInfo;//记录操作后信息
@@ -62,6 +64,14 @@ public class KeyInfoChange implements java.io.Serializable{
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getPreInfo() {

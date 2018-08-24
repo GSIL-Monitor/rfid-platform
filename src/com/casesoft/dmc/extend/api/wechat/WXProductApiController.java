@@ -204,7 +204,7 @@ public class WXProductApiController extends ApiBaseController {
                 long countValue = this.epcStockService.countAllByStyleId(sty.getId());
                 //大于0说明入过库
                 if(countValue > 0){
-                    infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), prePriceMap, aftPriceMap);
+                    infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
                 }
             }
 
