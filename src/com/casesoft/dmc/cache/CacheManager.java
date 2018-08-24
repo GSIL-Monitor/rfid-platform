@@ -164,6 +164,33 @@ public class CacheManager {
 		cache.remove("AccessToken");
 	}
 
+	/**
+	 * 小程序初始化和获取token
+	 */
+	public static void removeMiniProgramToken(){
+		cache.remove("MiniProgramAccessToken");
+	}
+
+	public static void initMiniProgramAccessToken(AccessToken accessToken){
+		Map<String,AccessToken> accessTokenMap  = new HashMap<>();
+		accessTokenMap.put("MiniProgramAccessToken",accessToken);
+		cache.put(new Element("MiniProgramAccessToken",accessTokenMap));
+	}
+
+	public static AccessToken getMiniProgramAccessToken(){
+		Element result = cache.get("MiniProgramAccessToken");
+		if (result==null){
+			AccessToken miniProgramAccessToken = new AccessToken();
+			initMiniProgramAccessToken(miniProgramAccessToken);
+			Element element = cache.get("MiniProgramAccessToken");
+			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) element.getValue();
+			return accessTokenMap.get("MiniProgramAccessToken");
+		}else {
+			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) result.getValue();
+			return accessTokenMap.get("MiniProgramAccessToken");
+		}
+	}
+
 
 	public static void iniDepartment(){
 		DepartmentService departmentService =(DepartmentService) SpringContextUtil.getBean("departmentService");
