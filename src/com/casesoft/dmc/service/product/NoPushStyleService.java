@@ -29,6 +29,7 @@ public class NoPushStyleService extends AbstractBaseService<NoPushStyle, String>
 
     }
 
+
     @Override
     public NoPushStyle load(String id) {
         return null;
