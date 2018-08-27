@@ -46,7 +46,9 @@ public class WarehouseController extends BaseController implements IBaseInfoCont
 	        page.setPageProperty();
 	        page = this.warehouseService.findPage(page,filters);
 	        for(Unit u:page.getRows()){
-	        	u.setUnitName(CacheManager.getUnitById(u.getOwnerId()).getName());
+	        	if(CommonUtil.isNotBlank(u)) {
+					u.setUnitName(CacheManager.getUnitById(u.getOwnerId()).getName());
+				}
 			}
 	        return page;
 	}

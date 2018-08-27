@@ -75,6 +75,17 @@ public class GuestView {
 	@Column()
 	private String updaterId;
 
+	@Column
+	private String idCard;
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
+
 	private String vipId;
 	@Column()
 	private String unionid;

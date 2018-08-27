@@ -1342,7 +1342,7 @@ public class BillConvertUtil {
         saleOrderBill.setTotQty(totQty);
         saleOrderBill.setTotPrice(totPrice);
         saleOrderBill.setActQty(actQty);
-        saleOrderBill.setActPrice(actPrice);
+        saleOrderBill.setActPrice(0D + Math.round(actPrice));
         saleOrderBill.setTotOutQty(totOutQty.longValue());
         saleOrderBill.setTotInQty(totInQty.longValue());
         saleOrderBill.setTotOutVal(totOutVal);

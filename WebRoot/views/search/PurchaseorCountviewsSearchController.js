@@ -311,8 +311,13 @@ function initKendoUIGrid() {
                     groupHeaderTemplate: function (data) {
                         var yetInitQty = data.aggregates.yetInitQty.sum;
                         var qty = data.aggregates.qty.sum;
-                        var d=new Date(data.value)
-                        var value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+                        var value;
+                        if(data.value!=undefined){
+                            var d=new Date(data.value)
+                            value =  d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+                        }else{
+                            value="";
+                        }
                         var totactprice = data.aggregates.totactprice.sum;
                         return "入库时间:" + value + " 已入库数量:" + yetInitQty + " 总数量:" + qty + "; 实际金额 :" + kendo.toString(totactprice, '0.00');
                     }
@@ -1192,8 +1197,8 @@ function openSearchVendorDialog() {
 function selected_VendorId_purchaseOrder() {
     var rowId = $("#vendorSelect_Grid").jqGrid("getGridParam", "selrow");
     var rowData = $("#vendorSelect_Grid").jqGrid('getRowData', rowId);
-    $("#filter_eq_destunitid").val(rowData.id);
-    $("#filter_eq_destunitname").val(rowData.name);
+    $("#search_destUnitId").val(rowData.id);
+    $("#search_destUnitName").val(rowData.name);
     $("#modal_vendor_search_table").modal('hide');
 }
 function hideImage() {

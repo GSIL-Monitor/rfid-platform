@@ -1,10 +1,7 @@
 package test.casesoft.dmc.controller;
 
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.core.util.CommonUtil;
-import com.casesoft.dmc.core.util.file.FileUtil;
-import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.mock.WebMockUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.hub.HallApiController;
@@ -19,21 +16,10 @@ import com.casesoft.dmc.service.hall.HallFloorService;
 import com.casesoft.dmc.service.hall.HallRoomService;
 import com.casesoft.dmc.service.hall.HallTaskService;
 import com.casesoft.dmc.service.hall.SampleService;
-
 import junit.framework.Assert;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-
-import test.casesoft.dmc.BaseTestCase;
-import test.casesoft.dmc.BeanContext;
 
 import java.util.Date;
 import java.util.List;
@@ -105,7 +91,7 @@ public class HallApiControllerTest extends AbstractTestCase {
 		this.hallFloorService.save(hallFloor);
 		CacheManager.refreshUnitCache();
 		CacheManager.refreshDeviceCache();
-		CacheManager.refreshHallFloor();
+//		CacheManager.refreshHallFloor();
 
 	}
 

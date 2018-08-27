@@ -73,6 +73,13 @@ public class DetailStockChatView {
     @Column()
     private String groupId;
 
+    @Column()
+    private Long inStockTime;
+
+    public Long getInStockTime() { return inStockTime; }
+
+    public void setInStockTime(Long inStockTime) { this.inStockTime = inStockTime; }
+
     public String getGroupId() {
         return groupId;
     }
@@ -293,5 +300,18 @@ public class DetailStockChatView {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public DetailStockChatView() { }
+
+    public DetailStockChatView(String styleId, String styleName, Long qty, Double price, Double precast, Double puprice, Double wsprice, String class1) {
+        this.styleId = styleId;
+        this.styleName = styleName;
+        this.qty = qty.intValue();
+        this.price = price;
+        this.precast = precast;
+        this.puprice = puprice;
+        this.wsprice = wsprice;
+        this.class1 = class1;
     }
 }

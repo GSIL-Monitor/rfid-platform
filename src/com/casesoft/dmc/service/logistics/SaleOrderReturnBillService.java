@@ -1,7 +1,6 @@
 package com.casesoft.dmc.service.logistics;
 
 import com.casesoft.dmc.cache.CacheManager;
-import com.casesoft.dmc.controller.logistics.MonthAccountUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -16,17 +15,16 @@ import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
-import com.casesoft.dmc.model.shop.PointsChange;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
-import com.casesoft.dmc.model.sys.PointsRule;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.BusinessDtl;
 import com.casesoft.dmc.model.task.Record;
+import com.casesoft.dmc.service.shop.GuestValueChangeService;
+import com.casesoft.dmc.service.shop.PointsChangeService;
+import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +48,18 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     private ConsignmentBillDao consignmentBillDao;
     @Autowired
     private MonthAccountStatementDao monthAccountStatementDao;
+    @Autowired
+    private MonthAccountStatementService monthAccountStatementService;
+    @Autowired
+    private PointsChangeService pointsChangeService;
+    @Autowired
+    private GuestService guestService;
+    @Autowired
+    private GuestValueChangeService guestValueChangeService;
 
+    public Double findSumActPrice(String origUnitId){
+        return this.saleOrderReturnBillDao.findUnique("select sum(actPrice) from SaleOrderReturnBill where status = 2 and origUnitId =?",origUnitId);
+    }
 
     @Override
     public Page<SaleOrderReturnBill> findPage(Page<SaleOrderReturnBill> page, List<PropertyFilter> filters) {
@@ -80,237 +89,67 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.saleOrderReturnBillDao.batchExecute("delete from SaleOrderReturnBillDtl sd where sd.billNo=?", bill.getBillNo());
         this.saleOrderReturnBillDao.batchExecute("delete from BillRecord where billNo=?", bill.getBillNo());
         String curYearMonth = CommonUtil.getDateString(new Date(), "yyyy-MM");
-        Logger logger = LoggerFactory.getLogger(SaleOrderReturnBill.class);
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
-        String preOrigUnitId = this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
-        Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", new Object[]{bill.getOrigUnitId()});
         Double preDiffPrice = this.saleOrderReturnBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
-        Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", new Object[]{bill.getOrigUnitId()});
-        Boolean isUpdateMonthAccount = false;
-        isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(bill.getBillDate(), "yyyy-MM"));
+        if(CommonUtil.isBlank(preDiffPrice)){
+            preDiffPrice = 0D;
+        }
+        String origUnitId = bill.getOrigUnitId();
+        String preOrigUnitId = this.saleOrderReturnBillDao.findUnique("select origUnitId from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
+        Boolean isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(bill.getBillDate(), "yyyy-MM"));
         if (isUpdateMonthAccount) {
-            Map<String, MonthAccountStatement> preMonthAccountMap = new HashMap<>();
-            List<MonthAccountStatement> preMonthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc", preOrigUnitId);
-            for (MonthAccountStatement m : preMonthAcountList) {
-                preMonthAccountMap.put(m.getId(), m);
-            }
-            List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
-            MonthAccountUtil.updateMonthAcoutData(bill.getBillDate(), preMonthAccountMap, updateMonthAccountList, preOrigUnitId, preDiffPrice, false);
-            this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
+            this.monthAccountStatementService.updateMonthAccountData(bill.getBillDate(), preOrigUnitId, preDiffPrice, false);
 
+            this.monthAccountStatementService.updateMonthAccountData(bill.getBillDate(), bill.getOrigUnitId(), diffPrice, true);
         }
-        if (CommonUtil.isNotBlank(preOrigUnitId)) {
-            Unit preUnit = CacheManager.getUnitByCode(preOrigUnitId);
-            if (CommonUtil.isNotBlank(preUnit)) {
-                this.saleOrderReturnBillDao.batchExecute("update Unit set owingValue = owingValue - ? where id =?", preDiffPrice, preOrigUnitId);
-                /*logger.error("销售退货单"+bill.getBillNo()+"金额"+diffPrice+"客户"+preUnit.getName()+"欠款金额"+(preUnit.getOwingValue()-preDiffPrice));*/
-                logger.error("Unit原来客户" + preUnit.getName() + "Unit原来客户编号" + preUnit.getId() + "原单本单差额" + preDiffPrice);
-
-            } else {
-                /* Customer customer = CacheManager.getCustomerById(preOrigUnitId);*/
-
-                this.saleOrderReturnBillDao.batchExecute("update Customer set owingValue = owingValue - ? where id =?", preDiffPrice, preOrigUnitId);
-                /*logger.error("销售退货单"+bill.getBillNo()+"金额"+diffPrice+"客户"+customer.getName()+"欠款金额"+(customer.getOwingValue()-preDiffPrice));*/
-                logger.error("Customer原来客户编号" + preOrigUnitId + "原单本单差额" + preDiffPrice);
+        //add by yushen 改变客户或者客户余额变动 保存所有变动记录，更新客户欠款
+        if(diffPrice.doubleValue() != preDiffPrice.doubleValue() || !origUnitId.equals(preOrigUnitId)){
+            //modify by yushen更新之前的客户欠款和积分
+            if (CommonUtil.isNotBlank(preOrigUnitId)) {
+                Unit preUnit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", preOrigUnitId);
+                Customer preCustomer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", preOrigUnitId);
+                //add by yushen 保存积分回退记录
+                Long pointsBackoff = this.pointsChangeService.savePointsBackoff(bill.getId(), preOrigUnitId, this.guestService.getVipPoints(preUnit, preCustomer), Constant.ChangeRecordStatus.SaleReturnOrderChange);
+                //保存客户欠款回退记录
+                this.guestValueChangeService.saveValueBackoff(bill.getId(), preOrigUnitId, this.guestService.getOwingValue(preUnit, preCustomer), Constant.ChangeRecordStatus.SaleReturnOrderChange);
+                //更新客户欠款金额和积分
+                this.guestService.resetPreGust(bill.getId(), preDiffPrice, pointsBackoff, preUnit, preCustomer);
             }
+            Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", origUnitId);
+            Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", origUnitId);
+            Long points = 0L;
+            if(CommonUtil.isNotBlank(bill.getSrcBillNo())){//寄存转退货
+                points = this.pointsChangeService.cm2ReturnOrderPointsFallback(bill, details, guestService.getVipPoints(unit, customer));
+            }else {//正常退货
+                //add by yushen 计算销售单积分并保存积分变动记录
+                points = this.pointsChangeService.savePointsFallback(bill, details, guestService.getVipPoints(unit, customer));
+            }
+            //保存客户欠款变动记录
+            this.guestValueChangeService.saveValueChange(bill.getId(), bill.getActPrice(), bill.getPayPrice(), origUnitId, this.guestService.getOwingValue(unit, customer), Constant.ChangeRecordStatus.SaleReturnOrder);
+            //更新客户欠款金额和积分
+            this.guestService.updateCurrentGuest(bill.getId(), diffPrice, points, unit, customer);
         }
-        if (CommonUtil.isBlank(unit)) {
-
-            if (CommonUtil.isBlank(customer.getOwingValue())) {
-                customer.setOwingValue(0.0);
-            }
-            logger.error("销售退货单" + bill.getBillNo() + "本单差额" + diffPrice + "unit客户" + customer.getName() + "unit客户编号" + customer.getId() + "欠款金额" + (customer.getOwingValue() + diffPrice) + "原欠款金额" + (customer.getOwingValue()));
-            if (CommonUtil.isNotBlank(preOrigUnitId) && preOrigUnitId.equals(customer.getCode())) {
-                this.saleOrderReturnBillDao.batchExecute("update Customer set owingValue = ? where id =?", customer.getOwingValue() - preDiffPrice + diffPrice, preOrigUnitId);
-            } else {
-                customer.setOwingValue(customer.getOwingValue() + diffPrice);
-            }
-            this.saleOrderReturnBillDao.saveOrUpdateX(customer);
-        } else {
-            if (CommonUtil.isBlank(unit.getOwingValue())) {
-                unit.setOwingValue(0.0);
-            }
-            logger.error("销售退货单" + bill.getBillNo() + "本单差额" + diffPrice + "unit客户" + unit.getName() + "unit客户编号" + unit.getId() + "欠款金额" + (unit.getOwingValue() + diffPrice) + "原欠款金额" + (unit.getOwingValue()));
-            if (CommonUtil.isNotBlank(preOrigUnitId) && preOrigUnitId.equals(unit.getCode())) {
-                this.saleOrderReturnBillDao.batchExecute("update Unit set owingValue = ? where id =?", unit.getOwingValue() - preDiffPrice + diffPrice, preOrigUnitId);
-            } else {
-                unit.setOwingValue(unit.getOwingValue() + diffPrice);
-            }
-            this.saleOrderReturnBillDao.saveOrUpdateX(unit);
-        }
-
-        if (isUpdateMonthAccount) {
-            Map<String, MonthAccountStatement> monthAccountMap = new HashMap<>();
-            List<MonthAccountStatement> monthAcountList = this.monthAccountStatementDao.find("from MonthAccountStatement where unitId = ? order by month  asc", bill.getOrigUnitId());
-            for (MonthAccountStatement m : monthAcountList) {
-                monthAccountMap.put(m.getId(), m);
-            }
-            List<MonthAccountStatement> updateMonthAccountList = new ArrayList<>();
-            MonthAccountUtil.updateMonthAcoutData(bill.getBillDate(), monthAccountMap, updateMonthAccountList, bill.getOrigUnitId(), diffPrice, true);
-            this.monthAccountStatementDao.doBatchInsert(updateMonthAccountList);
-        }
+        //保存订单
         this.saleOrderReturnBillDao.saveOrUpdate(bill);
         this.saleOrderReturnBillDao.doBatchInsert(details);
         if (CommonUtil.isNotBlank(bill.getBillRecordList())) {
             this.saleOrderReturnBillDao.doBatchInsert(bill.getBillRecordList());
         }
-        //退算积分
-        //查询库户
-        customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
-        Unit units = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{bill.getOrigUnitId()});
-        if (CommonUtil.isNotBlank(customer)) {
-            if (CommonUtil.isNotBlank(customer.getVipId())) {
-                //根据code查询
-                ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
-                for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
-                    String uniqueCodes = saleOrderReturnBillDtl.getUniqueCodes();
-                    if (CommonUtil.isNotBlank(uniqueCodes)) {
-                        String[] split = uniqueCodes.split(",");
-                        for (int i = 0; i < split.length; i++) {
-                            List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
-                            PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{BillRecords.get(0).getBillNo()});
-                            if (CommonUtil.isNotBlank(pointsChange)) {
-                                PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                if (CommonUtil.isNotBlank(pointsRule)) {
-                                    Double actPrice = saleOrderReturnBillDtl.getActPrice();
-                                    double points = pointsRule.getUnitPoints() / 100 * actPrice;
-                                    //Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
-                                    Double v = customer.getVippoints();
-                                    if (CommonUtil.isBlank(v)) {
-                                        v = 0D;
-                                    }
-                                    customer.setVippoints(v - points);
-                                    this.saleOrderReturnBillDao.saveOrUpdateX(customer);
-                                    RecordReturnScore recordReturnScore = new RecordReturnScore();
-                                    recordReturnScore.setId(saleOrderReturnBillDtl.getId() + "-" + split[i]);
-                                    recordReturnScore.setBillno(bill.getBillNo());
-                                    recordReturnScore.setCode(split[i]);
-                                    recordReturnScore.setRetrunDetailid(saleOrderReturnBillDtl.getId());
-                                    list.add(recordReturnScore);
-                                }
-
-                            }
-
-                        }
-                    }
-                    if (list.size() != 0) {
-                        this.saleOrderReturnBillDao.doBatchInsert(list);
-                    }
-
-                }
-            }
-        }
-        if (CommonUtil.isNotBlank(units)) {
-            if (CommonUtil.isNotBlank(units.getVipId())) {
-                //根据code查询
-                ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
-                for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
-                    String uniqueCodes = saleOrderReturnBillDtl.getUniqueCodes();
-                    if (CommonUtil.isNotBlank(uniqueCodes)) {
-                        String[] split = uniqueCodes.split(",");
-                        for (int i = 0; i < split.length; i++) {
-                            List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
-                            PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{BillRecords.get(0).getBillNo()});
-                            if (CommonUtil.isNotBlank(pointsChange)) {
-                                PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                if (CommonUtil.isNotBlank(pointsRule)) {
-                                    Double actPrice = saleOrderReturnBillDtl.getActPrice();
-                                    double points = pointsRule.getUnitPoints() / 100 * actPrice;
-                                    //Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{bill.getOrigUnitId()});
-                                    Double v = units.getVippoints();
-                                    if (CommonUtil.isBlank(v)) {
-                                        v = 0D;
-                                    }
-                                    units.setVippoints(v - points);
-                                    this.saleOrderReturnBillDao.saveOrUpdateX(units);
-                                    RecordReturnScore recordReturnScore = new RecordReturnScore();
-                                    recordReturnScore.setId(saleOrderReturnBillDtl.getId() + "-" + split[i]);
-                                    recordReturnScore.setBillno(bill.getBillNo());
-                                    recordReturnScore.setCode(split[i]);
-                                    recordReturnScore.setRetrunDetailid(saleOrderReturnBillDtl.getId());
-                                    list.add(recordReturnScore);
-                                }
-
-                            }
-
-                        }
-                    }
-                    if (list.size() != 0) {
-                        this.saleOrderReturnBillDao.doBatchInsert(list);
-                    }
-
-                }
-            }
-        }
-
-
     }
 
     public void cancelUpdate(SaleOrderReturnBill saleOrderReturnBill) {
-        Logger logger = LoggerFactory.getLogger(SaleOrderReturnBill.class);
         Double diffPrice = saleOrderReturnBill.getActPrice() - saleOrderReturnBill.getPayPrice();
-        Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
-        if (CommonUtil.isBlank(unit)) {
-            Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
-            customer.setOwingValue(customer.getOwingValue() - diffPrice);
-            logger.error("销售退货单" + saleOrderReturnBill.getBillNo() + "金额" + diffPrice + "客户" + customer.getName() + "欠款金额" + (customer.getOwingValue() - diffPrice));
-            this.saleOrderReturnBillDao.saveOrUpdateX(customer);
-        } else {
-            unit.setOwingValue(unit.getOwingValue() - diffPrice);
-            logger.error("销售退货单" + saleOrderReturnBill.getBillNo() + "金额" + diffPrice + "客户" + unit.getName() + "欠款金额" + (unit.getOwingValue() - diffPrice));
-            this.saleOrderReturnBillDao.saveOrUpdateX(unit);
-        }
+        String preOrigUnitId = saleOrderReturnBill.getOrigUnitId();
+        Unit preUnit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", saleOrderReturnBill.getOrigUnitId());
+        Customer preCustomer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", saleOrderReturnBill.getOrigUnitId());
+        //add by yushen 保存积分回退记录
+        Long pointsBackoff = this.pointsChangeService.savePointsBackoff(saleOrderReturnBill.getId(), preOrigUnitId, this.guestService.getVipPoints(preUnit, preCustomer), Constant.ChangeRecordStatus.SaleReturnOrderCancel);
+        //保存客户欠款回退记录
+        this.guestValueChangeService.saveValueBackoff(saleOrderReturnBill.getId(), preOrigUnitId, this.guestService.getOwingValue(preUnit, preCustomer), Constant.ChangeRecordStatus.SaleReturnOrderCancel);
+        //更新客户欠款金额和积分
+        this.guestService.resetPreGust(saleOrderReturnBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
-        //退算积分
-        Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
-        if (CommonUtil.isNotBlank(customer)) {
-            if (CommonUtil.isNotBlank(customer.getVipId())) {
-                //根据code查询
-                ArrayList<RecordReturnScore> list = new ArrayList<RecordReturnScore>();
-                List<SaleOrderReturnBillDtl> details = this.saleOrderReturnBillDao.find("from SaleOrderReturnBillDtl where billNo = ? ", new Object[]{saleOrderReturnBill.getBillNo()});
-                if (CommonUtil.isNotBlank(details)) {
-                    for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : details) {
-                        String uniqueCodes = saleOrderReturnBillDtl.getUniqueCodes();
-                        if (CommonUtil.isNotBlank(uniqueCodes)) {
-                            String[] split = uniqueCodes.split(",");
-                            for (int i = 0; i < split.length; i++) {
-                                List<BillRecord> BillRecords = this.saleOrderReturnBillDao.find("from BillRecord where code = ? order by billNo desc", new Object[]{split[i]});
-                                PointsChange pointsChange = this.saleOrderReturnBillDao.findUnique("from PointsChange where id = ?", new Object[]{BillRecords.get(0).getBillNo()});
-                                if (CommonUtil.isNotBlank(pointsChange)) {
-                                    PointsRule pointsRule = this.saleOrderReturnBillDao.findUnique("from PointsRule where id = ?", new Object[]{pointsChange.getPointsRuleId()});
-                                    if (CommonUtil.isNotBlank(pointsRule)) {
-                                        Double actPrice = saleOrderReturnBillDtl.getActPrice();
-                                        double points = pointsRule.getUnitPoints() / 100 * actPrice;
-                                        // Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ?", new Object[]{saleOrderReturnBill.getOrigUnitId()});
-                                        Double v = customer.getVippoints();
-                                        if (CommonUtil.isBlank(v)) {
-                                            v = 0D;
-                                        }
-                                        customer.setVippoints(v + points);
-                                        this.saleOrderReturnBillDao.saveOrUpdateX(customer);
-                                        RecordReturnScore recordReturnScore = new RecordReturnScore();
-                                        recordReturnScore.setId(saleOrderReturnBillDtl.getId() + "-" + split[i]);
-                                        recordReturnScore.setBillno(saleOrderReturnBill.getBillNo());
-                                        recordReturnScore.setCode(split[i]);
-                                        recordReturnScore.setRetrunDetailid(saleOrderReturnBillDtl.getId());
-                                        list.add(recordReturnScore);
-                                    }
-
-                                }
-
-                            }
-                        }
-                        if (list.size() != 0) {
-                            this.saleOrderReturnBillDao.doBatchInsert(list);
-                        }
-
-                    }
-                }
-            }
-        }
-
-
     }
 
     @Override

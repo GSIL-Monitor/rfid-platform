@@ -20,6 +20,9 @@ public class PointsChange implements java.io.Serializable{
     private String id;
 
     @Column()
+    private String orderId;
+
+    @Column()
     private String customerId;
 
     @Transient
@@ -30,10 +33,19 @@ public class PointsChange implements java.io.Serializable{
     private Date recordDate;
 
     @Column()
+    private Long recordTime;
+
+    @Column()
     private Long pointsChange;
 
     @Column()
     private Double transactionVal;  //交易金额
+
+    @Column()
+    private Long prePoints;
+
+    @Column()
+    private Long afterPoints;
 
     @Column()
     private String ownerId;
@@ -44,8 +56,19 @@ public class PointsChange implements java.io.Serializable{
     @Column()
     private Integer status = 0; //0 默认 ; -1 已撤销
 
+    @Column
+    private Double ratio; //销售单对应积分规则的比例，退货单比例设置为 -1
+
     public String getId() {
         return id;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public void setId(String id) {
@@ -76,6 +99,14 @@ public class PointsChange implements java.io.Serializable{
         this.recordDate = recordDate;
     }
 
+    public Long getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Long recordTime) {
+        this.recordTime = recordTime;
+    }
+
     public Long getPointsChange() {
         return pointsChange;
     }
@@ -90,6 +121,22 @@ public class PointsChange implements java.io.Serializable{
 
     public void setTransactionVal(Double transactionVal) {
         this.transactionVal = transactionVal;
+    }
+
+    public Long getPrePoints() {
+        return prePoints;
+    }
+
+    public void setPrePoints(Long prePoints) {
+        this.prePoints = prePoints;
+    }
+
+    public Long getAfterPoints() {
+        return afterPoints;
+    }
+
+    public void setAfterPoints(Long afterPoints) {
+        this.afterPoints = afterPoints;
     }
 
     public String getOwnerId() {
@@ -114,5 +161,13 @@ public class PointsChange implements java.io.Serializable{
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Double getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(Double ratio) {
+        this.ratio = ratio;
     }
 }

@@ -8,7 +8,6 @@ import com.casesoft.dmc.dao.search.DetailStockChatViewDao;
 import com.casesoft.dmc.dao.search.DetailStockViewDao;
 import com.casesoft.dmc.model.search.DetailStockChatView;
 import com.casesoft.dmc.model.search.DetailStockCodeView;
-import com.casesoft.dmc.model.search.DetailStockView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +24,51 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
     private DetailStockViewDao detailStockViewDao;
     @Autowired
     private DetailStockChatViewDao detailStockChatViewDao;
+
     @Override
     public Page<DetailStockChatView> findPage(Page<DetailStockChatView> page, List<PropertyFilter> filters) {
-        return this.detailStockChatViewDao.findPage(page,filters);
+        // 原始方法
+        return this.detailStockChatViewDao.findPage(page, filters);
+
+    }
+
+    public Page<DetailStockChatView> findPageList(Page<DetailStockChatView> page, List<PropertyFilter> filters) {
+        String groupIdFilter = "";
+        String styleFilter = "";
+        Boolean isWarehIdNull = true;
+        for (int i = 0; i < filters.size(); i++) {
+            PropertyFilter propertyFilter = filters.get(i);
+            String propertyName = propertyFilter.getPropertyNames()[0];
+            PropertyFilter.MatchType matchType = propertyFilter.getMatchType();
+            String name = matchType.name();
+            if (propertyName.equals("groupId")) {
+                groupIdFilter = propertyFilter.getMatchValue().toString();
+            } else if (propertyName.equals("styleId")||propertyName.equals("styleName")) {
+                styleFilter = propertyFilter.getMatchValue().toString();
+            } else if (propertyName.equals("warehId") && propertyFilter.getMatchValue().toString() != null) {
+                isWarehIdNull = false;
+            }
+        }
+        if (isWarehIdNull) {
+            String sortName = page.getOrderBy();
+            String order = page.getOrder();
+            String hql = "select new com.casesoft.dmc.model.search.DetailStockChatView" +
+                    "(styleId,styleName,sum(qty) as qty,price,precast,puprice,wsprice,class1) " +
+                    "from DetailStockChatView ";
+            if (groupIdFilter == "") {
+                hql += "where (groupId like '%" + groupIdFilter + "%' or groupId is null) ";
+            } else {
+                hql += "where groupId = '" + groupIdFilter + "' ";
+            }
+            hql += "and (styleId like '%" + styleFilter + "%' or styleName like '%" + styleFilter + "%') " +
+                    "group by class1,precast,price,puprice,styleId,styleName,wsprice " +
+                    "order by " + sortName + " " + order;
+            page.setAutoCount(false);
+            return this.detailStockChatViewDao.findPage(page, hql, new Object[]{});
+        } else {
+            // 原始方法
+            return this.detailStockChatViewDao.findPage(page, filters);
+        }
     }
 
     @Override
@@ -74,50 +115,51 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
     public void delete(String id) {
 
     }
-    public Long findstockNum(String warehId,String styleId){
-        String hql="select sum(qty) from DetailStockChatView where 1=1";
-        if(CommonUtil.isNotBlank(warehId)){
-            hql+=" and warehId like '"+warehId+"'";
+
+    public Long findstockNum(String warehId, String styleId) {
+        String hql = "select sum(qty) from DetailStockChatView where 1=1";
+        if (CommonUtil.isNotBlank(warehId)) {
+            hql += " and warehId like '" + warehId + "'";
         }
-        if(CommonUtil.isNotBlank(styleId)){
-            hql+=" and (styleid = '"+styleId+"')";
+        if (CommonUtil.isNotBlank(styleId)) {
+            hql += " and (styleid = '" + styleId + "')";
         }
         Long unique = this.detailStockViewDao.findUnique(hql);
         return unique;
     }
 
-    public Long findwarehNum(String warehId,String styleId,String groupId){
-        String hql="select sum(qty) from DetailStockChatView where 1=1";
-        if(CommonUtil.isNotBlank(warehId)){
-            hql+=" and warehId like '"+warehId+"'";
+    public Long findwarehNum(String warehId, String styleId, String groupId) {
+        String hql = "select sum(qty) from DetailStockChatView where 1=1";
+        if (CommonUtil.isNotBlank(warehId)) {
+            hql += " and warehId like '" + warehId + "'";
         }
-        if(CommonUtil.isNotBlank(styleId)){
-            hql+=" and (styleid like '%"+styleId+"%' or styleName like '%"+styleId+"%')";
+        if (CommonUtil.isNotBlank(styleId)) {
+            hql += " and (styleid like '%" + styleId + "%' or styleName like '%" + styleId + "%')";
         }
-        if(CommonUtil.isNotBlank(groupId)){
-            hql+=" and groupId = '"+groupId+"'";
+        if (CommonUtil.isNotBlank(groupId)) {
+            hql += " and groupId = '" + groupId + "'";
         }
         Long unique = this.detailStockViewDao.findUnique(hql);
         return unique;
     }
 
-    public Double findwarehMun(String warehId,String styleId,String groupId){
-        String hql="select sum(qty*precast) from DetailStockChatView where 1=1";
-        if(CommonUtil.isNotBlank(warehId)){
-            hql+=" and warehId like '"+warehId+"'";
+    public Double findwarehMun(String warehId, String styleId, String groupId) {
+        String hql = "select sum(qty*precast) from DetailStockChatView where 1=1";
+        if (CommonUtil.isNotBlank(warehId)) {
+            hql += " and warehId like '" + warehId + "'";
         }
-        if(CommonUtil.isNotBlank(styleId)){
-            hql+=" and (styleid like '%"+styleId+"%' or styleName like '%"+styleId+"%')";
+        if (CommonUtil.isNotBlank(styleId)) {
+            hql += " and (styleid like '%" + styleId + "%' or styleName like '%" + styleId + "%')";
         }
-        if(CommonUtil.isNotBlank(groupId)){
-            hql+=" and groupId = '"+groupId+"'";
+        if (CommonUtil.isNotBlank(groupId)) {
+            hql += " and groupId = '" + groupId + "'";
         }
         Double unique = this.detailStockViewDao.findUnique(hql);
         return unique;
     }
 
-    public List<DetailStockCodeView> findDetial(String warehId,String styleId){
-        String hql="from DetailStockCodeView where warehId=? and styleId=?";
+    public List<DetailStockCodeView> findDetial(String warehId, String styleId) {
+        String hql = "from DetailStockCodeView where warehId=? and styleId=?";
         List<DetailStockCodeView> list = this.detailStockChatViewDao.find(hql, new Object[]{warehId, styleId});
         return list;
     }

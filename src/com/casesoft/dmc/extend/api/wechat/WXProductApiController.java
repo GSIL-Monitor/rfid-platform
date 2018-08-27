@@ -2,6 +2,7 @@ package com.casesoft.dmc.extend.api.wechat;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -16,11 +17,11 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
-import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.KeyInfoChangeService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.*;
 
 @Controller
@@ -66,6 +68,8 @@ public class WXProductApiController extends ApiBaseController {
 
     @Autowired
     private PricingRulesService pricingRulesService;
+    @Autowired
+    private KeyInfoChangeService keyInfoChangeService;
 
     @Override
     public String index() {
@@ -132,18 +136,43 @@ public class WXProductApiController extends ApiBaseController {
         return this.returnSuccessInfo("获取成功", page.getRows());
     }
 
+    /**
+     * @param styleStr
+     * @param colorStr
+     * @param sizeStr
+     * @param userId
+     * @param pageType 保存类型： add edit
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/saveStyleWS.do")
     @ResponseBody
-    public MessageBox saveStyleWS(String styleStr, String colorStr, String sizeStr, String userId) throws Exception {
+    public MessageBox saveStyleWS(HttpServletRequest request, String styleStr, String colorStr, String sizeStr, String userId, String pageType) {
         logAllRequestParams();
         try {
+            HashMap<String, Object> prePriceMap = new HashMap<>();
             Style styleDTO = JSON.parseObject(styleStr, Style.class);
             Style sty = CacheManager.getStyleById(styleDTO.getStyleId());
-            if (CommonUtil.isBlank(sty)) {
-                sty = new Style();
-                sty.setId(styleDTO.getStyleId());
-                sty.setStyleId(styleDTO.getStyleId());
-                sty.setIsUse("Y");
+            if ("add".equals(pageType)) {
+                //判断sytleId在数据库中是否存在
+                if (CommonUtil.isBlank(sty)) {
+                    sty = new Style();
+                    sty.setId(styleDTO.getStyleId());
+                    sty.setStyleId(styleDTO.getStyleId());
+                    sty.setIsUse("Y");
+                } else {
+                    return this.returnFailInfo("新增保存失败!" + sty.getId() + "款号已存在，请换一个款号保存");
+                }
+            } else if ("edit".equals(pageType)) {
+                if (CommonUtil.isBlank(sty)) {
+                    return this.returnFailInfo("编辑失败!" + sty.getId() + "款号不存在");
+                }
+                prePriceMap.put("price", sty.getPrice());
+                prePriceMap.put("puPrice", sty.getPuPrice());
+                prePriceMap.put("wsPrice", sty.getWsPrice());
+                prePriceMap.put("preCast", sty.getPreCast());
+            } else {
+                throw new RuntimeException("保存类型只能传字符串：'add' or 'edit'");
             }
             List<ColorVo> colorVoList = JSON.parseArray(colorStr, ColorVo.class);
             List<SizeVo> sizeVoList = JSON.parseArray(sizeStr, SizeVo.class);
@@ -161,6 +190,23 @@ public class WXProductApiController extends ApiBaseController {
             List<Product> saveList = StyleUtil.covertToProductInfo(sty, styleDTO, productList);
 
             this.styleService.saveStyleAndProducts(sty, saveList);
+
+            //如果价格发生变动，记录变动信息
+            String infoChangeRemark = "";
+            if (CommonUtil.isNotBlank(prePriceMap)) {
+                HashMap<String, Object> aftPriceMap = new HashMap<>();
+                aftPriceMap.put("price", sty.getPrice());
+                aftPriceMap.put("puPrice", sty.getPuPrice());
+                aftPriceMap.put("wsPrice", sty.getWsPrice());
+                aftPriceMap.put("preCast", sty.getPreCast());
+
+                long countValue = this.epcStockService.countAllByStyleId(sty.getId());
+                //大于0说明入过库
+                if(countValue > 0){
+                    infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
+                }
+            }
+
             long time1 = System.currentTimeMillis();
             CacheManager.refreshStyleCache();
             long time2 = System.currentTimeMillis();
@@ -168,17 +214,45 @@ public class WXProductApiController extends ApiBaseController {
             CacheManager.refreshProductCache();
             long time3 = System.currentTimeMillis();
             System.out.println("刷新商品缓存时间：" + (time3 - time2) + "ms");
-
-            return this.returnSuccessInfo("保存成功", styleStr);
+            return this.returnSuccessInfo("保存成功", infoChangeRemark);
         } catch (Exception e) {
+            logger.error("保存失败", e);
             return this.returnFailInfo("保存失败");
         }
     }
 
+    /**
+     * 小程序款编辑价格发生变动，监控数据变化提醒
+     * add by Anna
+     *
+     * @param openId      小程序操作者openId
+     * @param formId      表单绑定的form_id
+     * @param styleId     当前编辑的款号
+     * @param brandName   为了跳转传参的品牌名字
+     * @param description 操作返回的描述
+     */
+    @RequestMapping("/sendDataChangeMsgWS.do")
+    @ResponseBody
+    public MessageBox sendDataChangeMsgWS(String openId, String formId, String styleId, String brandName, String description) {
+        try {
+            // 推送模版消息
+            String sendState = WechatTemplate.dataChangeSendMsg(openId, formId, styleId, brandName, description);
+            if (sendState.equals("success")) {
+                return this.returnSuccessInfo("发送消息成功", sendState);
+            } else {
+                return this.returnFailInfo(sendState);
+            }
+        } catch (Exception e) {
+            logger.error("小程序发送监控数据变化提醒失败", e);
+            return this.returnFailInfo("发送失败" + e.getMessage());
+        }
+    }
+
+
     @RequestMapping("/getStyleByIdWS.do")
     @ResponseBody
     public MessageBox getStyleByIdWS(String styleId) throws Exception {
-        Style s = CacheManager.getStyleById(styleId);
+        Style s = this.styleService.get("styleId", styleId);
         String rootPath = this.getSession().getServletContext().getRealPath("/");
         String imgUrl = StyleUtil.returnImageUrl(styleId, rootPath);
         s.setUrl(imgUrl);

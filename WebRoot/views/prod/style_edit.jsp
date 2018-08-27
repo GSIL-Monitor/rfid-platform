@@ -526,6 +526,7 @@
 //        initLoadStyle();
         iniGrid();
         inputPriceKeydown();
+        inputPriceKeydowno();
 
         if ('${pageType}' == 'edit') {
             $("#form_styleId").attr("readonly", true);
@@ -564,7 +565,9 @@
         });
         $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
         $("div.btn-group").css("padding", "0");
-
+        if ($("#form_isSeries").val()=="Y"){
+            $("#form_price").attr("disabled",true);
+        }
     });
 
     //更改select背景色
@@ -673,9 +676,10 @@
                         if (a.length > 5) {
                             $("#form_class3").next().children("button").text(a.substr(0, 5) + "...");
                         }
+                        changPrice($("#form_class9").val(),option[0].value);
+
                     }
                 });
-                $("#form_class3").append(" <option value='' style='background-color: #eeeeee'>请选择大类</option>");
                 for (var i = 0; i < json.length; i++) {
                     $("#form_class3").append("<option value='" + json[i].code + "' style='background-color: #eeeeee'>" + json[i].name + "</option>");
                 }
@@ -883,7 +887,7 @@
                     filterPlaceholder: "请选择系列",
                     maxHeight: "400",
                     onChange: function (option, checked) {//change事件改变
-                        changPrice(option[0].value);
+                        changPrice(option[0].value,$("#form_class3").val());
                     }
                 });
                 for (var i = 0; i < json.length; i++) {
@@ -959,18 +963,24 @@
     }
 
     function inputPriceKeydown() {
-        $("#form_price").keydown(function (event) {
+        var isSeries = $("#form_isSeries").val();
+        $("#form_preCast").keydown(function (event) {
             if (event.keyCode == 13) {
-                var preCate = $("#form_preCast").val();
-                var price = $("#form_price").val();
-                if (Math.round(preCate) > Math.round(price)) {
-                    bootbox.alert("价格不符合规则");
-                } else {
-                    priceIsUse();
+                if (isSeries == "Y") {
+                    changPrice($("#form_class9").val(),$("#form_class3").val());
                 }
+
             }
         })
-
+    }
+    function inputPriceKeydowno() {
+        $("#form_price").keydown(function (event) {
+            var price = $("#form_price").val();
+            if (event.keyCode == 13) {
+                $("#form_puPrice").val(price);
+                $("#form_wsPrice").val(price);
+            }
+        })
     }
 
     /*判断是否使用定价规则*/
@@ -978,41 +988,49 @@
         var price = $("#form_price").val();
         var isSeries = $("#form_isSeries").val();
         if (isSeries == "Y") {
-            changPrice($("#form_class9").val());
+            $("#form_price").attr("disabled",true);
+            changPrice($("#form_class9").val(),$("#form_class3").val());
         } else {
+            $("#form_price").attr("disabled",false);
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
         }
     }
 
     /*name=系列的code*/
-    function changPrice(name) {
+    function changPrice(name,class3) {
         var isSeries = $("#form_isSeries").val();
         if (isSeries == "Y") {
-            var price = $("#form_price").val();
+            var price;
             var purPrice;
             var wsPrice;
+            var preCast = $("#form_preCast").val();
             $.ajax({
-                url: basePath + "/sys/pricingRules/list.do",
+                url: basePath + "/sys/pricingRules/findPricingRules.do",
                 cache: false,
                 async: true,
                 inheritClass: true,
                 type: "POST",
                 data: {
-                    filter_EQS_series: name
+                    series: name,
+                    class3:class3
                 },
-                success: function (date, textStatus) {
-                    var json = date;
-                    for (var i = 0; i < json.length; i++) {
-                        checkNum = json[i].rule1;
+                success: function (msg) {
+                    if (msg.success) {
+                        var json = msg.result;
+                        checkNum = msg.rule1;
+                        price = Math.floor(preCast * (json.rule1) /10) * 10 +9;
                         /*规则1 表示吊牌价与采购价之间关系*/
-                        purPrice = Math.round(price * (json[i].rule3) * 10) / 10.0;
+                        purPrice = Math.round(price * (json.rule3) * 10) / 10.0;
                         /*规则3 代理商价与吊牌价之间关系*/
-                        wsPrice = Math.round(price * (json[i].rule2) * 10) / 10.0;
+                        wsPrice = Math.round(price * (json.rule2) * 10) / 10.0;
                         /*规则2 门店价与吊牌价直接关系*/
+                        $("#form_price").val(price);
+                        $("#form_puPrice").val(purPrice);
+                        $("#form_wsPrice").val(wsPrice);
+                    } else {
+                        bootbox.alert(msg.msg);
                     }
-                    $("#form_puPrice").val(purPrice);
-                    $("#form_wsPrice").val(wsPrice);
                 }
             });
         }
@@ -1043,50 +1061,11 @@
 
     function saveStyleAndProduct(str) {
         var isSeries = $("#form_isSeries").val();
-        if (isSeries == "N") {
-            $('#editStyleForm').data('bootstrapValidator').validate();
-            if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
-                return;
-            }
-            if (editDtailRowId != null) {
-                saveItem(editDtailRowId)
-            }
-            $("#form_sizeSortId").removeAttr("disabled");
-            cs.showProgressBar();
-            var dtlArray = [];
-            $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
-                var dtlRow = $("#CSGrid").getRowData(dtlValue);
-                dtlArray.push(dtlRow);
-            });
-            $.ajax({
-                dataType: "json",
-                url: basePath + "/prod/style/saveStyleAndProduct.do",
-                data: {
-                    styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
-                    productStr: JSON.stringify(dtlArray),
-                    userId: userId,
-                    pageType: str
-                },
-                type: "POST",
-                success: function (msg) {
-                    cs.closeProgressBar();
-                    if (msg.success) {
-                        $.gritter.add({
-                            text: msg.msg,
-                            class_name: 'gritter-success  gritter-light'
-                        });
-                    } else {
-                        bootbox.alert(msg.msg);
-                    }
-                }
-            });
-        } else {
-            if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
-                $.gritter.add({
-                    text: "采购价和吊牌价不符合定价规则，请核对对应价格",
-                    class_name: 'gritter-success  gritter-light'
-                });
-            } else {
+        var remark = $("#form_remark").val();
+        if ((remark.indexOf(",") >= 0)||(remark.indexOf("，") >= 0)){
+            bootbox.alert("成分中不允许含有回车及逗号字符");
+        }else {
+            if (isSeries == "N") {
                 $('#editStyleForm').data('bootstrapValidator').validate();
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                     return;
@@ -1123,6 +1102,52 @@
                         }
                     }
                 });
+            } else {
+                if (Math.round($("#form_preCast").val()) * checkNum > Math.round($("#form_price").val())) {
+                    $.gritter.add({
+                        text: "采购价和吊牌价不符合定价规则，请核对对应价格",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                } else {
+                    $("#form_price").attr("disabled",false);
+                    $('#editStyleForm').data('bootstrapValidator').validate();
+                    if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
+                        return;
+                    }
+                    if (editDtailRowId != null) {
+                        saveItem(editDtailRowId)
+                    }
+                    $("#form_sizeSortId").removeAttr("disabled");
+                    cs.showProgressBar();
+                    var dtlArray = [];
+                    $.each($("#CSGrid").getDataIDs(), function (dtlndex, dtlValue) {
+                        var dtlRow = $("#CSGrid").getRowData(dtlValue);
+                        dtlArray.push(dtlRow);
+                    });
+                    $.ajax({
+                        dataType: "json",
+                        url: basePath + "/prod/style/saveStyleAndProduct.do",
+                        data: {
+                            styleStr: JSON.stringify(array2obj($("#editStyleForm").serializeArray())),
+                            productStr: JSON.stringify(dtlArray),
+                            userId: userId,
+                            pageType: str
+                        },
+                        type: "POST",
+                        success: function (msg) {
+                            cs.closeProgressBar();
+                            if (msg.success) {
+                                $.gritter.add({
+                                    text: msg.msg,
+                                    class_name: 'gritter-success  gritter-light'
+                                });
+                                $("#form_price").attr("disabled",true);
+                            } else {
+                                bootbox.alert(msg.msg);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -1195,7 +1220,7 @@
     function inimultiSize() {
         var sizeSortIdValue = $("#form_sizeSortId").val();
         $.ajax({
-            url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId=${style.sizeSortId}",
+            url: basePath + "/prod/size/searchSizeMap.do?filter_EQS_sortId="+sizeSortIdValue,
             cache: false,
             async: true,
             type: 'POST',
@@ -1291,6 +1316,10 @@
                     validators: {
                         notEmpty: {
                             message: '款名不能为空'
+                        },
+                        regexp: {
+                            regexp: /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/,
+                            message: '款名由数字字母下划线汉字组成'
                         }
                     }
                 },
@@ -1308,7 +1337,6 @@
                         }
                     }
                 }
-
             }
         });
     }
