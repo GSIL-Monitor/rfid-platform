@@ -2,8 +2,6 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        //var basePathAll=window.location.href;
-        //var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
         var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
     </script>
     <script src="../../Olive/assets/js/jquery.js"></script>
@@ -15,20 +13,12 @@
     <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
     <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
     <style>
-        .bottom-button1{
+        .bottom-button{
             color:white;
             background-color:#307a3c;
             height:8%;
             position: fixed;
             right: 10px;
-            bottom: 10px;
-            border-color:#307a3c
-        }
-        .bottom-button2{
-            color:white;
-            background-color:#307a3c;
-            height:8%;
-            position: fixed;
             bottom: 10px;
             border-color:#307a3c
         }
@@ -40,7 +30,7 @@
         <div class="panel panel-default left-panel">
             <div class="panel-body">
                 <div class="widget-body">
-                    <input  id="changinput" class=" col-lg-10 col-md-10 col-sm-10" type="text" style="width: 100%;text-align:center" placeholder="请输入编号，用户名和手机号" onkeyup="changeWrite()">
+                    <input  id="changinput" class=" col-lg-10 col-md-10 col-sm-10" type="text" style="width: 100%;text-align:center" placeholder="模糊查询编号/名称" onkeyup="changeWrite()">
                     <input  id="writeinput" class=" col-lg-10 col-md-10 col-sm-10" type="text" style="width: 100%;display: none" onfocus="writeinputonfocus();" >
                 </div>
             </div>
@@ -57,8 +47,7 @@
             </div>
         </div>
     </div>
-    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button1" onclick="onNext()">下一页</button>
-    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button2" onclick="onBack()">上一页</button>
+    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button" onclick="sure()">确定</button>
 </div>
 <script>
     var page=1;
@@ -97,71 +86,54 @@
             });
         });
     });
-   function onBack() {
-       window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
-   }
-   function changeWrite() {
-       page=1;
-       var changinput=$("#changinput").val();
-       $.ajax({
-           dataType: "json",
-           url: basePath + "/pad/customerOnCashier/pageWS.do",
-           cache: false,
-           async: false,
-           data:{
-               rows: 30,
-               page: page,
-               filter_EQI_status:1,
-               filter_LIKES_tel: changinput
-           },
-           type: "POST",
-           success: function (msg) {
-               var rows=msg.rows;
-               console.log(rows);
-               var html="";
-               if(rows!=""&&rows!=undefined){
-                   for(var i=0;i<rows.length;i++){
-                       html+="<div data-unitType='"+rows[i].unitType+"' data-name='"+rows[i].name+"' data-id='"+rows[i].id+"' onclick='selectthisDIV(this)'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
-                   }
-                   $("#scrollCustmerDiv").html(html)
-               }
+    function sure() {
+        window.location.href=basePath+'/views/transferOrder/1.html';
+    }
+    function changeWrite() {
+        page=1;
+        var changinput=$("#changinput").val();
+        $.ajax({
+            dataType: "json",
+            url: basePath + "/pad/customerOnCashier/pageWS.do",
+            cache: false,
+            async: false,
+            data:{
+                rows: 30,
+                page: page,
+                filter_EQI_status:1,
+                filter_LIKES_tel: changinput
+            },
+            type: "POST",
+            success: function (msg) {
+                var rows=msg.rows;
+                console.log(rows);
+                var html="";
+                if(rows!=""&&rows!=undefined){
+                    for(var i=0;i<rows.length;i++){
+                        html+="<div data-unitType='"+rows[i].unitType+"' data-name='"+rows[i].name+"' data-id='"+rows[i].id+"' onclick='selectthisDIV(this)'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
+                    }
+                    $("#scrollCustmerDiv").html(html)
+                }
 
-           }
-       });
-   }
-   function selectthisDIV(t) {
-       console.log($(t).data("id"));
-       console.log($(t).data("name"));
-       localStorage.setItem("custmerName",$(t).data("name"));
-       localStorage.setItem("custmerId",$(t).data("id"));
-       localStorage.setItem("unitType",$(t).data("unittype"));
-
-       $("#writeinput").val($(t).data("name"));
-       $("#writeinput").show();
-       $("#changinput").hide();
-   }
-   function writeinputonfocus() {
-       $("#writeinput").hide();
-       $("#changinput").show();
-   }
-   function onNext() {
-       var custmerId=localStorage.getItem("custmerId");
-       console.log(custmerId);
-       if(custmerId!=""&&custmerId!=null&&custmerId!=undefined){
-           window.location.href=basePath+'/views/NoOneCashier/selectSaleOrSaleRetrunWS.html';
-       }else{
-           bootbox.alert("请选择客户");
-       }
-   }
-   function isHaveCustomer() {
-       var custmerId = localStorage.getItem("custmerId");
-       var custmerName = localStorage.getItem("custmerName");
-       if (custmerName != "" && custmerName != undefined) {
-           $("#writeinput").val(custmerName);
-           $("#writeinput").show();
-           $("#changinput").hide();
-       }
-   }
+            }
+        });
+    }
+    function selectthisDIV(t) {
+        $("#writeinput").val($(t).data("name"));
+    }
+    function writeinputonfocus() {
+        $("#writeinput").hide();
+        $("#changinput").show();
+    }
+    function isHaveCustomer() {
+        var custmerId = localStorage.getItem("custmerId");
+        var custmerName = localStorage.getItem("custmerName");
+        if (custmerName != "" && custmerName != undefined) {
+            $("#writeinput").val(custmerName);
+            $("#writeinput").show();
+            $("#changinput").hide();
+        }
+    }
 </script>
 </body>
 </html>
