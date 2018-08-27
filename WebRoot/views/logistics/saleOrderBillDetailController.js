@@ -48,7 +48,6 @@ $(function () {
         }
 
     }
-
 });
 
 
@@ -883,38 +882,45 @@ function addProductInfo(status) {
 
 
 function save() {
-    cs.showProgressBar();
-    $("#search_customerType").removeAttr('disabled');
-    $("#search_origId").removeAttr('disabled');
-    $("#search_destId").removeAttr('disabled');
-    $("#search_busnissId").removeAttr('disabled');
+    var p = new Promise(function (resolve,reject) {
+        cs.showProgressBar();
+        $("#search_customerType").removeAttr('disabled');
+        $("#search_origId").removeAttr('disabled');
+        $("#search_destId").removeAttr('disabled');
+        $("#search_busnissId").removeAttr('disabled');
 
-    if ($("#search_origId").val() == $("#search_destId").val()) {
-        bootbox.alert("不能在相同的单位之间销售");
-        cs.closeProgressBar();
-        return false;
-    }
+        if ($("#search_origId").val() == $("#search_destId").val()) {
+            bootbox.alert("不能在相同的单位之间销售");
+            cs.closeProgressBar();
+            reject("不能在相同的单位之间销售");
+            return false;
+        }
 
-    $("#editForm").data('bootstrapValidator').destroy();
-    $('#editForm').data('bootstrapValidator', null);
-    initEditFormValid();
-    $('#editForm').data('bootstrapValidator').validate();
-    if (!$('#editForm').data('bootstrapValidator').isValid()) {
-        cs.closeProgressBar();
-        return false;
-    }
-    if ($("#addDetailgrid").getDataIDs().length == 0) {
-        bootbox.alert("请添加销售商品！");
-        cs.closeProgressBar();
-        return false;
-    }
-    if (addDetailgridiRow != null && addDetailgridiCol != null) {
-        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
-        addDetailgridiRow = null;
-        addDetailgridiCol = null;
-    }
-    //客户余额变动
-    guestBalanceChange();
+        $("#editForm").data('bootstrapValidator').destroy();
+        $('#editForm').data('bootstrapValidator', null);
+        initEditFormValid();
+        $('#editForm').data('bootstrapValidator').validate();
+        if (!$('#editForm').data('bootstrapValidator').isValid()) {
+            cs.closeProgressBar();
+            reject("失败");
+            return false;
+        }
+        if ($("#addDetailgrid").getDataIDs().length == 0) {
+            bootbox.alert("请添加销售商品！");
+            reject("请添加销售商品！");
+            cs.closeProgressBar();
+            return false;
+        }
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        //客户余额变动
+        guestBalanceChange();
+        resolve("成功");
+    });
+    return p;
 }
 
 function add() {
