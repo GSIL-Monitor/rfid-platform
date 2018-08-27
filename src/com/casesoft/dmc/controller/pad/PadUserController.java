@@ -1,5 +1,6 @@
 package com.casesoft.dmc.controller.pad;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.stock.StockUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
@@ -13,6 +14,7 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.wechat.wxpay.pay.WXPayConfigImpl;
+import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.pad.MobilePayment;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.GuestView;
@@ -259,6 +261,118 @@ public class PadUserController extends BaseController implements IBaseInfoContro
                         }
                         int sumSqu = failSqu.size();
                         return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能出库,总共："+sumSqu+"件",successEpcStock);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new MessageBox(false, e.getMessage());
+            }
+        }else {
+            return new MessageBox(false,"未扫描到商品！");
+        }
+
+    }
+    /**
+     * @param warehId 仓库id 出库为发货仓，入库为收货仓
+     * @return Messbox true ,允许操作，false允许出，入库提示msg信息
+     * 扫描检测唯一吗是否可以出/入库(存在库存表中)
+     */
+    @RequestMapping("/scanning/checkEpcStockOnWebWS")
+    @ResponseBody
+    public MessageBox checkEpcStockOnWeb(String warehId ,String type,String strDtlList ){
+        List<SaleOrderBillDtl> saleOrderBillDtlList = JSON.parseArray(strDtlList, SaleOrderBillDtl.class);
+        List<String>epcList = new ArrayList<>();
+        List<String>codeList = new ArrayList<>();
+        for(SaleOrderBillDtl saleOrderBillDtl: saleOrderBillDtlList){
+            String code=saleOrderBillDtl.getUniqueCodes();
+            if(CommonUtil.isNotBlank(code)){
+                String[] split = code.split(",");
+                for(int i=0;i<split.length;i++){
+                    String uniqueCode = EpcSecretUtil.decodeEpc(split[i]).substring(0, 13);
+                    codeList.add(uniqueCode);
+                }
+            }
+        }
+        int sumCode = codeList.size();
+        List<EpcStock> epcStockList = new ArrayList<>();
+        List<EpcStock> successEpcStock = new ArrayList<>();
+        List<String> failSqu = new ArrayList<>();
+        StringBuffer failCodestr = new StringBuffer();
+        String codes="";
+        if (sumCode!=0){
+            try {
+                epcStockList = this.epcStockService.findEpcCodes(TaskUtil.getSqlStrByList(codeList, EpcStock.class, "code"));
+                for(EpcStock epcStock :epcStockList) {
+                    if (type.equals("1")){
+                        if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()!=1){
+                            StockUtil.convertEpcStock(epcStock);
+                            successEpcStock.add(epcStock);
+                        }else {
+                            failSqu.add(epcStock.getSku());
+                        }
+                    }else {
+                        if (epcStock.getWarehouseId().equals(warehId)&&epcStock.getInStock()==1){
+                            StockUtil.convertEpcStock(epcStock);
+                            successEpcStock.add(epcStock);
+                        }else {
+                            failSqu.add(epcStock.getSku());
+                        }
+                    }
+                }
+                if (type.equals("1")){
+                    if (failSqu.size()==0) {
+                        return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能入库", successEpcStock);
+                    }else {
+                        for (String s :failSqu){
+                            s=s+"、";
+                            failCodestr.append(s);
+                        }
+                        int sumSqu = failSqu.size();
+                        return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能入库,总共："+sumSqu+"件",successEpcStock);
+                    }
+                }else {
+                    if (failSqu.size()==0) {
+                        return new MessageBox(true, "总共扫描 " + sumCode + " 件,0件不能出库", saleOrderBillDtlList);
+                    }else {
+                        for (String s :failSqu){
+                            s=s+"、";
+                            failCodestr.append(s);
+                            if(CommonUtil.isNotBlank(codes)){
+                                codes+=s;
+                            }else{
+                                codes+=","+s;
+                            }
+                        }
+                        int sumSqu = failSqu.size();
+                        //详情单的code的重新填写
+                        for(SaleOrderBillDtl saleOrderBillDtl: saleOrderBillDtlList){
+                            String code=saleOrderBillDtl.getUniqueCodes();
+                            String noOutPutCode="";
+                            String uniqueCodes="";
+                            if(CommonUtil.isNotBlank(code)){
+                                String[] split = code.split(",");
+
+                                for(int i=0;i<split.length;i++){
+                                    String uniqueCode = EpcSecretUtil.decodeEpc(split[i]).substring(0, 13);
+                                    if(uniqueCode.indexOf(codes)!=-1){
+                                        if(CommonUtil.isNotBlank(noOutPutCode)){
+                                            noOutPutCode+=uniqueCode;
+                                        }else{
+                                            noOutPutCode+=","+uniqueCode;
+                                        }
+                                    }else{
+                                        if(CommonUtil.isNotBlank(uniqueCodes)){
+                                            uniqueCodes+=uniqueCode;
+                                        }else{
+                                            uniqueCodes+=","+uniqueCode;
+                                        }
+                                    }
+                                }
+                            }
+                            saleOrderBillDtl.setUniqueCodes(uniqueCodes);
+                            saleOrderBillDtl.setNoOutPutCode(noOutPutCode);
+                        }
+                        return new MessageBox(true,"总共扫描 "+sumCode+" 件，其中"+failCodestr+"不能出库,总共："+sumSqu+"件",saleOrderBillDtlList);
                     }
                 }
             } catch (Exception e) {

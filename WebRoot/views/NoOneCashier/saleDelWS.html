@@ -244,7 +244,8 @@
                         return parseFloat(cellValue).toFixed(2);
                     }
                 },
-                {name: 'uniqueCodes', label: '唯一码', hidden: true}
+                {name: 'uniqueCodes', label: '唯一码', hidden: true},
+                {name: 'noOutPutCode', label: '异常唯一码', hidden: true}
             ],
             autowidth: true,
             rownumbers: true,
@@ -449,7 +450,7 @@
     }
     function save() {
         checkAndSave();
-        //window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrPayWS.html';
+
     }
     function onClear() {
         $("#addDetailgrid").clearGridData();
@@ -464,6 +465,26 @@
             dtlArray.push(rowData);
         });
         console.log(dtlArray)
+        $.ajax({
+            dataType: "json",
+            url: basePath + "/pad/scanning/checkEpcStockOnWebWS.do",
+            cache: false,
+            async: false,
+            data:{
+                warehId:localStorage.getItem("defaultWarehId"),
+                type:0,
+                strDtlList:JSON.stringify(dtlArray)
+            },
+            type: "POST",
+            success: function (msg) {
+                console.log(msg)
+                if(msg.success){
+                    localStorage.setItem("saleDel", JSON.stringify(msg.result));
+                    console.log(JSON.parse(  localStorage.getItem("saleDel")));
+                    window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrPayWS.html';
+                }
+            }
+        });
     }
 </script>
 </body>

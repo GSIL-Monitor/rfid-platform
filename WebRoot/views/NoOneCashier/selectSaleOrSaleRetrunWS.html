@@ -99,7 +99,9 @@
         }
     }
     function selectSale() {
-        window.location.href=basePath+'/views/NoOneCashier/saleDelWS.html';
+        if(localStorage.getItem("saleDel")!=""&&localStorage.getItem("saleDel")!=undefined&&localStorage.getItem("saleDel")!=null){
+            window.location.href=basePath+'/views/NoOneCashier/saleDelWS.html';
+        }
     }
 </script>
 </body>
