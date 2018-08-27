@@ -9,6 +9,13 @@ var price = 0;//应收
 var payPrice = 0;//控制变量
 var actpayPrice = 0;//实收
 $(function () {
+    var saleDel=localStorage.getItem("saleDel");
+    var totActPrice=0;
+    if(saleDel!=""&&saleDel!=undefined&&saleDel!=null){
+        for(var i=0;i<saleDel.length;i++){
+            totActPrice+=parseFloat(saleDel[i].totActPrice)
+        }
+    }
     $.ajax({
         url: basePath + "/sys/property/searchByTypeWS.do?type=PT",
         dataType: 'json',
@@ -16,7 +23,7 @@ $(function () {
         success: function (result) {
             payhtml += "<li>"
                         +"<span id='Price'>应收金额</span>"
-                        +"<input id='Priced' type='text' readonly value='1000' name='payPrice'>"
+                        +"<input id='Priced' type='text' readonly value='"+totActPrice+"' name='payPrice'>"
                         +"</li>";
             payhtml += "<li>"
                         +"<span id='actPayPrice'>实收金额</span>"
@@ -153,7 +160,15 @@ function changeValue() {
 }
 function saveSale() {
     var sale={};
-    sale
+    sale.afterBalance=parseFloat(localStorage.getItem("owingValue"))
+    sale.afterBalance=0-(parseFloat(localStorage.getItem("owingValue"))+parseFloat($("#actPayPriced").val())-parseFloat($("#Priced").val()));
+    sale.discount=localStorage.getItem("discount");
+    sale.destId=localStorage.getItem("defaultWarehId");
+    sale.customerTypeId=localStorage.getItem("unitType");
+    sale.destUnitId=localStorage.getItem("custmerId");
+    sale.destUnitName=localStorage.getItem("custmerName");
+    sale.actPrice=$("#Priced").val();
+    sale.actPrice=$("#actPayPriced").val();
 }
 function savePayPrice() {
     var returnPrice = $("#returnPriced").val();
