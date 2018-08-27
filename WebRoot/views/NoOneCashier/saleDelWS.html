@@ -359,7 +359,11 @@
                         productInfo.wsPrice=productInfo.price;
                         productInfo.actPrice=productInfo.price;
                         productInfo.stockPrice = productInfo.price;
-                        productInfo.discount=100;
+                        if(localStorage.getItem("discount")!=undefined&&localStorage.getItem("discount")!=""&&localStorage.getItem("discount")!=null){
+                            productInfo.discount=localStorage.getItem("discount");
+                        }else{
+                            productInfo.discount=100;
+                        }
                         productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                         productInfo.abnormalStatus=0;
                         productInfo.outQty = 0;

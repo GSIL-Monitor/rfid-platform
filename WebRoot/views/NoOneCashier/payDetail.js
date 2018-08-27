@@ -151,6 +151,10 @@ function changeValue() {
         $("#returnPriced").attr("value",0);//找零0
     }
 }
+function saveSale() {
+    var sale={};
+    sale
+}
 function savePayPrice() {
     var returnPrice = $("#returnPriced").val();
     var payPrice = $("#Priced").val();

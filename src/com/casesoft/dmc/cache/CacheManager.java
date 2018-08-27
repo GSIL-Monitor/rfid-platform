@@ -843,7 +843,7 @@ public class CacheManager {
 	public static Customer getCustomerById(String id) {
 		Customer customer = null;
 		String custring = redisUtils.hgetString(PREFIX_CUSTOMER, id);
-		if (CommonUtil.isNotBlank(customer)) {
+		if (CommonUtil.isNotBlank(custring)) {
 			customer = JSON.parseObject(custring, Customer.class);
 		}
 		return customer;

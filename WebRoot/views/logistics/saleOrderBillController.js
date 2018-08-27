@@ -2027,6 +2027,7 @@ function saveAjax() {
         var rowData = $("#addDetailgrid").getRowData(value);
         dtlArray.push(rowData);
     });
+    console.log(array2obj($("#editForm").serializeArray()));
     $("#SODtl_wareHouseIn").attr({"disabled": "disabled"});
     $.ajax({
         dataType: "json",
