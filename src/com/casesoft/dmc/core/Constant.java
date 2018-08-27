@@ -132,6 +132,8 @@ public class Constant {
       public final static String Glm = "20";
       public final static String Heyi = "21";
       public final static String AncientStone = "24";
+      public final static String MIGAO = "36";
+      public final static String SHUNZA = "37";
   }
 
 
