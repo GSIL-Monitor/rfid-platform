@@ -10,11 +10,12 @@ var payPrice = 0;//控制变量
 var actpayPrice = 0;//实收
 $(function () {
 
-    var saleDel=localStorage.getItem("saleDel");
+    var saleDel=JSON.parse(localStorage.getItem("saleDel"));
     var actPrice=0;
     if(saleDel!=""&&saleDel!=undefined&&saleDel!=null){
         for(var i=0;i<saleDel.length;i++) {
-            actPrice += parseFloat(saleDel[i].totActPrice);
+            var sale=saleDel[i];
+            actPrice += sale.totActPrice
         }
     }
     $.ajax({
@@ -170,17 +171,41 @@ function saveSale() {
     sale.customerTypeId=localStorage.getItem("unitType");
     sale.destUnitId=localStorage.getItem("custmerId");
     sale.destUnitName=localStorage.getItem("custmerName");
+    sale.busnissId=localStorage.getItem("busnissId");
+    sale.origId=localStorage.getItem("defaultWarehId");
     sale.actPrice=$("#Priced").val();
-    sale.actPrice=$("#actPayPriced").val();
-
+    sale.payPrice=$("#actPayPriced").val();
+    sale.billDate=new Date();
+    var saleDel=localStorage.getItem("saleDel");
+    $.ajax({
+        dataType: "json",
+        async: true,
+        url: basePath + "/logistics/saleOrderBill/saveWS.do",
+        data: {
+            saleOrderBillStr: JSON.stringify(sale),
+            strDtlList: saleDel,
+            userId: "admin"
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            debugger
+            if (msg.success) {
+                bootbox.alert(msg.msg);
+                savePayPrice(msg.result.billNo);
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
 }
-function savePayPrice() {
+function savePayPrice(billNo) {
     var returnPrice = $("#returnPriced").val();
     var payPrice = $("#Priced").val();
     var actPayPrice = $("#actPayPriced").val();
-    var billNo = "TESTLLY";
-    var shop = "LLY";
-    var returnBillNo = "TESTRETURNLLY";
+    var billNo = billNo;
+    var shop = localStorage.getItem("defaultWarehId");
+    //var returnBillNo = "TESTRETURNLLY";
     var customerId = "admin";
     $(".paywaylist").find("li").each(function () {
         cs.showProgressBar();
