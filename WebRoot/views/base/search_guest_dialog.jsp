@@ -458,6 +458,38 @@
                 $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
             }
             setDiscount();
+            if($("#search_destId").prop("disabled") && slaeOrder_status != "-2"){
+                if(outStatus ==2 || outStatus ==3){
+                    console.info(oldDest);
+                    console.info($("#search_destId").val());
+                    if(oldDest != $("#search_destId").val()){
+                        bootbox.confirm({
+                            buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
+                            message: "检测到入库仓库变化，是否保存?",
+                            callback: function (result) {
+                                if (result) {
+                                    save().then(function (res) {
+                                        $.ajax({
+                                            url: basePath + "/logistics/saleOrder/changeDest.do",
+                                            cache: false,
+                                            data: {billNo:billNo,destId:$("#search_destId").val(),destUnitId:$("#search_destUnitId").val()},
+                                            type: "POST",
+                                            success: function (data) {
+                                                $.gritter.add({
+                                                    text: data.msg,
+                                                    class_name: 'gritter-success  gritter-light'
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                                else {
+                                }
+                            }
+                        });
+                    }
+                }
+            }
         }
         $("#modal_guest_search_table").modal('hide');
     }
