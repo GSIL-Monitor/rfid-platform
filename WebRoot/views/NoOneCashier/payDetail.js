@@ -167,7 +167,7 @@ function saveSale() {
     sale.afterBalance=parseFloat(localStorage.getItem("owingValue"))
     sale.afterBalance=0-(parseFloat(localStorage.getItem("owingValue"))+parseFloat($("#actPayPriced").val())-parseFloat($("#Priced").val()));
     sale.discount=localStorage.getItem("discount");
-    sale.destId=localStorage.getItem("defaultWarehId");
+    //sale.destId=localStorage.getItem("defaultWarehId");
     sale.customerTypeId=localStorage.getItem("unitType");
     sale.destUnitId=localStorage.getItem("custmerId");
     sale.destUnitName=localStorage.getItem("custmerName");
@@ -177,6 +177,7 @@ function saveSale() {
     sale.payPrice=$("#actPayPriced").val();
     sale.billDate=new Date();
     var saleDel=localStorage.getItem("saleDel");
+    console.log(saleDel);
     $.ajax({
         dataType: "json",
         async: true,
@@ -189,9 +190,8 @@ function saveSale() {
         type: "POST",
         success: function (msg) {
             cs.closeProgressBar();
-            debugger
             if (msg.success) {
-                bootbox.alert(msg.msg);
+                //bootbox.alert(msg.msg);
                 savePayPrice(msg.result.billNo);
             } else {
                 bootbox.alert(msg.msg);
@@ -200,12 +200,13 @@ function saveSale() {
     });
 }
 function savePayPrice(billNo) {
+    debugger
     var returnPrice = $("#returnPriced").val();
     var payPrice = $("#Priced").val();
     var actPayPrice = $("#actPayPriced").val();
     var billNo = billNo;
     var shop = localStorage.getItem("defaultWarehId");
-    //var returnBillNo = "TESTRETURNLLY";
+    var returnBillNo = "";
     var customerId = "admin";
     $(".paywaylist").find("li").each(function () {
         cs.showProgressBar();
