@@ -268,10 +268,11 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 return returnFailInfo("保存失败");
             }
         } else {
-            int number = this.customerService.findId(entity.getTel()).size();
+            //换验证方式
+            /*int number = this.customerService.findId(entity.getTel()).size();
             if (number != 0) {
                 return returnFailInfo("电话号码已存在，保存失败");
-            } else {
+            } else */
                 Customer guest = this.customerService.getById(entity.getId());
                 if (CommonUtil.isBlank(guest)) {
                     guest = new Customer();
@@ -324,7 +325,6 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     e.printStackTrace();
                     return returnFailInfo("保存失败");
                 }
-            }
         }
     }
 

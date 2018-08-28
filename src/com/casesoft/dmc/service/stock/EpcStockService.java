@@ -9,6 +9,8 @@ import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.model.erp.BillDtl;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.tag.Epc;
+import com.casesoft.dmc.model.task.Business;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,33 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     @Override
     public void save(EpcStock entity) {
+        this.epcStockDao.saveOrUpdate(entity);
+    }
 
+    /**
+     * add by lly
+     * @param billNo
+     * @param destId
+     * @param destUnitId
+     * @param codes
+     */
+    public void changeDest(String billNo,String destId,String destUnitId,List<String> codes){
+        Session session = this.epcStockDao.getSession();
+        String codeList = "(";
+        String ins = null;
+        for(int i=0 ; i<codes.size();i++){
+            codeList += codes.get(i)+",";
+            if(i==codes.size()-1){
+                ins = codeList.substring(0,codeList.length()-1);
+                ins +=")";
+            }
+        }
+        String sql = "update STOCK_EPCSTOCK set warehouse2Id='"+destId+"' where code in"+ins;
+        String sql1 = "update TASK_BUSINESS set destId='"+destId+"',destUnitId='"+destUnitId+"' where billNo='"+billNo+"' and type=0";
+        SQLQuery sqlQuery = session.createSQLQuery(sql);
+        SQLQuery sqlQuery1 = session.createSQLQuery(sql1);
+        sqlQuery.executeUpdate();
+        sqlQuery1.executeUpdate();
     }
 
     public List<EpcStock> findEpcStock(String storageId) {
