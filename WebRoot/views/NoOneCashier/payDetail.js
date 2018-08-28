@@ -229,6 +229,7 @@ function savePayPrice(billNo) {
                     cs.closeProgressBar();
                     if(result.msg){
                         //bootbox.alert("请先选择上级仓库");
+                        localStorage.clear();
                     }
                     else {
                         bootbox.alert("结算失败");
