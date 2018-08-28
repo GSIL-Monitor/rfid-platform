@@ -79,10 +79,7 @@ $(function () {
                 }
                 //付款方式点击方法
                 $(this).bind("click",function () {
-                    //待收为0不让添加
-                    if($("#payPriced").val() == 0){
-                        return;
-                    }
+
                     if($(this).hasClass("active")){
                         if(payNum ==1){
                             return;//至少有一个付款方式
@@ -100,6 +97,10 @@ $(function () {
                     }
                     else {
                         if(payNum <3){
+                            //待收为0不让添加
+                            if($("#payPriced").val() == 0){
+                                return;
+                            }
                             var html = "<li class="+$(this).attr("class")+">"
                                 +"<span id="+$(this).attr("class")+">"+$(this).text()+"</span>"
                                 +"<input id="+$(this).attr("class")+"d"+" type='text'  placeholder='0.00'>"
