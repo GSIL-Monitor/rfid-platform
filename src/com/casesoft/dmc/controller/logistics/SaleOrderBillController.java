@@ -208,7 +208,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         return new MessageBox(true, "结束成功");
     }
 
-    @RequestMapping(value = "/cancel")
+    @RequestMapping(value = {"/cancel","/cancelWS"})
     @ResponseBody
     @Override
     public MessageBox cancel(String billNo) throws Exception {

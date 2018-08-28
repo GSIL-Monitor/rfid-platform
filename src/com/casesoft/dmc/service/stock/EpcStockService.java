@@ -186,7 +186,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     }
 
     public EpcStock findEpcNotInCode(String warehId, String code) {
-        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and warehouse2Id=?", new Object[]{code, warehId});
+        return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and (warehouse2Id=? or warehouseId=?)", new Object[]{code, warehId, warehId});
     }
 
     public EpcStock findProductByCode(String code) {
@@ -197,7 +197,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.find("from EpcStock epcstock where epcstock.inStock=1  and " + codes + " and epcstock.warehouseId=?", new Object[]{warehId});
     }
 
-    public List<EpcStock> findEpcCodes(String codes){
+    public List<EpcStock> findEpcCodes(String codes) {
         return this.epcStockDao.find("from EpcStock epcstock where" + codes);
     }
 
@@ -229,7 +229,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
                 "AND r.origId=? ";
         if (CommonUtil.isNotBlank(type)) {
             hql += "AND e.inStock=" + type
-                +" AND (e.warehouseId = r.origId or e.warehouse2Id = r.origId) ";
+                    + " AND (e.warehouseId = r.origId or e.warehouse2Id = r.origId) ";
         }
         hql += "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
@@ -253,7 +253,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
                 "AND r.destId=? ";
         if (CommonUtil.isNotBlank(type)) {
             hql += "AND e.inStock=" + type
-                + " AND e.warehouseId = r.destId " ;
+                    + " AND e.warehouseId = r.destId ";
         }
         hql += "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
@@ -302,7 +302,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
      *
      * @param code 唯一码
      */
-    public void updateEpcStockOut(String code){
+    public void updateEpcStockOut(String code) {
         this.epcStockDao.batchExecute("update EpcStock set inStock=0 where code=?", code);
     }
 
@@ -324,6 +324,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     /**
      * 用于判断某个款是否曾经入过库，返回值大于0说明曾经入过库
+     *
      * @param styleId
      */
     public long countAllByStyleId(String styleId) {
