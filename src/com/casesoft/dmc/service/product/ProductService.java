@@ -258,8 +258,8 @@ public class ProductService extends AbstractBaseService<Product, String> {
     }
     public Long getMaxVersionId(){
         String hql="select max(version) from Product";
-        long maxVersionId = this.productDao.findUnique(hql);
-        return maxVersionId;
+        Long maxVersionId = this.productDao.findUnique(hql);
+        return maxVersionId == null ? 0 : maxVersionId;
     }
 
     /**
