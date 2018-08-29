@@ -240,7 +240,7 @@ public class StyleService extends AbstractBaseService<Style, String> {
 	}
 	public Long getMaxVersionId(){
 		String hql="select max(version) from Style";
-		long maxVersionId = this.styleDao.findUnique(hql);
-		return maxVersionId;
+		Long maxVersionId = this.styleDao.findUnique(hql);
+		return maxVersionId == null ? 0 : maxVersionId;
 	}
 }
