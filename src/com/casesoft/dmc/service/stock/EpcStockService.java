@@ -399,12 +399,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     * 重复代码有时间做封装
     * */
     public Page<sku> findskuByRm(String wareId, String rackId, String levelId, String allocationId,Page<sku> page){
-        SQLQuery query =null;
-        int startIndex = 0;
-        int endIndex = page.getPageSize()*page.getPageNo();
         StringBuilder sql =new StringBuilder();
-        Session session = this.epcStockDao.getSession();
-        //sql.append("select A.*,ROWNUM from(");
         sql.append("select ''as rackName,'' as areaName,'' as allocationName,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
         sql.append("from STOCK_EPCSTOCK\r\n");
         sql.append("where inStock =1\r\n");
@@ -421,36 +416,8 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
             sql.append("and floorAllocation='"+allocationId+"'\r\n");
         }
         sql.append("group by sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation\n");
-        //sql.append(") A\r\n");
-        //sql.append("where ROWNUM>=:startIndex and ROWNUM<=:endIndex\r\n");
-        /*if(page.getPageNo() ==1){
-            startIndex = 0;
-        }
-        else{
-            startIndex = page.getPageSize() * (page.getPageNo()-1);
-        }
-        query = session.createSQLQuery(sql.toString());
-        query.setParameter("wareId",wareId);
-        *//*query.setParameter("startIndex",startIndex);
-        query.setParameter("endIndex",endIndex);*//*
-        if(CommonUtil.isNotBlank(rackId)) {
-            query.setParameter("rackId",rackId);
-        }
-        if(CommonUtil.isNotBlank(levelId)) {
-            query.setParameter("levelId",levelId);
-        }
-        if(CommonUtil.isNotBlank(allocationId)) {
-            query.setParameter("allocationId",allocationId);
-        }*/
         Page<sku> pageBySQl = this.skuDao.findPageBySQl(page, sku.class, sql.toString(), null);
-      /*  //跟sku映射
-        Field[] fields = sku.class.getDeclaredFields();
-        for (Field field : fields) {
-            query.addScalar(field.getName());
-        }
-        query.setResultTransformer(Transformers.aliasToBean(sku.class));
-        List<sku> skus = query.list();
-        return skus;*/
+
       return  pageBySQl;
     }
     /*
@@ -458,12 +425,9 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     * 重复代码有时间做封装
     * */
     public Page<code> findcodeByRm(String wareId, String rackId, String levelId, String allocationId,Page<code> page){
-        SQLQuery query =null;
-        int startIndex = 0;
-        //int endIndex = page.getPageSize()*page.getPageNo();
+
         StringBuilder sql =new StringBuilder();
-        //Session session = this.epcStockDao.getSession();
-        //sql.append("select A.*,ROWNUM from(");
+
         sql.append("select ''as rackName,'' as areaName,'' as allocationName,code,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
         sql.append("from STOCK_EPCSTOCK\r\n");
         sql.append("where inStock =1\r\n");
@@ -480,36 +444,9 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
             sql.append("and floorAllocation='"+allocationId+"'\r\n");
         }
         sql.append("group by code,sku,styleId,colorId,sizeId,warehouseId,floorRack,floorArea,floorAllocation\n");
-        //sql.append(") A\r\n");
-        //sql.append("where ROWNUM>=:startIndex and ROWNUM<=:endIndex\r\n");
-        /*if(page.getPageNo() ==1){
-            startIndex = 0;
-        }
-        else{
-            startIndex = page.getPageSize() * (page.getPageNo()-1);
-        }
-        query = session.createSQLQuery(sql.toString());
-        query.setParameter("wareId",wareId);
-        *//*query.setParameter("startIndex",startIndex);
-        query.setParameter("endIndex",endIndex);*//*
-        if(CommonUtil.isNotBlank(rackId)) {
-            query.setParameter("rackId",rackId);
-        }
-        if(CommonUtil.isNotBlank(levelId)) {
-            query.setParameter("levelId",levelId);
-        }
-        if(CommonUtil.isNotBlank(allocationId)) {
-            query.setParameter("allocationId",allocationId);
-        }*/
+
         Page<code> pageBySQl = this.codeDao.findPageBySQl(page, code.class, sql.toString(), null);
-      /*  //跟sku映射
-        Field[] fields = sku.class.getDeclaredFields();
-        for (Field field : fields) {
-            query.addScalar(field.getName());
-        }
-        query.setResultTransformer(Transformers.aliasToBean(sku.class));
-        List<sku> skus = query.list();
-        return skus;*/
+
         return  pageBySQl;
     }
     /*
@@ -517,12 +454,8 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     * 重复代码有时间做封装
     * */
     public Page<styled> findstyledByRm(String wareId, String rackId, String levelId, String allocationId, Page<styled> page){
-        SQLQuery query =null;
-        int startIndex = 0;
-        //int endIndex = page.getPageSize()*page.getPageNo();
+
         StringBuilder sql =new StringBuilder();
-        //Session session = this.epcStockDao.getSession();
-        //sql.append("select A.*,ROWNUM from(");
         sql.append("select ''as rackName,'' as areaName,'' as allocationName,styleId,warehouseId,floorRack,floorArea,floorAllocation,count(sku) as qty\n");
         sql.append("from STOCK_EPCSTOCK\r\n");
         sql.append("where inStock =1\r\n");
@@ -539,36 +472,9 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
             sql.append("and floorAllocation='"+allocationId+"'\r\n");
         }
         sql.append("group by styleId,warehouseId,floorRack,floorArea,floorAllocation\n");
-        //sql.append(") A\r\n");
-        //sql.append("where ROWNUM>=:startIndex and ROWNUM<=:endIndex\r\n");
-        /*if(page.getPageNo() ==1){
-            startIndex = 0;
-        }
-        else{
-            startIndex = page.getPageSize() * (page.getPageNo()-1);
-        }
-        query = session.createSQLQuery(sql.toString());
-        query.setParameter("wareId",wareId);
-        *//*query.setParameter("startIndex",startIndex);
-        query.setParameter("endIndex",endIndex);*//*
-        if(CommonUtil.isNotBlank(rackId)) {
-            query.setParameter("rackId",rackId);
-        }
-        if(CommonUtil.isNotBlank(levelId)) {
-            query.setParameter("levelId",levelId);
-        }
-        if(CommonUtil.isNotBlank(allocationId)) {
-            query.setParameter("allocationId",allocationId);
-        }*/
+
         Page<styled> pageBySQl = this.styledDao.findPageBySQl(page, styled.class, sql.toString(), null);
-      /*  //跟sku映射
-        Field[] fields = sku.class.getDeclaredFields();
-        for (Field field : fields) {
-            query.addScalar(field.getName());
-        }
-        query.setResultTransformer(Transformers.aliasToBean(sku.class));
-        List<sku> skus = query.list();
-        return skus;*/
+
         return  pageBySQl;
     }
     //查询总数
