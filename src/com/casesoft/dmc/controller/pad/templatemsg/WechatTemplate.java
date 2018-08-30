@@ -69,6 +69,27 @@ public class WechatTemplate {
     }
 
     /**
+     * web端，商品价格发生变动时，给公众号推送消息
+     * @param openId 推送对象的openId 推送给管理员
+     * @param styleId 价格发生变动的款
+     * @param originalPrice 变动之前的价格
+     * @param currentPrice 变动之后的价格
+     * @param oprId 操作人Id
+     * @return
+     */
+    public static String priceChangeMsg(String openId, String styleId, String originalPrice, String currentPrice, String oprId){
+        Map<String, TemplateData> param = new HashMap<>();
+        param.put("first", new TemplateData("商品价格发生变动：", "#696969"));
+        param.put("keyword1", new TemplateData("【商品款号】" + styleId, "#696969"));
+        param.put("keyword2", new TemplateData(originalPrice, "#696969"));
+        param.put("keyword3", new TemplateData(currentPrice, "#696969"));
+        param.put("remark", new TemplateData("操作人：" + oprId + " \r\n请尽快处理，避免影响业务", "#696969"));
+
+        String regTempId = "SxT1GYhqNSlgPxTrfEmx0AhH5S9vCQjs-t4szqvfY-o";
+        return WX_TemplateMsgUtil.sendWechatMsgToUser(openId, regTempId, "", "#000000", packJsonmsg(param));
+    }
+
+    /**
      * 小程序监控数据变化提醒
      * @param openId 小程序操作者openId
      * @param formId 表单绑定的form_id

@@ -1,16 +1,22 @@
 package com.casesoft.dmc.controller.product;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.Product;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.tag.Init;
+import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
+import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.KeyInfoChangeService;
 import com.casesoft.dmc.service.tag.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +36,8 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.service.product.StyleService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/prod/style")
 public class StyleController extends BaseController implements IBaseInfoController<Style>{
@@ -42,6 +50,12 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ProductService productService;
 	@Autowired
 	public InitService initService;
+	@Autowired
+	public EpcStockService epcStockService;
+	@Autowired
+	public KeyInfoChangeService keyInfoChangeService;
+	@Autowired
+	public WeiXinUserService weiXinUserService;
 
 	@RequestMapping("/page")
 	@ResponseBody
@@ -95,8 +109,9 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	 * */
 	@RequestMapping("/saveStyleAndProduct")
 	@ResponseBody
-	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId,String pageType) throws Exception {
+	public MessageBox saveStyleAndProduct(HttpServletRequest request, String styleStr, String productStr, String userId, String pageType) throws Exception {
 		try {
+			HashMap<String, Object> prePriceMap = new HashMap<>();
 			Style style = JSON.parseObject(styleStr,Style.class);
 			Style sty = CacheManager.getStyleById(style.getStyleId());
 			//判断是 add（）的请求还是 edit（）的请求
@@ -111,16 +126,54 @@ public class StyleController extends BaseController implements IBaseInfoControll
 				}else {
 					return this.returnFailInfo("保存失败!"+sty.getId()+"款号已存在请重新输入");
 				}
+			}else if ("edit".equals(pageType)) {
+				if (CommonUtil.isBlank(sty)) {
+					return this.returnFailInfo("编辑失败!" + sty.getId() + "款号不存在");
+				}
+				prePriceMap.put("price", sty.getPrice());
+				prePriceMap.put("puPrice", sty.getPuPrice());
+				prePriceMap.put("wsPrice", sty.getWsPrice());
+				prePriceMap.put("preCast", sty.getPreCast());
+			} else {
+				throw new RuntimeException("保存类型只能传字符串：'add' or 'edit'");
 			}
 			sty.setOprId(userId);
 			List<Product> productList = JSON.parseArray(productStr,Product.class);
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
+			//如果价格发生变动，记录变动信息
+			String infoChangeRemark = "";
+			if (CommonUtil.isNotBlank(prePriceMap)) {
+				HashMap<String, Object> aftPriceMap = new HashMap<>();
+				aftPriceMap.put("price", sty.getPrice());
+				aftPriceMap.put("puPrice", sty.getPuPrice());
+				aftPriceMap.put("wsPrice", sty.getWsPrice());
+				aftPriceMap.put("preCast", sty.getPreCast());
+
+				long countValue = this.epcStockService.countAllByStyleId(sty.getId());
+				//大于0说明入过库
+				if(countValue > 0){
+					infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
+				}
+			}
+
+			//价格发生变动时，向管理员推送公众号消息
+			if(CommonUtil.isNotBlank(infoChangeRemark)){
+				String[] infoArray = infoChangeRemark.split("\r\n");
+				User admin = CacheManager.getUserById("admin");
+				if(CommonUtil.isBlank(admin)){
+					logger.error("管理员账号不存在");
+				}else {
+					String openId = this.weiXinUserService.getByPhone(admin.getPhone()).getOpenId();
+					String originalPrice = infoArray[0].replace("原价：","");
+					String currentPrice = infoArray[1].replace("现价：","");
+					WechatTemplate.priceChangeMsg(openId, sty.getStyleId(), originalPrice, currentPrice, userId);
+				}
+			}
+
 			CacheManager.refreshStyleCache();
-			/*if(saveList.size() > 0){*/
-				CacheManager.refreshProductCache();
-			/*}*/
+			CacheManager.refreshProductCache();
 			//推送微信商城
 			//读取congif.properties文件
 			boolean is_wxshop = Boolean.parseBoolean(PropertyUtil

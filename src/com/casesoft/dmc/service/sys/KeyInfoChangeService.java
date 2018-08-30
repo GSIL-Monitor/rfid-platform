@@ -78,17 +78,25 @@ public class KeyInfoChangeService extends BaseService<KeyInfoChange, String> {
      */
     public String commonSave(String userId, String method, String objectId,  Map<String, Object> preInfoMap, Map<String, Object> aftInfoMap){
         boolean valueChange = false;
-        StringBuilder sb = new StringBuilder();
-        sb.append("以下价格发生变动：");
+        StringBuilder originalSb = new StringBuilder();
+        StringBuilder currentSb = new StringBuilder();
+        originalSb.append("原价：");
+        currentSb.append("现价：");
         for (Map.Entry<String, Object> entry : preInfoMap.entrySet()) {
             String key = entry.getKey();
             Object preValue = entry.getValue();
             if((Double) aftInfoMap.get(key) != ((Double) preValue).doubleValue()){
                 valueChange = true;
-                sb.append(" ").append(getPriceName(key)).append(":").append(preValue).append("-->").append(aftInfoMap.get(key));
+                originalSb.append(getPriceName(key)).append(":").append(preValue).append(",");
+                currentSb.append(getPriceName(key)).append(":").append(aftInfoMap.get(key)).append(",");
             }
         }
+
         if(valueChange){
+            originalSb.deleteCharAt(originalSb.length()-1);
+            currentSb.deleteCharAt(currentSb.length()-1);
+            String remark = originalSb.append("\r\n").append(currentSb).append("\r\n").append("操作人：").append(userId).toString();
+
             KeyInfoChange infoChange = new KeyInfoChange();
             infoChange.setOprId(userId);
             infoChange.setCreatedDate(new Date());
@@ -96,7 +104,7 @@ public class KeyInfoChangeService extends BaseService<KeyInfoChange, String> {
             infoChange.setObjectId(objectId);
             infoChange.setPreInfo(JSON.toJSONString(preInfoMap));
             infoChange.setAftInfo(JSON.toJSONString(aftInfoMap));
-            infoChange.setRemarks(sb.toString());
+            infoChange.setRemarks(remark);
             this.save(infoChange);
             return infoChange.getRemarks();
         }
@@ -106,8 +114,8 @@ public class KeyInfoChangeService extends BaseService<KeyInfoChange, String> {
     private String getPriceName(String key){
         HashMap<String, String> priceNameMap = new HashMap<>();
         priceNameMap.put("price","吊牌价");
-        priceNameMap.put("puPrice","代理商批发价格");
-        priceNameMap.put("wsPrice","门店批发价格");
+        priceNameMap.put("puPrice","代理价");
+        priceNameMap.put("wsPrice","门店价");
         priceNameMap.put("preCast","采购价");
 
         return priceNameMap.get(key);
