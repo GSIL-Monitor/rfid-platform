@@ -8,6 +8,7 @@ var skuQty = {};//保存每个SKU对应的出入库数量。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var billNo;
 var sizeArry="S,XS,M,L,XL,XXL,XXXL,F,other";
+var outStatus = null;//出库状态
 $(function () {
 
 
@@ -48,7 +49,6 @@ $(function () {
         }
 
     }
-
 });
 
 
@@ -376,6 +376,7 @@ function initGrid() {
             {
                 name: 'outStatusImg', label: '出库状态', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
+                    outStatus = rowObject.outStatus;
                     if (rowObject.outStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
                     } else if (rowObject.outStatus == 2) {
@@ -885,38 +886,57 @@ function addProductInfo(status) {
 
 
 function save() {
-    cs.showProgressBar();
-    $("#search_customerType").removeAttr('disabled');
-    $("#search_origId").removeAttr('disabled');
-    $("#search_destId").removeAttr('disabled');
-    $("#search_busnissId").removeAttr('disabled');
+    var p = new Promise(function (resolve,reject) {
+        cs.showProgressBar();
+        $("#search_customerType").removeAttr('disabled');
+        $("#search_origId").removeAttr('disabled');
+        $("#search_destId").removeAttr('disabled');
+        $("#search_busnissId").removeAttr('disabled');
 
-    if ($("#search_origId").val() == $("#search_destId").val()) {
-        bootbox.alert("不能在相同的单位之间销售");
-        cs.closeProgressBar();
-        return false;
-    }
+        if ($("#search_origId").val() == $("#search_destId").val()) {
+            bootbox.alert("不能在相同的单位之间销售");
+            cs.closeProgressBar();
+            reject("不能在相同的单位之间销售");
+            $("#search_customerType").attr('disabled',true);
+            $("#search_origId").attr('disabled',true);
+            $("#search_destId").attr('disabled',true);
+            $("#search_busnissId").attr('disabled',true);
+            return false;
+        }
 
-    $("#editForm").data('bootstrapValidator').destroy();
-    $('#editForm').data('bootstrapValidator', null);
-    initEditFormValid();
-    $('#editForm').data('bootstrapValidator').validate();
-    if (!$('#editForm').data('bootstrapValidator').isValid()) {
-        cs.closeProgressBar();
-        return false;
-    }
-    if ($("#addDetailgrid").getDataIDs().length == 0) {
-        bootbox.alert("请添加销售商品！");
-        cs.closeProgressBar();
-        return false;
-    }
-    if (addDetailgridiRow != null && addDetailgridiCol != null) {
-        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
-        addDetailgridiRow = null;
-        addDetailgridiCol = null;
-    }
-    //客户余额变动
-    guestBalanceChange();
+        $("#editForm").data('bootstrapValidator').destroy();
+        $('#editForm').data('bootstrapValidator', null);
+        initEditFormValid();
+        $('#editForm').data('bootstrapValidator').validate();
+        if (!$('#editForm').data('bootstrapValidator').isValid()) {
+            cs.closeProgressBar();
+            $("#search_customerType").attr('disabled',true);
+            $("#search_origId").attr('disabled',true);
+            $("#search_destId").attr('disabled',true);
+            $("#search_busnissId").attr('disabled',true);
+            reject("失败");
+            return false;
+        }
+        if ($("#addDetailgrid").getDataIDs().length == 0) {
+            bootbox.alert("请添加销售商品！");
+            reject("请添加销售商品！");
+            $("#search_customerType").attr('disabled',true);
+            $("#search_origId").attr('disabled',true);
+            $("#search_destId").attr('disabled',true);
+            $("#search_busnissId").attr('disabled',true);
+            cs.closeProgressBar();
+            return false;
+        }
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        //客户余额变动
+        guestBalanceChange();
+        resolve("成功");
+    });
+    return p;
 }
 
 function add() {

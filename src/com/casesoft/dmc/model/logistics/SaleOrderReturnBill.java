@@ -1,6 +1,7 @@
 package com.casesoft.dmc.model.logistics;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Session on 2017-06-28.
@@ -35,6 +36,13 @@ public class SaleOrderReturnBill extends BaseBill{
 	private Double totStockVal =0D;//库存成本
 	@Column
 	private String returnCode;
+
+	@Transient
+	private List<SaleOrderReturnBillDtl> dtlList;
+
+	public List<SaleOrderReturnBillDtl> getDtlList() { return dtlList; }
+
+	public void setDtlList(List<SaleOrderReturnBillDtl> dtlList) { this.dtlList = dtlList; }
 
 	public String getReturnCode() {
 		return returnCode;

@@ -4,6 +4,7 @@ package com.casesoft.dmc.controller.logistics;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -19,6 +20,7 @@ import com.casesoft.dmc.model.logistics.SaleOrderBillDtl;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -27,6 +29,7 @@ import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
+import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
@@ -62,6 +65,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private TemplateMsgService templateMsgService;
     @Autowired
     private GuestViewService guestViewService;
+    @Autowired
+    private EpcStockService epcStockService;
+
+
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -79,7 +86,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         return mv;
     }
 
-    @RequestMapping(value = "/page")
+    @RequestMapping(value = {"/page","/pageWS"})
     @ResponseBody
     public Page<SaleOrderBill> findPage(Page<SaleOrderBill> page, String userId) throws Exception {
         this.logAllRequestParams();
@@ -97,6 +104,66 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         page = this.saleOrderBillService.findPage(page, filters);
         return page;
     }
+
+
+    /**
+     * add by Anna on 2018-08-28
+     * 小程序调用，获取销售单，带图片的信息
+     * @param pageSize
+     * @param pageNo
+     * @param userId
+     * @param sortOrder
+     * @return
+     */
+    @RequestMapping(value = "/findSaleOrderListWS")
+    @ResponseBody
+    public MessageBox findSaleOrderListWS(String pageSize, String pageNo, String userId, String sortOrder){
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
+        User CurrentUser = CacheManager.getUserById(userId);
+        String ownerId = CurrentUser.getOwnerId();
+        //只要是管理员权限的账号就可以看所有单据
+//        String id = CurrentUser.getId();
+        if (!ownerId.equals("1")) {
+            PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
+            filters.add(filter);
+        }
+        Page<SaleOrderBill> page = new Page<SaleOrderBill>();
+        page.setPageSize(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setPage(Integer.parseInt(pageNo));
+        String sort = "billDate";
+        String order = "desc";
+        if (CommonUtil.isNotBlank(sortOrder)) {
+            String[] split = sortOrder.split("_");
+            sort = split[0];
+            order = split[1];
+        }
+        page.setSort(sort);
+        page.setOrder(order);
+        page.setPageProperty();
+        page = this.saleOrderBillService.findPage(page, filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        if (CommonUtil.isNotBlank(page.getRows())) {
+            for (SaleOrderBill saleOrderBill : page.getRows()) {
+
+                List<SaleOrderBillDtl> dtlList = this.saleOrderBillService.findBillDtlByBillNo(saleOrderBill.getBillNo());
+
+                for (SaleOrderBillDtl saleOrderBillDtl : dtlList) {
+                    String imgUrl = StyleUtil.returnImageUrl(saleOrderBillDtl.getStyleId(), rootPath);
+                    saleOrderBillDtl.setImgUrl(imgUrl);
+                    Style style = CacheManager.getStyleById(saleOrderBillDtl.getStyleId());
+                    if (CommonUtil.isNotBlank(style)) {
+                        saleOrderBillDtl.setStyleName(style.getStyleName());
+                    }
+                }
+                saleOrderBill.setDtlList(dtlList);
+            }
+        }
+        return new MessageBox(true, "success", page);
+    }
+
 
     @Override
     public Page<SaleOrderBill> findPage(Page<SaleOrderBill> page) throws Exception {
@@ -147,7 +214,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
         return new MessageBox(true, "结束成功");
     }
 
-    @RequestMapping(value = "/cancel")
+    @RequestMapping(value = {"/cancel","/cancelWS"})
     @ResponseBody
     @Override
     public MessageBox cancel(String billNo) throws Exception {
@@ -511,6 +578,29 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     public MessageBox confirmExchange(String origCode, String exchangeCode, String origSku, String exchangeSku, String billNo) throws Exception {
         try {
             this.saleOrderBillService.confirmExchange(origCode, exchangeCode, origSku, exchangeSku, billNo);
+            return new MessageBox(true, "替换成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false, "替换失败");
+        }
+    }
+
+    /**
+     * add by lly
+     * @param billNo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/changeDest")
+    @ResponseBody
+    public MessageBox changeDest(String billNo,String destId,String destUnitId) throws Exception {
+        try {
+            List<BillRecord> billRecods = saleOrderBillService.getBillRecod(billNo);
+            List<String> codes = new ArrayList<>();
+            for(BillRecord billRecord:billRecods){
+                codes.add(billRecord.getCode());
+            }
+            epcStockService.changeDest(billNo,destId,destUnitId,codes);
             return new MessageBox(true, "替换成功");
         }catch (Exception e){
             e.printStackTrace();
