@@ -46,14 +46,12 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
      * @param codes
      */
     public void changeDest(String billNo,String destId,String destUnitId,List<String> codes){
-        Session session = this.epcStockDao.getSession();
         String ins =CommonUtil.getSqlStrByList(codes,EpcStock.class,"code");
-        String sql = "update STOCK_EPCSTOCK set warehouse2Id='"+destId+"' where "+ins;
+        String sql = "update epcstock set epcstock.warehouse2Id='"+destId+"' where "+ins;
         String sql1 = "update TASK_BUSINESS set destId='"+destId+"',destUnitId='"+destUnitId+"' where billNo='"+billNo+"' and type=0";
-        SQLQuery sqlQuery = session.createSQLQuery(sql);
-        SQLQuery sqlQuery1 = session.createSQLQuery(sql1);
-        sqlQuery.executeUpdate();
-        sqlQuery1.executeUpdate();
+        this.epcStockDao.batchExecute(sql,new Object[]{});
+        this.epcStockDao.creatSQLQuery(sql1).executeUpdate();
+
     }
 
     public List<EpcStock> findEpcStock(String storageId) {

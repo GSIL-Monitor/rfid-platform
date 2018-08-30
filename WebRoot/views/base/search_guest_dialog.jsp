@@ -459,6 +459,8 @@
             }
             setDiscount();
             if($("#search_destId").prop("disabled") && slaeOrder_status != "-2"){
+                console.info("2222");
+                console.info(outStatus);
                 if(outStatus ==2 || outStatus ==3){
                     console.info(oldDest);
                     console.info($("#search_destId").val());

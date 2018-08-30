@@ -456,7 +456,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     }
                     this.guestService.updateCustomer(guest,preUnit);
                 }else {
-                    List<String> number = this.customerService.findId(entity.getTel());
+                    /*List<String> number = this.customerService.findId(entity.getTel());
                     if (number.size()==1){
                         if (number.get(0).equals(guest.getId())){
                             this.customerService.save(guest);
@@ -465,9 +465,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         }
                     }else if (number.size()>1){
                         return returnFailInfo("手机号码已存在，保存失败");
-                    }else {
+                    }else {*/
                         this.customerService.save(guest);
-                    }
+                    //}
                 }
                 CacheManager.refreshUnitCache();
                 CacheManager.refreshCustomer();

@@ -376,7 +376,6 @@ function initGrid() {
             {
                 name: 'outStatusImg', label: '出库状态', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
-                    outStatus = rowObject.outStatus;
                     if (rowObject.outStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
                     } else if (rowObject.outStatus == 2) {
@@ -545,6 +544,7 @@ function initeditGrid() {
             {
                 name: 'outStatusImg', label: '出库状态', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
+                    outStatus = rowObject.outStatus;
                     if (rowObject.outStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
                     } else if (rowObject.outStatus == 2) {
