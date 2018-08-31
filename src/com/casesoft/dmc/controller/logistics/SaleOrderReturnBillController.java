@@ -3,6 +3,7 @@ package com.casesoft.dmc.controller.logistics;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
+import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.controller.stock.StockUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -161,6 +162,66 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         mv.addObject("userId", getCurrentUser().getId());
         return mv;
     }
+
+    /**
+     * add by Anna on 2018-08-28
+     * 小程序调用，获取退货单，带图片的信息
+     *
+     * @param pageSize
+     * @param pageNo
+     * @param userId
+     * @param sortOrder
+     * @return
+     */
+    @RequestMapping(value = "/findReturnOrderListWS")
+    @ResponseBody
+    public MessageBox findReturnOrderListWS(String pageSize, String pageNo, String userId, String sortOrder) {
+        this.logAllRequestParams();
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        //权限设置，增加过滤条件，只显示当前ownerId下的销售单信息
+        User CurrentUser = CacheManager.getUserById(userId);
+        String ownerId = CurrentUser.getOwnerId();
+        //只要是管理员权限的账号就可以看所有单据
+//        String id = CurrentUser.getId();
+        if (!ownerId.equals("1")) {
+            PropertyFilter filter = new PropertyFilter("EQS_ownerId", ownerId);
+            filters.add(filter);
+        }
+        Page<SaleOrderReturnBill> page = new Page<SaleOrderReturnBill>();
+        page.setPageSize(Integer.parseInt(pageSize));
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setPage(Integer.parseInt(pageNo));
+        String sort = "billDate";
+        String order = "desc";
+        if (CommonUtil.isNotBlank(sortOrder)) {
+            String[] split = sortOrder.split("_");
+            sort = split[0];
+            order = split[1];
+        }
+        page.setSort(sort);
+        page.setOrder(order);
+        page.setPageProperty();
+        page = this.saleOrderReturnBillService.findPage(page, filters);
+        String rootPath = this.getSession().getServletContext().getRealPath("/");
+        if (CommonUtil.isNotBlank(page.getRows())) {
+            for (SaleOrderReturnBill saleOrderReturnBill : page.getRows()) {
+
+                List<SaleOrderReturnBillDtl> dtlList = this.saleOrderReturnBillService.findBillDtlByBillNo(saleOrderReturnBill.getBillNo());
+
+                for (SaleOrderReturnBillDtl saleOrderReturnBillDtl : dtlList) {
+                    String imgUrl = StyleUtil.returnImageUrl(saleOrderReturnBillDtl.getStyleId(), rootPath);
+                    saleOrderReturnBillDtl.setImgUrl(imgUrl);
+                    Style style = CacheManager.getStyleById(saleOrderReturnBillDtl.getStyleId());
+                    if (CommonUtil.isNotBlank(style)) {
+                        saleOrderReturnBillDtl.setStyleName(style.getStyleName());
+                    }
+                }
+                saleOrderReturnBill.setDtlList(dtlList);
+            }
+        }
+        return new MessageBox(true, "success", page);
+    }
+
 
 
     @RequestMapping(value = "/page")
@@ -465,7 +526,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         return null;
     }
 
-    @RequestMapping(value = "/cancel")
+    @RequestMapping(value = {"/cancel", "/cancelWS"})
     @ResponseBody
     @Override
     public MessageBox cancel(String billNo) throws Exception {
