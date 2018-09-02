@@ -328,6 +328,18 @@ public abstract class BaseController {
         response.getOutputStream().write(data);
         response.flushBuffer();
     }
+
+    public void outFile(HttpServletResponse response, String fileName, File zipFile, String contentType)throws IOException {
+        response.setContentType(contentType);
+        response.setHeader("Content-Disposition", "attachment;filename="
+                + URLEncoder.encode(fileName, "utf-8"));
+
+        byte[] data = getBytes(zipFile);
+
+        response.setContentLength(data.length);
+        response.getOutputStream().write(data);
+        response.flushBuffer();
+    }
     public static byte[] getBytes(File file){
         byte[] buffer = null;
         try {
@@ -348,4 +360,6 @@ public abstract class BaseController {
         }
         return buffer;
     }
+
+
 }

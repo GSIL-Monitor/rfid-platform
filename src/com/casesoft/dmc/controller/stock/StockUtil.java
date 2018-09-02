@@ -85,11 +85,18 @@ public class StockUtil {
 		Style style = CacheManager.getStyleById(epcStock.getStyleId());
 		Color color = CacheManager.getColorById(epcStock.getColorId());
 		Size size = CacheManager.getSizeById(epcStock.getSizeId());
-		epcStock.setWsPrice(style.getWsPrice());
-		epcStock.setPuPrice(style.getPuPrice());
-		epcStock.setPreCast(style.getPreCast());
-		epcStock.setColorName(color.getColorName());
-		epcStock.setSizeName(size.getSizeName());
+		if(CommonUtil.isNotBlank(style)){
+			epcStock.setWsPrice(style.getWsPrice());
+			epcStock.setPuPrice(style.getPuPrice());
+			epcStock.setPreCast(style.getPreCast());
+			epcStock.setBargainPrice(style.getBargainPrice());
+		}
+		if(CommonUtil.isNotBlank(color)) {
+			epcStock.setColorName(color.getColorName());
+		}
+		if(CommonUtil.isNotBlank(size)) {
+			epcStock.setSizeName(size.getSizeName());
+		}
 		epcStock.setBargainPrice(style.getBargainPrice());
 		if (CommonUtil.isNotBlank(style.getBargainPrice())&&style.getBargainPrice()!=0){
 			epcStock.setPrice(epcStock.getBargainPrice());
@@ -97,6 +104,14 @@ public class StockUtil {
 			epcStock.setPrice(style.getPrice());
 		}
 	}
+
+	public static List<EpcStock> convertEpcStockList(List<EpcStock> epcStockList) {
+		for(EpcStock s : epcStockList){
+			convertEpcStock(s);
+		}
+		return epcStockList;
+	}
+
 
 	// ///
 	public static String convertToChartResult(List<Stock> l) {
@@ -717,4 +732,6 @@ public class StockUtil {
 		listBill.add(bill);
 		return listBill;
 	}
+
+
 }

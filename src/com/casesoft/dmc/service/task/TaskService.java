@@ -242,8 +242,13 @@ public class TaskService extends AbstractBaseService<Business, String> {
         if (CommonUtil.isNotBlank(recordList)) {
             if (bus.getToken().intValue() != Constant.Token.Shop_Inventory
                     && bus.getToken().intValue() != Constant.Token.Storage_Inventory) {
+                long version = CacheManager.getMaxEpcstockVersionId()+1;
                 List<EpcStock> list = TaskUtil
                         .recordConvertEpsStock(recordList);
+                for(EpcStock e : list){
+                    e.setVersion(version);
+                }
+                CacheManager.setEpcstockVersionId(version);
                 this.epcStockService.saveEpcStocks(list);
             }
             this.taskDao.doBatchInsert(recordList);

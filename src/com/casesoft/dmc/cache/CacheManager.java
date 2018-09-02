@@ -18,6 +18,7 @@ import com.casesoft.dmc.service.cfg.PropertyKeyService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.shop.CustomerService;
+import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.RoleService;
@@ -286,8 +287,12 @@ public class CacheManager {
 		StyleService styleService = (StyleService) SpringContextUtil
 				.getBean("styleService");
 		//得到当前商品最大版本号放进redis
+		EpcStockService epcStockService = (EpcStockService) SpringContextUtil
+				.getBean("epcStockService");
 		long productMaxVersionId = productService.getMaxVersionId();
 		redisUtils.hset("maxVersionId","productMaxVersionId",JSON.toJSONString(productMaxVersionId));
+		long EpcStockMaxVersionId = epcStockService.getMaxVersionId();
+		redisUtils.hset("maxVersionId","EpcStockMaxVersionId",JSON.toJSONString(EpcStockMaxVersionId));
 		long styleMaxVersionId = styleService.getMaxVersionId();
 		redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId));
 	}
@@ -1178,11 +1183,20 @@ public class CacheManager {
 	}
 
 	public static Long getproductMaxVersionId(){
-		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","productMaxVersionId");
+		Long maxVersionId = Long.parseLong(redisUtils.hget("maxVersionId","productMaxVersionId").toString());
 		return maxVersionId;
 	}
 	public static Long getStyleMaxVersionId(){
-		Long maxVersionId = (Long)redisUtils.hget("maxVersionId","styleMaxVersionId");
+		Long maxVersionId = Long.parseLong(redisUtils.hget("maxVersionId","styleMaxVersionId").toString());
 		return maxVersionId;
+	}
+
+
+	public static Long getMaxEpcstockVersionId() {
+		Long maxVersionId = Long.parseLong(redisUtils.hget("maxVersionId","EpcStockMaxVersionId").toString());
+		return maxVersionId;
+	}
+	public static void setEpcstockVersionId(Long version){
+		redisUtils.hset("maxVersionId","EpcStockMaxVersionId",JSON.toJSONString(version));
 	}
 }

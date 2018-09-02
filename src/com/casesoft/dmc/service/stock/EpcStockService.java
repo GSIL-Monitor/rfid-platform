@@ -43,7 +43,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     @Override
     public Page<EpcStock> findPage(Page<EpcStock> page, List<PropertyFilter> filters) {
-        return null;
+        return this.epcStockDao.findPage(page, filters);
     }
 
     @Override
@@ -515,5 +515,11 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         List<BigDecimal> ct = query.list();
         count = ct.get(0).intValue();
         return count;
+    }
+
+    public long getMaxVersionId() {
+        String hql="select max(version) from EpcStock";
+        Long maxVersionId = this.epcStockDao.findUnique(hql);
+        return maxVersionId == null ? 0 : maxVersionId;
     }
 }

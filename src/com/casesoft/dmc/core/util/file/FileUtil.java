@@ -1,6 +1,8 @@
 package com.casesoft.dmc.core.util.file;
 
 import com.casesoft.dmc.core.Constant;
+import com.casesoft.dmc.model.product.Product;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -507,4 +509,12 @@ public class FileUtil {
     return files;
   }
 
+  public static void writeJsonProductFileObjects(String s, List<Product> rows) {
+  }
+
+  public static void copyFile(String dbPath, String destDBPath) throws IOException {
+    File srcFile = new File(dbPath);
+    File destFile = new File(destDBPath);
+    FileUtils.copyFile(srcFile,destFile);
+  }
 }

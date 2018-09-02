@@ -53,6 +53,16 @@ public class EpcStock implements Serializable {
 
 	private Integer dressingStatus=0; //店员套版状态, 0表示在库，1表示穿着中
 
+
+	private Long version;//版本号
+	@Column()
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 	@Transient
 	private String styleName;
 	@Transient
@@ -427,4 +437,6 @@ public class EpcStock implements Serializable {
 	public void setFloorAllocation(String floorAllocation) {
 		this.floorAllocation = floorAllocation;
 	}
+
+
 }

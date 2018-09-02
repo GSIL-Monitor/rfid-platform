@@ -503,6 +503,7 @@ public class ProductUtil {
                 p.setPreCast(style.getPreCast());
                 p.setWsPrice(style.getWsPrice());
                 p.setPuPrice(CommonUtil.isBlank(style.getPuPrice()) ? 0 : style.getPuPrice());
+                p.setBargainPrice(style.getBargainPrice());
             }
             if (CommonUtil.isBlank(p.getSizeName())) {
 
@@ -1701,4 +1702,26 @@ public class ProductUtil {
 
     }
 
+    public static void convertToProductVo(Product p) {
+        Style s = CacheManager.getStyleById(p.getStyleId());
+        if(CommonUtil.isNotBlank(s)) {
+            p.setStyleName(s.getStyleName());
+            p.setPrice(s.getPrice());
+            p.setPreCast(s.getPreCast());
+            p.setWsPrice(s.getWsPrice());
+            p.setBargainPrice(s.getBargainPrice());
+            p.setClass1(s.getClass1());
+            p.setClass2(s.getClass2());
+            p.setClass3(s.getClass3());
+            p.setClass4(s.getClass4());
+            p.setClass5(s.getClass5());
+            p.setClass6(s.getClass6());
+            p.setClass7(s.getClass7());
+            p.setClass8(s.getClass8());
+            p.setClass9(s.getClass9());
+            p.setClass10(s.getClass10());
+        }
+        p.setColorName(CacheManager.getColorNameById(p.getColorId()));
+        p.setSizeName(CacheManager.getSizeNameById(p.getSizeId()));
+    }
 }
