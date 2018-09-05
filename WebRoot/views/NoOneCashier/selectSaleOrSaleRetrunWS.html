@@ -69,25 +69,7 @@
 </div>
 <script>
     $(function () {
-        //会员客户和普通客户的正方形
-        var vipWidth=$("#sale").width();
-        var vipHeight=$("#sale").height();
-        if(vipWidth<=vipHeight) {
-            $("#sale").css("height", vipWidth);
-            $("#sale").css("width", vipWidth);
-        }else{
-            $("#sale").css("height", vipHeight);
-            $("#sale").css("width", vipHeight);
-        }
-        var vipWidth=$("#saleRetrun").width();
-        var vipHeight=$("#saleRetrun").height();
-        if(vipWidth<=vipHeight) {
-            $("#saleRetrun").css("height", vipWidth);
-            $("#saleRetrun").css("width", vipWidth);
-        }else{
-            $("#saleRetrun").css("height", vipHeight);
-            $("#saleRetrun").css("width", vipHeight);
-        }
+
 
     });
     function onBack() {
@@ -99,9 +81,7 @@
         }
     }
     function selectSale() {
-        if(localStorage.getItem("saleDel")!=""&&localStorage.getItem("saleDel")!=undefined&&localStorage.getItem("saleDel")!=null){
-            window.location.href=basePath+'/views/NoOneCashier/saleDelWS.html';
-        }
+        window.location.href=basePath+'/views/NoOneCashier/saleDelWS.html';
     }
 </script>
 </body>

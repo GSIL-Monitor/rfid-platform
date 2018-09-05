@@ -244,6 +244,7 @@
                         return parseFloat(cellValue).toFixed(2);
                     }
                 },
+                {name: 'puPrice', label: '门店批发价', hidden: true},
                 {name: 'uniqueCodes', label: '唯一码', hidden: true},
                 {name: 'noOutPutCode', label: '异常唯一码', hidden: true}
             ],
@@ -453,7 +454,8 @@
         console.log(data);
     }
     function save() {
-        checkAndSave();
+        fullpuPrice();
+        //checkAndSave();
 
     }
     function onClear() {
@@ -461,6 +463,41 @@
     }
     function onBack() {
         window.location.href=basePath+'/views/NoOneCashier/selectSaleOrSaleRetrunWS.html';
+    }
+    function fullpuPrice(){
+        var codes="";
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            if(index==0){
+                codes+="'"+rowData.styleId+"'";
+            }else{
+                codes+=",'"+rowData.styleId+"'";
+            }
+        });
+        $.ajax({
+            url:  basePath + "/prod/style/listProuctBySkuWS.do",
+            cache: false,
+            async: false,
+            data:{
+                codes:codes,
+            },
+            type: "POST",
+            success: function (mse) {
+                console.log(mse)
+                if(mse.length>0){
+                    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                        var rowData = $("#addDetailgrid").getRowData(value);
+                        for(var i=0;i<mse.length;i++){
+                            if(rowData.styleId==mse[i].id){
+                                $('#addDetailgrid').setCell(value, "puPrice", rowData.puPrice);
+                            }
+                        }
+
+                    });
+                }
+                checkAndSave();
+            }
+        });
     }
     function checkAndSave() {
         var dtlArray = [];

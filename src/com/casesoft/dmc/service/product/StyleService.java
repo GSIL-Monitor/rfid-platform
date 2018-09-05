@@ -243,4 +243,10 @@ public class StyleService extends AbstractBaseService<Style, String> {
 		Long maxVersionId = this.styleDao.findUnique(hql);
 		return maxVersionId == null ? 0 : maxVersionId;
 	}
+
+	public List<Style> listProuctBySku(String codes){
+		String hql="from Style where id in("+codes+")";
+		List<Style> styleList = this.styleDao.find(hql);
+		return styleList;
+	}
 }

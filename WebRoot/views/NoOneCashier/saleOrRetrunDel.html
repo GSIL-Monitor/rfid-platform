@@ -1,0 +1,181 @@
+<html lang="en" style="height: 100%;width: 100%">
+<head>
+        <meta charset="UTF-8">
+        <script>
+            var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+        </script>
+        <title>自助收银</title>
+        <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+        <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+        <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+        <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+        <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+        <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+        <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+        <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+        <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+        <link rel="stylesheet" href="../pad/css/padBase.css">
+    
+        <script src="../../Olive/assets/js/jquery.js"></script>
+        <script src="../../Olive/assets/js/bootstrap.js"></script>
+        <!--grid.locale-en.js这个文件必须在jquery.jqGrid.min.js之前加载，否则会出问题-->
+        <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+        <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+    
+        <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+        <script src="../../Olive/assets/js/jquery-ui.js"></script>
+        <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+        <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+        <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+        <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+        <script src="../../jslib2/constant.js"></script>
+        <script src="../../Olive/plugin/dateFormatUtil.js"></script>
+        <script src="../../Olive/assets/js/bootbox.js"></script>
+        <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+        <script src="../../Olive/assets/js/qrcode.min.js"></script>
+        <script src="../../Olive/assets/js/qrcode.js"></script>
+        <script src="./saleOrRetrunDel.js"></script>
+    <style>
+        .center-vertical {
+            position:relative;
+            top:50%;
+            transform:translateY(-50%)
+        }
+        .footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+        img#img{
+            display:none;
+        }
+        .bottom-button1{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+        .bottom-button2{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+    </style>
+</head>
+<body style="width: 100%;height: 100%">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height:100%">
+    <!--<div class="center">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">客户:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="customer">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">日期:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="billDate">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">折扣:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 " onkeyup="value=value.replace(/[^\d]/g,'')" id="discount">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">折扣:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 " onkeyup="value=value.replace(/[^\d]/g,'')" id="retrunDiscount">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">店铺:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="unitName">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">仓库:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="defaultWarehId">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">销售员:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="busnissId">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <div class="center">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <h5>销售明细</h5>
+                        <table id="addSaleDetailgrid"></table>
+                        <div id="grid-Sale-pager" ></div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <h5>退货明细</h5>
+                        <table id="addSaleRetrunDetailgrid" ></table>
+                        <div id="grid-SaleRetrun-pager" ></div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style=" margin-top: 5em">
+                        <label class="col-lg-3 col-md-3 col-sm-3 ">销售金额:</label>
+                        <input class="col-lg-3 col-md-3 col-sm-3 "readonly id="saleAmount" >
+                        <label class="col-lg-3 col-md-3 col-sm-3 ">销售实收金额:</label>
+                        <input class="col-lg-3 col-md-3 col-sm-3 "readonly id="saleActAmount" >
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style=" margin-top: 5em">
+                        <label class="col-lg-3 col-md-3 col-sm-3 ">退货金额:</label>
+                        <input class="col-lg-3 col-md-3 col-sm-3 "readonly id="saleRetrunAmount" >
+                        <label class="col-lg-3 col-md-3 col-sm-3 ">退货实收金额:</label>
+                        <input class="col-lg-3 col-md-3 col-sm-3 "readonly id="saleRetrunActAmount">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="center">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">客户:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="customer">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">日期:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="billDate">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">折扣:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 " onkeyup="value=value.replace(/[^\d]/g,'')" id="discount" onblur="edit_discount_onblur()">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">退货折扣:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 " onkeyup="value=value.replace(/[^\d]/g,'')" id="retrunDiscount" onblur="edit_retrundiscount_onblur()">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">店铺:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="unitName">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">仓库:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="defaultWarehId">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <label class="col-lg-6 col-md-6 col-sm-6 ">销售员:</label>
+                        <input class="col-lg-6 col-md-6 col-sm-6 "readonly id="busnissId">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button1" onclick="onPay()">支付</button>
+    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button2" onclick="onBack()">上一页</button>
+</div>
+</body>
+</html>

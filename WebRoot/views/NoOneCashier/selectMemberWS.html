@@ -100,25 +100,7 @@
 </div>
 <script>
     $(function () {
-        //会员客户和普通客户的正方形
-        var vipWidth=$("#vip").width();
-        var vipHeight=$("#vip").height();
-        if(vipWidth<=vipHeight) {
-            $("#vip").css("height", vipWidth);
-            $("#vip").css("width", vipWidth);
-        }else{
-            $("#vip").css("height", vipHeight);
-            $("#vip").css("width", vipHeight);
-        }
-        var vipWidth=$("#ordinary").width();
-        var vipHeight=$("#ordinary").height();
-        if(vipWidth<=vipHeight) {
-            $("#ordinary").css("height", vipWidth);
-            $("#ordinary").css("width", vipWidth);
-        }else{
-            $("#ordinary").css("height", vipHeight);
-            $("#ordinary").css("width", vipHeight);
-        }
+
         findOrigIdByUser();
     });
     function findOrigIdByUser() {

@@ -276,6 +276,17 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			return returnFailInfo("更改失败");
 		}
 	}
+	@RequestMapping(value = "/listProuctBySkuWS")
+	@ResponseBody
+	public MessageBox listProuctBySku(String codes){
+		try {
+			List<Style> list = this.styleService.listProuctBySku(codes);
+			return  new MessageBox(true,"查询成功",list);
+		}catch (Exception e){
+			e.printStackTrace();
+			return  new MessageBox(true,"查询失败",e.getMessage());
+		}
+	}
 	@RequestMapping(value = "/changePS")
 	@ResponseBody
 	public MessageBox changePS(String code,String status){

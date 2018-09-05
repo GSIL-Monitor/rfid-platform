@@ -9,15 +9,15 @@ var price = 0;//应收
 var payPrice = 0;//控制变量
 var actpayPrice = 0;//实收
 $(function () {
-
-    var saleDel=JSON.parse(localStorage.getItem("saleDel"));
+    var actPrice=parseFloat(localStorage.getItem("saleAmount"));
+   /* var saleDel=JSON.parse(localStorage.getItem("saleDel"));
     var actPrice=0;
     if(saleDel!=""&&saleDel!=undefined&&saleDel!=null){
         for(var i=0;i<saleDel.length;i++) {
             var sale=saleDel[i];
             actPrice += sale.totActPrice
         }
-    }
+    }*/
     $.ajax({
         url: basePath + "/sys/property/searchByTypeWS.do?type=PT",
         dataType: 'json',
@@ -202,7 +202,6 @@ function saveSale() {
     });
 }
 function savePayPrice(billNo) {
-    debugger
     var returnPrice = $("#returnPriced").val();
     var payPrice = $("#Priced").val();
     var actPayPrice = $("#actPayPriced").val();
