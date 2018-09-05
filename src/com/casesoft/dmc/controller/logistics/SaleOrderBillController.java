@@ -326,7 +326,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
              SaleOrderBill saleOrderBill = JSON.parseObject(saleOrderBillStr, SaleOrderBill.class);
             if(CommonUtil.isNotBlank(saleOrderBill.getBillNo())){
                 Integer status = this.saleOrderBillService.findBillStatus(saleOrderBill.getBillNo());
-                if(status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
+                if(CommonUtil.isNotBlank(status)&&status != Constant.ScmConstant.BillStatus.saved && !userId.equals("admin")){
                     return new MessageBox(false, "单据不是录入状态无法保存,请返回");
                 }
             }
