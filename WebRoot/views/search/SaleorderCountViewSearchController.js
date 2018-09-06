@@ -72,7 +72,7 @@ function inttitledata() {
 }
 
 function initMultiSelect() {
-    if(isJMS){
+    if(isJMS === "true"){
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId="+curOwnerId,
             cache: false,
@@ -109,7 +109,7 @@ function initMultiSelect() {
     }
 
     var queryShopUrl = "";
-    if(isJMS){
+    if(isJMS === "true"){
         queryShopUrl = basePath + "/unit/list.do?filter_EQI_type=4&filter_EQS_code="+curOwnerId
     }else {
         queryShopUrl = basePath + "/unit/list.do?filter_EQI_type=4"
