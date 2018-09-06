@@ -17,6 +17,7 @@
         var Codes="<%=user.getCode()%>";
         var roleid="${roleid}";
         var groupid="${groupid}";
+        var isJMS="${isJMS}";
         var ownersId ="";
     </script>
     <style type="text/css">

@@ -57,6 +57,7 @@ public class WxwarehStockController extends ApiBaseController {
     @ResponseBody
     public MessageBox findwarehId(String ownerId){
         this.logAllRequestParams();
+        boolean isJMS = false;
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());
         if(CommonUtil.isNotBlank(ownerId)) {
@@ -67,14 +68,29 @@ public class WxwarehStockController extends ApiBaseController {
             if (CommonUtil.isNotBlank(unitById)) {
                 if (CommonUtil.isNotBlank(unitById.getGroupId())) {
                     if (unitById.getGroupId().equals("JMS")) {
+                        isJMS = true;
                         PropertyFilter filter = new PropertyFilter("EQS_ownerId", unitById.getId());
                         filters.add(filter);
-
                     }
                 }
             }
         }
-        List<Unit> warehouse=this.warehouseService.find(filters);
+        List<Unit> warehouse = new ArrayList<>();
+        if(!isJMS){
+            Unit unitAll = new Unit();
+            unitAll.setId("");
+            unitAll.setName("所有");
+            Unit unitAllDG = new Unit();
+            unitAllDG.setId("allDG");
+            unitAllDG.setName("所有门店仓库");
+            Unit unitAllJMS = new Unit();
+            unitAllJMS.setId("allJMS");
+            unitAllJMS.setName("所有加盟商仓库");
+            warehouse.add(unitAll);
+            warehouse.add(unitAllDG);
+            warehouse.add(unitAllJMS);
+        }
+        warehouse.addAll(this.warehouseService.find(filters));
 
         return returnSuccessInfo("保存成功",warehouse);
     }

@@ -650,7 +650,6 @@
             //关闭TAB
             $("#tab_" + id).remove();
             $("#" + id).remove();
-            debugger;
             var billNosale = sessionStorage.getItem("billNosale");
             if(billNosale!=""&&billNosale!=null){
                 $.ajax({
