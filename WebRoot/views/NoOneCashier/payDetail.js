@@ -9,7 +9,7 @@ var price = 0;//应收
 var payPrice = 0;//控制变量
 var actpayPrice = 0;//实收
 $(function () {
-    var actPrice=parseFloat(localStorage.getItem("saleAmount"));
+    var actPrice=parseFloat(localStorage.getItem("saleAmount"))+parseFloat(localStorage.getItem("saleRetrunAmount"));
    /* var saleDel=JSON.parse(localStorage.getItem("saleDel"));
     var actPrice=0;
     if(saleDel!=""&&saleDel!=undefined&&saleDel!=null){
@@ -165,41 +165,89 @@ function changeValue() {
     }
 }
 function saveSale() {
-    var sale={};
-    sale.afterBalance=parseFloat(localStorage.getItem("owingValue"))
-    sale.afterBalance=0-(parseFloat(localStorage.getItem("owingValue"))+parseFloat($("#actPayPriced").val())-parseFloat($("#Priced").val()));
-    sale.discount=localStorage.getItem("discount");
-    //sale.destId=localStorage.getItem("defaultWarehId");
-    sale.customerTypeId=localStorage.getItem("unitType");
-    sale.destUnitId=localStorage.getItem("custmerId");
-    sale.destUnitName=localStorage.getItem("custmerName");
-    sale.busnissId=localStorage.getItem("busnissId");
-    sale.origId=localStorage.getItem("defaultWarehId");
-    sale.actPrice=$("#Priced").val();
-    sale.payPrice=$("#actPayPriced").val();
-    sale.billDate=new Date();
     var saleDel=localStorage.getItem("saleDel");
-    console.log(saleDel);
-    $.ajax({
-        dataType: "json",
-        async: true,
-        url: basePath + "/logistics/saleOrderBill/saveWS.do",
-        data: {
-            saleOrderBillStr: JSON.stringify(sale),
-            strDtlList: saleDel,
-            userId: "admin"
-        },
-        type: "POST",
-        success: function (msg) {
-            cs.closeProgressBar();
-            if (msg.success) {
-                //bootbox.alert(msg.msg);
-                savePayPrice(msg.result.billNo);
-            } else {
-                bootbox.alert(msg.msg);
+    if(saleDel!=null&&saleDel!=undefined) {
+        var sale={};
+        sale.afterBalance=parseFloat(localStorage.getItem("owingValue"))
+        sale.afterBalance = 0 - (parseFloat(localStorage.getItem("owingValue")) + parseFloat($("#actPayPriced").val()) - parseFloat($("#Priced").val()));
+        sale.discount = localStorage.getItem("discount");
+        //sale.destId=localStorage.getItem("defaultWarehId");
+        sale.customerTypeId = localStorage.getItem("unitType");
+        sale.destUnitId = localStorage.getItem("custmerId");
+        sale.destUnitName = localStorage.getItem("custmerName");
+        sale.busnissId = localStorage.getItem("busnissId");
+        sale.origId = localStorage.getItem("defaultWarehId");
+        sale.actPrice = $("#Priced").val();
+        sale.payPrice = $("#actPayPriced").val();
+        sale.billDate = new Date();
+        var saleDel = localStorage.getItem("saleDel");
+        console.log(saleDel);
+        $.ajax({
+            dataType: "json",
+            async: true,
+            url: basePath + "/logistics/saleOrderBill/saveWS.do",
+            data: {
+                saleOrderBillStr: JSON.stringify(sale),
+                strDtlList: saleDel,
+                userId: "admin"
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+                if (msg.success) {
+                    //bootbox.alert(msg.msg);
+                    savePayPrice(msg.result.billNo);
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }
+    var saleRetrunDel=localStorage.getItem("saleRetrunDel");
+    if(saleRetrunDel!=null&&saleRetrunDel!=undefined){
+        var saleRetrun={};
+        saleRetrun.afterBalance=parseFloat(localStorage.getItem("owingValue"))
+        saleRetrun.afterBalance=0-(parseFloat(localStorage.getItem("owingValue"))+parseFloat($("#actPayPriced").val())-parseFloat($("#Priced").val()));
+        saleRetrun.discount=localStorage.getItem("retrunDiscount");
+        //sale.destId=localStorage.getItem("defaultWarehId");
+        saleRetrun.customerTypeId=localStorage.getItem("unitType");
+        saleRetrun.origUnitId=localStorage.getItem("custmerId");
+        saleRetrun.origUnitName=localStorage.getItem("custmerName");
+        saleRetrun.busnissId=localStorage.getItem("busnissId");
+        saleRetrun.destId=localStorage.getItem("defaultWarehId");
+        saleRetrun.actPrice=localStorage.getItem("saleRetrunAmount");
+        saleRetrun.payPrice=localStorage.getItem("saleRetrunActAmount");
+        saleRetrun.billDate=new Date();
+        saleRetrun.id="SR"+formatDateTime(new Date());
+        saleRetrun.billNo=saleRetrun.id;
+
+        if(saleRetrunDel!=""&&saleRetrunDel!=undefined&&saleDel!=null){
+            for(var i=0;i<saleRetrunDel.length;i++) {
+                saleRetrunDel[i].billId=saleRetrun.id;
+                saleRetrunDel[i].billNo=saleRetrun.id;
             }
         }
-    });
+        $.ajax({
+            dataType: "json",
+            async: true,
+            url: basePath + "/logistics/saleOrderReturn/saveReturnWS.do",
+            data: {
+                bill: JSON.stringify(saleRetrun),
+                strDtlList: saleRetrunDel,
+                userId: "admin"
+            },
+            type: "POST",
+            success: function (msg) {
+                cs.closeProgressBar();
+                if (msg.success) {
+                    //bootbox.alert(msg.msg);
+                    savePayPrice(msg.result.billNo);
+                } else {
+                    bootbox.alert(msg.msg);
+                }
+            }
+        });
+    }
 }
 function savePayPrice(billNo) {
     var returnPrice = $("#returnPriced").val();
@@ -232,6 +280,12 @@ function savePayPrice(billNo) {
                     if(result.msg){
                         //bootbox.alert("请先选择上级仓库");
                         localStorage.clear();
+                        bootbox.setDefaults("locale","zh_CN");
+                        bootbox.confirm("结算成功！", function(result) {
+                            if (result){
+                                window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
+                            }
+                        });
                     }
                     else {
                         bootbox.alert("结算失败");
@@ -240,5 +294,35 @@ function savePayPrice(billNo) {
             })
         }
     });
+}
+function deleteBill(){
+
+    //bootbox.alert("结算成功");
+    bootbox.setDefaults("locale","zh_CN");
+    bootbox.confirm("确定取消！", function(result) {
+        if (result){
+            localStorage.clear();
+            window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
+        }
+    });
+}
+function formatDateTime(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    var minute = date.getMinutes();
+    var second=date.getSeconds();
+    var milliseconds=date.getMilliseconds()
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second =second < 10 ? ('0' + second) : second;
+    if(milliseconds<10){
+        milliseconds='00'+milliseconds
+    }else if(10<=milliseconds<100){
+        milliseconds='0'+milliseconds
+    }
+    return y+m+d+h+minute+second+milliseconds;
 }
 

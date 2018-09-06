@@ -119,6 +119,7 @@
                     localStorage.setItem("defalutCustomerId", msg.result.defalutCustomerId);
                     localStorage.setItem("owingValue", msg.result.owingValue);
                     localStorage.setItem("defaultWarehId",msg.result.defaultWarehId);
+                    localStorage.setItem("defaultWarehName",msg.result.defaultWarehouseName);
                     localStorage.setItem("unitName",msg.result.name);
                     localStorage.setItem("ownerId",msg.result.ownerId);
                     $("#search_origId").val(msg.result.defaultWarehouseName);
@@ -148,7 +149,7 @@
                 $("#search_busnissId").append("<option value='' >--请选择销售员--</option>");
                 var json = data;
                 for (var i = 0; i < json.length; i++) {
-                    $("#search_busnissId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
+                    $("#search_busnissId").append("<option value='" + json[i].id + ","+json[i].name+ "'>" + json[i].name + "</option>");
                 }
 
                 var defaultSaleStaffId=localStorage.getItem("defaultSaleStaffId");
@@ -160,8 +161,9 @@
         });
     }
     function onOrdinary() {
-        var busnissId=$("#search_busnissId").val();
-        localStorage.setItem("busnissId",busnissId);
+        var busnissId=$("#search_busnissId").val().split(",");
+        localStorage.setItem("busnissId",busnissId[0]);
+        localStorage.setItem("busnissName",busnissId[1]);
         localStorage.setItem("memberType","ordinary");
         if(busnissId!=""&&busnissId!=undefined){
             window.location.href=basePath+'/views/NoOneCashier/selectSaleOrSaleRetrunWS.html';
@@ -170,8 +172,9 @@
         }
     }
     function onVip() {
-        var busnissId=$("#search_busnissId").val();
-        localStorage.setItem("busnissId",busnissId);
+        var busnissId=$("#search_busnissId").val().split(",");
+        localStorage.setItem("busnissId",busnissId[0]);
+        localStorage.setItem("busnissName",busnissId[1]);
         localStorage.setItem("memberType","vip");
         if(busnissId!=""&&busnissId!=undefined){
             window.location.href=basePath+'/views/NoOneCashier/selectCustomWS.html';

@@ -363,22 +363,8 @@ function checkAndSave() {
                 localStorage.setItem("statusRetrun", true);
                 localStorage.setItem("saleRetrunDel", JSON.stringify(dtlArray));
                 console.log(JSON.parse(  localStorage.getItem("saleRetrunDel")));
-                window.location.href='./selectSaleRetrunOrPay.html';
-            }else{
-                localStorage.setItem("statusRetrun", false);
-                localStorage.setItem("saleRetrunDel", JSON.stringify(dtlArray));
+                window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrPayWS.html';
             }
-        },
-        timeout:function(msg){
-            localStorage.setItem("statusRetrun", false);
-            localStorage.setItem("saleRetrunDel", JSON.stringify(dtlArray));
-             window.location.href='./selectSaleRetrunOrPay.html';
-            
-        },
-        error:function(msg){
-            localStorage.setItem("statusRetrun", false);
-            localStorage.setItem("saleRetrunDel", JSON.stringify(dtlArray));
-            window.location.href=basePath+'/views/NoOneCashier/selectSaleRetrunOrPayWS.html';
         }
     });
 }
