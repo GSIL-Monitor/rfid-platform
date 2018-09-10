@@ -110,7 +110,7 @@
             cache: false,
             async: false,
             data:{
-                userId:"admin"
+                userId:localStorage.getItem("userId")
             },
             type: "POST",
             success: function (msg) {

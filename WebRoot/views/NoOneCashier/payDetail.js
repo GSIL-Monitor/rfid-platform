@@ -189,7 +189,7 @@ function saveSale() {
             data: {
                 saleOrderBillStr: JSON.stringify(sale),
                 strDtlList: saleDel,
-                userId: "admin"
+                userId: localStorage.getItem("userId")
             },
             type: "POST",
             success: function (msg) {
@@ -234,7 +234,7 @@ function saveSale() {
             data: {
                 bill: JSON.stringify(saleRetrun),
                 strDtlList: saleRetrunDel,
-                userId: "admin"
+                userId: localStorage.getItem("userId")
             },
             type: "POST",
             success: function (msg) {
