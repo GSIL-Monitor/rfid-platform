@@ -279,7 +279,11 @@ function savePayPrice(billNo) {
                     cs.closeProgressBar();
                     if(result.msg){
                         //bootbox.alert("请先选择上级仓库");
+                        var userId=localStorage.getItem("userId");
+                        var ownerId=localStorage.getItem("ownerId");
                         localStorage.clear();
+                        localStorage.setItem("userId",userId);
+                        localStorage.setItem("ownerId",ownerId);
                         bootbox.setDefaults("locale","zh_CN");
                         bootbox.confirm("结算成功！", function(result) {
                             if (result){
@@ -301,7 +305,11 @@ function deleteBill(){
     bootbox.setDefaults("locale","zh_CN");
     bootbox.confirm("确定取消！", function(result) {
         if (result){
+            var userId=localStorage.getItem("userId");
+            var ownerId=localStorage.getItem("ownerId");
             localStorage.clear();
+            localStorage.setItem("userId",userId);
+            localStorage.setItem("ownerId",ownerId);
             window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
         }
     });
