@@ -282,10 +282,11 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 return returnFailInfo("保存失败");
             }
         } else {
-            int number = this.customerService.findId(entity.getTel()).size();
+            //换验证方式
+            /*int number = this.customerService.findId(entity.getTel()).size();
             if (number != 0) {
                 return returnFailInfo("电话号码已存在，保存失败");
-            } else {
+            } else */
                 Customer guest = this.customerService.getById(entity.getId());
                 if (CommonUtil.isBlank(guest)) {
                     guest = new Customer();
@@ -338,7 +339,6 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     e.printStackTrace();
                     return returnFailInfo("保存失败");
                 }
-            }
         }
     }
 
@@ -474,7 +474,7 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     }
                     this.guestService.updateCustomer(guest,preUnit);
                 }else {
-                    List<String> number = this.customerService.findId(entity.getTel());
+                    /*List<String> number = this.customerService.findId(entity.getTel());
                     if (number.size()==1){
                         if (number.get(0).equals(guest.getId())){
                             this.customerService.save(guest);
@@ -483,9 +483,9 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         }
                     }else if (number.size()>1){
                         return returnFailInfo("手机号码已存在，保存失败");
-                    }else {
-                        this.customerService.save(guest);
-                    }
+                    }else {*/
+                    this.customerService.save(guest);
+                    //}
                 }
                 List<Unit> unitList = new ArrayList<>();
                 unitList.add(preUnit);
