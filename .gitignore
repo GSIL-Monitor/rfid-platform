@@ -1,5 +1,5 @@
 .idea
 *.iml
 dist
-.DS_Store
 out/
+.DS_Store

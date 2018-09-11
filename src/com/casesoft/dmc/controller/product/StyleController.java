@@ -1,5 +1,9 @@
 package com.casesoft.dmc.controller.product;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.cache.RedisUtils;
@@ -8,6 +12,7 @@ import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
+import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
@@ -18,13 +23,18 @@ import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.product.Term;
 import com.casesoft.dmc.model.sys.ResourcePrivilege;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
+import com.casesoft.dmc.model.tag.Init;
+import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.UserService;
+import com.casesoft.dmc.service.stock.EpcStockService;
+import com.casesoft.dmc.service.sys.KeyInfoChangeService;
 import com.casesoft.dmc.service.tag.InitService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +49,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/prod/style")
 public class StyleController extends BaseController implements IBaseInfoController<Style>{
@@ -51,6 +63,12 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ProductService productService;
 	@Autowired
 	public InitService initService;
+	@Autowired
+	public EpcStockService epcStockService;
+	@Autowired
+	public KeyInfoChangeService keyInfoChangeService;
+	@Autowired
+	public WeiXinUserService weiXinUserService;
 	@Autowired
 	private PropertyService propertyService;
 	@Autowired
@@ -119,9 +137,9 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	 * */
 	@RequestMapping("/saveStyleAndProduct")
 	@ResponseBody
-	public MessageBox saveStyleAndProduct(String styleStr,String productStr,String userId,String pageType) throws Exception {
+	public MessageBox saveStyleAndProduct(HttpServletRequest request, String styleStr, String productStr, String userId, String pageType) throws Exception {
 		try {
-
+			HashMap<String, Object> prePriceMap = new HashMap<>();
 			Style style = JSON.parseObject(styleStr,Style.class);
 			Style sty = CacheManager.getStyleById(style.getStyleId());
 			Long productMaxVersionId = CacheManager.getproductMaxVersionId();
@@ -141,22 +159,60 @@ public class StyleController extends BaseController implements IBaseInfoControll
 				}else {
 					return this.returnFailInfo("保存失败!"+sty.getId()+"款号已存在请重新输入");
 				}
+			}else if ("edit".equals(pageType)) {
+				if (CommonUtil.isBlank(sty)) {
+					return this.returnFailInfo("编辑失败!" + sty.getId() + "款号不存在");
+				}
+				prePriceMap.put("price", sty.getPrice());
+				prePriceMap.put("puPrice", sty.getPuPrice());
+				prePriceMap.put("wsPrice", sty.getWsPrice());
+				prePriceMap.put("preCast", sty.getPreCast());
+			} else {
+				throw new RuntimeException("保存类型只能传字符串：'add' or 'edit'");
 			}
 			sty.setOprId(userId);
 			List<Product> productList = JSON.parseArray(productStr,Product.class);
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
-			//保存成功更新缓存
-			redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
-			redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
-			CacheManager.refreshMaxVersionId();
-			List<Style> styleList = new ArrayList<>();
-			styleList.add(sty);
-			CacheManager.refreshStyleCache(styleList);
-			/*if(saveList.size() > 0){*/
-			CacheManager.refreshProductCache(saveList);
-			/*}*/
+			//如果价格发生变动，记录变动信息
+			String infoChangeRemark = "";
+			if (CommonUtil.isNotBlank(prePriceMap)) {
+				HashMap<String, Object> aftPriceMap = new HashMap<>();
+				aftPriceMap.put("price", sty.getPrice());
+				aftPriceMap.put("puPrice", sty.getPuPrice());
+				aftPriceMap.put("wsPrice", sty.getWsPrice());
+				aftPriceMap.put("preCast", sty.getPreCast());
+
+				long countValue = this.epcStockService.countAllByStyleId(sty.getId());
+				//大于0说明入过库
+				if(countValue > 0){
+					infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
+				}
+			}
+
+			//价格发生变动时，向管理员推送公众号消息
+			if(CommonUtil.isNotBlank(infoChangeRemark)){
+				String[] infoArray = infoChangeRemark.split("\r\n");
+				User admin = CacheManager.getUserById("admin");
+				if(CommonUtil.isBlank(admin)){
+					logger.error("管理员账号不存在");
+				}else {
+					String openId = this.weiXinUserService.getByPhone(admin.getPhone()).getOpenId();
+					String originalPrice = infoArray[0].replace("原价：","");
+					String currentPrice = infoArray[1].replace("现价：","");
+					WechatTemplate.priceChangeMsg(openId, sty.getStyleId(), originalPrice, currentPrice, userId);
+				}
+			}
+
+            //保存成功更新缓存
+            redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
+            redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(maxVersionId+1));
+            CacheManager.refreshMaxVersionId();
+            List<Style> styleList = new ArrayList<>();
+            styleList.add(sty);
+            CacheManager.refreshStyleCache(styleList);
+            CacheManager.refreshProductCache(saveList);
 			//推送微信商城
 			//读取congif.properties文件
 			boolean is_wxshop = Boolean.parseBoolean(PropertyUtil

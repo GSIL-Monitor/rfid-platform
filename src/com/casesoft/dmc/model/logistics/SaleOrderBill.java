@@ -43,6 +43,13 @@ public class SaleOrderBill extends BaseBill {
     @Column()
     private Double afterBalance = 0D;
 
+    @Transient
+    private List<SaleOrderBillDtl> dtlList;
+
+    public List<SaleOrderBillDtl> getDtlList() { return dtlList; }
+
+    public void setDtlList(List<SaleOrderBillDtl> dtlList) { this.dtlList = dtlList; }
+
     public Integer getTotRetrunQty() {
         return totRetrunQty;
     }

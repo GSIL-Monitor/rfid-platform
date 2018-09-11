@@ -17,6 +17,7 @@
         var Codes="<%=user.getCode()%>";
         var roleid="${roleid}";
         var groupid="${groupid}";
+        var isJMS="${isJMS}";
         var ownersId ="";
         var tableRole= ${tableRole};
         var divRole= ${divRole};

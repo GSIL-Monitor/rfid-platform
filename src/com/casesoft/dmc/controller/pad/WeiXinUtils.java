@@ -19,11 +19,14 @@ import static com.casesoft.dmc.controller.pad.ProjectConst.ACCESS_TOKEN_URL;
 /**
  * @author ltc
  * @create 2018-06-07
- * @desc 用户获取access_token,众号调用各接口时都需使用access_token
+ * @desc 用户获取access_token, 众号调用各接口时都需使用access_token
  **/
 public class WeiXinUtils {
     public static String APPID;
     public static String APPSECRET;
+    public static String MINI_PRAOGRAM_APPID;
+    public static String MINI_PRAOGRAM_APPSECRET;
+
     /**
      * Get请求，方便到一个url接口来获取结果
      *
@@ -47,30 +50,32 @@ public class WeiXinUtils {
         }
         return jsonObject;
     }
+
     /**
      * 获取accessToken
+     *
      * @return accessToken
      */
-    public static AccessToken getAccessToken(){
+    public static AccessToken getAccessToken() {
         try {
             APPID = PropertyUtil.getValue("APPID");
             APPSECRET = PropertyUtil.getValue("APPSECRET");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         AccessToken accessToken = new AccessToken();
         Long nowDate = new Date().getTime();
         accessToken = CacheManager.getAccessToken();
-        if (accessToken!=null&&accessToken.getTime()!=null&&(nowDate-accessToken.getTime()<1800*1000)){
-            System.out.println("accessToken存在不需要"+accessToken.getToken());
+        if (accessToken != null && accessToken.getTime() != null && (nowDate - accessToken.getTime() < 1800 * 1000)) {
+            System.out.println("accessToken存在不需要" + accessToken.getToken());
             return accessToken;
-        }else {
+        } else {
             CacheManager.remove();
-            String url =ACCESS_TOKEN_URL.replace("APPID" ,APPID).replace("APPSECRET",APPSECRET);
+            String url = ACCESS_TOKEN_URL.replace("APPID", APPID).replace("APPSECRET", APPSECRET);
             JSONObject jsonObject = doGetStr(url);
             Object errcode = jsonObject.get("errcode");
             //如果不存在错误码,则代表此次交易正常
-            if(errcode == null || "0".equals(errcode)){
+            if (errcode == null || "0".equals(errcode)) {
                 accessToken.setToken(jsonObject.getString("access_token"));
                 accessToken.setExpireIn(jsonObject.getInt("expires_in"));
                 accessToken.setTime(new Date().getTime());
@@ -78,10 +83,50 @@ public class WeiXinUtils {
                 System.out.println("获取成功");
                 System.out.println(accessToken.getToken());
                 return accessToken;
-            }else{
-                System.out.println("当前获取accesstoken失败，错误码为："+errcode + "错误原因为："+jsonObject.getString("errmsg"));
+            } else {
+                System.out.println("当前获取accesstoken失败，错误码为：" + errcode + "错误原因为：" + jsonObject.getString("errmsg"));
                 return null;
             }
         }
     }
+
+    /**
+     * add by Anna on 2018-08-24
+     * 获取小程序的accessToken
+     * @return miniProgramAccessToken
+     */
+    public static AccessToken getMiniProgramAccessToken() {
+        try {
+            MINI_PRAOGRAM_APPID = PropertyUtil.getValue("MINI_PRAOGRAM_APPID");
+            MINI_PRAOGRAM_APPSECRET = PropertyUtil.getValue("MINI_PRAOGRAM_APPSECRET");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        AccessToken miniProgramAccessToken = new AccessToken();
+        Long nowDate = new Date().getTime();
+        miniProgramAccessToken = CacheManager.getMiniProgramAccessToken();
+        if (miniProgramAccessToken != null && miniProgramAccessToken.getTime() != null && (nowDate - miniProgramAccessToken.getTime() < 1800 * 1000)) {
+            System.out.println("access_token［" + miniProgramAccessToken.getToken() + "］存在，且未过期");
+            return miniProgramAccessToken;
+        } else {
+            CacheManager.removeMiniProgramToken();
+            String url = ACCESS_TOKEN_URL.replace("APPID", MINI_PRAOGRAM_APPID).replace("APPSECRET", MINI_PRAOGRAM_APPSECRET);
+            JSONObject jsonObject = doGetStr(url);
+            Object errcode = jsonObject.get("errcode");
+            //如果不存在错误码,则代表此次交易正常
+            if (errcode == null || "0".equals(errcode)) {
+                miniProgramAccessToken.setToken(jsonObject.getString("access_token"));
+                miniProgramAccessToken.setExpireIn(jsonObject.getInt("expires_in"));
+                miniProgramAccessToken.setTime(new Date().getTime());
+                CacheManager.initMiniProgramAccessToken(miniProgramAccessToken);
+                System.out.println("小程序Token获取成功");
+                System.out.println(miniProgramAccessToken.getToken());
+                return miniProgramAccessToken;
+            } else {
+                System.out.println("当前获取accesstoken失败，错误码为：" + errcode + "错误原因为：" + jsonObject.getString("errmsg"));
+                return null;
+            }
+        }
+    }
+
 }

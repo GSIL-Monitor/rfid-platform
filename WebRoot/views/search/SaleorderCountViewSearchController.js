@@ -83,7 +83,6 @@ function inttitledata() {
         data: {"dates": JSON.stringify(params)},
         type: "POST",
         success: function (data, textStatus) {
-            debugger;
             var result = data.result;
             $(".salesum").text(":" + result.sum);
             $(".salereturnsum").text(":" + result.rsum);
@@ -101,7 +100,7 @@ function inttitledata() {
 }
 
 function initMultiSelect() {
-    if(roleid =="JMSJS"){
+    if(isJMS === "true"){
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId="+curOwnerId,
             cache: false,
@@ -114,6 +113,7 @@ function initMultiSelect() {
                     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
                 }
                 $("#filter_in_deport").val(deportId);
+                $(".selectpicker").selectpicker('refresh');
             }
         });
     }else{
@@ -135,52 +135,15 @@ function initMultiSelect() {
             }
         });
     }
-    /* $.ajax({
-     url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + curOwnerId,
-     cache: false,
-     async: false,
-     type: "POST",
-     success: function (data, textStatus) {
-     $("#filter_in_deport").empty();
-     $("#filter_in_deport").append("<option value='' style='background-color: #eeeeee'>--请选择入库仓库--</option>");
-     var json = data;
-     for (var i = 0; i < json.length; i++) {
-     $("#filter_in_deport").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-     $("#filter_in_deport").trigger('chosen:updated');
-     }
-     }
-     });*/
-    /*$("#filter_in_deport").val(deportId);*/
-/*
-    $("#filter_in_origid").kendoMultiSelect({
-        dataTextField: "name",
-        dataValueField: "code",
-        height: 400,
-        suggest: true,
-        dataSource: {
-            transport: {
-                read: basePath + "/sys/warehouse/list.do?filter_INI_type=9"
-            }
-        }
-    });
-*/
 
-
-/*
-    $("#filter_in_destUnitId").kendoMultiSelect({
-        dataTextField: "name",
-        dataValueField: "code",
-        height: 400,
-        suggest: true,
-        dataSource: {
-            transport: {
-                read: basePath + "/sys/warehouse/list.do?filter_INI_type=0,1,2"
-            }
-        }
-    });*/
-
+    var queryShopUrl = "";
+    if(isJMS === "true"){
+        queryShopUrl = basePath + "/unit/list.do?filter_EQI_type=4&filter_EQS_code="+curOwnerId
+    }else {
+        queryShopUrl = basePath + "/unit/list.do?filter_EQI_type=4"
+    }
     $.ajax({
-        url:basePath + "/sys/warehouse/list.do?filter_EQI_type=4",
+        url: queryShopUrl,
         cache: false,
         async: false,
         type: "POST",
@@ -190,11 +153,14 @@ function initMultiSelect() {
             for (var i = 0; i < json.length; i++) {
                 $("#filter_in_destUnitId").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
             }
+            if(isJMS){
+                $("#filter_in_destUnitId").val(curOwnerId);
+            }
             $(".selectpicker").selectpicker('refresh');
         }
     });
-    $(".selectpicker").selectpicker('refresh');
 }
+
 function refresh() {
     resetData();
 }
@@ -384,7 +350,6 @@ function search() {
 }
 var isoneinitKendoUIGrid = true;
 function initKendoUIGrid() {
-    debugger;
     exportExcelid = "searchGrid";
     if (isoneinitKendoUIGrid) {
         var filters = serializeToFilter($("#searchForm"));
@@ -526,7 +491,6 @@ function initKendoUIGrid() {
                 {
                     field: "", title: "图片", width: 100,
                     template: function (data) {
-                        debugger;
                         var url = data.url;
                         if (url == null) {
                             return "无图片";
@@ -568,7 +532,6 @@ function initKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -684,7 +647,6 @@ function initKendoUIGrid() {
                     title: "单据类型",
                     width: "180px",
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -706,7 +668,6 @@ function initKendoUIGrid() {
                     title: "实际价格",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var actprice=data.actprice.toFixed(2);
                         return actprice;
                     }
@@ -727,7 +688,6 @@ function initKendoUIGrid() {
                     title: "销售毛利",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var gross=parseFloat(data.gross).toFixed(2);
                         return gross;
                     }
@@ -745,7 +705,6 @@ function initKendoUIGrid() {
                     aggregates: ["sum"],
                     footerTemplate: "#=kendo.toString(sum,'0.00')#",
                     template: function (data) {
-                        debugger;
                         var totactprice=parseFloat(data.totactprice).toFixed(2);
                         return totactprice;
                     }
@@ -829,7 +788,6 @@ function initKendoUIGrid() {
 }
 var isoneinitKendoUIGrid=true;
 function initnoKendoUIGrid() {
-    debugger;
     exportExcelid = "searchGrid";
     if (isoneinitKendoUIGrid) {
         var filters = serializeToFilter($("#searchForm"));
@@ -843,7 +801,6 @@ function initnoKendoUIGrid() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -1000,7 +957,6 @@ function initnoKendoUIGrid() {
                     width: "250px",
                     aggregates: ["count"],
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -1079,7 +1035,6 @@ function initnoKendoUIGrid() {
                     title: "单据类型",
                     width: "180px",
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.qty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.totactprice.sum;
@@ -1101,7 +1056,6 @@ function initnoKendoUIGrid() {
                     title: "实际价格",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var actprice=data.actprice.toFixed(2);
                         return actprice;
                     }
@@ -1134,7 +1088,6 @@ function initnoKendoUIGrid() {
                     aggregates: ["sum"],
                     footerTemplate: "#=kendo.toString(sum,'0.00')#",
                     template: function (data) {
-                        debugger;
                         var totactprice=parseFloat(data.totactprice).toFixed(2);
                         return totactprice;
                     }
@@ -1183,7 +1136,6 @@ function initnoKendoUIGrid() {
 }
 var isoneinitKendoUIsearchsaleGrid = true;
 function initKendoUIGridSale() {
-    debugger;
     exportExcelid = "searchsaleGrid";
     if (isoneinitKendoUIsearchsaleGrid) {
         var filters = serializeToFilter($("#searchForm"));
@@ -1197,7 +1149,6 @@ function initKendoUIGridSale() {
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -1389,7 +1340,6 @@ function initKendoUIGridSale() {
                     title: "客户类型",
                     width: "180px",
                     template: function (data) {
-                      debugger;
                         if (data.customertypeid == "CT-AT") {
                             return "省代客户";
                         } else if (data.customertypeid == "CT-ST") {
@@ -1457,7 +1407,6 @@ function initKendoUIGridSale() {
                     title: "销售员",
                     width: "180px",
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.totqty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.actprice.sum;
@@ -1473,7 +1422,6 @@ function initKendoUIGridSale() {
                     title: "单据类型",
                     width: "180px",
                     groupHeaderTemplate: function (data) {
-                        debugger;
                         var totQty = data.aggregates.totqty.sum;
                         var value = data.value;
                         var totactprice = data.aggregates.actprice.sum;
@@ -1515,7 +1463,6 @@ function onGrouping(arg) {
  }*/
 var isoneinitKendoUIGridSalebusinessname=true;
 function initKendoUIGridSalebusinessname(){
-    debugger;
     exportExcelid = "searchsalebusinessnameGrid";
     if (isoneinitKendoUIGridSalebusinessname) {
         var filters = serializeToFilter($("#searchForm"));
@@ -1659,7 +1606,6 @@ function initKendoUIGridSalebusinessname(){
                     title: "毛利",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var gross=parseFloat(data.gross).toFixed(2);
                         return gross;
                     }
@@ -1684,7 +1630,6 @@ function initKendoUIGridSalebusinessname(){
                     title: "销售金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salemoney=parseFloat(data.salemoney).toFixed(2);
                         return salemoney;
                     }
@@ -1694,7 +1639,6 @@ function initKendoUIGridSalebusinessname(){
                     title: "销售退货金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
                         return salereturnmoney;
                     }
@@ -1704,7 +1648,6 @@ function initKendoUIGridSalebusinessname(){
                     title: "销售额",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var totactprice=parseFloat(data.totactprice).toFixed(2);
                         return totactprice;
                     }
@@ -1733,7 +1676,6 @@ function initKendoUIGridSalebusinessnameno(){
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -1869,7 +1811,6 @@ function initKendoUIGridSalebusinessnameno(){
                     title: "销售金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salemoney=parseFloat(data.salemoney).toFixed(2);
                         return salemoney;
                     }
@@ -1879,7 +1820,6 @@ function initKendoUIGridSalebusinessnameno(){
                     title: "销售退货金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
                         return salereturnmoney;
                     }
@@ -1904,7 +1844,6 @@ function initKendoUIGridSalebusinessnameno(){
                     title: "销售额",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var totactprice=parseFloat(data.totactprice).toFixed(2);
                         return totactprice;
                     }
@@ -1921,7 +1860,6 @@ function initKendoUIGridSalebusinessnameno(){
 }
 var isoneinitKendoUIGridSaleorigname=true;
 function initKendoUIGridSaleorigname(){
-    debugger;
     exportExcelid = "searchsaleorignameGrid";
     if (isoneinitKendoUIGridSaleorigname) {
         var filters = serializeToFilter($("#searchForm"));
@@ -1935,7 +1873,6 @@ function initKendoUIGridSaleorigname(){
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -2085,7 +2022,6 @@ function initKendoUIGridSaleorigname(){
                     title: "销售金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salemoney=parseFloat(data.salemoney).toFixed(2);
                         return salemoney;
                     }
@@ -2095,7 +2031,6 @@ function initKendoUIGridSaleorigname(){
                     title: "销售退货金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salereturnmoney=parseFloat(data.salereturnmoney).toFixed(2);
                         return salereturnmoney;
                     }
@@ -2120,7 +2055,6 @@ function initKendoUIGridSaleorigname(){
     }
 }
 function initKendoUIGridSaleorignameno(){
-    debugger;
     exportExcelid = "searchsaleorignameGrid";
     if (isoneinitKendoUIGridSaleorigname) {
         var filters = serializeToFilter($("#searchForm"));
@@ -2134,7 +2068,6 @@ function initKendoUIGridSaleorignameno(){
                 filterable: true
             },
             excelExport: function (e) {
-                debugger;
                 var sheet = e.workbook.sheets[0];
                 /* var tokenTemplate = kendo.template(this.columns[4].template);
                  var destTemplate = kendo.template(this.columns[6].template);
@@ -2280,7 +2213,6 @@ function initKendoUIGridSaleorignameno(){
                     title: "销售金额",
                     width: "150px",
                     template: function (data) {
-                        debugger;
                         var salemoney=parseFloat(data.salemoney).toFixed(2);
                         return salemoney;
                     }
@@ -2299,7 +2231,6 @@ function initKendoUIGridSaleorignameno(){
                     title: "销售额",
                     width: "180px",
                     template: function (data) {
-                        debugger;
                         var totactprice=parseFloat(data.totactprice).toFixed(2);
                         return totactprice;
                     }

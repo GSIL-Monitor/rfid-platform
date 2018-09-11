@@ -42,6 +42,13 @@ public class SaleOrderReturnBill extends BaseBill{
 	@Column()
 	private Double afterBalance = 0D;
 
+	@Transient
+	private List<SaleOrderReturnBillDtl> dtlList;
+
+	public List<SaleOrderReturnBillDtl> getDtlList() { return dtlList; }
+
+	public void setDtlList(List<SaleOrderReturnBillDtl> dtlList) { this.dtlList = dtlList; }
+
 	public String getReturnCode() {
 		return returnCode;
 	}

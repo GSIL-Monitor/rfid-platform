@@ -41,28 +41,30 @@ public class WxPublicNumber extends BaseController implements IBaseInfoControlle
     private WeiXinUserService weiXinUserService;
 
     private static Logger log = LoggerFactory.getLogger(WX_TemplateMsgUtil.class);
+
     /**
-     *测试基本配置
-     * @param req 微信后台回传信息
+     * 测试基本配置
+     *
+     * @param req  微信后台回传信息
      * @param resp 返回信息告知微信后台已接收
      * @return 消息
      */
     @RequestMapping("/indexWS")
-    public String login(HttpServletRequest req, HttpServletResponse resp)throws IOException {
+    public String login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String echostr = req.getParameter("echostr");
-        if (echostr==null){
-            Map<String ,String> map  = xmlToMap(req);
-            if (map.get("Event").equals("subscribe")){
+        if (echostr == null) {
+            Map<String, String> map = xmlToMap(req);
+            if (map.get("Event").equals("subscribe")) {
                 //获取openid
                 String fromUserName = map.get("FromUserName");
                 //获取关注的微信公众号信息
                 net.sf.json.JSONObject weiXinJson = WeiXinUserInfoUtils.getUserInfo(fromUserName);
                 System.out.println(weiXinJson);
                 Object errcode = weiXinJson.get("errcode");
-                if(errcode == null || "0".equals(errcode)) {
+                if (errcode == null || "0".equals(errcode)) {
                     WeiXinUser weiXinUser = new WeiXinUser();
-                    weiXinUser = this.weiXinUserService.get("openId",weiXinJson.getString("openid"));
-                    if (CommonUtil.isBlank(weiXinUser)){
+                    weiXinUser = this.weiXinUserService.get("openId", weiXinJson.getString("openid"));
+                    if (CommonUtil.isBlank(weiXinUser)) {
                         weiXinUser = new WeiXinUser();
                         weiXinUser.setSubscribe(weiXinJson.getInt("subscribe"));
                         weiXinUser.setOpenId(weiXinJson.getString("openid"));
@@ -76,43 +78,43 @@ public class WxPublicNumber extends BaseController implements IBaseInfoControlle
                         weiXinUser.setUnionId(weiXinJson.getString("unionid"));
                         System.out.println(weiXinUser.toString());
                         this.weiXinUserService.save(weiXinUser);
-                    }else {
+                    } else {
                         System.out.println("该微信号已关注过公众号");
                     }
-                }else {
-                    System.out.println("当前获取weiXinUser失败，错误码为："+errcode + "错误原因为："+weiXinJson.getString("errmsg"));
+                } else {
+                    System.out.println("当前获取weiXinUser失败，错误码为：" + errcode + "错误原因为：" + weiXinJson.getString("errmsg"));
                 }
-            }else if (map.get("Event").equals("submit_membercard_user_info")){
+            } else if (map.get("Event").equals("submit_membercard_user_info")) {
                 //发送者id
                 String fromUserName = map.get("FromUserName");
                 //卡券id
                 String cardId = map.get("CardId");
                 //卡券code码
                 String userCardCode = map.get("UserCardCode");
-                String url = "https://api.weixin.qq.com/card/membercard/userinfo/get?access_token="+WeiXinUtils.getAccessToken().getToken();
+                String url = "https://api.weixin.qq.com/card/membercard/userinfo/get?access_token=" + WeiXinUtils.getAccessToken().getToken();
                 JSONObject json = new JSONObject();
-                json.put("card_id",cardId);
-                json.put("code",userCardCode);
-                try{
-                    JSONObject result = WX_HttpsUtil.httpsRequest(url,"POST",json.toString());
+                json.put("card_id", cardId);
+                json.put("code", userCardCode);
+                try {
+                    JSONObject result = WX_HttpsUtil.httpsRequest(url, "POST", json.toString());
                     JSONObject resultJson = new JSONObject(result);
                     log.info("发送微信消息返回信息：" + resultJson.get("errcode"));
                     String errmsg = (String) resultJson.get("errmsg");
-                    if(!"ok".equals(errmsg)){
+                    if (!"ok".equals(errmsg)) {
                         System.out.println("拉取用户信息失败");
                         return "";
-                    }else {
+                    } else {
                         JSONObject user_info = (JSONObject) resultJson.get("user_info");
-                        List<Map<String,String>> common_field_list = (List<Map<String, String>>) user_info.get("common_field_list");
+                        List<Map<String, String>> common_field_list = (List<Map<String, String>>) user_info.get("common_field_list");
                         String phone = common_field_list.get(0).get("value");
-                        this.weiXinUserService.updatePhoneByopenId(fromUserName,phone);
+                        this.weiXinUserService.updatePhoneByopenId(fromUserName, phone);
                     }
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     return "";
                 }
             }
-        }else {
+        } else {
             System.out.println(echostr);
             PrintWriter pw = resp.getWriter();
             pw.write(echostr);  //这里 echostr 的值必须返回，否则微信认为请求失败
@@ -122,30 +124,34 @@ public class WxPublicNumber extends BaseController implements IBaseInfoControlle
         }
         return "";
     }
+
+
     /**
      * XML格式转为map格式
-     * @param request  微信后台回传信息
+     *
+     * @param request 微信后台回传信息
      * @return 解析后的map
      */
-    private static Map<String , String> xmlToMap(HttpServletRequest request){
-        Map<String ,String> map = new HashMap<String , String>();
+    private static Map<String, String> xmlToMap(HttpServletRequest request) {
+        Map<String, String> map = new HashMap<String, String>();
         try {
-            InputStream inputStream =null;
+            InputStream inputStream = null;
             inputStream = request.getInputStream();
             SAXReader reader = new SAXReader();
             Document doc = reader.read(inputStream);
             Element rootElement = doc.getRootElement();
             List<Element> elements = rootElement.elements();
-            for (Element el:elements) {
-                map.put(el.getName() , el.getText());
+            for (Element el : elements) {
+                map.put(el.getName(), el.getText());
             }
             inputStream.close();
-            return map ;
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
-            return null ;
+            return null;
         }
     }
+
 
     @Override
     public String index() {

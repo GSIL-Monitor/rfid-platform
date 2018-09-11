@@ -36,49 +36,49 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/sys/user")
-public class UserController extends BaseController implements IBaseInfoController<User>{
+public class UserController extends BaseController implements IBaseInfoController<User> {
     @Autowired
     private UserService userService;
     @Autowired
-    private  SaleOrderBillService saleOrderBill;
+    private SaleOrderBillService saleOrderBill;
     @Autowired
-    private  SaleOrderReturnBillService saleOrderReturnBill;
+    private SaleOrderReturnBillService saleOrderReturnBill;
     @Autowired
-    private  ConsignmentBillService consignmentBill;
+    private ConsignmentBillService consignmentBill;
     @Autowired
-    private  TransferOrderBillService transferOrderBill;
+    private TransferOrderBillService transferOrderBill;
     @Autowired
-    private  PurchaseOrderBillService purchaseOrderBill;
+    private PurchaseOrderBillService purchaseOrderBill;
     @Autowired
-    private  PurchaseReturnBillService purchaseReturnBill;
+    private PurchaseReturnBillService purchaseReturnBill;
 
 
-    private PropertyFilter typeFilter = new PropertyFilter("EQI_type",""+Constant.UserType.User);
-	
+    private PropertyFilter typeFilter = new PropertyFilter("EQI_type", "" + Constant.UserType.User);
+
     @RequestMapping("/index")
     @Override
-	public String index() {		
-		return "/views/sys/user";
-	}
-    
+    public String index() {
+        return "/views/sys/user";
+    }
+
     @RequestMapping("/page")
     @ResponseBody
-	@Override
-	public Page<User> findPage(Page<User> page) throws Exception {
-		this.logAllRequestParams();//日志
-		List<PropertyFilter> filters=PropertyFilter.buildFromHttpRequest(this.getRequest());
-		System.out.println("filters");
+    @Override
+    public Page<User> findPage(Page<User> page) throws Exception {
+        this.logAllRequestParams();//日志
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
+        System.out.println("filters");
         filters.add(typeFilter);
         page.setPageProperty();
 
-        page=this.userService.findPage(page, filters);
+        page = this.userService.findPage(page, filters);
 
-        for(User u: page.getRows()){
-        	if(CommonUtil.isNotBlank(u.getOwnerId())) {
-				Unit owner = CacheManager.getUnitById(u.getOwnerId());
-				if(CommonUtil.isNotBlank(owner)){
-					u.setUnitName(owner.getName());
-				}
+        for (User u : page.getRows()) {
+            if (CommonUtil.isNotBlank(u.getOwnerId())) {
+                Unit owner = CacheManager.getUnitById(u.getOwnerId());
+                if (CommonUtil.isNotBlank(owner)) {
+                    u.setUnitName(owner.getName());
+                }
 
 			}
     }
@@ -99,8 +99,8 @@ public class UserController extends BaseController implements IBaseInfoControlle
     }
     @RequestMapping(value = {"/list","/listWS"})
     @ResponseBody
-	@Override
-	public List<User> list() throws Exception {
+    @Override
+    public List<User> list() throws Exception {
         this.logAllRequestParams();//日志
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this.getRequest());
         System.out.println("filters");
@@ -109,28 +109,28 @@ public class UserController extends BaseController implements IBaseInfoControlle
             for (User u : users) {
                 if (CommonUtil.isNotBlank(u.getOwnerId())) {
                     Unit unit = CacheManager.getUnitById(u.getOwnerId());
-                    if (CommonUtil.isNotBlank(unit)){
+                    if (CommonUtil.isNotBlank(unit)) {
                         String ownerName = CacheManager.getUnitById(u.getOwnerId()).getName();
                         u.setUnitName(ownerName);
                     }
                 }
-             }
+            }
             return users;
         }
         return new ArrayList<>();
     }
 
-    @RequestMapping(value="/save")
+    @RequestMapping(value = "/save")
     @ResponseBody
-	@Override
-	public MessageBox save(User user) throws Exception {
+    @Override
+    public MessageBox save(User user) throws Exception {
         this.logAllRequestParams();
         String pageType = this.getReqParam("pageType");
         User sessionUser = this.getCurrentUser();
-        User u=this.userService.getUserByCode(user.getCode());
-        if (pageType.equals("add")){
-            if (CommonUtil.isBlank(u)){
-                u=new User();
+        User u = this.userService.getUserByCode(user.getCode());
+        if (pageType.equals("add")) {
+            if (CommonUtil.isBlank(u)) {
+                u = new User();
                 u.setId(user.getCode());
                 u.setCode(user.getCode());
                 u.setLocked(0);
@@ -145,10 +145,10 @@ public class UserController extends BaseController implements IBaseInfoControlle
                 u.setRoleId(user.getRoleId());
                 u.setPhone(user.getPhone());
                 u.setOwnerId(user.getOwnerId());
-            }else {
+            } else {
                 return returnFailInfo("登录名已存在，请重新输入");
             }
-        }else {
+        } else {
             u.setName(user.getName());
             u.setPassword(user.getPassword());
             u.setIsAdmin(user.getIsAdmin());
@@ -169,29 +169,29 @@ public class UserController extends BaseController implements IBaseInfoControlle
            }
 	}
 
-	@Override
-	public MessageBox edit(String taskId) throws Exception {
+    @Override
+    public MessageBox edit(String taskId) throws Exception {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public MessageBox delete(String taskId) throws Exception {
+    @Override
+    public MessageBox delete(String taskId) throws Exception {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public void exportExcel() throws Exception {
+    @Override
+    public void exportExcel() throws Exception {
 
-		
-	}
 
-	@Override
-	public MessageBox importExcel(MultipartFile file) throws Exception {
+    }
 
-		return null;
-	}
+    @Override
+    public MessageBox importExcel(MultipartFile file) throws Exception {
+
+        return null;
+    }
 
     @RequestMapping("/resetPwd")
     @ResponseBody
@@ -207,109 +207,109 @@ public class UserController extends BaseController implements IBaseInfoControlle
     @RequestMapping("/logout")
     @ResponseBody
     public MessageBox logout() throws Exception {
-        try{
+        try {
             //修改单据
-            String billNosale=(String)session.getAttribute("billNosale");
+            String billNosale = (String) session.getAttribute("billNosale");
 
-            if(CommonUtil.isNotBlank(billNosale)){
+            if (CommonUtil.isNotBlank(billNosale)) {
                 try {
                     SaleOrderBill saleOrderBill = this.saleOrderBill.get("billNo", billNosale);
-                    if(CommonUtil.isNotBlank(saleOrderBill)){
-                        System.out.println("saleOrder34:"+saleOrderBill.getId());
+                    if (CommonUtil.isNotBlank(saleOrderBill)) {
+                        System.out.println("saleOrder34:" + saleOrderBill.getId());
                         saleOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
                         this.saleOrderBill.save(saleOrderBill);
-                    }else{
+                    } else {
                         System.out.println("saleOrder12:null");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
 
                 }
 
             }
-            String billNosaleReturn=(String)  this.getSession().getAttribute("billNosaleReturn");
+            String billNosaleReturn = (String) this.getSession().getAttribute("billNosaleReturn");
 
-            if(CommonUtil.isNotBlank(billNosaleReturn)){
+            if (CommonUtil.isNotBlank(billNosaleReturn)) {
                 try {
                     SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBill.findBillByBillNo(billNosaleReturn);
-                    if(CommonUtil.isNotBlank(saleOrderReturnBill)){
-                        System.out.println("saleOrder34:"+saleOrderReturnBill.getId());
+                    if (CommonUtil.isNotBlank(saleOrderReturnBill)) {
+                        System.out.println("saleOrder34:" + saleOrderReturnBill.getId());
                         saleOrderReturnBill.setBillType(Constant.ScmConstant.BillType.Save);
                         this.saleOrderReturnBill.save(saleOrderReturnBill);
-                    }else{
+                    } else {
                         System.out.println("saleOrder12:null");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            String billNoConsignment=(String)  this.getSession().getAttribute("billNoConsignment");
+            String billNoConsignment = (String) this.getSession().getAttribute("billNoConsignment");
 
-            if(CommonUtil.isNotBlank(billNoConsignment)){
+            if (CommonUtil.isNotBlank(billNoConsignment)) {
                 try {
                     ConsignmentBill consignmentBill = this.consignmentBill.findBillByBillNo(billNoConsignment);
-                    if(CommonUtil.isNotBlank(consignmentBill)){
-                        System.out.println("saleOrder34:"+consignmentBill.getId());
+                    if (CommonUtil.isNotBlank(consignmentBill)) {
+                        System.out.println("saleOrder34:" + consignmentBill.getId());
                         consignmentBill.setBillType(Constant.ScmConstant.BillType.Save);
                         this.consignmentBill.update(consignmentBill);
-                    }else{
+                    } else {
                         System.out.println("saleOrder12:null");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            String billNotransfer=(String)  this.getSession().getAttribute("billNotransfer");
+            String billNotransfer = (String) this.getSession().getAttribute("billNotransfer");
 
-            if(CommonUtil.isNotBlank(billNoConsignment)){
+            if (CommonUtil.isNotBlank(billNoConsignment)) {
                 try {
                     TransferOrderBill transferOrderBill = this.transferOrderBill.get("billNo", billNotransfer);
-                    if(CommonUtil.isNotBlank(transferOrderBill)){
-                        System.out.println("saleOrder34:"+transferOrderBill.getId());
+                    if (CommonUtil.isNotBlank(transferOrderBill)) {
+                        System.out.println("saleOrder34:" + transferOrderBill.getId());
                         transferOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
                         this.transferOrderBill.update(transferOrderBill);
-                    }else{
+                    } else {
                         System.out.println("saleOrder12:null");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            String billNopurchase=(String)  this.getSession().getAttribute("billNopurchase");
+            String billNopurchase = (String) this.getSession().getAttribute("billNopurchase");
 
-            if(CommonUtil.isNotBlank(billNoConsignment)){
+            if (CommonUtil.isNotBlank(billNoConsignment)) {
                 try {
-                    PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBill.get("billNo",billNopurchase);
-                    if(CommonUtil.isNotBlank(consignmentBill)){
-                        System.out.println("saleOrder34:"+purchaseOrderBill.getId());
+                    PurchaseOrderBill purchaseOrderBill = this.purchaseOrderBill.get("billNo", billNopurchase);
+                    if (CommonUtil.isNotBlank(consignmentBill)) {
+                        System.out.println("saleOrder34:" + purchaseOrderBill.getId());
                         purchaseOrderBill.setBillType(Constant.ScmConstant.BillType.Save);
                         this.purchaseOrderBill.save(purchaseOrderBill);
-                    }else{
+                    } else {
                         System.out.println("saleOrder12:null");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            String billNoPurchaseReturn=(String) this.getSession().getAttribute("billNoPurchaseReturn");
+            String billNoPurchaseReturn = (String) this.getSession().getAttribute("billNoPurchaseReturn");
 
-            if(CommonUtil.isNotBlank(billNoConsignment)){
+            if (CommonUtil.isNotBlank(billNoConsignment)) {
                 try {
                     PurchaseReturnBill purchaseReturnBill = this.purchaseReturnBill.findUniqueByBillNo(billNoPurchaseReturn);
-                    if(CommonUtil.isNotBlank(consignmentBill)){
-                        System.out.println("saleOrder34:"+purchaseReturnBill.getId());
+                    if (CommonUtil.isNotBlank(consignmentBill)) {
+                        System.out.println("saleOrder34:" + purchaseReturnBill.getId());
                         purchaseReturnBill.setBillType(Constant.ScmConstant.BillType.Save);
                         this.purchaseReturnBill.save(purchaseReturnBill);
-                    }else{
+                    } else {
                         System.out.println("saleOrder12:null");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             this.getSession().removeAttribute(Constant.Session.User_Session);
             this.getSession().removeAttribute("Session_Unit");
-           // this.getSession().invalidate();
+            // this.getSession().invalidate();
             //获取当前的Subject
             Subject currentUser = SecurityUtils.getSubject();
             if (!currentUser.isAuthenticated()) {
@@ -320,7 +320,7 @@ public class UserController extends BaseController implements IBaseInfoControlle
             }
 
 
-        }catch(Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return this.returnFailInfo(e.getLocalizedMessage());
         }
@@ -341,10 +341,10 @@ public class UserController extends BaseController implements IBaseInfoControlle
             Subject currentUser = SecurityUtils.getSubject();
             currentUser.login(token);
             model.setViewName("/oliveIndex");
-            if(currentUser.isAuthenticated()){
+            if (currentUser.isAuthenticated()) {
                 System.out.println("用户[" + code + "]登录认证通过");
                 return model;
-            }else{
+            } else {
                 token.clear();
             }
 
@@ -352,15 +352,15 @@ public class UserController extends BaseController implements IBaseInfoControlle
             final String message = ex.getMessage();
             this.getSession().setAttribute("message", message);
             //model.setViewName("/oliveLogin");
-            response.sendRedirect(request.getContextPath()+"/oliveLogin.jsp");
+            response.sendRedirect(request.getContextPath() + "/oliveLogin.jsp");
             return null;
-        }catch (UnknownAccountException e){
+        } catch (UnknownAccountException e) {
             this.getSession().setAttribute("message", e.getMessage());
-            response.sendRedirect(request.getContextPath()+"/oliveLogin.jsp");
+            response.sendRedirect(request.getContextPath() + "/oliveLogin.jsp");
             return null;
-        }catch (IncorrectCredentialsException e){
+        } catch (IncorrectCredentialsException e) {
             this.getSession().setAttribute("message", e.getMessage());
-            response.sendRedirect(request.getContextPath()+"/oliveLogin.jsp");
+            response.sendRedirect(request.getContextPath() + "/oliveLogin.jsp");
             return null;
         }
 
@@ -380,13 +380,13 @@ public class UserController extends BaseController implements IBaseInfoControlle
             //获取当前的Subject
             Subject currentUser = SecurityUtils.getSubject();
             currentUser.login(token);
-           // model.setViewName("/oliveIndex");
+            // model.setViewName("/oliveIndex");
             //response.sendRedirect("https://web.qinsilk.com/tms/mall/29358?salerId=130775");
-            if(currentUser.isAuthenticated()){
+            if (currentUser.isAuthenticated()) {
                 System.out.println("用户[" + code + "]登录认证通过");
                 response.sendRedirect("https://web.qinsilk.com/tms/mall/29358?salerId=130775");
                 return null;
-            }else{
+            } else {
                 token.clear();
             }
 
@@ -394,15 +394,15 @@ public class UserController extends BaseController implements IBaseInfoControlle
             final String message = ex.getMessage();
             this.getSession().setAttribute("message", message);
             //model.setViewName("/oliveLogin");
-            response.sendRedirect(request.getContextPath()+"/orCodeLogin.jsp");
+            response.sendRedirect(request.getContextPath() + "/orCodeLogin.jsp");
             return null;
-        }catch (UnknownAccountException e){
+        } catch (UnknownAccountException e) {
             this.getSession().setAttribute("message", e.getMessage());
-            response.sendRedirect(request.getContextPath()+"/orCodeLogin.jsp");
+            response.sendRedirect(request.getContextPath() + "/orCodeLogin.jsp");
             return null;
-        }catch (IncorrectCredentialsException e){
+        } catch (IncorrectCredentialsException e) {
             this.getSession().setAttribute("message", e.getMessage());
-            response.sendRedirect(request.getContextPath()+"/orCodeLogin.jsp");
+            response.sendRedirect(request.getContextPath() + "/orCodeLogin.jsp");
             return null;
         }
 

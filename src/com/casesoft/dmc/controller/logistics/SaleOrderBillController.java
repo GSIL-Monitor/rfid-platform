@@ -20,6 +20,7 @@ import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.ResourcePrivilege;
 import com.casesoft.dmc.model.sys.Setting;
+import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -28,6 +29,7 @@ import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.shop.CustomerService;
+import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.stock.InventoryService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
@@ -72,6 +74,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     private ResourcePrivilegeService resourcePrivilegeService;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private EpcStockService epcStockService;
+
+
 
     @Override
 //    @RequestMapping(value = "/index")
@@ -729,6 +735,29 @@ public class SaleOrderBillController extends BaseController implements ILogistic
             return new MessageBox(false, "删除失败");
         }
 
+    }
+
+    /**
+     * add by lly
+     * @param billNo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/changeDest")
+    @ResponseBody
+    public MessageBox changeDest(String billNo,String destId,String destUnitId) throws Exception {
+        try {
+            List<BillRecord> billRecods = saleOrderBillService.getBillRecod(billNo);
+            List<String> codes = new ArrayList<>();
+            for(BillRecord billRecord:billRecods){
+                codes.add(billRecord.getCode());
+            }
+            epcStockService.changeDest(billNo,destId,destUnitId,codes);
+            return new MessageBox(true, "替换成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false, "替换失败");
+        }
     }
 }
 

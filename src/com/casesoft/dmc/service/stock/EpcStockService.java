@@ -17,6 +17,8 @@ import com.casesoft.dmc.model.rem.VO.styled;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.tag.Epc;
 import org.hibernate.SQLQuery;
+import com.casesoft.dmc.model.task.Business;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,22 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
 
     @Override
     public void save(EpcStock entity) {
+        this.epcStockDao.saveOrUpdate(entity);
+    }
+
+    /**
+     * add by lly
+     * @param billNo
+     * @param destId
+     * @param destUnitId
+     * @param codes
+     */
+    public void changeDest(String billNo,String destId,String destUnitId,List<String> codes){
+        String ins =CommonUtil.getSqlStrByList(codes,EpcStock.class,"code");
+        String hql = "update EpcStock epcstock set epcstock.warehouse2Id='"+destId+"' where "+ins;
+        String sql1 = "update TASK_BUSINESS set destId='"+destId+"',destUnitId='"+destUnitId+"' where billNo='"+billNo+"' and type=0";
+        this.epcStockDao.batchExecute(hql);
+        this.epcStockDao.creatSQLQuery(sql1).executeUpdate();
 
     }
 
@@ -255,7 +273,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         }
     }
 
-    public List<EpcStock> findEpcCodes(String codes){
+    public List<EpcStock> findEpcCodes(String codes) {
         return this.epcStockDao.find("from EpcStock epcstock where" + codes);
     }
 
@@ -291,7 +309,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
                 "AND r.origId=? ";
         if (CommonUtil.isNotBlank(type)) {
             hql += "AND e.inStock=" + type
-                +" AND (e.warehouseId = r.origId or e.warehouse2Id = r.origId) ";
+                    + " AND (e.warehouseId = r.origId or e.warehouse2Id = r.origId) ";
         }
         hql += "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
@@ -315,7 +333,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
                 "AND r.destId=? ";
         if (CommonUtil.isNotBlank(type)) {
             hql += "AND e.inStock=" + type
-                + " AND e.warehouseId = r.destId " ;
+                    + " AND e.warehouseId = r.destId ";
         }
         hql += "AND r.token=10 " +
                 "ORDER BY r.scanTime DESC";
@@ -375,7 +393,7 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
      *
      * @param code 唯一码
      */
-    public void updateEpcStockOut(String code){
+    public void updateEpcStockOut(String code) {
         this.epcStockDao.batchExecute("update EpcStock set inStock=0 where code=?", code);
     }
 
@@ -521,5 +539,14 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         String hql="select max(version) from EpcStock";
         Long maxVersionId = this.epcStockDao.findUnique(hql);
         return maxVersionId == null ? 0 : maxVersionId;
+    }
+
+    /**
+     * 用于判断某个款是否曾经入过库，返回值大于0说明曾经入过库
+     *
+     * @param styleId
+     */
+    public long countAllByStyleId(String styleId) {
+        return this.epcStockDao.findUnique("select count(id) from EpcStock where styleId = ?", styleId);
     }
 }
