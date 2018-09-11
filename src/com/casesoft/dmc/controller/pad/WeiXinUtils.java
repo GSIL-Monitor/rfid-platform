@@ -102,19 +102,18 @@ public class WeiXinUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AccessToken miniProgramAccessToken = new AccessToken();
         Long nowDate = new Date().getTime();
-        miniProgramAccessToken = CacheManager.getMiniProgramAccessToken();
+        AccessToken miniProgramAccessToken = CacheManager.getMiniProgramAccessToken();
         if (miniProgramAccessToken != null && miniProgramAccessToken.getTime() != null && (nowDate - miniProgramAccessToken.getTime() < 1800 * 1000)) {
             System.out.println("access_token［" + miniProgramAccessToken.getToken() + "］存在，且未过期");
             return miniProgramAccessToken;
         } else {
-            CacheManager.removeMiniProgramToken();
             String url = ACCESS_TOKEN_URL.replace("APPID", MINI_PRAOGRAM_APPID).replace("APPSECRET", MINI_PRAOGRAM_APPSECRET);
             JSONObject jsonObject = doGetStr(url);
             Object errcode = jsonObject.get("errcode");
             //如果不存在错误码,则代表此次交易正常
             if (errcode == null || "0".equals(errcode)) {
+                miniProgramAccessToken = miniProgramAccessToken == null ? new AccessToken() : miniProgramAccessToken;
                 miniProgramAccessToken.setToken(jsonObject.getString("access_token"));
                 miniProgramAccessToken.setExpireIn(jsonObject.getInt("expires_in"));
                 miniProgramAccessToken.setTime(new Date().getTime());

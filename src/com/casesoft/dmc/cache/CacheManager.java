@@ -25,6 +25,7 @@ import com.casesoft.dmc.service.sys.impl.RoleService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,8 @@ public class CacheManager {
 	private static String PREFIX_SIZESORT = "SizeSort";
 
 	private static String PREFIX_ACCESSTOKEN = "AccessToken";
+
+	private static String PREFIX_MINIPROGRAMACCESSTOKEN = "MiniProgramAccessToken";
 	//--------------------------新增redis缓存数据-------------------------------------------------
 	private static String PREFIX_UNIT = "unit";
 
@@ -709,18 +712,6 @@ public class CacheManager {
 			iniAccessToken(token);
 			return token;
 		}
-		/*Element result = cache.get("AccessToken");
-		if (result==null){
-			AccessToken accessToken = new AccessToken();
-			iniAccessToken(accessToken);
-			Element element = cache.get("AccessToken");
-			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) element.getValue();
-			return accessTokenMap.get("AccessToken");
-		}else {
-			Map<String,AccessToken> accessTokenMap = (Map<String, AccessToken>) result.getValue();
-			return accessTokenMap.get("AccessToken");
-		}*/
-
 	}
 
 	public static void remove(){
@@ -728,6 +719,22 @@ public class CacheManager {
 		/*cache.remove("AccessToken");*/
 	}
 
+
+	/**
+	 * 小程序初始化和获取token
+	 */
+	public static void initMiniProgramAccessToken(AccessToken accessToken){
+		redisUtils.hset(PREFIX_MINIPROGRAMACCESSTOKEN,"AccessToken", JSON.toJSONString(accessToken));
+	}
+
+	public static AccessToken getMiniProgramAccessToken(){
+		AccessToken accessToken = null;
+		String accessTokenStr = redisUtils.hgetString(PREFIX_MINIPROGRAMACCESSTOKEN, "AccessToken");
+		if(StringUtils.isNotBlank(accessTokenStr)){
+			accessToken = JSON.parseObject(accessTokenStr, AccessToken.class);
+		}
+		return accessToken;
+	}
 
 
 	public static Map<String, User> getUserMap() {
