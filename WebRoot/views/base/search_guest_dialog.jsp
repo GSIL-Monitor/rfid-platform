@@ -428,7 +428,6 @@
     function confirm_selected_GuestId_sale() {
         var rowId = $("#guestSelect_Grid").jqGrid("getGridParam", "selrow");
         var rowData = $("#guestSelect_Grid").jqGrid('getRowData', rowId);
-        var oldDest = $("#search_destId").val();
         if(prefixId =="search") {
             $("#search_destUnitId").val(rowData.id);
             $("#search_destUnitName").val(rowData.name);
@@ -437,36 +436,35 @@
         }else if(prefixId =="edit"){
             $("#edit_destUnitId").val(rowData.id);
             $("#edit_destUnitName").val(rowData.name);
+            var oldDest = $("#edit_destId").val();
             initSelectDestForm();
             $("#edit_destId").selectpicker('val', rowData.defaultWarehId);
             $("#edit_customerType").val(rowData.unitType);
             if (!$('#edit_discount').is(':hidden')){
-                if($('#edit_discount').is(':hidden')){
+                if(rowData.discount) {
+                    $("#edit_discount").val(rowData.discount);
+                }else{
                     $("#edit_discount").val(100);
-                }else {
-                    if(rowData.discount) {
-                        $("#edit_discount").val(rowData.discount);
-                    }else{
-                        $("#edit_discount").val(100);
-                    }
                 }
                 $("#edit_pre_Balance").val((0-rowData.owingValue).toFixed(2));
                 updateBillDetailData();
                 setDiscount();
-                if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
-                    $("#SODtl_wareHouseIn").removeAttr("disabled");
-                } else {
-                    $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
-                }
+            }else {
+                $("#edit_discount").val(100);
             }
-            setDiscount();
-            if($("#search_destId").prop("disabled") && slaeOrder_status != "-2"){
+            if ($("#edit_destId").val() && $("#edit_destId").val() != null) {
+                $("#SODtl_wareHouseIn").removeAttr("disabled");
+            } else {
+                $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
+            }
+
+            if($("#edit_destId").prop("disabled") && slaeOrder_status != "-2"){
                 console.info("2222");
                 console.info(outStatus);
-                if(outStatus ==2 || outStatus ==3){
+                if(outStatus == 2 || outStatus == 3){
                     console.info(oldDest);
-                    console.info($("#search_destId").val());
-                    if(oldDest != $("#search_destId").val()){
+                    console.info($("#edit_destId").val());
+                    if(oldDest != $("#edit_destId").val()){
                         bootbox.confirm({
                             buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
                             message: "检测到入库仓库变化，是否保存?",
@@ -476,7 +474,7 @@
                                         $.ajax({
                                             url: basePath + "/logistics/saleOrder/changeDest.do",
                                             cache: false,
-                                            data: {billNo:billNo,destId:$("#search_destId").val(),destUnitId:$("#search_destUnitId").val()},
+                                            data: {billNo:billNo,destId:$("#edit_destId").val(),destUnitId:$("#edit_destId").val()},
                                             type: "POST",
                                             success: function (data) {
                                                 $.gritter.add({
