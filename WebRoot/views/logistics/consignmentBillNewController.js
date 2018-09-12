@@ -1639,3 +1639,26 @@ function loadingButtonDivTable(billStatus) {
         $("#edit_guest_button").attr({"disabled": "disabled"});
     }
 }
+function search_discount_onblur() {
+    setDiscount();
+}
+//将整单折扣设置到明细中
+function setDiscount() {
+    debugger;
+    if (editDtailiRow != null && editDtailiCol != null) {
+        $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
+        editDtailiRow = null;
+        editDtailiCol = null;
+    }
+    var discount = $("#edit_discount").val();
+    if (discount && discount != null && discount != "") {
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            $('#addDetailgrid').setCell(value, "discount", discount);
+            var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+            var var_totActPrice = -Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(value, "qty") * 100) / 100);
+            $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+            $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+        });
+    }
+    setAddFooterData();
+}
