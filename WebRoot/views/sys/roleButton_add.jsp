@@ -127,6 +127,7 @@
                         text: result.msg,
                         class_name: 'gritter-success  gritter-light'
                     });
+                    closeButtonDialog();
                 } else {
                     cs.showAlertMsgBox(result.msg);
                 }
