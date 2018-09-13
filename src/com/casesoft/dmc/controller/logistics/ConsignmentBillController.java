@@ -53,7 +53,7 @@ public class ConsignmentBillController extends BaseController implements ILogist
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
-        ModelAndView mv = new ModelAndView("/views/logistics/consignmentBillNew");
+        ModelAndView mv = new ModelAndView("/views/logistics/consignmentBill");
         List<ResourcePrivilege> resourcePrivilege = this.resourcePrivilegeService.findPrivilege("logistics/Consignment", this.getCurrentUser().getRoleId());
         mv.addObject("resourcePrivilege", FastJSONUtil.getJSONString(resourcePrivilege));
         mv.addObject("ownerId", getCurrentUser().getOwnerId());
