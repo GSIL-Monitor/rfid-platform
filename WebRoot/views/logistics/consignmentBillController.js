@@ -1436,7 +1436,7 @@ function confirmWareHouseIn() {
                 $("#modal-addEpc-table").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
                 bootbox.alert( "已入库" + inqty + "件");
-
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
