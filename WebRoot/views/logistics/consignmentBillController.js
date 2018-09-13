@@ -281,6 +281,7 @@ function initSearchGrid() {
             initDetailData(rowid)
         },
         loadComplete:function () {
+
             if (cargoTrack=="cargoTracking"){
                 initDetailData(cTbillNo);
                 $("#search_billId").val(cTbillNo);
@@ -608,6 +609,7 @@ function setFooterData() {
     });
 }
 function _search() {
+
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
     $("#grid").jqGrid('setGridParam', {
@@ -1198,6 +1200,7 @@ function saveother(totActPrice) {
                 $("#edit_billNo").val(msg.result);
                 billNo = msg.result;
                 issaleretrun = true;
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
