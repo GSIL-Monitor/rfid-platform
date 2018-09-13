@@ -256,6 +256,7 @@ function initGrid() {
 
 function initDetailData(rowid) {
     $("#myTab li").eq(0).find("a").click();
+    $("#SODtl_wareHouseIn").removeAttr("disabled");
     var rowData = $("#grid").getRowData(rowid);
     $("#editForm").setFromData(rowData);
     $(".selectpicker").selectpicker('refresh');
@@ -271,16 +272,9 @@ function initDetailData(rowid) {
     $("#addDetailgrid").trigger("reloadGrid");
     var slaeOrder_status = rowData.status;
     //如果入库仓库为空，禁止入库按钮
-    if ($("#search_destId").val() && $("#search_destId").val() != null) {
-        if($("#edit_status").val()=="2"||$("#edit_status").val()=="3"){
+    if (!$("#search_destId").val() || $("#search_destId").val() == null) {
             $("#SODtl_wareHouseIn").attr("disabled","disabled");
-        }else {
-            $("#SODtl_wareHouseIn").removeAttr("disabled");
-        }
-    } else {
-        $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
     }
-
     $("#edit_customerType").attr('disabled', true);
     $("#edit_busnissId").attr('disabled', true);
     $("#addDetail").show();
@@ -308,22 +302,22 @@ function loadingButtonDivTable(billStatus) {
     var disableButtonIds = "";
     switch (billStatus){
         case "-1" :
-            disableButtonIds = [];
+            disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "0" :
-            disableButtonIds = [];
+            disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "1":
-            disableButtonIds = [];
+            disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "2" :
-            disableButtonIds = [];
+            disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "3":
             disableButtonIds = [];
             break;
         default:
-            disableButtonIds = [];
+            disableButtonIds = ["SODtl_wareHouseIn"];
     }
     //根据单据状态disable按钮
     $.each(privilegeMap['button'],function(index,value){
