@@ -39,20 +39,21 @@ public class MultiLevelRelationService extends AbstractBaseService<MultiLevelRel
 
     //组织架构的多级关系保存
     public void save(Unit company, String multiLevelType) {
-        this.save(company.getId(), company.getName(), company.getOwnerId(), multiLevelType);
+        this.save(company.getId(), company.getCode(), company.getName(), company.getOwnerId(), multiLevelType);
     }
 
     //商品分类多级关系保存
     public void save(PropertyKey entity, String parentId, String multiLevelType) {
-        this.save(entity.getId(), entity.getName(), parentId, multiLevelType);
+        this.save(entity.getId(), entity.getCode(), entity.getName(), parentId, multiLevelType);
     }
 
-    public void save(String id, String name, String parentId, String multiLevelType) {
+    public void save(String id, String code, String name, String parentId, String multiLevelType) {
         try {
             MultiLevelRelation multiLevelRelation = this.get("relatedId", id);
             if (CommonUtil.isBlank(multiLevelRelation)) {
                 multiLevelRelation = new MultiLevelRelation();
                 multiLevelRelation.setId(id);
+                multiLevelRelation.setCode(code);
                 multiLevelRelation.setRelatedId(id);
                 multiLevelRelation.setMultiLevelType(multiLevelType);
                 multiLevelRelation.setRoot(false);
