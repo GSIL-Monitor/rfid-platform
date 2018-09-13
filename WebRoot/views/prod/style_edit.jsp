@@ -731,7 +731,7 @@
                             depth = depth - 1;
                         }
                     }
-                    $("#form_class3").append("<option value='" + json[i].id + "' style='background-color: #eeeeee'>" + subLevelHeader +json[i].name + "</option>");
+                    $("#form_class3").append("<option value='" + json[i].code + "' style='background-color: #eeeeee'>" + subLevelHeader +json[i].name + "</option>");
                 }
                 if ("${pageType}" == "edit") {
                     $("#form_class3").find("option[value='${style.class3}']").attr("selected", true);

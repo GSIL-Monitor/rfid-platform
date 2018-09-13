@@ -1,6 +1,9 @@
 package com.casesoft.dmc.service.logistics;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.cache.RedisUtils;
+import com.casesoft.dmc.cache.SpringContextUtil;
 import com.casesoft.dmc.controller.logistics.BillConvertUtil;
 import com.casesoft.dmc.controller.product.StyleUtil;
 import com.casesoft.dmc.core.Constant;
@@ -27,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +44,7 @@ import java.util.Map;
 public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill, String> {
     @Autowired
     private LabelChangeBillDao labelChangeBillDao;
+    private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
     @Override
     public Page<LabelChangeBill> findPage(Page<LabelChangeBill> page, List<PropertyFilter> filters) {
         return this.labelChangeBillDao.findPage(page,filters);
@@ -94,7 +99,21 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
         this.labelChangeBillDao.batchExecute("delete from BillRecord where billNo=?", labelChangeBill.getBillNo());
         if(issave&& CommonUtil.isNotBlank(init)){
             this.labelChangeBillDao.dosaveBatchInsert(listStyle);
+            List<Style> styleList = new ArrayList<>();
+            for(Style style:listStyle){
+                long styleMaxVersionId = CacheManager.getStyleMaxVersionId();
+                redisUtils.hset("maxVersionId","styleMaxVersionId", JSON.toJSONString(styleMaxVersionId+1));
+                CacheManager.refreshMaxVersionId();
+                styleList.add(style);
+            }
+
+            CacheManager.refreshStyleCache(styleList);
             this.labelChangeBillDao.dosaveBatchInsert(listproduct);
+            List<Product> productList=new ArrayList<Product>();
+            for(Product product:listproduct){
+                productList.add(product);
+            }
+            CacheManager.refreshProductCache(productList);
             this.labelChangeBillDao.saveOrUpdateX(init);
             this.labelChangeBillDao.doBatchInsert(init.getDtlList());
 

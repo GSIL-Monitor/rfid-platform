@@ -92,7 +92,7 @@
                                     </div>
                                     <%--树形结构--%>
                                     <div id="property-tree" hidden>
-                                        <div class="widget-body" style="height: 544px; border: 1px solid lightgrey;">
+                                        <div class="widget-body" style="height: 544px; border: 1px solid lightgrey;overflow: auto">
                                             <div class="widget-main no-padding">
                                                 <div id="jstree"></div>
                                             </div>

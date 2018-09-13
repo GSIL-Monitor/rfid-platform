@@ -17,6 +17,8 @@ public class MultiLevelRelation implements Serializable {
     @Column
     private String id;
     @Column
+    private String code;
+    @Column
     private String name;
     @Column
     private String multiLevelType;
@@ -49,6 +51,14 @@ public class MultiLevelRelation implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
