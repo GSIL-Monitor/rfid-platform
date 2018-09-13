@@ -970,7 +970,7 @@ function wareHouseOut() {
                             buttons: {ok: {label: '确定'}},
                             message: alertMessage,
                             callback: function () {
-                                quitback();
+
                             }
                         });
                     }
