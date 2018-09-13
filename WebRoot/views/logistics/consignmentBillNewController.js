@@ -466,7 +466,8 @@ function initeditGrid(billId) {
             {name: 'beforeoutQty', hidden: true},
             {name: 'savehaveuniqueCodes', label: '唯一码', hidden: true},
             {name: 'savenohanveuniqueCodes', label: '唯一码', hidden: true},
-            {name: 'readysale', label: '准备销售', hidden: true}
+            {name: 'readysale', label: '准备销售', hidden: true},
+            {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -751,6 +752,31 @@ function openSearchGuestDialog(preId) {
         "<button type='button'  class='btn btn-primary' onclick='confirm_selected_GuestId_Consignment()'>确认</button>"
     );
 }
+
+function updateBillDetailData(){
+    var ct = $("#edit_customerType").val();
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var dtlRow = $("#addDetailgrid").getRowData(value);
+        var map = dtlRow.stylePriceMap;
+        var stylePriceMap = JSON.parse(dtlRow.stylePriceMap);
+        if (ct == "CT-AT") {//省代价格
+            dtlRow.price = stylePriceMap['puPrice'];
+        } else if (ct == "CT-ST") {//门店价格
+            dtlRow.price = stylePriceMap['wsPrice'];
+        } else if (ct == "CT-LS") {//吊牌价格
+            dtlRow.price = stylePriceMap['price'];
+        }
+        dtlRow.totPrice = -Math.round(dtlRow.qty * dtlRow.price);
+        dtlRow.totActPrice = -Math.round((dtlRow.qty * dtlRow.actPrice).toFixed(2));
+        if(dtlRow.id){
+            $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+        }else{
+            $("#addDetailgrid").setRowData(value, dtlRow);
+        }
+    });
+}
+
+
 function initAddGrid() {
     $("#addDetailgrid").jqGrid({
         height: "auto",
@@ -910,7 +936,8 @@ function initAddGrid() {
             {name: 'beforeoutQty', hidden: true},
             {name: 'savehaveuniqueCodes', label: '唯一码', hidden: true},
             {name: 'savenohanveuniqueCodes', label: '唯一码', hidden: true},
-            {name: 'readysale', label: '准备销售', hidden: true}
+            {name: 'readysale', label: '准备销售', hidden: true},
+            {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
         autowidth: true,
         rownumbers: true,

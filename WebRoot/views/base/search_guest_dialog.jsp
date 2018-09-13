@@ -506,13 +506,21 @@
             $("#search_origUnitName").val(rowData.name);
             $("#edit_customerType").val(rowData.unitType);
             initSelectOrigForm();
-            $("#modal_guest_search_table").modal('hide');
         }else if(prefixId =="edit"){
             $("#edit_origUnitId").val(rowData.id);
             $("#edit_origUnitName").val(rowData.name);
             $("#edit_customerType").val(rowData.unitType);
-            initSelectOrigForm();
-            $("#modal_guest_search_table").modal('hide');
+            $("#edit_customerType").val(rowData.unitType);
+            $('#edit_origId').selectpicker();
+            $("#edit_origId").selectpicker('val', rowData.defaultWarehId);
+            $("#edit_origId").selectpicker('refresh');
+            if(rowData.discount){
+                $("#edit_discount").val(rowData.discount);
+            }else{
+                $("#edit_discount").val(100);
+            }
+            updateBillDetailData();
+            setDiscount();
         }
         $(".selectpicker").selectpicker('refresh');
         $("#modal_guest_search_table").modal('hide');
