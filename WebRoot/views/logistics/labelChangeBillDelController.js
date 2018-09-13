@@ -4,6 +4,7 @@ var allCodes; //用于拼接所有添加过的唯一码，防止重复添加
 var inOntWareHouseValid; //用于判断在编辑BillDtl时出入库操作是否需要校验，使用哪种校验。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
 var class9="";
+var isCheckWareHouse=false;//是否检测出库仓库
 $(function () {
     initForm();
     initGrid();
