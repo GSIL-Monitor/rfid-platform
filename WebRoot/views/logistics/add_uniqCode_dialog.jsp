@@ -187,12 +187,9 @@
                     });
                     return;
                 }
-
                 var progressDialog = bootbox.dialog({
-                    message: '<p><i class="fa fa-spin fa-spinner"></i>checking...</p>'
+                    message: '<p><i class="fa fa-spin fa-spinner"></i>查询中...</p>'
                 });
-
-
                 var ajax_url;
                 var ajax_data;
                 if (taskType === -1) {
@@ -223,6 +220,7 @@
                                 progressDialog.modal('hide');
                             }
                         } else {
+                            progressDialog.modal('hide');
                             $.gritter.add({
                                 text: data.msg,
                                 class_name: 'gritter-success  gritter-light'
@@ -240,14 +238,13 @@
                                     }
                                 } catch(e) {console.info(e);}
                                 //addProductsNoOutPutCode(result);
-                                progressDialog.modal('hide');
                             }
-                            progressDialog.modal('hide');
                         }
                         $('#uniqCode-editForm').clearForm();
                         progressDialog.modal('hide');
                     }
                 });
+                progressDialog.modal('hide');
             }
         })
     }

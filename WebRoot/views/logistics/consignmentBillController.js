@@ -281,6 +281,7 @@ function initSearchGrid() {
             initDetailData(rowid)
         },
         loadComplete:function () {
+
             if (cargoTrack=="cargoTracking"){
                 initDetailData(cTbillNo);
                 $("#search_billId").val(cTbillNo);
@@ -608,6 +609,7 @@ function setFooterData() {
     });
 }
 function _search() {
+
     var serializeArray = $("#searchForm").serializeArray();
     var params = array2obj(serializeArray);
     $("#grid").jqGrid('setGridParam', {
@@ -1070,8 +1072,8 @@ function addProductsOnCode() {
                 productInfo.status = 0;
                 productInfo.inStatus = 0;
                 productInfo.outStatus = 0;
-                if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                    productInfo.discount = $("#search_discount").val();
+                if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
+                    productInfo.discount = $("#edit_discount").val();
                 } else {
                     productInfo.discount = 100;
                 }
@@ -1198,6 +1200,7 @@ function saveother(totActPrice) {
                 $("#edit_billNo").val(msg.result);
                 billNo = msg.result;
                 issaleretrun = true;
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1433,7 +1436,7 @@ function confirmWareHouseIn() {
                 $("#modal-addEpc-table").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
                 bootbox.alert( "已入库" + inqty + "件");
-
+                _search();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1452,6 +1455,81 @@ function saleRetrunNo() {
         $("#inventoryCodeGrid").clearGridData();
     });
 
+}
+function addProductsOnCodes() {
+    var codes = "";
+    $.each($("#inventoryCodeGrid").getDataIDs(), function (index, value) {
+        /* var productInfo = $("#inventoryCodeGrid").getRowData(value);
+         if(index==0){
+         codes+=productInfo.code;
+         }else{
+         codes+=","+productInfo.code;
+         }*/
+        debugger;
+        var isok = 0;
+        var inventory = $("#inventoryCodeGrid").getRowData(value);
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            debugger;
+
+            var Detailgrid = $("#addDetailgrid").getRowData(value);
+            if (inventory.sku == Detailgrid.sku) {
+                //改变数量
+                var inQty = Detailgrid.inQty;//获取入库数量
+                var outQty = Detailgrid.outQty;//获取退货数量
+                if (parseInt(inQty) < (parseInt(outQty) + 1)) {
+                    $.gritter.add({
+                        text: Detailgrid.sku + "退货数量已经超出入库数量",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+
+                } else {
+                    var outQtys = parseInt(outQty) + 1;
+                    $('#addDetailgrid').setCell(value, "outQty", outQtys);
+                    //修改数据库寄存退货的数量
+                    //updateconsignmentnum(Detailgrid.id,outQtys);
+                    //比较codes
+                    var uniqueCodes = Detailgrid.uniqueCodes;
+                    var savehaveuniqueCodes = Detailgrid.savehaveuniqueCodes;
+                    var savenohanveuniqueCodes = Detailgrid.savenohanveuniqueCodes;
+                    if (uniqueCodes.indexOf(inventory.code) != -1) {
+                        if (savehaveuniqueCodes == "") {
+                            savehaveuniqueCodes += inventory.code;
+                            $('#addDetailgrid').setCell(value, "savehaveuniqueCodes", savehaveuniqueCodes);
+                        } else {
+                            savehaveuniqueCodes += "," + inventory.code;
+                            $('#addDetailgrid').setCell(value, "savehaveuniqueCodes", savehaveuniqueCodes);
+                        }
+                    } else {
+                        if (savenohanveuniqueCodes == "") {
+                            savenohanveuniqueCodes += inventory.code;
+                            $('#addDetailgrid').setCell(value, "savenohanveuniqueCodes", savenohanveuniqueCodes);
+                        } else {
+                            savenohanveuniqueCodes += "," + inventory.code;
+                            $('#addDetailgrid').setCell(value, "savenohanveuniqueCodes", savenohanveuniqueCodes);
+                        }
+                    }
+                }
+                issaleretrun = false;
+            } else {
+                /*  debugger;
+                 $.gritter.add({
+                 text: "此退货详情没有对应的sku",
+                 class_name: 'gritter-success  gritter-light'
+                 });*/
+                isok++;
+            }
+            if (isok == $("#addDetailgrid").getDataIDs().length) {
+                $.gritter.add({
+                    text: "此退货详情没有对应的sku",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            } else {
+                $("#add-inventory-dialog").modal('hide');
+            }
+
+
+        });
+    });
 }
 function saleRetrunNook() {
     cs.showProgressBar();
@@ -1645,7 +1723,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["CMDtl_cancel","CMDtl_save,TRDtl_addUniqCode"];
             break;
         case "2" :
-            disableButtonIds = ["CMDtl_save","CMDtl_cancel","CMDtl_wareHouseSale","CMDtl_wareHouseokSale"];
+            disableButtonIds = ["CMDtl_save","CMDtl_cancel"];
             break;
         case "3":
             disableButtonIds = ["CMDtl_save","CMDtl_cancel"];
