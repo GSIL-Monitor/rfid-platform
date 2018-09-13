@@ -605,6 +605,8 @@ function save() {
                 $("#edit_billNo").val(msg.result);
                 $("#add_addDetailgrid").hide();
                 $("#savebutton").hide();
+                console.info("111");
+                $("#grid").trigger("reloadGrid");
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -711,6 +713,9 @@ function edit_wareHouseOut() {
             } else {
                 bootbox.alert("发货仓库不能为空！");
             }
+        }
+        else {
+            addNew();
         }
         allCodes = "";
     }
@@ -907,7 +912,7 @@ function wareHouseOut() {
         var returnValue = "";
         cs.showProgressBar();
         $.ajax({
-            async: true,
+            async: false,//必须同步
             dataType: "json",
             url: basePath + "/logistics/purchaseReturn/convertOut.do",
             data: {
@@ -933,7 +938,7 @@ function wareHouseOut() {
                         url: basePath + '/logistics/purchaseReturn/findDtls.do?billNo=' + billNo,
                     });
                     $("#addDetailgrid").trigger("reloadGrid");
-
+                    $("#grid").trigger("reloadGrid");
                     var all_outQty = sum_outQty + epcArray.length;
                     var diff_qty = sum_qty - all_outQty;
                     if (pageType === "edit") {
@@ -959,12 +964,12 @@ function wareHouseOut() {
                             alertMessage = "已出库数量为：" + all_outQty + "；剩余数量为：" + diff_qty + "，其余商品请扫码出库"
                         } else if (sum_qty === all_outQty) {
                             alertMessage = "共" + all_outQty + "件商品，已全部出库";
+                            returnValue = "done";
                         }
                         bootbox.alert({
                             buttons: {ok: {label: '确定'}},
                             message: alertMessage,
                             callback: function () {
-                                quitback();
 
                             }
                         });
@@ -979,6 +984,22 @@ function wareHouseOut() {
         bootbox.alert("请先保存当前单据");
     }
 }
+function quitback() {
+    $.ajax({
+        url: basePath + "/logistics/purchaseReturn/quit.do?billNo=" + $("#edit_billNo").val(),
+        cache: false,
+        async: true,
+        type: "POST",
+        success: function (data, textStatus) {
+            if (textStatus == "success") {
+                $.gritter.add({
+                    text: $("#edit_billNo").val() + "可以修改",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+        }
+    });
+}
 /*查看唯一吗明细*/
 function showCodesDetail(uniqueCodes) {
 
@@ -990,6 +1011,8 @@ function showCodesDetail(uniqueCodes) {
  * isScan 是否调用扫码框
  * */
 function addNew(){
+    billNo = null;
+    $("#edit_status").val("0");
     $('#addDetailgrid').jqGrid("clearGridData");
     $('#addDetailgrid').jqGrid('GridUnload');
     initAddGrid();
@@ -1302,7 +1325,7 @@ function confirmWareHouseOut() {
         epcArray.push(rowData);
     });
     if (epcArray.length === 0) {
-        cs.showProgressBar();
+        cs.closeProgressBar();
         bootbox.alert("请添加唯一码!");
         return;
     }
