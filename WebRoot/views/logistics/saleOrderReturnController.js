@@ -1834,6 +1834,7 @@ function wareHouseInOut(type) {
                         text: "没有可以直接" + inOutString + "库的商品",
                         class_name: 'gritter-success  gritter-light'
                     });
+                    cs.closeProgressBar();
                     if (pageType === "edit") {
                         if (type === "out") {
                             edit_wareHouseOut();
@@ -1841,7 +1842,6 @@ function wareHouseInOut(type) {
                             edit_wareHouseIn_noOutHouse();
                         }
                     }
-                    cs.closeProgressBar();
                     if (type === "in") {
                         $("#SRDtl_wareHouseIn_noOutHouse").removeAttr("disabled");
                     } else if (type === "out") {
