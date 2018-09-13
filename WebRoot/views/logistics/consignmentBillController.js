@@ -1070,8 +1070,8 @@ function addProductsOnCode() {
                 productInfo.status = 0;
                 productInfo.inStatus = 0;
                 productInfo.outStatus = 0;
-                if ($("#search_discount").val() && $("#search_discount").val() !== null) {
-                    productInfo.discount = $("#search_discount").val();
+                if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
+                    productInfo.discount = $("#edit_discount").val();
                 } else {
                     productInfo.discount = 100;
                 }
@@ -1645,7 +1645,7 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["CMDtl_cancel","CMDtl_save,TRDtl_addUniqCode"];
             break;
         case "2" :
-            disableButtonIds = ["CMDtl_save","CMDtl_cancel","CMDtl_wareHouseSale","CMDtl_wareHouseokSale"];
+            disableButtonIds = ["CMDtl_save","CMDtl_cancel","CMDtl_wareHouseSale"];
             break;
         case "3":
             disableButtonIds = ["CMDtl_save","CMDtl_cancel"];
