@@ -164,6 +164,7 @@
                         text: result.msg,
                         class_name: 'gritter-success  gritter-light'
                     });
+                    closeTableDialog();
                 } else {
                     cs.showAlertMsgBox(result.msg);
                 }
