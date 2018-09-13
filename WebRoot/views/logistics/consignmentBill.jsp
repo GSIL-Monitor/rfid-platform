@@ -324,7 +324,7 @@
 <jsp:include page="findRetrunNo.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
-<script type="text/javascript" src="<%=basePath%>/views/logistics/consignmentBillNewController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/consignmentBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <div id="dialog"></div>
 <div id="progressDialog"></div>
