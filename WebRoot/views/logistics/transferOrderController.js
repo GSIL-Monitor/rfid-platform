@@ -115,7 +115,7 @@ function initGrid() {
         mtype: 'POST',
         colModel: [
 
-            {name: 'billNo', label: '单据编号', sortable: true, width: 50},
+            {name: 'billNo', label: '单据编号', sortable: true, width: 35},
             {name: 'status', hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
@@ -148,11 +148,11 @@ function initGrid() {
                     return html;
                 }
             },
-            {name: 'billDate', label: '单据日期', sortable: true, width: 30},
+            {name: 'billDate', label: '单据日期', sortable: true, width:18},
             {name: 'origUnitId', label: '发货方ID', hidden: true},
             {name: 'origUnitName', label: '发货方', width: 30,hidden: true},
             {name: 'origId', label: '发货仓库ID', hidden: true},
-            {name: 'origName', label: '发货仓库', width: 30,hidden: true},
+            {name: 'origName', label: '发货仓库', width: 20},
             {name: 'destUnitId', label: '收货方ID', hidden: true},
             {name: 'destUnitName', label: '收货方', width: 30,hidden: true},
             {name: 'destId', label: '收货仓库ID', hidden: true},
@@ -169,7 +169,7 @@ function initGrid() {
         autowidth: true,
         rownumbers: true,
         altRows: true,
-        rowNum: 50,
+        rowNum: 20,
         rowList: [20, 50, 100],
         pager: "#grid-pager",
         multiselect: false,
