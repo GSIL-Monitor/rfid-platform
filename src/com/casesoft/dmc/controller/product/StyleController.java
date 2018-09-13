@@ -145,7 +145,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			Long productMaxVersionId = CacheManager.getproductMaxVersionId();
 			//查询当前款最新的版本号
 			Long maxVersionId = CacheManager.getStyleMaxVersionId();
-			sty.setVersion(maxVersionId+1);
+			//sty.setVersion(maxVersionId+1);
 			//判断是 add（）的请求还是 edit（）的请求
 			if ("add".equals(pageType)){
 				//判断sytleId在数据库中是否存在
@@ -163,6 +163,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 				if (CommonUtil.isBlank(sty)) {
 					return this.returnFailInfo("编辑失败!" + sty.getId() + "款号不存在");
 				}
+				sty.setVersion(maxVersionId+1);
 				prePriceMap.put("price", sty.getPrice());
 				prePriceMap.put("puPrice", sty.getPuPrice());
 				prePriceMap.put("wsPrice", sty.getWsPrice());
