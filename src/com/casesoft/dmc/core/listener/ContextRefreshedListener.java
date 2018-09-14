@@ -16,23 +16,25 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
   QuartzJobController quartzJobController;
   @Override
   public void onApplicationEvent(ContextRefreshedEvent arg0) {
-    logger.debug("Spring容器加载完毕...");
-    // String propertyFile = this.getServletContext()
-    // .getRealPath("/WEB-INF/classes/config.properties");
-    // String propertyFile = getClass().getClassLoader().getResource("").getFile() + File.separator
-    // + "config.properties";
-    // PropertyUtil.init(propertyFile);// 初始化国际化配置文件
-    PropertyUtil.init();
-    try {
-		CacheManager.initCache();
-		this.quartzJobController.runJobs();
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}// 初始化缓存
+      if(arg0.getApplicationContext().getParent() == null){//root application context 没有parent，他就是老大.
+                     //需要执行的逻辑代码，当spring容器初始化完成后就会执行该方法。
+          logger.debug("Spring容器加载完毕...");
+          // String propertyFile = this.getServletContext()
+          // .getRealPath("/WEB-INF/classes/config.properties");
+          // String propertyFile = getClass().getClassLoader().getResource("").getFile() + File.separator
+          // + "config.properties";
+          // PropertyUtil.init(propertyFile);// 初始化国际化配置文件
+          PropertyUtil.init();
+          try {
+              CacheManager.initCache();
+              this.quartzJobController.runJobs();
+          } catch (Exception e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+          }// 初始化缓存
 
-    FileUtil.init();// 创建不存在的目录
-
+          FileUtil.init();// 创建不存在的目录
+      }
   }
 
 }
