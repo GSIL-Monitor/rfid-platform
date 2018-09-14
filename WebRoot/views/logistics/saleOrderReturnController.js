@@ -781,39 +781,7 @@ function initButtonGroup(type){
             "</button>"
         );
         loadingButtonDivTable(type);
-        $("#SRDtl_check").hide();
 
-}
-function loadingButton() {
-    $.ajax({
-        dataType: "json",
-        async: false,
-        url: basePath + "/logistics/saleOrderReturn/findResourceButton.do",
-        type: "POST",
-        success: function (msg) {
-
-            if (msg.success) {
-
-                var result=msg.result;
-                for(var i=0;i<result.length;i++){
-                    if(result[i].ishow===0){
-                        if( $("#"+result[i].buttonId).length>0){
-                            $("#"+result[i].buttonId).show();
-                        }
-                    }else {
-                        if( $("#"+result[i].buttonId).length>0){
-                            $("#"+result[i].buttonId).hide();
-                        }
-
-                    }
-
-                }
-
-            } else {
-                bootbox.alert(msg.msg);
-            }
-        }
-    });
 }
 //code明细
 
@@ -1834,6 +1802,7 @@ function wareHouseInOut(type) {
                         text: "没有可以直接" + inOutString + "库的商品",
                         class_name: 'gritter-success  gritter-light'
                     });
+                    cs.closeProgressBar();
                     if (pageType === "edit") {
                         if (type === "out") {
                             edit_wareHouseOut();
@@ -1841,7 +1810,6 @@ function wareHouseInOut(type) {
                             edit_wareHouseIn_noOutHouse();
                         }
                     }
-                    cs.closeProgressBar();
                     if (type === "in") {
                         $("#SRDtl_wareHouseIn_noOutHouse").removeAttr("disabled");
                     } else if (type === "out") {
@@ -1924,7 +1892,6 @@ function wareHouseInOut(type) {
                                     buttons: {ok: {label: '确定'}},
                                     message: alertMessage,
                                     callback: function () {
-                                        quitback();
                                         _search();
                                     }
                                 });
@@ -2543,27 +2510,7 @@ function setA4(id) {
         }
     });
 }
-/**
- * 动态配置按钮,div,表格列字段
- * */
-function loadingButtonDivTable() {
-    var privilegeMap = ButtonAndDivPower(resourcePrivilege);
-    $.each(privilegeMap['div'],function(index,value){
-        if(value.isShow!=0) {
-            $("#"+value.privilegeId).hide();
-        }
-    });
-    $.each(privilegeMap['button'],function(index,value){
-        if(value.isShow!=0) {
-            $("#"+value.privilegeId).hide();
-        }
-    });
-    $.each(privilegeMap['table'],function(index,value){
-        if(value.isShow!=0) {
-            $('#addDetailgrid').setGridParam().hideCol(value.privilegeId);
-        }
-    });
-}
+
 /**
  * billStatus 单据状态新增为0
  * 动态配置按钮,div,表格列字段

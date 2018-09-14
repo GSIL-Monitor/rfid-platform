@@ -887,6 +887,7 @@ function save() {
                     url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + msg.result,
                 });
                 $("#addDetailgrid").trigger("reloadGrid");
+                _search()
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -1304,12 +1305,7 @@ function saveother(totActPrice) {
 function wareHouseInOut(type) {
     cs.showProgressBar();
     var billNo = $("#edit_billNo").val();
-    if (type === "in") {
-        $("#SRDtl_wareHouseIn_noOutHouse").attr({"disabled": "disabled"});
-    } else if (type === "out") {
-        $("#SRDtl_wareHouseOut").attr({"disabled": "disabled"});
-    }
-
+    $("#SRDtl_wareHouseOut").attr({"disabled": "disabled"});
     if (billNo && billNo != null) {
         if (inOutStockCheck(type)) {
             cs.closeProgressBar();
@@ -1317,18 +1313,10 @@ function wareHouseInOut(type) {
         }
         var url_ajax;
         var inOutString;
-        if (type === "out") {
-            url_ajax = basePath + "/logistics/saleOrderReturn/convertOut.do";
-            inOutString = "出";
-            taskType = 0;
-            wareHouse = $("#edit_origId").val();
-        } else {
-            url_ajax = basePath + "/logistics/saleOrderReturn/convertIn.do";
-            inOutString = "入";
-            taskType = -1;
-            wareHouse = $("#edit_destId").val();
-        }
-
+        url_ajax = basePath + "/logistics/saleOrderReturn/convertOut.do";
+        inOutString = "出";
+        taskType = 0;
+        wareHouse = $("#edit_origId").val();
         var allUniqueCodes = "";
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             var rowData = $("#addDetailgrid").getRowData(value);
@@ -1468,9 +1456,7 @@ function wareHouseInOut(type) {
                                     buttons: {ok: {label: '确定'}},
                                     message: alertMessage,
                                     callback: function () {
-                                        quitback();
-
-                                    },
+                                    }
                                 });
                             }
                         } else {
@@ -1480,15 +1466,9 @@ function wareHouseInOut(type) {
                 });
             }
         });
-
-
     } else {
         cs.closeProgressBar();
-        if (type === "in") {
-            $("#SODtl_wareHouseIn_noOutHouse").removeAttr("disabled");
-        } else if (type === "out") {
-            $("#SODtl_wareHouseOut").removeAttr("disabled");
-        }
+        $("#SODtl_wareHouseOut").removeAttr("disabled");
         bootbox.alert("请先保存当前单据");
     }
 }

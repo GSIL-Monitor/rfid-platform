@@ -165,28 +165,30 @@ function refresh() {
     resetData();
 }
 function resetData() {
-    var gridData = $("#searchGrid").data("kendoGrid");
-    var gridData1= $("#searchsaleGrid").data("kendoGrid");
-    var gridData2= $("#searchsalebusinessnameGrid").data("kendoGrid");
-    var gridData3= $("#searchsaleorignameGrid").data("kendoGrid");
-
-    /* $("#filter_in_deport").val(deportId);
-     var filters = serializeToFilter($("#searchForm"));*/
-    gridData.dataSource.filter({});
-    if(gridData1 != null && gridData1 != "" && gridData1 != undefined){
-        gridData1.dataSource.filter({});
-    }
-    if(gridData2 != null && gridData2 != "" && gridData2 != undefined){
-        gridData2.dataSource.filter({});
-    }
-    if(gridData3 != null && gridData3 != "" && gridData3 != undefined){
-        gridData3.dataSource.filter({});
+    var gridData;
+    if(exportExcelid == "searchGrid"){
+        gridData = $("#searchGrid").data("kendoGrid");
+    }else if(exportExcelid == "searchsaleGrid"){
+        gridData = $("#searchsaleGrid").data("kendoGrid");
+    }else if(exportExcelid == "searchsalebusinessnameGrid"){
+        gridData = $("#searchsalebusinessnameGrid").data("kendoGrid");
+    }else if(exportExcelid == "searchsaleorignameGrid"){
+        gridData = $("#searchsaleorignameGrid").data("kendoGrid");
     }
 
-    /*  gridData.dataSource.filter({
-     logic: "and",
-     filters: filters
-     });*/
+    var filters = serializeToFilter($("#searchForm"));
+
+    if(gridData != null && gridData != "" && gridData != undefined){
+        if(isJMS === "true"){
+            gridData.dataSource.filter({
+                logic: "and",
+                filters: filters
+            });
+        }else {
+            gridData.dataSource.filter({});
+        }
+    }
+
     _reset();
 
 }

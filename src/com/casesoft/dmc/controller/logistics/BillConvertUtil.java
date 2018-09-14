@@ -954,11 +954,10 @@ public class BillConvertUtil {
         saleOrderReturnBill.setBillRecordList(billRecordList);
         saleOrderReturnBill.setTotOutQty(saleOrderReturnBill.getTotOutQty() + epcList.size());
         saleOrderReturnBill.setTotOutVal(saleOrderReturnBill.getTotOutVal() + totRcvPrice);
+        saleOrderReturnBill.setStatus(BillConstant.BillStatus.Doing);
         if (saleOrderReturnBill.getTotOutQty().intValue() == saleOrderReturnBill.getTotQty().intValue()) {
-            saleOrderReturnBill.setStatus(BillConstant.BillStatus.End);
             saleOrderReturnBill.setOutStatus(BillConstant.BillInOutStatus.OutStore);
         } else {
-            saleOrderReturnBill.setStatus(BillConstant.BillStatus.Doing);
             saleOrderReturnBill.setOutStatus(BillConstant.BillInOutStatus.Outing);
         }
         //出库填写EpcStock中成本价格
