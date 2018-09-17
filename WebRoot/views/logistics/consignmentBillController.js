@@ -512,7 +512,7 @@ function initeditGrid(billId) {
                 $('#addDetailgrid').setCell(rowid, "totPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100));
                 $('#addDetailgrid').setCell(rowid, "totActPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100));
             } else if (cellname === "outMonyQty") {
-                debugger;
+
                 var isok = true;
                 var outQty = $('#addDetailgrid').getCell(rowid, "outQty");
                 /* var sale=$('#addDetailgrid').getCell(rowid, "sale");*/
@@ -536,6 +536,7 @@ function initeditGrid(billId) {
                     $('#addDetailgrid').setCell(rowid, "readysale", readysale);
                 }
                 //var sale=$('#addDetailgrid').getCell(rowid, "sale");
+
                 if (isok) {
                     /*  alert(beforsale);*/
                     /* var readysale=$('#addDetailgrid').getCell(rowid, "readysale");*/
@@ -936,6 +937,7 @@ function initAddGrid() {
                 }
             },
             {name: 'beforeoutQty', hidden: true},
+            {name: 'outMonyQty', hidden: true},
             {name: 'savehaveuniqueCodes', label: '唯一码', hidden: true},
             {name: 'savenohanveuniqueCodes', label: '唯一码', hidden: true},
             {name: 'readysale', label: '准备销售', hidden: true},
@@ -982,7 +984,7 @@ function initAddGrid() {
                 $('#addDetailgrid').setCell(rowid, "totPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "price") * value * 100) / 100));
                 $('#addDetailgrid').setCell(rowid, "totActPrice", -Math.abs(Math.round($('#addDetailgrid').getCell(rowid, "actPrice") * value * 100) / 100));
             } else if (cellname === "outMonyQty") {
-                debugger;
+
                 var isok = true;
                 var outQty = $('#addDetailgrid').getCell(rowid, "outQty");
                 /* var sale=$('#addDetailgrid').getCell(rowid, "sale");*/
@@ -1465,11 +1467,11 @@ function addProductsOnCodes() {
          }else{
          codes+=","+productInfo.code;
          }*/
-        debugger;
+
         var isok = 0;
         var inventory = $("#inventoryCodeGrid").getRowData(value);
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            debugger;
+
 
             var Detailgrid = $("#addDetailgrid").getRowData(value);
             if (inventory.sku == Detailgrid.sku) {
@@ -1533,6 +1535,7 @@ function addProductsOnCodes() {
 }
 function saleRetrunNook() {
     cs.showProgressBar();
+    isfrist=true;
     var isok = true;
     var billNo = $("#edit_billNo").val();
     var epcArray = [];
@@ -1604,6 +1607,7 @@ function saleRetrunNook() {
             var rowData = $("#addDetailgrid").getRowData(value);
             dtlArray.push(rowData);
         });
+
         console.log(dtlArray);
         if (isok) {
             $("#CMDtl_wareHouseokSale").hide();
@@ -1629,6 +1633,8 @@ function saleRetrunNook() {
                          });*/
                         $("#modal-addEpc-table").modal('hide');
                         $("#addDetailgrid").trigger("reloadGrid");
+                        initeditGrid($("#edit_billNo").val());
+
                         bootbox.alert(msg.msg);
 
                     } else {
@@ -1749,7 +1755,7 @@ function search_discount_onblur() {
 }
 //将整单折扣设置到明细中
 function setDiscount() {
-    debugger;
+
     if (editDtailiRow != null && editDtailiCol != null) {
         $("#addDetailgrid").saveCell(editDtailiRow, editDtailiCol);
         editDtailiRow = null;
