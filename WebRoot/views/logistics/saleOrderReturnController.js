@@ -767,7 +767,7 @@ function initButtonGroup(type){
             "    <i class='ace-icon fa fa-print'></i>" +
             "    <span class='bigger-110'>打印</span>" +
             "</button>"+
-            "<button id='SRDtl_check' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='checkBillNo()'>" +
+            "<button id='SRDtl_check' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='checkAjax()'>" +
             "    <i class='ace-icon fa fa-check-square-o'></i>" +
             "    <span class='bigger-110'>审核</span>" +
             "</button>"+
@@ -1539,7 +1539,7 @@ function addProductsOnCode() {
         $("#so_savecode_button").removeAttr("disabled");
         $("#add-uniqCode-dialog").modal('hide');
         setAddFooterData();
-        var check = false;
+        var check = true;
         saveother(0 - alltotActPrice,check);
     }
 }
@@ -1705,19 +1705,14 @@ function saveother(totActPrice,check) {
                 });
                 $("#edit_billNo").val(msg.result);
                 billNo = msg.result;
-                $("#addDetailgrid").jqGrid('setGridParam', {
-                    page: 1,
-                    url: basePath + "/logistics/saleOrderReturn/returnDetails.do?billNo=" + msg.result,
-                });
-                $("#addDetailgrid").trigger("reloadGrid");
+                initeditGrid(msg.result);
                 if (check==true){
                     $('#codegrid').jqGrid("clearGridData");
                     $('#codegrid').jqGrid('GridUnload');
                     initCodeGrid({billNo: $("#edit_billNo").val(), warehId: $("#edit_origId").val()});
-                    checkAjax($("#edit_billNo").val());
+                    $("#codegrid").trigger("reloadGrid");
                 }
                 $("#grid").trigger("reloadGrid");
-                addNew();
             } else {
                 bootbox.alert(msg.msg);
             }
@@ -2219,87 +2214,9 @@ function updateBillDetailData(){
     });
 
 }
-
-function checkBillNo() {
-    $("#edit_origId").removeAttr("disabled");
-    var status = $("#edit_status").val();
-    if (status != "0") {
-        bootbox.alert("不是录入状态，不可审核!");
-        return
-    }
-    bootbox.confirm({
-        buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
-        message: "审核确定",
-        callback: function (result) {
-            if (result) {
-                $("#SRDtl_check").attr({"disabled": "disabled"});
-                var productListInfo = [];
-                var ct = $("#edit_customerType").val();
-                $.each($("#codegrid").getDataIDs(), function (index, value) {
-                    var productInfo = $("#codegrid").getRowData(value);
-                    if(productInfo.code!=""&&productInfo.code!=undefined){
-                        productInfo.qty = 1;
-                        if (ct == "CT-AT") {//省代价格
-                            productInfo.price = productInfo.puPrice;
-                        } else if (ct == "CT-ST") {//门店价格
-                            productInfo.price = productInfo.wsPrice;
-                        } else if (ct == "CT-LS") {//吊牌价格
-                            productInfo.price = productInfo.price;
-                        }
-                        productInfo.outQty = 0;
-                        productInfo.inQty = 0;
-                        productInfo.status = 0;
-                        productInfo.inStatus = 0;
-                        productInfo.outStatus = 0;
-                        if ($("#edit_discount").val() && $("#edit_discount").val() !== null) {
-                            productInfo.discount = $("#edit_discount").val();
-                        } else {
-                            productInfo.discount = 100;
-                        }
-                        productInfo.uniqueCodes = productInfo.code;
-                        productInfo.totPrice = -Math.abs(productInfo.price);
-                        productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
-                        productInfo.totActPrice = -Math.abs(productInfo.actPrice);
-                        productListInfo.push(productInfo);
-                    }
-                });
-                var isAdd = true;
-                var alltotActPrice = 0;
-                $('#addDetailgrid').jqGrid("clearGridData");
-                $('#addDetailgrid').jqGrid('GridUnload');
-                initAddGrid();
-                $.each(productListInfo, function (index, value) {
-                    isAdd = true;
-                    $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
-                        var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
-                        if (value.sku === dtlRow.sku) {
-                            dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                            dtlRow.totPrice = -Math.abs(dtlRow.qty * dtlRow.price);
-                            dtlRow.totActPrice = -Math.abs(dtlRow.qty * dtlRow.actPrice);
-                            alltotActPrice += -Math.abs(dtlRow.qty * dtlRow.actPrice);
-                            dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
-                            if (dtlRow.id) {
-                                $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
-                            } else {
-                                $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
-                            }
-                            isAdd = false;
-                        }
-                        console.log(dtlRow.uniqueCodes);
-                    });
-                    if (isAdd) {
-                        $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
-                    }
-                });
-                $("#SRDtl_check").removeAttr("disabled");
-                var check = true;
-                saveother(0 - alltotActPrice,check);
-            }else {
-            }
-        }
-    });
-}
-function checkAjax(billNo) {
+//加盟商退货专用审核通过后才能
+function checkAjax() {
+    var billNo = $("#edit_billNo").val();
     $.ajax({
         url: basePath + "/logistics/saleOrderReturn/check.do?billNo=" + billNo,
         type: "POST",
@@ -2309,8 +2226,8 @@ function checkAjax(billNo) {
                     text: result.msg,
                     class_name: 'gritter-success  gritter-light'
                 });
-                addNew();
                 _search();
+                addNew();
             } else {
                 $.gritter.add({
                     text: result.msg,

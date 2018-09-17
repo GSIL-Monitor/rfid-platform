@@ -1887,6 +1887,7 @@ function addProductsOnCode() {
         });
         if (productListInfo.length == 0) {
             bootbox.alert("请添加唯一码");
+            $("#so_savecode_button").removeAttr("disabled");
             return;
         }
         var isAdd = true;
@@ -1902,6 +1903,7 @@ function addProductsOnCode() {
                             text: value.code + "不能重复添加",
                             class_name: 'gritter-success  gritter-light'
                         });
+                        $("#so_savecode_button").removeAttr("disabled");
                         return true;
                     }
                     dtlRow.qty = parseInt(dtlRow.qty) + 1;
