@@ -513,7 +513,8 @@ function initAddGrid() {
                 }
             },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
-            {name: 'puPrice', label: '门店批发价', hidden: true},
+            {name: 'puPrice', label: '代理商批发价格', hidden: true},
+            {name: 'wsPrice', label: '门店批发价格', hidden: true},
             {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {name:'stylePriceMap',label:'价格表',hidden:true},
@@ -544,9 +545,10 @@ function initAddGrid() {
                 $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);*/
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
-                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "puPrice")&&isUserAbnormal){
-                    $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "puPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
-                    var_actPrice =  $('#addDetailgrid').getCell(rowid, "puPrice");
+                debugger
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "wsPrice")&&isUserAbnormal){
+                    $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "wsPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
+                    var_actPrice =  $('#addDetailgrid').getCell(rowid, "wsPrice");
                     $('#addDetailgrid').setCell(rowid, "actPrice", $('#addDetailgrid').getCell(rowid, "puPrice"));
                     $('#addDetailgrid').setCell(rowid, "abnormalStatus",1);
                     changeWordscolor(rowid,"blue");
@@ -902,7 +904,8 @@ function initeditGrid(billId) {
             },
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
-            {name: 'puPrice', label: '门店批发价', hidden: true},
+            {name: 'puPrice', label: '代理商批发价格', hidden: true},
+            {name: 'wsPrice', label: '门店批发价格', hidden: true},
             {name: 'returnbillNo', label: '退货单号', hidden: true},
             {name:'stylePriceMap',label:'价格表',hidden:true},
             {name:'abnormalStatus',label:'异常单状态',hidden:true}
@@ -936,10 +939,11 @@ function initeditGrid(billId) {
             if (cellname === "discount") {
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
-                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "puPrice")&&isUserAbnormal){
-                    $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "puPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
-                    var_actPrice =  $('#addDetailgrid').getCell(rowid, "puPrice");
-                    $('#addDetailgrid').setCell(rowid, "actPrice", $('#addDetailgrid').getCell(rowid, "puPrice"));
+                var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(rowid, "stylePriceMap"));
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
+                    $('#addDetailgrid').setCell(rowid, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
+                    var_actPrice =  stylePriceMap.wsPrice;
+                    $('#addDetailgrid').setCell(rowid, "actPrice", stylePriceMap.wsPrice);
                     $('#addDetailgrid').setCell(rowid, "abnormalStatus",1);
                     changeWordscolor(rowid,"blue");
                 }else{
@@ -1277,7 +1281,7 @@ function initEditFormValid() {
 }
 //将整单折扣设置到明细中
 function setDiscount() {
-
+    debugger
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1288,10 +1292,11 @@ function setDiscount() {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             //判断实际价格是不是小于门店批发价格
             var var_actPrice;
-            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<$('#addDetailgrid').getCell(value, "puPrice")&&isUserAbnormal){
-                $('#addDetailgrid').setCell(value, "discount", parseFloat($('#addDetailgrid').getCell(value, "puPrice")/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
-                var_actPrice =  $('#addDetailgrid').getCell(value, "puPrice");
-                $('#addDetailgrid').setCell(value, "actPrice", $('#addDetailgrid').getCell(value, "puPrice"));
+            var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(rowid, "stylePriceMap"));
+            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
+                $('#addDetailgrid').setCell(value, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
+                var_actPrice = stylePriceMap.wsPrice;
+                $('#addDetailgrid').setCell(value, "actPrice", stylePriceMap.wsPrice);
                 $('#addDetailgrid').setCell(value, "abnormalStatus",1);
                 changeWordscolor(value,"blue");
             }else{
@@ -1598,9 +1603,9 @@ function addProductInfo(status) {
                 productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                 productInfo.abnormalStatus=0;
             }else {
-                if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.puPrice&&isUserAbnormal){
-                    productInfo.actPrice = styleRow.puPrice;
-                    productInfo.discount = parseFloat(styleRow.puPrice/productInfo.price).toFixed(2)*100;
+                if(Math.round(productInfo.price * productInfo.discount) / 100<styleRow.wsPrice&&isUserAbnormal){
+                    productInfo.actPrice = styleRow.wsPrice;
+                    productInfo.discount = parseFloat(styleRow.wsPrice/productInfo.price).toFixed(2)*100;
                     productInfo.abnormalStatus=1;
                 }else{
                     productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
@@ -1860,9 +1865,9 @@ function addProductsOnCode() {
                     productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
                     productInfo.abnormalStatus=0;
                 }else {
-                    if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice&&isUserAbnormal){
-                        productInfo.actPrice = productInfo.puPrice;
-                        productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
+                    if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.wsPrice&&isUserAbnormal){
+                        productInfo.actPrice = productInfo.wsPrice;
+                        productInfo.discount = parseFloat(productInfo.wsPrice/productInfo.price).toFixed(2)*100;
                         productInfo.abnormalStatus=1;
                     }else{
                         productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
@@ -1955,9 +1960,9 @@ function addProductsNoOutPutCode(productInfo) {
         }
         productInfo.puPrice=productInfo.puPrice;
         //判断实际价格是不是小于门店批发价格
-        if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.puPrice&&isUserAbnormal){
-            productInfo.actPrice = productInfo.puPrice;
-            productInfo.discount = parseFloat(productInfo.puPrice/productInfo.price).toFixed(2)*100;
+        if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.wsPrice&&isUserAbnormal){
+            productInfo.actPrice = productInfo.wsPrice;
+            productInfo.discount = parseFloat(productInfo.wsPrice/productInfo.price).toFixed(2)*100;
             productInfo.abnormalStatus=1;
         }else{
             productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
