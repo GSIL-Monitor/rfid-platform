@@ -165,7 +165,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
             User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToTransferOrderBill(transferOrderBill, transferOrderBillDtlList, curUser);
             this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList);
-            return new MessageBox(true, "保存成功", transferOrderBill.getBillNo());
+            return new MessageBox(true, "保存成功", transferOrderBill);
         } catch (Exception e) {
             e.printStackTrace();
             return new MessageBox(false, e.getMessage());

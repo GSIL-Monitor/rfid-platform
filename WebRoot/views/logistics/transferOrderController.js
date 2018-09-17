@@ -200,6 +200,11 @@ function initDetailData(rowid) {
     initSelectOrigEditForm();
     initSelectDestEditForm();
 
+    loadDetailData(rowData);
+}
+
+//右边明细表加载数据
+function loadDetailData(rowData) {
     $("#editForm").setFromData(rowData);
     transferOrder_status=rowData.status;
 
@@ -759,7 +764,7 @@ function save() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 if ($("#edit_billNo").val() === "" || $("#edit_billNo").val() === null || $("#edit_billNo").val() === undefined) {
-                    $("#edit_billNo").val(msg.result);
+                    $("#edit_billNo").val(msg.result.billNo);
                 }
 
                 $("#addDetailgrid").jqGrid('setGridParam', {
@@ -770,6 +775,7 @@ function save() {
                 $("#grid").trigger("reloadGrid");
                 addNew();
                 _search();
+                loadDetailData(msg.result);
             } else {
                 bootbox.alert(msg.msg);
             }
