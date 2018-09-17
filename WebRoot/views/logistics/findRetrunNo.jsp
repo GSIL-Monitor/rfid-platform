@@ -59,7 +59,7 @@
                 $(viewTextId).val(row.name);
                 closeUnitSelectDialog();*/
 
-               if(billNo.indexOf("CM")!=-1){
+               /*if(billNo.indexOf("CM")!=-1){
                    $.ajax({
                        url: basePath +"/logistics/Consignment/quit.do?billNo=" +billNo,
                        cache: false,
@@ -78,7 +78,7 @@
                        }
                    });
 
-               }
+               }*/
                if(billNo.indexOf("SO")!=-1){
                    $.ajax({
                        url: basePath +"/logistics/saleOrder/quit.do?billNo=" +billNo,
