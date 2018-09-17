@@ -831,7 +831,9 @@ public class CacheManager {
 	}
 
 	public static void initCheckWarehouse() throws Exception {
-		String checkWarehouse = PropertyUtil.getValue("checkWarehouse");
+		SettingService settingService = (SettingService)SpringContextUtil.getBean("settingService");
+		Setting setting = settingService.get("id","checkWarehouse");
+		String checkWarehouse = setting.getValue();
 		redisUtils.hset(PREFIX_CHECKWAREHOUSE, "checkWarehouse", JSON.toJSONString(checkWarehouse));
 
 	}
