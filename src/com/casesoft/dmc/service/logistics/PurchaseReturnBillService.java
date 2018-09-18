@@ -192,24 +192,12 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 	}
 
 	public MessageBox saveBusiness(PurchaseReturnBill purchaseOrderBill, List<PurchaseReturnBillDtl> purchaseOrderBillDtlList, Business business) throws Exception {
-		List<Style> styleList = new ArrayList<>();
-		Map<String,Style> styleMap = new HashMap<>();
-		for(PurchaseReturnBillDtl dtl : purchaseOrderBillDtlList){
-			if(dtl.getStatus() == BillConstant.BillDtlStatus.OutStore ){
-				Style s = CacheManager.getStyleById(dtl.getStyleId());
-				s.setClass6(BillConstant.InStockType.BackOrder);
-				styleMap.put(s.getStyleId(),s);
-			}
-		}
-		styleList = new ArrayList<>(styleMap.values());
+
 		MessageBox messageBox = this.taskService.checkEpcStock(business);
 		if(messageBox.getSuccess()){
 			this.purchaseReturnBillDao.saveOrUpdate(purchaseOrderBill);
 			this.purchaseReturnBillDao.doBatchInsert(purchaseOrderBillDtlList);
 			this.taskService.webSave(business);
-			if(styleList.size() > 0){
-				this.purchaseReturnBillDao.doBatchInsert(styleList);
-			}
 			return messageBox;
 		}else{
 			return messageBox;
