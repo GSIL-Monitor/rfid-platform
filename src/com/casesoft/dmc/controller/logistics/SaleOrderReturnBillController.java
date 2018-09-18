@@ -604,8 +604,17 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         User currentUser = CacheManager.getUserById(userId);
         SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.get("billNo", billNo);
-        Business business = BillConvertUtil.covertToSaleReturnOrderBusinessOut(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
-        MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderReturnBillService.findAbnormalCodeMessageByBillNo(billNo);
+        String AbnormalCodeMessagecodes="";
+        for(AbnormalCodeMessage abnormalCodeMessage:abnormalCodeMessageByBillNo){
+            if(CommonUtil.isNotBlank(AbnormalCodeMessagecodes)){
+                AbnormalCodeMessagecodes+=","+abnormalCodeMessage.getCode();
+            }else{
+                AbnormalCodeMessagecodes+=abnormalCodeMessage.getCode();
+            }
+        }
+        Business business = BillConvertUtil.covertToSaleReturnOrderBusinessOut(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser,AbnormalCodeMessagecodes,abnormalCodeMessageByBillNo);
+        MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business,abnormalCodeMessageByBillNo);
         if (messageBox.getSuccess()) {
             return new MessageBox(true, "出库成功");
         } else {
@@ -636,7 +645,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             User currentUser = CacheManager.getUserById(userId);
             SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.get("billNo", billNo);
             Business business = BillConvertUtil.covertToSaleReturnOrderBusinessIn(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
-            MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
+            MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business,null);
             if (messageBox.getSuccess()) {
                 String rBillNo = saleOrderReturnBill.getBillNo();
                 String totQty = saleOrderReturnBill.getTotQty().toString();

@@ -1753,6 +1753,10 @@ function wareHouseInOut(type) {
             var rowData = $("#addDetailgrid").getRowData(value);
             allUniqueCodes = allUniqueCodes + "," + rowData.uniqueCodes;
         });
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            allUniqueCodes = allUniqueCodes + "," + rowData.noOutPutCode;
+        });
         if (allUniqueCodes.substr(0, 1) == ",") {
             allUniqueCodes = allUniqueCodes.substr(1);
         }
@@ -1776,8 +1780,23 @@ function wareHouseInOut(type) {
                 $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                     var rowData = $("#addDetailgrid").getRowData(value);
                     var codes = rowData.uniqueCodes.split(",");
+                    var noOutcodes = rowData.noOutPutCode.split(",");
                     if (codes && codes != null && codes != "") {
                         $.each(codes, function (index, value) {
+                            if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                                var epc = {};
+                                epc.code = value;
+                                epc.styleId = rowData.styleId;
+                                epc.sizeId = rowData.sizeId;
+                                epc.colorId = rowData.colorId;
+                                epc.qty = 1;
+                                epc.sku = rowData.sku;
+                                epcArray.push(epc)
+                            }
+                        });
+                    }
+                    if (noOutcodes && noOutcodes != null && noOutcodes != "") {
+                        $.each(noOutcodes, function (index, value) {
                             if (uniqueCodes_inHouse.indexOf(value) != -1) {
                                 var epc = {};
                                 epc.code = value;

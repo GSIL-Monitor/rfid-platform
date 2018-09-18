@@ -209,7 +209,7 @@ public class InventoryBillController extends BaseController implements ILogistic
             String epcCode = code.toUpperCase();
             code = EpcSecretUtil.decodeEpc(epcCode).substring(0, 13);
         }
-        EpcStock epcStock = this.inventoryBillService.checkEpcStockNew(code,ownerId);
+        EpcStock epcStock = this.inventoryBillService.checkEpcStock(code);
         if (CommonUtil.isBlank(epcStock)) {
             Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
             if (CommonUtil.isNotBlank(tagEpc)) {

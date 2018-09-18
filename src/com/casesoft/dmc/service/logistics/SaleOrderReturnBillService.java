@@ -234,7 +234,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         return this.saleOrderReturnBillDao.find(hql, new Object[]{billNo});
     }
 
-    public MessageBox saveBusiness(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> purchaseOrderBillDtlList, Business business) throws Exception {
+    public MessageBox saveBusiness(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> purchaseOrderBillDtlList, Business business, List<AbnormalCodeMessage> abnormalCodeMessageByBillNo) throws Exception {
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if (messageBox.getSuccess()) {
             this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
@@ -267,6 +267,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
                 }
                 if (list.size() != 0) {
                     this.saleOrderReturnBillDao.doBatchInsert(list);
+                }
+                if(CommonUtil.isNotBlank(abnormalCodeMessageByBillNo)&&abnormalCodeMessageByBillNo.size()!=0){
+                    this.saleOrderReturnBillDao.doBatchInsert(abnormalCodeMessageByBillNo);
                 }
             }
             return messageBox;
