@@ -1909,6 +1909,7 @@ function wareHouseInOut(type) {
                                     }
                                 });
                             }
+                            initeditGrid($("#edit_billNo").val());
                         } else {
                             bootbox.alert(msg.msg);
                         }
