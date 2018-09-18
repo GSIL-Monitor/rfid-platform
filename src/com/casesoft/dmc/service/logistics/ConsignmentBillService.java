@@ -26,9 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -150,14 +148,16 @@ public class ConsignmentBillService extends BaseService<ConsignmentBill, String>
     }
 
     public MessageBox saveBusiness(ConsignmentBill consignmentBill, List<ConsignmentBillDtl> consignmentBillDtlList, Business business) throws Exception {
+        Map<String,Style> styleMap = new HashMap<>();
         List<Style> styleList = new ArrayList<>();
         for(ConsignmentBillDtl dtl : consignmentBillDtlList){
             if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore ){
                 Style s = CacheManager.getStyleById(dtl.getStyleId());
                 s.setClass6(BillConstant.InStockType.BackOrder);
-                styleList.add(s);
+                styleMap.put(s.getStyleId(),s);
             }
         }
+        styleList = new ArrayList<>(styleMap.values());
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if(messageBox.getSuccess()){
             this.consignmentBillDao.saveOrUpdate(consignmentBill);

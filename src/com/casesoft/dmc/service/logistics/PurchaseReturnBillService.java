@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Session on 2017-06-29.
@@ -191,13 +193,15 @@ public class PurchaseReturnBillService implements IBaseService<PurchaseReturnBil
 
 	public MessageBox saveBusiness(PurchaseReturnBill purchaseOrderBill, List<PurchaseReturnBillDtl> purchaseOrderBillDtlList, Business business) throws Exception {
 		List<Style> styleList = new ArrayList<>();
+		Map<String,Style> styleMap = new HashMap<>();
 		for(PurchaseReturnBillDtl dtl : purchaseOrderBillDtlList){
 			if(dtl.getStatus() == BillConstant.BillDtlStatus.OutStore ){
 				Style s = CacheManager.getStyleById(dtl.getStyleId());
 				s.setClass6(BillConstant.InStockType.BackOrder);
-				styleList.add(s);
+				styleMap.put(s.getStyleId(),s);
 			}
 		}
+		styleList = new ArrayList<>(styleMap.values());
 		MessageBox messageBox = this.taskService.checkEpcStock(business);
 		if(messageBox.getSuccess()){
 			this.purchaseReturnBillDao.saveOrUpdate(purchaseOrderBill);

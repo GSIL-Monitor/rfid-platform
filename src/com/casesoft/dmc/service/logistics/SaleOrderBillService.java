@@ -424,15 +424,17 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private TaskService taskService;
 
     public MessageBox saveBusiness(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business) throws Exception {
+        Map<String,Style> styleMap = new HashMap<>();
         List<Style> styleList = new ArrayList<>();
         for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
             if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
                 Style s = CacheManager.getStyleById(dtl.getStyleId());
                 s.setClass6(BillConstant.InStockType.BackOrder);
-                styleList.add(s);
+                styleMap.put(s.getStyleId(),s);
             }
         }
         //检查epc
+        styleList = new ArrayList<>(styleMap.values());
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         boolean success = messageBox.getSuccess();
         if(success){

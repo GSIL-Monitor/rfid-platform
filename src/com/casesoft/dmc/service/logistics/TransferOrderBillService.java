@@ -174,14 +174,16 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
      * web调拨转换出入库任务
      * */
     public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business,List<BillRecord> billRecordList) throws Exception {
+        Map<String,Style> styleMap = new HashMap<>();
         List<Style> styleList = new ArrayList<>();
         for(TransferOrderBillDtl dtl : transferOrderBillDtlList){
             if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore){
                 Style s = CacheManager.getStyleById(dtl.getStyleId());
                 s.setClass6(BillConstant.InStockType.BackOrder);
-                styleList.add(s);
+                styleMap.put(s.getStyleId(),s);
             }
         }
+        styleList = new ArrayList<>(styleMap.values());
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if(messageBox.getSuccess()){
             this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
@@ -219,13 +221,15 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
      * */
     public MessageBox saveBusinessOnHaveSaleNo(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business,List<Epc> epcList, User user, Setting setting) throws Exception {
         List<Style> styleList = new ArrayList<>();
+        Map<String,Style> styleMap = new HashMap<>();
         for(TransferOrderBillDtl dtl : transferOrderBillDtlList){
             if(dtl.getStatus() == BillConstant.BillDtlStatus.InStore){
                 Style s = CacheManager.getStyleById(dtl.getStyleId());
                 s.setClass6(BillConstant.InStockType.BackOrder);
-                styleList.add(s);
+                styleMap.put(s.getStyleId(),s);
             }
         }
+        styleList = new ArrayList<>(styleMap.values());
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if(messageBox.getSuccess()){
             this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
