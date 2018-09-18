@@ -211,7 +211,7 @@ public class InventoryBillController extends BaseController implements ILogistic
         }
         EpcStock epcStock = this.inventoryBillService.checkEpcStockNew(code,ownerId);
         if (CommonUtil.isBlank(epcStock)) {
-            Epc tagEpc = this.epcStockService.findTagEpcByCodeNew(code,ownerId);
+            Epc tagEpc = this.epcStockService.findTagEpcByCode(code);
             if (CommonUtil.isNotBlank(tagEpc)) {
                 epcStock = new EpcStock();
                 epcStock.setId(code);

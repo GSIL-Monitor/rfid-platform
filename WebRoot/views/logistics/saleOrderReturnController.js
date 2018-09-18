@@ -1617,7 +1617,7 @@ function addProductsNoOutPutCode(productInfo) {
             }
         });
         $("#so_savecode_button").removeAttr("disabled");
-        $("#add-uniqCode-dialog").modal('hide');
+        //$("#add-uniqCode-dialog").modal('hide');
         setAddFooterData();
         var check = false;
         saveother(0 - alltotActPrice,check);
