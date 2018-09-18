@@ -311,9 +311,7 @@ function initSearchGrid() {
             {name: 'remark', label: '备注', hidden: true},
             {name: 'preBalance', label: '售前余额', hidden: true},
             {name: 'afterBalance', label: '售后余额', hidden: true},
-            {name: 'busnissName', label: '销售员',width: 30},
-
-
+            {name: 'busnissName', label: '销售员',width: 30}
         ],
         viewrecords: true,
         autowidth: true,
@@ -1122,13 +1120,15 @@ function save() {
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
     $("#edit_busnissId").removeAttr('disabled');
-
-    if ($("#edit_origId").val() == $("#edit_destId").val()) {
-        bootbox.alert("不能在相同的单位之间做销售退货");
-        cs.closeProgressBar();
-        return;
+    //寄存单转的可以相同单位保存
+    var ttt=$("#edit_srcBillNo").val();
+    if ($("#edit_srcBillNo").val()===""){
+        if ($("#edit_origId").val()==$("#edit_destId").val()) {
+            bootbox.alert("不能在相同的单位之间做销售退货");
+            cs.closeProgressBar();
+            return;
+        }
     }
-
     if(pageType=="edit"){
         if(slaeOrderReturn_customerType!=$("#edit_customerType").val()){
             bootbox.alert("客户类型不相同");
@@ -1136,7 +1136,6 @@ function save() {
             return;
         }
     }
-
     $("#editForm").data('bootstrapValidator').destroy();
     $('#editForm').data('bootstrapValidator', null);
     initEditFormValid();
