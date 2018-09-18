@@ -424,17 +424,6 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private TaskService taskService;
 
     public MessageBox saveBusiness(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business) throws Exception {
-        Map<String,Style> styleMap = new HashMap<>();
-        List<Style> styleList = new ArrayList<>();
-        for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
-            if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
-                Style s = CacheManager.getStyleById(dtl.getStyleId());
-                s.setClass6(BillConstant.InStockType.BackOrder);
-                styleMap.put(s.getStyleId(),s);
-            }
-        }
-        //检查epc
-        styleList = new ArrayList<>(styleMap.values());
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         boolean success = messageBox.getSuccess();
         if(success){
@@ -444,9 +433,6 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                 this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
             }
             this.taskService.webSave(business);
-            if (styleList.size() > 0) {
-                this.saleOrderBillDao.doBatchInsert(styleList);
-            }
             //记录第一次入库时间
             if(business.getType().equals(Constant.TaskType.Inbound)) {
                 List<Record> recordList = business.getRecordList();
