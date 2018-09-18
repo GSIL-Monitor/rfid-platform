@@ -27,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by CaseSoft-Software on 2017-06-13.
@@ -324,14 +326,16 @@ public class PurchaseOrderBillService implements IBaseService<PurchaseOrderBill,
     }
 
     public void saveBusiness(PurchaseOrderBill purchaseOrderBill, List<PurchaseOrderBillDtl> purchaseOrderBillDtlList, Business business) {
+        Map<String,Style> styleMap = new HashMap<>();
         List<Style> styleList = new ArrayList<>();
         for (PurchaseOrderBillDtl dtl : purchaseOrderBillDtlList) {
             if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore && dtl.getInStockType().equals(BillConstant.InStockType.NewStyle)) {
                 Style s = CacheManager.getStyleById(dtl.getStyleId());
                 s.setClass6(BillConstant.InStockType.BackOrder);
-                styleList.add(s);
+                styleMap.put(s.getStyleId(),s);
             }
         }
+        styleList = new ArrayList<>(styleMap.values());
         this.purchaseBillOrderDao.saveOrUpdate(purchaseOrderBill);
         this.purchaseBillOrderDao.doBatchInsert(purchaseOrderBillDtlList);
         if (business.getType().equals(Constant.TaskType.Inbound)) {
