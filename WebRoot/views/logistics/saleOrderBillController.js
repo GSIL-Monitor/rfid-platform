@@ -13,6 +13,7 @@ var autoSelect =false;//是否自动选中
 var showScanDialog = false;
 var isCheckWareHouse=false;//是否检测出库仓库
 var slaeOrder_status = "0";
+var outStatus = null;//出库状态
 $(function () {
     load().then(function (data) {
         /*初始化左侧grig*/
@@ -224,6 +225,7 @@ function fullDetailData(rowData) {
         $("#edit_guest_button").removeAttr("disabled");
         $("#edit_origId").attr('disabled', true);
         $("#edit_destId").attr('disabled', true);
+        $("#SODtl_save").removeAttr("disabled");
     }
     $(".selectpicker").selectpicker('refresh');
     $('#addDetailgrid').jqGrid("clearGridData");
@@ -316,6 +318,7 @@ function initAddGrid() {
             {
                 name: 'outStatusImg', label: '出库状态', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
+                    outStatus = rowObject.outStatus;
                     if (rowObject.outStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
                     } else if (rowObject.outStatus == 2) {
@@ -670,6 +673,7 @@ function initeditGrid(billId) {
             {
                 name: 'outStatusImg', label: '出库状态', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
+                    outStatus = rowObject.outStatus;
                     if (rowObject.outStatus == 0) {
                         return '<i class="fa fa-tasks blue" title="订单状态"></i>';
                     } else if (rowObject.outStatus == 2) {
@@ -925,7 +929,6 @@ function initeditGrid(billId) {
         cellsubmit: 'clientArray',
         afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
             var rowData = $('#addDetailgrid').getRowData(rowid);
-            debugger
             if ((parseInt(rowData.qty) - parseInt(rowData.outQty)) >= parseInt(rowData.returnQty) || rowData.returnQty == "") {
                 $('#addDetailgrid').editCell(iRow, iCol, true);
             } else {
@@ -1425,7 +1428,7 @@ function initButtonGroup(billStatus){
         if(groupid=="JMS"){
             $("#SODtl_doPrintA4").hide();
         }
-    $("#addDetail").show();
+        $("#addDetail").show();
     loadingButtonDivTable(billStatus);
 }
 function loadingButtonDivTable(billStatus) {
@@ -1469,6 +1472,9 @@ function loadingButtonDivTable(billStatus) {
             $("#"+value.privilegeId).removeAttr("disabled");
         }
     });
+    if (userId == "admin") {
+        $("#SODtl_save").removeAttr("disabled");
+    }
 }
 var dialogOpenPage;
 var prefixId;
@@ -2077,38 +2083,52 @@ function saveAjax() {
  * 保存按钮方法
  * */
 function save() {
-    cs.showProgressBar();
-    $("#edit_customerType").removeAttr('disabled');
-    $("#edit_origId").removeAttr('disabled');
-    $("#edit_destId").removeAttr('disabled');
-    $("#edit_busnissId").removeAttr('disabled');
+    var p = new Promise(function (resolve,reject) {
+        cs.showProgressBar();
+        $("#edit_customerType").removeAttr('disabled');
+        $("#edit_origId").removeAttr('disabled');
+        $("#edit_destId").removeAttr('disabled');
+        $("#edit_busnissId").removeAttr('disabled');
 
-    if ($("#edit_origId").val() == $("#edit_destId").val()) {
-        bootbox.alert("不能在相同的单位之间销售");
-        cs.closeProgressBar();
-        return false;
-    }
+        if ($("#edit_origId").val() == $("#edit_destId").val()) {
+            bootbox.alert("不能在相同的单位之间销售");
+            cs.closeProgressBar();
+            return false;
+        }
 
-    $("#editForm").data('bootstrapValidator').destroy();
-    $('#editForm').data('bootstrapValidator', null);
-    initEditFormValid();
-    $('#editForm').data('bootstrapValidator').validate();
-    if (!$('#editForm').data('bootstrapValidator').isValid()) {
-        cs.closeProgressBar();
-        return false;
-    }
-    if ($("#addDetailgrid").getDataIDs().length == 0) {
-        bootbox.alert("请添加销售商品！");
-        cs.closeProgressBar();
-        return false;
-    }
-    if (addDetailgridiRow != null && addDetailgridiCol != null) {
-        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
-        addDetailgridiRow = null;
-        addDetailgridiCol = null;
-    }
-    //客户余额变动
-    guestBalanceChange();
+        $("#editForm").data('bootstrapValidator').destroy();
+        $('#editForm').data('bootstrapValidator', null);
+        initEditFormValid();
+        $('#editForm').data('bootstrapValidator').validate();
+        if (!$('#editForm').data('bootstrapValidator').isValid()) {
+            cs.closeProgressBar();
+            $("#edit_customerType").attr('disabled',true);
+            $("#edit_origId").attr('disabled',true);
+            $("#edit_destId").attr('disabled',true);
+            $("#edit_busnissId").attr('disabled',true);
+            reject("失败");
+            return false;
+        }
+        if ($("#addDetailgrid").getDataIDs().length == 0) {
+            bootbox.alert("请添加销售商品！");
+            reject("请添加销售商品！");
+            $("#edit_customerType").attr('disabled',true);
+            $("#edit_origId").attr('disabled',true);
+            $("#edit_destId").attr('disabled',true);
+            $("#edit_busnissId").attr('disabled',true);
+            cs.closeProgressBar();
+            return false;
+        }
+        if (addDetailgridiRow != null && addDetailgridiCol != null) {
+            $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+            addDetailgridiRow = null;
+            addDetailgridiCol = null;
+        }
+        //客户余额变动
+        guestBalanceChange();
+        resolve("成功");
+    });
+    return p;
 }
 
 function edit_discount_onblur() {

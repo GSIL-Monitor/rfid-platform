@@ -457,13 +457,8 @@
             } else {
                 $("#SODtl_wareHouseIn").attr({"disabled": "disabled"})
             }
-
             if($("#edit_destId").prop("disabled") && slaeOrder_status != "-2"){
-                console.info("2222");
-                console.info(outStatus);
                 if(outStatus == 2 || outStatus == 3){
-                    console.info(oldDest);
-                    console.info($("#edit_destId").val());
                     if(oldDest != $("#edit_destId").val()){
                         bootbox.confirm({
                             buttons: {confirm: {label: '确定'}, cancel: {label: '取消'}},
@@ -472,9 +467,9 @@
                                 if (result) {
                                     save().then(function (res) {
                                         $.ajax({
-                                            url: basePath + "/logistics/saleOrder/changeDest.do",
+                                            url: basePath + "/logistics/saleOrderBill/changeDest.do",
                                             cache: false,
-                                            data: {billNo:billNo,destId:$("#edit_destId").val(),destUnitId:$("#edit_destId").val()},
+                                            data: {billNo:$("#edit_billNo").val(),destId:$("#edit_destId").val(),destUnitId:$("#edit_destUnitId").val()},
                                             type: "POST",
                                             success: function (data) {
                                                 $.gritter.add({
