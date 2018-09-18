@@ -733,7 +733,7 @@ public class ProductApiController extends ApiBaseController {
     @Autowired
     private DBService dbService;
 
-    @RequestMapping(value = "/downloadSqliteZipFileWS.do")
+   // @RequestMapping(value = "/downloadSqliteZipFileWS.do")
     public void downloadSqliteZipFileWS(HttpServletResponse response) throws Exception {
 
         System.out.println("start:" + CommonUtil.getDateString(new Date(), "yy-MM-dd HH:mm:ss"));
