@@ -1292,7 +1292,7 @@ function setDiscount() {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             //判断实际价格是不是小于门店批发价格
             var var_actPrice;
-            var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(rowid, "stylePriceMap"));
+            var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(value, "stylePriceMap"));
             if((discount*$('#addDetailgrid').getCell(value, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
                 $('#addDetailgrid').setCell(value, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
                 var_actPrice = stylePriceMap.wsPrice;
