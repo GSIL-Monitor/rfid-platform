@@ -1271,12 +1271,12 @@ function initEditFormValid() {
             discount: {
                 validators: {
                     numeric: {
-                        message: '折扣只能只能为0-100之间的数字'
+                        message: '折扣只能只能为0-200之间的数字'
                     },
                     callback: {
-                        message: '折扣只能只能为0-100之间的数字',
+                        message: '折扣只能只能为0-200之间的数字',
                         callback: function (value, validator) {
-                            if (parseInt(value) < 0 || parseInt(value) > 100) {
+                            if (parseInt(value) < 0 || parseInt(value) > 200) {
                                 return false;
                             }
                             return true;

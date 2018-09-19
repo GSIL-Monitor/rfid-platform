@@ -469,7 +469,7 @@ function initAddGrid() {
                 editrules: {
                     number: true,
                     minValue: 0,
-                    maxValue: 100
+                    maxValue: 200
                 },
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
@@ -1253,12 +1253,12 @@ function initEditFormValid() {
             discount: {
                 validators: {
                     numeric: {
-                        message: '折扣只能只能为0-100之间的数字'
+                        message: '折扣只能只能为0-200之间的数字'
                     },
                     callback: {
-                        message: '折扣只能只能为0-100之间的数字',
+                        message: '折扣只能只能为0-200之间的数字',
                         callback: function (value, validator) {
-                            if (parseInt(value) < 0 || parseInt(value) > 100) {
+                            if (parseInt(value) < 0 || parseInt(value) > 200) {
                                 return false;
                             }
                             return true;
