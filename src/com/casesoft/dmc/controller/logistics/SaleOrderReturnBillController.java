@@ -455,10 +455,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @ResponseBody
     @Override
     public MessageBox save(String bill, String strDtlList, String userId) throws Exception {
-        System.out.println("bill=" + bill);
-        System.out.println("strDtlList=" + strDtlList);
-        logger.error("销售退货单保存的数据："+bill);
-        logger.error("销售退货单详情保存的数据："+strDtlList);
+        this.logAllRequestParams();
         try {
             SaleOrderReturnBill saleOrderReturnBill = JSON.parseObject(bill, SaleOrderReturnBill.class);
             if (CommonUtil.isNotBlank(saleOrderReturnBill.getBillNo())) {
@@ -605,9 +602,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = this.saleOrderReturnBillService.findDtlByBillNo(billNo);
-        logger.error("销售退货单出库epc的数据："+strEpcList);
-        logger.error("销售退货单单号的数据："+billNo);
-        logger.error("销售退货详情的数据："+strEpcList);
+        this.logAllRequestParams();
         List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = JSON.parseArray(strDtlList, SaleOrderReturnBillDtl.class);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         User currentUser = CacheManager.getUserById(userId);

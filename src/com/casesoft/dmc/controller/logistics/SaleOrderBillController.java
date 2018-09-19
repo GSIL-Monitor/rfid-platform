@@ -330,8 +330,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Override
     public MessageBox save(String saleOrderBillStr, String strDtlList, String userId) throws Exception {
         this.logAllRequestParams();
-        logger.error("销售单保存的数据："+saleOrderBillStr);
-        logger.error("销售单详情保存的数据："+strDtlList);
+
         try {
              SaleOrderBill saleOrderBill = JSON.parseObject(saleOrderBillStr, SaleOrderBill.class);
             if(CommonUtil.isNotBlank(saleOrderBill.getBillNo())){
@@ -536,9 +535,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderBillDtl> saleOrderBillDtlList = this.saleOrderBillService.findBillDtlByBillNo(billNo);
-        logger.error("销售单出库epc的数据："+strEpcList);
-        logger.error("销售单单号的数据："+billNo);
-        logger.error("销售详情的数据："+strEpcList);
+        this.logAllRequestParams();
 
         List<SaleOrderBillDtl> saleOrderBillDtlList = JSON.parseArray(strDtlList, SaleOrderBillDtl.class);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
