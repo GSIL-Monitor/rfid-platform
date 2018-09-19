@@ -198,7 +198,12 @@ public class WXProductApiController extends ApiBaseController {
             sty.setOprId(userId);
             List<Product> saveList = StyleUtil.covertToProductInfo(sty, styleDTO, productList);
             this.styleService.saveStyleAndProducts(sty, saveList);
-
+            List<Style> styles = new ArrayList<>();
+            styles.add(sty);
+            CacheManager.refreshStyleCache(styles);
+            if(saveList.size() > 0){
+                CacheManager.refreshProductCache(saveList);
+            }
             //如果价格发生变动，记录变动信息
             String infoChangeRemark = "";
             if (CommonUtil.isNotBlank(prePriceMap)) {
@@ -214,15 +219,6 @@ public class WXProductApiController extends ApiBaseController {
                     infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
                 }
             }
-
-            List<Style> styleList = new ArrayList<>();
-            styleList.add(sty);
-            if(saveList.size() > 0){
-                CacheManager.refreshStyleCache(styleList);
-            }
-            List<Style> styles = new ArrayList<>();
-            styles.add(sty);
-            CacheManager.refreshStyleCache(styles);
             return this.returnSuccessInfo("保存成功", infoChangeRemark);
         } catch (Exception e) {
             logger.error("保存失败", e);
