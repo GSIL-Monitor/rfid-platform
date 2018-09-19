@@ -36,6 +36,8 @@ import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.SettingService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +55,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/logistics/saleOrderBill")
 public class SaleOrderBillController extends BaseController implements ILogisticsBillController<SaleOrderBill> {
-
+    private static Logger logger = LoggerFactory.getLogger(SaleOrderBillController.class);
     @Autowired
     private SaleOrderBillService saleOrderBillService;
     @Autowired
@@ -328,6 +330,8 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @Override
     public MessageBox save(String saleOrderBillStr, String strDtlList, String userId) throws Exception {
         this.logAllRequestParams();
+        logger.error("销售单保存的数据："+saleOrderBillStr);
+        logger.error("销售单详情保存的数据："+strDtlList);
         try {
              SaleOrderBill saleOrderBill = JSON.parseObject(saleOrderBillStr, SaleOrderBill.class);
             if(CommonUtil.isNotBlank(saleOrderBill.getBillNo())){
@@ -532,6 +536,10 @@ public class SaleOrderBillController extends BaseController implements ILogistic
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderBillDtl> saleOrderBillDtlList = this.saleOrderBillService.findBillDtlByBillNo(billNo);
+        logger.error("销售单出库epc的数据："+strEpcList);
+        logger.error("销售单单号的数据："+billNo);
+        logger.error("销售详情的数据："+strEpcList);
+
         List<SaleOrderBillDtl> saleOrderBillDtlList = JSON.parseArray(strDtlList, SaleOrderBillDtl.class);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         User currentUser = CacheManager.getUserById(userId);

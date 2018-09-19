@@ -34,6 +34,8 @@ import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.task.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +53,7 @@ import java.util.*;
 @RequestMapping(value = "/logistics/saleOrderReturn")
 @Controller
 public class SaleOrderReturnBillController extends BaseController implements ILogisticsBillController<SaleOrderReturnBill> {
+    private static Logger logger = LoggerFactory.getLogger(SaleOrderReturnBillController.class);
 
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
@@ -454,6 +457,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     public MessageBox save(String bill, String strDtlList, String userId) throws Exception {
         System.out.println("bill=" + bill);
         System.out.println("strDtlList=" + strDtlList);
+        logger.error("销售退货单保存的数据："+bill);
+        logger.error("销售退货单详情保存的数据："+strDtlList);
         try {
             SaleOrderReturnBill saleOrderReturnBill = JSON.parseObject(bill, SaleOrderReturnBill.class);
             if (CommonUtil.isNotBlank(saleOrderReturnBill.getBillNo())) {
@@ -600,6 +605,9 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = this.saleOrderReturnBillService.findDtlByBillNo(billNo);
+        logger.error("销售退货单出库epc的数据："+strEpcList);
+        logger.error("销售退货单单号的数据："+billNo);
+        logger.error("销售退货详情的数据："+strEpcList);
         List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = JSON.parseArray(strDtlList, SaleOrderReturnBillDtl.class);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         User currentUser = CacheManager.getUserById(userId);
