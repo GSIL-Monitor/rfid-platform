@@ -861,7 +861,7 @@ public class BillConvertUtil {
      * @param currentUser
      * @return
      */
-    public static Business covertToSaleReturnOrderBusinessOut(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList, List<Epc> epcList, User currentUser) {
+    public static Business covertToSaleReturnOrderBusinessOut(SaleOrderReturnBill saleOrderReturnBill, List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList, List<Epc> epcList, User currentUser, String AbnormalCodeMessagecodes,List<AbnormalCodeMessage> abnormalCodeMessageByBillNo) {
         Map<String, SaleOrderReturnBillDtl> saleOrderReturnBillDtlMap = new HashMap<>();
         for (SaleOrderReturnBillDtl dtl : saleOrderReturnBillDtlList) {
             saleOrderReturnBillDtlMap.put(dtl.getSku(), dtl);
@@ -878,6 +878,12 @@ public class BillConvertUtil {
             styleCountMap.put(e.getStyleId(), e.getStyleId());
             if (saleOrderReturnBillDtlMap.containsKey(sku)) {
                 SaleOrderReturnBillDtl dtl = saleOrderReturnBillDtlMap.get(sku);
+                if(CommonUtil.isNotBlank(AbnormalCodeMessagecodes)){
+                    if(e.getCode().indexOf(AbnormalCodeMessagecodes)!=-1){
+                        BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
+                        billRecordList.add(billRecord);
+                    }
+                }
                 /*BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
                 billRecordList.add(billRecord);*/
                 dtl.setOutQty(dtl.getOutQty() + 1);
@@ -987,6 +993,21 @@ public class BillConvertUtil {
         bus.setTotPreVal(totPreVal);
 
         bus.setRecordList(new ArrayList<>(recordMap.values()));
+        if(CommonUtil.isNotBlank(abnormalCodeMessageByBillNo)&&abnormalCodeMessageByBillNo.size()!=0){
+            String codes="";
+            for(Epc epc:epcList){
+                if(CommonUtil.isNotBlank(codes)){
+                    codes+=","+epc.getCode();
+                }else{
+                    codes+=epc.getCode();
+                }
+            }
+            for(AbnormalCodeMessage abnormalCodeMessage:abnormalCodeMessageByBillNo){
+                if(abnormalCodeMessage.getCode().indexOf(codes)!=-1){
+                    abnormalCodeMessage.setStatus(0);
+                }
+            }
+        }
 
         return bus;
     }

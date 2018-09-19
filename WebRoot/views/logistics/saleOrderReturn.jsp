@@ -378,25 +378,13 @@
                                                       name="remark">${SaleOrderReturnBill.remark}</textarea>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <div>
-                                                    <input id="edit_status" name="status"
-                                                           value="${SaleOrderReturnBill.status}"
-                                                           type="hidden">
-                                                    </input>
-                                                    <input id="edit_outStatus" name="outStatus"
-                                                           value="${SaleOrderReturnBill.outStatus}"
-                                                           type="hidden">
-                                                    </input>
-                                                    <input id="edit_inStatus" name="inStatus"
-                                                           value="${SaleOrderReturnBill.inStatus}"
-                                                           type="hidden">
-                                                    </input>
-                                                    <input id="edit_ownerId" name="ownerId"
-                                                           value="${SaleOrderReturnBill.ownerId}"
-                                                           type="hidden">
-                                                    </input>
+                                                    <input id="edit_status" name="status" type="hidden"/>
+                                                    <input id="edit_outStatus" name="outStatus" type="hidden"/>
+                                                    <input id="edit_inStatus" name="inStatus" type="hidden"/>
+                                                    <input id="edit_ownerId" name="ownerId" type="hidden"/>
+                                                    <input id="edit_srcBillNo" name="srcBillNo" type="hidden"/>
                                                 </div>
                                             </form>
                                         </div>

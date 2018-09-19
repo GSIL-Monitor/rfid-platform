@@ -311,9 +311,7 @@ function initSearchGrid() {
             {name: 'remark', label: '备注', hidden: true},
             {name: 'preBalance', label: '售前余额', hidden: true},
             {name: 'afterBalance', label: '售后余额', hidden: true},
-            {name: 'busnissName', label: '销售员',width: 30},
-
-
+            {name: 'busnissName', label: '销售员',width: 30}
         ],
         viewrecords: true,
         autowidth: true,
@@ -1122,13 +1120,15 @@ function save() {
     $("#edit_origId").removeAttr('disabled');
     $("#edit_destId").removeAttr('disabled');
     $("#edit_busnissId").removeAttr('disabled');
-
-    if ($("#edit_origId").val() == $("#edit_destId").val()) {
-        bootbox.alert("不能在相同的单位之间做销售退货");
-        cs.closeProgressBar();
-        return;
+    //寄存单转的可以相同单位保存
+    var ttt=$("#edit_srcBillNo").val();
+    if ($("#edit_srcBillNo").val()===""){
+        if ($("#edit_origId").val()==$("#edit_destId").val()) {
+            bootbox.alert("不能在相同的单位之间做销售退货");
+            cs.closeProgressBar();
+            return;
+        }
     }
-
     if(pageType=="edit"){
         if(slaeOrderReturn_customerType!=$("#edit_customerType").val()){
             bootbox.alert("客户类型不相同");
@@ -1136,7 +1136,6 @@ function save() {
             return;
         }
     }
-
     $("#editForm").data('bootstrapValidator').destroy();
     $('#editForm').data('bootstrapValidator', null);
     initEditFormValid();
@@ -1272,12 +1271,12 @@ function initEditFormValid() {
             discount: {
                 validators: {
                     numeric: {
-                        message: '折扣只能只能为0-100之间的数字'
+                        message: '折扣只能只能为0-200之间的数字'
                     },
                     callback: {
-                        message: '折扣只能只能为0-100之间的数字',
+                        message: '折扣只能只能为0-200之间的数字',
                         callback: function (value, validator) {
-                            if (parseInt(value) < 0 || parseInt(value) > 100) {
+                            if (parseInt(value) < 0 || parseInt(value) > 200) {
                                 return false;
                             }
                             return true;
@@ -1618,7 +1617,7 @@ function addProductsNoOutPutCode(productInfo) {
             }
         });
         $("#so_savecode_button").removeAttr("disabled");
-        $("#add-uniqCode-dialog").modal('hide');
+        //$("#add-uniqCode-dialog").modal('hide');
         setAddFooterData();
         var check = false;
         saveother(0 - alltotActPrice,check);
@@ -1754,6 +1753,10 @@ function wareHouseInOut(type) {
             var rowData = $("#addDetailgrid").getRowData(value);
             allUniqueCodes = allUniqueCodes + "," + rowData.uniqueCodes;
         });
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            allUniqueCodes = allUniqueCodes + "," + rowData.noOutPutCode;
+        });
         if (allUniqueCodes.substr(0, 1) == ",") {
             allUniqueCodes = allUniqueCodes.substr(1);
         }
@@ -1777,8 +1780,23 @@ function wareHouseInOut(type) {
                 $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                     var rowData = $("#addDetailgrid").getRowData(value);
                     var codes = rowData.uniqueCodes.split(",");
+                    var noOutcodes = rowData.noOutPutCode.split(",");
                     if (codes && codes != null && codes != "") {
                         $.each(codes, function (index, value) {
+                            if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                                var epc = {};
+                                epc.code = value;
+                                epc.styleId = rowData.styleId;
+                                epc.sizeId = rowData.sizeId;
+                                epc.colorId = rowData.colorId;
+                                epc.qty = 1;
+                                epc.sku = rowData.sku;
+                                epcArray.push(epc)
+                            }
+                        });
+                    }
+                    if (noOutcodes && noOutcodes != null && noOutcodes != "") {
+                        $.each(noOutcodes, function (index, value) {
                             if (uniqueCodes_inHouse.indexOf(value) != -1) {
                                 var epc = {};
                                 epc.code = value;
@@ -1891,6 +1909,7 @@ function wareHouseInOut(type) {
                                     }
                                 });
                             }
+                            initeditGrid($("#edit_billNo").val());
                         } else {
                             bootbox.alert(msg.msg);
                         }

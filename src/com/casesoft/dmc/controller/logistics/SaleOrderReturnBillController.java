@@ -34,6 +34,8 @@ import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
 import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.task.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +53,7 @@ import java.util.*;
 @RequestMapping(value = "/logistics/saleOrderReturn")
 @Controller
 public class SaleOrderReturnBillController extends BaseController implements ILogisticsBillController<SaleOrderReturnBill> {
+    private static Logger logger = LoggerFactory.getLogger(SaleOrderReturnBillController.class);
 
     @Autowired
     private SaleOrderReturnBillService saleOrderReturnBillService;
@@ -452,8 +455,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @ResponseBody
     @Override
     public MessageBox save(String bill, String strDtlList, String userId) throws Exception {
-        System.out.println("bill=" + bill);
-        System.out.println("strDtlList=" + strDtlList);
+        this.logAllRequestParams();
         try {
             SaleOrderReturnBill saleOrderReturnBill = JSON.parseObject(bill, SaleOrderReturnBill.class);
             if (CommonUtil.isNotBlank(saleOrderReturnBill.getBillNo())) {
@@ -600,12 +602,22 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = this.saleOrderReturnBillService.findDtlByBillNo(billNo);
+        this.logAllRequestParams();
         List<SaleOrderReturnBillDtl> saleOrderReturnBillDtlList = JSON.parseArray(strDtlList, SaleOrderReturnBillDtl.class);
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
         User currentUser = CacheManager.getUserById(userId);
         SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.get("billNo", billNo);
-        Business business = BillConvertUtil.covertToSaleReturnOrderBusinessOut(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
-        MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderReturnBillService.findAbnormalCodeMessageByBillNo(billNo);
+        String AbnormalCodeMessagecodes="";
+        for(AbnormalCodeMessage abnormalCodeMessage:abnormalCodeMessageByBillNo){
+            if(CommonUtil.isNotBlank(AbnormalCodeMessagecodes)){
+                AbnormalCodeMessagecodes+=","+abnormalCodeMessage.getCode();
+            }else{
+                AbnormalCodeMessagecodes+=abnormalCodeMessage.getCode();
+            }
+        }
+        Business business = BillConvertUtil.covertToSaleReturnOrderBusinessOut(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser,AbnormalCodeMessagecodes,abnormalCodeMessageByBillNo);
+        MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business,abnormalCodeMessageByBillNo);
         if (messageBox.getSuccess()) {
             return new MessageBox(true, "出库成功");
         } else {
@@ -636,7 +648,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             User currentUser = CacheManager.getUserById(userId);
             SaleOrderReturnBill saleOrderReturnBill = this.saleOrderReturnBillService.get("billNo", billNo);
             Business business = BillConvertUtil.covertToSaleReturnOrderBusinessIn(saleOrderReturnBill, saleOrderReturnBillDtlList, epcList, currentUser);
-            MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business);
+            MessageBox messageBox = this.saleOrderReturnBillService.saveBusiness(saleOrderReturnBill, saleOrderReturnBillDtlList, business,null);
             if (messageBox.getSuccess()) {
                 String rBillNo = saleOrderReturnBill.getBillNo();
                 String totQty = saleOrderReturnBill.getTotQty().toString();
