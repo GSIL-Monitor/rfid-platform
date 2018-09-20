@@ -43,6 +43,7 @@ public class SaleOrderBill extends BaseBill {
     @Column()
     private Double afterBalance = 0D;
 
+
     public Integer getTotRetrunQty() {
         return totRetrunQty;
     }

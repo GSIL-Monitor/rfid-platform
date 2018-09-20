@@ -62,8 +62,9 @@ function initSearchGrid() {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'billNo', label: '单据编号', sortable: true, width: 45},
-
+            {name: 'billDate', label: '单据日期', sortable: true, width: 30},
+            {name: 'billNo', label: '单据编号', sortable: true, width: 45,hidden:true},
+            {name: 'totOutQty', label: '已出库数量', width: 30,align: "center"},
             {name: 'status', hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
@@ -133,7 +134,7 @@ function initSearchGrid() {
             {name: 'destUnitId', label: '客户ID', hidden: true},
             {name: 'destUnitName', label: '客户', hidden: true},
 
-            {name: 'billDate', label: '单据日期', sortable: true, width: 30},
+
             {name: 'customerTypeId', label: '客户类型', hidden: true},
 
             {name: 'origUnitId', label: '发货方ID', hidden: true},
@@ -144,12 +145,12 @@ function initSearchGrid() {
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', hidden: true},
             {name: 'busnissId', hidden: true},
-            {name: 'totQty', label: '单据数量', width: 20},
+            {name: 'totQty', label: '单据数量', width: 25,align: "center"},
             {name: 'busnissName', label: '销售员', width: 20},
             {name: 'preBalance', label: '售前余额', width: 20, hidden: true},
             {name: 'afterBalance', label: '售后余额', width: 20, hidden: true},
-            {name: 'actPrice',label: '应付金额', hidden: true},
-            {name: 'payPrice',label: '实付金额', hidden: true},
+            {name: 'actPrice',label: '应付金额',width: 30,},
+            {name: 'payPrice',label: '实付金额', width: 30,},
             {name: 'remark', label: '备注', hidden: true}
         ],
         viewrecords: true,
@@ -330,7 +331,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'styleId', label: '款号', width: 40,
+            {name: 'styleId', label: '款号', width: 40,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -350,7 +351,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'colorId', label: '色码', width: 40,
+            {name: 'colorId', label: '色码', width: 40,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -360,7 +361,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'colorName', label: '颜色', width: 30,
+            {name: 'colorName', label: '颜色', width: 30,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -370,7 +371,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'sizeId', label: '尺码', width: 30,
+            {name: 'sizeId', label: '尺码', width: 30,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -380,7 +381,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'sizeName', label: '尺码', width: 40,
+            {name: 'sizeName', label: '尺码', width: 40,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -430,7 +431,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'sku', label: 'SKU', width: 50,
+            {name: 'sku', label: 'SKU', width: 60,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -505,7 +506,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'delRemark', label: '详情备注', editable: true,
+            {name: 'delRemark', label: '详情备注', editable: true,width: 100,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -548,7 +549,7 @@ function initAddGrid() {
                 $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);*/
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
-                debugger
+
                 if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<$('#addDetailgrid').getCell(rowid, "wsPrice")&&isUserAbnormal){
                     $('#addDetailgrid').setCell(rowid, "discount", parseFloat($('#addDetailgrid').getCell(rowid, "wsPrice")/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
                     var_actPrice =  $('#addDetailgrid').getCell(rowid, "wsPrice");
@@ -685,7 +686,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'styleId', label: '款号', width: 40,
+            {name: 'styleId', label: '款号', width: 40,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -705,7 +706,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'colorId', label: '色码', width: 40,
+            {name: 'colorId', label: '色码', width: 40,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -715,7 +716,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'colorName', label: '颜色', width: 30,
+            {name: 'colorName', label: '颜色', width: 30,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -725,7 +726,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'sizeId', label: '尺码', width: 30,
+            {name: 'sizeId', label: '尺码', width: 30,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -735,7 +736,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'sizeName', label: '尺码', width: 40,
+            {name: 'sizeName', label: '尺码', width: 40,hidden:true,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -746,7 +747,7 @@ function initeditGrid(billId) {
                 }
             },
             {
-                name: 'qty', label: '数量', editable: false, width: 40,
+                name: 'qty', label: '数量', editable: true, width: 40,
                 editrules: {
                     number: true,
                     minValue: 1
@@ -795,7 +796,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'sku', label: 'SKU', width: 50,
+            {name: 'sku', label: 'SKU', width: 75,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -806,7 +807,7 @@ function initeditGrid(billId) {
                 }
             },
             {
-                name: 'price', label: '销售价格', editable: false, width: 40,
+                name: 'price', label: '销售价格', width: 40,
                 editrules: {
                     number: true
                 },
@@ -883,7 +884,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'delRemark', label: '详情备注', editable: true,
+            {name: 'delRemark', label: '详情备注', editable: true,width: 100,
                 cellattr:function(rowId, val, rawObject, cm, rdata) {
                     if(rawObject.abnormalStatus==1){
                         return "style='color:blue;'";
@@ -895,13 +896,13 @@ function initeditGrid(billId) {
             },
             {name: 'uniqueCodes', label: '唯一码', hidden: true},
             {
-                name: '', label: '唯一码明细', width: 40, align: "center",
+                name: '', label: '唯一码明细', width: 55, align: "center",
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
             },
             {
-                name: '', label: '异常唯一码明细', width: 40, align: "center",
+                name: '', label: '异常唯一码明细', width: 65, align: "center",
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.noOutPutCode + "')><i class='ace-icon ace-icon fa fa-list' title='显示异常唯一码明细'></i></a>";
                 }
