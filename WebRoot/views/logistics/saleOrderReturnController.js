@@ -367,6 +367,9 @@ function initDetailData(rowid){
     $("#codegrid").trigger("reloadGrid");
     pageType="edit";
     initButtonGroup(slaeOrderReturn_status);
+    if(userId == 'admin'){
+        $("#SRDtl_save").attr('disabled', false);
+    }
 }
 
 function initeditGrid(billId) {
