@@ -729,6 +729,11 @@ function  addDisabled() {
         $("#search_nowclass9").attr('disabled', true);
         $("#search_beforeclass9").attr('disabled', true);
     }
+    if(type=="SC"){
+        $("#search_discount").attr('disabled', true);
+        $("#search_nowclass9").attr('disabled', true);
+        $("#search_beforeclass9").attr('disabled', true);
+    }
 
     $("#select_changeType").val(type);
     $("#select_changeType").attr('disabled', true);

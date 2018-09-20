@@ -1,4 +1,4 @@
-var searchUrl = basePath + "/logistics/FranchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId;
+var searchUrl = basePath + "/logistics/franchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId;
 var autoSelect =false;//是否自动选中
 var addDetailgridiRow;//存储iRow
 var addDetailgridiCol;//存储iCol
@@ -122,7 +122,7 @@ function initSearchGrid() {
     $("#grid").jqGrid({
         height: 'auto',
         datatype: 'json',
-        url: basePath + "/logistics/FranchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId,
+        url: basePath + "/logistics/franchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId,
         mtype: 'POST',
         colModel: [
             {name: 'billNo', label: "单号", width: 45, sortable: true},
