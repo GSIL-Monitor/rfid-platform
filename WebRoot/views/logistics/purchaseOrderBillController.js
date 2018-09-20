@@ -286,7 +286,7 @@ function initSearchGrid() {
             {name: 'destUnitName', label: '收货方', hidden: true, width: 40},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 35},
-            {name: 'totQty', label: '单据数量', sortable: false, width: 20},
+            {name: 'totQty', label: '单据数量', sortable: false, width: 20,align:"center"},
             {name: 'totInQty', label: '已入库数', width: 30, hidden: true},
             {
                 name: 'totInVal', label: '总入库金额', width: 30, hidden: true,
