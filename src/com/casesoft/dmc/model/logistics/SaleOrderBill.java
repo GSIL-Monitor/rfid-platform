@@ -43,6 +43,18 @@ public class SaleOrderBill extends BaseBill {
     @Column()
     private Double afterBalance = 0D;
 
+    //已出库数量
+    @Column()
+    private Integer outQty=0;
+
+    public Integer getOutQty() {
+        return outQty;
+    }
+
+    public void setOutQty(Integer outQty) {
+        this.outQty = outQty;
+    }
+
     public Integer getTotRetrunQty() {
         return totRetrunQty;
     }
