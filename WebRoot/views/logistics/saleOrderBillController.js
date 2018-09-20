@@ -64,7 +64,7 @@ function initSearchGrid() {
         colModel: [
             {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {name: 'billNo', label: '单据编号', sortable: true, width: 45,hidden:true},
-            {name: 'outQty', label: '已出库数量', width: 30,align: "center"},
+            {name: 'totOutQty', label: '已出库数量', width: 30,align: "center"},
             {name: 'status', hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,

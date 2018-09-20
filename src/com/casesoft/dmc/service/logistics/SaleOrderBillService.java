@@ -479,11 +479,6 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         }
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if(messageBox.getSuccess()){
-            int outQty = 0;
-            for(SaleOrderBillDtl dtl:saleOrderBillDtlList){
-                outQty += dtl.getOutQty();
-            }
-            saleOrderBill.setOutQty(outQty);
             this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
             this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
             if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
