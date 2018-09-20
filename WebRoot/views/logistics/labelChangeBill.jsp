@@ -52,7 +52,7 @@
                                         </button>
                                     </div>
                                     <div class="btn-group btn-group-sm pull-left">
-                                        <button type="button" class="btn btn-primary" onclick="add('SC')">
+                                        <button type="button" class="btn btn-primary" onclick="add('TG')">
                                             <i class="ace-icon fa fa-plus"></i>
                                             <span class="bigger-110">转换标签商场特供</span>
                                         </button>
@@ -99,7 +99,7 @@
                                                 <option value="">--请选择--</option>
                                                 <option value="CS">系列转变</option>
                                                 <option value="PC">打折</option>
-                                                <option value="SC">商场特供</option>
+                                                <option value="TG">商场特供</option>
                                             </select>
                                         </div>
                                     </div>

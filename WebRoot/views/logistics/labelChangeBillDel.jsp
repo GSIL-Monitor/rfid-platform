@@ -112,7 +112,7 @@
                                             <option value="">--请选择--</option>
                                             <option value="CS">系列转变</option>
                                             <option value="PC">打折</option>
-                                            <option value="SC">商场特供</option>
+                                            <option value="TG">商场特供</option>
                                         </select>
                                     </div>
 
