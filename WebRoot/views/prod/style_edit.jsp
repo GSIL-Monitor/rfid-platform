@@ -1019,7 +1019,14 @@
         $("#form_preCast").keydown(function (event) {
             if (event.keyCode == 13) {
                 if (isSeries == "Y") {
-                    changPrice($("#form_class9").val(),$("#form_class3").val());
+                    var styleId=$("#form_styleId").val();
+                    var endMessage=styleId.substr(styleId.length-2,styleId.length)
+                    if(endMessage=="TG"){
+                        changPrice($("#form_class9").val(),null);
+                    }else{
+                        changPrice($("#form_class9").val(),$("#form_class3").val());
+                    }
+
                 }
 
             }
