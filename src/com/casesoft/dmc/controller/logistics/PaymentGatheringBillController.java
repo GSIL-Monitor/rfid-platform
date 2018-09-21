@@ -127,6 +127,9 @@ public class PaymentGatheringBillController extends BaseController implements IL
             User currentUser = this.getCurrentUser();
             paymentGatheringBill.setOwnerId(currentUser.getOwnerId());
             paymentGatheringBill.setOprId(currentUser.getCode());
+            if(CommonUtil.isNotBlank(paymentGatheringBill.getDonationPrice())){
+                paymentGatheringBill.setPayPrice(paymentGatheringBill.getPayPrice()+Double.parseDouble(paymentGatheringBill.getDonationPrice()));
+            }
             //保存收银表
             payDetail payDetail = new payDetail();
             payDetail.setId(paymentGatheringBill.getBillNo()+paymentGatheringBill.getPayType());

@@ -55,7 +55,8 @@ function initGrid() {
                         return cellValue;
                     }
                 }
-            }
+            },
+            {name: 'donationPrice', label: '赠送金额', width: 150}
 
         ],
         viewrecords: true,

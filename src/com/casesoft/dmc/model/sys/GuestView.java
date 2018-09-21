@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by Session on 2017-06-20.
  */
 @Entity
-@Table(name = "SYS_GUEST")
+@Table(name = "SYS_GUEST_VIEW")
 public class GuestView {
 	@Id
 	@Column()
