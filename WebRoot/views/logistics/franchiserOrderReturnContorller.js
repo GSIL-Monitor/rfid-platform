@@ -1,4 +1,4 @@
-var searchUrl = basePath + "/logistics/FranchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId;
+var searchUrl = basePath + "/logistics/franchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId;
 var autoSelect =false;//是否自动选中
 var addDetailgridiRow;//存储iRow
 var addDetailgridiCol;//存储iCol
@@ -122,13 +122,14 @@ function initSearchGrid() {
     $("#grid").jqGrid({
         height: 'auto',
         datatype: 'json',
-        url: basePath + "/logistics/FranchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId,
+        url: basePath + "/logistics/franchiserOrderReturn/page.do?filter_GTI_status=-1&userId=" + userId,
         mtype: 'POST',
         colModel: [
-            {name: 'billNo', label: "单号", width: 45, sortable: true},
+            {name: 'billNo', label: "单号", width: 45, sortable: true,hidden:true},
             {name: "status", hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
+            {name: 'billDate', label: '单据日期', width: 30},
             {
                 name: '', label: '状态', width: 15, align: "center", sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -186,7 +187,7 @@ function initSearchGrid() {
                     }
                 }
             },
-            {name: 'billDate', label: '单据日期', width: 30},
+
             {name: 'customerType', label: "客户类型", width: 30, hidden: true},
             {name: 'customerTypeName', label: "客户类型", width: 30, hidden: true},
             {
@@ -208,12 +209,12 @@ function initSearchGrid() {
             {name: 'destName', label: '收货仓库', width: 30},
             {name: 'destUnitId', label: '收货方ID', hidden: true},
             {name: 'destUnitName', label: '收货方', width: 30, hidden: true},
-            {name: 'totQty', label: '单据数量', width: 20},
-            {name: 'totOutQty', label: '已出库数量', width: 30, hidden: true},
+            {name: 'totQty', label: '单据数量', width: 20,align:"center"},
+            {name: 'totOutQty', label: '已出库数量', width: 20,align:"center"},
             // {name: 'totOutVal', label: '总出库金额', width: 30},
             {name: 'totInQty', label: '已入库数量', width: 30, hidden: true},
             // {name: 'totInVal', label: '总入库金额', width: 30},
-            {name: 'actPrice', label: '应付付金额', width: 30, hidden: true,
+            {name: 'actPrice', label: '应付付金额', width: 30,
                 formatter: function (cellValue, options, rowObject) {
                     if(cellValue) {
                         var actPrice = cellValue.toFixed(2);
@@ -480,9 +481,13 @@ function initeditGrid(billId) {
 
 function setFooterData() {
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
+    var sum_actPrice = $("#grid").getCol('actPrice', false, 'sum');
+    var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
     $("#grid").footerData('set', {
-        billNo: "合计",
-        totQty: sum_totQty
+        billDate: "合计",
+        totQty: sum_totQty,
+        actPrice: sum_actPrice,
+        totOutQty: sum_totOutQty
     });
 }
 
@@ -671,12 +676,12 @@ function initAddGrid() {
                 }
             },
 
-            {name: 'styleId', label: '款号', width: 40},
-            {name: 'styleName', label: '款式', width: 40},
-            {name: 'colorId', label: '色号', width: 40},
-            {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
-            {name: 'sizeName', label: '尺寸', width: 40},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
+            {name: 'styleName', label: '款名', width: 20},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
             {
                 name: 'qty', label: '数量', width: 40, editable: true,
                 editrules: {

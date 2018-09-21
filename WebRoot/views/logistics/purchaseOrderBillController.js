@@ -286,7 +286,7 @@ function initSearchGrid() {
             {name: 'destUnitName', label: '收货方', hidden: true, width: 40},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 35},
-            {name: 'totQty', label: '单据数量', sortable: false, width: 20},
+            {name: 'totQty', label: '单据数量', sortable: false, width: 20,align:"center"},
             {name: 'totInQty', label: '已入库数', width: 30, hidden: true},
             {
                 name: 'totInVal', label: '总入库金额', width: 30, hidden: true,
@@ -473,12 +473,12 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'styleId', label: '款号', width: 16},
-            {name: 'colorId', label: '色码', width: 16},
-            {name: 'sizeId', label: '尺码', width: 16},
+            {name: 'styleId', label: '款号', width: 16,hidden: true},
+            {name: 'colorId', label: '色码', width: 16,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 16,hidden: true},
             {name: 'styleName', label: '款名', width: 16},
-            {name: 'colorName', label: '颜色', width: 16},
-            {name: 'sizeName', label: '尺码', width: 16},
+            {name: 'colorName', label: '颜色', width: 16,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 16,hidden: true},
             {
                 name: 'qty', label: '数量', editable: true, width: 16,
                 editrules: {
@@ -657,20 +657,20 @@ function initeditGrid(billNo) {
                 }
             },
 
-            {name: 'styleId', label: '款号', width: 20},
-            {name: 'colorId', label: '色码', width: 20},
-            {name: 'sizeId', label: '尺码', width: 20},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
             {name: 'styleName', label: '款名', width: 20},
-            {name: 'colorName', label: '颜色', width: 20},
-            {name: 'sizeName', label: '尺码', width: 20},
-            {name: 'qty', label: '数量', width: 20},
-            {name: 'arrival', label: '本次到货数', width: 20, editable: true},
-            {name: 'actPrintQty', label: '已打印数量', width: 20},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
+            {name: 'qty', label: '数量', width: 15,align:"center"},
+            {name: 'arrival', label: '本次到货数', width: 15,align:"center", editable: true},
+            {name: 'actPrintQty', label: '已打印数量', width: 15,align:"center"},
             {
-                name: 'printQty', label: '待打印数量', width: 20
+                name: 'printQty', label: '待打印数量', width: 15,align:"center"
             },
-            {name: 'inQty', label: '已入库数量', width: 20},
-            {name: 'sku', label: 'SKU', width: 20},
+            {name: 'inQty', label: '已入库数量', width: 15,align:"center"},
+            {name: 'sku', label: 'SKU', width: 30},
             {
                 name: 'price', label: '采购价格', width: 20,
                 formatter: function (cellValue, options, rowObject) {

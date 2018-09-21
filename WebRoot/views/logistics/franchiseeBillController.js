@@ -139,12 +139,13 @@ function initGrid() {
         datatype: "json",
         mtype: 'POST',
         colModel: [
-            {name: 'billNo', label: '单据编号', sortable: true, width: 45},
+            {name: 'billNo', label: '单据编号', sortable: true, width: 45,hidden:true},
             {name: 'status', hidden: true},
             {name: 'destUnitId', label: '客户ID', hidden: true},
             {name: 'destUnitName', label: '客户', width: 40,hidden:true},
             {name: 'outStatus', label: '出库状态', hidden: true,sortable: false},
             {name: 'inStatus', label: '入库状态', hidden: true,sortable: false},
+            {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -202,7 +203,7 @@ function initGrid() {
                     }
                 }
             },
-            {name: 'billDate', label: '单据日期', sortable: true, width: 30},
+
             {name: 'customerTypeId', label: '客户类型', hidden: true},
             {
                 label: '客户类型', sortable: false, width: 30,hidden:true,
@@ -225,12 +226,13 @@ function initGrid() {
             {name: 'destName', label: '收货仓库', width: 30,hidden:true},
             {name: 'busnissId', label: '业务员Id', hidden: true},
             {name: 'busnissName', label: '业务员', width: 20},
-            {name: 'totQty', label: '单据数量', width: 20},
-            {name: 'remark', label: '备注', width: 50,hidden:true},
+            {name: 'totInQty', label: '收货数量', width: 20,align:"center"},
+            {name: 'totQty', label: '单据数量', width: 20,align:"center"},
             {name:'customerTypeId',hidden:true},
             {name:'payPrice',hidden:true},
-            {name:'actPrice',hidden:true},
-            {name:'discount',hidden:true}
+            {name:'totPrice',label:'金额',width:20},
+            {name:'discount',hidden:true},
+            {name: 'remark', label: '备注', width: 20}
         ],
         viewrecords: true,
         autowidth: true,
@@ -332,22 +334,13 @@ function loadingButtonDivTable(billStatus) {
 //左侧表格汇总
 function setFooterData() {
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
-    var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
-    var sum_totOutVal = $("#grid").getCol('totOutVal', false, 'sum');
     var sum_totInQty = $("#grid").getCol('totInQty',false,'sum');
-    var sum_totInVal = $("#grid").getCol('totInVal', false, 'sum');
-    var sum_totActPrice = $("#grid").getCol('actPrice', false, 'sum');
-    var sum_payPrice = $("#grid").getCol('payPrice', false, 'sum');
-    /*$("#search_actPrice").val(sum_totActPrice);*/
+    var sum_totActPrice = $("#grid").getCol('totPrice', false, 'sum');
     $("#grid").footerData('set', {
-        billNo: "合计",
+        billDate: "合计",
         totQty: sum_totQty,
-        totOutQty: sum_totOutQty,
-        totOutVal: sum_totOutVal,
         totInQty: sum_totInQty,
-        totInVal: sum_totInVal,
-        actPrice:sum_totActPrice,
-        payPrice: sum_payPrice
+        totPrice: sum_totActPrice
     });
 }
 //左侧表格查询
@@ -417,12 +410,12 @@ function initeditGrid(billNo) {
                     }
                 }
             },
-            {name: 'styleId', label: '款号', width: 40},
-            {name: 'styleName', label: '款名', width: 40},
-            {name: 'colorId', label: '色码', width: 40},
-            {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
-            {name: 'sizeName', label: '尺码', width: 40},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
+            {name: 'styleName', label: '款名', width: 20},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
             {name: 'qty', label: '数量', editable: false, width: 40},
             {name: 'returnQty', label: '退货数量', editable: true, width: 40},
             {name: 'outQty', label: '已出库数量', width: 40},

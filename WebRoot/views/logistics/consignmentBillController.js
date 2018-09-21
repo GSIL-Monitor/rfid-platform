@@ -146,10 +146,11 @@ function initSearchGrid() {
         url: url,
         mtype: 'POST',
         colModel: [
-            {name: 'billNo', label: "单号", width: 50},
+            {name: 'billNo', label: "单号", width: 50,hidden: true},
             {name: "status", hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
+            {name: 'billDate', label: '单据日期', width: 30},
             {
                 name: '', label: '状态', width: 15, align: "center",
                 formatter: function (cellValue, options, rowObject) {
@@ -210,11 +211,11 @@ function initSearchGrid() {
                     }
                 }
             },
-            {name: 'billDate', label: '单据日期', width: 35},
+
             {name: 'customerType', label: "客户类型", hidden: true},
             {name: 'customerTypeName', label: "客户类型", hidden: true},
             {
-                label: "客户类型", width: 40,
+                label: "客户类型", width: 25,
                 formatter: function (cellValue, options, rowObject) {
                     if (rowObject.customerType == "CT-AT")
                         return "省代客户";
@@ -234,11 +235,11 @@ function initSearchGrid() {
             {name: 'busnissId', label: '销售员', hidden: true},
             {name: 'destUnitId', label: '收货方ID', hidden: true},
             {name: 'destUnitName', label: '收货方', width: 30, hidden: true},
-            {name: 'totQty', label: '单据数量', width: 15},
+            {name: 'totQty', label: '单据数量', width: 15,align:"center"},
             {name: 'totOutQty', label: '已出库数量', width: 30, hidden: true},
             {name: 'totOutVal', label: '总出库金额', width: 30, hidden: true},
-            {name: 'totInQty', label: '已入库数量', width: 30, hidden: true},
-            {name: 'totInVal', label: '总入库金额', width: 30, hidden: true,
+            {name: 'totInQty', label: '已入库数量', width: 15,align:"center"},
+            {name: 'totInVal', label: '总入库金额', width: 20,
                 formatter: function (cellValue, options, rowObject) {
                     if(cellValue) {
                         var totInVal = cellValue.toFixed(2);
@@ -258,7 +259,7 @@ function initSearchGrid() {
                     }
                 }
             },
-            {name: 'remark', label: '备注', width: 40, hidden: true}
+            {name: 'remark', label: '备注', width: 20}
 
         ],
         viewrecords: true,
@@ -407,12 +408,12 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'styleId', label: '款号', width: 40},
-            {name: 'styleName', label: '款式', width: 40},
-            {name: 'colorId', label: '色号', width: 40},
-            {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
-            {name: 'sizeName', label: '尺寸', width: 40},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
+            {name: 'styleName', label: '款名', width: 20},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
             {
                 name: 'qty', label: '数量', editable: true, width: 40,
                 editrules: {
@@ -600,7 +601,7 @@ function setFooterData() {
     var sum_totInVal = $("#grid").getCol('totInVal', false, 'sum');
     var sum_payPrice = $("#grid").getCol('payPrice', false, 'sum');
     $("#grid").footerData('set', {
-        billNo: "合计",
+        billDate: "合计",
         totQty: sum_totQty,
         totOutQty: sum_totOutQty,
         totOutVal: sum_totOutVal,
@@ -879,12 +880,12 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'styleId', label: '款号', width: 40},
-            {name: 'styleName', label: '款式', width: 40},
-            {name: 'colorId', label: '色号', width: 40},
-            {name: 'colorName', label: '颜色', width: 30},
-            {name: 'sizeId', label: '尺码', width: 30},
-            {name: 'sizeName', label: '尺寸', width: 40},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
+            {name: 'styleName', label: '款名', width: 20},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
             {
                 name: 'qty', label: '数量', editable: true, width: 40,
                 editrules: {

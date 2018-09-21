@@ -82,7 +82,7 @@ function initSearchGrid() {
             {name: 'destName', label: '收货仓库', editable: true, width: 40,hidden: true},
             {name: 'totOutQty', label: '已出库数量', width: 40,hidden: true},
             {name: "payPrice", label: '退货金额', width: 40,hidden: true},
-            {name: 'totQty', label: '单据数量', editable: true, width: 40},
+            {name: 'totQty', label: '单据数量', editable: true, width: 40,align:"center"},
             {name: 'remark', label: '备注', editable: true, width: 40,hidden: true},
             {name:'returnBillNo',hidden:true}
         ],
@@ -174,20 +174,20 @@ function initeditGrid(billId) {
                 }
             },
             {name: 'sku', label: "sku", width: 40},
-            {name: 'styleId', label: '款号', width: 40},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
             {name: 'styleName', label: '款名', width: 40},
-            {name: 'colorId', label: '色码', width: 40},
-            {name: 'colorName', label: '颜色', width: 40},
-            {name: 'sizeId', label: '尺码', width: 40},
-            {name: 'sizeName', label: '尺名', width: 40},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
             {
-                name: 'qty', label: '数量', width: 40,
+                name: 'qty', label: '数量', width: 20,
                 editrules: {
                     custom: true,
                     custom_func: validNum
                 }
             },
-            {name: 'outQty', label: '已出库数量', width: 40},
+            {name: 'outQty', label: '已出库数量', width: 20},
             {
                 name: 'price', label: '采购价格', width: 40,
                 editrules: {
@@ -478,12 +478,12 @@ function initAddGrid() {
                 }
             },
             {name: 'sku', label: "sku", width: 40},
-            {name: 'styleId', label: '款号', width: 40},
-            {name: 'styleName', label: '款名', width: 40},
-            {name: 'colorId', label: '色码', width: 40},
-            {name: 'colorName', label: '颜色', width: 40},
-            {name: 'sizeId', label: '尺码', width: 40},
-            {name: 'sizeName', label: '尺名', width: 40},
+            {name: 'styleId', label: '款号', width: 20,hidden: true},
+            {name: 'colorId', label: '色码', width: 20,hidden: true},
+            {name: 'sizeId', label: '尺码', width: 20,hidden: true},
+            {name: 'styleName', label: '款名', width: 20},
+            {name: 'colorName', label: '颜色', width: 20,hidden: true},
+            {name: 'sizeName', label: '尺码', width: 20,hidden: true},
             {
                 name: 'qty', label: '数量', width: 40,
                 editrules: {

@@ -339,6 +339,34 @@ public class LabelChangeBillController extends BaseController implements ILogist
                     String styleId = dtl.getStyleId();
                     dtl.setStyleNew(styleId+BillConstant.styleNew.PriceDiscount+CommonUtil.getInt(dtl.getDiscount()));
                 }
+                if (labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Shop)) {
+                    boolean isUseOldStyle = false;
+                    String styleId = dtl.getStyleId();
+                    //判断最后两位是有AA,AS,PD
+                    int styleIdLength = styleId.length();
+                    String styleTail = styleId.substring(styleIdLength - 2, styleIdLength);
+                    if (styleTail.equals(BillConstant.styleNew.Shop)) {
+                        styleId = styleId.substring(0, styleIdLength - 2);
+                        Style style = CacheManager.getStyleById(styleId);
+                        if (CommonUtil.isBlank(style)) {
+                            isUseOldStyle = false;
+                        } else {
+                            isUseOldStyle = true;
+                        }
+                    }
+                    String stylePDTail = styleId.substring(styleIdLength - 4, styleIdLength - 2);
+                    if (stylePDTail.equals(BillConstant.styleNew.PriceDiscount)) {
+                        styleId = styleId.substring(0, styleIdLength - 4);
+                    }
+                    if (!isUseOldStyle) {
+                        dtl.setStyleNew(styleId + labelChangeBill.getChangeType());
+                    } else {
+                        dtl.setStyleNew(styleId);
+                    }
+
+                }
+
+
             }
         }
         return labelChangeBillDels;
