@@ -26,10 +26,16 @@ import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
 import com.casesoft.dmc.service.tag.InitService;
 import com.casesoft.dmc.service.task.TaskService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,7 +134,7 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
      *保存标签改和标签初始化
      * by：czf
      */
-    public MessageBox saveLabelChangeBill(User currentUser,LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,String userId,InitService initService,PricingRulesService pricingRulesService,ProductService productService){
+    public MessageBox saveLabelChangeBill(User currentUser,LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,String userId,InitService initService,PricingRulesService pricingRulesService,ProductService productService,String rootPath) throws IOException {
 
 
             List<Style> listStyle=null;
@@ -166,13 +172,38 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
             if(ishavePricingRules) {
                 User curUser = CacheManager.getUserById(userId);
                 BillConvertUtil.covertToLabelChangeBill(labelChangeBill, labelChangeBillDels, curUser);
+                //新款图像的保存
+                if(CommonUtil.isNotBlank(listStyle)&&listStyle.size()>0) {
+                    for (Style style : listStyle) {
+                        String nowstyleId = style.getStyleId();
+                        String oldstyleId = "";
+                        int styleIdLength = nowstyleId.length();
+                        String styleTail = nowstyleId.substring(styleIdLength - 2, styleIdLength);
+                        if (styleTail.equals(BillConstant.styleNew.Alice) || styleTail.equals(BillConstant.styleNew.AncientStone) || styleTail.equals(BillConstant.styleNew.Shop)) {
+                            oldstyleId = nowstyleId.substring(0, styleIdLength - 2);
+                        } else {
+                            oldstyleId = nowstyleId.substring(0, styleIdLength - 4);
+                        }
+                        String filePath = rootPath + "/product/photo/" + oldstyleId;
+                        String newfilePath = rootPath + "/product/photo/" + nowstyleId;
+                        File folder = new File(filePath);
+                        if (CommonUtil.isNotBlank(folder)&&folder.exists()) {
+                            File newfolder = new File(newfilePath);
+                            //Files.copy(folder., newfolder);
+                            //FileUtils.copyFile(folder,newfolder);
+                            CommonUtil.copyDir(folder.listFiles(), newfolder);
+                        }
+                    }
+                }
                 save(labelChangeBill, labelChangeBillDels, listStyle, listproduct, issave, init);
+
                 return new MessageBox(true, "保存成功", labelChangeBill.getBillNo());
             }else{
                 return new MessageBox(false, message+"没有定价规则", labelChangeBill.getBillNo());
             }
 
     }
+
 
     public List<LabelChangeBillDel> findBillDtl(String billNo){
         return this.labelChangeBillDao.find("from LabelChangeBillDel where billNo=?", new Object[]{billNo});
