@@ -89,11 +89,13 @@
                 debugger;
                 var status=status;
                 if(status){
+                    epcinArray=[];
                     for(var i=0;i<aRowids.length;i++){
                         var row = $("#inuniqueCodeListGrid").jqGrid('getRowData', aRowids[i]);
                         epcinArray.push(row)
                     }
                 }else{
+                    epcinArray=[];
                     for(var i=0;i<aRowids.length;i++){
                         var row = $("#inuniqueCodeListGrid").jqGrid('getRowData', aRowids[i]);
                         for(var a=0;a<epcinArray.length;a++){
