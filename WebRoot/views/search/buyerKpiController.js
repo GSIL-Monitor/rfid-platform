@@ -189,47 +189,7 @@ function initKendoUIGrid() {
     });
 }
 
-function exportExcelImagePOI() {
-    var filters = serializeToFilter($("#searchForm"));
-    var gridData = $("#searchGrid").data("kendoGrid");
-    console.log(gridData);
-    var total = gridData.dataSource._total;
-    var request = {};
-    request.page = gridData.dataSource._page;
-    request.pageSize = gridData.dataSource._pageSize;
-    request.take = gridData.dataSource._pageSize;
-    request.sort = gridData.dataSource._sort;
-    request.skip = gridData.dataSource._skip;
-    request.filter = {
-        logic: "and",
-        filters: filters
-    };
-    var url = basePath + "/search/PurchaseorCountviews/exportnew.do";
-    $("#form1").attr("action", url);
-    $("#request").val(JSON.stringify(request));
-    $("#form1").submit();
-}
-
-function exportExcelProPOI() {
-    var filters = serializeToFilter($("#searchForm"));
-    var gridData = $("#searchGrid").data("kendoGrid");
-    var total = gridData.dataSource._total;
-    var request = {};
-    request.page = 1;
-    request.pageSize = total;
-    request.take = total;
-    request.skip = 0;
-    request.filter = {
-        logic: "and",
-        filters: filters
-    };
-    var url = basePath + "/search/PurchaseorCountviews/exportnew.do";
-    $("#form1").attr("action", url);
-    $("#request").val(JSON.stringify(request));
-    $("#form1").submit();
-}
-
-function exportExcelPOI() {
+function excelExportPOI() {
     var filters = serializeToFilter($("#searchForm"));
     var gridData = $("#searchGrid").data("kendoGrid");
     var total = gridData.dataSource._total;
@@ -242,10 +202,20 @@ function exportExcelPOI() {
         logic: "and",
         filters: filters
     };
-    var url = basePath + "/search/PurchaseorCountviews/exportnew.do";
-    $("#form1").attr("action", url);
+
+    $.ajax({
+        url:  basePath + "/search/buyerKpi/excelExport.do",
+        cache: false,
+        async: false,
+        type: "POST",
+        data: {request: JSON.stringify(request)},
+        success: function (data, textStatus) {
+        }
+    });
+
+    $("#exportForm").attr("action", basePath + "/search/buyerKpi/excelExport.do");
     $("#request").val(JSON.stringify(request));
-    $("#form1").submit();
+    $("#exportForm").submit();
 }
 
 function showDetails(e) {
