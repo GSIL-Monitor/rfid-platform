@@ -65,7 +65,9 @@ public class AccountStatementViewController extends BaseController implements IL
                 MonthAccountStatement tempM = monthAccountStatementMap.get(statement.getUnitId());
                 if(CommonUtil.isNotBlank(tempM)){
                     Double initialVal = tempM.getTotVal();
-                    initialVal += statement.getDiffPrice();
+                    if (statement.getDiffPrice() != null){
+                        initialVal += statement.getDiffPrice();
+                    }
                     tempM.setTotVal(initialVal);
                     monthAccountStatementMap.put(statement.getUnitId(),tempM);
                 }else {

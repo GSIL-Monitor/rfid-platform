@@ -9,6 +9,7 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var userId = "${userId}";
+
     </script>
     <style type="text/css">
         .data-container {

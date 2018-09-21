@@ -8,14 +8,17 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
+import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.PaymentGatheringBillService;
+import com.casesoft.dmc.service.shop.payDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +30,8 @@ import java.util.List;
 public class PaymentGatheringBillController extends BaseController implements ILogisticsBillController<PaymentGatheringBill> {
     @Autowired
     private PaymentGatheringBillService paymentGatheringBillService;
+    @Autowired
+    private com.casesoft.dmc.service.shop.payDetailService payDetailService;
 
     @RequestMapping("/index")
     @Override
@@ -122,7 +127,18 @@ public class PaymentGatheringBillController extends BaseController implements IL
             User currentUser = this.getCurrentUser();
             paymentGatheringBill.setOwnerId(currentUser.getOwnerId());
             paymentGatheringBill.setOprId(currentUser.getCode());
-
+            //保存收银表
+            payDetail payDetail = new payDetail();
+            payDetail.setId(paymentGatheringBill.getBillNo()+paymentGatheringBill.getPayType());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+            payDetail.setPayDate(df.format(new Date()));
+            payDetail.setCustomerId(paymentGatheringBill.getCustomsId());
+            payDetail.setShop(paymentGatheringBill.getOwnerId());
+            payDetail.setBillNo(paymentGatheringBill.getBillNo());
+            payDetail.setPayType(paymentGatheringBill.getPayType());
+            payDetail.setPayPrice(paymentGatheringBill.getPayPrice().toString());
+            payDetail.setActPayPrice(paymentGatheringBill.getPayPrice().toString());
+            this.payDetailService.save(payDetail);
             this.paymentGatheringBillService.saveGuest(paymentGatheringBill);
             return returnSuccessInfo("修改成功");
         } catch (Exception e) {

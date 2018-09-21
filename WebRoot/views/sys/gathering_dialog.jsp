@@ -65,13 +65,38 @@
                                 <option value=2>付款</option>
                             </select>
                         </div>
+
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_payType">
+                            <span class="text-danger">* </span>支付方式</label>
+
+                        <div class="col-xs-10 col-sm-5">
+                            <select class="form-control" id="form_payType" name="payType">
+                                <option value="">--请选择--</option>
+                                <option value="xianjinzhifu">现金支付</option>
+                                <option value="zhifubaozhifu">支付宝支付</option>
+                                <option value="wechatpay">微信支付</option>
+                                <option value="cardpay">刷卡支付</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right" for="form_payPrice">
                             <span class="text-danger">* </span>交易金额</label>
 
                         <div class="col-xs-10 col-sm-5">
                             <input class="form-control" id="form_payPrice" name="payPrice"
+                                   type="number" step="0.01"/>
+                        </div>
+                    </div>
+                    <div class="form-group hidden" id="donation">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_donationPrice">
+                            <span class="text-danger">* </span>赠送金额</label>
+
+                        <div class="col-xs-10 col-sm-5">
+                            <input class="form-control" id="form_donationPrice" name="donationPrice"
                                    type="number" step="0.01"/>
                         </div>
                     </div>
@@ -124,6 +149,16 @@
     $(function () {
         $("#gathering_dialog").on('show.bs.modal', function () {
             initGatheringFormValid();
+            $("#form_payType").val(defaultPayType);
+        });
+
+        $("#form_billType").bind('change',function () {
+           if($("#form_billType").val() == '1'){
+               $("#donation").removeClass("hidden");
+           }
+           else {
+               $("#donation").addClass("hidden");
+           }
         });
     });
 
@@ -144,6 +179,7 @@
                     }
                 }, 'json');
             },
+            excluded:[":disabled",":hidden"],
             fields: {
                 payPrice: {
                     validators: {

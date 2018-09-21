@@ -38,6 +38,10 @@ public class PaymentGatheringBill {
     private String ownerId;//当前用户的ownerID
     @Column()
     private String remark;
+    @Column
+    private String payType;//支付方式
+    @Column
+    private String donationPrice;//赠送金额
 
     public String getId() {
         return id;
@@ -133,5 +137,21 @@ public class PaymentGatheringBill {
 
     public void setVendorName(String vendorName) {
         this.vendorName = vendorName;
+    }
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public String getDonationPrice() {
+        return donationPrice;
+    }
+
+    public void setDonationPrice(String donationPrice) {
+        this.donationPrice = donationPrice;
     }
 }

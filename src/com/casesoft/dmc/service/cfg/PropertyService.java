@@ -73,6 +73,10 @@ public class PropertyService implements IBaseService<PropertyType, String> {
         String hql="from PropertyKey where type=? and ynuse='Y'";
         return this.propertyKeyDao.find(hql,new Object[]{type});
     }
+    public PropertyKey getDefaultPayType(){
+        String hql="from PropertyKey where type= 'PT' and isDefault= '1'";
+        return this.propertyKeyDao.findUnique(hql,new Object[]{});
+    }
 
 
     public PropertyType findPropertyTypebyid(String id) {
