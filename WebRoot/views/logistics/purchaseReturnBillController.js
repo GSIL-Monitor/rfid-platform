@@ -77,7 +77,7 @@ function initSearchGrid() {
             {name: 'origId', label: '出库仓库ID', hidden: true,hidden: true},
             {name: 'origName', label: '出库仓库', width: 40,hidden: true},
             {name: 'destUnitId', label: '供应商ID', hidden: true},
-            {name: 'destUnitName', label: '供应商', width: 40,hidden: true},
+            {name: 'destUnitName', label: '供应商', width: 40},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', editable: true, width: 40,hidden: true},
             {name: 'totOutQty', label: '已出库数量', width: 40,hidden: true},

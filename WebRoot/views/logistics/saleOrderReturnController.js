@@ -273,7 +273,7 @@ function initSearchGrid() {
                 }
             },
             {name: 'origUnitId', label: '退货客户ID', hidden: true},
-            {name: 'origUnitName', label: '退货客户', width: 30, hidden: true},
+            {name: 'origUnitName', label: '退货客户', width: 30},
             {name: 'origId', label: '出库仓库ID', hidden: true},
             {name: 'origName', label: '出库仓库', width: 30, hidden: true},
             {name: 'destId', label: '收货仓库ID', hidden: true},
@@ -645,6 +645,11 @@ function setFooterData() {
     $("#grid").footerData('set', {
         billDate: "合计",
         totQty: sum_totQty
+    });
+    var sum_totInQty = $("#grid").getCol('totInQty', false, 'sum');
+    $("#grid").footerData('set', {
+        billDate: "合计",
+        totInQty: sum_totInQty
     });
     var sun_actPrice = $("#grid").getCol('actPrice', false, 'sum');
     $("#grid").footerData('set', {
