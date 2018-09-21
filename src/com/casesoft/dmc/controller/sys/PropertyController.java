@@ -281,6 +281,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             return returnFailInfo("设置默认支付失败");
         }
     }
+    //add by lly
     @RequestMapping("/savePayPriceWS")
     @ResponseBody
     public MessageBox savePayPrice(payDetail payDetail) {

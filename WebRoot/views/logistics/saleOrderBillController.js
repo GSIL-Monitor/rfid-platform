@@ -106,7 +106,7 @@ function initSearchGrid() {
             {name: 'inStatus', hidden: true},
 
             {name: 'destUnitId', label: '客户ID', hidden: true},
-            {name: 'destUnitName', label: '客户', hidden: true},
+            {name: 'destUnitName', label: '客户', width: 20},
 
 
             {name: 'customerTypeId', label: '客户类型', hidden: true},
@@ -232,9 +232,11 @@ function addNew(isScan){
 function setFooterData() {
 
     var sum_totQty = $("#grid").getCol('totQty', false, 'sum');
+    var sum_totOutQty = $("#grid").getCol('totOutQty', false, 'sum');
     $("#grid").footerData('set', {
         billDate: "合计",
-        totQty: sum_totQty
+        totQty: sum_totQty,
+        totOutQty: sum_totOutQty
     });
     var sun_actPrice = $("#grid").getCol('actPrice', false, 'sum');
     $("#grid").footerData('set', {
@@ -1011,7 +1013,7 @@ function initeditGrid(billId) {
 }
 function setAddFooterData() {
     var sum_qty = $("#addDetailgrid").getCol('qty', false, 'sum');
-    var sum_outQty = $("#addDetailgrid").getCol('outQty', false, 'sum');
+    var sum_totOutQty = $("#addDetailgrid").getCol('totOutQty', false, 'sum');
     var sum_inQty = $("#addDetailgrid").getCol('inQty', false, 'sum');
     var sum_returnQty = $("#addDetailgrid").getCol('returnQty', false, 'sum');
     var sum_totPrice = $("#addDetailgrid").getCol('totPrice', false, 'sum');
@@ -1020,7 +1022,7 @@ function setAddFooterData() {
     $("#addDetailgrid").footerData('set', {
         styleId: "合计",
         qty: sum_qty,
-        outQty: sum_outQty,
+        totOutQty: sum_totOutQty,
         inQty: sum_inQty,
         returnQty: sum_returnQty,
         totPrice: sum_totPrice,

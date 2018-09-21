@@ -7,12 +7,14 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.BillConstant;
 import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.logistics.PaymentGatheringBillService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class GuestAccountController extends BaseController implements IBaseInfoC
 
     @Autowired
     private PaymentGatheringBillService paymentGatheringBillService;
+    @Autowired
+    private PropertyService propertyService;
 
     //    @RequestMapping("/index")
     @Override
@@ -124,6 +128,8 @@ public class GuestAccountController extends BaseController implements IBaseInfoC
         mv.addObject("guest", guest);
         mv.addObject("userId", userId);
         mv.addObject("masId", guest.getId() + "-" + yearMonth);
+        PropertyKey propertyKey = propertyService.getDefaultPayType();
+        mv.addObject("payType", propertyKey.getIconCode());
         return mv;
     }
 

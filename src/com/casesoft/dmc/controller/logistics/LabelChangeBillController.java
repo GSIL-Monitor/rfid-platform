@@ -100,11 +100,12 @@ public class LabelChangeBillController extends BaseController implements ILogist
     public MessageBox save(String bill, String strDtlList, String userId) throws Exception {
         //1.筛选需要保存的款式（有的新款式就不保存（爱丽丝的加AA），（as的加as））
         try {
+            String rootPath = this.getSession().getServletContext().getRealPath("/");
             LabelChangeBill labelChangeBill = JSON.parseObject(bill, LabelChangeBill.class);
             List<LabelChangeBillDel> labelChangeBillDels = JSON.parseArray(strDtlList, LabelChangeBillDel.class);
             User currentUser = (User) this.getSession().getAttribute(
                     Constant.Session.User_Session);
-            MessageBox messageBox = this.labelChangeBillService.saveLabelChangeBill(currentUser, labelChangeBill, labelChangeBillDels, userId, initService, pricingRulesService, productService);
+            MessageBox messageBox = this.labelChangeBillService.saveLabelChangeBill(currentUser, labelChangeBill, labelChangeBillDels, userId, initService, pricingRulesService, productService,rootPath);
             return messageBox;
         }catch (Exception e){
             e.printStackTrace();
@@ -196,6 +197,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
     @ResponseBody
     public MessageBox inventortyChangeLaber(String bill, String strDtlList,String userId){
         try {
+            String rootPath = this.getSession().getServletContext().getRealPath("/");
             List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                     .getRequest());
             LabelChangeBill labelChangeBill = JSON.parseObject(bill, LabelChangeBill.class);
@@ -276,7 +278,7 @@ public class LabelChangeBillController extends BaseController implements ILogist
             }
             User currentUser = (User) this.getSession().getAttribute(
                     Constant.Session.User_Session);
-            MessageBox messageBox = this.labelChangeBillService.saveLabelChangeBill(currentUser, labelChangeBill, labelChangeBillDels, userId, initService, pricingRulesService, productService);
+            MessageBox messageBox = this.labelChangeBillService.saveLabelChangeBill(currentUser, labelChangeBill, labelChangeBillDels, userId, initService, pricingRulesService, productService,rootPath);
             return messageBox;
         }catch (Exception e){
             e.printStackTrace();

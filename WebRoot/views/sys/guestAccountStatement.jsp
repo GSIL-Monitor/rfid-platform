@@ -17,7 +17,8 @@
         var basePath = "<%=basePath%>";
         <%--var guestId = "${guest.id}";--%>
         var userId = "${userId}";
-        var masId = "${masId}"
+        var masId = "${masId}";
+        var defaultPayType = "${payType}";
     </script>
 </head>
 <body class="no-skin">
@@ -74,6 +75,7 @@
                                             <option value="付款">付款</option>
                                         </select>
                                     </div>
+
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-1 control-label" for="search_guestTel">电话</label>

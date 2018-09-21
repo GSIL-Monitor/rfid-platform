@@ -13,61 +13,61 @@ import java.util.Date;
 public class GuestView {
 	@Id
 	@Column()
-	private String id;				//编号
+	private String id;                //编号
 	@Column()
-	private String name;			//姓名
+	private String name;            //姓名
 	@Column()
 	private String unitType;
 	@Column()
-	private Integer sex;				//1男 0女
+	private Integer sex;                //1男 0女
 	@Column()
-	private Integer status;			//启用状态		1启用 0未启用
+	private Integer status;            //启用状态		1启用 0未启用
 	@Column()
-	private String	fax;			//传真
+	private String fax;            //传真
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	@Column()
-	private Date storeDate;			//储值日期
+	private Date storeDate;            //储值日期
 	@Column()
-	private Double	storedValue;	//储值金额
+	private Double storedValue;    //储值金额
 
 	@Column
-	private String linkman;			//联系人
+	private String linkman;            //联系人
 
 	@Column()
-	private String tel;				//电话
+	private String tel;                //电话
 	@Column()
-	private String	email;			//邮箱
+	private String email;            //邮箱
 	@Column()
-	private String ownerId;			//所属方
+	private String ownerId;            //所属方
 	@Column()
-	private	String	bankAccount;	//银行账户
-	@JSONField(format="yyyy-MM-dd")
+	private String bankAccount;    //银行账户
+	@JSONField(format = "yyyy-MM-dd")
 	@Column()
-	private Date	birth;			//生日
+	private Date birth;            //生日
 	@Column()
-	private	String	phone;			//手机
+	private String phone;            //手机
 
 	@Column()
-	private	Integer	discount;		//折扣
+	private Integer discount;        //折扣
 	@Column()
-	private String address;			//地址
+	private String address;            //地址
 	@Column()
-	private String province;		//省份
+	private String province;        //省份
 	@Column()
-	private String city;			//城市
+	private String city;            //城市
 	@Column()
-	private String areaId;			//区县
+	private String areaId;            //区县
 
-    @Column()
+	@Column()
 	private String defaultWarehId;
 
 	@Column()
-	private String	depositBank;	//开户行
+	private String depositBank;    //开户行
 	@Column()
-    private Double owingValue;
+	private Double owingValue;
 	@Column()
-	@JSONField(format="yyyy-MM-dd HH:mm:ss")
-	private Date  createTime;		//建立时间
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	private Date createTime;        //建立时间
 
 	@Column()
 	private String remark;
@@ -77,6 +77,7 @@ public class GuestView {
 
 	@Column
 	private String idCard;
+
 
 	public String getIdCard() {
 		return idCard;
@@ -108,9 +109,9 @@ public class GuestView {
 		this.sendsucess = sendsucess;
 	}
 
-	@Column( length = 50)
+	@Column(length = 50)
 	private String areasId;//区域ID
-	@Column( length = 50)
+	@Column(length = 50)
 	private String ownerids;//加盟商或供应商id
 
 	public String getAreasId() {
@@ -129,7 +130,7 @@ public class GuestView {
 		this.ownerids = ownerids;
 	}
 
-	@Column( length = 50)
+	@Column(length = 50)
 	public String getVipId() {
 		return vipId;
 	}
@@ -358,6 +359,7 @@ public class GuestView {
 	@Transient
 	private String defaultWarehouseName;
 	private Double vippoints;
+
 	@Column()
 	public Double getVippoints() {
 		return vippoints;
@@ -398,4 +400,5 @@ public class GuestView {
 	public void setDefaultWarehouseName(String defaultWarehouseName) {
 		this.defaultWarehouseName = defaultWarehouseName;
 	}
+
 }

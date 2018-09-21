@@ -20,8 +20,7 @@ function load() {
         initSearchAndEditForm();
         /*初始化右侧grig*/
         initAddGrid();
-        pageType="add";
-        initButtonGroup(pageType);
+        initButtonGroup(0);
         loadingButtonDivTable(0);
         initEditFormValid();
         setEditFormVal();
@@ -274,7 +273,7 @@ function initSearchGrid() {
                 }
             },
             {name: 'origUnitId', label: '退货客户ID', hidden: true},
-            {name: 'origUnitName', label: '退货客户', width: 30, hidden: true},
+            {name: 'origUnitName', label: '退货客户', width: 30},
             {name: 'origId', label: '出库仓库ID', hidden: true},
             {name: 'origName', label: '出库仓库', width: 30, hidden: true},
             {name: 'destId', label: '收货仓库ID', hidden: true},
@@ -365,7 +364,6 @@ function initDetailData(rowid){
     $('#codegrid').jqGrid('GridUnload');
     initCodeGrid({billNo: rowData.billNo, warehId: rowData.origId});
     $("#codegrid").trigger("reloadGrid");
-    pageType="edit";
     initButtonGroup(slaeOrderReturn_status);
     if(userId == 'admin'){
         $("#SRDtl_save").attr('disabled', false);
@@ -648,6 +646,11 @@ function setFooterData() {
         billDate: "合计",
         totQty: sum_totQty
     });
+    var sum_totInQty = $("#grid").getCol('totInQty', false, 'sum');
+    $("#grid").footerData('set', {
+        billDate: "合计",
+        totInQty: sum_totInQty
+    });
     var sun_actPrice = $("#grid").getCol('actPrice', false, 'sum');
     $("#grid").footerData('set', {
         billDate: "合计",
@@ -745,8 +748,10 @@ function initCustomerTypeForm() {
 }
 /*根据权限初始化按钮*/
 function initButtonGroup(type){
+    if (type===0){
         $("#search_guest_button").removeAttr("disabled");
         $("#edit_billDate").val(getToDay("yyyy-MM-dd"));
+    }
         $("#buttonGroup").html("" +
             "<button id='SRDtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew()'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
