@@ -44,7 +44,7 @@
                                         </button>
                                     </div>
                                     <div class="btn-group btn-group-sm pull-left">
-                                        <button class="btn btn-info" onclick="newChooseExportFunction();">
+                                        <button class="btn btn-info" onclick="excelExportPOI();">
                                             <i class="ace-icon fa fa-file-excel-o"></i>
                                             <span class="bigger-110">导出</span>
                                         </button>
@@ -156,6 +156,10 @@
     </div>
     <!--/.fluid-container#main-container-->
 </div>
+
+<form  id="exportForm" action="" method=post name=form1 style='display:none'>
+    <input id="request" type=hidden  name='request' value=''>
+</form>
 
 <jsp:include page="search_js.jsp"/>
 <script type="text/javascript" src="<%=basePath%>/views/search/buyerKpiStyleDetailController.js"></script>

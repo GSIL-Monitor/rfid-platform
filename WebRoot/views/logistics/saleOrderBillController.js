@@ -106,7 +106,7 @@ function initSearchGrid() {
             {name: 'inStatus', hidden: true},
 
             {name: 'destUnitId', label: '客户ID', hidden: true},
-            {name: 'destUnitName', label: '客户', hidden: true},
+            {name: 'destUnitName', label: '客户', width: 20},
 
 
             {name: 'customerTypeId', label: '客户类型', hidden: true},

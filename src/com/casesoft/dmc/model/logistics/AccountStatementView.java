@@ -38,6 +38,10 @@ public class AccountStatementView {
     private String remark;//备注
     @Column()
     private String ownerId;
+    @Column
+    private String payType;//支付方式
+    @Column
+    private String donationPrice;//赠送金额
 
     public String getId() {
         return id;
@@ -156,5 +160,21 @@ public class AccountStatementView {
 
     public void setTotalOwingVal(Double totalOwingVal) {
         this.totalOwingVal = totalOwingVal;
+    }
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public String getDonationPrice() {
+        return donationPrice;
+    }
+
+    public void setDonationPrice(String donationPrice) {
+        this.donationPrice = donationPrice;
     }
 }
