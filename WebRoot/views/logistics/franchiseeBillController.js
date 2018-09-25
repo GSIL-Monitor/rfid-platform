@@ -254,6 +254,9 @@ function initGrid() {
             initDetailData(rowid)
         }
     });
+    if (roleid=="JMSJS"){
+        $('#grid').setGridParam().hideCol("totPrice");
+    }
 }
 
 function initDetailData(rowid) {

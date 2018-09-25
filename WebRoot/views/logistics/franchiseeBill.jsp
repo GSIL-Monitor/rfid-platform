@@ -19,7 +19,7 @@
         var userId = "${userId}";
         var deportId="${deportId}";
         var deportName="${deportName}";
-        var roleid="${roleid}"
+        var roleid="${roleid}";
         var resourcePrivilege =${resourcePrivilege};
     </script>
 </head>
