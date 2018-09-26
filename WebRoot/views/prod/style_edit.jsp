@@ -596,6 +596,13 @@
         $("div.btn-group,div.btn-group>button,div.btn-group>ul").addClass("col-sm-12");
         $("div.btn-group").css("padding", "0");
 
+        var isSeries = $("#form_isSeries").val();
+        if (isSeries == "Y") {
+            $("#form_price").attr("readonly",true);
+        } else {
+            $("#form_price").attr("readonly",false);
+            $("#form_wsPrice").attr("readonly",false);
+        }
     });
 
     $("#form_bargainPrice").blur(function(){
@@ -1036,11 +1043,36 @@
         $("#form_price").keydown(function (event) {
             var price = $("#form_price").val();
             if (event.keyCode == 13) {
-                $("#form_puPrice").val(price);
-                $("#form_wsPrice").val(price);
+                if($("#form_puPrice").val() == null || $("#form_puPrice").val() == ""){
+                    $("#form_puPrice").val(price);
+                }
+                if($("#form_wsPrice").val() == null || $("#form_wsPrice").val() == ""){
+                    $("#form_wsPrice").val(price);
+                }
+            }
+        });
+        $("#form_wsPrice").keydown(function (event) {
+            var wsPrice = $("#form_wsPrice").val();
+            if (event.keyCode == 13) {
+                $("#form_puPrice").val(wsPrice);
             }
         })
     }
+
+    $("#form_preCast").blur(function (event) {
+        var price = $("#form_price").val();
+        if($("#form_puPrice").val() == null || $("#form_puPrice").val() == ""){
+            $("#form_puPrice").val(price);
+        }
+        if($("#form_wsPrice").val() == null || $("#form_wsPrice").val() == ""){
+            $("#form_wsPrice").val(price);
+        }
+    });
+    $("#form_wsPrice").blur(function (event) {
+        var wsPrice = $("#form_wsPrice").val();
+        $("#form_puPrice").val(wsPrice);
+    });
+
 
     /*判断是否使用定价规则*/
     function priceIsUse() {
@@ -1053,6 +1085,7 @@
             changPrice($("#form_class9").val(),$("#form_class3").val());
         } else {
             $("#form_price").attr("readonly",false);
+            $("#form_wsPrice").attr("readonly",false);
             $("#form_puPrice").val(price);
             $("#form_wsPrice").val(price);
         }
@@ -1145,6 +1178,10 @@
                 $('#editStyleForm').data('bootstrapValidator').validate();
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                     return;
+                }
+                if( parseFloat($("#form_price").val()) <= parseFloat($("#form_wsPrice").val()) || parseFloat($("#form_wsPrice").val()) <= parseFloat($("#form_preCast").val())){
+                    bootbox.alert("未使用定价规则时，吊牌价应大于或等于门店价，且门店价大于或等于采购价");
+                    return false;
                 }
                 if (editDtailRowId != null) {
                     saveItem(editDtailRowId)
