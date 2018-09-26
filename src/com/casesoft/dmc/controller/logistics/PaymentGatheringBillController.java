@@ -130,21 +130,11 @@ public class PaymentGatheringBillController extends BaseController implements IL
             if(CommonUtil.isNotBlank(paymentGatheringBill.getDonationPrice())){
                 paymentGatheringBill.setPayPrice(paymentGatheringBill.getPayPrice()+Double.parseDouble(paymentGatheringBill.getDonationPrice()));
             }
-            //保存收银表
-            payDetail payDetail = new payDetail();
-            payDetail.setId(paymentGatheringBill.getBillNo()+paymentGatheringBill.getPayType());
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-            payDetail.setPayDate(df.format(new Date()));
-            payDetail.setCustomerId(paymentGatheringBill.getCustomsId());
-            payDetail.setShop(paymentGatheringBill.getOwnerId());
-            payDetail.setBillNo(paymentGatheringBill.getBillNo());
-            payDetail.setPayType(paymentGatheringBill.getPayType());
-            payDetail.setPayPrice(paymentGatheringBill.getPayPrice().toString());
-            payDetail.setActPayPrice(paymentGatheringBill.getPayPrice().toString());
-            this.payDetailService.save(payDetail);
+
             this.paymentGatheringBillService.saveGuest(paymentGatheringBill);
             return returnSuccessInfo("修改成功");
         } catch (Exception e) {
+            e.printStackTrace();
             return returnFailInfo("修改失败");
         }
     }

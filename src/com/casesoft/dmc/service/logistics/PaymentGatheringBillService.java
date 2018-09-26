@@ -6,14 +6,18 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.PaymentGatheringBillDao;
 import com.casesoft.dmc.dao.shop.CustomerDao;
+import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.dao.sys.UnitDao;
 import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +32,7 @@ public class PaymentGatheringBillService implements IBaseService<PaymentGatherin
     @Autowired
     private UnitDao unitDao;
     @Autowired
-    private CustomerDao customerDao;
+    private payDetailDao payDetailDao;
 
 
     @Override
@@ -97,6 +101,18 @@ public class PaymentGatheringBillService implements IBaseService<PaymentGatherin
 
     public void saveGuest(PaymentGatheringBill entity) {
         this.paymentGatheringBillDao.save(entity);
+        //保存收银表
+        payDetail payDetail = new payDetail();
+        payDetail.setId(entity.getBillNo()+entity.getPayType());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        payDetail.setPayDate(df.format(new Date()));
+        payDetail.setCustomerId(entity.getCustomsId());
+        payDetail.setShop(entity.getOwnerId());
+        payDetail.setBillNo(entity.getBillNo());
+        payDetail.setPayType(entity.getPayType());
+        payDetail.setPayPrice(entity.getPayPrice().toString());
+        payDetail.setActPayPrice(entity.getPayPrice().toString());
+        this.payDetailDao.saveOrUpdate(payDetail);
         Unit unit = this.paymentGatheringBillDao.findUnique("from Unit where id = ?",new Object[]{entity.getCustomsId()});
         if(CommonUtil.isBlank(unit)){
             Customer customer = this.paymentGatheringBillDao.findUnique("from Customer where id = ? ",new Object[]{entity.getCustomsId()});
