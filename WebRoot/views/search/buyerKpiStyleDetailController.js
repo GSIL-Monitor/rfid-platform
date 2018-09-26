@@ -115,7 +115,6 @@ function initKendoUIGrid() {
                 model: {
                     fields: {
                         styleId: {type: "string"},
-                        purchaseQty: {type: "number"},
                         purchaseInQty: {type: "number"},
                         stockQty: {type: "number"},
                         saleQty: {type: "number"},
@@ -142,23 +141,17 @@ function initKendoUIGrid() {
                 }
             },
             pageSize: 100.0,
-            // serverSorting: true,
             serverPaging: true,
             serverGrouping: false,
             serverFiltering: true,
             aggregate: [
                 {field: "styleId", aggregate: "count"},
-                {field: "purchaseQty", aggregate: "sum"},
                 {field: "purchaseInQty", aggregate: "sum"},
                 {field: "stockQty", aggregate: "sum"},
                 {field: "saleQty", aggregate: "sum"},
                 {field: "returnBackQty", aggregate: "sum"}
             ]
         },
-        // sortable: {
-        //     mode: "multiple",
-        //     allowUnsort: true
-        // },
         rowNumber: true,
         pageable: {
             input: true,
@@ -167,20 +160,11 @@ function initKendoUIGrid() {
             pageSizes: [10, 20, 50, 100]
         },
 
-        // groupable: true,
-        /* group: onGrouping,*/
-        // columnMenu: true,
-        // filterable: {
-        //     extra: false
-        // },
-        //selectable: "multiple row",
-        // reorderable: true,
         resizable: true,
         scrollable: true,
 
         columns: [
             {field: "styleId", title: "款号", aggregates: ["count"], footerTemplate: "#=count#", width: "150px"},
-            {field: "purchaseQty", title: "采购数", aggregates: ["sum"], footerTemplate: "#=sum#", width: "150px"},
             {field: "purchaseInQty", title: "采购入库数", aggregates: ["sum"], footerTemplate: "#=sum#", width: "150px"},
             {field: "stockQty", title: "库存数", aggregates: ["sum"], footerTemplate: "#=sum#", width: "150px"},
             {field: "saleQty", title: "销售数", aggregates: ["sum"], footerTemplate: "#=sum#", width: "150px"},
