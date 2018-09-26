@@ -70,6 +70,16 @@ public class Unit extends BaseUnit implements java.io.Serializable {
 	@Column( length = 50)
 	private String defalutCustomerId;//默认客户Id
 	private String defaultSaleStaffId;//默认销售员Id
+	@Transient
+	private String defaultSaleStaffName;//默认销售员Name
+
+	public String getDefaultSaleStaffName() {
+		return defaultSaleStaffName;
+	}
+
+	public void setDefaultSaleStaffName(String defaultSaleStaffName) {
+		this.defaultSaleStaffName = defaultSaleStaffName;
+	}
 
 	private String idCard;
 	@Column(length = 1)
