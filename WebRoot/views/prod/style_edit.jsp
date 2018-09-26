@@ -1179,7 +1179,7 @@
                 if (!$('#editStyleForm').data('bootstrapValidator').isValid()) {
                     return;
                 }
-                if( parseFloat($("#form_price").val()) <= parseFloat($("#form_wsPrice").val()) || parseFloat($("#form_wsPrice").val()) <= parseFloat($("#form_preCast").val())){
+                if( parseFloat($("#form_price").val()) < parseFloat($("#form_wsPrice").val()) || parseFloat($("#form_wsPrice").val()) < parseFloat($("#form_preCast").val())){
                     bootbox.alert("未使用定价规则时，吊牌价应大于或等于门店价，且门店价大于或等于采购价");
                     return false;
                 }
