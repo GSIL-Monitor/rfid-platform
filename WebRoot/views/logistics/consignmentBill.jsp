@@ -30,6 +30,7 @@
         var resourcePrivilege =${resourcePrivilege};
         var cargoTrack = "${cargoTracking}";
         var cTbillNo = "${cTbillNo}";
+        var isUserAbnormal="${isUserAbnormal}";
     </script>
 </head>
 <body class="no-skin">

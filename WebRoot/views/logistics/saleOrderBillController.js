@@ -940,7 +940,7 @@ function initeditGrid(billId) {
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
                 var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(rowid, "stylePriceMap"));
-                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<stylePriceMap.wsPrice && isUserAbnormal){
                     $('#addDetailgrid').setCell(rowid, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
                     var_actPrice =  stylePriceMap.wsPrice;
                     $('#addDetailgrid').setCell(rowid, "actPrice", stylePriceMap.wsPrice);

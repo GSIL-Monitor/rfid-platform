@@ -500,10 +500,33 @@ function initeditGrid(billId) {
         },
         afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
             if (cellname === "discount") {
-                var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
-                var var_totActPrice = -Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
-                $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
-                $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+                //判断实际价格是不是小于门店批发价格
+                var var_actPrice;
+                var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(rowid, "stylePriceMap"));
+                if(userId = 'admin'){
+                    var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                    var var_totActPrice = -Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
+                    $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+                }
+                else {
+                    if((value*$('#addDetailgrid').getCell(rowid, "price")/100)>stylePriceMap.wsPrice && isUserAbnormal){
+                        $('#addDetailgrid').setCell(rowid, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
+                        var_actPrice =  stylePriceMap.wsPrice;
+                        $('#addDetailgrid').setCell(rowid, "actPrice", stylePriceMap.wsPrice);
+                        $('#addDetailgrid').setCell(rowid, "abnormalStatus",1);
+                        changeWordscolor(rowid,"blue");
+                    }else{
+                        $('#addDetailgrid').setCell(rowid, "discount", value);
+                        var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
+                        $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
+                        $('#addDetailgrid').setCell(rowid, "abnormalStatus", 0);
+                        changeWordscolor(rowid,"black");
+                    }
+
+                    var var_totActPrice = -Math.round(var_actPrice * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100;
+                    $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
+                }
             } else if (cellname === "actPrice") {
                 var var_discount = Math.round(value / $('#addDetailgrid').getCell(rowid, "price") * 100);
                 var var_totActPrice = -Math.abs(Math.round(value * $('#addDetailgrid').getCell(rowid, "qty") * 100) / 100);
@@ -560,6 +583,24 @@ function initeditGrid(billId) {
     });
 
     $("#addDetailgrid-pager_center").html("");
+}
+function changeWordscolor(value,color) {
+    $("#addDetailgrid").setCell(value,"styleId",$('#addDetailgrid').getCell(value, "styleId"),{color:color});
+    $("#addDetailgrid").setCell(value,"styleName",$('#addDetailgrid').getCell(value, "styleName"),{color:color});
+    $("#addDetailgrid").setCell(value,"colorId",$('#addDetailgrid').getCell(value, "colorId"),{color:color});
+    $("#addDetailgrid").setCell(value,"colorName",$('#addDetailgrid').getCell(value, "colorName"),{color:color});
+    $("#addDetailgrid").setCell(value,"sizeId",$('#addDetailgrid').getCell(value, "sizeId"),{color:color});
+    $("#addDetailgrid").setCell(value,"sizeName",$('#addDetailgrid').getCell(value, "sizeName"),{color:color});
+    $("#addDetailgrid").setCell(value,"qty",$('#addDetailgrid').getCell(value, "qty"),{color:color});
+    $("#addDetailgrid").setCell(value,"returnQty",$('#addDetailgrid').getCell(value, "returnQty"),{color:color});
+    $("#addDetailgrid").setCell(value,"outQty",$('#addDetailgrid').getCell(value, "outQty"),{color:color});
+    $("#addDetailgrid").setCell(value,"inQty",$('#addDetailgrid').getCell(value, "inQty"),{color:color});
+    $("#addDetailgrid").setCell(value,"sku",$('#addDetailgrid').getCell(value, "sku"),{color:color});
+    $("#addDetailgrid").setCell(value,"price",$('#addDetailgrid').getCell(value, "price"),{color:color});
+    $("#addDetailgrid").setCell(value,"totPrice",$('#addDetailgrid').getCell(value, "totPrice"),{color:color});
+    $("#addDetailgrid").setCell(value,"discount",$('#addDetailgrid').getCell(value, "discount"),{color:color});
+    $("#addDetailgrid").setCell(value,"actPrice",$('#addDetailgrid').getCell(value, "actPrice"),{color:color});
+    $("#addDetailgrid").setCell(value,"totActPrice",$('#addDetailgrid').getCell(value, "totActPrice"),{color:color});
 }
 var allCodeStrInDtl = "";  //入库时，所有在单的唯一码
 function initAllCodesList() {

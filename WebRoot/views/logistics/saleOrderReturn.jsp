@@ -31,6 +31,7 @@
         var pageType = "${pageType}";
         var cargoTrack = "${cargoTracking}";
         var cTbillNo = "${cTbillNo}";
+        var isUserAbnormal="${isUserAbnormal}";
     </script>
 
 </head>
