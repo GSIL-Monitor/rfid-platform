@@ -910,7 +910,7 @@ public class BillConvertUtil {
             if (saleOrderReturnBillDtlMap.containsKey(sku)) {
                 SaleOrderReturnBillDtl dtl = saleOrderReturnBillDtlMap.get(sku);
                 if(CommonUtil.isNotBlank(AbnormalCodeMessagecodes)){
-                    if(e.getCode().indexOf(AbnormalCodeMessagecodes)!=-1){
+                    if(AbnormalCodeMessagecodes.indexOf(e.getCode())!=-1){
                         BillRecord billRecord = new BillRecord(dtl.getBillNo() + "-" + e.getCode(), e.getCode(), dtl.getBillNo(), dtl.getSku());
                         billRecordList.add(billRecord);
                     }
@@ -1034,7 +1034,7 @@ public class BillConvertUtil {
                 }
             }
             for(AbnormalCodeMessage abnormalCodeMessage:abnormalCodeMessageByBillNo){
-                if(abnormalCodeMessage.getCode().indexOf(codes)!=-1){
+                if(codes.indexOf(abnormalCodeMessage.getCode())!=-1){
                     abnormalCodeMessage.setStatus(0);
                 }
             }
