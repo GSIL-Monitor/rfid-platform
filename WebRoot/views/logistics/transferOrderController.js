@@ -119,6 +119,7 @@ function initGrid() {
             {name: 'status', hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
+            {name: "ownerId", hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {

@@ -279,6 +279,7 @@ function initSearchGrid() {
             },
             {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {name: 'origUnitId', label: '供应商ID', hidden: true},
+            {name: "ownerId", hidden: true},
             {name: 'origUnitName', label: '供应商', width: 40},
             {name: 'origId', label: '出库仓ID', hidden: true},
             {name: 'origName', label: '出库仓', hidden: true, width: 40},

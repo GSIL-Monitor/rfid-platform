@@ -263,6 +263,7 @@ function initAddGrid() {
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
+            {name: "ownerId", hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
             {
