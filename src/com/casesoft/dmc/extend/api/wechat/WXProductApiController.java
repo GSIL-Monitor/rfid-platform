@@ -17,8 +17,10 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
+import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
+import com.casesoft.dmc.service.pad.WeiXinUserService;
 import com.casesoft.dmc.service.product.*;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.KeyInfoChangeService;
@@ -70,7 +72,8 @@ public class WXProductApiController extends ApiBaseController {
     private PricingRulesService pricingRulesService;
     @Autowired
     private KeyInfoChangeService keyInfoChangeService;
-
+    @Autowired
+    public WeiXinUserService weiXinUserService;
     @Override
     public String index() {
         return null;
@@ -219,6 +222,20 @@ public class WXProductApiController extends ApiBaseController {
                     infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
                 }
             }
+            //价格发生变动时，向管理员推送公众号消息
+            if(CommonUtil.isNotBlank(infoChangeRemark)){
+                String[] infoArray = infoChangeRemark.split("\r\n");
+                User admin = CacheManager.getUserById("admin");
+                if(CommonUtil.isBlank(admin)){
+                    logger.error("管理员账号不存在");
+                }else {
+                    String openId = this.weiXinUserService.getByPhone(admin.getPhone()).getOpenId();
+                    String originalPrice = infoArray[0].replace("原价：","");
+                    String currentPrice = infoArray[1].replace("现价：","");
+                    WechatTemplate.priceChangeMsg(openId, sty.getStyleId(), originalPrice, currentPrice, userId);
+                }
+            }
+
             return this.returnSuccessInfo("保存成功", infoChangeRemark);
         } catch (Exception e) {
             logger.error("保存失败", e);
