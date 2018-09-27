@@ -119,7 +119,7 @@ function initSearchGrid() {
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', hidden: true},
             {name: 'busnissId', hidden: true},
-
+            {name: 'discount', hidden: true},
             {name: 'totQty', label: '单据数量', width: 20,align: "center"},
             {name: 'totOutQty', label: '出库数量', width: 20,align: "center"},
             {name: 'busnissName', label: '销售员', width: 20},
@@ -1282,7 +1282,7 @@ function initEditFormValid() {
 }
 //将整单折扣设置到明细中
 function setDiscount() {
-    debugger
+
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1290,27 +1290,38 @@ function setDiscount() {
     }
     var discount = $("#edit_discount").val();
     if (discount && discount != null && discount != "") {
-        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            //判断实际价格是不是小于门店批发价格
-            var var_actPrice;
-            var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(value, "stylePriceMap"));
-            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
-                $('#addDetailgrid').setCell(value, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
-                var_actPrice = stylePriceMap.wsPrice;
-                $('#addDetailgrid').setCell(value, "actPrice", stylePriceMap.wsPrice);
-                $('#addDetailgrid').setCell(value, "abnormalStatus",1);
-                changeWordscolor(value,"blue");
-            }else{
+        if(userId == 'admin') {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 $('#addDetailgrid').setCell(value, "discount", discount);
-                 var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                var var_totActPrice = -Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(value, "qty") * 100) / 100);
                 $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
-                $('#addDetailgrid').setCell(value, "abnormalStatus", 0);
-                changeWordscolor(value,"black");
-            }
-            var var_totActPrice = Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
-            $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
-            $("#grid-table").setCell(value,"useable",0,{color:'red'});
-        });
+                $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+            });
+        }
+        else {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                //判断实际价格是不是小于门店批发价格
+                var var_actPrice;
+                var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(value, "stylePriceMap"));
+                if((discount*$('#addDetailgrid').getCell(value, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
+                    $('#addDetailgrid').setCell(value, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
+                    var_actPrice = stylePriceMap.wsPrice;
+                    $('#addDetailgrid').setCell(value, "actPrice", stylePriceMap.wsPrice);
+                    $('#addDetailgrid').setCell(value, "abnormalStatus",1);
+                    changeWordscolor(value,"blue");
+                }else{
+                    $('#addDetailgrid').setCell(value, "discount", discount);
+                    var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                    $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+                    $('#addDetailgrid').setCell(value, "abnormalStatus", 0);
+                    changeWordscolor(value,"black");
+                }
+                var var_totActPrice = -Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
+                $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+                $("#grid-table").setCell(value,"useable",0,{color:'red'});
+            });
+        }
     }
     setAddFooterData();
 }
