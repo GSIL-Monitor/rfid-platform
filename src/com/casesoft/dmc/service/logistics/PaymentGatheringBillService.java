@@ -112,6 +112,7 @@ public class PaymentGatheringBillService implements IBaseService<PaymentGatherin
         payDetail.setPayType(entity.getPayType());
         payDetail.setPayPrice(entity.getPayPrice().toString());
         payDetail.setActPayPrice(entity.getPayPrice().toString());
+        payDetail.setBillType(entity.getBillType());
         this.payDetailDao.saveOrUpdate(payDetail);
         Unit unit = this.paymentGatheringBillDao.findUnique("from Unit where id = ?",new Object[]{entity.getCustomsId()});
         if(CommonUtil.isBlank(unit)){

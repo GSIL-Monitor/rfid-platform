@@ -48,6 +48,8 @@ public class payDetail implements Serializable{
 
     @Column
     private String status;//脏数据处理字段
+    @Column()
+    private String billType;//账单类型 收款0, 储值1, 付款2, 销售3, 退货4
 
 
     public String getId() {
@@ -136,5 +138,13 @@ public class payDetail implements Serializable{
 
     public void setReturnPrice(String returnPrice) {
         this.returnPrice = returnPrice;
+    }
+
+    public String getBillType() {
+        return billType;
+    }
+
+    public void setBillType(String billType) {
+        this.billType = billType;
     }
 }

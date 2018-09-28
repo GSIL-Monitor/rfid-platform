@@ -10,11 +10,13 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
+import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -65,6 +68,8 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private GuestService guestService;
     @Autowired
     private GuestValueChangeService guestValueChangeService;
+    @Autowired
+    private payDetailDao payDetailDao;
 
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
@@ -207,6 +212,20 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         if(CommonUtil.isNotBlank(list)&&list.size()>0){
             this.saleOrderBillDao.doBatchInsert(list);
         }
+
+        //保存收银表
+        payDetail payDetail = new payDetail();
+        payDetail.setId(saleOrderBill.getBillNo()+saleOrderBill.getPayType());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        payDetail.setPayDate(df.format(new Date()));
+        payDetail.setCustomerId(saleOrderBill.getDestUnitId());
+        payDetail.setShop(saleOrderBill.getOwnerId());
+        payDetail.setBillNo(saleOrderBill.getBillNo());
+        payDetail.setPayType(saleOrderBill.getPayType());
+        payDetail.setPayPrice(saleOrderBill.getPayPrice().toString());
+        payDetail.setActPayPrice(saleOrderBill.getPayPrice().toString());
+        payDetail.setBillType(saleOrderBill.getBillType());
+        this.payDetailDao.saveOrUpdate(payDetail);
     }
 
     /**
