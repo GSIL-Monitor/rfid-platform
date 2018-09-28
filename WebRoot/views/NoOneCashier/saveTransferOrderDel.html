@@ -1,0 +1,150 @@
+<html lang="en" style="height: 100%;width: 100%">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+    </script>
+    <title>自助收银</title>
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="../../Olive/assets/css/ui.jqgrid.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace-fonts.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="../pad/css/padBase.css">
+
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <!--grid.locale-en.js这个文件必须在jquery.jqGrid.min.js之前加载，否则会出问题-->
+    <script src="../../Olive/assets/js/jqGrid/i18n/grid.locale-cn.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../../Olive/assets/js/x-editable/bootstrap-editable.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.js"></script>
+    <script src="../../Olive/assets/js/jquery-ui.custom.js"></script>
+    <script src="../../Olive/assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.common.js"></script>
+    <script src="../../Olive/assets/js/jqGrid/src/grid.celledit.js"></script>
+    <script src="../../Olive/assets/js/bootstrap-select.js"></script>
+    <script src="../../jslib2/constant.js"></script>
+    <script src="../../Olive/plugin/dateFormatUtil.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <script src="../../Olive/assets/js/jquery.gritter.js"></script>
+    <script src="../../Olive/assets/js/qrcode.min.js"></script>
+    <script src="../../Olive/assets/js/qrcode.js"></script>
+    <script src="./saveTransferOrderDel.js"></script>
+    <script type="text/javascript" src="../../Olive/plugin/dateFormatUtil.js"></script>
+    <style>
+
+        .bottom-button{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+
+    </style>
+
+</head>
+<body style="width: 100%;height: 100%">
+<!--<object style="border:0px" type="text/x-scriptlet" data="../layout/footer_js.jsp" width=100% height=0></object>-->
+
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+    <div class="center">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"id="transferOrder" >
+                        <h5>调拨明细</h5>
+                        <table id="addSaleDetailgrid"></table>
+                        <div id="grid-Sale-pager" ></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="center">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <form id="editForm" class="form-horizontal" role="form"
+                          onkeydown="if(event.keyCode==13)return false;">
+                        <div class="form-group">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <label class="col-lg-6 col-md-6 col-sm-6 ">调出店铺:</label>
+                                <!--<input class="col-lg-6 col-md-6 col-sm-6 "readonly id="origUnitName">-->
+                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                    <input class="form-control" id="origUnitName"
+                                           type="text" />
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <label class="col-lg-6 col-md-6 col-sm-6 ">调出仓库:</label>
+                                <!--<input class="col-lg-6 col-md-6 col-sm-6 "readonly id="origId">-->
+                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                    <input class="form-control" id="origId"
+                                           type="text" />
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <label class="col-lg-6 col-md-6 col-sm-6 ">调入店铺:</label>
+                               <!-- <input class="col-lg-6 col-md-6 col-sm-6 " readonly id="destUnitName">-->
+                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                    <input class="form-control" id="destUnitName"
+                                           type="text" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <label class="col-lg-6 col-md-6 col-sm-6 ">调入仓库:</label>
+                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                    <select class="form-control" id="search_destId"
+                                            name="destId"
+                                            style="width: 100%;">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <label class="col-lg-6 col-md-6 col-sm-6 ">时间:</label>
+                                <!--<input class="col-lg-6 col-md-6 col-sm-6 " id="billDate">-->
+                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                    <input class="form-control date-picker" id="billDate"
+                                           type="text" data-date-format="yyyy-mm-dd"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <label class="col-lg-6 col-md-6 col-sm-6 ">备注:</label>
+                               <!-- <input class="col-lg-6 col-md-6 col-sm-6 "id="remark">-->
+                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                    <input class="form-control" id="remark"
+                                           type="text" />
+                                </div>
+                            </div>
+                        </div>
+                        <input id="edit_status" name="status" type="hidden">
+                        </input>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="scanning" class=" bottom-button" onclick="onScanning()">扫描</button>
+    <button id="stop" class="bottom-button" onclick="stop()">停止</button>
+    <button id="save" class="bottom-button" onclick="save()">保存</button>
+    <button id="clear" class="bottom-button" onclick="onClear()">清空</button>
+    <button id="back" class="bottom-button" onclick="onBack()">上一页</button>
+    <div id="footer" style="display: none"></div>
+
+</div>
+
+</body>
+
+</html>

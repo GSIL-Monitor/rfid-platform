@@ -112,7 +112,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
         return code == null ? (prefix + "001") : prefix + CommonUtil.convertIntToString(code + 1, 3);
     }
 
-    public void save(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList){
+    public void save(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, List<AbnormalCodeMessage> list){
         this.transferOrderBillDao.batchExecute("delete from TransferOrderBillDtl t where t.billNo=?",transferOrderBill.getBillNo());
         this.transferOrderBillDao.batchExecute("delete from BillRecord where billNo=?", transferOrderBill.getBillNo());
 
@@ -120,6 +120,9 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
         this.transferOrderBillDao.doBatchInsert(transferOrderBillDtlList);
         if(CommonUtil.isNotBlank(transferOrderBill.getBillRecordList())){
             this.transferOrderBillDao.doBatchInsert(transferOrderBill.getBillRecordList());
+        }
+        if(CommonUtil.isNotBlank(list)&&list.size()>0){
+            this.transferOrderBillDao.doBatchInsert(list);
         }
     }
     /**
@@ -173,7 +176,7 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
     /**
      * web调拨转换出入库任务
      * */
-    public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business,List<BillRecord> billRecordList) throws Exception {
+    public MessageBox saveBusiness(TransferOrderBill transferOrderBill, List<TransferOrderBillDtl> transferOrderBillDtlList, Business business,List<BillRecord> billRecordList,List<AbnormalCodeMessage> Abnormallist) throws Exception {
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if(messageBox.getSuccess()){
             this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
@@ -195,6 +198,9 @@ public class TransferOrderBillService implements IBaseService<TransferOrderBill,
             this.taskService.webSave(business);
             if(CommonUtil.isNotBlank(billRecordList)&&billRecordList.size()!=0){
                 this.transferOrderBillDao.doBatchInsert(billRecordList);
+            }
+            if(CommonUtil.isNotBlank(Abnormallist)&&Abnormallist.size()>0){
+                this.saleOrderBillDao.doBatchInsert(Abnormallist);
             }
             return messageBox;
         }else{

@@ -26,6 +26,16 @@ public class TransferOrderBillDtl extends BaseBillDtl {
     private int outStatus=0;
     @Column()
     private int inStatus =0;
+    @Transient
+    private String noOutPutCode;
+
+    public String getNoOutPutCode() {
+        return noOutPutCode;
+    }
+
+    public void setNoOutPutCode(String noOutPutCode) {
+        this.noOutPutCode = noOutPutCode;
+    }
 
     @Transient
     private String supplierName;//供应商名字关联款中class1对应name
