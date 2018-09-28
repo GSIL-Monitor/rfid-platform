@@ -1294,7 +1294,7 @@ function setDiscount() {
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 $('#addDetailgrid').setCell(value, "discount", discount);
                 var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
-                var var_totActPrice = -Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(value, "qty") * 100) / 100);
+                var var_totActPrice = Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(value, "qty") * 100) / 100);
                 $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
                 $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
             });
@@ -1317,7 +1317,7 @@ function setDiscount() {
                     $('#addDetailgrid').setCell(value, "abnormalStatus", 0);
                     changeWordscolor(value,"black");
                 }
-                var var_totActPrice = -Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
+                var var_totActPrice = Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
                 $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
                 $("#grid-table").setCell(value,"useable",0,{color:'red'});
             });
