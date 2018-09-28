@@ -33,6 +33,7 @@
         var resourcePrivilege =${resourcePrivilege};
         var cargoTrack = "${cargoTracking}";
         var cTbillNo = "${cTbillNo}";
+        var defaultPayType = "${payType}";//默认支付方式
     </script>
 
 </head>
@@ -296,8 +297,12 @@
                                                         <label class="col-md-1 control-label"
                                                                for="edit_payType">支付方式</label>
                                                         <div class="col-md-3">
-                                                            <input class="form-control" id="edit_payType" name="payType"
-                                                                   type="text" value="${saleOrderBill.payType}"/>
+                                                            <select class="form-control" id="edit_payType" name="payType">
+                                                                <option value="xianjinzhifu">现金支付</option>
+                                                                <option value="zhifubaozhifu">支付宝支付</option>
+                                                                <option value="wechatpay">微信支付</option>
+                                                                <option value="cardpay">刷卡支付</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>

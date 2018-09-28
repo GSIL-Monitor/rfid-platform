@@ -19,7 +19,7 @@ $(function () {
         /*初始化左侧grig*/
         initSearchGrid();
     });
-
+    $("#edit_payType").val(defaultPayType);
 
 });
 
@@ -1453,13 +1453,13 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["SODtl_search","SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseRe","SODtl_wareHouseCh","SODtl_findRetrunno"];
             break;
         case "0" :
-            disableButtonIds = ["SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_wareHouseCh"];
+            disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "1":
             disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
             break;
         case "2" :
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_wareHouseCh"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe"];
             break;
         case "3":
             disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
