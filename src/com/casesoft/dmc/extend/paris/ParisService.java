@@ -508,7 +508,7 @@ public class ParisService implements IBillWSService {
                             transferOrderBillDtlList = this.copyNewTRBillDtl(dtlListTRO);
                         }
                         BillConvertUtil.covertToTransferOrderBusiness(transferOrderBill, transferOrderBillDtlList, bus, Constant.Token.Storage_Transfer_Outbound);
-                        this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList);
+                        this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList,null);
                         break;
                     case Constant.Token.Storage_Transfer_Inbound:
                         transferOrderBill = this.transferOrderBillService.get("billNo", bus.getBillNo());

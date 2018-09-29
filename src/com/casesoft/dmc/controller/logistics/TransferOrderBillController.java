@@ -16,6 +16,7 @@ import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
 import com.casesoft.dmc.service.sys.PrintService;
 import com.casesoft.dmc.service.sys.PrintSetService;
@@ -42,6 +43,8 @@ public class TransferOrderBillController extends BaseController implements ILogi
 
     @Autowired
     private TransferOrderBillService transferOrderBillService;
+    @Autowired
+    private SaleOrderReturnBillService saleOrderReturnBillService;
 
     @Autowired
     private PrintService printService;
@@ -101,13 +104,15 @@ public class TransferOrderBillController extends BaseController implements ILogi
         return this.transferOrderBillService.find(billNo);
     }
 
-    @RequestMapping(value = "/findBillDtl")
+    @RequestMapping(value = {"/findBillDtl","/findBillDtlWS"})
     @ResponseBody
     public List<TransferOrderBillDtl> findBillDtl(String billNo) throws Exception {
         this.logAllRequestParams();
         List<TransferOrderBillDtl> transferOrderBillDtls = this.transferOrderBillService.findBillDtlByBillNo(billNo);
         Map<String,String> codeMap = new HashMap<>();
+        Map<String, String> abnormalCodeMap = new HashMap<>();
         List<BillRecord> billRecordList = this.transferOrderBillService.getBillRecod(billNo);
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderReturnBillService.findAbnormalCodeMessageByBillNo(billNo);
         for(BillRecord r : billRecordList){
             if(codeMap.containsKey(r.getSku())){
                 String code = codeMap.get(r.getSku());
@@ -115,6 +120,15 @@ public class TransferOrderBillController extends BaseController implements ILogi
                 codeMap.put(r.getSku(),code);
             }else{
                 codeMap.put(r.getSku(),r.getCode());
+            }
+        }
+        for (AbnormalCodeMessage a : abnormalCodeMessageByBillNo) {
+            if (abnormalCodeMap.containsKey(a.getSku())) {
+                String code = abnormalCodeMap.get(a.getSku());
+                code += "," + a.getCode();
+                abnormalCodeMap.put(a.getSku(), code);
+            } else {
+                abnormalCodeMap.put(a.getSku(), a.getCode());
             }
         }
         for (TransferOrderBillDtl dtl : transferOrderBillDtls) {
@@ -133,12 +147,15 @@ public class TransferOrderBillController extends BaseController implements ILogi
             if(codeMap.containsKey(dtl.getSku())){
                 dtl.setUniqueCodes(codeMap.get(dtl.getSku()));
             }
+            if (abnormalCodeMap.containsKey(dtl.getSku())) {
+                dtl.setNoOutPutCode(abnormalCodeMap.get(dtl.getSku()));
+            }
         }
         return transferOrderBillDtls;
     }
 
 
-    @RequestMapping(value = "/save")
+    @RequestMapping(value = {"/save","/saveWS"})
     @ResponseBody
     @Override
     public MessageBox save(String transferOrderBillStr, String strDtlList, String userId) throws Exception {
@@ -164,7 +181,22 @@ public class TransferOrderBillController extends BaseController implements ILogi
             transferOrderBill.setId(transferOrderBill.getBillNo());
             User curUser = CacheManager.getUserById(userId);
             BillConvertUtil.covertToTransferOrderBill(transferOrderBill, transferOrderBillDtlList, curUser);
-            this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList);
+            //判断是否有异常唯一码
+            //拼接code字符串
+            String code="";
+            for(TransferOrderBillDtl transferOrderBillDtl: transferOrderBillDtlList){
+                if(CommonUtil.isBlank(code)){
+                    if(CommonUtil.isNotBlank(transferOrderBillDtl.getUniqueCodes())) {
+                        code += transferOrderBillDtl.getUniqueCodes();
+                    }
+                }else{
+                    if(CommonUtil.isNotBlank(transferOrderBillDtl.getUniqueCodes())) {
+                        code += "," + transferOrderBillDtl.getUniqueCodes();
+                    }
+                }
+            }
+            List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(transferOrderBillDtlList,0,code);
+            this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList,list);
             return new MessageBox(true, "保存成功", transferOrderBill);
         } catch (Exception e) {
             e.printStackTrace();
@@ -310,7 +342,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/convertOut")
+    @RequestMapping(value = {"/convertOut","/convertOutWS"})
     @ResponseBody
     public MessageBox convertOut(String billNo, String strEpcList, String strDtlList, String userId) throws Exception {
 //        List<TransferOrderBillDtl> transferOrderBillDtlList = this.transferOrderBillService.findBillDtlByBillNo(billNo);
@@ -337,8 +369,31 @@ public class TransferOrderBillController extends BaseController implements ILogi
                 billRecordList.add(billRecord);
             }
         }
-        Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, transferOrderBillDtlList, epcList, currentUser);
-        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business,billRecordList);
+        //判断是否有异常唯一码
+        //拼接code字符串
+        String code="";
+        for(TransferOrderBillDtl transferOrderBillDtl: transferOrderBillDtlList){
+            if(CommonUtil.isBlank(code)){
+                if(CommonUtil.isNotBlank(transferOrderBillDtl.getUniqueCodes())){
+                    code += transferOrderBillDtl.getUniqueCodes();
+                }
+            }else{
+                if(CommonUtil.isNotBlank(transferOrderBillDtl.getUniqueCodes())) {
+                    code += "," + transferOrderBillDtl.getUniqueCodes();
+                }
+            }
+        }
+        List<AbnormalCodeMessage> abnormalCodeMessageByBillNo = this.saleOrderReturnBillService.findAbnormalCodeMessageByBillNo(billNo);
+        String AbnormalCodeMessagecodes="";
+        for(AbnormalCodeMessage abnormalCodeMessage:abnormalCodeMessageByBillNo){
+            if(CommonUtil.isNotBlank(AbnormalCodeMessagecodes)){
+                AbnormalCodeMessagecodes+=","+abnormalCodeMessage.getCode();
+            }else{
+                AbnormalCodeMessagecodes+=abnormalCodeMessage.getCode();
+            }
+        }
+        Business business = BillConvertUtil.covertToTransferOrderBusinessOut(transferOrderBill, transferOrderBillDtlList, epcList, currentUser,AbnormalCodeMessagecodes,abnormalCodeMessageByBillNo);
+        MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business,billRecordList,abnormalCodeMessageByBillNo);
         if(messageBox.getSuccess()){
             return new MessageBox(true,"出库成功");
         }else{
@@ -371,7 +426,7 @@ public class TransferOrderBillController extends BaseController implements ILogi
             User user = this.getCurrentUser();
             messageBox = this.transferOrderBillService.saveBusinessOnHaveSaleNo(transferOrderBill, transferOrderBillDtlList, business,epcList,user,setting);
         }else{
-            messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business,null);
+            messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, transferOrderBillDtlList, business,null,null);
         }
         if(messageBox.getSuccess()){
             return new MessageBox(true,"入库成功");

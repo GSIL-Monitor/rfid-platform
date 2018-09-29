@@ -58,7 +58,7 @@ public class TransferBillApiController extends ApiBaseController {
             }
             transferOrderBill.setId(transferOrderBill.getBillNo());
             BillConvertUtil.covertToTransferOrderBill(transferOrderBill, transferOrderBillDtlList, curUser);
-            this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList);
+            this.transferOrderBillService.save(transferOrderBill, transferOrderBillDtlList,null);
             return new MessageBox(true, "保存成功", transferOrderBill.getBillNo());
 
         } catch (Exception e) {
