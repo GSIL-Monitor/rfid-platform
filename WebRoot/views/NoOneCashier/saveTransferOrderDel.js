@@ -303,13 +303,13 @@ function saveTransfer(result) {
             return;
         }
 
-        if(userId !== 'admin'){
+        /*if(userId !== 'admin'){
             if($("#defaultWarehId").val() !== curOwnerId && $("#transferOrderDestUnitId").val() !== curOwnerId){
                 bootbox.alert("发货方或出货方必须有一个是本店");
                 cs.closeProgressBar();
                 return;
             }
-        }
+        }*/
 
 
 

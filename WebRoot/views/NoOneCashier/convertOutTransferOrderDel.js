@@ -161,9 +161,16 @@ function wareHouseOut() {
             }
         });
         if (epcArray.length === 0) {
-            $.gritter.add({
+            /*$.gritter.add({
                 text: "请扫码添加出库商品",
                 class_name: 'gritter-success  gritter-light'
+            });*/
+            bootbox.confirm("没有出库的商品", function(result) {
+                if (result){
+                    localStorage.clear();
+                    window.location.href=basePath+'/views/NoOneCashier/selectSaleOrTransferOrder.html';
+
+                }
             });
             cs.closeProgressBar();
             $("#TRDtl_wareHouseOut").removeAttr("disabled");
@@ -198,6 +205,7 @@ function wareHouseOut() {
                     });*/
                     bootbox.confirm("已出库" + epcArray.length + "件商品", function(result) {
                         if (result){
+                            localStorage.clear();
                             window.location.href=basePath+'/views/NoOneCashier/selectSaleOrTransferOrder.html';
                         }
                     });
