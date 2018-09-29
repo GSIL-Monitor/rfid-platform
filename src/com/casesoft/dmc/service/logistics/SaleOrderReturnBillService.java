@@ -151,9 +151,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         payDetail.setShop(bill.getOwnerId());
         payDetail.setBillNo(bill.getBillNo());
         payDetail.setPayType(bill.getPayType());
-        payDetail.setPayPrice(bill.getPayPrice().toString());
-        payDetail.setActPayPrice(bill.getPayPrice().toString());
-        payDetail.setBillType(bill.getBillType());
+        payDetail.setPayPrice(-bill.getPayPrice());
+        payDetail.setActPayPrice(-bill.getPayPrice());
+        payDetail.setBillType("2");//退货=付款
         this.payDetailDao.saveOrUpdate(payDetail);
     }
 

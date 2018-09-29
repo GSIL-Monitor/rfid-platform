@@ -222,9 +222,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         payDetail.setShop(saleOrderBill.getOwnerId());
         payDetail.setBillNo(saleOrderBill.getBillNo());
         payDetail.setPayType(saleOrderBill.getPayType());
-        payDetail.setPayPrice(saleOrderBill.getPayPrice().toString());
-        payDetail.setActPayPrice(saleOrderBill.getPayPrice().toString());
-        payDetail.setBillType(saleOrderBill.getBillType());
+        payDetail.setPayPrice(saleOrderBill.getPayPrice());
+        payDetail.setActPayPrice(saleOrderBill.getPayPrice());
+        payDetail.setBillType("0");//销售=收款
         this.payDetailDao.saveOrUpdate(payDetail);
     }
 

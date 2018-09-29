@@ -9,7 +9,7 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var userId = "${userId}";
-
+        var defaultPayType = "${payType}";
     </script>
     <style type="text/css">
         .data-container {
@@ -57,12 +57,6 @@
                                             <span class="bigger-110">刷新</span>
                                         </button>
                                     </div>
-                                    <div class="btn-group btn-group-sm pull-left">
-                                        <button class="btn btn-primary" onclick="showDetailPage()">
-                                            <i class="ace-icon fa fa-list"></i>
-                                            <span class="bigger-110">一览表</span>
-                                        </button>
-                                    </div>
                                     <div class="btn-group btn-group-sm pull-right">
                                         <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
                                             <i class="ace-icon fa fa-binoculars"></i>
@@ -77,33 +71,45 @@
                                 <form class="form-horizontal" role="form" id="searchForm">
 
                                     <div class="form-group">
-                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
-                                               for="search_nameOrTel">客户名称或电话</label>
-                                        <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
-                                            <input class="form-control" id="search_nameOrTel" name="filter_LIKES_name_OR_tel"
-                                                   type="text" placeholder="模糊查询"/>
-                                        </div>
-
-                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
-                                               for="search_unitType">客户类型</label>
-                                        <div class="col-xs-8 col-sm-8 col-md-2 col-lg-2">
-                                            <select class="form-control" name="filter_EQS_unitType" id="search_unitType">
-                                                <option value="">--选择客户类型--</option>
-                                                <option value="CT-AT">省代客户</option>
-                                                <option value="CT-ST">门店客户</option>
-                                                <option value="CT-LS">零售客户</option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-xs-1 control-label" for="search_owingValue">欠款金额</label>
-                                        <div class="col-xs-2">
+                                        <label class="col-md-1 control-label"
+                                               for="search_createTime">创建日期</label>
+                                        <div class="col-md-3">
                                             <div class="input-group">
-                                                <input class="form-control" id="search_owingValue"
-                                                       type="text" name="filter_GEN_owingValue"/>
+                                                <input class="form-control date-picker"
+                                                       id="search_createTime"
+                                                       type="text" name="filter_GED_billDate"
+                                                       data-date-format="yyyy-mm-dd"/>
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-exchange"></i>
                                                 </span>
-                                                <input  type="text" class="form-control" name="filter_LEN_owingValue"/>
+                                                <input class="form-control date-picker" type="text"
+                                                       class="input-sm form-control"
+                                                       name="filter_LED_billDate"
+                                                       data-date-format="yyyy-mm-dd"/>
+                                            </div>
+                                        </div>
+
+
+                                        <label class="col-md-1 control-label"
+                                               for="edit_shopId">店铺</label>
+                                        <div class="col-md-3">
+                                            <select class="form-control selectpicker show-tick"
+                                                    id="edit_shopId" name="shopId"
+                                                    style="width: 100%;"
+                                                    data-live-search="true">
+                                            </select>
+                                        </div>
+
+                                        <div id="payType_div">
+                                            <label class="col-md-1 control-label"
+                                                   for="edit_payType">支付方式</label>
+                                            <div class="col-md-3">
+                                                <select class="form-control selectpicker" id="edit_payType" name="payType">
+                                                    <option value="xianjinzhifu">现金支付</option>
+                                                    <option value="zhifubaozhifu">支付宝支付</option>
+                                                    <option value="wechatpay">微信支付</option>
+                                                    <option value="cardpay">刷卡支付</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -123,28 +129,6 @@
                             </div>
                         </div>
 
-                        <div id="isAdmin">
-                            <div class="data-container col-lg-2">
-                                <span class="title">客户数：</span>
-                                <span class="title" id ="sumOfCustomer">查询中...</span>
-                            </div>
-                            <div class="data-container col-lg-2">
-                                <span class="title">欠款客户数：</span>
-                                <span class="title" id ="sumOfOwningCustomer">查询中...</span>
-                            </div>
-                            <div class="data-container col-lg-2">
-                                <span class="title">欠款金额：</span>
-                                <span class="title" id="sumOfOwningValue">查询中...</span>
-                            </div>
-                            <div class="data-container col-lg-2">
-                                <span class="title">充值客户数：</span>
-                                <span class="title" id="sumOfRechargeCustomer">查询中...</span>
-                            </div>
-                            <div class="data-container col-lg-2">
-                                <span class="title">充值金额：</span>
-                                <span class="title" id="sumOfRechargeValue">查询中...</span>
-                            </div>
-                        </div>
 
                         <table id="grid"></table>
                         <div id="grid-pager"></div>
@@ -163,6 +147,6 @@
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
-<script type="text/javascript" src="<%=basePath%>/views/sys/guestAccountController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/search/shopTurnoverSearchController.js"></script>
 </body>
 </html>

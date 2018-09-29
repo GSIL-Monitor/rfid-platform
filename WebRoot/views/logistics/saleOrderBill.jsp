@@ -57,35 +57,7 @@
                             <div class="panel panel-default  left-panel">
                                 <div class="panel-body">
                                     <div class="widget-body">
-                                        <%-- <div class="widget-toolbox padding-8 clearfix">
-                                             <div class="btn-toolbar" role="toolbar">
-                                                 <div class="btn-group btn-group-sm pull-left">
-                                                     <button class="btn btn-info" onclick="refresh()">
-                                                         <i class="ace-icon fa fa-refresh"></i>
-                                                         <span class="bigger-110">刷新</span>
-                                                     </button>
-                                                 </div>
-                                                 <div class="btn-group btn-group-sm pull-left">
-                                                     <button type="button" class="btn btn-primary" onclick="add()">
-                                                         <i class="ace-icon fa fa-plus"></i>
-                                                         <span class="bigger-110">新增</span>
-                                                     </button>
-                                                 </div>
-                                                 <div class="btn-group btn-group-sm pull-left">
-                                                     <button type="button" class="btn btn-primary" onclick="addUniqCode()">
-                                                         <i class="ace-icon fa fa-plus"></i>
-                                                         <span class="bigger-110">扫描</span>
-                                                     </button>
-                                                 </div>
-                                                 <div class="btn-group btn-group-sm pull-right">
-                                                     <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
-                                                         <i class="ace-icon fa fa-binoculars"></i>
-                                                         <span class="bigger-110">高级查询</span>
-                                                     </button>
 
-                                                 </div>
-                                             </div>
-                                         </div>--%>
 
                                         <form class="form-horizontal" role="form" id="searchForm">
                                             <div class="form-group">
@@ -297,7 +269,7 @@
                                                         <label class="col-md-1 control-label"
                                                                for="edit_payType">支付方式</label>
                                                         <div class="col-md-3">
-                                                            <select class="form-control" id="edit_payType" name="payType">
+                                                            <select class="form-control selectpicker" id="edit_payType" name="payType">
                                                                 <option value="xianjinzhifu">现金支付</option>
                                                                 <option value="zhifubaozhifu">支付宝支付</option>
                                                                 <option value="wechatpay">微信支付</option>

@@ -19,7 +19,7 @@ $(function () {
         /*初始化左侧grig*/
         initSearchGrid();
     });
-    $("#edit_payType").val(defaultPayType);
+    $("#edit_payType").selectpicker('val',defaultPayType);
 
 });
 
@@ -64,7 +64,7 @@ function initSearchGrid() {
         colModel: [
             {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {name: 'billNo', label: '单据编号', sortable: true, width: 45,hidden:true},
-
+            {name: 'payType' , label: '支付方式', hidden : true},
             {name: 'status', hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
@@ -228,6 +228,7 @@ function addNew(isScan){
     slaeOrder_status ="0";
     initButtonGroup(0);
     initSelectBusinessIdFormOnAddNew();
+    $("#edit_payType").selectpicker('val',defaultPayType);
 }
 function setFooterData() {
 

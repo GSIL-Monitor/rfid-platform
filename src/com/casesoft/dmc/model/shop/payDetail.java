@@ -38,18 +38,20 @@ public class payDetail implements Serializable{
     private String payType;//支付方式
 
     @Column
-    private String payPrice;//应付金额
+    private Double payPrice;//应付金额
 
     @Column
-    private String actPayPrice;//实付金额
+    private Double actPayPrice;//实付金额
 
     @Column
     private String returnPrice;//找零
 
     @Column
     private String status;//脏数据处理字段
-    @Column()
+    @Column
     private String billType;//账单类型 收款0, 储值1, 付款2, 销售3, 退货4
+    @Column
+    private String donationPrice;//赠送金额
 
 
     public String getId() {
@@ -108,19 +110,19 @@ public class payDetail implements Serializable{
         this.payType = payType;
     }
 
-    public String getPayPrice() {
+    public Double getPayPrice() {
         return payPrice;
     }
 
-    public void setPayPrice(String payPrice) {
+    public void setPayPrice(Double payPrice) {
         this.payPrice = payPrice;
     }
 
-    public String getActPayPrice() {
+    public Double getActPayPrice() {
         return actPayPrice;
     }
 
-    public void setActPayPrice(String actPayPrice) {
+    public void setActPayPrice(Double actPayPrice) {
         this.actPayPrice = actPayPrice;
     }
 
@@ -146,5 +148,13 @@ public class payDetail implements Serializable{
 
     public void setBillType(String billType) {
         this.billType = billType;
+    }
+
+    public String getDonationPrice() {
+        return donationPrice;
+    }
+
+    public void setDonationPrice(String donationPrice) {
+        this.donationPrice = donationPrice;
     }
 }

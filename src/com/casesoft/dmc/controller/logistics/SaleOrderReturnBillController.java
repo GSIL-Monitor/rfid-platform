@@ -13,6 +13,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.pad.Template.TemplateMsg;
 import com.casesoft.dmc.model.product.Style;
@@ -21,6 +22,7 @@ import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.*;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
+import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.pad.TemplateMsgService;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
@@ -73,6 +75,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
     private ResourcePrivilegeService resourcePrivilegeService;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private PropertyService propertyService;
     @Autowired
     private TaskService taskService;
     private String billNo;
@@ -165,6 +169,8 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
         mv.addObject("userId", getCurrentUser().getId());
         Setting setting = this.settingService.get("id", "isUserAbnormal");
         mv.addObject("isUserAbnormal", setting.getValue());
+        PropertyKey propertyKey = propertyService.getDefaultPayType();
+        mv.addObject("payType", propertyKey.getIconCode());
         return mv;
     }
 

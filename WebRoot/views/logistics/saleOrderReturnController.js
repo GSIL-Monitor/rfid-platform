@@ -13,6 +13,7 @@ $(function (){
         /*初始化左侧grig*/
         initSearchGrid();
     });
+    $("#edit_payType").selectpicker('val',defaultPayType);
 });
 
 function load() {
@@ -202,6 +203,7 @@ function initSearchGrid() {
             {name: "ownerId", hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
+            {name: 'payType' , label: '支付方式', hidden : true},
             {
                 name: '', label: '状态', width: 15, align: "center", sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -2175,6 +2177,7 @@ function addNew(){
     if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined) {
         $("#edit_busnissId").selectpicker('val',defaultSaleStaffId);
     }
+    $("#edit_payType").selectpicker('val',defaultPayType);
 }
 function cancel() {
 

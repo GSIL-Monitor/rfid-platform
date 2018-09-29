@@ -337,7 +337,7 @@ public class CommonUtil {
    * @Author Alvin
    * */
   public  static boolean isHexNumberRex(String str){
-    Pattern p = Pattern.compile("^[0][x][0-9a-fA-F]+$");
+    Pattern p = Pattern.compile("^[A-Fa-f0-9]+$");
     Matcher matcher = p.matcher(str);
     return matcher.matches();
   }
