@@ -215,7 +215,7 @@ function initSearchGrid() {
             // {name: 'totOutVal', label: '总出库金额', width: 30},
             {name: 'totInQty', label: '已入库数量', width: 30, hidden: true},
             // {name: 'totInVal', label: '总入库金额', width: 30},
-            {name: 'actPrice', label: '应付付金额', width: 30,
+            {name: 'actPrice', label: '应付金额', width: 30,hidden: true,
                 formatter: function (cellValue, options, rowObject) {
                     if(cellValue) {
                         var actPrice = cellValue.toFixed(2);
@@ -367,10 +367,17 @@ function initeditGrid(billId) {
             {name: 'inQty', label: '已入库数量', width: 40},
             {name: 'sku', label: 'sku', width: 50},
             {
-                name: 'price', label: '吊牌价格', width: 40,
+                name: 'price', label: '成交价格', width: 40,
                 formatter: function (cellValue, options, rowObject) {
                     var price = parseFloat(cellValue).toFixed(2);
                     return price;
+                }
+            },
+            {
+                name: 'tagPrice', label: '吊牌价格', width: 40,
+                formatter: function (cellValue, options, rowObject) {
+                    var tagPrice = parseFloat(cellValue).toFixed(2);
+                    return tagPrice;
                 }
             },
             {
@@ -991,6 +998,7 @@ function addDetail() {
             $("#color_size_grid").clearGridData();
         });
         initStyleGridColumn(ct);
+        $ ("#stylegrid").setGridParam().hideCol("wsPrice");
     } else {
         bootbox.alert("请选择客户！");
     }
@@ -1080,12 +1088,14 @@ function setAddFooterData() {
     var sum_inQty = $("#addDetailgrid").getCol('inQty', false, 'sum');
     var sum_totPrice = $("#addDetailgrid").getCol('totPrice', false, 'sum');
     var sum_totActPrice = Math.round($("#addDetailgrid").getCol('totActPrice', false, 'sum'));
+    var sum_tagPrice = $("#addDetailgrid").getCol('tagPrice', false, 'sum');
     $("#edit_actPrice").val(sum_totActPrice);
     $("#addDetailgrid").footerData('set', {
         styleId: "合计",
         qty: sum_qty,
         outQty: sum_outQty,
         inQty: sum_inQty,
+        tagPrice:-Math.abs(sum_tagPrice),
         totPrice: -Math.abs(sum_totPrice),
         totActPrice: -Math.abs(sum_totActPrice)
     });
