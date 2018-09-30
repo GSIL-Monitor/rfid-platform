@@ -116,6 +116,7 @@
             success: function (msg) {
                 if(msg.success){
                     localStorage.setItem("defaultSaleStaffId", msg.result.defaultSaleStaffId);
+                    localStorage.setItem("defaultSaleStaffName", msg.result.defaultSaleStaffName);
                     localStorage.setItem("defalutCustomerId", msg.result.defalutCustomerId);
                     localStorage.setItem("owingValue", msg.result.owingValue);
                     localStorage.setItem("defaultWarehId",msg.result.defaultWarehId);
@@ -153,9 +154,10 @@
                 }
 
                 var defaultSaleStaffId=localStorage.getItem("defaultSaleStaffId");
+                var defaultSaleStaffName=localStorage.getItem("defaultSaleStaffName");
                 console.log(defaultSaleStaffId);
                 if (defaultSaleStaffId != "" && defaultSaleStaffId != undefined&&defaultSaleStaffId != "undefined") {
-                    $("#search_busnissId").val(defaultSaleStaffId);
+                    $("#search_busnissId").val(defaultSaleStaffId+","+defaultSaleStaffName);
                 }
             }
         });

@@ -653,9 +653,16 @@ public class BaseInfoApiController extends ApiBaseController {
                 if(CommonUtil.isNotBlank(defaultWareh)){
                     u.setDefaultWarehouseName(defaultWareh.getName());
                 }
+                if(CommonUtil.isNotBlank(u.getDefaultSaleStaffId())) {
+                    User userDefaultSale = this.userService.getUser(u.getDefaultSaleStaffId());
+                    if (CommonUtil.isNotBlank(userDefaultSale)) {
+                        u.setDefaultSaleStaffName(userDefaultSale.getName());
+                    }
+                }
                 return new MessageBox(true, "获取成功", u);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return returnFailInfo("获取失败");
         }
     }

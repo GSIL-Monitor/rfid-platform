@@ -72,6 +72,7 @@ function initSearchGrid() {
             },
             {name: 'billType', label: '退货类型', hidden: true},
             {name: 'billDate', label: '单据日期', width: 40},
+            {name: "ownerId", hidden: true},
             {name: 'origUnitId', label: '发货方ID', hidden: true},
             {name: 'origUnitName', label: '发货方', width: 40,hidden: true},
             {name: 'origId', label: '出库仓库ID', hidden: true,hidden: true},

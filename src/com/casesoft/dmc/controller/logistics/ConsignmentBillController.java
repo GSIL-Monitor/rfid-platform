@@ -15,6 +15,7 @@ import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
 import com.casesoft.dmc.model.stock.EpcStock;
 import com.casesoft.dmc.model.sys.ResourcePrivilege;
+import com.casesoft.dmc.model.sys.Setting;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
@@ -23,6 +24,7 @@ import com.casesoft.dmc.service.logistics.ConsignmentBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.ResourcePrivilegeService;
+import com.casesoft.dmc.service.sys.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +52,8 @@ public class ConsignmentBillController extends BaseController implements ILogist
     private SaleOrderReturnBillService saleOrderReturnBillService;
     @Autowired
     private ResourcePrivilegeService resourcePrivilegeService;
+    @Autowired
+    private SettingService settingService;
 
     @RequestMapping(value = "/index")
     public ModelAndView indexMV() throws Exception {
@@ -74,6 +78,8 @@ public class ConsignmentBillController extends BaseController implements ILogist
             mv.addObject("defalutCustomerowingValue", customer.getOwingValue());
         }
         mv.addObject("defaultSaleStaffId", defaultSaleStaffId);
+        Setting setting = this.settingService.get("id", "isUserAbnormal");
+        mv.addObject("isUserAbnormal", setting.getValue());
         return mv;
     }
 

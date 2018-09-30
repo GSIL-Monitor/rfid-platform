@@ -129,6 +129,7 @@ function initSearchGrid() {
             {name: "status", hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
+            {name: "ownerId", hidden: true},
             {name: 'billDate', label: '单据日期', width: 30},
             {
                 name: '', label: '状态', width: 15, align: "center", sortable: false,

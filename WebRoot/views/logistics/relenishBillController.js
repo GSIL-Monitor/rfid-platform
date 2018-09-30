@@ -107,6 +107,7 @@ function initGrid() {
             {name: 'status', hidden: true},
             {name: 'billDate', label: '单据日期', sortable: true, width: 35},
             {name: 'busnissId', label: '业务员Id', hidden: true},
+            {name: "ownerId", hidden: true},
             {name: 'busnissName', label: '业务员', width: 30},
             {name: 'totQty', label: '单据数量', width: 30},
 
