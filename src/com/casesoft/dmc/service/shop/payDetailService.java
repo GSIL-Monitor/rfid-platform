@@ -27,7 +27,7 @@ public class payDetailService extends BaseService<payDetail, String> {
 
     @Override
     public Page<payDetail> findPage(Page<payDetail> page, List<PropertyFilter> filters) {
-        return null;
+        return payDetailDao.findPage(page,filters);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class payDetailService extends BaseService<payDetail, String> {
 
     @Override
     public payDetail get(String propertyName, Object value) {
-        return null;
+        return payDetailDao.findUniqueBy(propertyName,value);
     }
 
     @Override
@@ -74,23 +74,44 @@ public class payDetailService extends BaseService<payDetail, String> {
     public void delete(String id) {
 
     }
-    public Page<ShopTurnOver> getPriceCount(Page<ShopTurnOver> page){
+    public Page<ShopTurnOver> getPriceCount(Page<ShopTurnOver> page,String GED_billDate,String LED_billDate,String shopId,String payType){
         StringBuilder sql =new StringBuilder();
         sql.append("SELECT\n" +
                 "  s.shop,\n" +
                 "  s.payType,\n" +
-                "\ts.PAYDATE,\n" +
-                "  (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='0') as recivePrice,\n" +
-                "  (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='1') as savePrice,\n" +
-                "  (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='2') as returnPrice,\n" +
+                "  s.PAYDATE,\n" +
+                "  u.name as shopName,\n" +
+                "  (case when (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='0' and t.PAYDATE = s.PAYDATE)\n" +
+                "   is null then 0\n" +
+                "   else (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='0' and t.PAYDATE = s.PAYDATE) end) as recivePrice,\n" +
+                "  (case when (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='1' and t.PAYDATE = s.PAYDATE)\n" +
+                "   is null then 0\n" +
+                "   else (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='1' and t.PAYDATE = s.PAYDATE) end) as savePrice,\n" +
+                "  (case when (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='2' and t.PAYDATE = s.PAYDATE)\n" +
+                "   is null then 0\n" +
+                "   else (SELECT SUM (PAYPRICE) from  SHOP_PAYDETAIL  t where t.shop=s.shop and t.payType=s.payType and t.billtype='2' and t.PAYDATE = s.PAYDATE) end) as returnPrice,\n" +
                 "  SUM (ACTPAYPRICE) AS totPrice\n" +
                 "FROM\n" +
-                "  SHOP_PAYDETAIL s\n" +
-                "\n" +
-                "GROUP BY\n" +
+                "  SHOP_PAYDETAIL s\n");
+        sql.append("LEFT JOIN SYS_UNIT u on s.SHOP = u.id\n" +
+                "where s.STATUS = '1'\n");
+        if(CommonUtil.isNotBlank(GED_billDate)){
+            sql.append("and s.PAYDATE >= to_char(to_date('"+GED_billDate+"','yyyy-mm-dd'),'yyyy-mm-dd')\n");
+        }
+        if (CommonUtil.isNotBlank(LED_billDate)){
+            sql.append("and s.PAYDATE <= to_char(to_date('"+LED_billDate+"','yyyy-mm-dd'),'yyyy-mm-dd')\n");
+        }
+        if (CommonUtil.isNotBlank(shopId)){
+            sql.append("and s.shop='"+shopId+"'\n");
+        }
+        if (CommonUtil.isNotBlank(payType)){
+            sql.append("and s.payType='"+payType+"'\n");
+        }
+        sql.append("GROUP BY\n" +
                 "  s.shop,\n" +
                 "  s.payType,\n" +
-                "\ts.PAYDATE");
+                "  u.name,\n" +
+                "  s.PAYDATE");
         page = this.shopTurnoverDao.findPageBySQl(page, ShopTurnOver.class, sql.toString(), null);
         return page;
     }

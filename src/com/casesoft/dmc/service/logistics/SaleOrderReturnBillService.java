@@ -22,6 +22,7 @@ import com.casesoft.dmc.model.task.BusinessDtl;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.shop.GuestValueChangeService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
+import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     @Autowired
     private GuestValueChangeService guestValueChangeService;
     @Autowired
-    private payDetailDao payDetailDao;
+    private payDetailService payDetailService;
 
     public Double findSumActPrice(String origUnitId){
         return this.saleOrderReturnBillDao.findUnique("select sum(actPrice) from SaleOrderReturnBill where status = 2 and origUnitId =?",origUnitId);
@@ -148,13 +149,16 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));
         payDetail.setCustomerId(bill.getDestUnitId());
-        payDetail.setShop(bill.getOwnerId());
+        payDetail.setCustomerName(bill.getDestUnitName());
+        payDetail.setShop(bill.getOrigUnitId());
+        payDetail.setShopName(bill.getOrigUnitName());
         payDetail.setBillNo(bill.getBillNo());
         payDetail.setPayType(bill.getPayType());
         payDetail.setPayPrice(-bill.getPayPrice());
         payDetail.setActPayPrice(-bill.getPayPrice());
         payDetail.setBillType("2");//退货=付款
-        this.payDetailDao.saveOrUpdate(payDetail);
+        payDetail.setStatus("1");
+        this.payDetailService.save(payDetail);
     }
 
     public void cancelUpdate(SaleOrderReturnBill saleOrderReturnBill) {
@@ -170,6 +174,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.guestService.resetPreGust(saleOrderReturnBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
+        payDetail payDetail = payDetailService.get("billNo",saleOrderReturnBill.getBillNo());
+        payDetail.setStatus("0");
+        payDetailService.save(payDetail);
     }
 
     @Override

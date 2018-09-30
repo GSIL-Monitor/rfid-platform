@@ -26,6 +26,7 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.shop.GuestValueChangeService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
+import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
@@ -69,7 +70,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     @Autowired
     private GuestValueChangeService guestValueChangeService;
     @Autowired
-    private payDetailDao payDetailDao;
+    private payDetailService payDetailService;
 
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
@@ -219,13 +220,16 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));
         payDetail.setCustomerId(saleOrderBill.getDestUnitId());
-        payDetail.setShop(saleOrderBill.getOwnerId());
+        payDetail.setCustomerName(saleOrderBill.getDestUnitName());
+        payDetail.setShop(saleOrderBill.getOrigUnitId());
+        payDetail.setShopName(saleOrderBill.getOrigUnitName());
         payDetail.setBillNo(saleOrderBill.getBillNo());
         payDetail.setPayType(saleOrderBill.getPayType());
         payDetail.setPayPrice(saleOrderBill.getPayPrice());
         payDetail.setActPayPrice(saleOrderBill.getPayPrice());
         payDetail.setBillType("0");//销售=收款
-        this.payDetailDao.saveOrUpdate(payDetail);
+        payDetail.setStatus("1");
+        this.payDetailService.save(payDetail);
     }
 
     /**
@@ -432,6 +436,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             this.transferOrderBillService.update(transferOrderBill);
         }
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
+        payDetail payDetail = payDetailService.get("billNo",saleOrderBill.getBillNo());
+        payDetail.setStatus("0");
+        payDetailService.save(payDetail);
     }
 
     public Epc findProductBycode(String code) {
