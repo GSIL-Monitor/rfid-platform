@@ -2693,6 +2693,7 @@ public class BillConvertUtil {
             saleOrderBill.setOutStatus(BillConstant.BillInOutStatus.OutStore);
             if (saleOrderBill.getCustomerTypeId().equals(BillConstant.customerType.Customer)) {
                 saleOrderBill.setStatus(BillConstant.BillStatus.End);
+
             }
         }
         return bus;

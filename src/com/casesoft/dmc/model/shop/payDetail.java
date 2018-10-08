@@ -26,7 +26,13 @@ public class payDetail implements Serializable{
     private String customerId;//客户id
 
     @Column
-    private String shop;//店铺
+    private String customerName;//客户名称
+
+    @Column
+    private String shop;//店铺id
+
+    @Column
+    private String shopName;//店铺名称
 
     @Column
     private String billNo;//销售单号
@@ -156,5 +162,21 @@ public class payDetail implements Serializable{
 
     public void setDonationPrice(String donationPrice) {
         this.donationPrice = donationPrice;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 }

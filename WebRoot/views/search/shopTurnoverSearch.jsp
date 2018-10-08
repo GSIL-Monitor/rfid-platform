@@ -9,24 +9,12 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var userId = "${userId}";
+        var ownerId = "${ownerId}";
         var defaultPayType = "${payType}";
     </script>
     <style type="text/css">
-        .data-container {
-            /*display: inline-block;*/
-            border: 1px solid #d7d7d7;
-            /*border-right: 0px;*/
-            width: 20%;
-            margin-bottom: 10px;
-            font-size: 12px;
-            text-align: center;
-            padding-top: 3px;
-            padding-bottom: 3px;
-        }
-        .title {
-            color: #53606b;
-            font-size: 14px;
-            line-height: 31px;
+        .ui-jqgrid-bdiv{
+            overflow-x: hidden!important;
         }
     </style>
 </head>
@@ -77,14 +65,14 @@
                                             <div class="input-group">
                                                 <input class="form-control date-picker"
                                                        id="search_createTime"
-                                                       type="text" name="filter_GED_billDate"
+                                                       type="text" name="GED_billDate"
                                                        data-date-format="yyyy-mm-dd"/>
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-exchange"></i>
                                                 </span>
                                                 <input class="form-control date-picker" type="text"
                                                        class="input-sm form-control"
-                                                       name="filter_LED_billDate"
+                                                       name="LED_billDate"
                                                        data-date-format="yyyy-mm-dd"/>
                                             </div>
                                         </div>
@@ -105,6 +93,7 @@
                                                    for="edit_payType">支付方式</label>
                                             <div class="col-md-3">
                                                 <select class="form-control selectpicker" id="edit_payType" name="payType">
+                                                    <option value="">--选择支付方式--</option>
                                                     <option value="xianjinzhifu">现金支付</option>
                                                     <option value="zhifubaozhifu">支付宝支付</option>
                                                     <option value="wechatpay">微信支付</option>
@@ -147,6 +136,7 @@
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/search/shopTurnoverSearchController.js"></script>
 </body>
 </html>

@@ -10,17 +10,19 @@ public class ShopTurnOver {
 
     private String shop;//店铺id
 
+    private String shopName;//店铺名称
+
     private String payType;//支付方式
 
     private String payDate;//支付事件
 
-    private Double recivePrice;//收款金额
+    private BigDecimal recivePrice;//收款金额
 
-    private Double savePrice;//储值金额
+    private BigDecimal savePrice;//储值金额
 
-    private Double returnPrice;//付款金额
+    private BigDecimal returnPrice;//付款金额
 
-    private Double totPrice;//总金额
+    private BigDecimal totPrice;//总金额
 
     public String getShop() {
         return shop;
@@ -46,36 +48,43 @@ public class ShopTurnOver {
         this.payDate = payDate;
     }
 
-    public Double getTotPrice() {
+    public BigDecimal getTotPrice() {
         return totPrice;
     }
 
-    public void setTotPrice(Double totPrice) {
+    public void setTotPrice(BigDecimal totPrice) {
         this.totPrice = totPrice;
     }
 
-    public Double getRecivePrice() {
+    public BigDecimal getRecivePrice() {
         return recivePrice;
     }
 
-    public void setRecivePrice(Double recivePrice) {
+    public void setRecivePrice(BigDecimal recivePrice) {
         this.recivePrice = recivePrice;
     }
 
-    public Double getSavePrice() {
+    public BigDecimal getSavePrice() {
         return savePrice;
     }
 
-    public void setSavePrice(Double savePrice) {
+    public void setSavePrice(BigDecimal savePrice) {
         this.savePrice = savePrice;
     }
 
-    public Double getReturnPrice() {
+    public BigDecimal getReturnPrice() {
         return returnPrice;
     }
 
-    public void setReturnPrice(Double returnPrice) {
+    public void setReturnPrice(BigDecimal returnPrice) {
         this.returnPrice = returnPrice;
     }
 
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 }
