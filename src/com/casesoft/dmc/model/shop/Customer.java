@@ -75,6 +75,18 @@ public class Customer implements java.io.Serializable {
     private String updaterId;
     private String linkman;  // 销售联系人ID
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @Column(length = 19)
+    private Date createDate;
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
     @Transient   // 销售联系人姓名
     private String linkmanName;
     public String getLinkmanName() { return linkmanName; }
