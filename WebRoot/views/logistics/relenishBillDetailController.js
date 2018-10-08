@@ -124,7 +124,7 @@ function initGrid() {
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
-
+            {name: "ownerId", hidden: true},
             {
                 name: "operation", label: "操作", width: 30, align: "center", sortable: false,
                 formatter: function (cellvalue, options, rowObject) {

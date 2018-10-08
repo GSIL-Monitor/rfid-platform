@@ -8,10 +8,12 @@ import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
+import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -20,12 +22,14 @@ import com.casesoft.dmc.model.task.BusinessDtl;
 import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.shop.GuestValueChangeService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
+import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -55,6 +59,8 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     private GuestService guestService;
     @Autowired
     private GuestValueChangeService guestValueChangeService;
+    @Autowired
+    private payDetailService payDetailService;
 
     public Double findSumActPrice(String origUnitId){
         return this.saleOrderReturnBillDao.findUnique("select sum(actPrice) from SaleOrderReturnBill where status = 2 and origUnitId =?",origUnitId);
@@ -137,6 +143,22 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         if(CommonUtil.isNotBlank(list)&&list.size()>0){
             this.saleOrderReturnBillDao.doBatchInsert(list);
         }
+        //保存收银表
+        payDetail payDetail = new payDetail();
+        payDetail.setId(bill.getBillNo()+bill.getPayType());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        payDetail.setPayDate(df.format(new Date()));
+        payDetail.setCustomerId(bill.getDestUnitId());
+        payDetail.setCustomerName(bill.getDestUnitName());
+        payDetail.setShop(bill.getOrigUnitId());
+        payDetail.setShopName(bill.getOrigUnitName());
+        payDetail.setBillNo(bill.getBillNo());
+        payDetail.setPayType(bill.getPayType());
+        payDetail.setPayPrice(-bill.getPayPrice());
+        payDetail.setActPayPrice(-bill.getPayPrice());
+        payDetail.setBillType("2");//退货=付款
+        payDetail.setStatus("1");
+        this.payDetailService.save(payDetail);
     }
 
     public void cancelUpdate(SaleOrderReturnBill saleOrderReturnBill) {
@@ -152,6 +174,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.guestService.resetPreGust(saleOrderReturnBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
+        payDetail payDetail = payDetailService.get("billNo",saleOrderReturnBill.getBillNo());
+        payDetail.setStatus("0");
+        payDetailService.save(payDetail);
     }
 
     @Override

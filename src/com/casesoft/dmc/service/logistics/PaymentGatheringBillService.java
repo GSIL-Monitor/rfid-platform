@@ -107,11 +107,20 @@ public class PaymentGatheringBillService implements IBaseService<PaymentGatherin
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));
         payDetail.setCustomerId(entity.getCustomsId());
-        payDetail.setShop(entity.getOwnerId());
+        payDetail.setCustomerName(entity.getCustomsName());
+        payDetail.setShop(entity.getVendorId());
+        payDetail.setShopName(entity.getVendorName());
         payDetail.setBillNo(entity.getBillNo());
         payDetail.setPayType(entity.getPayType());
-        payDetail.setPayPrice(entity.getPayPrice().toString());
-        payDetail.setActPayPrice(entity.getPayPrice().toString());
+        payDetail.setPayPrice(entity.getPayPrice());
+        payDetail.setActPayPrice(entity.getPayPrice());
+        payDetail.setBillType(entity.getBillType());
+        payDetail.setDonationPrice(entity.getDonationPrice());
+        payDetail.setStatus("1");
+        if("2".equals(entity.getBillType())){
+            payDetail.setActPayPrice(-entity.getPayPrice());
+            payDetail.setPayPrice(-entity.getPayPrice());
+        }
         this.payDetailDao.saveOrUpdate(payDetail);
         Unit unit = this.paymentGatheringBillDao.findUnique("from Unit where id = ?",new Object[]{entity.getCustomsId()});
         if(CommonUtil.isBlank(unit)){

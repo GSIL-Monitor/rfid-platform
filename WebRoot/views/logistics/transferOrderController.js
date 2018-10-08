@@ -119,6 +119,7 @@ function initGrid() {
             {name: 'status', hidden: true},
             {name: 'outStatus', label: '出库状态', hidden: true},
             {name: 'inStatus', label: '入库状态', hidden: true},
+            {name: "ownerId", hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -308,7 +309,14 @@ function initAddGrid() {
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
-            }
+            },
+            {
+                name: '', label: '异常唯一码明细', width: 75, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.noOutPutCode + "')><i class='ace-icon ace-icon fa fa-list' title='显示异常唯一码明细'></i></a>";
+                }
+            },
+            {name: 'noOutPutCode', label: '异常唯一码', hidden: true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -417,7 +425,14 @@ function initeditGrid(billNo) {
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
-            }
+            },
+            {
+                name: '', label: '异常唯一码明细', width: 75, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.noOutPutCode + "')><i class='ace-icon ace-icon fa fa-list' title='显示异常唯一码明细'></i></a>";
+                }
+            },
+            {name: 'noOutPutCode', label: '异常唯一码', hidden: true}
         ],
         autowidth: true,
         rownumbers: true,
@@ -927,7 +942,7 @@ function addProductsOnCode() {
 /**
  * 出库
  */
-function wareHouseOut() {
+/*function wareHouseOut() {
     $("#TRDtl_wareHouseOut").attr({"disabled": "disabled"});
     var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
     var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
@@ -1022,6 +1037,145 @@ function wareHouseOut() {
         bootbox.alert("请先保存当前单据");
     }
 
+}*/
+function wareHouseOut() {
+    $("#TRDtl_wareHouseOut").attr({"disabled": "disabled"});
+    var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
+    var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
+    if (sum_qty === sum_outQty) {
+        $.gritter.add({
+            text: '已全部出库',
+            class_name: 'gritter-success  gritter-light'
+        });
+        $("#addDetailgrid").trigger("reloadGrid");
+        $("#TRDtl_wareHouseOut").removeAttr("disabled");
+        return;
+    }
+    cs.showProgressBar();
+    var billNo = $("#edit_billNo").val();
+    if (billNo && billNo !== null) {
+        var allUniqueCodes = "";
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            allUniqueCodes = allUniqueCodes + "," + rowData.uniqueCodes;
+        });
+        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+            var rowData = $("#addDetailgrid").getRowData(value);
+            allUniqueCodes = allUniqueCodes + "," + rowData.noOutPutCode;
+        });
+        if (allUniqueCodes.substr(0, 1) == ",") {
+            allUniqueCodes = allUniqueCodes.substr(1);
+        }
+        taskType = 0;
+        wareHouse = $("#edit_origId").val();
+        var uniqueCodes_inHouse;
+        $.ajax({
+            async: true,
+            dataType: "json",
+            url: basePath + "/stock/warehStock/checkCodes.do",
+            data: {
+                warehId: wareHouse,
+                codes: allUniqueCodes,
+                type: taskType,
+                billNo: billNo
+            },
+            type: "POST",
+            success: function (data) {
+                debugger
+                uniqueCodes_inHouse = data.result;
+                var epcArray = [];
+                $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                        var rowData = $("#addDetailgrid").getRowData(value);
+                        var codes = rowData.uniqueCodes.split(",");
+                        var noOutcodes =""
+                        if(rowData.noOutPutCode!=undefined&& rowData.noOutPutCode != null && rowData.noOutPutCode != "") {
+                            noOutcodes = rowData.noOutPutCode.split(",");
+                        }
+                        if (codes && codes != null && codes != "") {
+                            $.each(codes, function (index, value) {
+                                if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                                    var epc = {};
+                                    epc.code = value;
+                                    epc.styleId = rowData.styleId;
+                                    epc.sizeId = rowData.sizeId;
+                                    epc.colorId = rowData.colorId;
+                                    epc.qty = 1;
+                                    epc.sku = rowData.sku;
+                                    epcArray.push(epc)
+                                }
+                            });
+                        }
+                        if (noOutcodes && noOutcodes != null && noOutcodes != "") {
+                            $.each(noOutcodes, function (index, value) {
+                                if (uniqueCodes_inHouse.indexOf(value) != -1) {
+                                    debugger
+                                    var epc = {};
+                                    epc.code = value;
+                                    epc.styleId = rowData.styleId;
+                                    epc.sizeId = rowData.sizeId;
+                                    epc.colorId = rowData.colorId;
+                                    epc.qty = 1;
+                                    epc.sku = rowData.sku;
+                                    epcArray.push(epc)
+                                }
+                            });
+                        }
+
+                });
+
+                if (epcArray.length === 0) {
+                    $.gritter.add({
+                        text: "没有可以直接出库的商品",
+                        class_name: 'gritter-success  gritter-light'
+                    });
+                    cs.closeProgressBar();
+                }
+                var dtlArray = [];
+                $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                    var rowData = $("#addDetailgrid").getRowData(value);
+                    dtlArray.push(rowData);
+                });
+
+                $.ajax({
+                    dataType: "json",
+                    // async:false,
+                    url: basePath + "/logistics/transferOrder/convertOut.do",
+                    data: {
+                        billNo: billNo,
+                        strEpcList: JSON.stringify(epcArray),
+                        strDtlList: JSON.stringify(dtlArray),
+                        userId: userId
+                    },
+                    type: "POST",
+                    success: function (msg) {
+                        cs.closeProgressBar();
+                        $("#TRDtl_wareHouseOut").removeAttr("disabled");
+                        if (msg.success) {
+                            $.gritter.add({
+                                text: msg.msg,
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                            $("#modal-addEpc-table").modal('hide');
+                            $("#addDetailgrid").jqGrid('setGridParam', {
+                                page: 1,
+                                url: basePath + "/logistics/transferOrder/findBillDtl.do?billNo=" + billNo,
+                            });
+                            $("#addDetailgrid").trigger("reloadGrid");
+                            $("#grid").trigger("reloadGrid");
+                            initButtonGroup(transferOrder_status);
+                            setFooterData();
+                            bootbox.alert("已出库" + epcArray.length + "件商品");
+                        } else {
+                            bootbox.alert(msg.msg);
+                        }
+                    }
+                });
+            }
+        });
+    }else {
+        cs.closeProgressBar();
+        bootbox.alert("请先保存当前单据");
+    }
 }
 function wareHouseIn() {
     skuQty = {};

@@ -14,6 +14,7 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.extend.api.web.ApiBaseController;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
+import com.casesoft.dmc.model.pad.WeiXinUser;
 import com.casesoft.dmc.model.product.*;
 import com.casesoft.dmc.model.product.vo.ColorVo;
 import com.casesoft.dmc.model.product.vo.SizeVo;
@@ -229,10 +230,15 @@ public class WXProductApiController extends ApiBaseController {
                 if(CommonUtil.isBlank(admin)){
                     logger.error("管理员账号不存在");
                 }else {
-                    String openId = this.weiXinUserService.getByPhone(admin.getPhone()).getOpenId();
-                    String originalPrice = infoArray[0].replace("原价：","");
-                    String currentPrice = infoArray[1].replace("现价：","");
-                    WechatTemplate.priceChangeMsg(openId, sty.getStyleId(), originalPrice, currentPrice, userId);
+                    WeiXinUser weiXinUser = this.weiXinUserService.getByPhone(admin.getPhone());
+                    if(CommonUtil.isBlank(weiXinUser)){
+                        logger.error("微信账号不存在");
+                    }else {
+                        String openId = weiXinUser.getOpenId();
+                        String originalPrice = infoArray[0].replace("原价：","");
+                        String currentPrice = infoArray[1].replace("现价：","");
+                        WechatTemplate.priceChangeMsg(openId, sty.getStyleId(), originalPrice, currentPrice, userId);
+                    }
                 }
             }
 

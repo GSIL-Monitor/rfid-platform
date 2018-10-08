@@ -19,7 +19,7 @@ $(function () {
         /*初始化左侧grig*/
         initSearchGrid();
     });
-
+    $("#edit_payType").selectpicker('val',defaultPayType);
 
 });
 
@@ -64,7 +64,7 @@ function initSearchGrid() {
         colModel: [
             {name: 'billDate', label: '单据日期', sortable: true, width: 30},
             {name: 'billNo', label: '单据编号', sortable: true, width: 45,hidden:true},
-
+            {name: 'payType' , label: '支付方式', hidden : true},
             {name: 'status', hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
@@ -119,7 +119,7 @@ function initSearchGrid() {
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', hidden: true},
             {name: 'busnissId', hidden: true},
-
+            {name: 'discount', hidden: true},
             {name: 'totQty', label: '单据数量', width: 20,align: "center"},
             {name: 'totOutQty', label: '出库数量', width: 20,align: "center"},
             {name: 'busnissName', label: '销售员', width: 20},
@@ -228,6 +228,7 @@ function addNew(isScan){
     slaeOrder_status ="0";
     initButtonGroup(0);
     initSelectBusinessIdFormOnAddNew();
+    $("#edit_payType").selectpicker('val',defaultPayType);
 }
 function setFooterData() {
 
@@ -263,6 +264,7 @@ function initAddGrid() {
             {name: 'billId', label: 'billId', hidden: true},
             {name: 'billNo', label: 'billNo', hidden: true},
             {name: 'status', hidden: true},
+            {name: "ownerId", hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
             {
@@ -940,7 +942,7 @@ function initeditGrid(billId) {
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
                 var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(rowid, "stylePriceMap"));
-                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
+                if((value*$('#addDetailgrid').getCell(rowid, "price")/100)<stylePriceMap.wsPrice && isUserAbnormal){
                     $('#addDetailgrid').setCell(rowid, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(rowid, "price")).toFixed(2)*100);
                     var_actPrice =  stylePriceMap.wsPrice;
                     $('#addDetailgrid').setCell(rowid, "actPrice", stylePriceMap.wsPrice);
@@ -1281,7 +1283,7 @@ function initEditFormValid() {
 }
 //将整单折扣设置到明细中
 function setDiscount() {
-    debugger
+
     if (addDetailgridiRow != null && addDetailgridiCol != null) {
         $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
         addDetailgridiRow = null;
@@ -1289,27 +1291,38 @@ function setDiscount() {
     }
     var discount = $("#edit_discount").val();
     if (discount && discount != null && discount != "") {
-        $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
-            //判断实际价格是不是小于门店批发价格
-            var var_actPrice;
-            var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(value, "stylePriceMap"));
-            if((discount*$('#addDetailgrid').getCell(value, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
-                $('#addDetailgrid').setCell(value, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
-                var_actPrice = stylePriceMap.wsPrice;
-                $('#addDetailgrid').setCell(value, "actPrice", stylePriceMap.wsPrice);
-                $('#addDetailgrid').setCell(value, "abnormalStatus",1);
-                changeWordscolor(value,"blue");
-            }else{
+        if(userId == 'admin') {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 $('#addDetailgrid').setCell(value, "discount", discount);
-                 var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                var var_totActPrice = Math.abs(Math.round(var_actPrice * $('#addDetailgrid').getCell(value, "qty") * 100) / 100);
                 $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
-                $('#addDetailgrid').setCell(value, "abnormalStatus", 0);
-                changeWordscolor(value,"black");
-            }
-            var var_totActPrice = Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
-            $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
-            $("#grid-table").setCell(value,"useable",0,{color:'red'});
-        });
+                $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+            });
+        }
+        else {
+            $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+                //判断实际价格是不是小于门店批发价格
+                var var_actPrice;
+                var stylePriceMap=JSON.parse($('#addDetailgrid').getCell(value, "stylePriceMap"));
+                if((discount*$('#addDetailgrid').getCell(value, "price")/100)<stylePriceMap.wsPrice&&isUserAbnormal){
+                    $('#addDetailgrid').setCell(value, "discount", (stylePriceMap.wsPrice/$('#addDetailgrid').getCell(value, "price")).toFixed(2)*100);
+                    var_actPrice = stylePriceMap.wsPrice;
+                    $('#addDetailgrid').setCell(value, "actPrice", stylePriceMap.wsPrice);
+                    $('#addDetailgrid').setCell(value, "abnormalStatus",1);
+                    changeWordscolor(value,"blue");
+                }else{
+                    $('#addDetailgrid').setCell(value, "discount", discount);
+                    var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
+                    $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
+                    $('#addDetailgrid').setCell(value, "abnormalStatus", 0);
+                    changeWordscolor(value,"black");
+                }
+                var var_totActPrice = Math.round(var_actPrice * parseInt($('#addDetailgrid').getCell(value, "qty")) * 100) / 100;
+                $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
+                $("#grid-table").setCell(value,"useable",0,{color:'red'});
+            });
+        }
     }
     setAddFooterData();
 }
@@ -1441,13 +1454,13 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["SODtl_search","SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseRe","SODtl_wareHouseCh","SODtl_findRetrunno"];
             break;
         case "0" :
-            disableButtonIds = ["SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_wareHouseCh"];
+            disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "1":
             disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
             break;
         case "2" :
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_wareHouseCh"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe"];
             break;
         case "3":
             disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];

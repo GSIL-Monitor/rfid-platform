@@ -10,11 +10,13 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
+import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.SaleorderCountView;
 import com.casesoft.dmc.model.shop.Customer;
+import com.casesoft.dmc.model.shop.payDetail;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -24,6 +26,7 @@ import com.casesoft.dmc.model.task.Record;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.service.shop.GuestValueChangeService;
 import com.casesoft.dmc.service.shop.PointsChangeService;
+import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.GuestService;
 import com.casesoft.dmc.service.task.TaskService;
@@ -33,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -65,6 +69,8 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     private GuestService guestService;
     @Autowired
     private GuestValueChangeService guestValueChangeService;
+    @Autowired
+    private payDetailService payDetailService;
 
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
@@ -207,6 +213,23 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         if(CommonUtil.isNotBlank(list)&&list.size()>0){
             this.saleOrderBillDao.doBatchInsert(list);
         }
+
+        //保存收银表
+        payDetail payDetail = new payDetail();
+        payDetail.setId(saleOrderBill.getBillNo()+saleOrderBill.getPayType());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        payDetail.setPayDate(df.format(new Date()));
+        payDetail.setCustomerId(saleOrderBill.getDestUnitId());
+        payDetail.setCustomerName(saleOrderBill.getDestUnitName());
+        payDetail.setShop(saleOrderBill.getOrigUnitId());
+        payDetail.setShopName(saleOrderBill.getOrigUnitName());
+        payDetail.setBillNo(saleOrderBill.getBillNo());
+        payDetail.setPayType(saleOrderBill.getPayType());
+        payDetail.setPayPrice(saleOrderBill.getPayPrice());
+        payDetail.setActPayPrice(saleOrderBill.getPayPrice());
+        payDetail.setBillType("0");//销售=收款
+        payDetail.setStatus("1");
+        this.payDetailService.save(payDetail);
     }
 
     /**
@@ -413,6 +436,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             this.transferOrderBillService.update(transferOrderBill);
         }
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
+        payDetail payDetail = payDetailService.get("billNo",saleOrderBill.getBillNo());
+        payDetail.setStatus("0");
+        payDetailService.save(payDetail);
     }
 
     public Epc findProductBycode(String code) {

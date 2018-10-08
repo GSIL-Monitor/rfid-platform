@@ -99,6 +99,7 @@ function initSearchGrid() {
         mtype: 'POST',
         colModel: [
             {name: 'billNo', label: '单据编号', sortable: true, width: 45},
+            {name: "ownerId", hidden: true},
             {
                 name: 'statusImg', label: '状态', width: 15, align: 'center',sortable: false,
                 formatter: function (cellValue, options, rowObject) {

@@ -1,0 +1,173 @@
+<html lang="en" style="height: 100% ;width: 100%">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        //var basePathAll=window.location.href;
+        //var basePath=basePathAll.split(":")[0]+":"+basePathAll.split(":")[1]+":"+basePathAll.split(":")[2].split("/")[0];
+        var basePath=window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+    </script>
+    <script src="../../Olive/assets/js/jquery.js"></script>
+    <script src="../../Olive/assets/js/bootstrap.js"></script>
+    <script src="../../Olive/assets/js/bootbox.js"></script>
+    <link rel="stylesheet" href="../../Olive/assets/css/ace.css"/>
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/datepicker.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../../Olive/assets/css/jquery-ui.custom.css">
+    <style>
+        .bottom-button1{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+        .bottom-button2{
+            color:white;
+            background-color:#307a3c;
+            height:8%;
+            position: fixed;
+            bottom: 10px;
+            border-color:#307a3c
+        }
+    </style>
+</head>
+<body style="height: 100%;width: 100%">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="center">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <input  id="changinput" class=" col-lg-10 col-md-10 col-sm-10" type="text" style="width: 100%;text-align:center" placeholder="输入名称或电话或VIP" onkeyup="changeWrite()">
+                    <input  id="writeinput" class=" col-lg-10 col-md-10 col-sm-10" type="text" style="width: 100%;display: none" onfocus="writeinputonfocus();" >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="center" style="height: 65%">
+        <div class="panel panel-default left-panel">
+            <div class="panel-body">
+                <div class="widget-body">
+                    <div id="scrollCustmerDiv" style="overflow-y:scroll;width:100%;height: 100%;white-space:nowrap;" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button1" onclick="onNext()">下一页</button>
+    <button class="col-xs-2 col-sm-2 col-md-2 col-lg-2 bottom-button2" onclick="onBack()">上一页</button>
+</div>
+<script>
+    var page=1;
+    $(function () {
+        //判断是否有选择的数据
+        isHaveCustomer();
+        changeWrite();
+        $("#scrollCustmerDiv").scroll(function(){
+            if($("#scrollCustmerDiv")[0].scrollTop >= ($("#scrollCustmerDiv")[0].scrollHeight - $("#scrollCustmerDiv").height()))
+                var changinput=$("#changinput").val();
+                url ="";
+                url= basePath + "/unit/pageWS.do?filter_INI_type=1,2,4&filter_EQI_status=1";
+
+                 page++;
+                $.ajax({
+                    dataType: "json",
+                    url: url,
+                    cache: false,
+                    async: false,
+                    data:{
+                        rows: 30,
+                        page: page,
+                        filter_LIKES_name_OR_tel_OR_vipId: changinput
+                    },
+                    type: "GET",
+                    success: function (msg) {
+                        var rows=msg.rows;
+                        console.log(rows);
+                        var html="";
+                        if(rows!=""&&rows!=undefined){
+                            for(var i=0;i<rows.length;i++){
+                                html+="<div data-owingValue='"+rows[i].owingValue+"'  data-name='"+rows[i].name+"' data-id='"+rows[i].id+"'onclick='selectthisDIV(this)'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
+                            }
+                            $("#scrollCustmerDiv").append(html)
+                        }
+
+                    }
+                });
+        });
+    });
+    function onBack() {
+        window.location.href=basePath+'/views/NoOneCashier/selectMemberWS.html';
+    }
+    function changeWrite() {
+        page=1;
+        var changinput=$("#changinput").val();
+        url ="";
+        url= basePath + "/unit/pageWS.do?filter_INI_type=1,2,4&filter_EQI_status=1";
+
+        $.ajax({
+            dataType: "json",
+            url: url,
+            cache: false,
+            async: false,
+            data:{
+                rows: 30,
+                page: page,
+                filter_LIKES_name_OR_tel_OR_vipId: changinput
+            },
+            type: "GET",
+            success: function (msg) {
+                var rows=msg.rows;
+                console.log(rows);
+                var html="";
+                if(rows!=""&&rows!=undefined){
+                    for(var i=0;i<rows.length;i++){
+                        html+="<div  data-owingValue='"+rows[i].owingValue+"'  data-name='"+rows[i].name+"' data-id='"+rows[i].id+"' onclick='selectthisDIV(this)'><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>姓名："+rows[i].name+"</span><span class='col-lg-6 col-md-6 col-sm-6' style='float:left;text-align:center'>电话："+rows[i].tel+"</span></div> <hr width='100%'>"
+                    }
+                    $("#scrollCustmerDiv").html(html)
+                }
+
+            }
+        });
+    }
+    function selectthisDIV(t) {
+
+        console.log($(t).data("id"));
+        console.log($(t).data("name"));
+        localStorage.setItem("transferOrderDestUnitId",$(t).data("id"));
+        localStorage.setItem("transferOrderDestUnitName",$(t).data("name"));
+        $("#writeinput").val($(t).data("name"));
+        $("#writeinput").show();
+        $("#changinput").hide();
+    }
+    function writeinputonfocus() {
+        $("#writeinput").hide();
+        $("#changinput").show();
+    }
+    function onNext() {
+        var transferOrderDestUnitId=localStorage.getItem("transferOrderDestUnitId");
+        console.log(transferOrderDestUnitId);
+        if(transferOrderDestUnitId!=""&&transferOrderDestUnitId!=null&&transferOrderDestUnitId!=undefined){
+            window.location.href=basePath+'/views/NoOneCashier/saveTransferOrderDel.html';
+        }else{
+            bootbox.alert("请选择收货方");
+        }
+    }
+    function isHaveCustomer() {
+        var transferOrderDestUnitId = localStorage.getItem("transferOrderDestUnitId");
+        var transferOrderDestUnitName = localStorage.getItem("transferOrderDestUnitName");
+        if (transferOrderDestUnitId != "" && transferOrderDestUnitName != undefined) {
+            $("#writeinput").val(transferOrderDestUnitName);
+            $("#writeinput").show();
+            $("#changinput").hide();
+        }
+    }
+    function onBack() {
+        window.location.href=basePath+'/views/NoOneCashier/selectSaleOrTransferOrder.html';
+    }
+</script>
+</body>
+</html>
