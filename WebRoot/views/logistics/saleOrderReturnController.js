@@ -368,6 +368,10 @@ function initDetailData(rowid){
     initCodeGrid({billNo: rowData.billNo, warehId: rowData.origId});
     $("#codegrid").trigger("reloadGrid");
     initButtonGroup(slaeOrderReturn_status);
+    if(slaeOrderReturn_status == '2'){
+        //隐藏操作
+        $("#addDetailgrid").setGridParam().hideCol("");
+    }
     if(userId == 'admin'){
         $("#SRDtl_save").attr('disabled', false);
     }
@@ -386,13 +390,13 @@ function initeditGrid(billId) {
             {name: 'status', hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
-            /*{
-                name: "operation", label: '操作', width: 30, align: 'center', sortable: false,
+            {
+                name: "", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteRow('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                        + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                 }
-            },*/
+            },
             {
                 label: '状态', width: 20, hidden: true, sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -916,13 +920,13 @@ function initAddGrid() {
             {name: 'status', hidden: true},
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
-            /*{
-                name: "operation", label: '操作', width: 30, align: 'center', sortable: false,
+            {
+                name: "", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteRow('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                        + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                 }
-            },*/
+            },
             {
                 label: '状态', width: 20, hidden: true, sortable: false,
                 formatter: function (cellValue, options, rowObject) {
@@ -2595,5 +2599,30 @@ function loadingButtonDivTable(billStatus) {
         $("#SRDtl_check").removeAttr("disabled");
     }else {
         $("#SRDtl_check").attr({"disabled": "disabled"});
+    }
+}
+function saveItem(rowId) {
+    if (addDetailgridiRow != null && addDetailgridiCol != null) {
+        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+        addDetailgridiRow = null;
+        addDetailgridiCol = null;
+    }
+    var value = $('#addDetailgrid').getRowData(rowId);
+    value.totPrice = value.qty * value.price;
+    value.totActPrice = value.qty * value.actPrice;
+    $("#addDetailgrid").setRowData(rowId, value);
+    setAddFooterData();
+}
+
+function deleteItem(rowId) {
+    var value = $('#addDetailgrid').getRowData(rowId);
+    $("#addDetailgrid").jqGrid("delRowData", rowId);
+    setAddFooterData();
+    var totActPrice = value.totActPrice;
+    //判断是否有异常的code
+    if(value.noOutPutCode!=null&&value.noOutPutCode!=""&&value.noOutPutCode!=undefined){
+        deletenoOutPutCode(value.noOutPutCode,totActPrice);
+    }else{
+        saveother(totActPrice);
     }
 }

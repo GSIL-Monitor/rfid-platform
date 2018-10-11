@@ -209,6 +209,10 @@ function fullDetailData(rowData) {
     $('#addDetailgrid').jqGrid('GridUnload');
     initeditGrid(rowData.billNo);
     initButtonGroup(slaeOrder_status);
+    if(slaeOrder_status == '2'){
+        //隐藏操作
+        $("#addDetailgrid").setGridParam().hideCol("");
+    }
     $("#addDetailgrid").trigger("reloadGrid");
 }
 /**
@@ -268,7 +272,7 @@ function initAddGrid() {
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
             {
-                name: "operation", label: "操作", width: 30, align: "center", sortable: false,
+                name: "", label: "操作", width: 30, align: "center", sortable: false,
                 formatter: function (cellvalue, options, rowObject) {
                     return  "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')>"
                         +     "<i class= 'ace-icon ace-icon fa fa-save' title='保存'></i>"
@@ -635,7 +639,7 @@ function initeditGrid(billId) {
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
             {
-                name: "operation", label: "操作", width: 30, editable: false, sortable: false, align: "center",
+                name: "", label: "操作", width: 30, editable: false, sortable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
                     return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
                         + "<a style='margin: 8px' href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
