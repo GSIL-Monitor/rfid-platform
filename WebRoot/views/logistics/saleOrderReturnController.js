@@ -1287,6 +1287,7 @@ function save() {
                     class_name: 'gritter-success  gritter-light'
                 });
                 $("#search_billNo").val(msg.result);
+                $("#editForm").setFromData(msg.result);
                 billNo = msg.result;
                 $("#addDetailgrid").jqGrid('setGridParam', {
                     page: 1,
