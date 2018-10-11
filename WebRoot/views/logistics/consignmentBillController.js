@@ -333,8 +333,6 @@ function initeditGrid(billId) {
                     } else {
                         return "";
                     }
-                    /*var html = '<a href="#" title="保存该行" onclick="saveItem(' + options.rowId + ')"><i class="ace-icon fa fa-save"></i></a>';
-                     html += '&nbsp;&nbsp;&nbsp;<a href="#"  title="删除一行" onclick="deleteRow(' + options.rowId + ')"><i class="ace-icon fa fa-trash"></i></a>';*/
                 }
             },
             {
@@ -846,8 +844,7 @@ function initAddGrid() {
                     } else {
                         return "";
                     }
-                    /*var html = '<a href="#" title="保存该行" onclick="saveItem(' + options.rowId + ')"><i class="ace-icon fa fa-save"></i></a>';
-                     html += '&nbsp;&nbsp;&nbsp;<a href="#"  title="删除一行" onclick="deleteRow(' + options.rowId + ')"><i class="ace-icon fa fa-trash"></i></a>';*/
+
                 }
             },
             {

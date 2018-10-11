@@ -393,8 +393,14 @@ function initeditGrid(billId) {
             {
                 name: "", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
-                    return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    if(rowObject.status != '0'){
+                        return "<a href='javascript:void(0);'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
+                    else{
+                        return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
                 }
             },
             {
@@ -923,8 +929,14 @@ function initAddGrid() {
             {
                 name: "", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
-                    return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    if(rowObject.status != '0'){
+                        return "<a href='javascript:void(0);'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
+                    else{
+                        return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
                 }
             },
             {
