@@ -41,6 +41,7 @@ function initSelectBuyerSelect() {
         success: function (data, textStatus) {
             $("#filter_contains_buyerId").empty();
             $("#filter_contains_buyerId").append("<option value='' >--请选择买手--</option>");
+            $("#filter_contains_buyerId").append("<option value='admin' >admin</option>");
             var json = data;
             for (var i = 0; i < json.length; i++) {
                 $("#filter_contains_buyerId").append("<option value='" + json[i].id + "'>" + json[i].name + "</option>");
