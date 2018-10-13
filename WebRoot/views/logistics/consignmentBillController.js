@@ -302,10 +302,6 @@ function initDetailData(rowid) {
     initButtonGroup(pageType);
     $("#addDetailgrid").trigger("reloadGrid");
     loadingButtonDivTable(comsigment_status);
-    if(comsigment_status == '2'){
-        //隐藏操作
-        $("#addDetailgrid").setGridParam().hideCol("");
-    }
 }
 var beforsale = 0;
 var readysale = 0;
@@ -972,7 +968,7 @@ function initAddGrid() {
                     return totActPrice;
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {name: 'uniqueCodes', label: '唯一码',hidden:true},
             {
                 name: '', label: '唯一码明细', width: 40, align: "center",
                 formatter: function (cellValue, options, rowObject) {

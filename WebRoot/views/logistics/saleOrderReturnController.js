@@ -368,10 +368,6 @@ function initDetailData(rowid){
     initCodeGrid({billNo: rowData.billNo, warehId: rowData.origId});
     $("#codegrid").trigger("reloadGrid");
     initButtonGroup(slaeOrderReturn_status);
-    if(slaeOrderReturn_status == '2'){
-        //隐藏操作
-        $("#addDetailgrid").setGridParam().hideCol("");
-    }
     if(userId == 'admin'){
         $("#SRDtl_save").attr('disabled', false);
     }
@@ -393,7 +389,7 @@ function initeditGrid(billId) {
             {
                 name: "", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
-                    if(rowObject.status != '0'){
+                    if(rowObject.status != '0'&&slaeOrderReturn_status != '2'){
                         return "<a href='javascript:void(0);'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
                             + "<a href='javascript:void(0);' style='margin-left: 20px'><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }
@@ -571,7 +567,7 @@ function initeditGrid(billId) {
                     }
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {name: 'uniqueCodes', label: '唯一码',hidden:true},
             {
                 name: '', label: '唯一码明细', width: 40, align: "center",
                 formatter: function (cellValue, options, rowObject) {
@@ -929,7 +925,7 @@ function initAddGrid() {
             {
                 name: "", label: '操作', width: 30, align: 'center', sortable: false,
                 formatter: function (cellValue, options, rowObject) {
-                    if(rowObject.status != '0'){
+                    if(rowObject.status != '0'&&slaeOrderReturn_status != '2'){
                         return "<a href='javascript:void(0);'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
                             + "<a href='javascript:void(0);' style='margin-left: 20px'><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }
@@ -1101,7 +1097,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {name: 'uniqueCodes', label: '唯一码',hidden:true},
             {
                 name: '', label: '唯一码明细', width: 40, align: "center",
                 formatter: function (cellValue, options, rowObject) {
@@ -1109,7 +1105,7 @@ function initAddGrid() {
                 }
             },
             {name:'stylePriceMap',label:'价格表',hidden:true},
-            {name: 'noOutPutCode', label: '异常唯一码', hidden: true}
+            {name: 'noOutPutCode', label: '异常唯一码'}
         ],
         autowidth: true,
         rownumbers: true,
