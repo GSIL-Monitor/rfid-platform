@@ -177,40 +177,14 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
-			//如果价格发生变动，记录变动信息
-			String infoChangeRemark = "";
-			if (CommonUtil.isNotBlank(prePriceMap)) {
-				HashMap<String, Object> aftPriceMap = new HashMap<>();
-				aftPriceMap.put("price", sty.getPrice());
-				aftPriceMap.put("puPrice", sty.getPuPrice());
-				aftPriceMap.put("wsPrice", sty.getWsPrice());
-				aftPriceMap.put("preCast", sty.getPreCast());
 
-				long countValue = this.epcStockService.countAllByStyleId(sty.getId());
-				//大于0说明入过库
-				if(countValue > 0){
-					infoChangeRemark = this.keyInfoChangeService.commonSave(userId, request.getRequestURL().toString(), sty.getId(), prePriceMap, aftPriceMap);
-				}
-			}
-
-			//价格发生变动时，向管理员推送公众号消息
-			if(CommonUtil.isNotBlank(infoChangeRemark)){
-				String[] infoArray = infoChangeRemark.split("\r\n");
-				User admin = CacheManager.getUserById("admin");
-				if(CommonUtil.isBlank(admin)){
-					logger.error("管理员账号不存在");
-				}else {
-					WeiXinUser weiXinUser = this.weiXinUserService.getByPhone(admin.getPhone());
-					if(CommonUtil.isBlank(weiXinUser)){
-						logger.error("微信账号不存在");
-					}else {
-						String openId = weiXinUser.getOpenId();
-						String originalPrice = infoArray[0].replace("原价：","");
-						String currentPrice = infoArray[1].replace("现价：","");
-						WechatTemplate.priceChangeMsg(openId, sty.getStyleId(), originalPrice, currentPrice, userId);
-					}
-				}
-			}
+			HashMap<String, Object> aftPriceMap = new HashMap<>();
+			aftPriceMap.put("price", sty.getPrice());
+			aftPriceMap.put("puPrice", sty.getPuPrice());
+			aftPriceMap.put("wsPrice", sty.getWsPrice());
+			aftPriceMap.put("preCast", sty.getPreCast());
+			//保存价格变动信息并向微信公众号推送消息
+			this.keyInfoChangeService.saveChangeInfoAndPushOAMsg(userId, request.getRequestURI().toUpperCase(), sty.getId(), prePriceMap, aftPriceMap);
 
             //保存成功更新缓存
             redisUtils.hset("maxVersionId","productMaxVersionId", JSON.toJSONString(productMaxVersionId+1));
