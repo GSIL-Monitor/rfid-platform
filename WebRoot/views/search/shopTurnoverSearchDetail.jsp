@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: yushen
-  Date: 2017/7/12
-  Time: 13:25
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();

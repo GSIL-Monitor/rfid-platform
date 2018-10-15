@@ -268,14 +268,16 @@ function initAddGrid() {
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
             {
-                name: "operation", label: "操作", width: 30, align: "center", sortable: false,
+                name: "", label: "操作", width: 30, align: "center", sortable: false,
                 formatter: function (cellvalue, options, rowObject) {
-                    return  "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')>"
-                        +     "<i class= 'ace-icon ace-icon fa fa-save' title='保存'></i>"
-                        + "</a>"
-                        + "<a style='margin: 8px' href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')>"
-                        +     "<i class='ace-icon fa fa-trash-o red' title='删除'></i>"
-                        + "</a>";
+                    if(rowObject.status != '0'&& slaeOrder_status != '2'){
+                        return "<a href='javascript:void(0);'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
+                    else{
+                        return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
                 }
             },
             {
@@ -635,10 +637,16 @@ function initeditGrid(billId) {
             {name: 'inStatus', hidden: true},
             {name: 'outStatus', hidden: true},
             {
-                name: "operation", label: "操作", width: 30, editable: false, sortable: false, align: "center",
+                name: "", label: "操作", width: 30, editable: false, sortable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
-                    return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
-                        + "<a style='margin: 8px' href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    if(rowObject.status != '0'&& slaeOrder_status != '2'){
+                        return "<a href='javascript:void(0);'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
+                    else{
+                        return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + ")'><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
+                            + "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
+                    }
                 }
             },
             {

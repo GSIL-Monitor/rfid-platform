@@ -183,7 +183,7 @@
             exchangeSku && exchangeSku !== null){
             $.ajax({
                 async: false,
-                url: basePath + "/logistics/saleOrder/confirmExchange.do",
+                url: basePath + "/logistics/saleOrderBill/confirmExchange.do",
                 data: {
                     origCode: origCode,
                     exchangeCode: exchangeCode,

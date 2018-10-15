@@ -260,6 +260,20 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         }
     }
 
+    /**
+     * 唯一码不在库校验，校验仓库时检查warehouse2Id，warehouseId任意一个即可
+     * @param warehId
+     * @param code
+     * @return
+     */
+    public EpcStock findEpcNotInCode(String warehId, String code) {
+        if(CacheManager.getCheckWarehhouse()) {
+            return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=? and (epcstock.warehouse2Id=? or epcstock.warehouseId=?)", new Object[]{code, warehId, warehId});
+        }else{
+            return this.epcStockDao.findUnique("from EpcStock epcstock where inStock=0 and code=?", new Object[]{code});
+        }
+    }
+
     public EpcStock findProductByCode(String code) {
         return this.epcStockDao.findUnique("from EpcStock where code=?", code);
     }
