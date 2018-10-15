@@ -287,12 +287,24 @@
                                                     </div>
 
                                                 </div>
+                                                <div class="form-group">
+                                                    <div id="remark_div">
+                                                        <label class="col-md-1 control-label" for="edit_remark">备注</label>
+                                                        <div class="col-md-11 col-sm-11">
+                                                            <textarea maxlength="400" class="form-control" id="edit_remark"
+                                                                      name="remark">${consignmentBill.remark}
+                                                            </textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div id="status_div">
                                                     <input class="form-control" id="edit_status" name="status"
                                                            value="${consignmentBill.status}"style="display: none">
                                                     </input>
                                                 </div>
+
                                             </form>
+
                                         </div>
                                     </div>
                                     <div class="widget-body">
