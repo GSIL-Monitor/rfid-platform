@@ -49,6 +49,11 @@ function updateGuest(){
     if (!$("#editForm").data("bootstrapValidator").isValid()) {
         return
     }
+    var birth=$("#edit_birth").val();
+    if (birth.length!==0&&birth.length!==10){
+        bootbox.alert("生日格式错误");
+        return
+    }
     $("#edit_type").removeAttr("disabled");
     cs.showProgressBar();
     $.post(basePath + "/sys/guest/update.do", $("#editForm")
@@ -103,6 +108,11 @@ function saveGuest() {
         return
     }
     if (!$("#editForm").data("bootstrapValidator").isValid()) {
+        return
+    }
+    var birth=$("#edit_birth").val();
+    if (birth.length!==0&&birth.length!==10){
+        bootbox.alert("生日格式错误");
         return
     }
     $("#edit_type").removeAttr("disabled");
