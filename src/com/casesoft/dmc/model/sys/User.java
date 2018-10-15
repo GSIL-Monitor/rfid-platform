@@ -37,8 +37,9 @@ public class User implements java.io.Serializable {
 	private String unitName;
 	// 增加类型标记
 	private Integer type;//0 普通用户 1系统管理员 4:收银员
-    private String src;
-    private String defaultWH;//默认仓库
+	private String src;
+	private String defaultWH;//默认仓库
+	private Integer acceptMessageOfOA; // 接受微信公众号消息 1接受 0不接受；只有管理员角色这个参数才有效
 
 
 	@Column(nullable = false)
@@ -263,5 +264,14 @@ public class User implements java.io.Serializable {
 
 	public void setDefaultWH(String defaultWH) {
 		this.defaultWH = defaultWH;
+	}
+
+	@Column()
+	public Integer getAcceptMessageOfOA() {
+		return acceptMessageOfOA;
+	}
+
+	public void setAcceptMessageOfOA(Integer acceptMessageOfOA) {
+		this.acceptMessageOfOA = acceptMessageOfOA;
 	}
 }

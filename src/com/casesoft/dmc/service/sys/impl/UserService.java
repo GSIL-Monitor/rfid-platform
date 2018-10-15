@@ -290,4 +290,8 @@ public class UserService implements IUserService {
   public StaffInfo findStaffByOpenId(String openId){
     return this.staffInfoDao.findUniqueBy("openId", openId);
   }
+
+    public List<User> getAcceptMsgUserList() {
+      return this.userDao.find("from User where acceptMessageOfOA = 1 and roleId = 0");
+    }
 }
