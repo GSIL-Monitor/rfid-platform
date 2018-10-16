@@ -404,16 +404,20 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         preCustomer.setStatus(1);
                     }
                     this.guestService.updateUnit(guest,preCustomer);
-                    List<Customer> customerList = new ArrayList<>();
-                    customerList.add(preCustomer);
-                    CacheManager.refreshCustomer(customerList);
+                    if (CommonUtil.isNotBlank(preCustomer)){
+                        List<Customer> customerList = new ArrayList<>();
+                        customerList.add(preCustomer);
+                        CacheManager.refreshCustomer(customerList);
+                    }
                 }else{
                     this.guestService.save(guest);
 
                 }
-                List<Unit> unitList = new ArrayList<>();
-                unitList.add(guest);
-                CacheManager.refreshUnitCache(unitList);
+                if (CommonUtil.isNotBlank(guest)){
+                    List<Unit> unitList = new ArrayList<>();
+                    unitList.add(guest);
+                    CacheManager.refreshUnitCache(unitList);
+                }
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -487,12 +491,16 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     this.customerService.save(guest);
                     //}
                 }
-                List<Unit> unitList = new ArrayList<>();
-                unitList.add(preUnit);
-                CacheManager.refreshUnitCache(unitList);
-                List<Customer> customerList = new ArrayList<>();
-                customerList.add(guest);
-                CacheManager.refreshCustomer(customerList);
+                if(CommonUtil.isNotBlank(preUnit)){
+                    List<Unit> unitList = new ArrayList<>();
+                    unitList.add(preUnit);
+                    CacheManager.refreshUnitCache(unitList);
+                }
+                if (CommonUtil.isNotBlank(guest)){
+                    List<Customer> customerList = new ArrayList<>();
+                    customerList.add(guest);
+                    CacheManager.refreshCustomer(customerList);
+                }
                 return returnSuccessInfo("保存成功");
             } catch (Exception e) {
                 e.printStackTrace();
