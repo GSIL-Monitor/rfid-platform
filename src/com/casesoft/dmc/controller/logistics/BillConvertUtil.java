@@ -1389,7 +1389,11 @@ public class BillConvertUtil {
         }
         saleOrderBill.setBillRecordList(billRecordList);
         if (CommonUtil.isBlank(saleOrderBill.getOwnerId())) {
-            saleOrderBill.setOwnerId(curUser.getOwnerId());
+            //销售单ownerid默认和出库所属方id相同
+            saleOrderBill.setOwnerId(saleOrderBill.getOrigUnitId());
+            if(CommonUtil.isBlank(saleOrderBill.getOrigUnitId())) {
+                saleOrderBill.setOwnerId(curUser.getOwnerId());
+            }
         }
         if (CommonUtil.isBlank(saleOrderBill.getStatus())) {
             saleOrderBill.setStatus(BillConstant.BillStatus.Enter);
@@ -1885,28 +1889,6 @@ public class BillConvertUtil {
         List<BillRecord> billRecordList = new ArrayList<>();
         for (SaleOrderReturnBillDtl detail : saleOrderReturnBillDtls) {
 
-            /*从EpcStock中取出三字段信息 add by Anna*/
-            /*List<EpcStock> epcStockList = epcStockService.findSaleReturnFilterByOriginIdDtl(detail.getUniqueCodes(), bill.getDestId());
-            Map<String,EpcStock> epcStockMap = new HashMap<>()
-
-            EpcStock epcStock;
-            String originBillNo;
-            Date lastSaleTime;
-            Long saleCycle;
-            if (epcStockList.size() == 0 || epcStockList.isEmpty()) {
-                originBillNo = null;
-                lastSaleTime = null;
-                saleCycle = null;
-            } else {
-                Long cycle = ((new Date()).getTime() - epcStockList.get(0).getLastSaleTime().getTime()) / 1000 / 60 / 60 / 24;
-                epcStockList.get(0).setSaleCycle(cycle);
-                epcStock = epcStockList.get(0);
-                originBillNo = epcStock.getOriginBillNo();
-                lastSaleTime = epcStock.getLastSaleTime();
-                saleCycle = epcStock.getSaleCycle();
-            }*/
-            /* end */
-
             detail.setId(new GuidCreator().toString());
             detail.setBillId(bill.getId());
             detail.setBillNo(bill.getBillNo());
@@ -1945,7 +1927,12 @@ public class BillConvertUtil {
         }
         bill.setBillRecordList(billRecordList);
         if (CommonUtil.isBlank(bill.getOwnerId())) {
-            bill.setOwnerId(user.getOwnerId());
+            //销售退货单ownerid 默认写入库所属方id
+            bill.setOwnerId(bill.getDestUnitId());
+            if(CommonUtil.isBlank(bill.getDestUnitId())){
+                bill.setOwnerId(user.getOwnerId());
+            }
+
         }
         if (CommonUtil.isBlank(bill.getStatus())) {
             bill.setStatus(BillConstant.BillStatus.Enter);
@@ -2025,7 +2012,12 @@ public class BillConvertUtil {
         }
         bill.setBillRecordList(billRecordList);
         if (CommonUtil.isBlank(bill.getOwnerId())) {
-            bill.setOwnerId(user.getOwnerId());
+            //ownerid为null寄存单的所属方写入库方id
+            bill.setOwnerId(bill.getDestUnitId());
+            if(CommonUtil.isBlank(bill.getDestUnitId())){
+                //入库方id为空,写当前登录用户ownerid
+                bill.setOwnerId(user.getOwnerId());
+            }
         }
         if (CommonUtil.isBlank(bill.getStatus())) {
             bill.setStatus(BillConstant.BillStatus.Enter);
