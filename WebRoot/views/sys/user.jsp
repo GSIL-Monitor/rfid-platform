@@ -78,6 +78,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label fontPosition text-right" for="search_phone">电话号码</label>
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+                                            <input class="form-control" id="search_phone" name="filter_LIKES_phone" type="text" placeholder="模糊查询"/>
+                                        </div>
+                                    </div>
                                     <!--高级查询按钮-->
                                     <div class="form-group">
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-11 btnPosition">
