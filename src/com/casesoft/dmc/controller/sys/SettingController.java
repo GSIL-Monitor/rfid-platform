@@ -107,6 +107,7 @@ public class SettingController extends BaseController {
             else{
                 setting.setValue("false");
             }
+            this.settingService.save(setting);
         }catch (Exception e){
             e.printStackTrace();
             return this.returnSuccessInfo("设置失败");
