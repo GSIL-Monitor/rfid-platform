@@ -138,7 +138,7 @@
 
         <!--/.fluid-container#main-container-->
     </div>
-</div>
+
 
     <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 
