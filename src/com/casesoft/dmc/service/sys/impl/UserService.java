@@ -292,6 +292,6 @@ public class UserService implements IUserService {
   }
 
     public List<User> getAcceptMsgUserList() {
-      return this.userDao.find("from User where acceptMessageOfOA = 1 and roleId = 0");
+      return this.userDao.find("from User where acceptMessageOfOA = 1 and roleId = '0'");
     }
 }
