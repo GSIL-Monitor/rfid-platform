@@ -457,9 +457,8 @@ public class ConsignmentBillController extends BaseController implements ILogist
     @RequestMapping(value = "/saleRetrunNo")
     @ResponseBody
     public MessageBox saleRetrunNo( String strEpcList, String userId,String bill, String strDtlList) {
+        this.logAllRequestParams();
         List<Epc> epcList = JSON.parseArray(strEpcList, Epc.class);
-        //List<ConsignmentBillDtl> billDtlByBillNo = this.consignmentBillService.findBillDtlByBillNo(billNo);
-        //ConsignmentBill consignmentBill = this.consignmentBillService.findBillByBillNo(billNo);
         ConsignmentBill consignmentBill = JSON.parseObject(bill, ConsignmentBill.class);
         List<ConsignmentBillDtl> consignmentBillDtls = JSON.parseArray(strDtlList, ConsignmentBillDtl.class);
         consignmentBill.setId(consignmentBill.getBillNo());

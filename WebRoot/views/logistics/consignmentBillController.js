@@ -228,7 +228,7 @@ function initSearchGrid() {
             {name: 'origUnitId', label: '寄售客户ID', hidden: true},
             {name: 'origUnitName', label: '寄售客户', width: 30},
             {name: 'origId', label: '出库仓库ID', hidden: true},
-            /*{name: 'origName', label: '出库仓库', width: 30},*/
+            {name: 'ownerId',  hidden: true},
             {name: 'destId', label: '收货仓库ID', hidden: true},
             {name: 'destName', label: '收货仓库', width: 30,hidden: true},
             {name: 'discount', label: '整单折扣', hidden: true},

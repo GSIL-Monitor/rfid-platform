@@ -301,7 +301,28 @@
                                                     <input class="form-control" id="edit_status" name="status"
                                                            value="${consignmentBill.status}"style="display: none">
                                                     </input>
+                                                    <input id="edit_outStatus" name="outStatus"
+                                                           value="${consignmentBill.outStatus}"
+                                                           type="hidden">
+                                                    </input>
+                                                    <input id="edit_inStatus" name="inStatus"
+                                                           value="${consignmentBill.inStatus}"
+                                                           type="hidden">
+                                                    </input>
+                                                    <input id="edit_ownerId" name="ownerId"
+                                                                   value="${consignmentBill.ownerId}"
+                                                                   type="hidden">
+                                                    </input>
+                                                    <input id="edit_destUnitId" name="destUnitId"
+                                                           value="${consignmentBill.destUnitId}"
+                                                           type="hidden">
+                                                    </input>
+                                                    <input id="edit_destUnitName" name="destUnitName"
+                                                           value="${consignmentBill.destUnitName}"
+                                                           type="hidden">
+                                                    </input>
                                                 </div>
+
 
                                             </form>
 
