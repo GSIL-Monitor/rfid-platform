@@ -1270,13 +1270,6 @@ function initEditFormValid() {
             }, 'json');
         },
         fields: {
-            destUnitId: {
-                validators: {
-                    notEmpty: {
-                        message: "供应商不能为空"
-                    }
-                }
-            },
             destId: {
                 validators: {
                     notEmpty: {
