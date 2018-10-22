@@ -1,5 +1,6 @@
 package com.casesoft.dmc.controller.logistics;
 
+import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.ILogisticsBillController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
@@ -101,6 +102,7 @@ public class MonthAccountStatementController extends BaseController implements I
         //取出月份减一的时间
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
+        //测试屏蔽这一行
         cal.add(Calendar.MONTH, -1);
         Date date = cal.getTime();
 
@@ -111,7 +113,7 @@ public class MonthAccountStatementController extends BaseController implements I
         List<Unit> vendors = this.unitService.findVendors();
         for (Unit vendor : vendors) {
             MonthAccountStatement monthAccountStatement = new MonthAccountStatement();
-            monthAccountStatement.setId(vendor.getCode() + "-" + month);
+            monthAccountStatement.setId(vendor.getCode() + "-" + month+"-"+ Constant.UnitType.Vender);
             monthAccountStatement.setBillDate(CommonUtil.converStrToDate(dateNow, "yyyy-MM-dd"));
             monthAccountStatement.setMonth(month);
             monthAccountStatement.setBillType("付款");
@@ -129,7 +131,7 @@ public class MonthAccountStatementController extends BaseController implements I
         List<GuestView> guests = this.guestViewService.findGuests();
         for (GuestView guest : guests) {
             MonthAccountStatement monthAccountStatement = new MonthAccountStatement();
-            monthAccountStatement.setId(guest.getId() + "-" + month);
+            monthAccountStatement.setId(guest.getId() + "-" + month+"-"+ Constant.UnitType.Guest);
             monthAccountStatement.setBillDate(CommonUtil.converStrToDate(dateNow, "yyyy-MM-dd"));
             monthAccountStatement.setMonth(month);
             monthAccountStatement.setBillType("收款");
