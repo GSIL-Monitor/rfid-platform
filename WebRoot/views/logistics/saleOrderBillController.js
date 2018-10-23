@@ -1177,7 +1177,7 @@ function initSelectBusinessIdFormOnAddNew() {
         async: false,
         type: "POST",
         success: function (data, textStatus) {
-            debugger
+            debugger;;
             $("#edit_busnissId").empty();
             $("#edit_busnissId").append("<option value='' >--请选择--</option>");
             var json = data;
@@ -1299,7 +1299,7 @@ function setDiscount() {
     }
     var discount = $("#edit_discount").val();
     if (discount && discount != null && discount != "") {
-        if(userId == 'admin') {
+        /*if(userId == 'admin') {
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 $('#addDetailgrid').setCell(value, "discount", discount);
                 var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
@@ -1308,7 +1308,7 @@ function setDiscount() {
                 $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
             });
         }
-        else {
+        else {*/
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
@@ -1330,7 +1330,7 @@ function setDiscount() {
                 $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
                 $("#grid-table").setCell(value,"useable",0,{color:'red'});
             });
-        }
+        /*}*/
     }
     setAddFooterData();
 }
@@ -1829,7 +1829,7 @@ function cancel() {
             /* $("#SODtl_save").removeAttr("disabled");*/
             if (result) {
                 cancelAjax(billId);
-                addNew(false)
+                addNew(false);;
                 _search();
             } else {
             }
@@ -2922,7 +2922,7 @@ function setSanLian(id) {
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";;
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -3023,16 +3023,16 @@ function setA4(id) {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
+                    debugger;;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";;
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";;
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"

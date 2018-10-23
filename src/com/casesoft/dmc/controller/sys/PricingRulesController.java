@@ -4,6 +4,7 @@ import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.controller.BaseController;
 import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
+import com.casesoft.dmc.core.tag.util.UUIDGenerator;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
@@ -12,6 +13,8 @@ import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.sys.PricingRules;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.sys.impl.PricingRulesService;
+import com.opensymphony.xwork2.interceptor.ParameterRemoverInterceptor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,15 +96,26 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
     public MessageBox save(PricingRules pricingRules) throws Exception {
         this.logAllRequestParams();
         try {
+            String pageType = this.getReqParam("pageType");
             String series = pricingRules.getSeries();
             String class3 = pricingRules.getClass3();
             User u = getCurrentUser();
             pricingRules.setUserId(u.getCode());
             pricingRules.setUpdateTime(new Date());
-            if (this.pricingRulesService.isExist(series, class3)) {
-                return returnFailInfo("定价规则已存在");
+            PricingRules pr = new PricingRules();
+            if(CommonUtil.isNotBlank(class3)){
+                pr=this.pricingRulesService.findBySC(series,class3);
             }
-            this.pricingRulesService.save(pricingRules);
+            if(CommonUtil.isBlank(pricingRules.getId())){
+                pricingRules.setId(UUIDGenerator.generate());
+            }
+            if ("add".equals(pageType)) {
+                if (CommonUtil.isNotBlank(pr) && CommonUtil.isNotBlank(pr.getId())) {
+                    return this.returnFailInfo("已存在，保存失败");
+                }
+            }
+            BeanUtils.copyProperties(pricingRules,pr);
+            this.pricingRulesService.save(pr);
             return returnSuccessInfo("保存成功");
         } catch (Exception e) {
             e.printStackTrace();
