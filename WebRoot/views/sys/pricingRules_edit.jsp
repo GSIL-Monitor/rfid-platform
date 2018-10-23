@@ -63,6 +63,47 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_tagPrice">吊牌价</label>
+                        <div class="col-xs-8 col-sm-8">
+                            <input class="form-control" id="form_tagPrice" name="tagPrice"
+                                   type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_isAllUse">适用所有</label>
+                        <div class="col-xs-8 col-sm-8">
+                            <select class="chosen-select form-control selectpicker"  data-live-search="true" id="form_isAllUse" name="isAllUse">
+                                <option value="">请选择</option>
+                                <option value="Y">是</option>
+                                <option value="N">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_priceRule">吊牌价关系</label>
+                        <div class="col-xs-8 col-sm-8">
+                            <select class="chosen-select form-control selectpicker"  data-live-search="true" id="form_priceRule" name="priceRule">
+                                <option value="">吊牌价关系</option>
+                                <option value="GT">高于</option>
+                                <option value="LT">低于</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_preifx">款前缀</label>
+                        <div class="col-xs-8 col-sm-8">
+                            <input class="form-control" id="form_preifx" name="prefix"
+                                   type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right" for="form_suffix">款后缀</label>
+                        <div class="col-xs-8 col-sm-8">
+                            <input class="form-control" id="form_suffix" name="suffix"
+                                   type="text"/>
+                        </div>
+                    </div>
                     <input id="form_class3Name" name="class3Name" type="hidden"/>
                     <div class="form-group">
                         <input id="form_state" name="state" hidden="hidden"/>
@@ -185,7 +226,15 @@
                             message: '大类不能为空请选择'
                         }
                     }
-                }
+                },
+                tagPrice:{
+                    validators: {
+                        regexp: {
+                            regexp: /^[0-9]*$/,
+                            message: '请输入数字'
+                        }
+                    }
+                },
             }
         });
     }

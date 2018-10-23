@@ -23,13 +23,39 @@ function initGrid() {
             {name: 'rule2', label: '吊牌价与门店价的关系', editable: true, width: 40},
             {name: 'rule3', label: '吊牌价与代理价的关系', editable: true, width: 40},
             {name: 'series', hidden:true},
+            {name: 'tagPrice',label: '吊牌价', editable: true, width: 40},
+            {name: 'priceRule', hidden:true},
+            {name: 'priceRuleImg',label: '吊牌价格规则', editable: true, width: 40,
+                formatter: function (cellValue, option, rowObject) {
+                    var value="";
+                    if (rowObject.priceRule == "GT") {
+                        value="高于";
+                    } else if(rowObject.priceRule == "LT"){
+                        value="低于";
+                    }
+                    return value;
+                }
+            },
+            {name: 'isAllUse', hidden:true},
+            {name: 'isAllUseImg', label:'适用所有',width:20,
+                formatter: function (cellValue, option, rowObject) {
+                    if (rowObject.isAllUse == "Y") {
+                        return "是";
+                    }else {
+                        return "否";
+                    }
+                }
+            },
+            {name: 'prefix', label:'款前缀',width:20},
+            {name:'suffix',label:'款后缀',width:20},
             {name: 'seriesName', label: '系列', editable: true, width: 40},
             {name: 'updateTime', label: '更新时间', editable: true, width: 40},
             {name: 'class3',label:'大类',hidden:true},
             {name: 'class3Name',label: '大类', editable: true, width: 40},
             {name: 'userId', label: '创建人', editable: true, width: 40},
+            {name: 'state', hidden:true},
             {
-                name: 'state', label: '操作', editable: true, width: 50, align: 'center',
+                name: 'stateImg', label: '操作', editable: true, width: 50, align: 'center',
                 formatter: function (cellValue, option, rowObject) {
                     var html;
                     if (rowObject.state == "Y") {
