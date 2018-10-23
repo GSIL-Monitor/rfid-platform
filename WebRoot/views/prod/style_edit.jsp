@@ -1100,33 +1100,109 @@
             var wsPrice;
             var preCast = $("#form_preCast").val();
             $.ajax({
-                url: basePath + "/sys/pricingRules/findPricingRules.do",
+                url: basePath + "/sys/pricingRules/findAllUseRule.do",
                 cache: false,
                 async: true,
                 inheritClass: true,
                 type: "POST",
                 data: {
                     series: name,
-                    class3:class3
                 },
                 success: function (msg) {
-                    if (msg.success) {
-                        var json = msg.result;
-                        checkNum = msg.rule1;
-                        price = Math.floor(preCast * (json.rule1) /10) * 10 +9;
-                        /*规则1 表示吊牌价与采购价之间关系*/
-                        purPrice = Math.round(price * (json.rule3) * 10) / 10.0;
-                        /*规则3 代理商价与吊牌价之间关系*/
-                        wsPrice = Math.round(price * (json.rule2) * 10) / 10.0;
-                        /*规则2 门店价与吊牌价直接关系*/
-                        $("#form_price").val(price);
-                        $("#form_puPrice").val(purPrice);
-                        $("#form_wsPrice").val(wsPrice);
-                    } else {
-                        bootbox.alert(msg.msg);
+                    var jsonGT,jsonLT,res = null;
+                    if(msg.result != null && msg.result !=""){
+                        if(msg.result[0].priceRule == "GT"){
+                            jsonGT = msg.result[0];
+                            jsonLT = msg.result[1];
+                        }
+                        else {
+                            jsonGT = msg.result[1];
+                            jsonLT = msg.result[0];
+                        }
+                        if(preCast*5 > 4000){
+                            checkNum = jsonGT.rule1;
+                            price = Math.floor(preCast * (jsonGT.rule1) /10) * 10 +9;
+                            /*规则1 表示吊牌价与采购价之间关系*/
+                            purPrice = Math.round(price * (jsonGT.rule3) * 10) / 10.0;
+                            /*规则3 代理商价与吊牌价之间关系*/
+                            wsPrice = Math.round(price * (jsonGT.rule2) * 10) / 10.0;
+                            /*规则2 门店价与吊牌价直接关系*/
+                            $("#form_price").val(price);
+                            $("#form_puPrice").val(purPrice);
+                            $("#form_wsPrice").val(wsPrice);
+                            if($("#form_styleId").val().length >= 16){
+                                if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != ""){
+                                    res = $("#form_styleId").val().substring(0,14);
+                                    $("#form_styleId").val(jsonGT.prefix+res+jsonGT.suffix);
+                                }
+                                if(jsonGT.suffix != null && jsonGT.suffix != ""){
+                                    res = $("#form_styleId").val().substring(0,15);
+                                    $("#form_styleId").val(res+jsonGT.suffix);
+                                }if(jsonGT.prefix != null && jsonGT.prefix != ""){
+                                    res = $("#form_styleId").val().substring(0,15);
+                                    $("#form_styleId").val(jsonGT.prefix+res);
+                                }
+                            }
+                        }
+                        else {
+                            checkNum = jsonLT.rule1;
+                            price = Math.floor(preCast * (jsonLT.rule1) /10) * 10 +9;
+                            /*规则1 表示吊牌价与采购价之间关系*/
+                            purPrice = Math.round(price * (jsonLT.rule3) * 10) / 10.0;
+                            /*规则3 代理商价与吊牌价之间关系*/
+                            wsPrice = Math.round(price * (jsonLT.rule2) * 10) / 10.0;
+                            /*规则2 门店价与吊牌价直接关系*/
+                            $("#form_price").val(price);
+                            $("#form_puPrice").val(purPrice);
+                            $("#form_wsPrice").val(wsPrice);
+                            if($("#form_styleId").val().length >= 16){
+                                if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != ""){
+                                    res = $("#form_styleId").val().substring(0,14);
+                                    $("#form_styleId").val(jsonGT.prefix+res+jsonGT.suffix);
+                                }
+                                if(jsonGT.suffix != null && jsonGT.suffix != ""){
+                                    res = $("#form_styleId").val().substring(0,15);
+                                    $("#form_styleId").val(res+jsonGT.suffix);
+                                }if(jsonGT.prefix != null && jsonGT.prefix != ""){
+                                    res = $("#form_styleId").val().substring(0,15);
+                                    $("#form_styleId").val(jsonGT.prefix+res);
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $.ajax({
+                            url: basePath + "/sys/pricingRules/findPricingRules.do",
+                            cache: false,
+                            async: true,
+                            inheritClass: true,
+                            type: "POST",
+                            data: {
+                                series: name,
+                                class3:class3
+                            },
+                            success: function (msg) {
+                                if (msg.success) {
+                                    var json = msg.result;
+                                    checkNum = json.rule1;
+                                    price = Math.floor(preCast * (json.rule1) /10) * 10 +9;
+                                    /*规则1 表示吊牌价与采购价之间关系*/
+                                    purPrice = Math.round(price * (json.rule3) * 10) / 10.0;
+                                    /*规则3 代理商价与吊牌价之间关系*/
+                                    wsPrice = Math.round(price * (json.rule2) * 10) / 10.0;
+                                    /*规则2 门店价与吊牌价直接关系*/
+                                    $("#form_price").val(price);
+                                    $("#form_puPrice").val(purPrice);
+                                    $("#form_wsPrice").val(wsPrice);
+                                } else {
+                                    bootbox.alert(msg.msg);
+                                }
+                            }
+                        });
                     }
                 }
             });
+
         }
     }
 
