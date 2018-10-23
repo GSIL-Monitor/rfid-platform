@@ -27,7 +27,7 @@ import java.util.List;
  * 定价规则
  *
  * @author liutianci 修改时间2018.3.28
- * 修改内容定价规则 验证add、edit方法的传送
+ *         修改内容定价规则 验证add、edit方法的传送
  */
 
 @Controller
@@ -68,18 +68,19 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
     }
 
     /**
-     *根据大类系列查询定价规则
+     * 根据大类系列查询定价规则
+     *
      * @param series 系列
      * @param class3 大类
      * @return pr
      */
-    @RequestMapping(value ={"/findPricingRules","/findPricingRulesWS"})
+    @RequestMapping(value = {"/findPricingRules", "/findPricingRulesWS"})
     @ResponseBody
-    public MessageBox findPricingRules(String series,String class3){
+    public MessageBox findPricingRules(String series, String class3) {
         try {
-            PricingRules pr = this.pricingRulesService.findPricingRulesBySC(series,class3);
-            return returnSuccessInfo("查询成功",pr);
-        }catch (Exception e){
+            PricingRules pr = this.pricingRulesService.findPricingRulesBySC(series, class3);
+            return returnSuccessInfo("查询成功", pr);
+        } catch (Exception e) {
             e.printStackTrace();
             return returnFailInfo("查询失败");
         }
@@ -92,42 +93,38 @@ public class PricingRulesController extends BaseController implements IBaseInfoC
     public MessageBox save(PricingRules pricingRules) throws Exception {
         this.logAllRequestParams();
         try {
-            String pageType = this.getReqParam("pageType");
             String series = pricingRules.getSeries();
             String class3 = pricingRules.getClass3();
-            PricingRules pr = this.pricingRulesService.findBySC(series, class3);
-            if ("add".equals(pageType)) {
-                if (CommonUtil.isNotBlank(pr)) {
-                    return this.returnFailInfo("已存在，保存失败");
-                } else {
-                    pr = new PricingRules();
-                    User u = getCurrentUser();
-                    pr.setUserId(u.getCode());
-                    pr.setName(pricingRules.getName());
-                    pr.setRule1(pricingRules.getRule1());
-                    pr.setRule2(pricingRules.getRule2());
-                    pr.setRule3(pricingRules.getRule3());
-                    pr.setSeries(pricingRules.getSeries());
-                    pr.setUpdateTime(new Date());
-                    pr.setClass3(pricingRules.getClass3());
-                    pr.setClass3Name(pricingRules.getClass3Name());
-                }
-            } else {
-                pr.setName(pricingRules.getName());
-                pr.setRule1(pricingRules.getRule1());
-                pr.setRule2(pricingRules.getRule2());
-                pr.setRule3(pricingRules.getRule3());
-                pr.setUpdateTime(new Date());
-                User u = getCurrentUser();
-                pr.setUserId(u.getCode());
-                pr.setClass3(pricingRules.getClass3());
-                pr.setClass3Name(pricingRules.getClass3Name());
+            User u = getCurrentUser();
+            pricingRules.setUserId(u.getCode());
+            pricingRules.setUpdateTime(new Date());
+            if (this.pricingRulesService.isExist(series, class3)) {
+                return returnFailInfo("定价规则已存在");
             }
-            this.pricingRulesService.save(pr);
+            this.pricingRulesService.save(pricingRules);
             return returnSuccessInfo("保存成功");
         } catch (Exception e) {
             e.printStackTrace();
             return returnFailInfo("保存失败");
+        }
+    }
+
+    /**
+     * @return
+     * @Author Alvin.Ma
+     * @Description 查找通用定价规则
+     * @Date 2018-10-23
+     * @Param series 品牌名(style 中 class9值)
+     */
+    @RequestMapping(value = {"/findAllUseRule", "/findAllUseRuleWS"})
+    @ResponseBody
+    public MessageBox findAllUseRule(String series) {
+        try {
+            List<PricingRules> pricingRulesList = this.pricingRulesService.findAllUseRule(series);
+            return returnSuccessInfo("查询成功", pricingRulesList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return returnFailInfo("查询失败");
         }
     }
 

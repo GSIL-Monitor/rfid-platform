@@ -43,7 +43,18 @@ public class PricingRules implements java.io.Serializable {
 	@Column(length = 50)
 	private String class3;//大类
 	@Column(length = 50)
-	private String class3Name;//大类名称
+	private String class3Name;//大类名称double
+	@Column()
+	private double tagPrice=0D;//吊牌价
+	@Column(length=2)
+	private String priceRule;//价格规则 GT表示高于 LT表示低于 吊牌价
+	@Column(length=1)
+	private String isAllUse; //是否适用所有大类 Y表示是N表示否
+	@Column(length=5)
+	private String prefix;//款号前缀
+	@Column(length=5)
+	private String suffix;//款号后缀
+
 
 	public String getClass3Name() {
 		return class3Name;
@@ -65,7 +76,27 @@ public class PricingRules implements java.io.Serializable {
 		super();
 	}
 
-	public PricingRules(String id, String name, double rule1, double rule2, double rule3, String userId, String series, Date upDateTime, String state,String seriesName) {
+	public PricingRules(String name, double rule1, double rule2, double rule3, String userId, String series, Date upDateTime, String state, String seriesName, String class3, String class3Name,
+						Double tagPrice, String priceRule, String isAllUse, String prefix, String suffix) {
+		this.name = name;
+		this.rule1 = rule1;
+		this.rule2 = rule2;
+		this.rule3 = rule3;
+		this.userId = userId;
+		this.series = series;
+		this.upDateTime = upDateTime;
+		this.state = state;
+		this.seriesName = seriesName;
+		this.class3 = class3;
+		this.class3Name = class3Name;
+		this.tagPrice = tagPrice;
+		this.priceRule = priceRule;
+		this.isAllUse = isAllUse;
+		this.prefix = prefix;
+		this.suffix = suffix;
+	}
+
+	public PricingRules(String id, String name, double rule1, double rule2, double rule3, String userId, String series, Date upDateTime, String state, String seriesName) {
 		this.id = id;
 		this.name = name;
 		this.rule1 = rule1;
@@ -182,5 +213,53 @@ public class PricingRules implements java.io.Serializable {
 
 	public void setSeriesName(String seriesName) {
 		this.seriesName = seriesName;
+	}
+
+	public String getIsAllUse() {
+		return isAllUse;
+	}
+
+	public void setIsAllUse(String isAllUse) {
+		this.isAllUse = isAllUse;
+	}
+
+	public Date getUpDateTime() {
+		return upDateTime;
+	}
+
+	public void setUpDateTime(Date upDateTime) {
+		this.upDateTime = upDateTime;
+	}
+
+	public Double getTagPrice() {
+		return tagPrice;
+	}
+
+	public void setTagPrice(Double tagPrice) {
+		this.tagPrice = tagPrice;
+	}
+
+	public String getPriceRule() {
+		return priceRule;
+	}
+
+	public void setPriceRule(String priceRule) {
+		this.priceRule = priceRule;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 }

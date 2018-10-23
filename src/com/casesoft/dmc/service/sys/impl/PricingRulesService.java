@@ -32,6 +32,15 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
     }
   }
 
+  public Boolean isExist(String series,String class3){
+    if(CommonUtil.isNotBlank(class3)){
+      Long count = this.pricingRulesDao.findUnique("select count(*) from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
+      return count>0?true:false;
+    }else{
+      return false;
+    }
+  }
+
   public PricingRules findPricingRulesBySC(String series,String class3){
     PricingRules pricingRules = this.pricingRulesDao.findUnique("from PricingRules where series = '"+series+"' and class3 = ?",new Object[]{class3});
     String parentId = "";
@@ -114,5 +123,9 @@ public class PricingRulesService extends AbstractBaseService<PricingRules,String
 
   public List<PropertyType> findPricingRulesPropertyType() {
     return this.pricingRulesDao.find("from PropertyType where type=?",new Object[]{"商品代码分类"});
+  }
+
+  public List<PricingRules> findAllUseRule(String series) {
+    return this.pricingRulesDao.find("from PricingRules where isAllUse='Y' and series=?",series);
   }
 }
