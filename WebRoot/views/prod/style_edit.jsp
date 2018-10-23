@@ -1642,9 +1642,10 @@
                         },
 
                         regexp: {
-                            regexp: /^[a-zA-Z0-9_-]+$/,
-                            message: '款号由数字字母下划线组成'
+                            regexp: /^[a-zA-Z0-9_-]{0,16}$/,
+                            message: '款号由数字字母下划线组成且不能超过16位'
                         }
+
                     }
                 },
                 styleName: {
