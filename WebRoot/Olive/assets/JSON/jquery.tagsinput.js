@@ -293,10 +293,22 @@
 				// if user types a comma, create a new tag
 				$(data.fake_input).bind('keypress',data,function(event) {
 					if (event.which==event.data.delimiter.charCodeAt(0) || event.which==13 ) {
+						var that = this;
 					    event.preventDefault();
-						if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) )
+						if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) ){}
 							$(event.data.real_input).addTag($(event.data.fake_input).val(),{focus:true,unique:(settings.unique)});
-					  	$(event.data.fake_input).resetAutosize(settings);
+						console.info(settings);
+                        var re = $("#tags_3").val();
+                        var txt = re.replace(/\D/g,"");
+                        if(txt > 99){
+                            bootbox.alert("成分不能超过99");
+                            var last_tag = $(that).closest('.tagsinput').find('.tag:last').text();
+                            var id = $(that).attr('id').replace(/_tag$/, '');
+                            last_tag = last_tag.replace(/[\s]+x$/, '');
+                            $('#' + id).removeTag(escape(last_tag));
+                            $(that).trigger('focus');
+                        }
+						$(event.data.fake_input).resetAutosize(settings);
 						return false;
 					} else if (event.data.autosize) {
 			            $(event.data.fake_input).doAutosize(settings);
@@ -306,6 +318,7 @@
 				//Delete last tag on backspace
 				data.removeWithBackspace && $(data.fake_input).bind('keydown', function(event)
 				{
+
 					if(event.keyCode == 8 && $(this).val() == '')
 					{
 						 event.preventDefault();

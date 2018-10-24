@@ -1144,7 +1144,15 @@
                                 }
                             }
                             else{
-                                $("#form_styleId").val(jsonGT.prefix+$("#form_styleId").val()+jsonGT.suffix);
+                                if(jsonGT.suffix != null && json.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != "" && jsonGT.suffix != undefined && jsonGT.prefix != undefined){
+                                    $("#form_styleId").val(jsonGT.prefix+$("#form_styleId").val()+jsonGT.suffix);
+                                }
+                                if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.suffix != undefined){
+                                    $("#form_styleId").val($("#form_styleId").val()+jsonGT.suffix);
+                                }
+                                if(jsonGT.prefix != null && jsonGT.prefix != "" && jsonGT.prefix != undefined){
+                                    $("#form_styleId").val(jsonGT.prefix+$("#form_styleId").val());
+                                }
                             }
                         }
                         else {
@@ -1172,7 +1180,15 @@
                                 }
                             }
                             else{
-                                $("#form_styleId").val(jsonLT.prefix+$("#form_styleId").val()+jsonLT.suffix);
+                                if(jsonLT.suffix != null && json.suffix != "" && jsonLT.prefix != null && jsonLT.prefix != "" && jsonLT.suffix != undefined && jsonLT.prefix != undefined){
+                                    $("#form_styleId").val(jsonLT.prefix+$("#form_styleId").val()+jsonLT.suffix);
+                                }
+                                if(jsonLT.suffix != null && jsonLT.suffix != "" && jsonLT.suffix != undefined){
+                                    $("#form_styleId").val($("#form_styleId").val()+jsonLT.suffix);
+                                }
+                                if(jsonLT.prefix != null && jsonLT.prefix != "" && jsonLT.prefix != undefined){
+                                    $("#form_styleId").val(jsonLT.prefix+$("#form_styleId").val());
+                                }
                             }
                         }
                     }
@@ -1253,6 +1269,7 @@
         var re = $("#tags_3").val();
         $("#form_remark").val(re);
         if ((re.indexOf(",") >= 0)||(re.indexOf("，") >= 0)){
+
             bootbox.alert("成分中不允许含有回车及逗号字符");
         }else {
             bootbox.setDefaults("locale","zh_CN");
