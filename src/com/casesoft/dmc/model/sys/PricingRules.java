@@ -11,15 +11,12 @@ import java.util.Date;
  * @author liutinaci 2018/3/21
  */
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "PRODUCT_PRICE")
 public class PricingRules implements java.io.Serializable {
 
 	private static final long serialVersionUID = -521893168086214431L;
 	@Id
 	@Column(nullable = false,length = 50)
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name="uuid",strategy = "uuid")
 	private String id; //规则ID
 	@Column(length = 200)
 	private String name;//定价规则名
@@ -31,7 +28,7 @@ public class PricingRules implements java.io.Serializable {
 	private double rule3;//规则3 代理商价与吊牌价之间关系 （double 保留两位小数）
 	@Column(length = 20)
 	private String userId;//更新人
-	@Column(length = 50,unique = true)
+	@Column(length = 50)
 	private String series;//系列
 	@Column(length = 50)
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
@@ -45,7 +42,7 @@ public class PricingRules implements java.io.Serializable {
 	@Column(length = 50)
 	private String class3Name;//大类名称double
 	@Column()
-	private double tagPrice=0D;//吊牌价
+	private Double tagPrice=0D;//吊牌价
 	@Column(length=2)
 	private String priceRule;//价格规则 GT表示高于 LT表示低于 吊牌价
 	@Column(length=1)

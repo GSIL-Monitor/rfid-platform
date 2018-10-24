@@ -1181,7 +1181,7 @@ function setDiscount() {
     }
     var discount = $("#edit_discount").val();
     if (discount && discount != null && discount != "") {
-        if(userId == 'admin') {
+        /*if(userId == 'admin') {
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 $('#addDetailgrid').setCell(value, "discount", discount);
                 var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
@@ -1190,7 +1190,7 @@ function setDiscount() {
                 $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
             });
         }
-        else {
+        else {*/
             $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
                 //判断实际价格是不是小于门店批发价格
                 var var_actPrice;
@@ -1212,7 +1212,7 @@ function setDiscount() {
                 $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
                 $("#grid-table").setCell(value,"useable",0,{color:'red'});
             });
-        }
+       /* }*/
     }
     setAddFooterData();
 }
