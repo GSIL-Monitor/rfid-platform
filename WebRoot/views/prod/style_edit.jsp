@@ -1143,6 +1143,9 @@
                                     $("#form_styleId").val(jsonGT.prefix+res);
                                 }
                             }
+                            else{
+                                $("#form_styleId").val(jsonGT.prefix+$("#form_styleId").val()+jsonGT.suffix);
+                            }
                         }
                         else {
                             checkNum = jsonLT.rule1;
@@ -1156,17 +1159,20 @@
                             $("#form_puPrice").val(purPrice);
                             $("#form_wsPrice").val(wsPrice);
                             if($("#form_styleId").val().length >= 16){
-                                if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != ""){
+                                if(jsonLT.suffix != null && jsonLT.suffix != "" && jsonLT.prefix != null && jsonLT.prefix != ""){
                                     res = $("#form_styleId").val().substring(0,14);
-                                    $("#form_styleId").val(jsonGT.prefix+res+jsonGT.suffix);
+                                    $("#form_styleId").val(jsonLT.prefix+res+jsonLT.suffix);
                                 }
-                                if(jsonGT.suffix != null && jsonGT.suffix != ""){
+                                if(jsonLT.suffix != null && jsonLT.suffix != ""){
                                     res = $("#form_styleId").val().substring(0,15);
-                                    $("#form_styleId").val(res+jsonGT.suffix);
-                                }if(jsonGT.prefix != null && jsonGT.prefix != ""){
+                                    $("#form_styleId").val(res+jsonLT.suffix);
+                                }if(jsonLT.prefix != null && jsonLT.prefix != ""){
                                     res = $("#form_styleId").val().substring(0,15);
-                                    $("#form_styleId").val(jsonGT.prefix+res);
+                                    $("#form_styleId").val(jsonLT.prefix+res);
                                 }
+                            }
+                            else{
+                                $("#form_styleId").val(jsonLT.prefix+$("#form_styleId").val()+jsonLT.suffix);
                             }
                         }
                     }
