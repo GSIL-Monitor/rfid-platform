@@ -140,7 +140,7 @@ public class ResourceService implements IResourceService {
     return this.resourceDao.find(hql,new Object[]{ownerId});
   }
 
-  public String findMaxByCode(String ownerId){
+    public String findMaxByCode(String ownerId){
     String hql = "select max(code)from Resource where ownerId =?";
     int maxCode = Integer.parseInt(this.resourceDao.findUnique(hql,ownerId))+1;
     return "0"+String.valueOf(maxCode);

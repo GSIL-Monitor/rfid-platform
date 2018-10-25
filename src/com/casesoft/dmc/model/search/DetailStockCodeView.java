@@ -62,6 +62,9 @@ public class DetailStockCodeView extends BaseProductView{
     @Column()
     @Excel(name = "厂家")
     private String class1Name;
+    @Column()
+    @Excel(name="大类")
+    private String class3Name;
 
     public String getGroupId() {
         return groupId;
@@ -216,5 +219,13 @@ public class DetailStockCodeView extends BaseProductView{
 
     public void setInStockDays(Long inStockDays) {
         this.inStockDays = inStockDays;
+    }
+
+    public String getClass3Name() {
+        return class3Name;
+    }
+
+    public void setClass3Name(String class3Name) {
+        this.class3Name = class3Name;
     }
 }

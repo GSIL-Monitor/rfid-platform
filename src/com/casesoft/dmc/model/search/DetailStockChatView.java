@@ -71,6 +71,9 @@ public class DetailStockChatView {
     @Excel(name = "厂家")
     private String class1Name;
     @Column()
+    @Excel(name="大类")
+    private String class3Name;
+    @Column()
     private String groupId;
 
     @Column()
@@ -313,5 +316,13 @@ public class DetailStockChatView {
         this.puprice = puprice;
         this.wsprice = wsprice;
         this.class1 = class1;
+    }
+
+    public String getClass3Name() {
+        return class3Name;
+    }
+
+    public void setClass3Name(String class3Name) {
+        this.class3Name = class3Name;
     }
 }

@@ -163,6 +163,21 @@ function initMultiSelect() {
             }
         }
     });
+    debugger;
+    $.ajax({
+        url: basePath +  "/sys/property/listMultiLevel.do?type=C3",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#filter_eq_class3").empty();
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#filter_eq_class3").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
+            }
+            $('.selectpicker').selectpicker('refresh');
+        }
+    });
     console.log(JMSCODE);
     console.log(JMSNAME);
     if(JMSCODE!=""&&JMSCODE!=undefined&&JMSNAME!=""&&JMSNAME!=undefined){
@@ -193,6 +208,7 @@ function initMultiSelect() {
                 $('.selectpicker').selectpicker('refresh');
             }
         });
+
     }else{
         /*$("#filter_in_warehId").kendoMultiSelect({
          dataTextField: "name",
@@ -380,7 +396,7 @@ function initKendoUIGrid() {
                     {field: "colorId", title: "色号", width: 80},
                     {field: "sizeId", title: "尺号", width: 80},
                     {field: "class1Name", title: "厂家", width: 80},
-
+                    {field: "class3Name", title: "大类", width: 80},
                     {
                         field: "qty", title: "库存数量", width: 80,
                         groupable: false,
@@ -731,6 +747,7 @@ function initCodeKendoUIGrid() {
                     {field: "colorId", title: "色号", width: 60},
                     {field: "sizeId", title: "尺号", width: 60},
                     {field: "class1Name", title: "厂家", width: 80},
+                    {field: "class3Name", title: "大类", width: 80},
                     {field: "code", title: "Code", width: 100},
 
                     {
@@ -1066,6 +1083,7 @@ function initstyleKendoUIGrid() {
 
                     {field: "styleName", title: "款名", width: 80},
                     {field: "class1Name", title: "厂家", width: 80},
+                    {field: "class3Name", title: "大类", width: 80},
                     {
                         field: "qty", title: "库存数量", width: 80,
                         groupable: false,

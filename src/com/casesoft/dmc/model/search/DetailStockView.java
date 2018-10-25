@@ -53,6 +53,9 @@ public class DetailStockView extends BaseProductView {
     @Column()
     @Excel(name="厂家")
     private String class1Name;
+    @Column()
+    @Excel(name="大类")
+    private String class3Name;
 
     public String getClass1Name() {
         return class1Name;
@@ -195,5 +198,13 @@ public class DetailStockView extends BaseProductView {
 
     public void setInStockPrice(Double inStockPrice) {
         this.inStockPrice = inStockPrice;
+    }
+
+    public String getClass3Name() {
+        return class3Name;
+    }
+
+    public void setClass3Name(String class3Name) {
+        this.class3Name = class3Name;
     }
 }

@@ -366,17 +366,6 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
         return this.epcStockDao.findUnique(hql, code);
     }
 
-    /**
-     * add by lly
-     * @param code
-     * @param ownerId
-     * @return
-     */
-    public Epc findTagEpcByCodeNew(String code,String ownerId) {
-        String hql = "from Epc where code=? and ownerId=?";
-        return this.epcStockDao.findUnique(hql, new Object[]{code,ownerId});
-    }
-
     public List<Epc> findTagEpcByCodes(String codes) {
         return this.epcStockDao.find("from Epc epc where  " + codes);
     }

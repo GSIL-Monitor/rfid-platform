@@ -179,6 +179,16 @@
 
 
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right" for="filter_eq_class3">大类</label>
+
+                                        <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
+
+                                            <select class="form-control selectpicker show-tick" style="width: 100%" id="filter_eq_class3" name="filter_eq_class3" multiple="multiple"
+                                                    data-live-search="true">
+                                            </select>
+                                        </div>
+                                    </div>
                                     <!-- #section:elements.form -->
 
                                     <div class="form-group">
