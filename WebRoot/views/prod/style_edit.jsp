@@ -95,7 +95,7 @@
                                                 <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
                                                     <input class="form-control" id="form_styleId" name="styleId"
                                                            type="text" placeholder="" value="${style.styleId}"
-                                                           onkeyup="this.value=this.value"/>
+                                                           onkeyup="this.value=this.value;count = 0;"/>
                                                 </div>
 
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
@@ -564,6 +564,7 @@
 
 <script type="text/javascript">
     var checkNum;
+    var count = 0;
     $(function () {
         loadingButton();
         $("#tags_3").val(remark);
@@ -1130,8 +1131,11 @@
                             $("#form_price").val(price);
                             $("#form_puPrice").val(purPrice);
                             $("#form_wsPrice").val(wsPrice);
+                            if(count == 1){
+                                return;
+                            }
+                            count++;
                             if($("#form_styleId").val().length >= 16){
-                                debugger;
                                 if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != ""){
                                     res = $("#form_styleId").val().substring(0,14);
                                     $("#form_styleId").val(jsonGT.prefix+res+jsonGT.suffix);
