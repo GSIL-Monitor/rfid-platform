@@ -1131,6 +1131,7 @@
                             $("#form_puPrice").val(purPrice);
                             $("#form_wsPrice").val(wsPrice);
                             if($("#form_styleId").val().length >= 16){
+                                debugger;
                                 if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != ""){
                                     res = $("#form_styleId").val().substring(0,14);
                                     $("#form_styleId").val(jsonGT.prefix+res+jsonGT.suffix);
@@ -1144,7 +1145,7 @@
                                 }
                             }
                             else{
-                                if(jsonGT.suffix != null && json.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != "" && jsonGT.suffix != undefined && jsonGT.prefix != undefined){
+                                if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != "" && jsonGT.suffix != undefined && jsonGT.prefix != undefined){
                                     $("#form_styleId").val(jsonGT.prefix+$("#form_styleId").val()+jsonGT.suffix);
                                 }
                                 if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.suffix != undefined){
@@ -1180,7 +1181,7 @@
                                 }
                             }
                             else{
-                                if(jsonLT.suffix != null && json.suffix != "" && jsonLT.prefix != null && jsonLT.prefix != "" && jsonLT.suffix != undefined && jsonLT.prefix != undefined){
+                                if(jsonLT.suffix != null && jsonLT.suffix != "" && jsonLT.prefix != null && jsonLT.prefix != "" && jsonLT.suffix != undefined && jsonLT.prefix != undefined){
                                     $("#form_styleId").val(jsonLT.prefix+$("#form_styleId").val()+jsonLT.suffix);
                                 }
                                 if(jsonLT.suffix != null && jsonLT.suffix != "" && jsonLT.suffix != undefined){
