@@ -123,6 +123,7 @@ public class TagReplaceController extends BaseController {
             initDtl.setQty(1);
             initDtl.setStartNum(initService.findMaxNoBySkuNo(sku) + 1);
             initDtl.setEndNum(initService.findMaxNoBySkuNo(sku) + 1);
+            CacheManager.setMaxTagSkuNum(initDtl.getSku(),initDtl.getEndNum());
             ArrayList<InitDtl> initDtlList = new ArrayList<>();
             initDtlList.add(initDtl);
 

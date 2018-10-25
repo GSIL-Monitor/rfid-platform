@@ -46,6 +46,10 @@ public class Style extends BaseStyle implements java.io.Serializable {
 
     @Transient
     private String remarkOrigin; // 原成份
+    @Column(length=2)
+    private String prefix;// 款前缀
+    @Column(length=4)
+    private String suffix;//款后缀
 
     public String getRemarkOrigin() {return remarkOrigin;}
 
@@ -209,5 +213,29 @@ public class Style extends BaseStyle implements java.io.Serializable {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public Boolean getCoverSkuRemark() {
+        return isCoverSkuRemark;
+    }
+
+    public void setCoverSkuRemark(Boolean coverSkuRemark) {
+        isCoverSkuRemark = coverSkuRemark;
     }
 }

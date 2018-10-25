@@ -1,6 +1,7 @@
 package com.casesoft.dmc.cache;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -24,6 +25,7 @@ import com.casesoft.dmc.service.sys.impl.ResourceService;
 import com.casesoft.dmc.service.sys.impl.RoleService;
 import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
+import com.casesoft.dmc.service.tag.InitService;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
@@ -90,6 +92,9 @@ public class CacheManager {
 
 	private static String PREFIX_CHECKWAREHOUSE="checkwareouse";
 
+	private static String PREFIX_MAXPRODUCTID = "maxProductId";
+	private static String PREFIX_MAXTAGSKU = "maxTagSku";
+
 	private static long LIVETIME = 3000;
 
 	public static void initCache() throws Exception {
@@ -111,7 +116,10 @@ public class CacheManager {
 		initCustomerCache();
 		initCheckWarehouse();
 		initMaxVersionId();
+		initMaxTagSKUNoCahche();
 	}
+
+
 
 	public static void refresh() throws Exception {
 		refreshPropertyCache();
@@ -130,6 +138,7 @@ public class CacheManager {
 		refreshRoleCache();
 		refreshSizeSortCache();
 		refreshMaxVersionId();
+		refreshMaxTagSKUNoCahche();
 	}
 
 	public static void initUserCache() {
@@ -321,6 +330,7 @@ public class CacheManager {
 			} else {
 				maxProductId = list.size();
 			}
+			redisUtils.hset(PREFIX_MAXPRODUCTID,"maxProductId",JSON.toJSONString(maxProductId));
 		}
 		for (Product p : list) {
 			redisUtils.hset(PREFIX_PRODUCT, p.getCode(), JSON.toJSONString(p));
@@ -463,6 +473,29 @@ public class CacheManager {
 		}
 	}
 
+	private static void initMaxTagSKUNoCahche() {
+		InitService initService = (InitService) SpringContextUtil
+				.getBean("initService");
+		List<Object> list = initService.findMaxSKUNo();
+		for (Object o : list) {
+			net.sf.json.JSONArray jsonArray = net.sf.json.JSONArray.fromObject(o);
+			String sku = jsonArray.get(0).toString();
+			Long value = Long.parseLong(jsonArray.get(1).toString());
+			redisUtils.hset(PREFIX_MAXTAGSKU, sku, JSON.toJSONString(value));
+		}
+	}
+
+	public static Long getMaxTagSkuNum(String sku){
+		String value = redisUtils.hgetString(PREFIX_MAXTAGSKU,sku);
+		return CommonUtil.isNotBlank(value)?Long.parseLong(value):0L;
+	}
+	public static void setMaxTagSkuNum(String sku,Long num){
+		redisUtils.hset(PREFIX_MAXTAGSKU, sku, JSON.toJSONString(num));
+	}
+    public static void refreshMaxTagSKUNoCahche(){
+		redisUtils.del(PREFIX_MAXTAGSKU);
+		initMaxTagSKUNoCahche();
+	}
 	private static void initSizeSortCache() {
 		sizeSortList = new ArrayList<SizeSort>();
 		StyleService styleService = (StyleService) SpringContextUtil
@@ -1184,10 +1217,8 @@ public class CacheManager {
 	}
 
 	public static int getMaxProductId() {
-		ProductService productService = (ProductService) SpringContextUtil
-				.getBean("productService");
-		String maxProductId = productService.getMaxProductId();
-		Integer maxId=Integer.parseInt(maxProductId)+1;
+		Integer maxId = Integer.parseInt(redisUtils.hget(PREFIX_MAXPRODUCTID,"maxProductId").toString())+1;
+		redisUtils.hset(PREFIX_MAXPRODUCTID,"maxProductId",JSON.toJSONString(maxId));
 		return maxId;
 	}
 

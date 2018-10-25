@@ -119,6 +119,7 @@ public class InitUtil {
 				detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
 				detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
 						+ qty);
+				CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
 				detail.setQty(qty);
 
 				detail.setOwnerId(user.getOwnerId());
@@ -210,6 +211,7 @@ public class InitUtil {
 							.getSku()) + 1);
 					detail.setEndNum(epcService.findMaxNoBySkuNo(detail
 							.getSku()) + qty);
+					CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
 					detail.setQty(qty);
 
 					detail.setOwnerId(user.getOwnerId());
@@ -289,6 +291,7 @@ public class InitUtil {
 				detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
 				detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
 						+ qty);
+				CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
 				detail.setQty(qty);
 
 				detail.setOwnerId(user.getOwnerId());
@@ -377,6 +380,7 @@ public class InitUtil {
 		detail.setSku(product.getCode());
 		detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
 		detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku()) + qty);
+		CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
 		detail.setQty(qty);
 		detail.setOwnerId(CacheManager.getDeviceByCode(deviceId).getOwnerId());
 		detail.setStatus(1);// 0:已导入
@@ -563,6 +567,7 @@ public class InitUtil {
 				detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
 				detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
 						+ qty);
+				CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
 				detail.setQty(qty);
 
 				detail.setOwnerId(user.getOwnerId());

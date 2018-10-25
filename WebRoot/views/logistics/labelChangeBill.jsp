@@ -57,7 +57,12 @@
                                             <span class="bigger-110">转换标签商场特供</span>
                                         </button>
                                     </div>
-
+                                    <div class="btn-group btn-group-sm pull-left">
+                                        <button type="button" class="btn btn-primary" onclick="add('ID')">
+                                            <i class="ace-icon fa fa-plus"></i>
+                                            <span class="bigger-110">转换货号</span>
+                                        </button>
+                                    </div>
                                     <div class="btn-group btn-group-sm pull-right">
 
                                         <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">

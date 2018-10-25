@@ -51,6 +51,8 @@ public class PricingRules implements java.io.Serializable {
 	private String prefix;//款号前缀
 	@Column(length=5)
 	private String suffix;//款号后缀
+	@Column(length=1)
+	private String isDefault;//默认定价规则 每个系列默认一个
 
 
 	public String getClass3Name() {
@@ -258,5 +260,13 @@ public class PricingRules implements java.io.Serializable {
 
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
+	}
+
+	public String getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(String isDefault) {
+		this.isDefault = isDefault;
 	}
 }

@@ -9,15 +9,15 @@
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var pageType = "${pageType}";
-        var userId="${userId}";
+        var userId = "${userId}";
         var billNo = "${labelChangeBill.billNo}";
-        var ownersId="${ownersId}";
-        var beforeclass9="${labelChangeBill.beforeclass9}";
-        var origId="${labelChangeBill.origId}";
-        var nowclass9="${labelChangeBill.nowclass9}";
-        var changeType="${labelChangeBill.changeType}";
-        var type ="${type}";
-        var defaultWarehId ="${defaultWarehId}";
+        var ownersId = "${ownersId}";
+        var beforeclass9 = "${labelChangeBill.beforeclass9}";
+        var origId = "${labelChangeBill.origId}";
+        var nowclass9 = "${labelChangeBill.nowclass9}";
+        var changeType = "${labelChangeBill.changeType}";
+        var type = "${type}";
+        var defaultWarehId = "${defaultWarehId}";
     </script>
 </head>
 <body class="no-skin">
@@ -78,12 +78,12 @@
                                 <div class="form-group">
 
 
-                                   <%-- <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
-                                    <div class="col-xs-2">
-                                        <select class="form-control" id="search_destId" name="destId"
-                                                style="width: 100%;" value="${LabelChangeBill.destId}">
-                                        </select>
-                                    </div>--%>
+                                    <%-- <label class="col-xs-1 control-label" for="search_destId">入库仓库</label>
+                                     <div class="col-xs-2">
+                                         <select class="form-control" id="search_destId" name="destId"
+                                                 style="width: 100%;" value="${LabelChangeBill.destId}">
+                                         </select>
+                                     </div>--%>
                                     <label class="col-xs-1 control-label" for="search_origId">仓库</label>
                                     <div class="col-xs-2">
                                         <select class="form-control" id="search_origId" name="origId"
@@ -96,13 +96,20 @@
                                                 style="width: 100%;" value="${labelChangeBill.beforeclass9}">
                                         </select>
                                     </div>
+                                    <label class="col-xs-1 control-label" for="search_prefix">货号前缀</label>
+                                    <div class="col-xs-2">
+                                        <input class="form-control" id="search_prefix" name="prefix"
+                                               value="${labelChangeBill.prefix}">
+                                        </input>
+                                    </div>
                                 </div>
                                 <div class="form-group">
 
                                     <label class="col-xs-1 control-label" for="search_discount">整单折扣</label>
                                     <div class="col-xs-2">
                                         <input class="form-control" id="search_discount" name="discount"
-                                               value="${labelChangeBill.discount}" onblur="search_discount_onblur()" onkeyup="value=value.replace(/[^\d]/g,'')">
+                                               value="${labelChangeBill.discount}" onblur="search_discount_onblur()"
+                                               onkeyup="value=value.replace(/[^\d]/g,'')">
                                         </input>
                                     </div>
                                     <label class="col-xs-1 control-label" for="select_changeType">转变类型</label>
@@ -113,7 +120,14 @@
                                             <option value="CS">系列转变</option>
                                             <option value="PC">打折</option>
                                             <option value="TG">商场特供</option>
+                                            <option value="ID">货号转换</option>
                                         </select>
+                                    </div>
+                                    <label class="col-xs-1 control-label" for="search_suffix">货号后缀</label>
+                                    <div class="col-xs-2">
+                                        <input class="form-control" id="search_suffix" name="suffix"
+                                               value="${labelChangeBill.suffix}">
+                                        </input>
                                     </div>
 
                                 </div>

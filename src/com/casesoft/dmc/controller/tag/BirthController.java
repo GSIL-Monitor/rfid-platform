@@ -315,6 +315,7 @@ public class BirthController extends BaseController implements IBaseInfoControll
 							initDtl.setStyleId(p.getStyleId());
 							initDtl.setStartNum(1);
 							initDtl.setEndNum(1);
+							CacheManager.setMaxTagSkuNum(initDtl.getSku(),initDtl.getEndNum());
 							initDtl.setStatus(1);
 							initDtl.setQty(1);
 							initDtl.setSku(row.getBarcode());
