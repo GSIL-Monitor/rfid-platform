@@ -513,6 +513,7 @@ public class BillConvertUtil {
                 detail.setStartNum(epcService.findMaxNoBySkuNo(dtl.getSku()) + 1);
                 detail.setEndNum(epcService.findMaxNoBySkuNo(dtl.getSku())
                         + arrival);
+                CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
                 detail.setQty(arrival);
                 detail.setOwnerId(currentUser.getOwnerId());
                 detail.setStatus(1);
@@ -611,6 +612,11 @@ public class BillConvertUtil {
                     detail.setStyleId(styleId);
                     detail.setSku(styleId+ dtl.getColorId() + dtl.getSizeId());
                 }
+            }else if(changeType.equals(BillConstant.ChangeType.Style)){
+                styleId =dtl.getStyleNew();
+                detail.setId(taskId + "-" + styleId + dtl.getColorId() + dtl.getSizeId());
+                detail.setStyleId(styleId);
+                detail.setSku(styleId+ dtl.getColorId() + dtl.getSizeId());
             }else{
                 styleId = dtl.getStyleId();
                 detail.setId(taskId + "-" + styleId + newStylesuffix +CommonUtil.getInt(dtl.getDiscount())+ dtl.getColorId() + dtl.getSizeId());
@@ -626,6 +632,7 @@ public class BillConvertUtil {
             detail.setStartNum(epcService.findMaxNoBySkuNo(detail.getSku()) + 1);
             detail.setEndNum(epcService.findMaxNoBySkuNo(detail.getSku())
                     + dtl.getQty());
+            CacheManager.setMaxTagSkuNum(detail.getSku(),detail.getEndNum());
             detail.setQty(dtl.getQty());
             detail.setOwnerId("1");
             detail.setStatus(1);
@@ -3927,6 +3934,9 @@ public class BillConvertUtil {
                     labelChangeBillDelMap.put(styleId + dtl.getColorId() + dtl.getSizeId(), dtl);
                 }
 
+            }
+            if(labelChangeBill.getChangeType().equals(BillConstant.ChangeType.Style)){
+                labelChangeBillDelMap.put(dtl.getStyleNew()+ dtl.getColorId() + dtl.getSizeId(), dtl);
             }
 
         }

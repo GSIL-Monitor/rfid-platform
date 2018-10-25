@@ -3,26 +3,41 @@ var wareHouse;
 var allCodes; //用于拼接所有添加过的唯一码，防止重复添加
 var inOntWareHouseValid; //用于判断在编辑BillDtl时出入库操作是否需要校验，使用哪种校验。
 var allCodeStrInDtl = "";  //入库时，所有明细中的唯一码
-var class9="";
-var isCheckWareHouse=false;//是否检测出库仓库
+var class9 = "";
+var isCheckWareHouse = false;//是否检测出库仓库
 $(function () {
     initForm();
     initGrid();
     keydown();
 });
-function  initForm() {
+function initForm() {
     //initSelectDestForm();
     initSelectOrigForm();
     initSelectclass9();
     initButtonGroup();
-    if(pageType=="add"){
-        if(type=="CS"){
+    if (pageType == "add") {
+        if (type == "CS") {
             $("#search_discount").attr('disabled', true);
+            $("#search_prefix").attr('disabled', true);
+            $("#search_suffix").attr('disabled', true);
 
         }
-        if(type=="PC"){
+        if (type == "PC") {
             $("#search_nowclass9").attr('disabled', true);
             $("#search_beforeclass9").attr('disabled', true);
+            $("#search_prefix").attr('disabled', true);
+            $("#search_suffix").attr('disabled', true);
+        }
+        if (type == "TG") {
+            $("#search_nowclass9").attr('disabled', true);
+            $("#search_beforeclass9").attr('disabled', true);
+            $("#search_prefix").attr('disabled', true);
+            $("#search_suffix").attr('disabled', true);
+        }
+        if (type == "ID") {
+            $("#search_nowclass9").attr('disabled', true);
+            $("#search_beforeclass9").attr('disabled', true);
+            $("#search_discount").attr('disabled', true);
         }
 
         $("#select_changeType").val(type);
@@ -31,7 +46,7 @@ function  initForm() {
         $("#search_origId").attr('disabled', true);
     }
 
-    if(pageType=="edit"){
+    if (pageType == "edit") {
         $("#search_nowclass9").val(nowclass9);
         $("#search_beforeclass9").val(beforeclass9);
         $("#search_origId").val(origId);
@@ -75,21 +90,21 @@ function initSelectclass9() {
 function initSelectOrigForm() {
 
 
-        $.ajax({
-            url: basePath + "/unit/list.do?filter_EQI_type=9",
-            cache: false,
-            async: false,
-            type: "POST",
-            success: function (data, textStatus) {
-                $("#search_origId").empty();
-                $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择仓库--</option>");
-                var json = data;
-                for (var i = 0; i < json.length; i++) {
-                    $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
-                    $("#search_origId").trigger('chosen:updated');
-                }
+    $.ajax({
+        url: basePath + "/unit/list.do?filter_EQI_type=9",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#search_origId").empty();
+            $("#search_origId").append("<option value='' style='background-color: #eeeeee'>--请选择仓库--</option>");
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                $("#search_origId").trigger('chosen:updated');
             }
-        });
+        }
+    });
 
 
 }
@@ -109,11 +124,11 @@ function initGrid() {
             {
                 name: "", label: "操作", width: 30, editable: false, sortable: false, align: "center",
                 formatter: function (cellvalue, options, rowObject) {
-                    if(pageType!="edit"){
+                    if (pageType != "edit") {
                         return "<a href='javascript:void(0);' onclick=saveItem('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-save' title='保存'></i></a>"
                             + "<a style='margin-left: 20px' href='javascript:void(0);' onclick=deleteItem('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
-                    }else {
-                        return""
+                    } else {
+                        return ""
                     }
 
 
@@ -138,7 +153,7 @@ function initGrid() {
                     return price;
                 }
             },
-            {name: 'preCast', label: '采购价',hidden:true, width: 40},
+            {name: 'preCast', label: '采购价', hidden: true, width: 40},
             {
                 name: 'actPrice', label: '实际价格', editable: true, width: 40,
                 editrules: {
@@ -162,7 +177,7 @@ function initGrid() {
                     return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.sku + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码',hidden: true}
+            {name: 'uniqueCodes', label: '唯一码', hidden: true}
 
         ],
         autowidth: true,
@@ -183,7 +198,7 @@ function initGrid() {
 
                 var var_price = Math.round(value * $('#addDetailgrid').getCell(rowid, "price")) / 100;
                 var var_actPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "actPrice")) / 100;
-                var var_totActPrice = Math.round(value *$('#addDetailgrid').getCell(rowid, "totActPrice")) / 100;
+                var var_totActPrice = Math.round(value * $('#addDetailgrid').getCell(rowid, "totActPrice")) / 100;
                 $('#addDetailgrid').setCell(rowid, "price", var_price);
                 $('#addDetailgrid').setCell(rowid, "actPrice", var_actPrice);
                 $('#addDetailgrid').setCell(rowid, "totActPrice", var_totActPrice);
@@ -210,29 +225,27 @@ function initButtonGroup() {
             "<button id='Dtl_addUniqCode' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
-            "</button>"+
+            "</button>" +
             "<button id='Dtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOutIn()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库入库</span>" +
-            "</button>"+
+            "</button>" +
             "<button id='Dtl_findBirthno' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findbirth()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找标签初始化</span>" +
             "</button>"
-
-
         );
     }
-    if(pageType === "edit"){
+    if (pageType === "edit") {
         $("#buttonGroup").html("" +
             "<button id='Dtl_save' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='save()'>" +
             "    <i class='ace-icon fa fa-save'></i>" +
             "    <span class='bigger-110'>保存</span>" +
-            "</button>"+
+            "</button>" +
             "<button id='Dtl_wareHouseOut' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='wareHouseOutIn()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库入库</span>" +
-            "</button>"+
+            "</button>" +
             "<button id='Dtl_findBirthno' type='button' style='margin-left: 20px' class='btn btn-sm btn-primary' onclick='findbirth()'>" +
             "    <i class='ace-icon fa fa-search'></i>" +
             "    <span class='bigger-110'>查找标签初始化</span>" +
@@ -243,43 +256,43 @@ function initButtonGroup() {
 }
 function addUniqCode() {
     inOntWareHouseValid = 'addPage_scanUniqueCode';
-    var origId=$("#search_origId").val();
+    var origId = $("#search_origId").val();
     //var destId=$("#search_destId").val();
-    var beforeclass9=$("#search_beforeclass9").val();
-    var nowclass9=$("#search_nowclass9").val();
-    var changeType=$("#select_changeType").val();
-    var discount=$("#search_discount").val();
+    var beforeclass9 = $("#search_beforeclass9").val();
+    var nowclass9 = $("#search_nowclass9").val();
+    var changeType = $("#select_changeType").val();
+    var discount = $("#search_discount").val();
 
-    wareHouse=origId;
-    class9=$("#search_beforeclass9").val().split("-")[1];
-    if (origId ==""|| origId == null) {
-        bootbox.alert("仓库不能为空！")
+    wareHouse = origId;
+    class9 = $("#search_beforeclass9").val().split("-")[1];
+    if (origId == "" || origId == null) {
+        bootbox.alert("仓库不能为空！");
         return
     }
     /*if (destId ==""|| destId == null) {
-        bootbox.alert("入库仓库不能为空！")
-        return
-    }*/
-    if(type=="CS"){
-        if (beforeclass9 ==""|| beforeclass9 == null) {
-            bootbox.alert("原系列不能为空！")
+     bootbox.alert("入库仓库不能为空！")
+     return
+     }*/
+    if (type == "CS") {
+        if (beforeclass9 == "" || beforeclass9 == null) {
+            bootbox.alert("原系列不能为空！");
             return
         }
-        if (nowclass9 ==""|| nowclass9 == null) {
-            bootbox.alert("现系列不能为空！")
+        if (nowclass9 == "" || nowclass9 == null) {
+            bootbox.alert("现系列不能为空！");
             return
         }
-        if(beforeclass9==nowclass9){
-            bootbox.alert("原系列和现系列不能相同！")
+        if (beforeclass9 == nowclass9) {
+            bootbox.alert("原系列和现系列不能相同！");
             return
         }
-        if (changeType ==""|| changeType == null) {
-            bootbox.alert("转变类型不能为空！")
+        if (changeType == "" || changeType == null) {
+            bootbox.alert("转变类型不能为空！");
             return
         }
         taskType = 3;
-    }else{
-        taskType =0;
+    } else {
+        taskType = 0;
     }
 
     $("#dialog_buttonGroup").html("" +
@@ -302,7 +315,7 @@ function addProductsOnCode() {
             productInfo.qty = 1;
 
             productInfo.price = productInfo.price;
-            productInfo.preCast=productInfo.preCast;
+            productInfo.preCast = productInfo.preCast;
             productInfo.outQty = 0;
             productInfo.inQty = 0;
             productInfo.uniqueCodes = productInfo.code;
@@ -336,7 +349,7 @@ function addProductsOnCode() {
                         return true;
                     }
                     dtlRow.qty = parseInt(dtlRow.qty) + 1;
-                    dtlRow.actPrice = (dtlRow.price*dtlRow.discount)/100;
+                    dtlRow.actPrice = (dtlRow.price * dtlRow.discount) / 100;
                     dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
                     alltotActPrice += dtlRow.qty * dtlRow.actPrice;
                     dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.code;
@@ -417,7 +430,7 @@ function save() {
     $("#search_billNo").attr('disabled', false);
     $("#search_billDate").attr('disabled', false);
     $("#search_discount").attr('disabled', false);
-    if($("#addDetailgrid").getDataIDs().length == 0){
+    if ($("#addDetailgrid").getDataIDs().length == 0) {
         $.gritter.add({
             text: "请扫描需要该标签的商品",
             class_name: 'gritter-success  gritter-light'
@@ -425,37 +438,52 @@ function save() {
         addDisabled();
         return;
     }
-    var discount=$("#search_discount").val();
-    if(type=="PC"){
-        if(discount ==""||discount==null){
-            bootbox.alert("折扣不能为空！")
+    var discount = $("#search_discount").val();
+    if (type == "PC") {
+        if (discount == "" || discount == null) {
+            bootbox.alert("折扣不能为空！");
             addDisabled();
 
             return
         }
-        if(discount>100||discount<=0){
-            bootbox.alert("折扣请添写1到100的数字！")
+        if (discount > 100 || discount <= 0) {
+            bootbox.alert("折扣请添写1到100的数字！");
             addDisabled();
 
             return
         }
 
     }
+    var suffix = $("#search_suffix").val();
+    var prefix = $("#search_prefix").val();
+    var isTrue = false;
+    if (type == "ID") {
+        if (suffix != "") {
+            isTrue = true;
+        }
+        if (prefix != ""){
+            isTrue =true;
+        }
+        if(!isTrue){
+            bootbox.alert("请填写新款号前缀或者后缀！");
+            return
+        }
+            }
     cs.showProgressBar();
     var dtlArray = [];
-    var isCanSave=true;
+    var isCanSave = true;
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
         console.log(rowData);
-        var styleId=rowData.styleId;
-        var suffixVariate=styleId.substring(styleId.length-4,styleId.length-2);
-        if(suffixVariate=="PD"){
-            isCanSave=false;
+        var styleId = rowData.styleId;
+        var suffixVariate = styleId.substring(styleId.length - 4, styleId.length - 2);
+        if (suffixVariate == "PD") {
+            isCanSave = false;
             return
         }
         dtlArray.push(rowData);
     });
-    if(isCanSave){
+    if (isCanSave) {
         $.ajax({
             dataType: "json",
             async: false,
@@ -476,7 +504,7 @@ function save() {
                     });
                     $("#search_billNo").val(msg.result);
                     $("#search_id").val(msg.result);
-                    location.href = basePath + "/logistics/labelChangeBill/edit.do?billNo="+ msg.result;
+                    location.href = basePath + "/logistics/labelChangeBill/edit.do?billNo=" + msg.result;
 
 
                 } else {
@@ -484,11 +512,11 @@ function save() {
                 }
             }
         });
-    }else{
-        bootbox.alert("已有打折处理的商品！")
+    } else {
+        bootbox.alert("已有打折处理的商品！");
         addDisabled();
         cs.closeProgressBar();
-        return
+
     }
 
 }
@@ -641,17 +669,16 @@ function wareHouseOutIn() {
             }
         });
     } else {
-        cs.closeProgressBar()
+        cs.closeProgressBar();
         bootbox.alert("请先保存当前单据");
     }
-
 
 
 }
 function outStockCheck() {
     var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
     var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
-    if (sum_qty <= sum_outQty ) {
+    if (sum_qty <= sum_outQty) {
         $.gritter.add({
             text: '已全部出库',
             class_name: 'gritter-success  gritter-light'
@@ -664,18 +691,18 @@ function search_discount_onblur() {
 }
 //将整单折扣设置到明细中
 function setDiscount() {
-   /* if (addDetailgridiRow != null && addDetailgridiCol != null) {
-        $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
-        addDetailgridiRow = null;
-        addDetailgridiCol = null;
-    }*/
+    /* if (addDetailgridiRow != null && addDetailgridiCol != null) {
+     $("#addDetailgrid").saveCell(addDetailgridiRow, addDetailgridiCol);
+     addDetailgridiRow = null;
+     addDetailgridiCol = null;
+     }*/
     var discount = $("#search_discount").val();
     if (discount && discount != null && discount != "") {
         $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
             $('#addDetailgrid').setCell(value, "discount", discount);
             var var_price = Math.round(discount * $('#addDetailgrid').getCell(value, "price")) / 100;
             var var_actPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "actPrice")) / 100;
-            var var_totActPrice = Math.round(discount *$('#addDetailgrid').getCell(value, "totActPrice")) / 100;
+            var var_totActPrice = Math.round(discount * $('#addDetailgrid').getCell(value, "totActPrice")) / 100;
             $('#addDetailgrid').setCell(value, "price", var_price);
             $('#addDetailgrid').setCell(value, "actPrice", var_actPrice);
             $('#addDetailgrid').setCell(value, "totActPrice", var_totActPrice);
@@ -720,16 +747,16 @@ function showCodesDetail(sku) {
     codeListReload(uniqueCodes);
 }
 
-function  addDisabled() {
-    if(type=="CS"){
+function addDisabled() {
+    if (type == "CS") {
         $("#search_discount").attr('disabled', true);
 
     }
-    if(type=="PC"){
+    if (type == "PC") {
         $("#search_nowclass9").attr('disabled', true);
         $("#search_beforeclass9").attr('disabled', true);
     }
-    if(type=="SC"){
+    if (type == "SC") {
         $("#search_discount").attr('disabled', true);
         $("#search_nowclass9").attr('disabled', true);
         $("#search_beforeclass9").attr('disabled', true);

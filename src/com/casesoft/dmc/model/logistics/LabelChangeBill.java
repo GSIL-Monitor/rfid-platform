@@ -24,11 +24,27 @@ public class LabelChangeBill extends BaseBill{
     private String changeType;//CS(系列的转换)，PC(价格的转换)
     @Transient
     private String changeTypeName;
+    @Column()
+    private String prefix;//转换货号前缀
+    @Column()
+    private String suffix;//转换货号后缀
     public LabelChangeBill(){
 
     }
 
-    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType,Date billDate,String origId,String remark,String billNo,Integer status) {
+    public LabelChangeBill(String id, String beforeclass9, String beforeclass9Name, String nowclass9, String nowclass9Name, String changeType, String changeTypeName, String prefix, String suffix) {
+        this.id = id;
+        this.beforeclass9 = beforeclass9;
+        this.beforeclass9Name = beforeclass9Name;
+        this.nowclass9 = nowclass9;
+        this.nowclass9Name = nowclass9Name;
+        this.changeType = changeType;
+        this.changeTypeName = changeTypeName;
+        this.prefix = prefix;
+        this.suffix = suffix;
+    }
+
+    public LabelChangeBill(String id, String beforeclass9, String nowclass9, String changeType, Date billDate, String origId, String remark, String billNo, Integer status) {
         this.id = id;
         this.beforeclass9 = beforeclass9;
         this.nowclass9 = nowclass9;
@@ -95,5 +111,21 @@ public class LabelChangeBill extends BaseBill{
 
     public void setNowclass9(String nowclass9) {
         this.nowclass9 = nowclass9;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 }

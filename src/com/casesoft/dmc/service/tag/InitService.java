@@ -1,5 +1,6 @@
 package com.casesoft.dmc.service.tag;
 
+import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -61,11 +62,18 @@ public class InitService extends AbstractBaseService<Init, String> {
         this.taskService.save(bus);
     }
 
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)*/
     public long findMaxNoBySkuNo(String sku) {
-        String hql = "select max(detail.endNum) from InitDtl as detail where detail.sku=?";
+     /*   String hql = "select max(detail.endNum) from InitDtl as detail where detail.sku=?";
         Number i = this.initDao.findUnique(hql, new Object[]{sku});
-        return i == null ? 0 : i.longValue();
+        return i == null ? 0 : i.longValue();*/
+        Long num = CacheManager.getMaxTagSkuNum(sku);
+        return num;
+    }
+    @Transactional(readOnly = true)
+    public List<Object> findMaxSKUNo() {
+        String hql = "select sku,max(endNum)from InitDtl group by sku";
+        return this.initDao.find(hql);
     }
 
     /**
@@ -275,8 +283,8 @@ public class InitService extends AbstractBaseService<Init, String> {
     }
 
     public void deleteNoStatus(String billNo) {
-        this.initDao.batchExecute("delete Init i where i.billNo=?", new Object[]{billNo});
-        this.initDao.batchExecute("delete InitDtl i where i.billNo=?", new Object[]{billNo});
+        this.initDao.batchExecute("delete Init i where i.billNo=?", billNo);
+        this.initDao.batchExecute("delete InitDtl i where i.billNo=?", billNo);
     }
 
     public void deleteTemp(User user) {
@@ -417,5 +425,6 @@ public class InitService extends AbstractBaseService<Init, String> {
         String hql="from Init where remark=?";
        return this.initDao.find(hql,new Object[]{billNo});
     }
+
 
 }

@@ -47,13 +47,14 @@ import java.util.Map;
  */
 @Service
 @Transactional
-public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill, String> {
+public class LabelChangeBillService extends AbstractBaseService<LabelChangeBill, String> {
     @Autowired
     private LabelChangeBillDao labelChangeBillDao;
     private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
+
     @Override
     public Page<LabelChangeBill> findPage(Page<LabelChangeBill> page, List<PropertyFilter> filters) {
-        return this.labelChangeBillDao.findPage(page,filters);
+        return this.labelChangeBillDao.findPage(page, filters);
     }
 
     @Override
@@ -68,8 +69,9 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
 
     @Override
     public LabelChangeBill get(String propertyName, Object value) {
-        return this.labelChangeBillDao.findUniqueBy(propertyName,value);
+        return this.labelChangeBillDao.findUniqueBy(propertyName, value);
     }
+
     @Override
     public List<LabelChangeBill> find(List<PropertyFilter> filters) {
         return null;
@@ -100,23 +102,23 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
 
     }
 
-    public void save(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels, List<Style> listStyle,List<Product> listproduct, boolean issave, Init init){
+    public void save(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels, List<Style> listStyle, List<Product> listproduct, boolean issave, Init init) {
         this.labelChangeBillDao.batchExecute("delete from LabelChangeBillDel where billNo=?", labelChangeBill.getBillNo());
         this.labelChangeBillDao.batchExecute("delete from BillRecord where billNo=?", labelChangeBill.getBillNo());
-        if(issave&& CommonUtil.isNotBlank(init)){
+        if (issave && CommonUtil.isNotBlank(init)) {
             this.labelChangeBillDao.dosaveBatchInsert(listStyle);
             List<Style> styleList = new ArrayList<>();
-            for(Style style:listStyle){
+            for (Style style : listStyle) {
                 long styleMaxVersionId = CacheManager.getStyleMaxVersionId();
-                redisUtils.hset("maxVersionId","styleMaxVersionId", JSON.toJSONString(styleMaxVersionId+1));
+                redisUtils.hset("maxVersionId", "styleMaxVersionId", JSON.toJSONString(styleMaxVersionId + 1));
                 CacheManager.refreshMaxVersionId();
                 styleList.add(style);
             }
 
             CacheManager.refreshStyleCache(styleList);
             this.labelChangeBillDao.dosaveBatchInsert(listproduct);
-            List<Product> productList=new ArrayList<Product>();
-            for(Product product:listproduct){
+            List<Product> productList = new ArrayList<Product>();
+            for (Product product : listproduct) {
                 productList.add(product);
             }
             CacheManager.refreshProductCache(productList);
@@ -126,86 +128,87 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
         }
         this.labelChangeBillDao.saveOrUpdate(labelChangeBill);
         this.labelChangeBillDao.doBatchInsert(labelChangeBillDels);
-        if(CommonUtil.isNotBlank(labelChangeBill.getBillRecordList())){
+        if (CommonUtil.isNotBlank(labelChangeBill.getBillRecordList())) {
             this.labelChangeBillDao.doBatchInsert(labelChangeBill.getBillRecordList());
         }
     }
+
     /*
      *保存标签改和标签初始化
      * by：czf
      */
-    public MessageBox saveLabelChangeBill(User currentUser,LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels,String userId,InitService initService,PricingRulesService pricingRulesService,ProductService productService,String rootPath) throws IOException {
+    public MessageBox saveLabelChangeBill(User currentUser, LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDels, String userId, InitService initService, PricingRulesService pricingRulesService, ProductService productService, String rootPath) throws IOException {
 
 
-            List<Style> listStyle=null;
-            List<Product> listproduct=null;
-            String newStylesuffix=null;
-            Init init=null;
-            boolean issave=true;
-            boolean ishavePricingRules=true;
-            String message="";
-            //2.保存数据，标签初始化
-            if(CommonUtil.isBlank(labelChangeBill.getBillNo())){
-                String prefix = BillConstant.BillPrefix.labelChangeBill
-                        + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
-                //String billNo = this.saleOrderBillService.findMaxBillNo(prefix);
+        List<Style> listStyle = null;
+        List<Product> listproduct = null;
+        String newStylesuffix = null;
+        Init init = null;
+        boolean issave = true;
+        boolean ishavePricingRules = true;
+        String message = "";
+        //2.保存数据，标签初始化
+        if (CommonUtil.isBlank(labelChangeBill.getBillNo())) {
+            String prefix = BillConstant.BillPrefix.labelChangeBill
+                    + CommonUtil.getDateString(new Date(), "yyMMddHHmmssSSS");
+            //String billNo = this.saleOrderBillService.findMaxBillNo(prefix);
               /*  User currentUser = (User) this.getSession().getAttribute(
                         Constant.Session.User_Session);*/
-                String prefixTaskId = Constant.Bill.Tag_Init_Prefix
-                        + CommonUtil.getDateString(new Date(), "yyMMdd");
-                String taskId = initService.findMaxNo(prefixTaskId);
-                labelChangeBill.setId(prefix);
-                labelChangeBill.setBillNo(prefix);
-                labelChangeBill.setStatus(0);
-                labelChangeBill.setBillDate(new Date());
-                Map<String, Object> map = StyleUtil.newstyleidonlabelChangeBillDel(labelChangeBill, labelChangeBillDels,pricingRulesService,productService);
-                ishavePricingRules=(Boolean) map.get("ishavePricingRules");
-                message=(String)map.get("message");
-                 listStyle=( List<Style>) map.get("style");
-                listproduct=( List<Product>)map.get("product");
-                 newStylesuffix=(String)map.get("newStylesuffix");
-                init = BillConvertUtil.labelcovertToTagBirth(taskId, labelChangeBillDels, initService, currentUser,prefix,newStylesuffix,labelChangeBill.getChangeType());
+            String prefixTaskId = Constant.Bill.Tag_Init_Prefix
+                    + CommonUtil.getDateString(new Date(), "yyMMdd");
+            String taskId = initService.findMaxNo(prefixTaskId);
+            labelChangeBill.setId(prefix);
+            labelChangeBill.setBillNo(prefix);
+            labelChangeBill.setStatus(0);
+            labelChangeBill.setBillDate(new Date());
+            Map<String, Object> map = StyleUtil.newstyleidonlabelChangeBillDel(labelChangeBill, labelChangeBillDels, pricingRulesService, productService);
+            ishavePricingRules = (Boolean) map.get("ishavePricingRules");
+            message = (String) map.get("message");
+            listStyle = (List<Style>) map.get("style");
+            listproduct = (List<Product>) map.get("product");
+            newStylesuffix = (String) map.get("newStylesuffix");
+            init = BillConvertUtil.labelcovertToTagBirth(taskId, labelChangeBillDels, initService, currentUser, prefix, newStylesuffix, labelChangeBill.getChangeType());
 
-            }else{
-                issave=false;
-            }
-            if(ishavePricingRules) {
-                User curUser = CacheManager.getUserById(userId);
-                BillConvertUtil.covertToLabelChangeBill(labelChangeBill, labelChangeBillDels, curUser);
-                //新款图像的保存
-                if(CommonUtil.isNotBlank(listStyle)&&listStyle.size()>0) {
-                    for (Style style : listStyle) {
-                        String nowstyleId = style.getStyleId();
-                        String oldstyleId = "";
-                        int styleIdLength = nowstyleId.length();
-                        String styleTail = nowstyleId.substring(styleIdLength - 2, styleIdLength);
-                        if (styleTail.equals(BillConstant.styleNew.Alice) || styleTail.equals(BillConstant.styleNew.AncientStone) || styleTail.equals(BillConstant.styleNew.Shop)) {
-                            oldstyleId = nowstyleId.substring(0, styleIdLength - 2);
-                        } else {
-                            oldstyleId = nowstyleId.substring(0, styleIdLength - 4);
-                        }
-                        String filePath = rootPath + "/product/photo/" + oldstyleId;
-                        String newfilePath = rootPath + "/product/photo/" + nowstyleId;
-                        File folder = new File(filePath);
-                        if (CommonUtil.isNotBlank(folder)&&folder.exists()) {
-                            File newfolder = new File(newfilePath);
-                            //Files.copy(folder., newfolder);
-                            //FileUtils.copyFile(folder,newfolder);
-                            CommonUtil.copyDir(folder.listFiles(), newfolder);
-                        }
+        } else {
+            issave = false;
+        }
+        if (ishavePricingRules) {
+            User curUser = CacheManager.getUserById(userId);
+            BillConvertUtil.covertToLabelChangeBill(labelChangeBill, labelChangeBillDels, curUser);
+            //新款图像的保存
+            if (CommonUtil.isNotBlank(listStyle) && listStyle.size() > 0) {
+                for (Style style : listStyle) {
+                    String nowstyleId = style.getStyleId();
+                    String oldstyleId = "";
+                    int styleIdLength = nowstyleId.length();
+                    String styleTail = nowstyleId.substring(styleIdLength - 2, styleIdLength);
+                    if (styleTail.equals(BillConstant.styleNew.Alice) || styleTail.equals(BillConstant.styleNew.AncientStone) || styleTail.equals(BillConstant.styleNew.Shop)) {
+                        oldstyleId = nowstyleId.substring(0, styleIdLength - 2);
+                    } else {
+                        oldstyleId = nowstyleId.substring(0, styleIdLength - 4);
+                    }
+                    String filePath = rootPath + "/product/photo/" + oldstyleId;
+                    String newfilePath = rootPath + "/product/photo/" + nowstyleId;
+                    File folder = new File(filePath);
+                    if (CommonUtil.isNotBlank(folder) && folder.exists()) {
+                        File newfolder = new File(newfilePath);
+                        //Files.copy(folder., newfolder);
+                        //FileUtils.copyFile(folder,newfolder);
+                        CommonUtil.copyDir(folder.listFiles(), newfolder);
                     }
                 }
-                save(labelChangeBill, labelChangeBillDels, listStyle, listproduct, issave, init);
-
-                return new MessageBox(true, "保存成功", labelChangeBill.getBillNo());
-            }else{
-                return new MessageBox(false, message+"没有定价规则", labelChangeBill.getBillNo());
             }
+            save(labelChangeBill, labelChangeBillDels, listStyle, listproduct, issave, init);
+
+            return new MessageBox(true, "保存成功", labelChangeBill.getBillNo());
+        } else {
+            return new MessageBox(false, message + "没有定价规则", labelChangeBill.getBillNo());
+        }
 
     }
 
 
-    public List<LabelChangeBillDel> findBillDtl(String billNo){
+    public List<LabelChangeBillDel> findBillDtl(String billNo) {
         return this.labelChangeBillDao.find("from LabelChangeBillDel where billNo=?", new Object[]{billNo});
     }
 
@@ -213,18 +216,20 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
         return this.labelChangeBillDao.find("from BillRecord where billNo=?", new Object[]{billNo});
     }
 
-    public void cancel( LabelChangeBill labelChangeBill,Init init){
+    public void cancel(LabelChangeBill labelChangeBill, Init init) {
         labelChangeBill.setStatus(BillConstant.BillStatus.Cancel);
         init.setStatus(BillConstant.BillStatus.Cancel);
         this.labelChangeBillDao.saveOrUpdateX(labelChangeBill);
         this.labelChangeBillDao.saveOrUpdateX(init);
     }
+
     @Autowired
     private TaskService taskService;
-    public  MessageBox saveBusinessout(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDelList, Business business,Business businessIn)throws Exception{
+
+    public MessageBox saveBusinessout(LabelChangeBill labelChangeBill, List<LabelChangeBillDel> labelChangeBillDelList, Business business, Business businessIn) throws Exception {
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         MessageBox messageBoxIn = this.taskService.checkEpcStock(businessIn);
-        if(messageBox.getSuccess()&&messageBoxIn.getSuccess()){
+        if (messageBox.getSuccess() && messageBoxIn.getSuccess()) {
             labelChangeBill.setStatus(BillConstant.BillStatus.End);
             this.labelChangeBillDao.saveOrUpdateX(labelChangeBill);
             this.labelChangeBillDao.doBatchInsert(labelChangeBillDelList);
@@ -238,7 +243,6 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
     }
 
     /**
-     *
      * @param page
      * @param filters
      * @param billClass//单据的class
@@ -247,9 +251,9 @@ public class LabelChangeBillService  extends AbstractBaseService<LabelChangeBill
      * @return
      */
 
-    public  Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page, List<PropertyFilter> filters, Class<?> billClass, Class<?> billDtlClass,String constructorParameter){
-        String hql= CommonUtil.hqlbyBillandBillDel(billClass, billDtlClass, filters, constructorParameter);
-         page = this.labelChangeBillDao.findSqlPage(page, hql);
+    public Page<LabelChangeBill> findNewPage(Page<LabelChangeBill> page, List<PropertyFilter> filters, Class<?> billClass, Class<?> billDtlClass, String constructorParameter) {
+        String hql = CommonUtil.hqlbyBillandBillDel(billClass, billDtlClass, filters, constructorParameter);
+        page = this.labelChangeBillDao.findSqlPage(page, hql);
 
         return page;
     }

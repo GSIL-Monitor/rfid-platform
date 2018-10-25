@@ -1118,7 +1118,15 @@ function addProductsOnCode() {
                 } else {
                     productInfo.discount = 100;
                 }
-                productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                /*productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;*/
+                if(Math.round(productInfo.price * productInfo.discount) / 100<productInfo.wsPrice&&isUserAbnormal){
+                    productInfo.actPrice = productInfo.wsPrice;
+                    productInfo.discount = parseFloat(productInfo.wsPrice/productInfo.price).toFixed(2)*100;
+                    productInfo.abnormalStatus=1;
+                }else{
+                    productInfo.actPrice = Math.round(productInfo.price * productInfo.discount) / 100;
+                    productInfo.abnormalStatus=0;
+                }
                 productInfo.uniqueCodes = productInfo.code;
                 productInfo.totPrice = -Math.abs(productInfo.price);
                 productInfo.totActPrice = -Math.abs(productInfo.actPrice);

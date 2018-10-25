@@ -11,7 +11,7 @@ public class LabelChangeBillDel extends BaseBillDtl{
     @Id
     @Column()
     private String id;
-    @Transient
+    @Column()
     private String styleNew;
 
     public String getStyleNew() {

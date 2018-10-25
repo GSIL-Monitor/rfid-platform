@@ -76,12 +76,14 @@ public class BillConstant {
         public final static String AncientStone = "AS";
         public final static String PriceDiscount = "PD";
         public final static String Shop = "TG";
+        public final static String Style="ID";
     }
 
     public  final static class ChangeType{
         public final static String Series="CS";
         public final static String Price="PC";
         public final static String Shop="TG";
+        public final static String Style="ID";
     }
 
     public final static class replenishOption{
