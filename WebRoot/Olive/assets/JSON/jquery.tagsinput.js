@@ -297,7 +297,7 @@
 					    event.preventDefault();
 						if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) ){}
 							$(event.data.real_input).addTag($(event.data.fake_input).val(),{focus:true,unique:(settings.unique)});
-						console.info(settings);
+						/*console.info(settings);
                         var re = $("#tags_3").val();
                         var res = re.split(" ");
                         console.info(res);
@@ -312,7 +312,7 @@
                                 $(that).trigger('focus');
                             }
 						}
-
+*/
 						$(event.data.fake_input).resetAutosize(settings);
 						return false;
 					} else if (event.data.autosize) {
