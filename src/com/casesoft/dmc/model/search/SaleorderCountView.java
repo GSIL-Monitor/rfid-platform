@@ -57,6 +57,11 @@ public class SaleorderCountView {
     @Column()
     @Excel(name = "款名")
     private String stylename;
+    @Column()
+    private String class3;
+    @Column()
+    @Excel(name="大类")
+    private String class3Name;
 
     public String getStylename() {
         return stylename;
@@ -628,5 +633,21 @@ public class SaleorderCountView {
     public SaleorderCountView(String origname, Long sumQty) {
         this.origname = origname;
         this.sumQty = sumQty;
+    }
+
+    public String getClass3Name() {
+        return class3Name;
+    }
+
+    public void setClass3Name(String class3Name) {
+        this.class3Name = class3Name;
+    }
+
+    public String getClass3() {
+        return class3;
+    }
+
+    public void setClass3(String class3) {
+        this.class3 = class3;
     }
 }

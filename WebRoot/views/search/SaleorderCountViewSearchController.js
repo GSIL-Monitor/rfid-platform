@@ -100,6 +100,20 @@ function inttitledata() {
 }
 
 function initMultiSelect() {
+    $.ajax({
+        url: basePath +  "/sys/property/listMultiLevel.do?type=C3",
+        cache: false,
+        async: false,
+        type: "POST",
+        success: function (data, textStatus) {
+            $("#filter_eq_class3").empty();
+            var json = data;
+            for (var i = 0; i < json.length; i++) {
+                $("#filter_eq_class3").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
+            }
+            $('.selectpicker').selectpicker('refresh');
+        }
+    });
     if(isJMS === "true"){
         $.ajax({
             url: basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId="+curOwnerId,
@@ -425,7 +439,8 @@ function initKendoUIGrid() {
                             billQty: {type: "number"},
                             diffQty: {type: "number"},
                             price: {type: "number"},
-                            saletype: {type: "string"}
+                            saletype: {type: "string"},
+                            class3Name: {type: "string"}
                         }
                     },
 
@@ -662,6 +677,12 @@ function initKendoUIGrid() {
                 {
                     field: "discount",
                     title: "折扣",
+                    width: "180px",
+
+                },
+                {
+                    field: "class3Name",
+                    title: "大类",
                     width: "180px",
 
                 },

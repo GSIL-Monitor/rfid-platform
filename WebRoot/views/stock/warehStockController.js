@@ -163,7 +163,6 @@ function initMultiSelect() {
             }
         }
     });
-    debugger;
     $.ajax({
         url: basePath +  "/sys/property/listMultiLevel.do?type=C3",
         cache: false,

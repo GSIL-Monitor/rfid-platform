@@ -128,7 +128,7 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
         return unique;
     }
 
-    public Long findwarehNum(String warehId, String styleId, String groupId) {
+    public Long findwarehNum(String warehId, String styleId, String groupId,String class3) {
         String hql = "select sum(qty) from DetailStockChatView where 1=1";
         if (CommonUtil.isNotBlank(warehId)) {
             hql += " and warehId like '" + warehId + "'";
@@ -139,11 +139,14 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
         if (CommonUtil.isNotBlank(groupId)) {
             hql += " and groupId = '" + groupId + "'";
         }
+        if (CommonUtil.isNotBlank(class3)) {
+            hql += " and class3 = '" + class3 + "'";
+        }
         Long unique = this.detailStockViewDao.findUnique(hql);
         return unique;
     }
 
-    public Double findwarehMun(String warehId, String styleId, String groupId) {
+    public Double findwarehMun(String warehId, String styleId, String groupId,String class3) {
         String hql = "select sum(qty*precast) from DetailStockChatView where 1=1";
         if (CommonUtil.isNotBlank(warehId)) {
             hql += " and warehId like '" + warehId + "'";
@@ -153,6 +156,9 @@ public class DetailStockViewChatService implements IBaseService<DetailStockChatV
         }
         if (CommonUtil.isNotBlank(groupId)) {
             hql += " and groupId = '" + groupId + "'";
+        }
+        if (CommonUtil.isNotBlank(class3)) {
+            hql += " and class3 = '" + class3 + "'";
         }
         Double unique = this.detailStockViewDao.findUnique(hql);
         return unique;

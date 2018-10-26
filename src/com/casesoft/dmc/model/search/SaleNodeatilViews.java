@@ -98,6 +98,9 @@ public class SaleNodeatilViews {
     private Double totstockval;
     @Column()
     private Double totinval;
+    @Column()
+    @Excel(name="大类")
+    private String class3Name;
 
     public String getId() {
         return id;
@@ -437,5 +440,13 @@ public class SaleNodeatilViews {
 
     public void setGroupid(String groupid) {
         this.groupid = groupid;
+    }
+
+    public String getClass3Name() {
+        return class3Name;
+    }
+
+    public void setClass3Name(String class3Name) {
+        this.class3Name = class3Name;
     }
 }
