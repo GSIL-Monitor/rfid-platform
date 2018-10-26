@@ -564,7 +564,6 @@
 
 <script type="text/javascript">
     var checkNum;
-    var count = 0;
     $(function () {
         loadingButton();
         $("#tags_3").val(remark);
@@ -1131,10 +1130,9 @@
                             $("#form_price").val(price);
                             $("#form_puPrice").val(purPrice);
                             $("#form_wsPrice").val(wsPrice);
-                            if(count == 1){
+                            if(jsonGT.suffix == $("#form_styleId").val().slice(-1) || jsonGT.prefix == $("#form_styleId").val().slice(0,1)){
                                 return;
                             }
-                            count++;
                             if($("#form_styleId").val().length >= 16){
                                 if(jsonGT.suffix != null && jsonGT.suffix != "" && jsonGT.prefix != null && jsonGT.prefix != ""){
                                     res = $("#form_styleId").val().substring(0,14);
@@ -1171,6 +1169,9 @@
                             $("#form_price").val(price);
                             $("#form_puPrice").val(purPrice);
                             $("#form_wsPrice").val(wsPrice);
+                            if(jsonLT.suffix == $("#form_styleId").val().slice(-1) || jsonLT.prefix == $("#form_styleId").val().slice(0,1)){
+                                return;
+                            }
                             if($("#form_styleId").val().length >= 16){
                                 if(jsonLT.suffix != null && jsonLT.suffix != "" && jsonLT.prefix != null && jsonLT.prefix != ""){
                                     res = $("#form_styleId").val().substring(0,14);
