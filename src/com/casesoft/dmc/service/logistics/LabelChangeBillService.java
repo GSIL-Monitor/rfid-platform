@@ -122,6 +122,7 @@ public class LabelChangeBillService extends AbstractBaseService<LabelChangeBill,
                 productList.add(product);
             }
             CacheManager.refreshProductCache(productList);
+
             this.labelChangeBillDao.saveOrUpdateX(init);
             this.labelChangeBillDao.doBatchInsert(init.getDtlList());
 

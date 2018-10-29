@@ -64,10 +64,15 @@ public class InitService extends AbstractBaseService<Init, String> {
 
     /*@Transactional(readOnly = true)*/
     public long findMaxNoBySkuNo(String sku) {
-     /*   String hql = "select max(detail.endNum) from InitDtl as detail where detail.sku=?";
+        String hql = "select max(detail.endNum) from InitDtl as detail where detail.sku=?";
         Number i = this.initDao.findUnique(hql, new Object[]{sku});
-        return i == null ? 0 : i.longValue();*/
-        Long num = CacheManager.getMaxTagSkuNum(sku);
+        Long num=CommonUtil.isBlank(i)? 0 : i.longValue();
+        Long redisnum = CacheManager.getMaxTagSkuNum(sku);
+        if(num > redisnum){
+            CacheManager.setMaxTagSkuNum(sku,num);
+        }else{
+            num = redisnum;
+        }
         return num;
     }
     @Transactional(readOnly = true)

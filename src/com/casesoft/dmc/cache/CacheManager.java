@@ -47,7 +47,6 @@ public class CacheManager {
 	private static net.sf.ehcache.CacheManager cacheManager;
 	private static Cache cache;
 	private static int sizeMaxSeqNo;
-	private static int maxProductId;
 	public static Unit company = null;
 	private static RedisUtils redisUtils;
 
@@ -307,6 +306,11 @@ public class CacheManager {
 		redisUtils.hset("maxVersionId","EpcStockMaxVersionId",JSON.toJSONString(EpcStockMaxVersionId));
 		long styleMaxVersionId = styleService.getMaxVersionId();
 		redisUtils.hset("maxVersionId","styleMaxVersionId",JSON.toJSONString(styleMaxVersionId));
+		String maxProductId = productService.getMaxProductId();
+		Integer maxId = Integer.parseInt(maxProductId);
+		redisUtils.hset(PREFIX_MAXPRODUCTID,"maxProductId",JSON.toJSONString(maxId));
+
+
 	}
 	public static void initProductCache() {
 		long startTime = System.currentTimeMillis();   //获取开始时间
@@ -314,7 +318,7 @@ public class CacheManager {
 				.getBean("productService");
 
 		List<Product> list = productService.getAll();
-		Collections.sort(list, new Comparator<Product>() {
+		/*Collections.sort(list, new Comparator<Product>() {
 
 			@Override
 			public int compare(Product o1, Product o2) {
@@ -331,7 +335,7 @@ public class CacheManager {
 				maxProductId = list.size();
 			}
 			redisUtils.hset(PREFIX_MAXPRODUCTID,"maxProductId",JSON.toJSONString(maxProductId));
-		}
+		}*/
 		for (Product p : list) {
 			redisUtils.hset(PREFIX_PRODUCT, p.getCode(), JSON.toJSONString(p));
 			redisUtils.hset(PREFIX_PRODUCT, p.getId(), JSON.toJSONString(p));
@@ -352,6 +356,12 @@ public class CacheManager {
 			redisUtils.hset(PREFIX_PRODUCT, p.getCode(), JSON.toJSONString(p));
 			redisUtils.hset(PREFIX_PRODUCT, p.getId(), JSON.toJSONString(p));
 		}
+		ProductService productService = (ProductService) SpringContextUtil
+				.getBean("productService");
+
+		String maxProductId = productService.getMaxProductId();
+		Integer maxId = Integer.parseInt(maxProductId);
+		redisUtils.hset(PREFIX_MAXPRODUCTID,"maxProductId",JSON.toJSONString(maxId));
 	}
 
 	private static void initColorCache() {
@@ -1212,12 +1222,19 @@ public class CacheManager {
 
 	}
 
-	public static void setMaxProductId(int index) {
-		maxProductId = index;
-	}
+
 
 	public static int getMaxProductId() {
-		Integer maxId = Integer.parseInt(redisUtils.hget(PREFIX_MAXPRODUCTID,"maxProductId").toString())+1;
+		ProductService productService = (ProductService) SpringContextUtil
+				.getBean("productService");
+		String maxProductId = productService.getMaxProductId();
+		Integer maxId = Integer.parseInt(maxProductId);
+		Integer redisMaxId = Integer.parseInt(redisUtils.hget(PREFIX_MAXPRODUCTID,"maxProductId").toString());
+		if(maxId < redisMaxId){
+			maxId = redisMaxId +1;
+		}else{
+			maxId = maxId +1;
+		}
 		redisUtils.hset(PREFIX_MAXPRODUCTID,"maxProductId",JSON.toJSONString(maxId));
 		return maxId;
 	}
