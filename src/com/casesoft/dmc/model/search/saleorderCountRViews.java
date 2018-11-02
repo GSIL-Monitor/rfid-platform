@@ -148,6 +148,10 @@ public class saleorderCountRViews {
     private Double gross;
     @Column()
     private Double grossall;
+    @Column()
+    private String class3;
+    @Column()
+    private String class3Name;
 
     public Double getGross() {
         return gross;
@@ -540,5 +544,21 @@ public class saleorderCountRViews {
 
     public void setGroupid(String groupid) {
         this.groupid = groupid;
+    }
+
+    public String getClass3() {
+        return class3;
+    }
+
+    public void setClass3(String class3) {
+        this.class3 = class3;
+    }
+
+    public String getClass3Name() {
+        return class3Name;
+    }
+
+    public void setClass3Name(String class3Name) {
+        this.class3Name = class3Name;
     }
 }

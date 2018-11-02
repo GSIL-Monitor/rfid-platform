@@ -202,7 +202,7 @@
 
                                         <div class="col-xs-8 col-sm-8 col-md-3 col-lg-3">
 
-                                            <select class="form-control selectpicker show-tick" style="width: 100%" id="filter_eq_class3" name="filter_eq_class3" multiple="multiple"
+                                            <select class="form-control selectpicker show-tick" style="width: 100%" id="filter_eq_class3" name="filter_eq_class3"
                                                     data-live-search="true">
                                             </select>
                                         </div>

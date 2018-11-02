@@ -108,6 +108,7 @@ function initMultiSelect() {
         success: function (data, textStatus) {
             $("#filter_eq_class3").empty();
             var json = data;
+            $("#filter_eq_class3").append("<option value='' >请选择大类</option>");
             for (var i = 0; i < json.length; i++) {
                 $("#filter_eq_class3").append("<option value='" + json[i].code + "'>" + json[i].name + "</option>");
             }
