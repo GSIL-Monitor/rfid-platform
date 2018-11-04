@@ -305,10 +305,10 @@
         }
         $("#componentsTable").append("<tr id='flag"+count+"'>"
             +"<td>"
-            +"<input type='text' id='components"+count+"' width='50%' value='"+$("#components0").val()+"'/>"
+            +"<input type='text' id='components"+count+"' width='50%' value='"+$("#components0").val()+"' readonly/>"
             +"</td>"
             +"<td>"
-            +"<input type='text' id='componentsRemark"+count+"' width='50%' value='"+$("#componentsRemark0").val()+"'/>"
+            +"<input type='text' id='componentsRemark"+count+"' width='50%' value='"+$("#componentsRemark0").val()+"' readonly/>"
             +"</td>"
             +"<td>"
             +"<button type='button'  class='btn btn-primary' onclick='removeComponent("+count+")'>删除</button>"
