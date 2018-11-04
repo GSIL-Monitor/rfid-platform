@@ -13,7 +13,6 @@
         var userId = "${userId}";
         var styleId = "${styleId}";
         var pageType = "${pageType}";
-        var remark  = "${style.remark}";
         var fieldList = ${fieldList};
     </script>
     <style>
@@ -30,6 +29,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
     </style>
 </head>
 <body class="no-skin">
@@ -481,19 +481,12 @@
                                         <form class="form-horizontal">
                                             <div class="form-group">
                                                 <label class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-right control-label"
-                                                       for="tags_3">成分</label>
+                                                       for="components">成分</label>
                                                 <div class="col-xs-7 col-sm-7">
                                                     <div class="input-group ">
-                                                    <textarea maxlength="400" class="form-control" id="tags_3"
-                                                              name="remark">
-                                                    </textarea>
-                                                    <span class="input-group-addon"
-                                                          title="添加${classTypes[10].value}">
-                                                            <a href='#' class="white"
-                                                               onclick="addStyleProperty('${classTypes[10].id}')">
-                                                            <i class="fa fa-plus red"></i>
-                                                            </a>
-                                                        </span>
+                                                        <textarea maxlength="400" class="form-control" id="components" style="width: 325%;"
+                                                                  name="remark">${style.remark}</textarea>
+
                                                     </div>
                                                 </div>
 
@@ -559,6 +552,7 @@
 <jsp:include page="style_size_edit.jsp"></jsp:include>
 <jsp:include page="../sys/property_edit_ Detailed.jsp"></jsp:include>
 <jsp:include page="changeRemark_dialog.jsp"></jsp:include>
+<jsp:include page="Components.jsp"></jsp:include>
 <script src="<%=basePath%>/Olive/assets/js/bootstrap-multiselect.js"></script>
 
 
@@ -566,19 +560,10 @@
     var checkNum;
     $(function () {
         loadingButton();
-        $("#tags_3").val(remark);
-        $('#tags_3').tagsInput({
-            width: '540',
-            height:'70',
-            autocomplete_url:'remark.do'
-        });
         iniGrid();
         inputPriceKeydown();
         inputPriceKeydowno();
-
-
         initeditStyleFormValid();
-
         initSelect();
         setTimeout(function () {
             setUrl();
@@ -603,6 +588,9 @@
             $("#form_price").attr("readonly",false);
             $("#form_wsPrice").attr("readonly",false);
         }
+        $("#components").focus(function () {
+            $("#edit_components_dialog").modal('show');
+        });
     });
 
     $("#form_bargainPrice").blur(function(){
@@ -1272,7 +1260,7 @@
             return false;
         }
         var isSeries = $("#form_isSeries").val();
-        var re = $("#tags_3").val();
+        var re = $("#components").val();
         $("#form_remark").val(re);
         if ((re.indexOf(",") >= 0)||(re.indexOf("，") >= 0)){
 
@@ -1940,6 +1928,7 @@
         }
 
     }
+
 </script>
 </body>
 </html>

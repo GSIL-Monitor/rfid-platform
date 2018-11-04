@@ -1,8 +1,7 @@
 package com.casesoft.dmc.controller.product;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
@@ -13,6 +12,7 @@ import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.controller.pad.templatemsg.WechatTemplate;
+import com.casesoft.dmc.core.util.PinyinTool;
 import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.json.FastJSONUtil;
 import com.casesoft.dmc.core.util.page.Page;
@@ -20,6 +20,7 @@ import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.pad.WeiXinUser;
+import com.casesoft.dmc.model.product.ComponentsProduct;
 import com.casesoft.dmc.model.product.Product;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.product.Term;
@@ -29,6 +30,7 @@ import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.service.cfg.PropertyService;
 import com.casesoft.dmc.model.tag.Init;
 import com.casesoft.dmc.service.pad.WeiXinUserService;
+import com.casesoft.dmc.service.product.ComponentsService;
 import com.casesoft.dmc.service.product.ProductService;
 import com.casesoft.dmc.service.product.StyleService;
 import com.casesoft.dmc.service.push.pushBaseInfo;
@@ -37,7 +39,10 @@ import com.casesoft.dmc.service.sys.impl.UserService;
 import com.casesoft.dmc.service.stock.EpcStockService;
 import com.casesoft.dmc.service.sys.KeyInfoChangeService;
 import com.casesoft.dmc.service.tag.InitService;
+import io.swagger.util.Json;
 import net.sf.json.JSONArray;
+import org.hibernate.id.GUIDGenerator;
+import org.hibernate.id.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +52,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,6 +80,8 @@ public class StyleController extends BaseController implements IBaseInfoControll
 	private ResourcePrivilegeService resourcePrivilegeService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ComponentsService componentsService;
 
 	private static RedisUtils redisUtils = (RedisUtils) SpringContextUtil.getBean("redisUtils");
 
@@ -175,6 +181,26 @@ public class StyleController extends BaseController implements IBaseInfoControll
 			sty.setOprId(userId);
 			List<Product> productList = JSON.parseArray(productStr,Product.class);
 			List<Product> saveList = StyleUtil.covertToProductInfo(sty,style,productList);
+
+			//保存款成分表
+			PinyinTool tool = new PinyinTool();//汉字转换拼音工具
+			List<ComponentsProduct> saveComponentsList = new ArrayList<>();
+			sty.setRemark(sty.getRemark().trim());
+			String[] remarks = style.getRemark().split("\r\n");
+			for(int i = 0;i < remarks.length;i++){
+				ComponentsProduct componentsProduct = new ComponentsProduct();
+				String[] remarkDetail = remarks[i].split(":");
+				//成分数组一定是两个元素
+				if(remarkDetail.length > 1){
+					componentsProduct.setId(sty.getId()+tool.toPinYin(remarkDetail[0],"", PinyinTool.Type.LOWERCASE));
+					componentsProduct.setStyleId(sty.getId());
+					componentsProduct.setComponentsName(remarkDetail[0]);
+					componentsProduct.setCremark(remarkDetail[1]);
+					componentsProduct.setComponentsId(tool.toPinYin(remarkDetail[0],"", PinyinTool.Type.LOWERCASE));
+					saveComponentsList.add(componentsProduct);
+				}
+			}
+			this.componentsService.saveBatchComponentsProduct(saveComponentsList);
 
 			this.styleService.saveStyleAndProducts(sty,saveList);
 

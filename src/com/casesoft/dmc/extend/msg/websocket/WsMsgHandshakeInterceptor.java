@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.Map;
 
-//@Component
+//@Components
 public class WsMsgHandshakeInterceptor implements HandshakeInterceptor {
 
     private static final Logger logger = Logger.getLogger(WsMsgHandshakeInterceptor.class);
