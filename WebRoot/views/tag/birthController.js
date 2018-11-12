@@ -31,6 +31,8 @@ function initGrid() {
                         html += '<i class="fa fa-times red" title="未确认"></i>';
                     } else if (cellValue == 2) {
                         html += '<i class="fa fa-print blue" title="已打印"></i>';
+                    }else if (cellValue == -1){
+                        html += '<i class="fa fa-print red" title="打印中"></i>';
                     }
                     return html;
                 }
@@ -39,12 +41,21 @@ function initGrid() {
             {name: 'billDate', label: '导入时间', editable: true, width: 200},
             {name: 'fileName', label: '导入文件名', editable: true, width: 150},
             {name: 'importType', label: '导入类型', editable: true, width: 100},
-            {name: 'totSku', label: 'SKU数', editable: true, width: 100},
-            {name: 'totEpc', label: '总数量', editable: true, width: 100},
-            {name: 'unit2Id', label: '收货方', editable: true, width: 100},
-            {name: 'detectTotQty', label: '已检测数量', editable: true, width: 100},
-            {name: 'deliverNo', label: '快递单号', editable: true, width: 300},
-            {name: 'receiveTotQty', label: '已接受数量', editable: true, width: 100},
+            {name: 'totSku', label: 'SKU数', editable: true, width: 50},
+            {name: 'totEpc', label: '总数量', editable: true, width: 50},
+            {name: 'totPrintQty', label: '已打印数量', editable: true, width: 50},
+            {name: '', label: '打印Rfid标签', editable: true, width: 50,
+                formatter: function (cellValue, option, rowObject) {
+                  var html ="<a href='javascript:void(0);' onclick=printRfidTag('" + rowObject.billNo +"')> <i class='fa fa-print blue' title='打印RFID标签'></i></a>";
+                  return html;
+                }
+            },
+            {name: '', label: '打印洗水唛', editable: true, width: 50,
+                formatter: function (cellValue, option, rowObject) {
+                    var html ="<a href='javascript:void(0);' onclick=printLabelTag('" + rowObject.billNo +"')><i class='fa fa-print blue'title='打印洗水唛标签'></i></a>";
+                    return html;
+                }
+            },
         ],
         viewrecords: true,
         autowidth: false,
@@ -54,7 +65,7 @@ function initGrid() {
         rowList: [20, 50, 100],
         pager: "#grid-pager",
         multiselect: false,
-        shrinkToFit: false,
+        shrinkToFit: true,
         sortname: 'billDate',
         sortorder: "desc",
         autoScroll: false
@@ -65,7 +76,19 @@ function initGrid() {
 
 
 }
-
+function printRfidTag(billNo){
+    console.log(billNo+"rfid");
+    downloadPrintInfo(billNo,"rfid");
+}
+function printLabelTag(billNo){
+    console.log(billNo+"label");
+    downloadPrintInfo(billNo,"label");
+}
+//打印标签
+function downloadPrintInfo(billNo,outPutFile){
+    window.location.href = basePath + "/tag/birth/printByBillNo.do?billNo=" + billNo+"&dtlListStr=&epcListStr="
+                                    + "&outFileName="+outPutFile+"&isAll=true";
+}
 function showAdvSearchPanel() {
     $("#searchPanel").slideToggle("fast");
 }

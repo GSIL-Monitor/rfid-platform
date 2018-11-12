@@ -1259,6 +1259,20 @@ function convertToTagBirth() {
     });
 }
 
+function findBirthTags(){
+    var billNo = $("#edit_billNo").val();
+    if(billNo == "" || billNo == undefined){
+        $.gritter.add({
+            text: "无单据信息请选择要查看的单据！",
+            class_name: 'gritter-success  gritter-light'
+        });
+        return;
+    }
+    $("#show-findBirthNo-list").modal('show');
+    initBirthNoList(billNo);
+
+}
+
 function openAddEpcDialog() {
     var billNo = $("#edit_billNo").val();
     $("#modal-addEpc-table").modal('show').on('hidden.bs.modal', function () {
@@ -1533,6 +1547,10 @@ function initButtonGroup(billStatus) {
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>标签初始化</span>" +
         "</button>" +
+        "<button id='PIDtl_birthTag' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='findBirthTags()'>" +
+        "    <i class='ace-icon fa fa-tags'></i>" +
+        "    <span class='bigger-110'>查看标签初始化</span>" +
+        "</button>"+
         "<button id='PIDtl_findshopMessage' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='openAddEpcDialog()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>采购入库单</span>" +
@@ -1638,16 +1656,16 @@ function setSanLian(id) {
                 var printCode = print.printCode;
                 var printCodeArray = printCode.split(",");
                 for (var i = 0; i < printCodeArray.length; i++) {
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#" + plp).text(message);
                 }
-                var tbodyCont = ""
+                var tbodyCont = "";
                 for (var a = 0; a < contDel.length; a++) {
                     var del = contDel[a];
                     var printTableCode = print.printTableCode.split(",");
-                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>";
                     for (var b = 0; b < printTableCode.length; b++) {
                         if (printTableCode[b] == "styleId" || printTableCode[b] == "styleName" || printTableCode[b] == "colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -1735,16 +1753,16 @@ function setA4(id) {
                 var printCode = print.printCode;
                 var printCodeArray = printCode.split(",");
                 for (var i = 0; i < printCodeArray.length; i++) {
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#" + plp).text(message);
                 }
-                var tbodyCont = ""
+                var tbodyCont = "";
                 for (var a = 0; a < contDel.length; a++) {
                     var del = contDel[a];
                     var printTableCode = print.printTableCode.split(",");
-                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>";
                     for (var b = 0; b < printTableCode.length; b++) {
                         if (printTableCode[b] == "styleId" || printTableCode[b] == "styleName" || printTableCode[b] == "colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"

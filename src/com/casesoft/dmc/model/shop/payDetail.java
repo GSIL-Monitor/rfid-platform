@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "SHOP_PAYDETAIL")
-public class payDetail implements Serializable{
+public class PayDetail implements Serializable{
 
     private static final long serialVersionUID = -3401786740340682556L;
 

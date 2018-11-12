@@ -12,7 +12,7 @@ import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.cfg.PropertyType;
 import com.casesoft.dmc.model.cfg.MultiLevelRelation;
 import com.casesoft.dmc.model.cfg.VO.TreeVO;
-import com.casesoft.dmc.model.shop.payDetail;
+import com.casesoft.dmc.model.shop.PayDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.cfg.PropertyKeyService;
@@ -284,7 +284,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
     //add by lly
     @RequestMapping("/savePayPriceWS")
     @ResponseBody
-    public MessageBox savePayPrice(payDetail payDetail) {
+    public MessageBox savePayPrice(PayDetail payDetail) {
         this.logAllRequestParams();
         try{
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式

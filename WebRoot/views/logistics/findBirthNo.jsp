@@ -29,11 +29,11 @@
     //        initUniqueCodeList();
     //    });
 
-    function initBirthNoList() {
+    function initBirthNoList(billNo) {
         debugger;
         $("#findBirthNoListGrid").jqGrid({
             height: 400,
-            url: basePath + "/logistics/labelChangeBill/findInitByLabel.do?billNo=" + $("#search_billNo").val(),
+            url: basePath + "/logistics/labelChangeBill/findInitByLabel.do?billNo=" + billNo,
             datatype: "json",
             mtype: "POST",
             colModel: [

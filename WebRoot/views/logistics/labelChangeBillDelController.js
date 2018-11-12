@@ -712,8 +712,7 @@ function setDiscount() {
 }
 function findbirth() {
     $("#show-findBirthNo-list").modal('show');
-    initBirthNoList();
-
+    initBirthNoList($("#search_billNo").val());
 
 }
 

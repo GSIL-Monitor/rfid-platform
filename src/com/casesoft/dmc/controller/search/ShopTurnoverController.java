@@ -6,7 +6,7 @@ import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.shop.ShopTurnOver;
-import com.casesoft.dmc.model.shop.payDetail;
+import com.casesoft.dmc.model.shop.PayDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.cfg.PropertyService;
@@ -48,7 +48,7 @@ public class ShopTurnoverController extends BaseController{
     }
     @RequestMapping(value = {"/getDetail"})
     @ResponseBody
-    public Page<payDetail> getDetail(Page<payDetail> page, String userId) throws Exception {
+    public Page<PayDetail> getDetail(Page<PayDetail> page, String userId) throws Exception {
         this.logAllRequestParams();
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(this
                 .getRequest());

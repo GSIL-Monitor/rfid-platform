@@ -340,6 +340,7 @@
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../sys/print_Test.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
+<jsp:include page="findBirthNo.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
 <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
 <link rel="stylesheet" href="<%=basePath%>/font-awesome-4.7.0/css/font-awesome.min.css">

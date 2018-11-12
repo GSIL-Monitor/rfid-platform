@@ -5,12 +5,11 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.logistics.PaymentGatheringBillDao;
-import com.casesoft.dmc.dao.shop.CustomerDao;
 import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.dao.sys.UnitDao;
 import com.casesoft.dmc.model.logistics.PaymentGatheringBill;
 import com.casesoft.dmc.model.shop.Customer;
-import com.casesoft.dmc.model.shop.payDetail;
+import com.casesoft.dmc.model.shop.PayDetail;
 import com.casesoft.dmc.model.sys.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,7 +101,7 @@ public class PaymentGatheringBillService implements IBaseService<PaymentGatherin
     public void saveGuest(PaymentGatheringBill entity) {
         this.paymentGatheringBillDao.save(entity);
         //保存收银表
-        payDetail payDetail = new payDetail();
+        PayDetail payDetail = new PayDetail();
         payDetail.setId(entity.getBillNo()+entity.getPayType());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));

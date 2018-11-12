@@ -252,8 +252,8 @@ public class TaskService extends AbstractBaseService<Business, String> {
                 }
                 CacheManager.setEpcstockVersionId(version);
                 this.epcStockService.saveEpcStocks(list);
-                if(bus.getToken().intValue() == Constant.Token.Storage_Inbound){
-                    //采购入库更新tag_epc中唯一吗状态
+                if(bus.getType().intValue() == Constant.TaskType.Inbound){
+                    //更新tag_epc中唯一吗状态
                     this.initService.updateEpcStatus(CommonUtil.getSqlStrByList(codeList,Epc.class,"code"));
                 }
             }

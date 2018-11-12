@@ -492,7 +492,7 @@ public class InitService extends AbstractBaseService<Init, String> {
      * @Description 更新tag_epc唯一吗入库状态
     **/
     public void updateEpcStatus(String code) {
-        this.initDao.batchExecute("update Epc epc set epc.status = 1 where "+code);
+        this.initDao.batchExecute("update Epc epc set epc.status = 1 where "+code+" and epc.status <>1");
     }
     
     /*

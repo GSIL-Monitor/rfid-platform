@@ -8,12 +8,11 @@ import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
-import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.shop.Customer;
-import com.casesoft.dmc.model.shop.payDetail;
+import com.casesoft.dmc.model.shop.PayDetail;
 import com.casesoft.dmc.model.stock.CodeFirstTime;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
@@ -144,7 +143,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
             this.saleOrderReturnBillDao.doBatchInsert(list);
         }
         //保存收银表
-        payDetail payDetail = new payDetail();
+        PayDetail payDetail = new PayDetail();
         payDetail.setId(bill.getBillNo()+bill.getPayType());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));
@@ -174,7 +173,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.guestService.resetPreGust(saleOrderReturnBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
-        payDetail payDetail = payDetailService.get("billNo",saleOrderReturnBill.getBillNo());
+        PayDetail payDetail = payDetailService.get("billNo",saleOrderReturnBill.getBillNo());
         payDetail.setStatus("0");
         payDetailService.save(payDetail);
     }

@@ -7,7 +7,7 @@ import com.casesoft.dmc.dao.shop.ShopTurnoverDao;
 import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.shop.ShopTurnOver;
-import com.casesoft.dmc.model.shop.payDetail;
+import com.casesoft.dmc.model.shop.PayDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,39 +19,39 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class payDetailService extends BaseService<payDetail, String> {
+public class payDetailService extends BaseService<PayDetail, String> {
     @Autowired
     private payDetailDao payDetailDao;
     @Autowired
     private ShopTurnoverDao shopTurnoverDao;
 
     @Override
-    public Page<payDetail> findPage(Page<payDetail> page, List<PropertyFilter> filters) {
+    public Page<PayDetail> findPage(Page<PayDetail> page, List<PropertyFilter> filters) {
         return payDetailDao.findPage(page,filters);
     }
 
     @Override
-    public void save(payDetail entity) {
+    public void save(PayDetail entity) {
         payDetailDao.saveOrUpdate(entity);
     }
 
     @Override
-    public payDetail load(String id) {
+    public PayDetail load(String id) {
         return null;
     }
 
     @Override
-    public payDetail get(String propertyName, Object value) {
+    public PayDetail get(String propertyName, Object value) {
         return payDetailDao.findUniqueBy(propertyName,value);
     }
 
     @Override
-    public List<payDetail> find(List<PropertyFilter> filters) {
+    public List<PayDetail> find(List<PropertyFilter> filters) {
         return null;
     }
 
     @Override
-    public List<payDetail> getAll() {
+    public List<PayDetail> getAll() {
         return null;
     }
 
@@ -61,12 +61,12 @@ public class payDetailService extends BaseService<payDetail, String> {
     }
 
     @Override
-    public void update(payDetail entity) {
+    public void update(PayDetail entity) {
 
     }
 
     @Override
-    public void delete(payDetail entity) {
+    public void delete(PayDetail entity) {
 
     }
 
