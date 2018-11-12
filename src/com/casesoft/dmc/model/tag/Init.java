@@ -14,232 +14,266 @@ import java.util.List;
 @Table(name = "TAG_INIT")
 public class Init implements java.io.Serializable {
 
-  private static final long serialVersionUID = 5263118560626275031L;
+    private static final long serialVersionUID = 5263118560626275031L;
+    @Id
+    @Column(nullable = false, length = 50)
+    private String billNo;
 
-  private String billNo;
-  private String importType;
-  private String fileName;
-  private long totEpc;
-  private long totSku;
-  private long totStyle;
-  private String ownerId;
-  private String hostId;
-  private Date billDate;
-  private Integer status;
+    @Column(length = 7)
+    private String importType;
 
-  private Long detectTotQty;
-  private Long receiveTotQty;
+    @Column(nullable = false, length = 200)
+    private String fileName;
 
-  protected String detectTaskId;
-  protected String receiveTaskId;
+    @Column(nullable = false)
+    private long totEpc;
 
-  protected String deliverNo;
+    @Column()
+    private long totPrintQty;
 
-  protected String remark;
+    @Column(nullable = false)
+    private long totSku;
 
-  private String deviceId;
+    @Column()
+    private long totStyle;
 
-  private Integer unit2Type;
-  private String destId;
-  
-  private List<InitDtl> dtlList;
-  private String destName;
+    @Column(nullable = false, length = 50)
+    private String ownerId;
 
-  @Column(length = 50)
-  public String getDestId() {
-    return destId;
-  }
+    @Column(nullable = false, length = 50)
+    private String hostId;
 
-  public void setDestId(String destId) {
-    this.destId = destId;
-  }
-  @Column(length = 20)
-  public Integer getUnit2Type() {
-    return unit2Type;
-  }
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @Column(nullable = false, length = 19)
+    private Date billDate;
 
-  public void setUnit2Type(Integer unit2Type) {
-    this.unit2Type = unit2Type;
-  }
+    @Column(nullable = false)
+    private Integer status;//-1 打印中,0录入,1已确定,2已完成
 
-  @Column()
-  public String getDeviceId() {
-    return deviceId;
-  }
+    @Column()
+    private Long detectTotQty;
 
-  public void setDeviceId(String deviceId) {
-    this.deviceId = deviceId;
-  }
+    @Column()
+    private Long receiveTotQty;
 
-  @Column()
-  public Long getDetectTotQty() {
-    return detectTotQty;
-  }
+    @Column(length = 50)
+    protected String detectTaskId;
 
-  public void setDetectTotQty(Long detectTotQty) {
-    this.detectTotQty = detectTotQty;
-  }
+    @Column(length = 50)
+    protected String receiveTaskId;
 
-  @Column()
-  public Long getReceiveTotQty() {
-    return receiveTotQty;
-  }
+    @Column(length = 50)
+    protected String deliverNo;
 
-  public void setReceiveTotQty(Long receiveTotQty) {
-    this.receiveTotQty = receiveTotQty;
-  }
+    @Column(length = 500)
+    protected String remark;
+    @Column()
+    private String deviceId;
+    @Column(length = 20)
+    private Integer unit2Type;
+    @Column(length = 50)
+    private String destId;
 
-  /** default constructor */
-  public Init() {
-  }
+    @Transient
+    private List<InitDtl> dtlList;
+    @Transient
+    private String destName;
 
-  @Id
-  @Column(nullable = false, length = 50)
-  public String getBillNo() {
-    return this.billNo;
-  }
 
-  public void setBillNo(String billNo) {
-    this.billNo = billNo;
-  }
+    public String getDestId() {
+        return destId;
+    }
 
-  @Column(length = 7)
-  public String getImportType() {
-    return importType;
-  }
+    public void setDestId(String destId) {
+        this.destId = destId;
+    }
 
-  public void setImportType(String importType) {
-    this.importType = importType;
-  }
+    public Integer getUnit2Type() {
+        return unit2Type;
+    }
 
-  @Column(nullable = false, length = 200)
-  public String getFileName() {
-    return this.fileName;
-  }
+    public void setUnit2Type(Integer unit2Type) {
+        this.unit2Type = unit2Type;
+    }
 
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
-  }
+    public String getDeviceId() {
+        return deviceId;
+    }
 
-  @Column(nullable = false)
-  public long getTotEpc() {
-    return this.totEpc;
-  }
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
-  public void setTotEpc(long totEpc) {
-    this.totEpc = totEpc;
-  }
+    public Long getDetectTotQty() {
+        return detectTotQty;
+    }
 
-  @Column(nullable = false)
-  public long getTotSku() {
-    return this.totSku;
-  }
+    public void setDetectTotQty(Long detectTotQty) {
+        this.detectTotQty = detectTotQty;
+    }
 
-  public void setTotSku(long totSku) {
-    this.totSku = totSku;
-  }
+    public Long getReceiveTotQty() {
+        return receiveTotQty;
+    }
 
-  @Column()
-  public long getTotStyle() {
-    return this.totStyle;
-  }
+    public void setReceiveTotQty(Long receiveTotQty) {
+        this.receiveTotQty = receiveTotQty;
+    }
 
-  public void setTotStyle(long totStyle) {
-    this.totStyle = totStyle;
-  }
+    /**
+     * default constructor
+     */
+    public Init() {
+    }
 
-  @Column(nullable = false, length = 50)
-  public String getOwnerId() {
-    return this.ownerId;
-  }
+    public String getBillNo() {
+        return this.billNo;
+    }
 
-  public void setOwnerId(String ownerId) {
-    this.ownerId = ownerId;
-  }
+    public void setBillNo(String billNo) {
+        this.billNo = billNo;
+    }
 
-  @Column(nullable = false, length = 50)
-  public String getHostId() {
-    return this.hostId;
-  }
+    public String getImportType() {
+        return importType;
+    }
 
-  public void setHostId(String hostId) {
-    this.hostId = hostId;
-  }
+    public void setImportType(String importType) {
+        this.importType = importType;
+    }
 
-  @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-  @Column(nullable = false, length = 19)
-  public Date getBillDate() {
-    return this.billDate;
-  }
 
-  public void setBillDate(Date billDate) {
-    this.billDate = billDate;
-  }
+    public String getFileName() {
+        return this.fileName;
+    }
 
-  @Column(nullable = false)
-  public Integer getStatus() {
-    return this.status;
-  }
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
 
-  @Column(length = 50)
-  public String getDetectTaskId() {
-    return detectTaskId;
-  }
+    public long getTotEpc() {
+        return this.totEpc;
+    }
 
-  public void setDetectTaskId(String detectTaskId) {
-    this.detectTaskId = detectTaskId;
-  }
+    public void setTotEpc(long totEpc) {
+        this.totEpc = totEpc;
+    }
 
-  @Column(length = 50)
-  public String getReceiveTaskId() {
-    return receiveTaskId;
-  }
+    public long getTotPrintQty() {
+        return totPrintQty;
+    }
 
-  public void setReceiveTaskId(String receiveTaskId) {
-    this.receiveTaskId = receiveTaskId;
-  }
+    public void setTotPrintQty(long totPrintQty) {
+        this.totPrintQty = totPrintQty;
+    }
 
-  @Column(length = 50)
-  public String getDeliverNo() {
-    return deliverNo;
-  }
+    public long getTotSku() {
+        return this.totSku;
+    }
 
-  public void setDeliverNo(String deliverNo) {
-    this.deliverNo = deliverNo;
-  }
+    public void setTotSku(long totSku) {
+        this.totSku = totSku;
+    }
 
-  @Column(length = 500)
-  public String getRemark() {
-    return remark;
-  }
 
-  public void setRemark(String remark) {
-    this.remark = remark;
-  }
+    public long getTotStyle() {
+        return this.totStyle;
+    }
 
-  // ==========>
- 
+    public void setTotStyle(long totStyle) {
+        this.totStyle = totStyle;
+    }
 
-  @Transient
-  public List<InitDtl> getDtlList() {
-    return dtlList;
-  }
 
-  public void setDtlList(List<InitDtl> dtlList) {
-    this.dtlList = dtlList;
-  }
+    public String getOwnerId() {
+        return this.ownerId;
+    }
 
- 
- @Transient
-  public String getDestName() {
-    return destName;
-  }
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 
-  public void setDestName(String destName) {
-    this.destName = destName;
-  }
+
+    public String getHostId() {
+        return this.hostId;
+    }
+
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
+    }
+
+
+    public Date getBillDate() {
+        return this.billDate;
+    }
+
+    public void setBillDate(Date billDate) {
+        this.billDate = billDate;
+    }
+
+
+    public Integer getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+
+    public String getDetectTaskId() {
+        return detectTaskId;
+    }
+
+    public void setDetectTaskId(String detectTaskId) {
+        this.detectTaskId = detectTaskId;
+    }
+
+
+    public String getReceiveTaskId() {
+        return receiveTaskId;
+    }
+
+    public void setReceiveTaskId(String receiveTaskId) {
+        this.receiveTaskId = receiveTaskId;
+    }
+
+
+    public String getDeliverNo() {
+        return deliverNo;
+    }
+
+    public void setDeliverNo(String deliverNo) {
+        this.deliverNo = deliverNo;
+    }
+
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    // ==========>
+
+
+    public List<InitDtl> getDtlList() {
+        return dtlList;
+    }
+
+    public void setDtlList(List<InitDtl> dtlList) {
+        this.dtlList = dtlList;
+    }
+
+
+    public String getDestName() {
+        return destName;
+    }
+
+    public void setDestName(String destName) {
+        this.destName = destName;
+    }
 }

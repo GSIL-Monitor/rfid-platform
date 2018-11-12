@@ -90,10 +90,10 @@ public class ShiroAuthorRealm extends AuthorizingRealm {
 			System.out
 					.println("Session默认超时时间为[" + session.getTimeout() + "]毫秒");
 			if (null != session) {
-				Unit unit = CacheManager.getUnitById(user.getOwnerId());
-				session.setAttribute("Session_Unit", unit);
+				/*Unit unit = CacheManager.getUnitById(user.getOwnerId());
+				session.setAttribute("Session_Unit", unit);*/
 
-				String storageId = "";
+			/*	String storageId = "";
 				String ownerId = unit.getId();
 				int storeType = Constant.StoreType.Storage;// 默认是仓库
 				if (unit.getType() == Constant.UnitType.Warehouse
@@ -107,16 +107,16 @@ public class ShiroAuthorRealm extends AuthorizingRealm {
 						storeType = Constant.StoreType.Storage;
 					}
 
-				}
-				Integer iToken = UserUtil.getIToken(unit);
+				}*/
+			/*	Integer iToken = UserUtil.getIToken(unit);
 				Integer oToken = UserUtil.getOToken(unit);
 				Integer cToken = UserUtil.getCToken(unit);
 				session.setAttribute("iToken", iToken);
 				session.setAttribute("oToken", oToken);
 				session.setAttribute("cToken", cToken);
-				session.setAttribute("storageId", storageId);
-				session.setAttribute("ownerId", ownerId);
-				session.setAttribute("storeType", storeType);
+				session.setAttribute("storageId", storageId);*/
+				session.setAttribute("ownerId", user.getOwnerId());/*
+				session.setAttribute("storeType", storeType);*/
 				user.setRoleName(CacheManager.getRoleNameById(user.getRoleId()));
 				session.setAttribute(Constant.Session.User_Session, user);
 				session.setAttribute("loginUserName", user.getName());

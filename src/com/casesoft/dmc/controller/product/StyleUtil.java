@@ -311,15 +311,15 @@ public class StyleUtil {
                 String id = ProductUtil.getNewProductId(index+i);
                 p.setId(id);
                 //查最新的版本号+1
-                Long maxVersionId = CacheManager.getproductMaxVersionId();
-                p.setVersion(maxVersionId+1);
+               /* Long maxVersionId = CacheManager.getproductMaxVersionId();
+                p.setVersion(maxVersionId+1);*/
 
             }else{
                 p.setId(product.getId());
             }
             //查最新的版本号+1
-            Long maxVersionId = CacheManager.getproductMaxVersionId();
-            p.setVersion(maxVersionId+1);
+         /*   Long maxVersionId = CacheManager.getproductMaxVersionId();
+            p.setVersion(maxVersionId+1);*/
             p.setStyleId(style.getStyleId());
             p.setStyleName(style.getStyleName());
             p.setColorName(CacheManager.getColorNameById(p.getColorId()));
@@ -714,7 +714,28 @@ public class StyleUtil {
                 Style style= CacheManager.getStyleById(styleId);
                 int oldPrefixlen = CommonUtil.isNotBlank(style.getPrefix())?style.getPrefix().length():0;
                 int oldSuffixlen = CommonUtil.isNotBlank(style.getSuffix())?style.getSuffix().length():0;
-                String styleNewId = prefix+style.getStyleId().substring(oldPrefixlen,style.getStyleId().length()-oldSuffixlen)+suffix;
+                List<PricingRules> pricingRulesList = pricingRulesService.findAllUseRule(style.getClass9());
+                PricingRules GTRule = new PricingRules();
+                PricingRules LTRule = new PricingRules();
+                Double tagPRice=0D;
+                for(PricingRules rules : pricingRulesList){
+                    if(rules.getPriceRule().equals("GT")){
+                        GTRule =rules;
+                    }else{
+                        LTRule = rules;
+                    }
+                    tagPRice = rules.getTagPrice();
+                }
+                String rulePrefix = "";
+                String ruleSuffix ="";
+                if(style.getPreCast() * 5>tagPRice){
+                    rulePrefix = CommonUtil.isNotBlank(GTRule.getPrefix())?GTRule.getPrefix():"";
+                    ruleSuffix= CommonUtil.isNotBlank(GTRule.getSuffix())?GTRule.getSuffix():"";
+                }else{
+                    rulePrefix = CommonUtil.isNotBlank(LTRule.getPrefix())?LTRule.getPrefix():"";
+                    ruleSuffix= CommonUtil.isNotBlank(LTRule.getSuffix())?LTRule.getSuffix():"";
+                }
+                String styleNewId = rulePrefix+prefix+style.getStyleId().substring(oldPrefixlen,style.getStyleId().length()-oldSuffixlen)+suffix+ruleSuffix;
                 if(styleNewId.length() > 18){
                     styleNewId = styleNewId.substring(0,18-suffix.length())+suffix;//款号不能超过18位
                 }
@@ -722,37 +743,20 @@ public class StyleUtil {
                 if(CommonUtil.isBlank(styleNew)){
                     styleNew=new Style();
                     BeanUtils.copyProperties(style,styleNew);
-                    List<PricingRules> pricingRulesList = pricingRulesService.findAllUseRule(styleNew.getClass9());
-                    PricingRules GTRule = new PricingRules();
-                    PricingRules LTRule = new PricingRules();
-                    Double tagPRice=0D;
-                    for(PricingRules rules : pricingRulesList){
-                        if(rules.getPriceRule().equals("GT")){
-                            GTRule =rules;
-                        }else{
-                            LTRule = rules;
-                        }
-                        tagPRice = rules.getTagPrice();
-                    }
-                    String rulePrefix = "";
-                    String ruleSuffix ="";
+
                     if(styleNew.getPreCast() * 5>tagPRice){
-                        rulePrefix = CommonUtil.isNotBlank(GTRule.getPrefix())?GTRule.getPrefix():"";
-                        ruleSuffix= CommonUtil.isNotBlank(GTRule.getSuffix())?GTRule.getSuffix():"";
+
                         styleNew.setPrice(CommonUtil.getInt(CommonUtil.doubleChange(style.getPreCast() * GTRule .getRule1(), 1) / 10) * 10 + 9);
                         styleNew.setPuPrice(CommonUtil.doubleChange(styleNew.getPrice() * GTRule.getRule3(), 1));
                         styleNew.setWsPrice(CommonUtil.doubleChange(styleNew.getPrice() * GTRule.getRule2(), 1));
 
                     }else {
-                        rulePrefix = CommonUtil.isNotBlank(LTRule.getPrefix())?LTRule.getPrefix():"";
-                        ruleSuffix= CommonUtil.isNotBlank(LTRule.getSuffix())?LTRule.getSuffix():"";
                         styleNew.setPrice(CommonUtil.getInt(CommonUtil.doubleChange(style.getPreCast() * LTRule .getRule1(), 1) / 10) * 10 + 9);
                         styleNew.setPuPrice(CommonUtil.doubleChange(styleNew.getPrice() * LTRule.getRule3(), 1));
                         styleNew.setWsPrice(CommonUtil.doubleChange(styleNew.getPrice() * LTRule.getRule2(), 1));
 
                     }
                     list.add(styleNew);
-                    styleNewId = rulePrefix+styleNewId+ruleSuffix;
                     styleNew.setId(styleNewId);
                     styleNew.setStyleId(styleNewId);
                     styleNew.setPrefix(prefix);

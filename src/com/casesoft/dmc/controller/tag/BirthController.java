@@ -1,5 +1,6 @@
 package com.casesoft.dmc.controller.tag;
 
+import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -70,9 +71,14 @@ public class BirthController extends BaseController implements IBaseInfoControll
 
 	@RequestMapping(value = "/detailPage")
 	@ResponseBody
-	public List<InitDtl> findDetailPage(String billNo) throws Exception {
+	public List<InitDtl> findDetailPage(String billNo,String sku) throws Exception {
 		this.logAllRequestParams();
-		List<InitDtl> dtlList = this.initService.findInitDtl(billNo);
+		List<InitDtl> dtlList = new ArrayList<>();
+		if(CommonUtil.isBlank(sku)) {
+			dtlList = this.initService.findInitDtl(billNo);
+		}else{
+			dtlList = this.initService.findTagInitDtl(billNo,sku) ;
+		}
 		for (InitDtl dtl : dtlList) {
 			Product p = CacheManager.getProductByCode(dtl.getSku());
 			if (CommonUtil.isNotBlank(p)) {
@@ -86,9 +92,14 @@ public class BirthController extends BaseController implements IBaseInfoControll
 
 	@RequestMapping(value = "/detailEpcPage")
 	@ResponseBody
-	public List<Epc> getDpcofDetail(String billNo){
+	public List<Epc> getDpcofDetail(String billNo,String sku){
 		this.logAllRequestParams();
-		List<Epc> epcList= this.initService.findEpcList(billNo);
+		List<Epc> epcList= new ArrayList<>();
+		if(CommonUtil.isBlank(sku)) {
+			epcList = this.initService.findEpcList(billNo);
+		}else{
+			epcList = this.initService.findTagEpcList(billNo, sku);
+		}
 		for(Epc epc:epcList){
 			Product p=CacheManager.getProductByCode(epc.getSku());
 			if(CommonUtil.isNotBlank(p)){
@@ -130,6 +141,76 @@ public class BirthController extends BaseController implements IBaseInfoControll
 
 		String contentType = "application/zip;charset=utf-8";
 		this.outFile(filename, inputPath, contentType);
+	}
+
+
+
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/6 10:15
+     * @Param billNo 单号  必输参数
+     * @Param dtlListStr 明细sku信息  不是必输参数 格式[sku1,sku2]
+     * @Param epcListStr 打印唯一吗信息  不是必输参数 格式 [code1,code2]
+     * @Param outFileName 输出文件名 必输参数
+     * @Param isAll 是否打印全部 必输参数 true/false
+     * @return 返回下载的文件
+     * @Description :标签初始化web打印接口,返回打印文件txt格式
+    **/
+	@RequestMapping(value = "/printByBillNo")
+	@ResponseBody
+	public void printByBillNo(String billNo,String dtlListStr,String epcListStr,String outFileName,String isAll) throws Exception {
+		List<InitDtl> details = new ArrayList<>();
+		Init master = this.initService.get("billNo", billNo);
+		List<Epc> tagEpcList = new ArrayList<>();
+		File resultFile = null;
+        if(Boolean.parseBoolean(isAll)){
+            //整单打印
+			details = this.initService.findInitDtl(billNo);
+			tagEpcList = InitUtil.covertToPrintTagInfo(details);
+			resultFile = InitUtil.writePrintTxtFile(tagEpcList,outFileName);
+		}else{
+			if(CommonUtil.isNotBlank(dtlListStr)){
+                //打印明细
+				List<String> dtlSkuList = JSON.parseArray(dtlListStr,String.class);
+				details = this.initService.findInitDtl(billNo,CommonUtil.getSqlStrByList(dtlSkuList,InitDtl.class,"sku"));
+				tagEpcList = InitUtil.covertToPrintTagInfo(details);
+                resultFile = InitUtil.writePrintTxtFile(tagEpcList,outFileName);
+			}
+			if(CommonUtil.isNotBlank(epcListStr)){
+				List<String> epcList = JSON.parseArray(epcListStr,String.class);
+				tagEpcList = this.initService.findEpcList(billNo,CommonUtil.getSqlStrByList(epcList,Epc.class,"code"));
+				resultFile = InitUtil.writePrintTxtFile(tagEpcList,outFileName);
+			}
+
+		}
+		for(InitDtl dtl : details){
+			dtl.setPrintQty(dtl.getQty());
+			dtl.setStatus(Constant.BirthTagStatus.End);
+		}
+		master.setDtlList(details);
+		if (master.getStatus() == Constant.BirthTagStatus.Comfirm
+				|| master.getStatus() == Constant.BirthTagStatus.Printting) {// 已确认状态 或者打印中
+			// master.setStatus(-1);// 设置状态 打印中...
+			this.initService.updatePrintInfo(tagEpcList, master);
+
+		}
+		String contentType = "text/plain;charset=utf-8";
+		this.outFile(resultFile.getName(), resultFile, contentType);
+	}
+
+	@RequestMapping(value = "/addNewPrintTag")
+	@ResponseBody
+	/*
+	 * @Author Alvin.Ma
+	 * @Date  2018/11/7 10:09
+	 * @Param billNo 单号
+	 * @Param dtlListStr 要新增明细信息
+	 * @return 返回MessageBox
+	 * @Description 新增新的唯一吗信息
+	**/
+	public MessageBox addNewPrintTag(String billNo,String dtlListStr){
+
+		return null;
 	}
 
 	@Override

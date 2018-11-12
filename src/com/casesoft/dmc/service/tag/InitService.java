@@ -1,6 +1,7 @@
 package com.casesoft.dmc.service.tag;
 
 import com.casesoft.dmc.cache.CacheManager;
+import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.dao.PropertyFilter;
 import com.casesoft.dmc.core.service.AbstractBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
@@ -139,6 +140,34 @@ public class InitService extends AbstractBaseService<Init, String> {
             this.initDao.doBatchInsert(epcList);
         }
         return epcList;
+    }
+
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/7 14:09
+     * @Param tagEpcList 生成唯一吗明细
+     * @return
+     * @Description web页面打印更新单据状态
+    **/
+    public void updatePrintInfo(List<Epc> tagEpcList, Init master) {
+        List<Epc> tempList = this.initDao.find("from Epc e where e.billNo=?",
+                new Object[]{master.getBillNo()});
+        tagEpcList.removeAll(tempList);
+        master.setTotPrintQty(master.getTotPrintQty()+tagEpcList.size());
+        if(master.getTotPrintQty() == master.getTotEpc()){
+            master.setStatus(Constant.BirthTagStatus.End);
+        }else{
+            if(master.getTotPrintQty()>0L){
+                master.setStatus(Constant.BirthTagStatus.Printting);
+            }
+        }
+        this.update(master);
+        if(CommonUtil.isNotBlank(master.getDtlList())){
+            this.initDao.doBatchInsert(master.getDtlList());
+        }
+        if(CommonUtil.isNotBlank(tagEpcList)){
+            this.initDao.doBatchInsert(tagEpcList);
+        }
     }
 
     public void save(List<Epc> epcList, Init master) {
@@ -431,5 +460,62 @@ public class InitService extends AbstractBaseService<Init, String> {
        return this.initDao.find(hql,new Object[]{billNo});
     }
 
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/9 15:06
+     * @Param billNo 单号
+     * @Parma sku 多个sku拼接成的In语句
+     * @return  
+     * @Description 返回标签初始化明细
+    **/
+    public List<InitDtl> findInitDtl(String billNo, String sku) {
+        return this.initDao.find("from InitDtl initdtl where "+sku +" and billNo=?",billNo);
+    }
 
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/9 15:10
+     * @Param billNo 单号
+     * @Param code code insql语句
+     * @return
+     * @Description 返回Epc信息
+    **/
+    public List<Epc> findEpcList(String billNo, String code) {
+        return this.initDao.find("from Epc epc where "+ code +" and epc.billNo=?",billNo);
+    }
+
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/8 14:40
+     * @Param code inSql语句
+     * @return
+     * @Description 更新tag_epc唯一吗入库状态
+    **/
+    public void updateEpcStatus(String code) {
+        this.initDao.batchExecute("update Epc epc set epc.status = 1 where "+code);
+    }
+    
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/9 15:06
+     * @Param billNo 单号
+     * @Parma sku sku模糊查询参数
+     * @return  
+     * @Description  返回标签初始化明细
+    **/
+    public List<InitDtl> findTagInitDtl(String billNo, String sku) {
+        return this.initDao.find("from InitDtl where sku like '%"+sku+"%' and billNo =?",billNo);
+    }
+
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/9 15:11
+     * @Param billNo 单号
+     * @Parma sku sku模糊查询参数
+     * @return
+     * @Description 唯一吗信息
+    **/
+    public List<Epc> findTagEpcList(String billNo, String sku) {
+       return this.initDao.find("from Epc where sku like '%"+sku+"%' and billNo = ?",billNo);
+    }
 }

@@ -9,195 +9,229 @@ import javax.persistence.*;
 @Table(name = "TAG_INITDTL")
 public class InitDtl implements java.io.Serializable {
 
-  private static final long serialVersionUID = -3991016494021088428L;
-  private String id;
-  private String billNo;
-  private String ownerId;
-  private Integer status;
-  private String styleId;
-  private String colorId;
-  private String sizeId;
-  private String sku;
-  private long qty;
-  private long startNum;
-  private long endNum;
+    private static final long serialVersionUID = -3991016494021088428L;
+    @Id
+    @Column(nullable = false, length = 50)
+    private String id;
 
-  private Long detectQty;
-  private Long receiveQty;
-  private String styleName;
-  private String colorName;
-  private String sizeName;
+    @Column(nullable = false, length = 50)
+    private String billNo;
 
-  @Column()
-  public Long getDetectQty() {
-    return detectQty;
-  }
+    @Column(nullable = false, length = 50)
+    private String ownerId;
 
-  public void setDetectQty(Long detectQty) {
-    this.detectQty = detectQty;
-  }
+    @Column(nullable = false)
+    private Integer status;
 
-  @Column()
-  public Long getReceiveQty() {
-    return receiveQty;
-  }
+    @Column(nullable = false, length = 20)
+    private String styleId;
 
-  public void setReceiveQty(Long receiveQty) {
-    this.receiveQty = receiveQty;
-  }
+    @Column(nullable = false, length = 20)
+    private String colorId;
 
-  /** default constructor */
-  public InitDtl() {
-  }
+    @Column(nullable = false, length = 10)
+    private String sizeId;
 
-  // Property accessors
-  @Id
-  @Column(nullable = false, length = 50)
-  public String getId() {
-    return this.id;
-  }
+    @Column(nullable = false, length = 50)
+    private String sku;
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    @Column(nullable = false)
+    private long qty;
 
-  @Column(nullable = false, length = 50)
-  public String getBillNo() {
-    return this.billNo;
-  }
+    @Column()
+    private long printQty;
 
-  public void setBillNo(String billNo) {
-    this.billNo = billNo;
-  }
+    @Column(nullable = false)
+    private long startNum;
 
-  @Column(nullable = false, length = 50)
-  public String getOwnerId() {
-    return this.ownerId;
-  }
+    @Column(nullable = false)
+    private long endNum;
 
-  public void setOwnerId(String ownerId) {
-    this.ownerId = ownerId;
-  }
+    @Column()
+    private Long detectQty;
 
-  @Column(nullable = false)
-  public Integer getStatus() {
-    return this.status;
-  }
+    @Column()
+    private Long receiveQty;
 
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
+    @Transient
+    private String styleName;
 
-  @Column(nullable = false, length = 20)
-  public String getStyleId() {
-    return this.styleId;
-  }
+    @Transient
+    private String colorName;
 
-  public void setStyleId(String styleId) {
-    this.styleId = styleId;
-  }
+    @Transient
+    private String sizeName;
 
-  @Column(nullable = false, length = 20)
-  public String getColorId() {
-    return this.colorId;
-  }
+    @Column()
+    private Integer editStatus;
 
-  public void setColorId(String colorId) {
-    this.colorId = colorId;
-  }
 
-  @Column(nullable = false, length = 10)
-  public String getSizeId() {
-    return this.sizeId;
-  }
+    public Long getDetectQty() {
+        return detectQty;
+    }
 
-  public void setSizeId(String sizeId) {
-    this.sizeId = sizeId;
-  }
+    public void setDetectQty(Long detectQty) {
+        this.detectQty = detectQty;
+    }
 
-  @Column(nullable = false, length = 50)
-  public String getSku() {
-    return this.sku;
-  }
 
-  public void setSku(String sku) {
-    this.sku = sku;
-  }
+    public Long getReceiveQty() {
+        return receiveQty;
+    }
 
-  @Column(nullable = false)
-  public long getQty() {
-    return this.qty;
-  }
+    public void setReceiveQty(Long receiveQty) {
+        this.receiveQty = receiveQty;
+    }
 
-  public void setQty(long qty) {
-    this.qty = qty;
-  }
+    /**
+     * default constructor
+     */
+    public InitDtl() {
+    }
 
-  @Column(nullable = false)
-  public long getStartNum() {
-    return this.startNum;
-  }
+    // Property accessors
 
-  public void setStartNum(long startNum) {
-    this.startNum = startNum;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  @Column(nullable = false)
-  public long getEndNum() {
-    return this.endNum;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setEndNum(long endNum) {
-    this.endNum = endNum;
-  }
 
-  // //===================>
- private String unicode;
+    public String getBillNo() {
+        return this.billNo;
+    }
 
-  @Transient
-  public String getUnicode() {
-    return unicode;
-  }
+    public void setBillNo(String billNo) {
+        this.billNo = billNo;
+    }
 
-  public void setUnicode(String unicode) {
-    this.unicode = unicode;
-  }
 
-  @Transient
-  public String getStyleName() {
-    return styleName;
-  }
+    public String getOwnerId() {
+        return this.ownerId;
+    }
 
-  public void setStyleName(String styleName) {
-    this.styleName = styleName;
-  }
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 
-  @Transient
-  public String getColorName() {
-    return colorName;
-  }
 
-  public void setColorName(String colorName) {
-    this.colorName = colorName;
-  }
+    public Integer getStatus() {
+        return this.status;
+    }
 
-  @Transient
-  public String getSizeName() {
-    return sizeName;
-  }
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
-  public void setSizeName(String sizeName) {
-    this.sizeName = sizeName;
-  }
-//john 添加0,没有编辑过，1编辑过
-  private Integer editStatus;
-  
-	@Column()
-	public Integer getEditStatus() {
-		return editStatus;
-	}
 
-	public void setEditStatus(Integer editStatus) {
-		this.editStatus = editStatus;
-	}
+    public String getStyleId() {
+        return this.styleId;
+    }
+
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
+    }
+
+
+    public String getColorId() {
+        return this.colorId;
+    }
+
+    public void setColorId(String colorId) {
+        this.colorId = colorId;
+    }
+
+
+    public String getSizeId() {
+        return this.sizeId;
+    }
+
+    public void setSizeId(String sizeId) {
+        this.sizeId = sizeId;
+    }
+
+
+    public String getSku() {
+        return this.sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+
+    public long getQty() {
+        return this.qty;
+    }
+
+    public void setQty(long qty) {
+        this.qty = qty;
+    }
+
+    public long getPrintQty() {
+        return printQty;
+    }
+
+    public void setPrintQty(long printQty) {
+        this.printQty = printQty;
+    }
+
+    public long getStartNum() {
+        return this.startNum;
+    }
+
+    public void setStartNum(long startNum) {
+        this.startNum = startNum;
+    }
+
+
+    public long getEndNum() {
+        return this.endNum;
+    }
+
+    public void setEndNum(long endNum) {
+        this.endNum = endNum;
+    }
+
+    // //===================>
+
+
+    public String getStyleName() {
+        return styleName;
+    }
+
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
+    }
+
+
+    public String getColorName() {
+        return colorName;
+    }
+
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
+    }
+
+
+    public String getSizeName() {
+        return sizeName;
+    }
+
+    public void setSizeName(String sizeName) {
+        this.sizeName = sizeName;
+    }
+
+    public Integer getEditStatus() {
+        return editStatus;
+    }
+
+    public void setEditStatus(Integer editStatus) {
+        this.editStatus = editStatus;
+    }
+
+
 }

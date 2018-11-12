@@ -245,11 +245,17 @@ public class TaskService extends AbstractBaseService<Business, String> {
                 long version = CacheManager.getMaxEpcstockVersionId()+1;
                 List<EpcStock> list = TaskUtil
                         .recordConvertEpsStock(recordList);
+                List<String> codeList = new ArrayList<>();
                 for(EpcStock e : list){
                     e.setVersion(version);
+                    codeList.add(e.getCode());
                 }
                 CacheManager.setEpcstockVersionId(version);
                 this.epcStockService.saveEpcStocks(list);
+                if(bus.getToken().intValue() == Constant.Token.Storage_Inbound){
+                    //采购入库更新tag_epc中唯一吗状态
+                    this.initService.updateEpcStatus(CommonUtil.getSqlStrByList(codeList,Epc.class,"code"));
+                }
             }
             this.taskDao.doBatchInsert(recordList);
         }

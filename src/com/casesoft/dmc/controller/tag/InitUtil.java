@@ -1394,5 +1394,115 @@ public class InitUtil {
 		return initList;
 	}
 
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/6 11:19
+     * @Param details 传入待打印sku明细
+     * @return 返回待打印唯一吗明细
+     * @Description 打明细转打印唯一吗
+    **/
+	public static List<Epc> covertToPrintTagInfo(List<InitDtl> details) throws Exception {
+		List<Epc> epcList = new ArrayList<>();
+		try {
+			for (InitDtl detail : details) {
+				int startNo = (int) detail.getStartNum();
+				for (int i = 1; i <= detail.getQty(); i++) {
+					//转换生成唯一吗信息
+					String className = PropertyUtil.getValue("tag_name");
+					ITag tag = TagFactory.getTag(className);
+					tag.setStyleId(detail.getStyleId());
+					tag.setColorId(detail.getColorId());
+					tag.setSizeId(detail.getSizeId());
+					tag.setSku(detail.getSku());
+					// String uniqueCode = EpcSecretUtil.getUniqueCode(detail.getSku(),
+					// startNo, i);
+					// String epc = EpcSecretUtil.convertUniqueCodeToEpc2(uniqueCode);//
+					// 待加密的EPC为转码之后的唯一码+“补0”
+					// String secretEpc = EpcSecretUtil.encodeEpc(epc);// encode(epc);
+					String uniqueCode = tag.getUniqueCode(startNo, i);
+					String epc = tag.getEpc();
+					String secretEpc = tag.getSecretEpc();
+					String code2 = PropertyUtil.getValue("webservice") + uniqueCode;
+					Epc epcObj = initEpcObj(detail, uniqueCode, secretEpc, code2);
+					epcList.add(epcObj);
+				}
+			}
+		}catch (Exception e){
+
+		}
+		return epcList;
+	}
+
+	/*
+	 * @Author Alvin.Ma
+	 * @Date  2018/11/6 11:36
+	 * @Param tagEpcList 传入唯一吗信息,
+	 * @Param outFileName
+	 * @return  输出txt文件
+	 * @Description  生成txt文件
+	**/
+	public static File writePrintTxtFile(List<Epc> tagEpcList,String outFileName) {
+		String title = "款式,款名,色码,颜色,尺寸,尺码,吊牌码,芯片码,二维码,价格,系列 ,条码 ,ENA,执行标准,成分\r\n";
+		String sTime = CommonUtil.getDateString(new Date(), "yyyyMMddHHmmss");
+		String path = Constant.Folder.Epc_Init_File_Folder + sTime + File.separator;
+		StringBuffer sb = new StringBuffer(title);
+
+		for (Epc epc : tagEpcList) {
+			sb.append(epc.getStyleId());
+			sb.append(",");
+			sb.append(CacheManager.getStyleNameById(epc.getStyleId()));
+			sb.append(",");
+			sb.append(epc.getColorId());
+			sb.append(",");
+			sb.append(CacheManager.getColorNameById(epc.getColorId()));
+			sb.append(",");
+			sb.append(epc.getSizeId());
+			sb.append(",");
+			sb.append(CacheManager.getSizeNameById(epc.getSizeId()));
+			sb.append(",");
+
+			// sb.append(convertToASCII(epc,0));
+			sb.append(epc.getCode());
+			sb.append(",");
+			sb.append(epc.getEpc());
+			sb.append(",");
+			sb.append(epc.getDimension());
+
+			sb.append(",");
+			Style style = CacheManager.getStyleById(epc.getStyleId());
+			if (style == null) {
+				sb.append("");
+				sb.append(",");
+				sb.append("");
+			} else {
+				DecimalFormat df = new DecimalFormat("#####0");// 设置价格显示无小数位
+				sb.append(df.format(style.getPrice()));
+				sb.append(",");
+				String class9 = "";
+				if(CommonUtil.isNotBlank(style.getClass9())){
+					class9 = CacheManager.getPropertyKey("C9-"+style.getClass9()).getName();
+				}
+				sb.append(class9);
+			}
+			Product p = CacheManager.getProductByCode(epc.getSku());
+			if (CommonUtil.isNotBlank(p)) {
+				String class7 = "";
+
+				if (CommonUtil.isNotBlank(style) && CommonUtil.isNotBlank(style.getClass7())) {
+					class7 = CacheManager.getPropertyKey("C7-"+style.getClass7()).getName();
+				}
+
+
+				sb.append(",").append(p.getBarcode()).append(",").append(p.getEan())
+						.append(",").append(class7).append(",").append(p.getRemark());
+			} else {
+				sb.append(",").append("").append(",").append("").append(",").append("");
+			}
+			sb.append("\r\n");
+		}
+		String fileName = path + outFileName +".txt";
+		new File(path).mkdirs();
+		return FileUtil.writeStringToFile(sb.toString(), fileName);
+	}
 
 }

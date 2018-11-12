@@ -80,7 +80,7 @@ public class Constant {
     }
   public final static class Sys {
 
-    public final static String Company_Name = "凯施智联软件科技";
+    public final static String Company_Name = "武汉庭云科技";
 
     public final static int Menu_Code_Min_Length = 2;
 
@@ -373,6 +373,13 @@ public class Constant {
         public final static String level = "2";
         public final static String allocation = "3";
         public final static String Company = "REPOSITORY";
+    }
+    public final static class BirthTagStatus{
+        public final static Integer Printting = -1;//打印中
+        public final static Integer Save = 0;//录入未确定
+        public final static Integer Comfirm = 1;//已确定
+        public final static Integer End = 2;//已完成
+
     }
     //客户欠款变动，积分变动记录的状态设置
     public final static class ChangeRecordStatus{

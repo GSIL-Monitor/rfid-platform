@@ -9,246 +9,294 @@ import javax.persistence.*;
 @Table(name = "TAG_EPC")
 public class Epc implements java.io.Serializable {
 
-	private static final long serialVersionUID = 790925789806122627L;
+    private static final long serialVersionUID = 790925789806122627L;
+    @Id
+    @Column(nullable = false, length = 50)
+    private String id;
 
-	private String billNo;
-	private String ownerId;
-	private String code;
-	private String epc;
-	private String dimension;
-	private String sku;
-	private String styleId;
-	private String colorId;
-	private String sizeId;
+    @Column(nullable = false, length = 50)
+    private String billNo;
 
-	private String tid;// 2014-10-23 TID号
+    @Column(nullable = false, length = 50)
+    private String ownerId;
 
-	private Integer isDestruct;// 被毁坏0否1是2人工破坏
-	private Integer destructToken;// 被毁坏的token
-	private String brandCode;
-	private String id;
-	private String styleName;
-	private String colorName;
-	private String sizeName;
+    @Column(unique = true, nullable = false, length = 50)
+    private String code;
 
-	
-	@Column(nullable = true, length = 20)
-	public String getBrandCode() {
-		return brandCode;
-	}
+    @Column()
+    private Integer status=0;//状态 0,标识未入库 1标识入库
 
-	public void setBrandCode(String brandCode) {
-		this.brandCode = brandCode;
-	}
+    @Column(unique = true, nullable = false, length = 50)
+    private String epc;
 
-	@Column(unique = true, nullable = true, length = 100)
-	public String getTid() {
-		return tid;
-	}
+    @Column(unique = true, nullable = false, length = 100)
+    private String dimension;
 
-	public void setTid(String tid) {
-		this.tid = tid;
-	}
+    @Column(nullable = false, length = 50)
+    private String sku;
 
-	@Column()
-	public Integer getIsDestruct() {
-		return isDestruct;
-	}
+    @Column(nullable = false, length = 20)
+    private String styleId;
 
-	public void setIsDestruct(Integer isDestruct) {
-		this.isDestruct = isDestruct;
-	}
+    @Column(nullable = false, length = 20)
+    private String colorId;
 
-	// Constructors
+    @Column(nullable = false, length = 10)
+    private String sizeId;
 
-	
-
-	@Id
-	@Column(nullable = false, length = 50)
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/** default constructor */
-	public Epc() {
-	}
-
-	public Epc(String code,String billNo,String sku, String epc, String styleId, String colorId, String sizeId) {
-		this.code = code;
-		this.billNo = billNo;
-		this.sku = sku;
-		this.epc = epc;
-		this.styleId = styleId;
-		this.colorId = colorId;
-		this.sizeId = sizeId;
-	}
-
-	@Column(unique = true, nullable = false, length = 50)
-	public String getEpc() {
-		return this.epc;
-	}
-
-	@Column(nullable = false, length = 50)
-	public String getBillNo() {
-		return this.billNo;
-	}
-
-	public void setBillNo(String billNo) {
-		this.billNo = billNo;
-	}
-
-	@Column(nullable = false, length = 50)
-	public String getOwnerId() {
-		return this.ownerId;
-	}
-
-	public void setOwnerId(String ownerId) {
-		this.ownerId = ownerId;
-	}
-
-	@Column(unique = true, nullable = false, length = 50)
-	public String getCode() {
-		return this.code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public void setEpc(String epc) {
-		this.epc = epc;
-	}
-
-	@Column(unique = true, nullable = false, length = 100)
-	public String getDimension() {
-		return this.dimension;
-	}
-
-	public void setDimension(String dimension) {
-		this.dimension = dimension;
-	}
-
-	@Column(nullable = false, length = 50)
-	public String getSku() {
-		return this.sku;
-	}
-
-	public void setSku(String sku) {
-		this.sku = sku;
-	}
-
-	@Column(nullable = false, length = 20)
-	public String getStyleId() {
-		return this.styleId;
-	}
-
-	public void setStyleId(String styleId) {
-		this.styleId = styleId;
-	}
-
-	@Column(nullable = false, length = 20)
-	public String getColorId() {
-		return this.colorId;
-	}
-
-	public void setColorId(String colorId) {
-		this.colorId = colorId;
-	}
-
-	@Column(nullable = false, length = 10)
-	public String getSizeId() {
-		return this.sizeId;
-	}
-
-	public void setSizeId(String sizeId) {
-		this.sizeId = sizeId;
-	}
-
-	
-	@Transient
-	public String getStyleName() {
-		return styleName;
-	}
-
-	public void setStyleName(String styleName) {
-		this.styleName = styleName;
-	}
-
-	@Transient
-	public String getColorName() {
-		return colorName;
-	}
-
-	public void setColorName(String colorName) {
-		this.colorName = colorName;
-	}
-
-	@Transient
-	public String getSizeName() {
-		return sizeName;
-	}
-
-	public void setSizeName(String sizeName) {
-		this.sizeName = sizeName;
-	}
+    @Column(unique = true, nullable = true, length = 100)
+    private String tid;// 2014-10-23 TID号
+    @Column()
+    private Integer isDestruct;// 被毁坏0否1是2人工破坏
 
 
-	private Double preCast = 0d;//事前成本价(采购价)
+    @Column(nullable = true, length = 20)
+    private String brandCode;
 
-	private Double price =0d;//吊牌价格
+    @Transient
+    private String styleName;
 
-	private Double puPrice =0d;//代理商批发价格
-	@Transient
-	public Double getPreCast() {
-		return preCast;
-	}
+    @Transient
+    private String colorName;
 
-	public void setPreCast(Double preCast) {
-		this.preCast = preCast;
-	}
+    @Transient
+    private String sizeName;
 
-	@Transient
-	public double getPrice() {
-		return price;
-	}
+    @Transient
+    private Double preCast = 0d;//事前成本价(采购价)
 
-	public void setPrice(double price) {
-		this.price = price;
-	}
+    @Transient
+    private Double price = 0d;//吊牌价格
 
-	@Transient
-	public Double getPuPrice() {
-		return puPrice;
-	}
+    @Transient
+    private Double puPrice = 0d;//代理商批发价格
 
-	public void setPuPrice(Double puPrice) {
-		this.puPrice = puPrice;
-	}
+    @Transient
+    private Double wsPrice = 0D;//门店批发价格
 
-	@Transient
-	public Double getWsPrice() {
-		return wsPrice;
-	}
-
-	public void setWsPrice(Double wsPrice) {
-		this.wsPrice = wsPrice;
-	}
+    @Transient
+    private String class6;//
 
 
-	private Double wsPrice =0D;//门店批发价格
+    public String getBrandCode() {
+        return brandCode;
+    }
 
-	private String class6;//
+    public void setBrandCode(String brandCode) {
+        this.brandCode = brandCode;
+    }
 
-	@Transient
-	public String getClass6() {
-		return class6;
-	}
 
-	public void setClass6(String class6) {
-		this.class6 = class6;
-	}
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
+
+
+    public Integer getIsDestruct() {
+        return isDestruct;
+    }
+
+    public void setIsDestruct(Integer isDestruct) {
+        this.isDestruct = isDestruct;
+    }
+
+    // Constructors
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * default constructor
+     */
+    public Epc() {
+    }
+
+    public Epc(String code, String billNo, String sku, String epc, String styleId, String colorId, String sizeId) {
+        this.code = code;
+        this.billNo = billNo;
+        this.sku = sku;
+        this.epc = epc;
+        this.styleId = styleId;
+        this.colorId = colorId;
+        this.sizeId = sizeId;
+    }
+
+
+    public String getEpc() {
+        return this.epc;
+    }
+
+
+    public String getBillNo() {
+        return this.billNo;
+    }
+
+    public void setBillNo(String billNo) {
+        this.billNo = billNo;
+    }
+
+
+    public String getOwnerId() {
+        return this.ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+
+    public String getCode() {
+        return this.code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setEpc(String epc) {
+        this.epc = epc;
+    }
+
+
+    public String getDimension() {
+        return this.dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+
+    public String getSku() {
+        return this.sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public String getStyleId() {
+        return this.styleId;
+    }
+
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
+    }
+
+
+    public String getColorId() {
+        return this.colorId;
+    }
+
+    public void setColorId(String colorId) {
+        this.colorId = colorId;
+    }
+
+
+    public String getSizeId() {
+        return this.sizeId;
+    }
+
+    public void setSizeId(String sizeId) {
+        this.sizeId = sizeId;
+    }
+
+
+    public String getStyleName() {
+        return styleName;
+    }
+
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
+    }
+
+
+    public String getColorName() {
+        return colorName;
+    }
+
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
+    }
+
+    public String getSizeName() {
+        return sizeName;
+    }
+
+    public void setSizeName(String sizeName) {
+        this.sizeName = sizeName;
+    }
+
+
+    public Double getPreCast() {
+        return preCast;
+    }
+
+    public void setPreCast(Double preCast) {
+        this.preCast = preCast;
+    }
+
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+
+    public Double getPuPrice() {
+        return puPrice;
+    }
+
+    public void setPuPrice(Double puPrice) {
+        this.puPrice = puPrice;
+    }
+
+
+    public Double getWsPrice() {
+        return wsPrice;
+    }
+
+    public void setWsPrice(Double wsPrice) {
+        this.wsPrice = wsPrice;
+    }
+
+
+    public String getClass6() {
+        return class6;
+    }
+
+    public void setClass6(String class6) {
+        this.class6 = class6;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Epc epc = (Epc)obj;
+        return this.code.equals(epc.code);
+    }
 }
