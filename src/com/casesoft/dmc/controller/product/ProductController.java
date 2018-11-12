@@ -107,7 +107,7 @@ public class ProductController extends BaseController implements IBaseInfoContro
             String id = ProductUtil.getNewProductId(index+i);
             Product product =new Product();
             product.setId(id);
-            product.setVersion(productMaxVersionId+1);
+           /* product.setVersion(productMaxVersionId+1);*/
             product.setStyleId(styleId);
             product.setStyleName(CacheManager.getStyleNameById(styleId));
             product.setColorId(colorId);

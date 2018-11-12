@@ -1297,7 +1297,7 @@ public class ProductUtil {
                     p.setId(productId);
                 }
                 long productMaxVersionId = CacheManager.getproductMaxVersionId();
-                p.setVersion(productMaxVersionId+1);
+               /* p.setVersion(productMaxVersionId+1);*/
                 p.setCode(pCode);
                 p.setStyleId(styleNo);
                 p.setStyleName(styleName);

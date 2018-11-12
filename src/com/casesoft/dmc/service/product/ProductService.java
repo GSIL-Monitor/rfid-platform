@@ -60,7 +60,7 @@ public class ProductService extends AbstractBaseService<Product, String> {
         if (!entity.equals(dtoProd)) {
             long version = this.sysLogService.getVersionByTable("Product");
             this.sysLogService.saveUpdateVersion("Product", version + 1);
-            entity.setVersion(version + 1);
+           /* entity.setVersion(version + 1);*/
             this.productDao.saveOrUpdate(entity);
         }
     }
@@ -84,7 +84,7 @@ public class ProductService extends AbstractBaseService<Product, String> {
                 }
             }
             if (!have) {
-                p.setVersion(version + 1);
+              /*  p.setVersion(version + 1);*/
                 dtoList.add(p);
             }
         }

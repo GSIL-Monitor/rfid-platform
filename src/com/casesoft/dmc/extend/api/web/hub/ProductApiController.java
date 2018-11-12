@@ -626,12 +626,12 @@ public class ProductApiController extends ApiBaseController {
         //查询当前最新的版本号
         Long productMaxVersionId = CacheManager.getproductMaxVersionId();
         Long maxVersionId = CacheManager.getStyleMaxVersionId();
-        sty.setVersion(maxVersionId + 1);
+        /*sty.setVersion(maxVersionId + 1);*/
         if (CommonUtil.isBlank(sty)) {
             sty = new Style();
             sty.setId(style.getStyleId());
             sty.setStyleId(style.getStyleId());
-            sty.setVersion(maxVersionId + 1);
+           /* sty.setVersion(maxVersionId + 1);*/
         }
         List<Product> productList = JSON.parseArray(productStr, Product.class);
         List<Product> saveList = StyleUtil.covertToProductInfo(sty, style, productList);

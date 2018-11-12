@@ -154,7 +154,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 					sty=new Style();
 					sty.setId(style.getStyleId());
 					sty.setStyleId(style.getStyleId());
-					sty.setVersion(maxVersionId+1);
+					/*sty.setVersion(maxVersionId+1);*/
 					sty.setIsUse("Y");
 				}else {
 					return this.returnFailInfo("保存失败!"+sty.getId()+"款号已存在请重新输入");
@@ -163,7 +163,7 @@ public class StyleController extends BaseController implements IBaseInfoControll
 				if (CommonUtil.isBlank(sty)) {
 					return this.returnFailInfo("编辑失败!" + sty.getId() + "款号不存在");
 				}
-				sty.setVersion(maxVersionId+1);
+				/*sty.setVersion(maxVersionId+1);*/
 				prePriceMap.put("price", sty.getPrice());
 				prePriceMap.put("puPrice", sty.getPuPrice());
 				prePriceMap.put("wsPrice", sty.getWsPrice());
