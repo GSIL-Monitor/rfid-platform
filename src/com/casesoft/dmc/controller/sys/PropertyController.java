@@ -290,6 +290,7 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
             payDetail.setPayDate(df.format(new Date()));
             payDetail.setId(payDetail.getBillNo()+payDetail.getPayType());
+            payDetail.setStatus("1");
             payDetailService.save(payDetail);
         }
         catch (Exception e){
@@ -297,6 +298,20 @@ public class PropertyController extends BaseController implements IBaseInfoContr
             return new MessageBox(false,"结算失败");
         }
         return new MessageBox(true,"结算成功");
+    }
+
+    //add by ltc
+    @RequestMapping("/changePayDetail")
+    @ResponseBody
+    public MessageBox changePayDetail(String billNo){
+        this.logAllRequestParams();
+        try {
+            payDetailService.changePayDetail(billNo);
+            return new MessageBox(true,"删除成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MessageBox(false,"删除失败");
+        }
     }
 
     @Override

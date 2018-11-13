@@ -115,4 +115,8 @@ public class payDetailService extends BaseService<PayDetail, String> {
         page = this.shopTurnoverDao.findPageBySQl(page, ShopTurnOver.class, sql.toString(), null);
         return page;
     }
+
+    public void changePayDetail(String billNo) {
+        this.payDetailDao.batchExecute("update PayDetail set status='0' where billNo=?",billNo);
+    }
 }

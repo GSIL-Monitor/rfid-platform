@@ -6,6 +6,7 @@
 <html>
 <head>
     <jsp:include page="../baseView.jsp"></jsp:include>
+    <link rel="stylesheet" href="<%=basePath%>/views/NoOneCashier/css/mynumkb.css">
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var curOwnerId = "${ownerId}";
@@ -35,6 +36,7 @@
         var cTbillNo = "${cTbillNo}";
         var defaultPayType = "${payType}";//默认支付方式
     </script>
+    <style>*{padding:0;margin:0;}</style>
 
 </head>
 <body class="no-skin">
@@ -371,7 +373,15 @@
                                                                 <input class="form-control" id="edit_payPrice"
                                                                        name="payPrice"
                                                                        type="number" step="0.01"
-                                                                       value="${saleOrderBill.payPrice}"/>
+                                                                       value="${saleOrderBill.payPrice}"
+                                                                onblur="payPriceChange()"/>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-sm btn-default"
+                                                                            type="button"
+                                                                            onclick="payPriceShow()">
+                                                                        <i class="ace-icon fa fa-list"></i>
+                                                                    </button>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -403,6 +413,7 @@
                                                            value="${saleOrderBill.ownerId}"
                                                            type="hidden">
                                                     </input>
+                                                    <input id="edit_returnBillNo" name="returnBillNo" hidden>
                                                 </div>
                                             </form>
                                         </div>
@@ -430,6 +441,7 @@
     </div>
 </div>
 <!--/.fluid-container#main-container-->
+<jsp:include page="payDetail.jsp"></jsp:include>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
 <jsp:include page="saleOrderBillPrint.jsp"></jsp:include>
@@ -447,6 +459,11 @@
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+
+<%--实收金额--%>
+<script src="<%=basePath%>/views/NoOneCashier/js/mynumkb.js"></script>
+<script src="<%=basePath%>/views/NoOneCashier/js/iconfont.js"></script>
+
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>
