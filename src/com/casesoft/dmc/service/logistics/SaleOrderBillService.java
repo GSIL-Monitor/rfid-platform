@@ -494,14 +494,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     }
 
     public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList,List<AbnormalCodeMessage> list) throws Exception {
-        List<Style> styleList = new ArrayList<>();
-        for (SaleOrderBillDtl dtl : saleOrderBillDtlList) {
-            if (dtl.getStatus() == BillConstant.BillDtlStatus.InStore) {
-                Style s = CacheManager.getStyleById(dtl.getStyleId());
-                s.setClass6(BillConstant.InStockType.BackOrder);
-                styleList.add(s);
-            }
-        }
+
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         if(messageBox.getSuccess()){
             this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
@@ -510,9 +503,6 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                 this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
             }
             this.taskService.webSave(business);
-            if (styleList.size() > 0) {
-                this.saleOrderBillDao.doBatchInsert(styleList);
-            }
             List<Record> recordList = business.getRecordList();
             List<String> codeStrList = new ArrayList<String>();
             for (Record record : recordList) {
