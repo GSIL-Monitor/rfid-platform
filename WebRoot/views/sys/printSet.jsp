@@ -371,15 +371,82 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="printTopST" style="display: none">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8" data-name="storeName" id="storeNameST">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">店铺名称</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div">
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8" data-name="title" id="titleST">
+                                        <span class="col-xs-12 col-sm-12 col-md-12	col-lg-12" style="font-weight:bold;font-size:20px;display:table-cell;vertical-align:middle;text-align:center">营业额统计</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div" data-name="countTime" id="countTimeST" >
+                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <span>销售周期:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div" data-name="totalPrice" id="totalPriceST" >
+                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <span>总销售额:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div" data-name="xianjinzhifu" id="xianjinzhifuST">
+                                    <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                        <span>现金支付:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div" data-name="wechat" id="wechatST">
+                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <span>微信支付:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div" data-name="alipay" id="alipayST">
+                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <span>支付宝:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div" data-name="cardPay" id="cardPayST">
+                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <span>银行卡:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div" data-name="yuezhifu" id="yuezhifuST">
+                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <span>余额支付:</span>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                        <span>xxxxxx</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div id="edit-dialog" style="text-align: center ;font-size:12px;" class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-
                                 <table style="text-align: center;font-size:12px;"class="col-xs-8 col-sm-8 col-md-8	col-lg-8">
                                     <thead style="text-align:center" border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
                                     <tr >
                                         <th align="left"  nowrap="nowrap" style="border:0px;height: 20px;width: 20%">商品</th>
                                         <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">数量</th>
-                                        <th align="right" nowrap="nowrap"style="border:0px;height: 20px;width: 20%">原价</th>
-                                        <th  align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">折后价</th>
+                                        <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">原价</th>
+                                        <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">折后价</th>
                                         <th align="right" nowrap="nowrap" style="border:0px;height: 20px;width: 20%">金额</th>
                                     </tr>
                                     </thead>
@@ -488,16 +555,16 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                        <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 Print-Bg-Top-div">
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                             <div class="headTitle">
                                 <input type="text" id="id" style="display: none"/>
                                 <input type="text" id="ownerId" style="display: none"/>
-                                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <span>小票名称:</span>
                                     <input type="text" id="receiptName"/>
                                 </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <span>小票类型:</span>
                                     <select id="receiptType" onchange="receiptTypeSelect()">
                                         <option value="SO">销售单据</option>
@@ -505,9 +572,10 @@
                                         <option value="PR">采购退货</option>
                                         <option value="SR">销售退货</option>
                                         <option value="TR">调拨单</option>
+                                        <option value="ST">营业额统计</option>
                                     </select>
                                 </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4	col-lg-4">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <span>公共类型:</span>
                                     <select id="commonType">
                                         <option value="1">否</option>
@@ -518,7 +586,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12	col-lg-12 Print-Bg-Top-div">
-                        <div class="col-xs-10 col-sm-10 col-md-10	col-lg-10">
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                             <div class="headTitle">
                                 <h3 onclick="selectheadPrint()">
                                     <span style="font-size: 14px;">头部打印</span>
@@ -724,6 +792,59 @@
                                             <div class="stecs on" data-name="remark" onclick="selectThis(this,'remarkTR')">
                                                 <i></i>
                                                 <span>备注</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="headTitleDiv" id="headPrintST" style="display: none">
+                                    <ul>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="storeName" onclick="selectThis(this,'storeNameST')">
+                                                <i></i>
+                                                <span>门店名称</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="countTime" onclick="selectThis(this,'countTimeST')">
+                                                <i></i>
+                                                <span>销售周期</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="totalPrice" onclick="selectThis(this,'totalPriceST')">
+                                                <i></i>
+                                                <span>总销售额</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="xianjinzhifu" onclick="selectThis(this,'xianjinzhifuST')">
+                                                <i></i>
+                                                <span>现金支付</span>
+                                            </div>
+                                        </li>
+
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="wechat" onclick="selectThis(this,'wechatST')">
+                                                <i></i>
+                                                <span>微信支付</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="alipay" onclick="selectThis(this,'alipayST')">
+                                                <i></i>
+                                                <span>支付宝</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="cardPay" onclick="selectThis(this,'cardPayST')">
+                                                <i></i>
+                                                <span>银行卡</span>
+                                            </div>
+                                        </li>
+                                        <li class="headTitleLi">
+                                            <div class="stecs on" data-name="yuezhifu" onclick="selectThis(this,'yuezhifuST')">
+                                                <i></i>
+                                                <span>余额支付</span>
                                             </div>
                                         </li>
                                     </ul>
@@ -1878,9 +1999,7 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <jsp:include page="../layout/footer.jsp"></jsp:include>
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="../base/unit_dialog.jsp"></jsp:include>

@@ -4,7 +4,6 @@ var LODOP; //声明为全局变量
 
 
 $(function () {
-    debugger
     if(groupid==="JMS") {
         $("#isshowA4").hide();
         $("#receiptType").html(" <option value='SO'>销售单据</option><option value='SR'>销售退货</option>");
@@ -18,11 +17,50 @@ $(function () {
 });
 function selectheadPrint() {
     $("#footerPrint").hide();
-    $("#headPrint").show();
+    var receiptType=$("#receiptType").val();
+    if(receiptType=="PI"){
+        $("#headPrint").hide();
+        $("#headPrintPI").show();
+        $("#headPrintPR").hide();
+        $("#headPrintTR").hide();
+        $("#headPrintST").hide();
+    }else if(receiptType=="PR"){
+        $("#headPrint").hide();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").show();
+        $("#headPrintTR").hide();
+        $("#headPrintST").hide();
+    }else if(receiptType=="TR") {
+        $("#headPrint").hide();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").hide();
+        $("#headPrintTR").show();
+        $("#headPrintST").hide();
+    }else if(receiptType=="ST") {
+        $("#headPrint").hide();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").hide();
+        $("#headPrintTR").hide();
+        $("#headPrintST").show();
+
+        $("#edit-dialog").hide();
+        $("#printFoot").hide();
+    }else{
+        $("#headPrint").show();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").hide();
+        $("#headPrintTR").hide();
+        $("#headPrintST").hide();
+    }
 }
 function selectfoorerPrint() {
     $("#footerPrint").show();
     $("#headPrint").hide();
+    $("#headPrintPI").hide();
+    $("#headPrintPR").hide();
+    $("#headPrintSR").hide();
+    $("#headPrintTR").hide();
+    $("#headPrintST").hide();
 }
 function selectRuleReceipt(sum) {
     if(sum=="A4"){
@@ -48,7 +86,6 @@ function selectRuleReceipt(sum) {
 
         });
     }else if(sum=="A4N0Size"){
-        debugger
         $("#A4NoSizePrint").show();
         $("#SanLianPrint").hide();
         $("#A4Print").hide();
@@ -409,8 +446,10 @@ function savePrint() {
             printTop="printTopPI";
         }else if($("#receiptType").val()=="PR"){
             printTop="printTopPR";
-        }else if($("#receiptType").val()=="TR"){
-            printTop="printTopTR";
+        }else if($("#receiptType").val()=="TR") {
+            printTop = "printTopTR";
+        }else if($("#receiptType").val()=="ST") {
+            printTop = "printTopST";
         }else {
             printTop="printTop";
         }
@@ -464,6 +503,7 @@ function savePrint() {
                         str+="LODOP.ADD_PRINT_TEXTA("+id+",0,"+leftA+","+widthA+","+printParameter.aRowheight+","+meessage8+");";
                         str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
                         if(printCode==""){
+                            debugger;
                             printCode+=$(this).data("name");
                         }else {
                             printCode+=","+$(this).data("name");
@@ -488,55 +528,58 @@ function savePrint() {
                 }
             }
         });
-        var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
-        if($("#receiptType").val()=="TR"){
-            var html="\"<body><table style='text-align: center;font-size:12px;'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr><th align='left' nowrap='nowrap' style='border:0px;height: 20px;'>商品</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>数量</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>原价</th></tr></thead><tbody><tr style='border-top:1px dashed black;padding-top:5px;'><td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td><td align='right' style='border-top:1px dashed black;padding-top:5px;'>0</td><td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td></tr></tbody></table></body>\"";
-        }else{
-            var html="\"<body><table style='text-align: center;font-size:12px;'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr><th align='left' nowrap='nowrap' style='border:0px;height: 20px;'>商品</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>数量</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>原价</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>折后价</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>金额</th></tr></thead><tbody><tr style='border-top:1px dashed black;padding-top:5px;'><td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td><td align='right' style='border-top:1px dashed black;padding-top:5px;'>0</td><td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td><td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td><td align='right' style='border-top:1px dashed black;padding-top:5px;'>0</td></tr></tbody></table></body>\"";
-        }
-        str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
-        str+="LODOP.SET_PRINT_STYLEA(0,\"ItemName\",\"baseHtml\");";
-        sum=0;
-        $("#printFoot").find(".col-xs-12").each(function (index,element) {
-            if(!$(this).is(":hidden")){
-                if($(this).attr("id")!="footExtend"){
-                    var id="\""+$(this).attr("id")+"\"";
-                    var meessage4="\""+$(this).find(".col-xs-4").find("span").text()+"\"";
-                    var meessage8="\""+$(this).find(".col-xs-8").find("span").text()+"\"";
-                    var width=parseInt(receiptWith/3*1);
-                    var widthA=parseInt(receiptWith/3*2);
-                    var leftA=width+10
-                    var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
-                    str+="LODOP.ADD_PRINT_TEXT("+top+",10,"+width+","+printParameter.aRowheight+","+meessage4+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                    str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+leftA+","+widthA+","+printParameter.aRowheight+","+meessage8+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                    if(printCode==""){
-                        if($(this).attr("id")!=undefined){
-                            printCode+=$(this).attr("id");
-                        }
-                    }else {
-                        if($(this).attr("id")!=undefined) {
-                            printCode += "," + $(this).attr("id");
-                        }
-                    }
-
-                }else{
-                    var a=$("#footExtendWrite").val();
-                    console.log(a);
-                    var messge=$("#footExtendWrite").val().replace(/<br>/g,"\\n")
-                    console.log(messge);
-                    messge="\""+messge+"\"";
-                    console.log(messge);
-                    str+="LODOP.ADD_PRINT_TEXT("+((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight)+",10,"+parseInt(receiptWith)+","+printParameter.aRowheight+","+messge+");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
-                    str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
-                }
-                sum++;
+        if(!$("#receiptType").val()=="ST"){
+            var top=((sum)*printParameter.aRowheight+(sum)*printParameter.intervalHeight);
+            if($("#receiptType").val()=="TR"){
+                var html="\"<body><table style='text-align: center;font-size:12px;'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr><th align='left' nowrap='nowrap' style='border:0px;height: 20px;'>商品</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>数量</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>原价</th></tr></thead><tbody><tr style='border-top:1px dashed black;padding-top:5px;'><td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td><td align='right' style='border-top:1px dashed black;padding-top:5px;'>0</td><td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td></tr></tbody></table></body>\"";
+            }else{
+                var html="\"<body><table style='text-align: center;font-size:12px;'><thead style='text-align:center' border='0' cellspacing='0' cellpadding='0' width='100%' align='center'><tr><th align='left' nowrap='nowrap' style='border:0px;height: 20px;'>商品</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>数量</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>原价</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>折后价</th><th align='right' nowrap='nowrap' style='border:0px;height: 20px;'>金额</th></tr></thead><tbody><tr style='border-top:1px dashed black;padding-top:5px;'><td align='left' style='border-top:1px dashed black;padding-top:5px;'>合计:</td><td align='right' style='border-top:1px dashed black;padding-top:5px;'>0</td><td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td><td style='border-top:1px dashed black;padding-top:5px;'>&nbsp;</td><td align='right' style='border-top:1px dashed black;padding-top:5px;'>0</td></tr></tbody></table></body>\"";
             }
-        });
+            str+="LODOP.ADD_PRINT_HTM("+top+",10,"+receiptWith+","+receiptHight+","+html+");";
+            str+="LODOP.SET_PRINT_STYLEA(0,\"ItemName\",\"baseHtml\");";
+            sum=0;
+            $("#printFoot").find(".col-xs-12").each(function (index,element) {
+                if(!$(this).is(":hidden")){
+                    if($(this).attr("id")!="footExtend"){
+                        var id="\""+$(this).attr("id")+"\"";
+                        var meessage4="\""+$(this).find(".col-xs-4").find("span").text()+"\"";
+                        var meessage8="\""+$(this).find(".col-xs-8").find("span").text()+"\"";
+                        var width=parseInt(receiptWith/3*1);
+                        var widthA=parseInt(receiptWith/3*2);
+                        var leftA=width+10
+                        var top=((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight);
+                        str+="LODOP.ADD_PRINT_TEXT("+top+",10,"+width+","+printParameter.aRowheight+","+meessage4+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                        str+="LODOP.ADD_PRINT_TEXTA("+id+","+top+","+leftA+","+widthA+","+printParameter.aRowheight+","+meessage8+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                        if(printCode==""){
+                            if($(this).attr("id")!=undefined){
+                                printCode+=$(this).attr("id");
+                            }
+                        }else {
+                            if($(this).attr("id")!=undefined) {
+                                printCode += "," + $(this).attr("id");
+                            }
+                        }
+
+                    }else{
+                        var a=$("#footExtendWrite").val();
+                        console.log(a);
+                        var messge=$("#footExtendWrite").val().replace(/<br>/g,"\\n")
+                        console.log(messge);
+                        messge="\""+messge+"\"";
+                        console.log(messge);
+                        str+="LODOP.ADD_PRINT_TEXT("+((sum)*printParameter.aRowheight+(sum+1)*printParameter.intervalHeight)+",10,"+parseInt(receiptWith)+","+printParameter.aRowheight+","+messge+");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"LinkedItem\",\"baseHtml\");";
+                        str+="LODOP.SET_PRINT_STYLEA(0,\"FontSize\","+receiptFontSize+");";
+                    }
+                    sum++;
+                }
+            });
+        }
+
         console.log(str);
         console.log(printCode);
         //得到需要保存的数据
@@ -637,18 +680,30 @@ function findPrintSet(sum) {
                                 $("#"+name).show();
                             }
                         });
-                    }else if($("#receiptType").val()=="TR"){
-                        $("#headPrintTR").find("div").each(function (index,element) {
-                            var name=$(this).data("name");
+                    }else if($("#receiptType").val()=="TR") {
+                        $("#headPrintTR").find("div").each(function (index, element) {
+                            var name = $(this).data("name");
 
-                            if(!(result.printCode.indexOf(name)!= -1)){
-                                $(this).attr("class","stecs");
-                                $("#"+name).hide();
-                            }else{
-                                $(this).attr("class","stecs on");
-                                $("#"+name).show();
+                            if (!(result.printCode.indexOf(name) != -1)) {
+                                $(this).attr("class", "stecs");
+                                $("#" + name).hide();
+                            } else {
+                                $(this).attr("class", "stecs on");
+                                $("#" + name).show();
                             }
                         });
+                    }else if($("#receiptType").val()=="ST") {
+                            $("#headPrintST").find("div").each(function (index, element) {
+                                var name = $(this).data("name");
+
+                                if (!(result.printCode.indexOf(name) != -1)) {
+                                    $(this).attr("class", "stecs");
+                                    $("#" + name).hide();
+                                } else {
+                                    $(this).attr("class", "stecs on");
+                                    $("#" + name).show();
+                                }
+                            });
                     }else {
                         $("#headPrint").find("div").each(function (index,element) {
                             var name=$(this).data("name");
@@ -919,7 +974,6 @@ function findPrintSetSanLian(sum) {
                          }
                     });
                     $("#"+printTopSanLian).find("span").each(function (index,element) {
-                        debugger
                         var name=$(this).data("name");
                         if(!(result.printCode.indexOf(name)!= -1)){
                             $(this).hide();
@@ -1037,28 +1091,57 @@ function receiptTypeSelect() {
         $("#printTopPI").show();
         $("#printTopPR").hide();
         $("#printTopTR").hide();
+        $("#printTopST").hide();
         $("#headPrint").hide();
         $("#headPrintPI").show();
         $("#headPrintPR").hide();
         $("#headPrintTR").hide();
+        $("#headPrintST").hide();
+
+        $("#edit-dialog").show();
+        $("#printFoot").show();
     }else if(receiptType=="PR"){
         $("#printTop").hide();
         $("#printTopPI").hide();
         $("#printTopPR").show();
         $("#printTopTR").hide();
+        $("#printTopST").hide();
         $("#headPrint").hide();
         $("#headPrintPI").hide();
         $("#headPrintPR").show();
         $("#headPrintTR").hide();
+        $("#headPrintST").hide();
+
+        $("#edit-dialog").show();
+        $("#printFoot").show();
     }else if(receiptType=="TR") {
         $("#printTop").hide();
         $("#printTopPI").hide();
         $("#printTopPR").hide();
         $("#printTopTR").show();
+        $("#printTopST").hide();
         $("#headPrint").hide();
         $("#headPrintPI").hide();
         $("#headPrintPR").hide();
         $("#headPrintTR").show();
+        $("#headPrintST").hide();
+
+        $("#edit-dialog").show();
+        $("#printFoot").show();
+    }else if(receiptType=="ST") {
+        $("#printTop").hide();
+        $("#printTopPI").hide();
+        $("#printTopPR").hide();
+        $("#printTopTR").hide();
+        $("#printTopST").show();
+        $("#headPrint").hide();
+        $("#headPrintPI").hide();
+        $("#headPrintPR").hide();
+        $("#headPrintTR").hide();
+        $("#headPrintST").show();
+
+        $("#edit-dialog").hide();
+        $("#printFoot").hide();
     }else{
         $("#printTop").show();
         $("#printTopPI").hide();
@@ -1068,7 +1151,10 @@ function receiptTypeSelect() {
         $("#headPrintPI").hide();
         $("#headPrintPR").hide();
         $("#headPrintTR").hide();
+        $("#headPrintST").hide();
 
+        $("#edit-dialog").show();
+        $("#printFoot").show();
     }
 
 }
@@ -1870,7 +1956,6 @@ function saveSanLian() {
 
         });
         html+="</tr>"
-        debugger
         var writeFootMessage=$("#footExtendWriteSanLian").val();
         var writeFootArray=writeFootMessage.split("<br>");
         for(var i=0;i<writeFootArray.length;i++){
@@ -1901,7 +1986,6 @@ function saveSanLian() {
             ruleReceipt:recordRule,
             commonType:$("#commonTypeSanLian").val()
         }
-        debugger
         saveAjax(printSet);
     }else{
         $.gritter.add({
@@ -1969,7 +2053,6 @@ function saveA4NoSize() {
                 var message=$(this).html();
                 var classname=$(this).data("name");
                 console.log(classname);
-                debugger
                 if(classname!=undefined&&classname!=""){
                     tabbleEndFoot+="<tr><th width='100%'align='middle' colspan='15' id='"+classname+"' style='font-size:15px;padding-top:5px'>xx</th></tr>"
                     if(printCode==""){

@@ -9,9 +9,13 @@ import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.sys.PrintSetDao;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
+import com.casesoft.dmc.model.shop.ShopTurnOver;
 import com.casesoft.dmc.model.sys.PrintSet;
+import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.service.logistics.*;
+import com.casesoft.dmc.service.shop.payDetailService;
+import com.casesoft.dmc.service.sys.impl.UnitService;
 import com.casesoft.dmc.service.sys.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +51,13 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
 
     @Autowired
     private GuestViewService guestViewService;
+
+    @Autowired
+    private payDetailService payDetailService;
+
+    @Autowired
+    private UnitService unitService;
+
     @Override
     public Page<PrintSet> findPage(Page<PrintSet> page, List<PropertyFilter> filters) {
         return null;
@@ -271,6 +282,31 @@ public class PrintSetService implements IBaseService<PrintSet,String> {
             map.put("cont",mapcont);
             map.put("contDel",billDtlByBillNo);
         }
+
+        return map;
+    }
+    public Map<String,Object> printCountMessage(User user,String id, Page<ShopTurnOver> page,String GED_billDate,String LED_billDate, String shopId, String payType){
+        Map<String,Object> map=new HashMap<String,Object>();
+        Map<String,Object> mapcont=new HashMap<String,Object>();
+        String hql="from PrintSet t where t.id=?";
+        PrintSet printSet = this.printSetDao.findUnique(hql, new Object[]{Long.parseLong(id)});
+        page = this.payDetailService.getPriceCount(page,GED_billDate,LED_billDate,shopId,payType);
+        List<ShopTurnOver> shopTurnOvers = page.getRows();
+        String userId = user.getId();
+        Unit unit = null;
+        if (!userId.equals("admin")) {
+            unit = unitService.findUnitByCode(user.getOwnerId(),4);
+            mapcont.put("storeName",unit.getName());
+        }
+        else {
+            mapcont.put("storeName","Ancient Stone");
+        }
+
+        mapcont.put("title","营业额统计");
+        map.put("print",printSet);
+        map.put("cont",mapcont);
+        map.put("contDel",shopTurnOvers);
+
         return map;
     }
 

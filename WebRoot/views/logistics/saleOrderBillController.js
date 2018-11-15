@@ -2774,7 +2774,6 @@ function _resetForm(){
 function doPrint() {
 
     /*$("#editForm").resetForm();*/
-    debugger;
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");
     var billNo = $("#edit_billNo").val();

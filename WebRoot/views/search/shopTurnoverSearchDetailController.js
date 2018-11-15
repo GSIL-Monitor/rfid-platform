@@ -29,6 +29,8 @@ function initGrid() {
                             return '支付宝支付';
                         case 'cardpay':
                             return '刷卡支付';
+                        case 'yuezhifu':
+                            return '余额支付';
                     }
                 }
             },
