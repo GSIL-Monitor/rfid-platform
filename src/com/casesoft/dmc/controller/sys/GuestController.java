@@ -398,10 +398,18 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
                 if(updatePre){
-                    if (preCustomer.getStatus()==1){
-                        preCustomer.setStatus(0);
+                    if (CommonUtil.isNotBlank(preCustomer)){
+                        if (preCustomer.getStatus()==1){
+                            preCustomer.setStatus(0);
+                        }else {
+                            preCustomer.setStatus(1);
+                        }
                     }else {
-                        preCustomer.setStatus(1);
+                        if (guest.getStatus()==1){
+                            guest.setStatus(0);
+                        }else {
+                            guest.setStatus(1);
+                        }
                     }
                     this.guestService.updateUnit(guest,preCustomer);
                     if (CommonUtil.isNotBlank(preCustomer)){
@@ -471,10 +479,18 @@ public class GuestController extends BaseController implements IBaseInfoControll
                 guest.setUpdaterId(this.getCurrentUser().getId());
                 guest.setUpdateTime(new Date());
                 if(updatePre){
-                    if (preUnit.getStatus()==1){
-                        preUnit.setStatus(0);
+                    if (CommonUtil.isNotBlank(preUnit)){
+                        if (preUnit.getStatus()==1){
+                            preUnit.setStatus(0);
+                        }else {
+                            preUnit.setStatus(1);
+                        }
                     }else {
-                        preUnit.setStatus(1);
+                        if (guest.getStatus()==1){
+                            guest.setStatus(0);
+                        }else {
+                            guest.setStatus(1);
+                        }
                     }
                     this.guestService.updateCustomer(guest,preUnit);
                 }else {
