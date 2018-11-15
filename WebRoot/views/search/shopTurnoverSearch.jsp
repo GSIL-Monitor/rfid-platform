@@ -45,20 +45,23 @@
                                             <span class="bigger-110">刷新</span>
                                         </button>
                                     </div>
-                                    <div class="btn-group btn-group-sm pull-right">
+                                    <%--<div class="btn-group btn-group-sm pull-right">
                                         <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
                                             <i class="ace-icon fa fa-binoculars"></i>
                                             <span class="bigger-110">高级查询</span>
                                         </button>
-                                    </div>
+                                    </div>--%>
                                 </div>
                             </div>
                             <div class="hr hr4"></div>
 
-                            <div class="widget-main" id="searchPanel" style="display: none">
+                            <div class="widget-main" id="searchPanel">
                                 <form class="form-horizontal" role="form" id="searchForm">
 
                                     <div class="form-group">
+
+                                        <input type="hidden" name="id" id="id">
+                                        <input type="hidden" name="nd" id="nd" value="1542250486976">
                                         <label class="col-md-1 control-label"
                                                for="search_createTime">创建日期</label>
                                         <div class="col-md-3">
@@ -111,7 +114,12 @@
                                             </button>
                                             <button type="reset" class="btn btn-sm btn-warning">
                                                 <i class="ace-icon fa fa-undo"></i>
-                                                <span class="bigger-110">清空</span></button>
+                                                <span class="bigger-110">清空</span>
+                                            </button>
+                                            <button id='SODtl_doPrint' type='button' style='margin: 8px' class='btn btn-sm btn-primary' onclick="doPrint()">
+                                                <i class='ace-icon fa fa-print'></i>
+                                                <span class='bigger-110'>打印</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -136,7 +144,9 @@
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="../logistics/saleOrderBillPrint.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/search/shopTurnoverSearchController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
 </body>
 </html>

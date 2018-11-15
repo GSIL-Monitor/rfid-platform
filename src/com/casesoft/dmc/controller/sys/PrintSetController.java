@@ -7,10 +7,12 @@ import com.casesoft.dmc.core.controller.IBaseInfoController;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
+import com.casesoft.dmc.model.shop.ShopTurnOver;
 import com.casesoft.dmc.model.sys.GuestView;
 import com.casesoft.dmc.model.sys.PrintSet;
 import com.casesoft.dmc.model.sys.Unit;
 import com.casesoft.dmc.model.sys.User;
+import com.casesoft.dmc.service.shop.payDetailService;
 import com.casesoft.dmc.service.sys.GuestViewService;
 import com.casesoft.dmc.service.sys.PrintSetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     private PrintSetService  printSetService;
     @Autowired
     private GuestViewService guestViewService;
+
 
     @Override
     public Page<PrintSet> findPage(Page<PrintSet> page) throws Exception {
@@ -138,6 +141,22 @@ public class PrintSetController extends BaseController implements IBaseInfoContr
     public MessageBox printMessage(String id,String billno){
         try {
             Map<String, Object> map = this.printSetService.printMessage(id, billno);
+            return new MessageBox(true, "查询成功",map);
+        }catch (Exception e){
+            return new MessageBox(false, "查询失败");
+        }
+
+    }
+    @RequestMapping(value="/printCountMessage")
+    @ResponseBody
+    public MessageBox printCountMessage(String id, Page<ShopTurnOver> page,String GED_billDate, String LED_billDate,String shopId,String payType){
+        try {
+            page.setPageNo(1);
+            page.setSidx("id");
+            page.setSort("desc");
+            page.setPageSize(50);
+            User user = this.getCurrentUser();
+            Map<String, Object> map = this.printSetService.printCountMessage(user,id,page,GED_billDate,LED_billDate,shopId,payType);
             return new MessageBox(true, "查询成功",map);
         }catch (Exception e){
             return new MessageBox(false, "查询失败");
