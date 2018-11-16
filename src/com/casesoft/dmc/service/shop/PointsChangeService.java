@@ -178,11 +178,13 @@ public class PointsChangeService extends BaseService<PointsChange, String> {
                 String[] codes = uniqueCodes.split(",");
                 for (String code : codes) {
                     List<BillRecord> BillRecords = this.pointsChangeDao.find("from BillRecord where code = ? and billNo like 'SO%' order by billNo desc", code);
-                    List<PointsChange> pointsChanges = this.pointsChangeDao.find("from PointsChange where orderId = ? and orderId like 'SO%' and status = 1 order by recordTime desc", BillRecords.get(0).getBillNo());
-                    if (CommonUtil.isNotBlank(pointsChanges)) {
-                        Double actPrice = saleOrderReturnBillDtl.getActPrice();
-                        Long points = (long) Math.floor(actPrice * pointsChanges.get(0).getRatio());
-                        totPoints += points;
+                    if (CommonUtil.isNotBlank(BillRecords)) {
+                        List<PointsChange> pointsChanges = this.pointsChangeDao.find("from PointsChange where orderId = ? and orderId like 'SO%' and status = 1 order by recordTime desc", BillRecords.get(0).getBillNo());
+                        if (CommonUtil.isNotBlank(pointsChanges)) {
+                            Double actPrice = saleOrderReturnBillDtl.getActPrice();
+                            Long points = (long) Math.floor(actPrice * pointsChanges.get(0).getRatio());
+                            totPoints += points;
+                        }
                     }
                 }
             }

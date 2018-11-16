@@ -90,6 +90,36 @@ public class Product extends BaseProduct implements java.io.Serializable {
 		this.sizeId = sizeId;
 		this.remark = remark;
 	}
+	public Product(String id,String code,String styleId, String colorId, String sizeId,int isDeton,
+				   String remark,String styleName,String class1,String class2,String class3,
+				   String class4,String class5,String class6,String class7,String class8,String class9,
+				   String class10,String styleRemark,Double preCast,Double puPrice,Double wsPrice,
+				   Double price,String sizeName){
+		this.id = id;
+		this.code =code;
+		this.styleId = styleId;
+		this.colorId = colorId;
+		this.sizeId = sizeId;
+		this.remark =remark;
+		this.styleName = styleName;
+		this.class1 = class1;
+		this.class2 = class2;
+		this.class3 = class3;
+		this.class4 = class4;
+		this.class5 = class5;
+		this.class6 = class6;
+		this.class7 = class7;
+		this.class8 = class8;
+		this.class9 = class9;
+		this.class10 = class10;
+		this.styleRemark = styleRemark;
+		this.preCast = preCast;
+		this.puPrice = puPrice;
+		this.wsPrice = wsPrice;
+		this.price = price;
+		this.sizeName = sizeName;
+
+	}
     @Column(length = 50)
 	public String getSizeSortId() {
 		return sizeSortId;
@@ -291,5 +321,6 @@ public class Product extends BaseProduct implements java.io.Serializable {
 			return false;
 		return true;
 	}
+
 
 }

@@ -485,8 +485,8 @@ public class ProductUtil {
     public static List<Product> convertToPageVo(List<Product> rows) {
         for (Product p : rows) {
             Style style = CacheManager.getStyleById(p.getStyleId());
-            if (null != style) {
-                p.setStyleSortName("" + style.getStyleEname());
+            if (CommonUtil.isNotBlank(style)) {
+               /* p.setStyleSortName("" + style.getStyleEname());*/
                 p.setStyleName("" + style.getStyleName());
                 p.setPrice(style.getPrice());
                 p.setStyleRemark("" + style.getRemark());
