@@ -404,14 +404,15 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         }else {
                             preCustomer.setStatus(1);
                         }
+                        this.guestService.updateUnit(guest,preCustomer);
                     }else {
                         if (guest.getStatus()==1){
                             guest.setStatus(0);
                         }else {
                             guest.setStatus(1);
                         }
+                        this.guestService.save(guest);
                     }
-                    this.guestService.updateUnit(guest,preCustomer);
                     if (CommonUtil.isNotBlank(preCustomer)){
                         List<Customer> customerList = new ArrayList<>();
                         customerList.add(preCustomer);
@@ -419,7 +420,6 @@ public class GuestController extends BaseController implements IBaseInfoControll
                     }
                 }else{
                     this.guestService.save(guest);
-
                 }
                 if (CommonUtil.isNotBlank(guest)){
                     List<Unit> unitList = new ArrayList<>();
@@ -485,14 +485,15 @@ public class GuestController extends BaseController implements IBaseInfoControll
                         }else {
                             preUnit.setStatus(1);
                         }
+                        this.guestService.updateCustomer(guest,preUnit);
                     }else {
                         if (guest.getStatus()==1){
                             guest.setStatus(0);
                         }else {
                             guest.setStatus(1);
                         }
+                        this.customerService.save(guest);
                     }
-                    this.guestService.updateCustomer(guest,preUnit);
                 }else {
                     /*List<String> number = this.customerService.findId(entity.getTel());
                     if (number.size()==1){

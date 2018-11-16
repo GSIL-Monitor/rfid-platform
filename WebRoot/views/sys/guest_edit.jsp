@@ -51,7 +51,7 @@
                         <form class="form-horizontal" role="form" id="editForm" onkeydown="if(event.keyCode==13)return false;">
                             <div class="form-group">
                                 <input name="id" value="${guest.id}" id="edit_id" hidden/>
-                                <input name="preType" value="${guest.type}" hidden/>
+                                <input name="preType" value="${guest.type}" id="edit_preType" hidden/>
                                 <label class="col-xs-4 col-sm-4 col-md-1 col-lg-1 control-label text-right"
                                        for="edit_name">
                                     <span style="color: #ff0000;">*</span>
