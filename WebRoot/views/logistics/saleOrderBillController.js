@@ -14,6 +14,7 @@ var showScanDialog = false;
 var isCheckWareHouse=false;//是否检测出库仓库
 var slaeOrder_status = "0";
 var outStatus = null;//出库状态
+var oldPayPrice=0;//实付金额
 $(function () {
     load().then(function (data) {
         /*初始化左侧grig*/
@@ -127,7 +128,8 @@ function initSearchGrid() {
             {name: 'afterBalance', label: '售后余额', width: 20, hidden: true},
             {name: 'actPrice',label: '应付金额',width: 20},
             {name: 'payPrice',label: '实付金额', width: 20},
-            {name: 'remark', label: '备注',  width: 20}
+            {name: 'remark', label: '备注',  width: 20},
+            {name: 'returnBillNo',hidden: true}
         ],
         viewrecords: true,
         autowidth: true,
@@ -190,6 +192,7 @@ function initDetailData(rowid){
 
 }
 function fullDetailData(rowData) {
+    oldPayPrice=0;
     $("#editForm").setFromData(rowData);
     slaeOrder_status = rowData.status;
     if (slaeOrder_status != "0" && userId != "admin") {
@@ -210,6 +213,7 @@ function fullDetailData(rowData) {
     initeditGrid(rowData.billNo);
     initButtonGroup(slaeOrder_status);
     $("#addDetailgrid").trigger("reloadGrid");
+    oldPayPrice = rowData.payPrice
 }
 /**
  * 新增单据调用
@@ -2770,7 +2774,6 @@ function _resetForm(){
 function doPrint() {
 
     /*$("#editForm").resetForm();*/
-    debugger;
     $("#edit-dialog-print").modal('show');
     $("#form_code").removeAttr("readOnly");
     var billNo = $("#edit_billNo").val();
@@ -3145,5 +3148,88 @@ function changeTr() {
         bootbox.alert("单号不能为空");
         cs.closeProgressBar();
     }
+}
+/*
+应收支付弹框
+ */
+function payPriceShow() {
+    var newPayPrice = $("#edit_payPrice").val();
+    var billNo=$("#edit_billNo").val();
+    if (billNo!=""){
+        if (newPayPrice!=0){
+            dialogOpenPage = "saleOrder";
+            $("#pay-Detail-dialog").modal("show");
+            initPayDetail();
+        }else {
+            patByBalance();
+        }
+    }else {
+        bootbox.alert("请先保存单据");
+    }
 
+}
+
+function payPriceChange() {
+    var billNo=$("#edit_billNo").val();
+   var newPayPrice = $("#edit_payPrice").val();
+   if (billNo!=""&&newPayPrice!=0&&newPayPrice!=oldPayPrice){
+       payPriceShow();
+   }
+}
+
+function patByBalance() {
+    var billNo=$("#edit_billNo").val();
+    var shop= defaultWarehId;
+    var returnBillNo =$("#edit_returnBillNo").val();
+    var customerId = userId;
+    var payPrice =  $("#edit_payPrice").val();
+    var actPayPrice = $("#edit_actPrice").val();
+    var returnPrice=0;
+    var payType="yuezhifu";
+    $.ajax({
+        url: basePath + "/sys/property/changePayDetail.do",
+        dataType: 'json',
+        data: {
+            billNo: billNo
+        },
+        success: function (result) {
+            cs.closeProgressBar();
+            if (result.msg) {
+                $.ajax({
+                    url: basePath + "/sys/property/savePayPriceWS.do",
+                    dataType: 'json',
+                    data: {
+                        billNo: billNo,
+                        shop: shop,
+                        returnBillNo: returnBillNo,
+                        customerId: customerId,
+                        payPrice: payPrice,
+                        actPayPrice: actPayPrice,
+                        returnPrice: returnPrice,
+                        payType: payType
+                    },
+                    success: function (result) {
+                        cs.closeProgressBar();
+                        if (result.msg) {
+                            $.gritter.add({
+                                text:"余额支付保存成功",
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                        }
+                        else {
+                            $.gritter.add({
+                                text:"余额支付保存失败",
+                                class_name: 'gritter-success  gritter-light'
+                            });
+                        }
+                    }
+                });
+            }else {
+                $.gritter.add({
+                    text:"余额支付保存失败",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+        }
+    });
 }

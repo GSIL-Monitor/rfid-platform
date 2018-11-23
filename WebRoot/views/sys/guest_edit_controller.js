@@ -56,7 +56,8 @@ function updateGuest(){
     }
     $("#edit_type").removeAttr("disabled");
     cs.showProgressBar();
-    $.post(basePath + "/sys/guest/update.do", $("#editForm")
+    var preType = $("#edit_preType").val();
+    $.post(basePath + "/sys/guest/update.do?preType="+preType, $("#editForm")
         .serialize(), function (result) {
         cs.closeProgressBar();
         if (result.success == true || result.success == 'true') {

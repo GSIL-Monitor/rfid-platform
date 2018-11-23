@@ -94,7 +94,7 @@ public class payDetailService extends BaseService<PayDetail, String> {
                 "FROM\n" +
                 "  SHOP_PAYDETAIL s\n");
         sql.append("LEFT JOIN SYS_UNIT u on s.SHOP = u.id\n" +
-                "where s.STATUS = '1'\n");
+                "where s.STATUS = '1' and u.TYPE=4\n");
         if(CommonUtil.isNotBlank(GED_billDate)){
             sql.append("and s.PAYDATE >= to_char(to_date('"+GED_billDate+"','yyyy-mm-dd'),'yyyy-mm-dd')\n");
         }
@@ -114,5 +114,9 @@ public class payDetailService extends BaseService<PayDetail, String> {
                 "  s.PAYDATE");
         page = this.shopTurnoverDao.findPageBySQl(page, ShopTurnOver.class, sql.toString(), null);
         return page;
+    }
+
+    public void changePayDetail(String billNo) {
+        this.payDetailDao.batchExecute("update PayDetail set status='0' where billNo=?",billNo);
     }
 }

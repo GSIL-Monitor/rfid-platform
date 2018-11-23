@@ -11,7 +11,6 @@
         </div>
         <div class="modal-content no-padding" style="width:100%;height:650px;">
             <div class="modal-body ">
-
                 <div class="col-sm-6" id="search_style_Panel">
                     <div class="col-xs-12 col-sm-12">
                         <div class="widget-box light-border">

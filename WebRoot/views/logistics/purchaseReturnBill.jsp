@@ -204,7 +204,7 @@
                                                     <label class="col-md-1 control-label"
                                                            for="edit_returnBillNo">采购单关联</label>
                                                     <div class="col-md-3">
-                                                        <input class="form-control date-picker" id="edit_returnBillNo"
+                                                        <input class="form-control" id="edit_returnBillNo"
                                                                name="returnBillNo"
                                                                type="text" readonly/>
                                                     </div>
