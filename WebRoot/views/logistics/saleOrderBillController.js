@@ -1380,6 +1380,10 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
+            "<button id='SODtl_addAllUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addAllUniqCode()'>" +
+            "    <i class='ace-icon fa fa-barcode'></i>" +
+            "    <span class='bigger-110'>批量扫码</span>" +
+            "</button>" +
             "<button id='SODtl_wareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
@@ -2359,11 +2363,25 @@ function outStockCheck() {
         return true;
     }
 }
-
+/**
+ * 批量扫码出库
+ */
+function edit_wareHouseOut() {
+    var ct = $("#edit_customerType").val();
+    billNo = $("#edit_billNo").val();
+    wareHouse=$("#edit_origId").val();
+    taskType = 0;
+    $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
+        $("#billInformationOutgrid").clearGridData();
+        $("#notThisOneOutgrid").clearGridData();
+    });
+    lodeBillInformationOutgrid();
+    initUniqeCodeGridColumn(ct);
+}
 /**
  * 扫码出库
  * */
-function edit_wareHouseOut() {
+/*function edit_wareHouseOut() {
     skuQty = {};
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
@@ -2382,7 +2400,7 @@ function edit_wareHouseOut() {
     initUniqeCodeGridColumn(ct);
     $("#codeQty").text(0);
     allCodes = "";
-}
+}*/
 
 /*
  * 扫码出库确认
@@ -2454,6 +2472,28 @@ function confirmWareHouseOut() {
         }
     });
     $("#add-uniqCode-dialog").modal('hide');
+}
+/**
+ * 批量入库
+ */
+function wareHouseIn() {
+    taskType = 1;
+    var destId = $("#edit_destId").val();
+    wareHouse = destId;
+    billNo = $("#edit_billNo").val();
+    var ct = $("#edit_customerType").val();
+    if (destId && destId != null) {
+
+        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationIngrid").clearGridData();
+            $("#notThisOneIngrid").clearGridData();
+        });
+        lodeBillInformationIngrid();
+        initUniqeCodeGridColumn(ct);
+        $("#codeQty").text(0);
+    } else {
+        bootbox.alert("入库仓库不能为空！");
+    }
 }
 /**
  * 入库方法
@@ -3231,5 +3271,15 @@ function patByBalance() {
                 });
             }
         }
+    });
+}
+
+function addAllUniqCode() {
+    var origId = $("#edit_origId").val();
+    taskType = 0;
+    wareHouse = origId;
+    billNo = $("#edit_billNo").val();
+    $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
+        $("#batchDetailgrid").clearGridData();
     });
 }

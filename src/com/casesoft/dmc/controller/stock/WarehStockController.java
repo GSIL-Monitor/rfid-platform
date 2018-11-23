@@ -1113,7 +1113,7 @@ public class WarehStockController extends BaseController {
      * "noInBill"List<EpcStock> 非本单商品
      * @Description
     **/
-    @RequestMapping("/checkUniqueCodesWS")
+    @RequestMapping("/checkUniqueCodes")
     @ResponseBody
     public MessageBox checkUniqueCodes(String uniqueCodes, String warehouseId, int type, Boolean isAdd, String rfidType, String billNo) throws Exception {
         this.logAllRequestParams();
