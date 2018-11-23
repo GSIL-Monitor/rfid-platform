@@ -392,4 +392,8 @@ public class Constant {
         public final static Integer SaleOrder2ReturnOrder = 3; //销售单关联生成退货单
         public final static Integer CMOrder2ReturnOrder = 4; //寄存单关联销售退货单
     }
+    public final static class RfidType{
+        public final static String UniqueCode = "code";
+        public final static String Epc = "epc";
+    }
 }

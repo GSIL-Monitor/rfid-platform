@@ -3,6 +3,7 @@ package com.casesoft.dmc.controller.stock;
 import com.alibaba.fastjson.JSON;
 import com.casesoft.dmc.cache.CacheManager;
 import com.casesoft.dmc.controller.product.StyleUtil;
+import com.casesoft.dmc.controller.syn.tool.BillUtil;
 import com.casesoft.dmc.controller.task.TaskUtil;
 import com.casesoft.dmc.core.Constant;
 import com.casesoft.dmc.core.controller.BaseController;
@@ -14,6 +15,7 @@ import com.casesoft.dmc.core.util.file.PropertyUtil;
 import com.casesoft.dmc.core.util.secret.EpcSecretUtil;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.search.DetailStockDao;
+import com.casesoft.dmc.model.erp.BillDtl;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.search.DetailStockChatView;
@@ -24,6 +26,8 @@ import com.casesoft.dmc.model.sys.User;
 import com.casesoft.dmc.model.tag.Epc;
 import com.casesoft.dmc.model.task.Business;
 import com.casesoft.dmc.model.task.Record;
+import com.casesoft.dmc.service.erp.ErpBillService;
+import com.casesoft.dmc.service.logistics.PurchaseOrderBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderBillService;
 import com.casesoft.dmc.service.logistics.SaleOrderReturnBillService;
 import com.casesoft.dmc.service.logistics.TransferOrderBillService;
@@ -70,6 +74,12 @@ public class WarehStockController extends BaseController {
     private UnitService unitService;
     @Autowired
     private TransferOrderBillService transferOrderBillService;
+
+    @Autowired
+    private PurchaseOrderBillService purchaseOrderBillService;
+
+    @Autowired
+    private ErpBillService erpBillService;
 
 
     @RequestMapping(value = "/index")
@@ -1039,7 +1049,7 @@ public class WarehStockController extends BaseController {
      **/
     @RequestMapping("/findScanCodeInfoWS")
     @ResponseBody
-    public MessageBox findScanCodeInfo(String codes, String userId,Integer type) {
+    public MessageBox findScanCodeInfo(String codes, String userId, Integer type) {
         String ownerId = CacheManager.getUserById(userId).getOwnerId();
         List<String> codeList = new ArrayList<>();
         List<EpcStock> errorList = new ArrayList<>();
@@ -1047,27 +1057,27 @@ public class WarehStockController extends BaseController {
             for (String code : codes.split(",")) {
                 codeList.add(code);
             }
-            List<EpcStock> epcStockList = this.epcStockService.findEpcCodes(CommonUtil.getSqlStrByList(codeList, EpcStock.class, "code"),type);
-            for(EpcStock epcStock : epcStockList){
+            List<EpcStock> epcStockList = this.epcStockService.findEpcCodes(CommonUtil.getSqlStrByList(codeList, EpcStock.class, "code"), type);
+            for (EpcStock epcStock : epcStockList) {
                 Unit u = CacheManager.getUnitByCode(epcStock.getWarehouseId());
-                if(CommonUtil.isNotBlank(u)){
+                if (CommonUtil.isNotBlank(u)) {
                     epcStock.setStorage(u.getName());
                 }
                 epcStock.setStyleName(CacheManager.getStyleNameById(epcStock.getStyleId()));
                 epcStock.setColorName(CacheManager.getColorNameById(epcStock.getColorId()));
                 epcStock.setSizeName(CacheManager.getSizeNameById(epcStock.getSizeId()));
-                if(!ownerId.equals(epcStock.getOwnerId())){
+                if (!ownerId.equals(epcStock.getOwnerId())) {
                     errorList.add(epcStock);
                 }
             }
-            if(errorList.size()>0){
-                return new MessageBox(false,"不是本店的唯一码",errorList);
+            if (errorList.size() > 0) {
+                return new MessageBox(false, "不是本店的唯一码", errorList);
             }
             //按照是否在库分组
-            Map<Integer,List<EpcStock>> epcStockMap  = epcStockList.stream().collect(Collectors.groupingBy(EpcStock::getInStock));
+            Map<Integer, List<EpcStock>> epcStockMap = epcStockList.stream().collect(Collectors.groupingBy(EpcStock::getInStock));
             //按照仓库分组
-            Map<String,List<EpcStock>> epcWarehouseMap  = epcStockList.stream().collect(Collectors.groupingBy(EpcStock::getWarehouseId));
-            if( type == Constant.InStock.InStore) {
+            Map<String, List<EpcStock>> epcWarehouseMap = epcStockList.stream().collect(Collectors.groupingBy(EpcStock::getWarehouseId));
+            if (type == Constant.InStock.InStore) {
                 //校验唯一码在库时候（出库，调整等用到）
                 if (epcWarehouseMap.size() > 1) {
                     return new MessageBox(false, "存在多个仓库", epcWarehouseMap.values());
@@ -1076,18 +1086,224 @@ public class WarehStockController extends BaseController {
                 } else {
                     return new MessageBox(true, "ok", epcStockList);
                 }
-            }else{
+            } else {
                 //校验唯一码不在库时候（入库用到）
-                if(CommonUtil.isNotBlank(epcStockMap.get(Constant.InStock.InStore))){
+                if (CommonUtil.isNotBlank(epcStockMap.get(Constant.InStock.InStore))) {
                     return new MessageBox(false, "存在不能入库唯一码", epcStockMap.get(Constant.InStock.InStore));
-                }else {
+                } else {
                     return new MessageBox(true, "ok", epcStockList);
                 }
             }
 
-        }else{
-            return new MessageBox(false,"没有唯一码信息");
+        } else {
+            return new MessageBox(false, "没有唯一码信息");
         }
+    }
+
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/22 11:16
+     * @Param uniqueCodes 上传唯一码数据 "['code1','code2']" json 数组 必填
+     * @Param warehouseId 仓库编号  必填
+     * @Param type 出入库类型 1入库，0出库,3盘点  必填
+     * @Param isAdd true,false 是否增加  必填
+     * @Param rfidType 唯一码类型 'code'或者'epc'
+     * @Param billNo 单号
+     * @return  返回messagebox reslut为 Map<String,List<EpcStock>>  "rightEpc":校验正确唯一码List<EpcStock>，"errorEpc":校验未通过唯一码List<EpcStock>
+     * "noInBill"List<EpcStock> 非本单商品
+     * @Description
+    **/
+    @RequestMapping("/checkUniqueCodesWS")
+    @ResponseBody
+    public MessageBox checkUniqueCodes(String uniqueCodes, String warehouseId, int type, Boolean isAdd, String rfidType, String billNo) throws Exception {
+        this.logAllRequestParams();
+        List<String> uniqueCodeList = new ArrayList<>();
+        Map<String, BillDtl> billDtlMap = new HashMap<>();
+        Map<String, EpcStock> epcStokMap = new HashMap<>();//需要校验的唯一码
+        List<EpcStock> rightEpcList = new ArrayList<>();
+        List<EpcStock> errorEpcList = new ArrayList<>();
+        List<EpcStock> noInBillEpcList = new ArrayList<>();
+        if (rfidType.equals(Constant.RfidType.UniqueCode)) {
+            uniqueCodeList = JSON.parseArray(uniqueCodes, String.class);
+        } else {
+            for (String epc : JSON.parseArray(uniqueCodes, String.class)) {
+                //将epc信息转换为唯一码
+                uniqueCodeList.add(EpcSecretUtil.decodeEpc(epc).substring(0, 13));
+            }
+        }
+        if (!isAdd) {
+            //扫码新增单据内容无需校验非本单唯一码,出入库需要校验
+            if (CommonUtil.isNotBlank(billNo)) {
+                //传入单号获取单据明细 ，唯一码明细
+                List<BillDtl> billDtlList = this.erpBillService.findErpBillDtlByBillNo(billNo, type);
+                for (BillDtl dtl : billDtlList) {
+                    billDtlMap.put(dtl.getSku(), dtl);
+                }
+                List<BillRecord> billRecordList = this.epcStockService.findBillRecordList(billNo, CommonUtil.getSqlStrByList(uniqueCodeList, BillRecord.class, "code"));
+                //更新单据明细唯一码
+                if (CommonUtil.isNotBlank(billRecordList)) {
+                    for (BillRecord r : billRecordList) {
+                        BillDtl dtl = billDtlMap.get(r.getSku());
+                        List<String> codeList = dtl.getCodeList();
+                        if(CommonUtil.isBlank(codeList)){
+                            codeList = new ArrayList<>();
+                        }
+                        codeList.add(r.getCode());
+                        dtl.setCodeList(codeList);
+                        billDtlMap.put(dtl.getSku(), dtl);
+                    }
+                }
+                if (billNo.subSequence(0, 2).equals(BillConstant.BillPrefix.purchase)) {
+                    List<Epc> epcList = this.purchaseOrderBillService.findNotInEpc(billNo);
+                    for (Epc e : epcList) {
+                        BillDtl dtl = billDtlMap.get(e.getSku());
+                        List<String> codeList = dtl.getCodeList();
+                        if(CommonUtil.isBlank(codeList)){
+                            codeList = new ArrayList<>();
+                        }
+                        codeList.add(e.getCode());
+                        dtl.setCodeList(codeList);
+                        billDtlMap.put(dtl.getSku(), dtl);
+                    }
+                }
+
+            }
+        }
+
+        List<EpcStock> epcStokcList = this.epcStockService.findEpcByCodes(CommonUtil.getSqlStrByList(uniqueCodeList, EpcStock.class, "code"));
+        for (EpcStock e : epcStokcList) {
+            epcStokMap.put(e.getCode(), e);
+        }
+        List<Epc> tagEpcList = this.epcStockService.findTagEpcByCodes(CommonUtil.getSqlStrByList(uniqueCodeList, Epc.class, "code"));
+        for (Epc epc : tagEpcList) {
+            if (!epcStokMap.containsKey(epc.getCode())) {
+                //说明该唯一码没有出入库记录将epc 转为EpcStock 未入库
+                EpcStock epcStock = new EpcStock();
+                epcStock.setId(epc.getCode());
+                epcStock.setCode(epc.getCode());
+                epcStock.setSku(epc.getSku());
+                epcStock.setStyleId(epc.getStyleId());
+                epcStock.setColorId(epc.getColorId());
+                epcStock.setSizeId(epc.getSizeId());
+                epcStock.setInStock(0);
+                epcStock.setWarehouseId(warehouseId);
+                StockUtil.convertEpcStock(epcStock);
+                epcStokMap.put(epcStock.getCode(), epcStock);
+            }
+        }
+        for (String code : epcStokMap.keySet()) {
+            EpcStock epcStock = epcStokMap.get(code);
+
+            if (type == Constant.TaskType.Inbound) {
+                //入库校验
+                if (isAdd) {
+                    if (epcStock.getWarehouseId().equals(warehouseId) && epcStock.getInStock() == 0) {
+                        rightEpcList.add(epcStock);
+                    } else {
+                        errorEpcList.add(epcStock);
+                    }
+                } else {
+                    BillDtl dtl = billDtlMap.get(epcStock.getSku());
+                    if ((epcStock.getWarehouseId().equals(warehouseId) || epcStock.getWarehouse2Id().equals(warehouseId)) && epcStock.getInStock() == 0) {
+                        //判断是否满足入库条件当前唯一码可以入库
+                        if (CommonUtil.isBlank(dtl)) {
+                            //明细为空表示不是当前单据加入noInBillEpcList
+                            epcStock.setRemark("非本单商品");
+                            noInBillEpcList.add(epcStock);
+                        } else {
+                            List<String> codeList = dtl.getCodeList();
+                            if(codeList.size() < dtl.getQty()){
+                                //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
+                                epcStock.setRemark("校验通过");
+                                rightEpcList.add(epcStock);
+                            }else{
+                                if(codeList.contains(epcStock.getCode())){
+                                    epcStock.setRemark("校验通过");
+                                    rightEpcList.add(epcStock);
+                                }else{
+                                    epcStock.setRemark("非本单商品");
+                                    noInBillEpcList.add(epcStock);
+                                }
+                            }
+
+                        }
+                    } else {
+                        if (CommonUtil.isBlank(dtl)) {
+                            epcStock.setRemark("校验未通过,不能入库");
+                        } else {
+                            List<String> codeList = dtl.getCodeList();
+                            if(codeList.contains(epcStock.getCode())){
+                                //说明改单已经入库
+                                epcStock.setRemark("校验未通过,已入库无需入库");
+                            }else{
+                                epcStock.setRemark("校验未通过,不能入库");
+                            }
+                        }
+                        errorEpcList.add(epcStock);
+                    }
+                }
+            } else if (type == Constant.TaskType.Outbound) {
+                //出库校验
+                if (isAdd) {
+                    //新增无需校验单据明细
+                    if (epcStock.getWarehouseId().equals(warehouseId) && epcStock.getInStock() == 1) {
+                        //判断是否可以出库
+                        rightEpcList.add(epcStock);
+                    } else {
+                        errorEpcList.add(epcStock);
+                    }
+                } else {
+                    BillDtl dtl = billDtlMap.get(epcStock.getSku());
+                    if (epcStock.getWarehouseId().equals(warehouseId) && epcStock.getInStock() == 1) {
+                        //判断是否可以出库
+                        if (CommonUtil.isBlank(dtl)) {
+                            //明细为空表示不是当前单据加入noInBillEpcList
+                            epcStock.setRemark("非本单商品");
+                            noInBillEpcList.add(epcStock);
+                        }else{
+                            List<String> codeList = dtl.getCodeList();
+                            if(codeList.size() < dtl.getQty()){
+                                //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
+                                epcStock.setRemark("校验通过");
+                                rightEpcList.add(epcStock);
+                            }else{
+                                if(codeList.contains(epcStock.getCode())){
+                                    epcStock.setRemark("校验通过");
+                                    rightEpcList.add(epcStock);
+                                }else{
+                                    epcStock.setRemark("非本单商品");
+                                    noInBillEpcList.add(epcStock);
+                                }
+                            }
+
+                        }
+                    }else{
+                        if (CommonUtil.isBlank(dtl)) {
+                            epcStock.setRemark("校验未通过,不能出库");
+                        } else {
+                            List<String> codeList = dtl.getCodeList();
+                            if(codeList.contains(epcStock.getCode())){
+                                //说明改单已经入库
+                                epcStock.setRemark("校验未通过,已出库无需出库");
+                            }else{
+                                epcStock.setRemark("校验未通过,不能出库");
+                            }
+                        }
+                        errorEpcList.add(epcStock);
+                    }
+
+
+                }
+
+            } else if (type == Constant.TaskType.Inventory) {
+                //盘点待开发
+            }
+        }
+        Map<String,List<EpcStock>> resultMap = new HashMap<>();
+        resultMap.put("rightEpc",rightEpcList);
+        resultMap.put("errorEpc",errorEpcList);
+        resultMap.put("noInBill",noInBillEpcList);
+        return new MessageBox(true,"ok",resultMap);
     }
 
 }
