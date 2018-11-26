@@ -517,7 +517,6 @@ function initAddGrid() {
             {name: 'wsPrice', label: '门店批发价格', hidden: true},
             {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
             {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
-            {name:'stylePriceMap',label:'价格表',hidden:true},
             {name:'abnormalStatus',label:'异常单状态',hidden:true},
             {
                 name: '', label: '唯一码明细', width: 40, align: "center",

@@ -52,8 +52,9 @@
     </div>
 </div>
 <script>
-    var skuInfoOut = [];
+    var skuInfo = [];
     var timeoutOut;
+    var websocket;
     $(function () {
 
         loadbillInformationOutTable();
@@ -61,7 +62,8 @@
 
     });
     function fullOutWebSocket() {
-        loadingwebsocket();
+        var wsUri ="ws://127.0.0.1:4649/csreader";
+        websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpenOut(evt) };
         websocket.onclose = function(evt) { onCloseOut(evt) };
         websocket.onmessage = function(evt) { onMessageOut(evt) };
@@ -93,10 +95,10 @@
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
                 if (value!==null&&value.skuInfo!==null){
-                    skuInfoOut.push(value.skuInfo);
+                    skuInfo.push(value.skuInfo);
                 }
             });
-
+        return false;
         } else {
 
         }
@@ -114,11 +116,14 @@
         var msg={
             "cmd":"10003"
         };
-        sendMessgeOutToServer(msg)
+        sendMessgeOutToServer(msg);
         //检查出入库
         checkOutCode();
     }
     function checkOutCode() {
+        var progressDialog = bootbox.dialog({
+            message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
+        });
         //获取说有的code
         var codeArray=[];
         $.each(skuInfo, function (index, value) {
@@ -162,7 +167,7 @@
     /**
      * 检测完出入库后填充表格数据
      */
-    function fullOutGridData() {
+    function fullOutGridData(result) {
         //得到校验正确唯一码
         var rightEpc=result.rightEpc;
         //得到校验未通过唯一码
@@ -193,48 +198,48 @@
             if(index===0){
                 var skuMap={};
                 var skuEpc={};
-                skuEpc.sku=errorEpc[index].sku;
-                skuEpc.styleId=errorEpc[index].styleId;
-                skuEpc.styleName=errorEpc[index].styleName;
-                skuEpc.colorId=errorEpc[index].colorId;
-                skuEpc.colorName=errorEpc[index].colorName;
-                skuEpc.sizeId=errorEpc[index].sizeId;
-                skuEpc.sizeName=errorEpc[index].sizeName;
+                skuEpc.sku=value.sku;
+                skuEpc.styleId=value.styleId;
+                skuEpc.styleName=value.styleName;
+                skuEpc.colorId=value.colorId;
+                skuEpc.colorName=value.colorName;
+                skuEpc.sizeId=value.sizeId;
+                skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
-                skuEpc.uniqueCodes=errorEpc[index].code;
-                skuMap.sku=errorEpc[index].sku;
+                skuEpc.uniqueCodes=value.code;
+                skuMap.sku=value.sku;
                 skuMap.values=skuEpc;
                 skuEpcList.push(skuMap);
             }else{
                 //判断该sku是否在skuEpcList中
                 var isHave=false;
                 for(var i=0;i<skuEpcList.length;i++){
-                    if(errorEpc[index].sku==skuEpcList[i].sku){
+                    if(value.sku==skuEpcList[i].sku){
                         skuEpcList[i].values.qty=skuEpcList[i].values.qty+1;
-                        skuEpcList[i].values.uniqueCodes=skuEpcList[i].values.uniqueCodes+","+errorEpc[index].code;
+                        skuEpcList[i].values.uniqueCodes=skuEpcList[i].values.uniqueCodes+","+value.code;
                         isHave=true;
                     }
                 }
                 if(isHave==false){
                     var skuMap={};
                     var skuEpc={};
-                    skuEpc.sku=errorEpc[index].sku;
-                    skuEpc.styleId=errorEpc[index].styleId;
-                    skuEpc.styleName=errorEpc[index].styleName;
-                    skuEpc.colorId=errorEpc[index].colorId;
-                    skuEpc.colorName=errorEpc[index].colorName;
-                    skuEpc.sizeId=errorEpc[index].sizeId;
-                    skuEpc.sizeName=errorEpc[index].sizeName;
+                    skuEpc.sku=value.sku;
+                    skuEpc.styleId=value.styleId;
+                    skuEpc.styleName=value.styleName;
+                    skuEpc.colorId=value.colorId;
+                    skuEpc.colorName=value.colorName;
+                    skuEpc.sizeId=value.sizeId;
+                    skuEpc.sizeName=value.sizeName;
                     skuEpc.qty=1;
-                    skuEpc.uniqueCodes=errorEpc[index].code;
-                    skuMap.sku=errorEpc[index].sku;
+                    skuEpc.uniqueCodes=value.code;
+                    skuMap.sku=value.sku;
                     skuMap.values=skuEpc;
                     skuEpcList.push(skuMap);
                 }
             }
         });
         $.each(skuEpcList, function (index, value) {
-            var values=skuEpcList[index].values;
+            var values=value.values;
             $("#notThisOneOutgrid").addRowData($("#notThisOneOutgrid").getDataIDs().length, values);
         });
     }
@@ -253,8 +258,8 @@
             /*showMessage('websocket已经关闭，请重新连接',true);*/
             return false;
         }
-        console.log(websocketOut);
-        var data = websocketOut.send(JSON.stringify(message));
+        console.log(websocket);
+        var data = websocket.send(JSON.stringify(message));
         console.log(data);
        
     }

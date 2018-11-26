@@ -1193,7 +1193,7 @@ public class WarehStockController extends BaseController {
         }
         for (String code : epcStokMap.keySet()) {
             EpcStock epcStock = epcStokMap.get(code);
-
+            StockUtil.convertEpcStock(epcStock);
             if (type == Constant.TaskType.Inbound) {
                 //入库校验
                 if (isAdd) {

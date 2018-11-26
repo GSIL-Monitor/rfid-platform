@@ -54,15 +54,15 @@
 <script>
     var skuInfoIn = [];
     var timeoutIn;
+    var websocket;
     $(function () {
-
-
         loadbillInformationInTable();
         loadnotThisOnegridInTable()
         //得到表格的宽度
     });
     function fullWebInSocket() {
-        loadingwebsocket();
+        var wsUri ="ws://127.0.0.1:4649/csreader";
+        websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpenIn(evt) };
         websocket.onclose = function(evt) { onCloseIn(evt) };
         websocket.onmessage = function(evt) { onMessageIn(evt) };
@@ -75,7 +75,18 @@
         var msg={
             "cmd":"10002"
         };
-        sendMessgeInToServer(msg);
+        sendMessgeToServer(msg);
+    }
+    function sendMessgeToServer(message) {
+        if (typeof websocket==="undefined"){
+            bootbox.alert("websocket还没有连接，或者连接失败，请检测");
+            return false;
+        }
+        if (websocket.readyState===3) {
+            bootbox.alert("websocket已经关闭，请重新连接");
+            return false;
+        }
+        websocket.send(JSON.stringify(message));
     }
     function onOpenIn(evt) {
         /*showMessage("连接 Reader Server成功");*/
@@ -115,12 +126,15 @@
         var msg={
             "cmd":"10003"
         };
-        sendMessgeInToServer(msg)
+        sendMessgeOutToServer(msg);
         //检查出入库
         checkInCode();
     }
     function checkInCode() {
         //获取说有的code
+        var progressDialog = bootbox.dialog({
+            message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
+        });
         var codeArray=[];
         $.each(skuInfoIn, function (index, value) {
             var productInfo = value;
@@ -163,7 +177,7 @@
     /**
      * 检测完出入库后填充表格数据
      */
-    function fullInGridData() {
+    function fullInGridData(result) {
         //得到校验正确唯一码
         var rightEpc=result.rightEpc;
         //得到校验未通过唯一码
