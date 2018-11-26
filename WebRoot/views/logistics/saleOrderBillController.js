@@ -1387,9 +1387,17 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>" +
+            "<button type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseOut()'>" +
+            "    <i class='ace-icon fa fa-sign-out'></i>" +
+            "    <span class='bigger-110'>批量出库</span>" +
+            "</button>"+
             "<button id='SODtl_wareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseIn()'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
+            "</button>" +
+            "<button  type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseIn()'>" +
+            "    <i class='ace-icon fa fa-sign-in'></i>" +
+            "    <span class='bigger-110'>批量入库</span>" +
             "</button>" +
             "<button id='SODtl_wareHouseRe' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='Returngoods()'>" +
             "    <i class='ace-icon fa fa-reply'></i>" +
@@ -2255,7 +2263,6 @@ function wareHouseOut() {
                     });
                     cs.closeProgressBar();
                     $("#SODtl_wareHouseOut").removeAttr("disabled");
-                    edit_wareHouseOut();
                     return;
                 }
                 var dtlArray = [];
@@ -2309,7 +2316,6 @@ function wareHouseOut() {
                                         text: "已出库数量为：" + all_outQty + "；剩余数量为：" + diff_qty + "，其余商品请扫码出库",
                                         class_name: 'gritter-success  gritter-light'
                                     });
-                                    edit_wareHouseOut();
                                 } else if (sum_qty === all_outQty) {
                                     $.gritter.add({
                                         text: "共" + all_outQty + "件商品，已全部出库",

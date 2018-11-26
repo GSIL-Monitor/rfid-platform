@@ -386,19 +386,19 @@
                 skuEpc.inStatus = 0;
                 skuEpc.outStatus = 0;
                 skuEpc.qty = 1;
-                skuEpc.actPrice = value.price*skuEpc.discount;
+                skuEpc.actPrice =Math.round(value.price*skuEpc.discount)/100;
                 skuEpc.totPrice = value.price*skuEpc.qty;
-                skuEpc.totActPrice = value.price*skuEpc.qty*skuEpc.discount;
+                skuEpc.totActPrice = Math.round(value.price*skuEpc.qty*skuEpc.discount)/100;
                 skuMap.set(value.sku,skuEpc);
             }else {
                 var exist=skuMap.get(value.sku);
                 exist.qty+=1;
                 exist.totPrice = exist.price*exist.qty;
-                exist.totActPrice = exist.actPrice*exist.qty*exist.discount;
-                if( exist.noOutPutCode!=""&&exist.noOutPutCode!=undefined){
-                    exist.noOutPutCode =  exist.noOutPutCode+","+rightEpc[i].code ;
+                exist.totActPrice = Math.round(exist.actPrice*exist.qty*exist.discount)/100;
+                if( exist.uniqueCodes!=""&&exist.uniqueCodes!=undefined){
+                    exist.uniqueCodes =  exist.uniqueCodes+","+value.code ;
                 }else{
-                    exist.noOutPutCode =  rightEpc[i].code ;
+                    exist.uniqueCodes = value.code ;
                 }
                 skuMap.set(value.sku,exist);
             }
@@ -427,142 +427,23 @@
                 skuEpc.inStatus = 0;
                 skuEpc.outStatus = 0;
                 skuEpc.qty = 1;
-                skuEpc.actPrice = value.price*skuEpc.discount;
+                skuEpc.actPrice = Math.round(value.price*skuEpc.discount)/100;
                 skuEpc.totPrice = value.price*skuEpc.qty;
-                skuEpc.totActPrice = value.price*skuEpc.qty*skuEpc.discount;
+                skuEpc.totActPrice = Math.round(value.price*skuEpc.qty*skuEpc.discount)/100;
                 skuMap.set(value.sku,skuEpc);
             }else {
                 var exist=skuMap.get(value.sku);
                 exist.qty+=1;
-                exist.totPrice = exist.price*exist.qty;
-                exist.totActPrice = exist.actPrice*exist.qty*exist.discount;
+                exist.totPrice = Math.round(exist.price*exist.qty)/100;
+                exist.totActPrice = Math.round(exist.actPrice*exist.qty*exist.discount)/100;
                 if( exist.noOutPutCode!=""&&exist.noOutPutCode!=undefined){
-                    exist.noOutPutCode =  exist.noOutPutCode+","+rightEpc[i].code ;
+                    exist.noOutPutCode =  exist.noOutPutCode+","+value.code ;
                 }else{
-                    exist.noOutPutCode =  rightEpc[i].code ;
+                    exist.noOutPutCode =  value.code ;
                 }
                 skuMap.set(value.sku,exist);
             }
         });
-        /*for(var i=0;i<rightEpc.length;i++){
-            if(i===0){
-                var skuMap={};
-                var skuEpc={};
-                skuEpc.sku=rightEpc[i].sku;
-                skuEpc.styleId=rightEpc[i].styleId;
-                skuEpc.colorId=rightEpc[i].colorId;
-                skuEpc.sizeId=rightEpc[i].sizeId;
-                skuEpc.styleName=rightEpc[i].styleName;
-                skuEpc.colorName=rightEpc[i].colorName;
-                skuEpc.sizeName=rightEpc[i].sizeName;
-                skuEpc.preCast=rightEpc[i].preCast;
-                skuEpc.price=rightEpc[i].price;
-                skuEpc.puPrice=rightEpc[i].puPrice;
-                skuEpc.wsPrice=rightEpc[i].wsPrice;
-                skuEpc.bargainPrice=rightEpc[i].bargainPrice;
-                skuEpc.uniqueCodes=rightEpc[i].code;
-                skuEpc.discount=100;
-                skuEpc.outQty = 0;
-                skuEpc.inQty = 0;
-                skuEpc.status = 0;
-                skuEpc.inStatus = 0;
-                skuEpc.outStatus = 0;
-                skuEpc.qty = 1;
-                skuEpc.totPrice = rightEpc[i].price*skuEpc.qty;
-                skuEpc.totActPrice = rightEpc[i].price*skuEpc.qty*skuEpc.discount;
-                skuMap.sku=rightEpc[i].sku;
-                skuMap.values=skuEpc;
-                skuEpcList.push(skuMap)
-            }else{
-                //判断该sku是否在skuEpcList中
-                var isHave=false;
-                for(var a=0;a<skuEpcList.length;a++){
-                   if(rightEpc[i].sku==skuEpcList[a].sku){
-                       skuEpcList[a].values.qty= skuEpcList[a].values.qty+1;
-                       skuEpcList[a].values.totPrice = skuEpcList[a].values.price*skuEpcList[a].values.qty;
-                       skuEpcList[a].values.totActPrice = skuEpcList[a].values.actPrice*skuEpcList[a].values.qty*skuEpcList[a].values.discount;
-                       if( skuEpcList[a].values.noOutPutCode!=""&&skuEpcList[a].values.noOutPutCode!=undefined){
-                           skuEpcList[a].values.noOutPutCode =  skuEpcList[a].values.noOutPutCode+","+rightEpc[i].code ;
-                       }else{
-                           skuEpcList[a].values.noOutPutCode =  rightEpc[i].code ;
-                       }
-                       isHave=true;
-                   }
-                }
-                if(isHave==false){
-                    var skuMap={};
-                    var skuEpc={};
-                    skuEpc.sku=rightEpc[i].sku;
-                    skuEpc.styleId=rightEpc[i].styleId;
-                    skuEpc.colorId=rightEpc[i].colorId;
-                    skuEpc.sizeId=rightEpc[i].sizeId;
-                    skuEpc.styleName=rightEpc[i].styleName;
-                    skuEpc.colorName=rightEpc[i].colorName;
-                    skuEpc.sizeName=rightEpc[i].sizeName;
-                    skuEpc.preCast=rightEpc[i].preCast;
-                    skuEpc.price=rightEpc[i].price;
-                    skuEpc.puPrice=rightEpc[i].puPrice;
-                    skuEpc.wsPrice=rightEpc[i].wsPrice;
-                    skuEpc.bargainPrice=rightEpc[i].bargainPrice;
-                    skuEpc.noOutPutCode=rightEpc[i].code;
-                    skuEpc.discount=100;
-                    skuEpc.outQty = 0;
-                    skuEpc.inQty = 0;
-                    skuEpc.status = 0;
-                    skuEpc.inStatus = 0;
-                    skuEpc.outStatus = 0;
-                    skuEpc.qty = 1;
-                    skuEpc.totPrice = rightEpc[i].price*skuEpc.qty;
-                    skuEpc.totActPrice = rightEpc[i].price*skuEpc.qty*skuEpc.discount;
-                    skuMap.sku=rightEpc[i].sku;
-                    skuMap.values=skuEpc;
-                    skuEpcList.push(skuMap)
-                }
-            }
-        }
-        //在做校验未通过唯一码
-        for(var b=0;b<errorEpc.length;b++){
-            //判断该sku是否在skuEpcList中
-            var isHave=false;
-            for(var c=0;c<skuEpcList.length;c++){
-                if(rightEpc[b].sku==skuEpcList[c].sku){
-                    skuEpcList[c].values.qty= skuEpcList[c].values.qty+1;
-                    skuEpcList[c].values.totPrice = skuEpcList[c].values.price*skuEpcList[c].values.qty;
-                    skuEpcList[c].values.totActPrice = skuEpcList[c].values.actPrice*skuEpcList[c].values.qty*skuEpcList[c].values.discount;
-                    skuEpcList[c].values.uniqueCodes =  skuEpcList[c].values.uniqueCodes+","+rightEpc[b].code ;
-                    isHave=true;
-                }
-            }
-            if(isHave==false){
-                var skuMap={};
-                var skuEpc={};
-                skuEpc.sku=errorEpc[b].sku;
-                skuEpc.styleId=errorEpc[b].styleId;
-                skuEpc.colorId=errorEpc[b].colorId;
-                skuEpc.sizeId=errorEpc[b].sizeId;
-                skuEpc.styleName=errorEpc[b].styleName;
-                skuEpc.colorName=errorEpc[b].colorName;
-                skuEpc.sizeName=errorEpc[b].sizeName;
-                skuEpc.preCast=errorEpc[b].preCast;
-                skuEpc.price=errorEpc[b].price;
-                skuEpc.puPrice=errorEpc[b].puPrice;
-                skuEpc.wsPrice=errorEpc[b].wsPrice;
-                skuEpc.bargainPrice=errorEpc[b].bargainPrice;
-                skuEpc.noOutPutCode=errorEpc[b].code;
-                skuEpc.discount=100;
-                skuEpc.outQty = 0;
-                skuEpc.inQty = 0;
-                skuEpc.status = 0;
-                skuEpc.inStatus = 0;
-                skuEpc.outStatus = 0;
-                skuEpc.qty = 1;
-                skuEpc.totPrice = errorEpc[b].price*skuEpc.qty;
-                skuEpc.totActPrice = errorEpc[b].price*skuEpc.qty*skuEpc.discount;
-                skuMap.sku=errorEpc[b].sku;
-                skuMap.values=skuEpc;
-                skuEpcList.push(skuMap)
-            }
-        }*/
         skuMap.forEach(function (value, key, map) {
             $("#batchDetailgrid").addRowData($("#batchDetailgrid").getDataIDs().length,value);
         });

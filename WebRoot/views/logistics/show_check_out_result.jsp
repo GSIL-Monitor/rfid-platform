@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div id="modal-batch-show-table" class="modal fade" role="dialog" tabindex="-1">
+<%@ page contentType="text/html;charset=UTF-8" import="java.util.*" language="java" %>
+<div id="modal-batch-show-table" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
@@ -55,11 +55,11 @@
     var skuInfo = [];
     var timeoutOut;
     var websocket;
+    var dataResultCode=new Map();
+    //点击唯一码明细时记录当前行的所有唯一码
     $(function () {
-
         loadbillInformationOutTable();
         loadnotThisOnegridOutTable()
-
     });
     function fullOutWebSocket() {
         var wsUri ="ws://127.0.0.1:4649/csreader";
@@ -79,32 +79,31 @@
         sendMessgeOutToServer(msg);
     }
     function onOpenOut(evt) {
-        /*showMessage("连接 Reader Server成功");*/
+        $.gritter.add({
+            text: "连接 Reader Server成功",
+            class_name: 'gritter-success  gritter-light'
+        });
     }
     function onCloseOut(evt) {
-        /*if(evt.code == 1005){
-         /!*showMessage('与服务器连接已断开');*!/
-         }else if(evt.code == 1006){
-         /!*showMessage('连接服务器失败',true);*!/
-         }*/
+        if(evt.code == 1005){
+            bootbox.alert("与服务器连接已断开");
+        }else if(evt.code == 1006){
+            bootbox.alert("连接服务器失败");
+        }
     }
     function onMessageOut(evt) {
-
         var res = JSON.parse(evt.data);
-
         if (res.cmd === "10006") {
-            $.each(res.data,function (index,value) {
-                if (value!==null&&value.skuInfo!==null){
+            $.each(res.data, function (index, value) {
+                if (value !== null && value.skuInfo !== null) {
                     skuInfo.push(value.skuInfo);
                 }
             });
-        return false;
-        } else {
-
+            return false;
         }
     }
     function onErrorOut(evt) {
-        /*showMessage('发生错误' + evt.data,true);*/
+        bootbox.alert("发生错误");
     }
     /*
      停止
@@ -121,6 +120,7 @@
         checkOutCode();
     }
     function checkOutCode() {
+        dataResultCode.clear();
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
         });
@@ -145,7 +145,6 @@
             type: "POST",
             success: function (data) {
                 if (data.success) {
-
                     //填充数据
                     fullOutGridData(data.result);
                     progressDialog.modal('hide');
@@ -156,14 +155,32 @@
                         class_name: 'gritter-success  gritter-light'
                     });
                     delete data.result["id"];
-
                 }
-
                 progressDialog.modal('hide');
             }
         });
         progressDialog.modal('hide');
     }
+
+/*    //解析为code汇总
+    function analysisCode(data) {
+        //得到校验正确唯一码
+        var rightEpc=result.rightEpc;
+        //得到校验未通过唯一码
+        var errorEpc=result.errorEpc;
+        //得到校验非本单商品唯一码
+        var noInBill=result.noInBill;
+        $.each(rightEpc,function (index,value) {
+            dataResultCode.set(value.code,value);
+        });
+        $.each(errorEpc,function (index,value) {
+            dataResultCode.set(value.code,value);
+        });
+        $.each(noInBill,function (index,value) {
+            dataResultCode.set(value.code,value);
+        });
+    }*/
+    
     /**
      * 检测完出入库后填充表格数据
      */
@@ -176,27 +193,27 @@
         var noInBill=result.noInBill;
         //添加校验正确的唯一码到billInformationOutgrid中
         $.each($("#billInformationOutgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var nn=dtlIndex;
             var dtlRow = $("#billInformationOutgrid").getRowData(dtlValue);
              for(var i=0;i<rightEpc.length;i++){
-                 if(dtlValue.sku==rightEpc[i].sku){
+                 if(dtlRow.sku==rightEpc[i].sku){
                      if(dtlRow.uniqueCodes!=""&&dtlRow.uniqueCodes!=undefined){
                          dtlRow.uniqueCodes=dtlRow.uniqueCodes+","+rightEpc[i].code;
-                         dtlRow.thisQty= dtlRow.thisQty+1;
+                         dtlRow.thisQty=parseInt(dtlRow.thisQty)+1;
                      }else{
                          dtlRow.uniqueCodes=rightEpc[i].code;
-                         dtlRow.thisQty= dtlRow.thisQty+1;
+                         dtlRow.thisQty=parseInt(dtlRow.thisQty)+1;
                      }
-                     $("#billInformationOutgrid").setRowData(dtlRow.id, dtlRow);
+                     $("#billInformationOutgrid").setRowData(dtlIndex, dtlRow);
                  }
 
              }
         });
         //添加校验未通过唯一码和非本单商品唯一码到notThisOneOutgrid中
         //定义一个根据sku做的唯一码和非本单商品唯一码汇总的对象
-        var skuEpcList=[];
+        var skuEpcList=new Map();
         $.each(errorEpc, function (index, value) {
-            if(index===0){
-                var skuMap={};
+            if (!skuEpcList.has(value.sku)){
                 var skuEpc={};
                 skuEpc.sku=value.sku;
                 skuEpc.styleId=value.styleId;
@@ -207,41 +224,40 @@
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
-                skuMap.sku=value.sku;
-                skuMap.values=skuEpc;
-                skuEpcList.push(skuMap);
-            }else{
-                //判断该sku是否在skuEpcList中
-                var isHave=false;
-                for(var i=0;i<skuEpcList.length;i++){
-                    if(value.sku==skuEpcList[i].sku){
-                        skuEpcList[i].values.qty=skuEpcList[i].values.qty+1;
-                        skuEpcList[i].values.uniqueCodes=skuEpcList[i].values.uniqueCodes+","+value.code;
-                        isHave=true;
-                    }
-                }
-                if(isHave==false){
-                    var skuMap={};
-                    var skuEpc={};
-                    skuEpc.sku=value.sku;
-                    skuEpc.styleId=value.styleId;
-                    skuEpc.styleName=value.styleName;
-                    skuEpc.colorId=value.colorId;
-                    skuEpc.colorName=value.colorName;
-                    skuEpc.sizeId=value.sizeId;
-                    skuEpc.sizeName=value.sizeName;
-                    skuEpc.qty=1;
-                    skuEpc.uniqueCodes=value.code;
-                    skuMap.sku=value.sku;
-                    skuMap.values=skuEpc;
-                    skuEpcList.push(skuMap);
-                }
+                skuEpc.exceptionType='异常唯一码';
+                skuEpcList.set(value.sku,skuEpc);
+            }else {
+                var exist=skuMap.get(value.sku);
+                exist.qty=parseInt(exist.qty)+1;
+                exist.uniqueCodes=exist.uniqueCodes+","+value.code;
+                skuEpcList.set(value.sku,exist);
             }
         });
-        $.each(skuEpcList, function (index, value) {
-            var values=value.values;
-            $("#notThisOneOutgrid").addRowData($("#notThisOneOutgrid").getDataIDs().length, values);
+        $.each(noInBill, function (index, value) {
+            if (!skuEpcList.has(value.sku)){
+                var skuEpc={};
+                skuEpc.sku=value.sku;
+                skuEpc.styleId=value.styleId;
+                skuEpc.styleName=value.styleName;
+                skuEpc.colorId=value.colorId;
+                skuEpc.colorName=value.colorName;
+                skuEpc.sizeId=value.sizeId;
+                skuEpc.sizeName=value.sizeName;
+                skuEpc.qty=1;
+                skuEpc.uniqueCodes=value.code;
+                skuEpc.exceptionType='非本单唯一码';
+                skuEpcList.set(value.sku,skuEpc);
+            }else {
+                var exist=skuMap.get(value.sku);
+                exist.qty=parseInt(exist.qty)+1;
+                exist.uniqueCodes=exist.uniqueCodes+","+value.code;
+                skuEpcList.set(value.sku,exist);
+            }
         });
+        skuEpcList.forEach(function (value,key,map) {
+            $("#notThisOneOutgrid").addRowData($("#notThisOneOutgrid").getDataIDs().length, value);
+        });
+        skuInfo=[];
     }
     function onClearOut() {
         $("#billInformationgrid").clearGridData();
@@ -251,17 +267,14 @@
     function sendMessgeOutToServer(message) {
 
         if (typeof websocket==="undefined"){
-            /* showMessage('websocket还没有连接，或者连接失败，请检测',true);*/
+            bootbox.alert("websocket还没有连接，或者连接失败，请检测");
             return false;
         }
         if (websocket.readyState===3) {
-            /*showMessage('websocket已经关闭，请重新连接',true);*/
+            bootbox.alert("websocket已经关闭，请重新连接");
             return false;
         }
-        console.log(websocket);
-        var data = websocket.send(JSON.stringify(message));
-        console.log(data);
-       
+        websocket.send(JSON.stringify(message));
     }
     function loadbillInformationOutTable() {
         $("#billInformationOutgrid").jqGrid({
@@ -303,7 +316,13 @@
                 {
                     name: '', label: '唯一码明细', width: 100, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesOutDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesOutDetail('"+options.rowId+"')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                    }
+                },
+                {
+                    name: "", label: "操作", width: 100, align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }
                 }
             ],
@@ -337,6 +356,26 @@
             }
         });
     }
+    function showCodesOutDetail(rowId) {
+        var row = $('#billInformationOutgrid').getRowData(rowId);
+        $("#show-allUniqueCode-list").modal('show');
+        initAllUniqueCodeList();
+        var allCode=row.uniqueCodes.split(",");
+        var infoData=[];
+        $.each(allCode,function (index,value) {
+            var rowData=[];
+            rowData.code=value;
+            rowData.sku=row.sku;
+            rowData.warehouseId=row.warehouseId;
+            rowData.floor=row.floor;
+            rowData.inStock=row.inStock;
+            infoData.push(rowData);
+        });
+        $.each(infoData,function (index,value) {
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,value);
+        });
+    }
+
     function lodeBillInformationOutgrid() {
         $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
             var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
@@ -360,10 +399,11 @@
                 {name: 'sku', label: 'SKU', width: 80},
                 {name: 'qty', label: '数量', width: 80},
                 {name: 'uniqueCodes', label: '唯一码',hidden: true},
+                {name: 'exceptionType', label:'异常类型', width: 80},
                 {
                     name: '', label: '唯一码明细', width: 120, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + ")><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 }
 
@@ -427,14 +467,17 @@
         $("#saveOut").attr({"disabled": "disabled"});
         var dtlArray = [];
         var epcArray = [];
+        var billNo = $("#edit_billNo").val();
         $.each($("#billInformationOutgrid").getDataIDs(), function (dtlIndex, dtlValue) {
             var dtlRow = $("#billInformationOutgrid").getRowData(dtlValue);
             //判断出库数量加本次数量是否大于单据数量
             if(parseInt(dtlRow.outQty)+parseInt(dtlRow.thisQty)>parseInt(dtlRow.qty)){
+                cs.closeProgressBar();
                 $.gritter.add({
                     text: dtlRow.sku+"要出库的数量超过本单数量"+(parseInt(dtlRow.outQty)+parseInt(dtlRow.thisQty)-parseInt(dtlRow.qty))+"件",
                     class_name: 'gritter-success  gritter-light'
                 });
+                return;
             }else {
                 dtlRow.outQty=parseInt(dtlRow.outQty)+parseInt(dtlRow.thisQty);
                 dtlArray.push(dtlRow);
@@ -489,6 +532,14 @@
         });
         $("#modal-batch-show-table").modal('hide');
         //wareHouseOut();
+    }
+    function deleteCode(rowId) {
+        $("#billInformationOutgrid").setCell(rowId, 'thisQty', 0);
+        $("#billInformationOutgrid").setCell(rowId, 'uniqueCodes',"");
+        $.gritter.add({
+            text: "删除成功，请重新扫码",
+            class_name: 'gritter-success  gritter-light'
+        });
     }
 
 </script>
