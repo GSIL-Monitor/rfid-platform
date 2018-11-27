@@ -111,9 +111,7 @@
                     skuInfoIn.push(value.skuInfo);
                 }
             });
-
-        } else {
-
+            return false;
         }
     }
     function onErrorIn(evt) {
@@ -169,9 +167,7 @@
                         class_name: 'gritter-success  gritter-light'
                     });
                     delete data.result["id"];
-
                 }
-
                 progressDialog.modal('hide');
             }
         });
@@ -191,7 +187,7 @@
         $.each($("#billInformationIngrid").getDataIDs(), function (dtlIndex, dtlValue) {
             var dtlRow = $("#billInformationIngrid").getRowData(dtlValue);
             for(var i=0;i<rightEpc.length;i++){
-                if(dtlValue.sku==rightEpc[i].sku){
+                if(dtlRow.sku==rightEpc[i].sku){
                     if(dtlRow.uniqueCodes!=""&&dtlRow.uniqueCodes!=undefined){
                         dtlRow.uniqueCodes=dtlRow.uniqueCodes+","+rightEpc[i].code;
                         dtlRow.thisQty= dtlRow.thisQty+1;
@@ -199,7 +195,7 @@
                         dtlRow.uniqueCodes=rightEpc[i].code;
                         dtlRow.thisQty= dtlRow.thisQty+1;
                     }
-                    $("#billInformationIngrid").setRowData(dtlRow.id, dtlRow);
+                    $("#billInformationIngrid").setRowData(dtlIndex, dtlRow);
                 }
 
             }
@@ -241,7 +237,7 @@
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
                 skuEpc.exceptionType='非本单唯一码';
-                skuMap.set(value.sku,skuEpc);
+                skuEpcList.set(value.sku,skuEpc);
             }else {
                 var exist=skuMap.get(value.sku);
                 exist.qty=exist.qty+1;
@@ -253,6 +249,7 @@
         skuEpcList.forEach(function (value,key,map) {
             $("#notThisOneIngrid").addRowData($("#notThisOneIngrid").getDataIDs().length, value);
         });
+        skuInfo=[];
     }
     function loadbillInformationInTable() {
         $("#billInformationIngrid").jqGrid({
@@ -294,7 +291,13 @@
                 {
                     name: '', label: '唯一码明细', width: 100, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesInDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                    }
+                },
+                {
+                    name: "", label: "操作", width: 100, align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteInCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }
                 }
             ],
@@ -328,6 +331,23 @@
             }
         });
     }
+
+    function showCodesInDetail(rowId) {
+        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
+            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
+        });
+        loadInPutCodeDetail(rowId);
+    }
+
+    function deleteInCode(rowId) {
+        $("#billInformationIngrid").setCell(rowId, 'thisQty', 0);
+        $("#billInformationIngrid").setCell(rowId, 'uniqueCodes',"");
+        $.gritter.add({
+            text: "删除成功，请重新扫码",
+            class_name: 'gritter-success  gritter-light'
+        });
+    }
+
     function loadnotThisOnegridInTable() {
         $("#notThisOneIngrid").jqGrid({
             height: 400,
@@ -347,7 +367,7 @@
                 {
                     name: '', label: '唯一码明细', width: 120, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesInDetail('" + rowObject.uniqueCodes + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesNoInDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 }
 
@@ -380,6 +400,14 @@
             }
         });
     }
+
+    function showCodesNoInDetail(rewId) {
+        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
+            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
+        });
+        loadPutCodeNoDetail(rowId);
+    }
+
     function onClearIn() {
         $("#billInformationgrid").clearGridData();
         $("#notThisOnegrid").clearGridData();
@@ -432,7 +460,6 @@
                 });
                 return;
             }else {
-                dtlRow.inQty=parseInt(dtlRow.inQty)+parseInt(dtlRow.thisQty);
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
                 var Codes=dtlRow.uniqueCodes.split(",");

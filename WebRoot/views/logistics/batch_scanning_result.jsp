@@ -11,32 +11,21 @@
             </div>
         </div>
         <div class="modal-content">
-            <%--<div class="modal-body">
-
-
-                <div class="row">
-                    <form class="form-horizontal" role="search" id="uniqCode-editForm">
-                        <label class="col-sm-2 control-label no-padding-right"
-                               for="add_uniqueCode">唯一码</label>
-                        <div class="col-xs-12 col-sm-9">
-                            <input class="form-control" id="add_uniqueCode" name="add_uniqueCode" type="text"
-                                   placeholder="按回车键结束" style="ime-mode:active"/>
-                        </div>
-
-                    </form>
-                </div>
-            </div>--%>
             <div class="hr hr4"></div>
             <table id="batchDetailgrid"></table>
             <div id="batch-grid-pager"></div>
         </div>
         <div class="modal-footer">
+            <div class="col-lg-3">
+                <span style="font-size:15px">已扫到数量：</span>
+                <span id="allCodeQty" style="font-size:15px;color: tomato">0</span>
+            </div>
             <div id="dialog_buttonGroup">
-                <button id="link"  class='btn btn-primary' onclick="fullWebSocket()">连接</button>
-                <button id="scanning"  class='btn btn-primary' onclick="onScanning()">扫描</button>
-                <button id="stop"  class='btn btn-primary' onclick="stop()">停止</button>
+                <button id="scanning"  class='btn btn-primary' onclick="onScanning()">继续扫描</button>
+                <button id="stop"  class='btn btn-primary' onclick="stop()">暂停</button>
                 <button id="clear"  class='btn btn-primary' onclick="onClear()">清空</button>
                 <button id="saveEPC"  class='btn btn-primary' onclick="saveEPC()">保存</button>
+                <button id="close"  class='btn btn-primary' onclick="close()">关闭连接</button>
             </div>
         </div>
     </div>
@@ -49,7 +38,7 @@
         loadTable();
         //得到表格的宽度
     });
-    function fullWebSocket() {
+    function initWebSocket() {
         var wsUri ="ws://127.0.0.1:4649/csreader";
         websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpen(evt) };
@@ -57,6 +46,92 @@
         websocket.onmessage = function(evt) { onMessage(evt) };
         websocket.onerror = function(evt) { onError(evt) };
     }
+    //关闭读写器
+    function close() {
+        var msg={
+            "cmd":"10004"
+        };
+        sendMessgeToServer(msg);
+    }
+
+    /*
+     继续扫描
+     */
+    function onScanning() {
+        var msg={
+            "cmd":"10006"
+        };
+        sendMessgeToServer(msg);
+    }
+
+    function onOpen(evt) {
+        var msg={
+            "cmd":"10002"
+        };
+        sendMessgeToServer(msg);
+        $.gritter.add({
+            text: "连接 Reader Server成功",
+            class_name: 'gritter-success  gritter-light'
+        });
+    }
+    function onClose(evt) {
+        if(evt.code === 1005){
+            bootbox.alert("与服务器连接已断开");
+        }else if(evt.code === 1006){
+            bootbox.alert("连接服务器失败");
+        }
+    }
+    function onMessage(evt) {
+        var res = JSON.parse(evt.data);
+        /*var unicodes = [];
+         var productListInfo = [];*/
+        if (res.cmd === "10006") {
+            $.each(res.data,function (index,value) {
+                if (value!==null&&value.skuInfo!==null){
+                    skuInfo.push(value.skuInfo);
+                    var num=skuInfo.length;
+                    $("#AllCodeQty").text(skuInfo.length);
+                }
+            });
+        }
+        if (res.cmd==="10002"&&res.success===true){
+            $.gritter.add({
+                text: res.msg,
+                class_name: 'gritter-success  gritter-light'
+            });
+        }
+    }
+    function onError(evt) {
+        bootbox.alert("发生错误");
+    }
+    /*
+     停止
+     */
+    function stop() {
+        if (timeout !== null) {
+            window.clearInterval(timeout);
+        }
+        var msg={
+            "cmd":"10003"
+        };
+        sendMessgeToServer(msg);
+        //检查出入库
+        checkCode();
+    }
+
+    function sendMessgeToServer(message) {
+        if (typeof websocket==="undefined"){
+            bootbox.alert("websocket还没有连接，或者连接失败，请检测");
+            return false;
+        }
+        if (websocket.readyState===3) {
+            bootbox.alert("websocket已经关闭，请重新连接");
+            return false;
+        }
+        websocket.send(JSON.stringify(message));
+    }
+
+
     function loadTable() {
         $("#batchDetailgrid").jqGrid({
             height: 400,
@@ -247,69 +322,7 @@
         });
     }
 
-    /*
-     扫描
-     */
-    function onScanning() {
-        var msg={
-            "cmd":"10002"
-        };
-        sendMessgeToServer(msg);
-    }
-    function onOpen(evt) {
-        $.gritter.add({
-            text: "连接 Reader Server成功",
-            class_name: 'gritter-success  gritter-light'
-        });
-    }
-    function onClose(evt) {
-        if(evt.code == 1005){
-            bootbox.alert("与服务器连接已断开");
-        }else if(evt.code == 1006){
-            bootbox.alert("连接服务器失败");
-        }
-    }
-    function onMessage(evt) {
-        var res = JSON.parse(evt.data);
-        /*var unicodes = [];
-        var productListInfo = [];*/
-        if (res.cmd === "10006") {
-            $.each(res.data,function (index,value) {
-                if (value!==null&&value.skuInfo!==null){
-                    skuInfo.push(value.skuInfo);
-                }
-            });
-        }
-    }
-    function onError(evt) {
-        bootbox.alert("发生错误");
-    }
-    /*
-     停止
-     */
-    function stop() {
-        if (timeout !== null) {
-            window.clearInterval(timeout);
-        }
-        var msg={
-            "cmd":"10003"
-        };
-        sendMessgeToServer(msg);
-        //检查出入库
-        checkCode();
-    }
 
-    function sendMessgeToServer(message) {
-        if (typeof websocket==="undefined"){
-            bootbox.alert("websocket还没有连接，或者连接失败，请检测");
-            return false;
-        }
-        if (websocket.readyState===3) {
-            bootbox.alert("websocket已经关闭，请重新连接");
-            return false;
-        }
-        websocket.send(JSON.stringify(message));
-    }
     function checkCode() {
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
@@ -345,7 +358,7 @@
                         class_name: 'gritter-success  gritter-light'
                     });
                     delete data.result["id"];
-
+                    skuInfo=[];
                 }
                 progressDialog.modal('hide');
             }
@@ -463,6 +476,11 @@
 
     function onClear() {
         $("#addDetailgrid").clearGridData();
+        skuInfo=[];
+        var msg={
+            "cmd":"10005"
+        };
+        sendMessgeToServer(msg);
     }
 
 

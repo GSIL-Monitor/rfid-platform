@@ -161,25 +161,6 @@
         });
         progressDialog.modal('hide');
     }
-
-/*    //解析为code汇总
-    function analysisCode(data) {
-        //得到校验正确唯一码
-        var rightEpc=result.rightEpc;
-        //得到校验未通过唯一码
-        var errorEpc=result.errorEpc;
-        //得到校验非本单商品唯一码
-        var noInBill=result.noInBill;
-        $.each(rightEpc,function (index,value) {
-            dataResultCode.set(value.code,value);
-        });
-        $.each(errorEpc,function (index,value) {
-            dataResultCode.set(value.code,value);
-        });
-        $.each(noInBill,function (index,value) {
-            dataResultCode.set(value.code,value);
-        });
-    }*/
     
     /**
      * 检测完出入库后填充表格数据
@@ -357,10 +338,17 @@
         });
     }
     function showCodesOutDetail(rowId) {
-        $("#show-allUniqueCode-list").modal('show').on('hide.bs.modal',function () {
-            $("#show-allUniqueCode-list").jqGrid('clearGridData');//清空表格
+        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
+            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });
         loadOutPutCodeDetail(rowId);
+    }
+
+    function showCodesNoOutDetail(rowId) {
+        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
+            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
+        });
+        loadPutCodeDetail(rowId);
     }
 
     function lodeBillInformationOutgrid() {
@@ -390,7 +378,7 @@
                 {
                     name: '', label: '唯一码明细', width: 120, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.uniqueCodes + ")><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesNoOutDetail('" + options.rowId + ")><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 }
 
@@ -466,7 +454,6 @@
                 });
                 return;
             }else {
-                dtlRow.outQty=parseInt(dtlRow.outQty)+parseInt(dtlRow.thisQty);
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
                 var Codes=dtlRow.uniqueCodes.split(",");

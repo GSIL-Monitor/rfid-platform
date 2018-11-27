@@ -14,6 +14,11 @@
             <div class="hr hr4"></div>
             <table id="allUniqueCodeListGrid"></table>
         </div>
+        <div class="modal-footer">
+            <div id="dialog_buttonGroup">
+                <button id="close"  class='btn btn-primary' onclick="close()">清空</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -21,6 +26,10 @@
     $(function () {
         initAllUniqueCodeList();
     });
+
+    function close() {
+        $("#show-allUniqueCode-list").modal("hide");
+    }
 
     function initAllUniqueCodeList() {
         $("#allUniqueCodeListGrid").jqGrid({
@@ -61,18 +70,56 @@
     function loadOutPutCodeDetail(rowId) {
         var row = $('#billInformationOutgrid').getRowData(rowId);
         var allCode=row.uniqueCodes.split(",");
-        var infoData=[];
         $.each(allCode,function (index,value) {
-            var rowData=[];
+            var rowData={};
             rowData.code=value;
             rowData.sku=row.sku;
             rowData.warehouseId=row.warehouseId;
             rowData.floor=row.floor;
             rowData.inStock=row.inStock;
-            infoData.push(rowData);
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
         });
-        $.each(infoData,function (index,value) {
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,value);
+    }
+
+    function loadPutCodeDetail(rowId) {
+        var row = $('#notThisOneOutgrid').getRowData(rowId);
+        var allCode=row.uniqueCodes.split(",");
+        $.each(allCode,function (index,value) {
+            var rowData={};
+            rowData.code=value;
+            rowData.sku=row.sku;
+            rowData.warehouseId=row.warehouseId;
+            rowData.floor=row.floor;
+            rowData.inStock=row.inStock;
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+        });
+    }
+
+    function loadInPutCodeDetail(rowId) {
+        var row = $('#billInformationIngrid').getRowData(rowId);
+        var allCode=row.uniqueCodes.split(",");
+        $.each(allCode,function (index,value) {
+            var rowData={};
+            rowData.code=value;
+            rowData.sku=row.sku;
+            rowData.warehouseId=row.warehouseId;
+            rowData.floor=row.floor;
+            rowData.inStock=row.inStock;
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+        });
+    }
+
+    function loadPutCodeNoDetail(rowId) {
+        var row = $('#notThisOneIngrid').getRowData(rowId);
+        var allCode=row.uniqueCodes.split(",");
+        $.each(allCode,function (index,value) {
+            var rowData={};
+            rowData.code=value;
+            rowData.sku=row.sku;
+            rowData.warehouseId=row.warehouseId;
+            rowData.floor=row.floor;
+            rowData.inStock=row.inStock;
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
         });
     }
 </script>

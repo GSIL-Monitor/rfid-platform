@@ -3287,4 +3287,5 @@ function addAllUniqCode() {
     $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
         $("#batchDetailgrid").clearGridData();
     });
+    initWebSocket();
 }
