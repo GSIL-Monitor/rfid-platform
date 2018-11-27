@@ -79,9 +79,9 @@
         var msg={
             "cmd":"10002"
         };
-        sendMessgeToServer(msg);
+        sendMessgeInToServer(msg);
     }
-    function sendMessgeToServer(message) {
+    function sendMessgeInToServer(message) {
         if (typeof websocket==="undefined"){
             bootbox.alert("websocket还没有连接，或者连接失败，请检测");
             return false;
@@ -106,9 +106,7 @@
          }
     }
     function onMessageIn(evt) {
-
         var res = JSON.parse(evt.data);
-
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
                 if (value!==null&&value.skuInfo!==null){
@@ -132,7 +130,7 @@
         var msg={
             "cmd":"10003"
         };
-        sendMessgeOutToServer(msg);
+        sendMessgeInToServer(msg);
         //检查出入库
         checkInCode();
     }
@@ -152,7 +150,7 @@
         var ajax_url;
         var ajax_data;
         ajax_url = basePath + "/stock/warehStock/checkUniqueCodes.do";
-        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: true,rfidType:"code"};
+        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: false,rfidType:"code"};
         $.ajax({
             async: false,
             url: ajax_url,
@@ -195,10 +193,10 @@
                 if(dtlRow.sku==rightEpc[i].sku){
                     if(dtlRow.uniqueCodes!=""&&dtlRow.uniqueCodes!=undefined){
                         dtlRow.uniqueCodes=dtlRow.uniqueCodes+","+rightEpc[i].code;
-                        dtlRow.thisQty= dtlRow.thisQty+1;
+                        dtlRow.thisQty= parseInt(dtlRow.thisQty)+1;
                     }else{
                         dtlRow.uniqueCodes=rightEpc[i].code;
-                        dtlRow.thisQty= dtlRow.thisQty+1;
+                        dtlRow.thisQty= parseInt(dtlRow.thisQty)+1;
                     }
                     $("#billInformationIngrid").setRowData(dtlIndex, dtlRow);
                 }
@@ -221,10 +219,10 @@
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
                 skuEpc.exceptionType='异常唯一码';
-                skuMap.set(value.sku,skuEpc);
+                skuEpcList.set(value.sku,skuEpc);
             }else {
-                var exist=skuMap.get(value.sku);
-                exist.qty=exist.qty+1;
+                var exist=skuEpcList.get(value.sku);
+                exist.qty=parseInt(exist.qty)+1;
                 exist.uniqueCodes=exist.uniqueCodes+","+value.code;
                 skuEpcList.set(value.sku,exist);
             }
@@ -244,8 +242,8 @@
                 skuEpc.exceptionType='非本单唯一码';
                 skuEpcList.set(value.sku,skuEpc);
             }else {
-                var exist=skuMap.get(value.sku);
-                exist.qty=exist.qty+1;
+                var exist=skuEpcList.get(value.sku);
+                exist.qty=parseInt(exist.qty)+1;
                 exist.uniqueCodes=exist.uniqueCodes+","+value.code;
                 skuEpcList.set(value.sku,exist);
             }
@@ -276,7 +274,8 @@
                 {name: 'sizeName', label: '尺码', width: 50},
                 {name: 'sku', label: 'SKU', width: 60},
                 {name: 'qty', label: '单据数量', width: 60},
-                {name: 'InQty', label: '出库数量', width: 50},
+                {name: 'inQty', label: '入库数量', width: 50},
+                {name: 'outQty', label: '出库数量', hidden: true},
                 {name: 'thisQty', label: '本次数量', width: 50},
                 {name: 'returnQty', label: '退货数量',hidden: true},
                 {name: 'price', label: '销售价格',hidden: true},
@@ -406,7 +405,7 @@
         });
     }
 
-    function showCodesNoInDetail(rewId) {
+    function showCodesNoInDetail(rowId) {
         $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
             $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });
@@ -443,9 +442,10 @@
     }
     function lodeBillInformationIngrid() {
         $.each($("#addDetailgrid").getDataIDs(), function (dtlIndex, dtlValue) {
-            dtlValue.thisQty=0;
-            dtlValue.uniqueCodes="";
-            $("#billInformationIngrid").addRowData($("#billInformationIngrid").getDataIDs().length, dtlValue);
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            dtlRow.thisQty=0;
+            dtlRow.uniqueCodes="";
+            $("#billInformationIngrid").addRowData($("#billInformationIngrid").getDataIDs().length, dtlRow);
         });
     }
     function saveIn() {

@@ -147,7 +147,7 @@
         var ajax_url;
         var ajax_data;
         ajax_url = basePath + "/stock/warehStock/checkUniqueCodes.do";
-        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: true,rfidType:"code"};
+        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: false,rfidType:"code"};
         $.ajax({
             async: false,
             url: ajax_url,
@@ -219,7 +219,7 @@
                 skuEpc.exceptionType='异常唯一码';
                 skuEpcList.set(value.sku,skuEpc);
             }else {
-                var exist=skuMap.get(value.sku);
+                var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
                 exist.uniqueCodes=exist.uniqueCodes+","+value.code;
                 skuEpcList.set(value.sku,exist);
@@ -240,7 +240,7 @@
                 skuEpc.exceptionType='非本单唯一码';
                 skuEpcList.set(value.sku,skuEpc);
             }else {
-                var exist=skuMap.get(value.sku);
+                var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
                 exist.uniqueCodes=exist.uniqueCodes+","+value.code;
                 skuEpcList.set(value.sku,exist);
@@ -288,6 +288,7 @@
                 {name: 'sizeName', label: '尺码', width: 50},
                 {name: 'sku', label: 'SKU', width: 60},
                 {name: 'qty', label: '单据数量', width: 60},
+                {name: 'inQty', label: '入库数量', hidden: true},
                 {name: 'outQty', label: '出库数量', width: 50},
                 {name: 'thisQty', label: '本次数量', width: 50},
                 {name: 'returnQty', label: '退货数量',hidden: true},
