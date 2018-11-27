@@ -2382,6 +2382,7 @@ function edit_wareHouseOut() {
     });
     lodeBillInformationOutgrid();
     initUniqeCodeGridColumn(ct);
+    $("#outCodeQty").text(0);
 }
 /**
  * 批量扫码入库
@@ -2399,7 +2400,7 @@ function edit_wareHouseIn() {
         });
         lodeBillInformationIngrid();
         initUniqeCodeGridColumn(ct);
-        $("#codeQty").text(0);
+        $("#inCodeQty").text(0);
     } else {
         bootbox.alert("入库仓库不能为空！");
     }
@@ -2500,12 +2501,7 @@ function confirmWareHouseOut() {
     });
     $("#add-uniqCode-dialog").modal('hide');
 }
-/**
- * 批量入库
- */
-function wareHouseIn() {
 
-}
 /**
  * 入库方法
  * */
@@ -3295,4 +3291,5 @@ function addAllUniqCode() {
         skuInfo=[];
     });
     initWebSocket();
+    $("#scanCodeQty").text(0);
 }

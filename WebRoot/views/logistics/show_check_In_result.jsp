@@ -48,7 +48,7 @@
                         <button id="scanningIn"  class='btn btn-primary' onclick="onScanningIn()">扫描</button>
                         <button id="stopIn"  class='btn btn-primary' onclick="stopIn()">停止</button>
                         <button id="saveIn"  class='btn btn-primary' onclick="saveIn()">保存</button>
-                        <button id="clearIn"  class='btn btn-primary' onclick="onClearIn()">清空</button>
+                        <button id="clearIn"  class='btn btn-primary' onclick="deleteInCode()">清空</button>
                     </div>
                 </div>
             </div>
@@ -298,12 +298,6 @@
                         return "<a href='javascript:void(0);' onclick=showCodesInDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 },
-                {
-                    name: "", label: "操作", width: 90, align: "center", sortable: false,
-                    formatter: function (cellvalue, options, rowObject) {
-                        return "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteInCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
-                    }
-                }
             ],
             autowidth: true,
             rownumbers: true,
@@ -343,14 +337,6 @@
         loadInPutCodeDetail(rowId);
     }
 
-    function deleteInCode(rowId) {
-        $("#billInformationIngrid").setCell(rowId, 'thisQty', 0);
-        $("#billInformationIngrid").setCell(rowId, 'uniqueCodes',"");
-        $.gritter.add({
-            text: "删除成功，请重新扫码",
-            class_name: 'gritter-success  gritter-light'
-        });
-    }
 
     function loadnotThisOnegridInTable() {
         $("#notThisOneIngrid").jqGrid({
@@ -412,9 +398,24 @@
         loadPutCodeNoDetail(rowId);
     }
 
-    function onClearIn() {
-        $("#billInformationgrid").clearGridData();
-        $("#notThisOnegrid").clearGridData();
+    function deleteInCode() {
+        $("#notThisOneIngrid").clearGridData();
+        $.each($("#billInformationIngrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#billInformationIngrid").getRowData(dtlValue);
+            dtlRow.thisQty=0;
+            dtlRow.uniqueCodes="";
+            $("#billInformationIngrid").setRowData(dtlIndex, dtlRow);
+        });
+        $.gritter.add({
+            text: "清除成功，请重新扫码",
+            class_name: 'gritter-success  gritter-light'
+        });
+        var msg={
+            "cmd":"10005"
+        };
+        onMessageIn(msg);
+        $("#inCodeQty").text(0);
+        skuInfo=[];
     }
     function updatePagerIcons(table) {
         //ui-icon ui-icon-circlesmall-minus
@@ -450,10 +451,19 @@
     }
     function saveIn() {
         cs.showProgressBar();
-        $("#saveIn").attr({"disabled": "disabled"});
         var billNo = $("#edit_billNo").val();
         var dtlArray = [];
         var epcArray = [];
+        var allUniqueCodes="";
+        $.each($("#billInformationIngrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#billInformationIngrid").getRowData(dtlValue);
+            allUniqueCodes+=dtlRow.uniqueCodes;
+        });
+        if (allUniqueCodes===""){
+            cs.closeProgressBar();
+            bootbox.alert("未扫描到能入库的唯一码，请继续扫码");
+            return;
+        }
         $.each($("#billInformationIngrid").getDataIDs(), function (dtlIndex, dtlValue) {
             var dtlRow = $("#billInformationIngrid").getRowData(dtlValue);
             //判断入库库数量加本次数量是否大于单据数量
@@ -468,19 +478,21 @@
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
                 var Codes=dtlRow.uniqueCodes.split(",");
-                for(var m=0;m<Codes.length;m++){
-                    var rowData={};
-                    rowData.code=Codes[m];
-                    rowData.styleId=dtlRow.styleId;
-                    rowData.colorId=dtlRow.colorId;
-                    rowData.sizeId=dtlRow.sizeId;
-                    rowData.sku=dtlRow.sku;
-                    rowData.styleName=dtlRow.styleName;
-                    rowData.colorName=dtlRow.sizeName;
-                    rowData.price=dtlRow.price;
-                    rowData.preCast=dtlRow.preCast;
-                    rowData.wsPrice=dtlRow.wsPrice;
-                    epcArray.push(rowData);
+                if (dtlRow.uniqueCodes!==""){
+                    for(var m=0;m<Codes.length;m++){
+                        var rowData={};
+                        rowData.code=Codes[m];
+                        rowData.styleId=dtlRow.styleId;
+                        rowData.colorId=dtlRow.colorId;
+                        rowData.sizeId=dtlRow.sizeId;
+                        rowData.sku=dtlRow.sku;
+                        rowData.styleName=dtlRow.styleName;
+                        rowData.colorName=dtlRow.sizeName;
+                        rowData.price=dtlRow.price;
+                        rowData.preCast=dtlRow.preCast;
+                        rowData.wsPrice=dtlRow.wsPrice;
+                        epcArray.push(rowData);
+                    }
                 }
             }
         });
