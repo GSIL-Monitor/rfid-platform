@@ -441,7 +441,6 @@
     </div>
 </div>
 <!--/.fluid-container#main-container-->
-<jsp:include page="allUniqeCode_detail_list.jsp"></jsp:include>
 <jsp:include page="payDetail.jsp"></jsp:include>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
@@ -459,6 +458,7 @@
 <jsp:include page="batch_scanning_result.jsp"></jsp:include>
 <jsp:include page="show_check_out_result.jsp"></jsp:include>
 <jsp:include page="show_check_In_result.jsp"></jsp:include>
+<jsp:include page="allUniqeCode_detail_list.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" import="java.util.*" language="java" %>
+<<%@ page contentType="text/html;charset=UTF-8" import="java.util.*" language="java" %>
 <div id="modal-batch-show-table" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-header no-padding">
@@ -59,7 +59,7 @@
     //点击唯一码明细时记录当前行的所有唯一码
     $(function () {
         loadbillInformationOutTable();
-        loadnotThisOnegridOutTable()
+        loadnotThisOnegridOutTable();
     });
     function fullOutWebSocket() {
         var wsUri ="ws://127.0.0.1:4649/csreader";
@@ -357,23 +357,10 @@
         });
     }
     function showCodesOutDetail(rowId) {
-        var row = $('#billInformationOutgrid').getRowData(rowId);
-        $("#show-allUniqueCode-list").modal('show');
-        initAllUniqueCodeList();
-        var allCode=row.uniqueCodes.split(",");
-        var infoData=[];
-        $.each(allCode,function (index,value) {
-            var rowData=[];
-            rowData.code=value;
-            rowData.sku=row.sku;
-            rowData.warehouseId=row.warehouseId;
-            rowData.floor=row.floor;
-            rowData.inStock=row.inStock;
-            infoData.push(rowData);
+        $("#show-allUniqueCode-list").modal('show').on('hide.bs.modal',function () {
+            $("#show-allUniqueCode-list").jqGrid('clearGridData');//清空表格
         });
-        $.each(infoData,function (index,value) {
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,value);
-        });
+        loadOutPutCodeDetail(rowId);
     }
 
     function lodeBillInformationOutgrid() {

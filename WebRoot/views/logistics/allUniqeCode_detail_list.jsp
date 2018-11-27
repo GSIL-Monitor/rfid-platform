@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div id="show-allUniqueCode-list" class="modal fade" tabindex="-1">
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
+<div id="show-allUniqueCode-list" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
@@ -18,10 +18,14 @@
 </div>
 
 <script>
+    $(function () {
+        initAllUniqueCodeList();
+    });
+
     function initAllUniqueCodeList() {
         $("#allUniqueCodeListGrid").jqGrid({
             height: 200,
-            datatype:"local",
+            datatype:"json",
             mtype: "POST",
             colModel: [
                 {name: 'code', label: '唯一码', width: 150},
@@ -51,6 +55,24 @@
             shrinkToFit: true,
             sortname: 'code',
             sortorder: "desc"
+        });
+    }
+
+    function loadOutPutCodeDetail(rowId) {
+        var row = $('#billInformationOutgrid').getRowData(rowId);
+        var allCode=row.uniqueCodes.split(",");
+        var infoData=[];
+        $.each(allCode,function (index,value) {
+            var rowData=[];
+            rowData.code=value;
+            rowData.sku=row.sku;
+            rowData.warehouseId=row.warehouseId;
+            rowData.floor=row.floor;
+            rowData.inStock=row.inStock;
+            infoData.push(rowData);
+        });
+        $.each(infoData,function (index,value) {
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,value);
         });
     }
 </script>
