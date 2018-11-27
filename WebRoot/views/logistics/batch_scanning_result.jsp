@@ -18,7 +18,7 @@
         <div class="modal-footer">
             <div class="col-lg-3">
                 <span style="font-size:15px">已扫到数量：</span>
-                <span id="allCodeQty" style="font-size:15px;color: tomato">0</span>
+                <span id="scanCodeQty" style="font-size:15px; color:tomato">0</span>
             </div>
             <div id="dialog_buttonGroup">
                 <button id="scanning"  class='btn btn-primary' onclick="onScanning()">继续扫描</button>
@@ -83,14 +83,11 @@
     }
     function onMessage(evt) {
         var res = JSON.parse(evt.data);
-        /*var unicodes = [];
-         var productListInfo = [];*/
         if (res.cmd === "10006") {
             $.each(res.data,function (index,value) {
                 if (value!==null&&value.skuInfo!==null){
                     skuInfo.push(value.skuInfo);
-                    var num=skuInfo.length;
-                    $("#AllCodeQty").text(skuInfo.length);
+                    changeScanCodeQty();
                 }
             });
         }
@@ -101,6 +98,12 @@
             });
         }
     }
+
+    function changeScanCodeQty() {
+        var num=skuInfo.length;
+        $("#scanCodeQty").text(num);
+    }
+
     function onError(evt) {
         bootbox.alert("发生错误");
     }
@@ -147,7 +150,7 @@
                 {name: 'statusImg', label: '状态',hidden:true},
                 {name: 'inStatusImg', label: '入库状态',hidden:true},
                 {name: 'outStatusImg', label: '出库状态',hidden:true},
-                {name: 'styleId', label: '款号',width: 50,
+                {name: 'styleId', label: '款号',width: 60,
                     cellattr:function(rowId, val, rawObject, cm, rdata) {
                         if(rawObject.noOutPutCode!=""&&rawObject.noOutPutCode!=undefined){
                             return "style='color:red;'";

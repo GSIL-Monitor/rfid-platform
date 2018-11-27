@@ -39,6 +39,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div class="col-lg-3">
+                        <span style="font-size:15px">已扫到数量：</span>
+                        <span id="outCodeQty" style="font-size:15px; color:tomato">0</span>
+                    </div>
                     <div id="dialog_buttonGroup">
                         <button id="link"  class='btn btn-primary' onclick="fullOutWebSocket()">连接</button>
                         <button id="scanningOut"  class='btn btn-primary' onclick="onScanningOut()">扫描</button>
@@ -97,11 +101,18 @@
             $.each(res.data, function (index, value) {
                 if (value !== null && value.skuInfo !== null) {
                     skuInfo.push(value.skuInfo);
+                    changeOutCodeQty();
                 }
             });
             return false;
         }
     }
+
+    function changeOutCodeQty() {
+        var num=skuInfo.length;
+        $("#outCodeQty").text(num);
+    }
+
     function onErrorOut(evt) {
         bootbox.alert("发生错误");
     }
@@ -271,14 +282,14 @@
                 {name: 'outStatus', hidden: true},
                 {name: 'styleId', label: '款号',width: 60},
                 {name: 'styleName', label: '款名', hidden:true},
-                {name: 'colorId', label: '色码', width: 60},
+                {name: 'colorId', label: '色码', width: 50},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
-                {name: 'sizeName', label: '尺码', width: 60},
+                {name: 'sizeName', label: '尺码', width: 50},
                 {name: 'sku', label: 'SKU', width: 60},
                 {name: 'qty', label: '单据数量', width: 60},
-                {name: 'outQty', label: '出库数量', width: 60},
-                {name: 'thisQty', label: '本次数量', width: 60},
+                {name: 'outQty', label: '出库数量', width: 50},
+                {name: 'thisQty', label: '本次数量', width: 50},
                 {name: 'returnQty', label: '退货数量',hidden: true},
                 {name: 'price', label: '销售价格',hidden: true},
                 {name: 'totPrice', label: '销售金额',hidden: true},
@@ -295,13 +306,13 @@
                 {name:'abnormalStatus',label:'异常单状态',hidden:true},
                 {name: 'uniqueCodes', label: '唯一码',hidden: true},
                 {
-                    name: '', label: '唯一码明细', width: 100, align: "center",
+                    name: '', label: '唯一码明细', width: 90, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesOutDetail('"+options.rowId+"')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 },
                 {
-                    name: "", label: "操作", width: 100, align: "center", sortable: false,
+                    name: "", label: "操作", width: 90, align: "center", sortable: false,
                     formatter: function (cellvalue, options, rowObject) {
                         return "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }

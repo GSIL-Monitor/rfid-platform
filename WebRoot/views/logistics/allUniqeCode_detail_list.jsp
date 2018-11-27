@@ -66,7 +66,6 @@
             sortorder: "desc"
         });
     }
-
     function loadOutPutCodeDetail(rowId) {
         var row = $('#billInformationOutgrid').getRowData(rowId);
         var allCode=row.uniqueCodes.split(",");
