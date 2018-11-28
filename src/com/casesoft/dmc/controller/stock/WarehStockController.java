@@ -1197,14 +1197,14 @@ public class WarehStockController extends BaseController {
             if (type == Constant.TaskType.Inbound) {
                 //入库校验
                 if (isAdd) {
-                    if (epcStock.getWarehouseId().equals(warehouseId) && epcStock.getInStock() == 0) {
+                    if (epcStock.getInStock() == 0) {
                         rightEpcList.add(epcStock);
                     } else {
                         errorEpcList.add(epcStock);
                     }
                 } else {
                     BillDtl dtl = billDtlMap.get(epcStock.getSku());
-                    if ((epcStock.getWarehouseId().equals(warehouseId) || epcStock.getWarehouse2Id().equals(warehouseId)) && epcStock.getInStock() == 0) {
+                    if (epcStock.getInStock() == 0) {
                         //判断是否满足入库条件当前唯一码可以入库
                         if (CommonUtil.isBlank(dtl)) {
                             //明细为空表示不是当前单据加入noInBillEpcList
