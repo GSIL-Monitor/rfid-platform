@@ -2707,10 +2707,12 @@ function saveEPC() {
     $.each(IDs,function (index,value) {
         var rowData=$("#batchDetailgrid").jqGrid('getRowData',value);
         var uRowData=$("#batchDetailgrid").jqGrid('getRowData',value);
+        //正常唯一码
         if(rowData.uniqueCodes!=""&&rowData.uniqueCodes!=undefined){
             var codes=rowData.uniqueCodes.split(",");
         }
-        if(rowData.noOutPutCode!=""&&uRowData.noOutPutCode!=undefined){
+        //异常唯一码
+        if(uRowData.noOutPutCode!=""&&uRowData.noOutPutCode!=undefined){
             var noCoses=rowData.noOutPutCode.split(",");
         }
         if (codes!=undefined){
