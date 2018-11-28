@@ -450,7 +450,7 @@
             }else {
                 var exist=skuMap.get(value.sku);
                 exist.qty+=1;
-                exist.totPrice = Math.round(exist.price*exist.qty)/100;
+                exist.totPrice = exist.price*exist.qty;
                 exist.totActPrice = Math.round(exist.actPrice*exist.qty*exist.discount)/100;
                 if( exist.noOutPutCode!=""&&exist.noOutPutCode!=undefined){
                     exist.noOutPutCode =  exist.noOutPutCode+","+value.code ;

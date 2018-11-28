@@ -3286,10 +3286,25 @@ function batchUniqCode() {
     taskType = 0;
     wareHouse = origId;
     billNo = $("#edit_billNo").val();
-    $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
-        $("#batchDetailgrid").clearGridData();
-        skuInfo=[];
-    });
-    initWebSocket();
-    $("#scanCodeQty").text(0);
+    var ct;
+    if($('#sale_discount_div').is(':hidden')){
+        ct = "CT-LS";
+    }else {
+        ct = $("#edit_customerType").val();
+    }
+    if (ct && ct != null) {
+        if (origId && origId != null) {
+            $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
+                $("#batchDetailgrid").clearGridData();
+                skuInfo=[];
+            });
+            initWebSocket();
+            initUniqeCodeGridColumn(ct);
+            $("#scanCodeQty").text(0);
+        } else {
+            bootbox.alert("出库仓库不能为空！")
+        }
+    } else {
+        bootbox.alert("请选择客户！");
+    }
 }
