@@ -65,7 +65,7 @@
         //得到表格的宽度
     });
     function fullWebInSocket() {
-        var wsUri ="ws://192.168.0.114:4649/csreader";
+        var wsUri ="ws://192.168.0.109:4649/csreader";
         websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpenIn(evt) };
         websocket.onclose = function(evt) { onCloseIn(evt) };
@@ -517,7 +517,7 @@
                 inurl = basePath + "/logistics/Consignment/convertIn.do";
                 break;
             case "SR":
-                inurl = "";
+                inurl = basePath + "/logistics/saleOrderReturn/convertIn.do";
                 break;
             case "TR":
                 inurl = basePath + "/logistics/transferOrder/convertIn.do";

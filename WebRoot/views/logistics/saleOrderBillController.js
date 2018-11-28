@@ -2377,7 +2377,6 @@ function outStockCheck() {
  * 批量扫码出库
  */
 function batchWareHouseOut() {
-    var ct = $("#edit_customerType").val();
     billNo = $("#edit_billNo").val();
     wareHouse=$("#edit_origId").val();
     taskType = 0;
@@ -2386,7 +2385,6 @@ function batchWareHouseOut() {
         $("#notThisOneOutgrid").clearGridData();
     });
     lodeBillInformationOutgrid();
-    initUniqeCodeGridColumn(ct);
     $("#outCodeQty").text(0);
 }
 /**
@@ -3312,4 +3310,124 @@ function batchUniqCode() {
     } else {
         bootbox.alert("请选择客户！");
     }
+}
+//批量扫描保存方法
+function saveEPC() {
+    var IDs=$("#batchDetailgrid").getDataIDs();
+    var productListInfo=[];
+    $.each(IDs,function (index,value) {
+        var rowData=$("#batchDetailgrid").jqGrid('getRowData',value);
+        var uRowData=$("#batchDetailgrid").jqGrid('getRowData',value);
+        if(rowData.uniqueCodes!=""&&rowData.uniqueCodes!=undefined){
+            var codes=rowData.uniqueCodes.split(",");
+        }
+        if(rowData.noOutPutCode!=""&&uRowData.noOutPutCode!=undefined){
+            var noCoses=rowData.noOutPutCode.split(",");
+        }
+        if (codes!=undefined){
+            delete rowData.noOutPutCode;
+            $.each(codes,function (cIndex,cValue) {
+                var newRowData=JSON.parse(JSON.stringify(rowData));
+                newRowData.uniqueCodes=cValue;
+                newRowData.qty = 1;
+                //判断实际价格是不是小于门店批发价格
+                if($('#sale_discount_div').is(':hidden')) {
+                    newRowData.actPrice = Math.round(newRowData.price * newRowData.discount) / 100;
+                    newRowData.abnormalStatus=0;
+                }else {
+                    if(Math.round(newRowData.price * newRowData.discount) / 100<newRowData.wsPrice&&isUserAbnormal){
+                        newRowData.actPrice = newRowData.wsPrice;
+                        newRowData.discount = parseFloat(newRowData.wsPrice/newRowData.price).toFixed(2)*100;
+                        newRowData.abnormalStatus=1;
+                    }else{
+                        newRowData.actPrice = Math.round(newRowData.price * newRowData.discount) / 100;
+                        newRowData.abnormalStatus=0;
+                    }
+                }
+                newRowData.outQty = 0;
+                newRowData.inQty = 0;
+                newRowData.status = 0;
+                newRowData.inStatus = 0;
+                newRowData.outStatus = 0;
+                newRowData.totPrice = newRowData.price;
+                newRowData.totActPrice = newRowData.actPrice;
+                var stylePriceMap={};
+                stylePriceMap['price']=newRowData.price;
+                stylePriceMap['wsPrice']=newRowData.wsPrice;
+                stylePriceMap['puPrice']=newRowData.puPrice;
+                newRowData.stylePriceMap=JSON.stringify(stylePriceMap);
+                productListInfo.push(newRowData);
+            });
+        }
+        if (noCoses!=undefined){
+            delete uRowData.uniqueCodes;
+            $.each(noCoses,function (nIndex,nValue) {
+                var newURowData=JSON.parse(JSON.stringify(uRowData));
+                newURowData.noOutPutCode=nValue;
+                newURowData.qty = 1;
+                //判断实际价格是不是小于门店批发价格
+                if($('#sale_discount_div').is(':hidden')) {
+                    newURowData.actPrice = Math.round(newURowData.price * newURowData.discount) / 100;
+                    newURowData.abnormalStatus=0;
+                }else {
+                    if(Math.round(newURowData.price * newURowData.discount) / 100<newURowData.wsPrice&&isUserAbnormal){
+                        newURowData.actPrice = newURowData.wsPrice;
+                        newURowData.discount = parseFloat(newURowData.wsPrice/newURowData.price).toFixed(2)*100;
+                        newURowData.abnormalStatus=1;
+                    }else{
+                        newURowData.actPrice = Math.round(newURowData.price * newURowData.discount) / 100;
+                        newURowData.abnormalStatus=0;
+                    }
+                }
+                newURowData.outQty = 0;
+                newURowData.inQty = 0;
+                newURowData.status = 0;
+                newURowData.inStatus = 0;
+                newURowData.outStatus = 0;
+                newURowData.totPrice = newURowData.price;
+                newURowData.totActPrice = newURowData.actPrice;
+                var stylePriceMap={};
+                stylePriceMap['price']=newURowData.price;
+                stylePriceMap['wsPrice']=newURowData.wsPrice;
+                stylePriceMap['puPrice']=newURowData.puPrice;
+                newURowData.stylePriceMap=JSON.stringify(stylePriceMap);
+                productListInfo.push(newURowData);
+            });
+        }
+    });
+    var isAdd = true;
+    var alltotActPrice = 0;
+    $.each(productListInfo,function (index,value) {
+        isAdd=true;
+        $.each($("#addDetailgrid").getDataIDs(),function (dtlIndex,dtlValue) {
+            var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+            if (value.sku === dtlRow.sku) {
+                if (value.uniqueCodes!=""&&value.uniqueCodes!=undefined&&dtlRow.uniqueCodes.indexOf(value.uniqueCodes)=== -1) {
+                    dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                    dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                    dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                    alltotActPrice += dtlRow.qty * dtlRow.actPrice;
+                    dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.uniqueCodes;
+                }
+                if (value.noOutPutCode!=""&&value.noOutPutCode!=undefined&&dtlRow.noOutPutCode.indexOf(value.noOutPutCode) === -1) {
+                    dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                    dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                    dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                    alltotActPrice += dtlRow.qty * dtlRow.actPrice;
+                    dtlRow.noOutPutCode = dtlRow.noOutPutCode + "," + value.noOutPutCode;
+                }
+                if (dtlRow.id) {
+                    $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                } else {
+                    $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                }
+                isAdd = false;
+            }
+        });
+        if (isAdd) {
+            $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+        }
+    });
+    $("#modal-batch-table").modal('hide');
+    setFooterData();
 }

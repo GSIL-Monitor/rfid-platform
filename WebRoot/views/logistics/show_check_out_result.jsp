@@ -66,7 +66,7 @@
         loadnotThisOnegridOutTable();
     });
     function fullOutWebSocket() {
-        var wsUri ="ws://127.0.0.1:4649/csreader";
+        var wsUri ="ws://192.168.0.109:4649/csreader";
         websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpenOut(evt) };
         websocket.onclose = function(evt) { onCloseOut(evt) };
@@ -515,7 +515,7 @@
         var outurl;
         switch(prifex){
             case "PR":
-                outurl = "";
+                outurl = basePath + "/logistics/saleOrderReturn/convertOut.do";
                 break;
             case "SO":
                 outurl = basePath + "/logistics/saleOrderBill/convertOut.do";
