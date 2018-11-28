@@ -1362,7 +1362,7 @@ function initButtonGroup(billStatus){
             "<button id='SODtl_add' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addNew(true)'>" +
             "    <i class='ace-icon fa fa-plus'></i>" +
             "    <span class='bigger-110'>新增</span>" +
-            "</button>" +
+            "</button>"+
             "<button id='SODtl_search' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='opnenSearchOrderDialog()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>查询订单</span>" +
@@ -1379,7 +1379,7 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
             "</button>" +
-            "<button id='SODtl_addAllUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addAllUniqCode()'>" +
+            "<button id='SODtl_batchUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>批量扫码</span>" +
             "</button>" +
@@ -1387,7 +1387,7 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>出库</span>" +
             "</button>" +
-            "<button type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseOut()'>" +
+            "<button id='SODtl_batchWareHouseOut'type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseOut()'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
             "    <span class='bigger-110'>批量出库</span>" +
             "</button>"+
@@ -1395,7 +1395,7 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button  type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseIn()'>" +
+            "<button id='SODtl_batchWareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseIn()'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>批量入库</span>" +
             "</button>" +
@@ -2371,7 +2371,7 @@ function outStockCheck() {
 /**
  * 批量扫码出库
  */
-function edit_wareHouseOut() {
+function batchWareHouseOut() {
     var ct = $("#edit_customerType").val();
     billNo = $("#edit_billNo").val();
     wareHouse=$("#edit_origId").val();
@@ -2387,7 +2387,7 @@ function edit_wareHouseOut() {
 /**
  * 批量扫码入库
  */
-function edit_wareHouseIn() {
+function batchWareHouseIn() {
     taskType = 1;
     var destId = $("#edit_destId").val();
     wareHouse = destId;
@@ -3281,7 +3281,7 @@ function patByBalance() {
     });
 }
 
-function addAllUniqCode() {
+function batchUniqCode() {
     var origId = $("#edit_origId").val();
     taskType = 0;
     wareHouse = origId;
