@@ -61,11 +61,11 @@
     var websocket;
     $(function () {
         loadbillInformationInTable();
-        loadnotThisOnegridInTable()
+        loadnotThisOnegridInTable();
         //得到表格的宽度
     });
     function fullWebInSocket() {
-        var wsUri ="ws://127.0.0.1:4649/csreader";
+        var wsUri ="ws://192.168.0.114:4649/csreader";
         websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpenIn(evt) };
         websocket.onclose = function(evt) { onCloseIn(evt) };
@@ -125,7 +125,7 @@
      */
     function stopIn() {
         if (skuInfoIn !== null) {
-            window.clearInterval(timeoutOut);
+            window.clearInterval(timeoutIn);
         }
         var msg={
             "cmd":"10003"
@@ -473,7 +473,7 @@
                     text: dtlRow.sku+"要入库的数量超过本单数量"+(parseInt(dtlRow.inQty)+parseInt(dtlRow.thisQty)-parseInt(dtlRow.qty))+"件",
                     class_name: 'gritter-success  gritter-light'
                 });
-                return;
+
             }else {
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
@@ -502,10 +502,32 @@
             cs.closeProgressBar();
             return;
         }
+
+        var prifex = billNo.substring(0,2);
+        //获取单号前缀设置入库url
+        var inurl;
+        switch(prifex){
+            case "PI":
+                inurl = "";
+                break;
+            case "SO":
+                inurl = basePath + "/logistics/saleOrderBill/convertIn.do";
+                break;
+            case "CM":
+                inurl = basePath + "/logistics/Consignment/convertIn.do";
+                break;
+            case "SR":
+                inurl = "";
+                break;
+            case "TR":
+                inurl = basePath + "/logistics/transferOrder/convertIn.do";
+                break;
+
+        }
         $.ajax({
             dataType: "json",
             async: true,
-            url: basePath + "/logistics/saleOrderBill/convertIn.do",
+            url: inurl,
             data: {
                 billNo: billNo,
                 strEpcList: JSON.stringify(epcArray),

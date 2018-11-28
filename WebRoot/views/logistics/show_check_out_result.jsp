@@ -481,7 +481,7 @@
                     text: dtlRow.sku+"要出库的数量超过本单数量"+(parseInt(dtlRow.outQty)+parseInt(dtlRow.thisQty)-parseInt(dtlRow.qty))+"件",
                     class_name: 'gritter-success  gritter-light'
                 });
-                return;
+
             }else {
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
@@ -510,9 +510,27 @@
             cs.closeProgressBar();
             return;
         }
+        var prifex = billNo.substring(0,2);
+        //获取单号前缀设置入库url
+        var outurl;
+        switch(prifex){
+            case "PR":
+                outurl = "";
+                break;
+            case "SO":
+                outurl = basePath + "/logistics/saleOrderBill/convertOut.do";
+                break;
+            case "SR":
+                outurl = "";
+                break;
+            case "TR":
+                outurl = basePath + "/logistics/transferOrder/convertOut.do";
+                break;
+
+        }
         $.ajax({
             dataType: "json",
-            url: basePath + "/logistics/saleOrderBill/convertOut.do",
+            url:  outurl,
             data: {
                 billNo: billNo,
                 strEpcList: JSON.stringify(epcArray),

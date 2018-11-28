@@ -1232,7 +1232,7 @@ public class WarehStockController extends BaseController {
                             epcStock.setRemark("校验未通过,不能入库");
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if(codeList.contains(epcStock.getCode())){
+                            if(CommonUtil.isNotBlank(codeList) && codeList.contains(epcStock.getCode())){
                                 //说明改单已经入库
                                 epcStock.setRemark("校验未通过,已入库无需入库");
                             }else{
