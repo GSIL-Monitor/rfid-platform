@@ -1395,7 +1395,7 @@ function initButtonGroup(billStatus){
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>入库</span>" +
             "</button>" +
-            "<button  type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='wareHouseIn()'>" +
+            "<button  type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='edit_wareHouseIn()'>" +
             "    <i class='ace-icon fa fa-sign-in'></i>" +
             "    <span class='bigger-110'>批量入库</span>" +
             "</button>" +
@@ -2382,7 +2382,30 @@ function edit_wareHouseOut() {
     });
     lodeBillInformationOutgrid();
     initUniqeCodeGridColumn(ct);
+    $("#outCodeQty").text(0);
 }
+/**
+ * 批量扫码入库
+ */
+function edit_wareHouseIn() {
+    taskType = 1;
+    var destId = $("#edit_destId").val();
+    wareHouse = destId;
+    billNo = $("#edit_billNo").val();
+    var ct = $("#edit_customerType").val();
+    if (destId && destId != null) {
+        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationIngrid").clearGridData();
+            $("#notThisOneIngrid").clearGridData();
+        });
+        lodeBillInformationIngrid();
+        initUniqeCodeGridColumn(ct);
+        $("#inCodeQty").text(0);
+    } else {
+        bootbox.alert("入库仓库不能为空！");
+    }
+}
+
 /**
  * 扫码出库
  * */
@@ -2478,28 +2501,7 @@ function confirmWareHouseOut() {
     });
     $("#add-uniqCode-dialog").modal('hide');
 }
-/**
- * 批量入库
- */
-function wareHouseIn() {
-    taskType = 1;
-    var destId = $("#edit_destId").val();
-    wareHouse = destId;
-    billNo = $("#edit_billNo").val();
-    var ct = $("#edit_customerType").val();
-    if (destId && destId != null) {
 
-        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
-            $("#billInformationIngrid").clearGridData();
-            $("#notThisOneIngrid").clearGridData();
-        });
-        lodeBillInformationIngrid();
-        initUniqeCodeGridColumn(ct);
-        $("#codeQty").text(0);
-    } else {
-        bootbox.alert("入库仓库不能为空！");
-    }
-}
 /**
  * 入库方法
  * */
@@ -3286,6 +3288,8 @@ function addAllUniqCode() {
     billNo = $("#edit_billNo").val();
     $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
         $("#batchDetailgrid").clearGridData();
+        skuInfo=[];
     });
     initWebSocket();
+    $("#scanCodeQty").text(0);
 }

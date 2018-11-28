@@ -476,14 +476,14 @@
         $("#modal-batch-table").modal('hide');
     }
 
-
     function onClear() {
-        $("#addDetailgrid").clearGridData();
-        skuInfo=[];
+        $("#batchDetailgrid").clearGridData();
         var msg={
             "cmd":"10005"
         };
         sendMessgeToServer(msg);
+        skuInfo=[];
+        $("#scanCodeQty").text(0);
     }
 
 

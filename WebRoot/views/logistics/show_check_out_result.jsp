@@ -48,7 +48,7 @@
                         <button id="scanningOut"  class='btn btn-primary' onclick="onScanningOut()">扫描</button>
                         <button id="stopOut"  class='btn btn-primary' onclick="stopOut()">停止</button>
                         <button id="saveOut"  class='btn btn-primary' onclick="saveOut()">保存</button>
-                        <button id="clearOut"  class='btn btn-primary' onclick="onClearOut()">清空</button>
+                        <button id="clearOut"  class='btn btn-primary' onclick="deleteCode()">清空</button>
                     </div>
                 </div>
             </div>
@@ -147,7 +147,7 @@
         var ajax_url;
         var ajax_data;
         ajax_url = basePath + "/stock/warehStock/checkUniqueCodes.do";
-        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: true,rfidType:"code"};
+        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: false,rfidType:"code"};
         $.ajax({
             async: false,
             url: ajax_url,
@@ -185,7 +185,6 @@
         var noInBill=result.noInBill;
         //添加校验正确的唯一码到billInformationOutgrid中
         $.each($("#billInformationOutgrid").getDataIDs(), function (dtlIndex, dtlValue) {
-            var nn=dtlIndex;
             var dtlRow = $("#billInformationOutgrid").getRowData(dtlValue);
              for(var i=0;i<rightEpc.length;i++){
                  if(dtlRow.sku==rightEpc[i].sku){
@@ -219,7 +218,7 @@
                 skuEpc.exceptionType='异常唯一码';
                 skuEpcList.set(value.sku,skuEpc);
             }else {
-                var exist=skuMap.get(value.sku);
+                var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
                 exist.uniqueCodes=exist.uniqueCodes+","+value.code;
                 skuEpcList.set(value.sku,exist);
@@ -240,7 +239,7 @@
                 skuEpc.exceptionType='非本单唯一码';
                 skuEpcList.set(value.sku,skuEpc);
             }else {
-                var exist=skuMap.get(value.sku);
+                var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
                 exist.uniqueCodes=exist.uniqueCodes+","+value.code;
                 skuEpcList.set(value.sku,exist);
@@ -251,9 +250,24 @@
         });
         skuInfo=[];
     }
-    function onClearOut() {
-        $("#billInformationgrid").clearGridData();
-        $("#notThisOnegrid").clearGridData();
+    function deleteCode() {
+        $("#notThisOneOutgrid").clearGridData();
+        $.each($("#billInformationOutgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#billInformationOutgrid").getRowData(dtlValue);
+            dtlRow.thisQty=0;
+            dtlRow.uniqueCodes="";
+            $("#billInformationOutgrid").setRowData(dtlIndex, dtlRow);
+        });
+        $.gritter.add({
+            text: "清除成功，请重新扫码",
+            class_name: 'gritter-success  gritter-light'
+        });
+        var msg={
+            "cmd":"10005"
+        };
+        sendMessgeOutToServer(msg);
+        $("#outCodeQty").text(0);
+        skuInfo=[];
     }
 
     function sendMessgeOutToServer(message) {
@@ -282,14 +296,15 @@
                 {name: 'outStatus', hidden: true},
                 {name: 'styleId', label: '款号',width: 60},
                 {name: 'styleName', label: '款名', hidden:true},
-                {name: 'colorId', label: '色码', width: 50},
+                {name: 'colorId', label: '色码', width: 40},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
-                {name: 'sizeName', label: '尺码', width: 50},
+                {name: 'sizeName', label: '尺码', width: 40},
                 {name: 'sku', label: 'SKU', width: 60},
-                {name: 'qty', label: '单据数量', width: 60},
-                {name: 'outQty', label: '出库数量', width: 50},
-                {name: 'thisQty', label: '本次数量', width: 50},
+                {name: 'qty', label: '单据数量', width: 65},
+                {name: 'inQty', label: '入库数量', hidden: true},
+                {name: 'outQty', label: '出库数量', width: 65},
+                {name: 'thisQty', label: '本次数量', width: 65},
                 {name: 'returnQty', label: '退货数量',hidden: true},
                 {name: 'price', label: '销售价格',hidden: true},
                 {name: 'totPrice', label: '销售金额',hidden: true},
@@ -306,15 +321,9 @@
                 {name:'abnormalStatus',label:'异常单状态',hidden:true},
                 {name: 'uniqueCodes', label: '唯一码',hidden: true},
                 {
-                    name: '', label: '唯一码明细', width: 90, align: "center",
+                    name: '', label: '唯一码明细', width: 65, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesOutDetail('"+options.rowId+"')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
-                    }
-                },
-                {
-                    name: "", label: "操作", width: 90, align: "center", sortable: false,
-                    formatter: function (cellvalue, options, rowObject) {
-                        return "<a href='javascript:void(0);' style='margin-left: 20px'  onclick=deleteCode('" + options.rowId + "')><i class='ace-icon fa fa-trash-o red' title='删除'></i></a>";
                     }
                 }
             ],
@@ -376,18 +385,18 @@
             datatype: "local",
             mtype: 'POST',
             colModel: [
-                {name: 'styleId', label: '款号',width: 80},
+                {name: 'styleId', label: '款号',width: 60},
                 {name: 'styleName', label: '款名', hidden:true},
-                {name: 'colorId', label: '色码', width: 80},
+                {name: 'colorId', label: '色码', width: 45},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
-                {name: 'sizeName', label: '尺码', width: 80},
+                {name: 'sizeName', label: '尺码', width: 45},
                 {name: 'sku', label: 'SKU', width: 80},
-                {name: 'qty', label: '数量', width: 80},
+                {name: 'qty', label: '数量', width: 45},
                 {name: 'uniqueCodes', label: '唯一码',hidden: true},
-                {name: 'exceptionType', label:'异常类型', width: 80},
+                {name: 'exceptionType', label:'异常类型', width: 60},
                 {
-                    name: '', label: '唯一码明细', width: 120, align: "center",
+                    name: '', label: '唯一码明细', width: 80, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesNoOutDetail('" + options.rowId + ")><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
@@ -450,10 +459,19 @@
     }
     function saveOut() {
         cs.showProgressBar();
-        $("#saveOut").attr({"disabled": "disabled"});
         var dtlArray = [];
         var epcArray = [];
         var billNo = $("#edit_billNo").val();
+        var allUniqueCodes="";
+        $.each($("#billInformationOutgrid").getDataIDs(), function (dtlIndex, dtlValue) {
+            var dtlRow = $("#billInformationOutgrid").getRowData(dtlValue);
+            allUniqueCodes+=dtlRow.uniqueCodes;
+        });
+        if (allUniqueCodes===""){
+            cs.closeProgressBar();
+            bootbox.alert("未扫描到能出库的唯一码，请继续扫码");
+            return;
+        }
         $.each($("#billInformationOutgrid").getDataIDs(), function (dtlIndex, dtlValue) {
             var dtlRow = $("#billInformationOutgrid").getRowData(dtlValue);
             //判断出库数量加本次数量是否大于单据数量
@@ -467,20 +485,22 @@
             }else {
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
-                var Codes=dtlRow.uniqueCodes.split(",");
-                for(var m=0;m<Codes.length;m++){
-                    var rowData={};
-                    rowData.code=Codes[m];
-                    rowData.styleId=dtlRow.styleId;
-                    rowData.colorId=dtlRow.colorId;
-                    rowData.sizeId=dtlRow.sizeId;
-                    rowData.sku=dtlRow.sku;
-                    rowData.styleName=dtlRow.styleName;
-                    rowData.colorName=dtlRow.sizeName;
-                    rowData.price=dtlRow.price;
-                    rowData.preCast=dtlRow.preCast;
-                    rowData.wsPrice=dtlRow.wsPrice;
-                    epcArray.push(rowData);
+                if (dtlRow.uniqueCodes!==""){
+                    var Codes=dtlRow.uniqueCodes.split(",");
+                    for(var m=0;m<Codes.length;m++){
+                        var rowData={};
+                        rowData.code=Codes[m];
+                        rowData.styleId=dtlRow.styleId;
+                        rowData.colorId=dtlRow.colorId;
+                        rowData.sizeId=dtlRow.sizeId;
+                        rowData.sku=dtlRow.sku;
+                        rowData.styleName=dtlRow.styleName;
+                        rowData.colorName=dtlRow.sizeName;
+                        rowData.price=dtlRow.price;
+                        rowData.preCast=dtlRow.preCast;
+                        rowData.wsPrice=dtlRow.wsPrice;
+                        epcArray.push(rowData);
+                    }
                 }
             }
         });
@@ -517,14 +537,6 @@
         });
         $("#modal-batch-show-table").modal('hide');
         //wareHouseOut();
-    }
-    function deleteCode(rowId) {
-        $("#billInformationOutgrid").setCell(rowId, 'thisQty', 0);
-        $("#billInformationOutgrid").setCell(rowId, 'uniqueCodes',"");
-        $.gritter.add({
-            text: "删除成功，请重新扫码",
-            class_name: 'gritter-success  gritter-light'
-        });
     }
 
 </script>
