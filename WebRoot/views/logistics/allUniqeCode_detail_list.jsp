@@ -46,9 +46,9 @@
                     name: '', label: '库存状态', width: 110,
                     formatter: function (cellValue, options, rowObject) {
                         switch (rowObject.inStock) {
-                            case 1:
+                            case "1":
                                 return "在库";
-                            case 0:
+                            case "0":
                                 return "不在库";
                             default:
                                 return "";
@@ -110,6 +110,20 @@
 
     function loadPutCodeNoDetail(rowId) {
         var row = $('#notThisOneIngrid').getRowData(rowId);
+        var allCode=row.uniqueCodes.split(",");
+        $.each(allCode,function (index,value) {
+            var rowData={};
+            rowData.code=value;
+            rowData.sku=row.sku;
+            rowData.warehouseId=row.warehouseId;
+            rowData.floor=row.floor;
+            rowData.inStock=row.inStock;
+            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+        });
+    }
+
+    function loadBatchPutCodeDetail(rowId) {
+        var row = $('#batchDetailgrid').getRowData(rowId);
         var allCode=row.uniqueCodes.split(",");
         $.each(allCode,function (index,value) {
             var rowData={};
