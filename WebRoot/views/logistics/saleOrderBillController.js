@@ -512,11 +512,10 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码', hidden: true},
+            {name: 'uniqueCodes', label: '唯一码', /*hidden: true*/width: 40},
             {name: 'puPrice', label: '代理商批发价格', hidden: true},
             {name: 'wsPrice', label: '门店批发价格', hidden: true},
             {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
-            {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {name:'abnormalStatus',label:'异常单状态',hidden:true},
             {
                 name: '', label: '唯一码明细', width: 40, align: "center",
@@ -525,7 +524,13 @@ function initAddGrid() {
                 }
             },
             {name:'stylePriceMap',label:'价格表',hidden:true},
-            {name: 'noOutPutCode', label: '异常唯一码', hidden: true}
+            {name: 'noOutPutCode', label: '异常唯一码', /*hidden: true*/width: 40},
+            {
+                name: '', label: '异常唯一码明细', width: 40, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.noOutPutCode + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                }
+            }
         ],
         autowidth: true,
         rownumbers: true,
@@ -1844,7 +1849,7 @@ function cancel() {
             /* $("#SODtl_save").removeAttr("disabled");*/
             if (result) {
                 cancelAjax(billId);
-                addNew(false);;
+                addNew(false);
                 _search();
             } else {
             }
