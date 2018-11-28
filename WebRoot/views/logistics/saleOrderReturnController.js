@@ -8,6 +8,7 @@ var isCheckWareHouse=false;//是否检测出库仓库
 var slaeOrderReturn_customerType;
 var allCodeStrInDtl;
 var allCodes;
+var billNo;
 $(function (){
     load().then(function (data) {
         /*初始化左侧grig*/
@@ -819,6 +820,10 @@ function initButtonGroup(type){
             "<button id='SRDtl_addUniqCode' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='addUniqCode()'>" +
             "    <i class='ace-icon fa fa-barcode'></i>" +
             "    <span class='bigger-110'>扫码</span>" +
+            "</button>" +
+            "<button id='SRDtl_batchUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchUniqCode()'>" +
+            "    <i class='ace-icon fa fa-barcode'></i>" +
+            "    <span class='bigger-110'>批量扫码</span>" +
             "</button>" +
             "<button id='SRDtl_wareHouseOut' type='button' style='margin: 8px'  class='btn btn-xs btn-primary' onclick='wareHouseInOut(" + "\"out\"" + ")'>" +
             "    <i class='ace-icon fa fa-sign-out'></i>" +
@@ -2650,5 +2655,35 @@ function deleteItem(rowId) {
         deletenoOutPutCode(value.noOutPutCode,totActPrice);
     }else{
         saveother(totActPrice);
+    }
+}
+//批量扫码
+function batchUniqCode() {
+    var ct = $("#edit_customerType").val();
+    if (ct && ct != null) {
+        billNo = $("#edit_billNo").val();
+        if ($("#edit_origId").val() && $("#edit_origId").val() !== null) {
+            taskType = 0; //出库
+            wareHouse = $("#edit_origId").val();
+            isCheckWareHouse=true;
+        }else if (($("#edit_destId").val() && $("#edit_destId").val() !== null)) {
+            taskType = 1; //没有出库仓库时，传入库仓库校验是否可以入库
+            wareHouse = $("#edit_destId").val();
+        }else {
+            $.gritter.add({
+                text: "请选择入库仓库",
+                class_name: 'gritter-success  gritter-light'
+            });
+            return
+        }
+        $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
+            $("#batchDetailgrid").clearGridData();
+            skuInfo=[];
+        });
+        initWebSocket();
+        $("#scanCodeQty").text(0);
+        initUniqeCodeGridColumn(ct);
+    } else {
+        bootbox.alert("请选择客户！");
     }
 }
