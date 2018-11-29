@@ -1185,7 +1185,7 @@ function initSelectBusinessIdFormOnAddNew() {
         async: false,
         type: "POST",
         success: function (data, textStatus) {
-            debugger;;
+            debugger;
             $("#edit_busnissId").empty();
             $("#edit_busnissId").append("<option value='' >--请选择--</option>");
             var json = data;
@@ -2975,7 +2975,7 @@ function setSanLian(id) {
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";;
+                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -3076,16 +3076,16 @@ function setA4(id) {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger;;
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#"+plp).text(message);
                 }
-                var tbodyCont="";;
+                var tbodyCont = "";
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";;
+                    tbodyCont += " <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -3313,22 +3313,25 @@ function batchUniqCode() {
 }
 //批量扫描保存方法
 function saveEPC() {
-    var IDs=$("#batchDetailgrid").getDataIDs();
-    var productListInfo=[];
-    $.each(IDs,function (index,value) {
-        var rowData=$("#batchDetailgrid").jqGrid('getRowData',value);
+    var productListInfo=[];//存放唯一码明细
+    //遍历批量扫到的唯一码将sku明细转换为唯一码明细
+    $.each($("#batchDetailgrid").getDataIDs(),function (index,value) {
+        var rowData=$("#batchDetailgrid").jqGrid('getRowData',value);//
         var uRowData=$("#batchDetailgrid").jqGrid('getRowData',value);
         //正常唯一码
-        if(rowData.uniqueCodes!=""&&rowData.uniqueCodes!=undefined){
-            var codes=rowData.uniqueCodes.split(",");
-        }
+        var rightCodes;
         //异常唯一码
-        if(uRowData.noOutPutCode!=""&&uRowData.noOutPutCode!=undefined){
-            var noCoses=rowData.noOutPutCode.split(",");
+        var errorCodes;
+        if(rowData.uniqueCodes!=""&&rowData.uniqueCodes!=undefined){
+            rightCodes =rowData.uniqueCodes.split(",");
         }
-        if (codes!=undefined){
+
+        if(uRowData.noOutPutCode!=""&&uRowData.noOutPutCode!=undefined){
+            errorCodes =rowData.noOutPutCode.split(",");
+        }
+        if (rightCodes!=undefined){
             delete rowData.noOutPutCode;
-            $.each(codes,function (cIndex,cValue) {
+            $.each(rightCodes,function (cIndex,cValue) {
                 var newRowData=JSON.parse(JSON.stringify(rowData));
                 newRowData.uniqueCodes=cValue;
                 newRowData.qty = 1;
@@ -3361,7 +3364,7 @@ function saveEPC() {
                 productListInfo.push(newRowData);
             });
         }
-        if (noCoses!=undefined){
+        if (errorCodes!=undefined){
             delete uRowData.uniqueCodes;
             $.each(noCoses,function (nIndex,nValue) {
                 var newURowData=JSON.parse(JSON.stringify(uRowData));
@@ -3399,6 +3402,7 @@ function saveEPC() {
     });
     var isAdd = true;
     var alltotActPrice = 0;
+    //将唯一码明细添加入明细表格
     $.each(productListInfo,function (index,value) {
         isAdd=true;
         $.each($("#addDetailgrid").getDataIDs(),function (dtlIndex,dtlValue) {
