@@ -36,9 +36,6 @@
         var cTbillNo = "${cTbillNo}";
         var defaultPayType = "${payType}";//默认支付方式
     </script>
-<<<<<<< Updated upstream
-    <style>*{padding:0;margin:0;}</style>
-=======
     <style>
         *{padding:0;margin:0;}
             /*对搜索下拉的框规定高度*/
@@ -51,7 +48,6 @@
 
 
     </style>
->>>>>>> Stashed changes
 
 </head>
 <body class="no-skin">
@@ -225,15 +221,15 @@
                                         <div class="widget-main padding-12">
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
-<<<<<<< Updated upstream
-=======
                                                 <div class="form-group" style="text-align: left;margin-left: 20px;margin-bottom: 10px;">
+                                                    <%--添加一个复选框--%>
                                                     <div class="checkbox_" style="display: inline-block;">
                                                         <input id="check"  onclick="test()" type="checkbox" style=" width:20px; height:20px ;padding-top: 10px" />
                                                     </div>
                                                     <div class="userinput" style="display: inline-block" >
                                                         <div id="text1"><input type="text" id="text2" style=" width:300px " placeholder="请输入衣服的编号或者名称"  autofocus = autofocus>
                                                         </div>
+                                                        <%--添加一个隐藏的搜索框--%>
                                                         <div id="search"   style="display: none">
                                                        <%--<select name="select_id" id="select_id"  class="selectpicker show-tick form-control" data-width="300px" data-first-option="false" data-live-search="true">
                                                             <foreach dealer in dealerList>
@@ -264,7 +260,6 @@
                                                     <button class="btn btn-xs btn-primary" id="bt_is" style="width: 60px;height: 100%">确认</button>
                                                     </div>
                                                 </div>
->>>>>>> Stashed changes
                                                 <div class="form-group">
                                                     <div id="destUnitId_div">
                                                         <label class="col-md-1 control-label"
@@ -510,7 +505,6 @@
 <jsp:include page="findTransferOrder.jsp"></jsp:include>
 <jsp:include page="findWxShop.jsp"></jsp:include>
 <jsp:include page="sendStreamNO.jsp"></jsp:include>
-<<<<<<< Updated upstream
 <jsp:include page="batch_scanning_result.jsp"></jsp:include>
 <jsp:include page="show_check_out_result.jsp"></jsp:include>
 <jsp:include page="show_check_In_result.jsp"></jsp:include>
@@ -519,27 +513,20 @@
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/views/logistics/websocket.js"></script>
-=======
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
-
 <script src="<%=basePath%>/Olive/assets/js/jquery-ui.js"></script>
 
+<%--typehead方法--%>
 
 
->>>>>>> Stashed changes
 
 <%--实收金额--%>
 <script src="<%=basePath%>/views/NoOneCashier/js/mynumkb.js"></script>
 <script src="<%=basePath%>/views/NoOneCashier/js/iconfont.js"></script>
 
-<<<<<<< Updated upstream
-<div id="dialog"></div>
-<div id="progressDialog"></div>
-<span id="notification"></span>
-=======
 
 
 <div id="dialog"></div>
@@ -548,11 +535,14 @@
 <script type="text/javascript">
 
     function test() {
+        /*如果复选框被选中*/
 
         if(document.getElementById('check').checked == true) {
+
             subMit();
            /* showDropdown(document.getElementById("select_id"));*/
         }
+        /*如果复选框没被选中*/
         if(document.getElementById('check').checked == false) {
 
             subMit1();
@@ -567,6 +557,7 @@
                     document.getElementById("tags").focus();
 
                 }
+                /**/
                 function subMit1(){
                     document.getElementById("text1").style.display  = "block";
                     document.getElementById("search").style.display = "none";
@@ -601,6 +592,7 @@
 
         ];
         $( "#tags" ).autocomplete({
+            /*获取数据*/
             source: availableTags
         });
     });
@@ -612,6 +604,5 @@
 
 </script>
 
->>>>>>> Stashed changes
 </body>
 </html>
