@@ -1237,9 +1237,13 @@ public class WarehStockController extends BaseController {
                             epcStock.setRemark("校验未通过,不能入库");
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if (CommonUtil.isNotBlank(codeList) && codeList.contains(epcStock.getCode())) {
-                                //说明改单已经入库
-                                epcStock.setRemark("校验未通过,已入库无需入库");
+                            if (CommonUtil.isNotBlank(codeList)) {
+                                if (codeList.contains(epcStock.getCode())) {
+                                    //说明改单已经入库
+                                    epcStock.setRemark("校验未通过,已入库无需入库");
+                                } else {
+                                    epcStock.setRemark("校验未通过,不能入库");
+                                }
                             } else {
                                 epcStock.setRemark("校验未通过,不能入库");
                             }
@@ -1267,7 +1271,7 @@ public class WarehStockController extends BaseController {
                             noInBillEpcList.add(epcStock);
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if(CommonUtil.isNotBlank(codeList)) {
+                            if (CommonUtil.isNotBlank(codeList)) {
                                 if (codeList.size() < dtl.getQty()) {
                                     //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
                                     epcStock.setRemark("校验通过");
@@ -1281,7 +1285,7 @@ public class WarehStockController extends BaseController {
                                         noInBillEpcList.add(epcStock);
                                     }
                                 }
-                            }else{
+                            } else {
                                 epcStock.setRemark("校验通过");
                                 rightEpcList.add(epcStock);
                             }
@@ -1292,9 +1296,13 @@ public class WarehStockController extends BaseController {
                             epcStock.setRemark("校验未通过,不能出库");
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if (codeList.contains(epcStock.getCode())) {
-                                //说明改单已经入库
-                                epcStock.setRemark("校验未通过,已出库无需出库");
+                            if (CommonUtil.isNotBlank(codeList)) {
+                                if (codeList.contains(epcStock.getCode())) {
+                                    //说明改单已经入库
+                                    epcStock.setRemark("校验未通过,已出库无需出库");
+                                } else {
+                                    epcStock.setRemark("校验未通过,不能出库");
+                                }
                             } else {
                                 epcStock.setRemark("校验未通过,不能出库");
                             }
