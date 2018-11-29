@@ -1837,20 +1837,30 @@ function setA4(id) {
         }
     });
 }
-
+//批量入库
 function batchWareHouseIn() {
     var billNo = $("#edit_billNo").val();
     $("#modal_purchase_Batch_WareHouse_In").modal('show').on('hidden.bs.modal', function () {
         $("#batchEpcGrid").clearGridData();
         $("#notThisOneIngrid").clearGridData();
         $("#inCodeQty").text(0);
-        skuInfoIn = [];
+        skuInfoIn= [];
         $("#noCodeQty").text(0);
     });
-    $("#batchEpcGrid").jqGrid('setGridParam', {
-        page: 1,
-        url: basePath + '/logistics/purchaseOrderBill/findNotInEpc.do',
-        postData: {billNo: billNo}
-    }).trigger("reloadGrid");
-    $("#inCodeQty").text(0);
+    loadWebInStocket().then(function (data) {
+        $("#batchEpcGrid").jqGrid('setGridParam', {
+            page: 1,
+            url: basePath + '/logistics/purchaseOrderBill/findNotInEpc.do',
+            postData: {billNo: billNo}
+        }).trigger("reloadGrid");
+        $("#inCodeQty").text(0);
+    });
+}
+
+function loadWebInStocket() {
+    var promise = new  Promise(function(resolve, reject){
+        fullWebInSocket();
+        resolve("success");
+    });
+    return promise;
 }

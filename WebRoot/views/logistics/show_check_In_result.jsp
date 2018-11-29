@@ -44,8 +44,7 @@
                         <span id="inCodeQty" style="font-size:15px; color:tomato">0</span>
                     </div>
                     <div id="dialog_buttonGroup">
-                        <button id="linkIn"  class='btn btn-primary' onclick="fullWebInSocket()">连接</button>
-                        <button id="scanningIn"  class='btn btn-primary' onclick="onScanningIn()">扫描</button>
+                        <button id="scanningIn"  class='btn btn-primary' onclick="onScanningIn()">继续扫描</button>
                         <button id="stopIn"  class='btn btn-primary' onclick="stopIn()">停止</button>
                         <button id="saveIn"  class='btn btn-primary' onclick="saveIn()">保存</button>
                         <button id="clearIn"  class='btn btn-primary' onclick="deleteInCode()">清空</button>
@@ -76,7 +75,7 @@
      */
     function onScanningIn() {
         var msg={
-            "cmd":"10002"
+            "cmd":"10006"
         };
         sendMessgeInToServer(msg);
     }
@@ -197,6 +196,9 @@
                         dtlRow.uniqueCodes=rightEpc[i].code;
                         dtlRow.thisQty= parseInt(dtlRow.thisQty)+1;
                     }
+                    dtlRow.floor=rightEpc[i].floor;
+                    dtlRow.inStock=rightEpc[i].inStock;
+                    dtlRow.warehouseId=rightEpc[i].warehouseId;
                     $("#billInformationIngrid").setRowData(dtlIndex, dtlRow);
                 }
 
@@ -217,7 +219,10 @@
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
-                skuEpc.exceptionType='异常唯一码';
+                skuEpc.remark=value.remark;
+                skuEpc.floor=value.floor;
+                skuEpc.inStock=value.inStock;
+                skuEpc.warehouseId=value.warehouseId;
                 skuEpcList.set(value.sku,skuEpc);
             }else {
                 var exist=skuEpcList.get(value.sku);
@@ -238,7 +243,10 @@
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
-                skuEpc.exceptionType='非本单唯一码';
+                skuEpc.remark=value.remark;
+                skuEpc.floor=value.floor;
+                skuEpc.inStock=value.inStock;
+                skuEpc.warehouseId=value.warehouseId;
                 skuEpcList.set(value.sku,skuEpc);
             }else {
                 var exist=skuEpcList.get(value.sku);
@@ -296,7 +304,10 @@
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesInDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
-                }
+                },
+                {name: 'warehouseId', hidden: true},
+                {name: 'floor', hidden: true},
+                {name: 'inStock', hidden: true}
             ],
             autowidth: true,
             rownumbers: true,
@@ -327,13 +338,23 @@
                 }, 0)
             }
         });
+        var parent_column = $("#billInformationIngrid").closest('.modal-dialog');
+        console.log(parent_column.width());
+        $("#billInformationIngrid").jqGrid('setGridWidth', parent_column.width() - 5);
     }
 
     function showCodesInDetail(rowId) {
         $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
             $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });
-        loadInPutCodeDetail(rowId);
+        batchCodeDetail(rowId,"billInformationIngrid");
+    }
+
+    function showCodesNoInDetail(rowId) {
+        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
+            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
+        });
+        batchNoCodeDetail(rowId,"notThisOneIngrid");
     }
 
 
@@ -352,13 +373,16 @@
                 {name: 'sku', label: 'SKU', width: 80},
                 {name: 'qty', label: '数量', width: 45},
                 {name: 'uniqueCodes', label: '唯一码',hidden: true},
-                {name: 'exceptionType', label:'异常类型', width: 60},
+                {name: 'remark', label:'异常类型', width: 100},
                 {
                     name: '', label: '唯一码明细', width: 80, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesNoInDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
-                }
+                },
+                {name: 'warehouseId', hidden: true},
+                {name: 'floor', hidden: true},
+                {name: 'inStock', hidden: true}
 
             ],
             autowidth: true,
@@ -388,13 +412,9 @@
                 }, 0)
             }
         });
-    }
-
-    function showCodesNoInDetail(rowId) {
-        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
-            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
-        });
-        loadPutCodeNoDetail(rowId);
+        var parent_column = $("#notThisOneIngrid").closest('.modal-dialog');
+        console.log(parent_column.width());
+        $("#notThisOneIngrid").jqGrid('setGridWidth', parent_column.width() - 5);
     }
 
     function deleteInCode() {

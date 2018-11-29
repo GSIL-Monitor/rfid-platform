@@ -44,8 +44,7 @@
                         <span id="outCodeQty" style="font-size:15px; color:tomato">0</span>
                     </div>
                     <div id="dialog_buttonGroup">
-                        <button id="link"  class='btn btn-primary' onclick="fullOutWebSocket()">连接</button>
-                        <button id="scanningOut"  class='btn btn-primary' onclick="onScanningOut()">扫描</button>
+                        <button id="scanningOut"  class='btn btn-primary' onclick="onScanningOut()">继续扫描</button>
                         <button id="stopOut"  class='btn btn-primary' onclick="stopOut()">停止</button>
                         <button id="saveOut"  class='btn btn-primary' onclick="saveOut()">保存</button>
                         <button id="clearOut"  class='btn btn-primary' onclick="deleteCode()">清空</button>
@@ -77,7 +76,7 @@
      */
     function onScanningOut() {
         var msg={
-            "cmd":"10002"
+            "cmd":"10006"
         };
         sendMessgeOutToServer(msg);
     }
@@ -194,6 +193,9 @@
                          dtlRow.uniqueCodes=rightEpc[i].code;
                          dtlRow.thisQty=parseInt(dtlRow.thisQty)+1;
                      }
+                     dtlRow.floor=rightEpc[i].floor;
+                     dtlRow.inStock=rightEpc[i].inStock;
+                     dtlRow.warehouseId=rightEpc[i].warehouseId;
                      $("#billInformationOutgrid").setRowData(dtlIndex, dtlRow);
                  }
 
@@ -214,8 +216,11 @@
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
-                skuEpc.exceptionType='异常唯一码';
+                skuEpc.remark=value.remark;
                 skuEpcList.set(value.sku,skuEpc);
+                skuEpc.floor=value.floor;
+                skuEpc.inStock=value.inStock;
+                skuEpc.warehouseId=value.warehouseId;
             }else {
                 var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
@@ -235,8 +240,11 @@
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
                 skuEpc.uniqueCodes=value.code;
-                skuEpc.exceptionType='非本单唯一码';
+                skuEpc.remark=value.remark;
                 skuEpcList.set(value.sku,skuEpc);
+                skuEpc.floor=value.floor;
+                skuEpc.inStock=value.inStock;
+                skuEpc.warehouseId=value.warehouseId;
             }else {
                 var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
@@ -295,7 +303,7 @@
                 {name: 'outStatus', hidden: true},
                 {name: 'styleId', label: '款号',width: 60},
                 {name: 'styleName', label: '款名', hidden:true},
-                {name: 'colorId', label: '色码', width: 40},
+                {name: 'colorId', label: '色码', width: 45},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
                 {name: 'sizeName', label: '尺码', width: 40},
@@ -324,7 +332,10 @@
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesOutDetail('"+options.rowId+"')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
-                }
+                },
+                {name: 'warehouseId', hidden: true},
+                {name: 'floor', hidden: true},
+                {name: 'inStock', hidden: true}
             ],
             autowidth: true,
             rownumbers: true,
@@ -355,19 +366,22 @@
                 }, 0)
             }
         });
+        var parent_column = $("#billInformationOutgrid").closest('.modal-dialog');
+        console.log(parent_column.width());
+        $("#billInformationOutgrid").jqGrid('setGridWidth', parent_column.width() - 5);
     }
     function showCodesOutDetail(rowId) {
         $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
             $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });
-        loadOutPutCodeDetail(rowId);
+        batchCodeDetail(rowId,"billInformationOutgrid");
     }
 
     function showCodesNoOutDetail(rowId) {
         $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
             $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });
-        loadPutCodeDetail(rowId);
+        batchNoCodeDetail(rowId,"notThisOneOutgrid");
     }
 
     function lodeBillInformationOutgrid() {
@@ -389,18 +403,20 @@
                 {name: 'colorId', label: '色码', width: 45},
                 {name: 'colorName', label: '颜色',hidden:true},
                 {name: 'sizeId', label: '尺码',hidden:true},
-                {name: 'sizeName', label: '尺码', width: 45},
-                {name: 'sku', label: 'SKU', width: 80},
-                {name: 'qty', label: '数量', width: 45},
+                {name: 'sizeName', label: '尺码', width: 40},
+                {name: 'sku', label: 'SKU', width: 60},
+                {name: 'qty', label: '数量', width: 65},
                 {name: 'uniqueCodes', label: '唯一码',hidden: true},
-                {name: 'exceptionType', label:'异常类型', width: 60},
+                {name: 'remark', label:'异常类型', width: 100},
                 {
-                    name: '', label: '唯一码明细', width: 80, align: "center",
+                    name: '', label: '唯一码明细', width: 65, align: "center",
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesNoOutDetail('" + options.rowId + ")><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
-                }
-
+                },
+                {name: 'warehouseId', hidden: true},
+                {name: 'floor', hidden: true},
+                {name: 'inStock', hidden: true}
             ],
             autowidth: true,
             rownumbers: true,
@@ -430,6 +446,9 @@
                 }, 0)
             }
         });
+        var parent_column = $("#notThisOneOutgrid").closest('.modal-dialog');
+        console.log(parent_column.width());
+        $("#notThisOneOutgrid").jqGrid('setGridWidth', parent_column.width() - 5);
     }
    
     function updatePagerIcons(table) {

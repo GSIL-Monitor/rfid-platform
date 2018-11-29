@@ -59,7 +59,7 @@
     var timeoutIn;
     var websocket;
     $(function () {
-        initEpcGrid();
+        initEpcGridOut();
         initNotThisOneIngrid();
     });
     //连接读写器
@@ -180,7 +180,7 @@
         $("#inCodeQty").text(0);
     }
 
-    function initEpcGrid() {
+    function initEpcGridOut() {
         $("#batchEpcGrid").jqGrid({
             height:  "350",
             datatype: "json",

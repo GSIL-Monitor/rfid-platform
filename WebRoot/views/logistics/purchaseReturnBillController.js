@@ -1433,7 +1433,7 @@ function loadingButtonDivTable(billStatus) {
     });
 
 }
-
+//批量出库
 function batchWareHouseOut() {
     var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
     var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
@@ -1453,10 +1453,11 @@ function batchWareHouseOut() {
             $("#notThisOneOutgrid").clearGridData();
         });
         lodeBillInformationOutgrid();
+        fullOutWebSocket
         $("#outCodeQty").text(0);
     }
 }
-
+//批量扫码
 function batchUniqCode() {
     var origId = $("#edit_origId").val();
     taskType = 0;

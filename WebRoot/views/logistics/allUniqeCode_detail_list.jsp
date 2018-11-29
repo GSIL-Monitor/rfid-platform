@@ -66,8 +66,8 @@
             sortorder: "desc"
         });
     }
-    function loadOutPutCodeDetail(rowId) {
-        var row = $('#billInformationOutgrid').getRowData(rowId);
+    function batchCodeDetail(rowId,gradName) {
+        var row = $("'#"+gradName+"'").getRowData(rowId);
         var allCode=row.uniqueCodes.split(",");
         $.each(allCode,function (index,value) {
             var rowData={};
@@ -80,51 +80,9 @@
         });
     }
 
-    function loadPutCodeDetail(rowId) {
-        var row = $('#notThisOneOutgrid').getRowData(rowId);
-        var allCode=row.uniqueCodes.split(",");
-        $.each(allCode,function (index,value) {
-            var rowData={};
-            rowData.code=value;
-            rowData.sku=row.sku;
-            rowData.warehouseId=row.warehouseId;
-            rowData.floor=row.floor;
-            rowData.inStock=row.inStock;
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
-        });
-    }
-
-    function loadInPutCodeDetail(rowId) {
-        var row = $('#billInformationIngrid').getRowData(rowId);
-        var allCode=row.uniqueCodes.split(",");
-        $.each(allCode,function (index,value) {
-            var rowData={};
-            rowData.code=value;
-            rowData.sku=row.sku;
-            rowData.warehouseId=row.warehouseId;
-            rowData.floor=row.floor;
-            rowData.inStock=row.inStock;
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
-        });
-    }
-
-    function loadPutCodeNoDetail(rowId) {
-        var row = $('#notThisOneIngrid').getRowData(rowId);
-        var allCode=row.uniqueCodes.split(",");
-        $.each(allCode,function (index,value) {
-            var rowData={};
-            rowData.code=value;
-            rowData.sku=row.sku;
-            rowData.warehouseId=row.warehouseId;
-            rowData.floor=row.floor;
-            rowData.inStock=row.inStock;
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
-        });
-    }
-
-    function loadBatchPutCodeDetail(rowId) {
-        var row = $('#batchDetailgrid').getRowData(rowId);
-        var allCode=row.uniqueCodes.split(",");
+    function batchNoCodeDetail(rowId,gradName) {
+        var row = $("'#"+gradName+"'").getRowData(rowId);
+        var allCode=row.noOutPutCode.split(",");
         $.each(allCode,function (index,value) {
             var rowData={};
             rowData.code=value;

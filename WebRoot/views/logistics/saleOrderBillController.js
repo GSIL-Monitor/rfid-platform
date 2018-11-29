@@ -2373,41 +2373,6 @@ function outStockCheck() {
         return true;
     }
 }
-/**
- * 批量扫码出库
- */
-function batchWareHouseOut() {
-    billNo = $("#edit_billNo").val();
-    wareHouse=$("#edit_origId").val();
-    taskType = 0;
-    $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
-        $("#billInformationOutgrid").clearGridData();
-        $("#notThisOneOutgrid").clearGridData();
-    });
-    lodeBillInformationOutgrid();
-    $("#outCodeQty").text(0);
-}
-/**
- * 批量扫码入库
- */
-function batchWareHouseIn() {
-    taskType = 1;
-    var destId = $("#edit_destId").val();
-    wareHouse = destId;
-    billNo = $("#edit_billNo").val();
-    var ct = $("#edit_customerType").val();
-    if (destId && destId != null) {
-        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
-            $("#billInformationIngrid").clearGridData();
-            $("#notThisOneIngrid").clearGridData();
-        });
-        lodeBillInformationIngrid();
-        initUniqeCodeGridColumn(ct);
-        $("#inCodeQty").text(0);
-    } else {
-        bootbox.alert("入库仓库不能为空！");
-    }
-}
 
 /**
  * 扫码出库
@@ -3283,7 +3248,7 @@ function patByBalance() {
         }
     });
 }
-
+//批量扫码
 function batchUniqCode() {
     var origId = $("#edit_origId").val();
     taskType = 0;
@@ -3311,6 +3276,50 @@ function batchUniqCode() {
         bootbox.alert("请选择客户！");
     }
 }
+
+/**
+ * 批量扫码出库
+ */
+function batchWareHouseOut() {
+    billNo = $("#edit_billNo").val();
+    wareHouse=$("#edit_origId").val();
+    taskType = 0;
+    if (wareHouse && wareHouse !== null) {
+        $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationOutgrid").clearGridData();
+            $("#notThisOneOutgrid").clearGridData();
+        });
+        lodeBillInformationOutgrid();
+        fullOutWebSocket();
+        $("#outCodeQty").text(0);
+    }else {
+        bootbox.alert("请选择出库仓库");
+        return;
+    }
+}
+/**
+ * 批量扫码入库
+ */
+function batchWareHouseIn() {
+    taskType = 1;
+    var destId = $("#edit_destId").val();
+    wareHouse = destId;
+    billNo = $("#edit_billNo").val();
+    var ct = $("#edit_customerType").val();
+    if (destId && destId != null) {
+        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationIngrid").clearGridData();
+            $("#notThisOneIngrid").clearGridData();
+        });
+        lodeBillInformationIngrid();
+        fullWebInSocket();
+        initUniqeCodeGridColumn(ct);
+        $("#inCodeQty").text(0);
+    } else {
+        bootbox.alert("入库仓库不能为空！");
+    }
+}
+
 //批量扫描保存方法
 function saveEPC() {
     var productListInfo=[];//存放唯一码明细

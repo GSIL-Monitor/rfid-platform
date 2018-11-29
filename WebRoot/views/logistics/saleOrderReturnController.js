@@ -2700,6 +2700,52 @@ function batchUniqCode() {
         bootbox.alert("请选择客户！");
     }
 }
+
+/**
+ * 批量扫码出库
+ */
+function batchWareHouseOut() {
+    billNo = $("#edit_billNo").val();
+    wareHouse=$("#edit_origId").val();
+    taskType = 0;
+    if (wareHouse && wareHouse !== null) {
+        $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationOutgrid").clearGridData();
+            $("#notThisOneOutgrid").clearGridData();
+        });
+        lodeBillInformationOutgrid();
+        fullOutWebSocket();
+        $("#outCodeQty").text(0);
+    }else {
+        bootbox.alert("出库仓库不能为空！");
+        return;
+    }
+
+}
+
+/**
+ * 批量扫码入库
+ */
+function batchWareHouseIn() {
+    taskType = 1;
+    var destId = $("#edit_destId").val();
+    wareHouse = destId;
+    billNo = $("#edit_billNo").val();
+    if (destId && destId != null) {
+        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationIngrid").clearGridData();
+            $("#notThisOneIngrid").clearGridData();
+        });
+        lodeBillInformationIngrid();
+        fullWebInSocket();
+        initUniqeCodeGridColumn(ct);
+        $("#inCodeQty").text(0);
+    } else {
+        bootbox.alert("入库仓库不能为空！");
+        return;
+    }
+}
+
 //批量扫描保存方法
 function saveEPC() {
     var IDs=$("#batchDetailgrid").getDataIDs();
@@ -2811,40 +2857,5 @@ function saveEPC() {
     });
     $("#modal-batch-table").modal('hide');
     setFooterData();
-}
-
-/**
- * 批量扫码出库
- */
-function batchWareHouseOut() {
-    billNo = $("#edit_billNo").val();
-    wareHouse=$("#edit_origId").val();
-    taskType = 0;
-    $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
-        $("#billInformationOutgrid").clearGridData();
-        $("#notThisOneOutgrid").clearGridData();
-    });
-    lodeBillInformationOutgrid();
-    $("#outCodeQty").text(0);
-}
-
-/**
- * 批量扫码入库
- */
-function batchWareHouseIn() {
-    taskType = 1;
-    var destId = $("#edit_destId").val();
-    wareHouse = destId;
-    billNo = $("#edit_billNo").val();
-    if (destId && destId != null) {
-        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
-            $("#billInformationIngrid").clearGridData();
-            $("#notThisOneIngrid").clearGridData();
-        });
-        lodeBillInformationIngrid();
-        $("#inCodeQty").text(0);
-    } else {
-        bootbox.alert("入库仓库不能为空！");
-    }
 }
 
