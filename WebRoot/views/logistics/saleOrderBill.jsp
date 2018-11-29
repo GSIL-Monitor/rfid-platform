@@ -7,6 +7,7 @@
 <head>
     <jsp:include page="../baseView.jsp"></jsp:include>
     <link rel="stylesheet" href="<%=basePath%>/views/NoOneCashier/css/mynumkb.css">
+    <link rel="stylesheet" href="<%=basePath%>/views/NoOneCashier/css/form-saleOrder.css">
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
         var curOwnerId = "${ownerId}";
@@ -36,7 +37,18 @@
         var cTbillNo = "${cTbillNo}";
         var defaultPayType = "${payType}";//默认支付方式
     </script>
-    <style>*{padding:0;margin:0;}</style>
+    <style>
+        *{padding:0;margin:0;}
+            /*对搜索下拉的框规定高度*/
+         .ui-autocomplete {
+             max-height: 200px;
+             overflow-y: auto;
+             /* 防止水平滚动条 */
+             overflow-x: hidden;
+         }
+
+
+    </style>
 
 </head>
 <body class="no-skin">
@@ -210,6 +222,31 @@
                                         <div class="widget-main padding-12">
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
+                                                <div class="form-group" style="text-align: left;margin-left: 20px;margin-bottom: 10px;">
+                                                    <%--添加一个复选框--%>
+                                                    <div class="checkbox_" style="display: inline-block;">
+                                                        <input id="check"  onclick="test()" type="checkbox" style=" width:20px; height:20px ;padding-top: 10px" />
+                                                    </div>
+                                                    <div class="userinput" style="display: inline-block" >
+                                                        <div id="text1"><input type="text" id="text2" style=" width:300px " placeholder="请输入衣服的编号或者名称"  autofocus = autofocus>
+                                                        </div>
+                                                        <%--添加一个隐藏的搜索框--%>
+                                                        <div id="search"   style="display: none">
+
+                                                               <label for="tags"></label>
+                                                           <input type="search" id="tags" style=" width:300px " placeholder="请输入衣服的编号或者名称"  autofocus = autofocus />
+
+
+
+
+
+                                                           </div>
+
+                                                </div>
+                                                    <div style="display: inline-block; height: 36px">
+                                                    <button class="btn btn-xs btn-primary" id="bt_is" style="width: 60px;height: 100%">确认</button>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group">
                                                     <div id="destUnitId_div">
                                                         <label class="col-md-1 control-label"
@@ -440,6 +477,38 @@
         </div>
     </div>
 </div>
+<%--弹出表格--%>
+<div id="all">
+
+    <div class="form" >
+        <div class="form_top">
+            <p id="s_id"></p>
+            <p id="s_name"></p>
+            <input type="number" name="" id="number" min="0" value="0" style="height: 20px" />
+            <input type="button" name="" id="setall" value="设置所有" />
+            <div class="close"><span>×</span></div>
+        </div>
+        <div class="form_body">
+            <div id="form_show">
+                <form id="form_all" style="border: 1px solid grey; " name="form_cs" autocomplete="off">
+                    <table id="table_all" cellspacing="" cellpadding="" style="font-size: 15px;color: black;">
+
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="form_end">
+            <div class="line"></div>
+            <button class="btn btn-xs btn-primary" id="form_reset" style="width: 100px;height:35px;margin-top:5px;margin-bottom: 20px;position: absolute;right: 200px">重置</button>
+            <button class="btn btn-xs btn-primary" id="form_sbm" style="width: 100px;height:35px;margin-top:5px;margin-bottom: 20px;position: absolute;right: 10px">确认</button>
+
+        </div>
+
+    </div>
+</div>
+<%--遮罩层--%>
+<div id="overlay" class="overlay"> </div>
+
 <!--/.fluid-container#main-container-->
 <jsp:include page="payDetail.jsp"></jsp:include>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
@@ -463,13 +532,272 @@
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/views/logistics/websocket.js"></script>
+<jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
+<script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+<script src="<%=basePath%>/Olive/assets/js/jquery-ui.js"></script>
+
+<%--typehead方法--%>
+
+
 
 <%--实收金额--%>
 <script src="<%=basePath%>/views/NoOneCashier/js/mynumkb.js"></script>
 <script src="<%=basePath%>/views/NoOneCashier/js/iconfont.js"></script>
 
+
+
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>
+<script type="text/javascript">
+
+    function test() {
+        /*如果复选框被选中*/
+
+        if(document.getElementById('check').checked == true) {
+
+            subMit();
+           /* showDropdown(document.getElementById("select_id"));*/
+        }
+        /*如果复选框没被选中*/
+        if(document.getElementById('check').checked == false) {
+
+            subMit1();
+
+
+        }
+    }
+
+                function subMit(){
+                    document.getElementById("text1").style.display  = "none";
+                    document.getElementById("search").style.display = "block";
+                    document.getElementById("tags").focus();
+
+                }
+                /**/
+                function subMit1(){
+                    document.getElementById("text1").style.display  = "block";
+                    document.getElementById("search").style.display = "none";
+                    document.getElementById("text2").focus();
+
+
+                }
+    $(function() {
+        var availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+
+        ];
+        $( "#tags" ).autocomplete({
+            /*获取数据*/
+            source: availableTags
+        });
+    });
+
+    $(function() {
+
+        function showOverlay() {
+            // 遮罩层宽高分别为页面内容的宽高
+            $('.overlay').css({
+                'height': $(document).height(),
+                'width': $(document).width()
+            });
+            $('.overlay').show();
+        }
+        //绑定关闭按钮事件
+        $(".close").click(function() {
+
+            $("#all").hide();
+            $('.overlay').hide();
+            /*暂时只能用刷新页面*/
+            window.location.href=window.location.href;
+            window.location.reload;
+            /*document.getElementById("form_all").reset();*/
+
+        })
+
+        /*换行开始标*/
+        var html = "<tr>";
+        /*var colorData=Json.parse(colorData);
+        var sizeData=Json.parse(sizeData);*/ //解析Json格式数组
+
+        /*测试数组*/
+        var colorData = [{
+            colorId: 1,
+            colorName: "黄"
+        }, {
+            colorId: 2,
+            colorName: "黑"
+        }, {
+            colorId: 3,
+            colorName: "红"
+        }];
+        var sizeData = [{
+            sizeId: 1,
+            sizeName: "x"
+        }, {
+            sizeId: 2,
+            sizeName: "xl"
+        }, {
+            sizeId: 3,
+            sizeName: "s"
+        }];
+
+        /*定义write函数插入表格*/
+        var write = function(colorData, sizeData) {
+
+            /*向数组插入一条数据来完成第一个空格*/
+            colorData.unshift({
+                colorId: 0,
+                colorName: ""
+            })
+            sizeData.unshift({
+                sizeId: 0,
+                sizeName: ""
+            })
+            /*遍历获得的两个数组*/
+            $.each(colorData, function(color_index, color_name) {
+
+                $.each(sizeData, function(size_index, size_name) {
+
+                    /*获取对象中的尺码和颜色名称*/
+
+                    var sn = size_name.sizeId;
+                    var cn = color_name.colorId;
+                    var snN = size_name.sizeName;
+                    var cnN = color_name.colorName;
+                    var sc = cn + "" + sn;
+                    /*根据index判断选择插入内容*/
+                    if(color_index == 0 && size_index == 0) {
+                        html += '<td> <td/>';
+                    } else if(color_index == 0 && size_index != 0) {
+                        html += '<th id = "' + sn + '"><span>' + snN + '<span/><th/>';
+                    } else if(color_index != 0 && size_index == 0) {
+                        html += '<th id = "' + cn + '"><span>' + cnN + '<span/><th/>';
+                    } else if(color_index != 0 && size_index != 0) {
+                        html += '<td><input type="number" style="width: 100%;font-weight: bold" min="0" class="user_input" name="' + sc + '" id="' + sc + '"></input><td/>';
+                    }
+
+                });
+                /*换行结束标*/
+                html += "<tr/>";
+                /*	console.log(html);*/
+
+            })
+            //删除添加的空值
+            colorData.shift();
+            sizeData.shift();
+
+        }
+        /*用户点击弹出表格事件*/
+        $("#bt_is").click(function() {
+            /*判断复选框*/
+            if(document.getElementById('check').checked == true) {
+                //弹出表格
+                $("#all").show();
+                showOverlay();
+                /*接收后台数据*/
+                /*$.ajax({
+                            type:"get",
+                            url:"",
+                            async:false,
+                            success:function(colorData,sizeData){
+                                write(colorData, sizeData);
+                    }
+                    })*/
+
+                write(colorData, sizeData);
+                $("#table_all").html(html); /!*插入数据到html*!/
+
+            }
+
+
+
+        })
+
+        /*设置设置所有按钮的事件*/
+        $("#setall").click(function() {
+            /*获取用户输入的值*/
+            var input_num = $("#number").val();
+            $(".user_input").val(input_num);
+
+        })
+        /*绑定重置按钮*/
+        $("#form_reset").click(function () {
+            $(".user_input").val("");
+        })
+
+        //绑定确认按扭传输数据到后台
+        $("#form_sbm").click(function() {
+            //打包form表格的内容
+          var data = $("#form_all").serializeArray(function() {
+
+            });
+            //修改JSON对象中的value属性名
+            data = JSON.parse(JSON.stringify(data).replace(/value/g, "qty"));
+            data = JSON.parse(JSON.stringify(data).replace(/name/g, "sku"));
+
+            console.log(data);
+
+
+            /*			  $.ajax({
+                type: "post",
+                url: "",
+                async: false,
+                data:data ,
+                dataType: "json",
+                success: function(data) {
+
+                    if(data.result == 'success') {
+
+                        alert('修改成功');
+
+                    } else {
+
+                        alert('修改失败');
+
+                    }
+
+                },
+
+                error: function(data) {
+
+                    alert(data.result);
+
+                }
+
+            });
+    */
+        })
+
+    })
+
+
+
+
+</script>
+
 </body>
 </html>
