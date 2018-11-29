@@ -1,4 +1,3 @@
-.
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/";
@@ -73,6 +72,7 @@ window.jQuery || document.write("<script src='<%=basePath%>Olive/assets/js/jquer
 <script type="text/javascript" src="<%=basePath%>/jslib2/constant.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/tree/jstree.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/assets/js/jquery.tagsinput.js"></script>
+<script type="text/javascript" src="<%=basePath%>/Olive/assets/js/echarts.js"></script>
 
 <div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="imgModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index: 9990; display: none;">
     <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">

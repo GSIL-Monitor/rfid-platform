@@ -86,6 +86,7 @@ public class StockUtil {
 		Color color = CacheManager.getColorById(epcStock.getColorId());
 		Size size = CacheManager.getSizeById(epcStock.getSizeId());
 		if(CommonUtil.isNotBlank(style)){
+			epcStock.setStyleName(style.getStyleName());
 			epcStock.setWsPrice(style.getWsPrice());
 			epcStock.setPuPrice(style.getPuPrice());
 			epcStock.setPreCast(style.getPreCast());

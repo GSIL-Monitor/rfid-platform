@@ -42,6 +42,20 @@ public class ProductService extends AbstractBaseService<Product, String> {
         return this.productDao.findPage(page, filters);
     }
 
+
+    public  Page<Product> findPage(Page<Product> page, Long version){
+        String hql = "select new Product(p.id,p.code,p.styleId,p.colorId, p.sizeId,p.isDeton," +
+                "p.remark,st.styleName,st.class1,st.class2,st.class3," +
+                "st.class4,st.class5,st.class6,st.class7,st.class8,st.class9," +
+                "st.class10,st.remark,st.preCast,st.puPrice,st.wsPrice," +
+                "st.price,s.sizeName) " +
+                "from Product p,Style st,Color c,Size s where p.styleId=st.styleId and p.colorId = c.colorId and p.sizeId=s.sizeId";
+        if(version != 0L) {
+            hql += " and p.version >"+version;
+        }
+        return this.productDao.findPage(page,hql);
+    }
+
     public void save(Map<String, EpcBindBarcode> tmps) {
         if (CommonUtil.isNotBlank(tmps)) {
             this.productDao.doBatchInsert(new ArrayList<>(tmps.values()));

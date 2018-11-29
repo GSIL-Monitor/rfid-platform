@@ -273,21 +273,31 @@
         //获取选中li标签 Id
         var selectedTab = $("li.active").attr('id');
         var selectData = getSelectData(selectedTab);
-        if(selectedTab == "dtlli"){
-            downloadDtlPrintInfo($("#search_billNo").val(),'rfid',JSON.stringify(selectData),'');
+        console.log(selectData);
+        if(selectData.length == 0){
+            bootbox.alert("请选择要打印的信息");
         }else{
-            downloadDtlPrintInfo($("#search_billNo").val(),'rfid','',JSON.stringify(selectData));
+            if(selectedTab == "dtlli"){
+                downloadDtlPrintInfo($("#search_billNo").val(),'rfid',JSON.stringify(selectData),'');
+            }else{
+                downloadDtlPrintInfo($("#search_billNo").val(),'rfid','',JSON.stringify(selectData));
+            }
         }
 
     }
     function printLabelDtlTag(){
         var selectedTab = $("li.active").attr('id');
         var selectData = getSelectData(selectedTab);
-        if(selectedTab == "dtlli"){
-            downloadDtlPrintInfo($("#search_billNo").val(),'label',JSON.stringify(selectData),'');
+        if(selectData.length == 0){
+            bootbox.alert("请选择要打印的信息");
         }else{
-            downloadDtlPrintInfo($("#search_billNo").val(),'label','',JSON.stringify(selectData));
+            if(selectedTab == "dtlli"){
+                downloadDtlPrintInfo($("#search_billNo").val(),'label',JSON.stringify(selectData),'');
+            }else{
+                downloadDtlPrintInfo($("#search_billNo").val(),'label','',JSON.stringify(selectData));
+            }
         }
+
 
     }
     function _search(){

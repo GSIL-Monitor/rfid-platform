@@ -11,6 +11,7 @@ import com.casesoft.dmc.dao.rem.vo.skuDao;
 import com.casesoft.dmc.dao.rem.vo.styledDao;
 import com.casesoft.dmc.dao.stock.EpcStockDao;
 import com.casesoft.dmc.model.erp.BillDtl;
+import com.casesoft.dmc.model.logistics.BillRecord;
 import com.casesoft.dmc.model.rem.VO.code;
 import com.casesoft.dmc.model.rem.VO.sku;
 import com.casesoft.dmc.model.rem.VO.styled;
@@ -552,4 +553,9 @@ public class EpcStockService extends AbstractBaseService<EpcStock, String> {
     public long countAllByStyleId(String styleId) {
         return this.epcStockDao.findUnique("select count(id) from EpcStock where styleId = ?", styleId);
     }
+    public List<BillRecord> findBillRecordList(String billNo, String code) {
+        String hql = "from BillRecord billrecord where "+code+" and billrecord.billNo=?";
+        return this.epcStockDao.find(hql,billNo);
+    }
+    
 }

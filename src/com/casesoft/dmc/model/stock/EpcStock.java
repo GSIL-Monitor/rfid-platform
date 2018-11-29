@@ -25,44 +25,83 @@ public class EpcStock implements Serializable {
 	public static final int TRANING = 2;
 	public static final int REFUNDING = 3;
 	public static final int ADJUSTING = 4;
+	@Id
+	@Column(nullable = false, length = 45)
 	private String id;
+
+	@Column(nullable = false, length = 45)
 	private String code;
+
+	@Column(nullable = false, length = 50)
 	private String sku;
+
+	@Column(nullable = false, length = 50)
 	private String warehouseId;
+
+	@Column(length = 50)
 	private String warehouse2Id;
+
+	@Column(nullable = false, length = 50)
 	private String ownerId;
+
+	@Column(length = 50)
 	private String owner2Id;
+
+	@Column(nullable = false)
 	private int inStock;
+
+	@Column(length = 20)
 	private String styleId;
+
+	@Column(length = 20)
 	private String colorId;
+
+	@Column(length = 10)
 	private String sizeId;
+
+	@Column(length = 50)
 	private String deviceId;
+
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@Column(length = 19)
 	private Date updateDate;
+
+	@Column(nullable = false)
 	private int token;
+
+	@Column(length = 50)
 	private String taskId;
+
+	@Column()
 	private int progress;// 0:库中，1:购买中，2:调拨中，3：退货中，4：调整
 
+	@Column()
 	private String floorArea;// 货层
+
+	@Column()
 	private String floor;// 仓库名
+
+	@Column()
 	private String floorAllocation;//货位
+
+	@Column()
 	private String floorRack;// 货架
+
+	@Column()
 	private Boolean isOvered = false;// 是否过期
 
+	@Column(length = 20)
 	private String inSotreType;//入库类型
+
+	@Column()
 	private Double stockPrice = 0D;//库存金额（入库时候单据价格）
 
 	private Integer dressingStatus=0; //店员套版状态, 0表示在库，1表示穿着中
 
-
-	private Long version;//版本号
 	@Column()
-	public Long getVersion() {
-		return version;
-	}
+	private Long version;//版本号
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
+
 	@Transient
 	private String styleName;
 	@Transient
@@ -70,9 +109,41 @@ public class EpcStock implements Serializable {
 	@Transient
 	private String sizeName;
 
+	@Transient
+	private Double preCast;//事前成本价(采购价)
+	@Transient
+	private Double price;//吊牌价格
+	@Transient
+	private Double puPrice;//代理商批发价格
+	@Transient
+	private Double wsPrice;//门店批发价格
 
+	@Transient
+	private Double bargainPrice;//特價
+	@Transient
+	private String isAlert;
+	@Column()
+	private String storage;
 
 	@Column()
+	private String originBillNo; //原始销售单号
+
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@Column()
+	private Date lastSaleTime;//最近一次销售时间
+
+	@Transient
+	private String unicode;
+
+	@Column()
+	private Long saleCycle; //销售周期（开单当天时间－销售单时间）
+
+	@Transient
+	private String remark;//备注
+
+
+
+
 	public Boolean isOvered() {
 		return isOvered;
 	}
@@ -81,7 +152,7 @@ public class EpcStock implements Serializable {
 		this.isOvered = isOvered;
 	}
 
-	@Column()
+
 	public String getFloorRack() {
 		return floorRack;
 	}
@@ -90,7 +161,7 @@ public class EpcStock implements Serializable {
 		this.floorRack = floorRack;
 	}
 
-	@Column()
+
 	public String getFloorArea() {
 		return floorArea;
 	}
@@ -99,7 +170,7 @@ public class EpcStock implements Serializable {
 		this.floorArea = floorArea;
 	}
 
-	@Column()
+
 	public String getFloor() {
 		return floor;
 	}
@@ -108,7 +179,7 @@ public class EpcStock implements Serializable {
 		this.floor = floor;
 	}
 
-	@Column(nullable = false, length = 50)
+
 	public String getSku() {
 		return sku;
 	}
@@ -117,7 +188,7 @@ public class EpcStock implements Serializable {
 		this.sku = sku;
 	}
 
-	@Column(nullable = false)
+
 	public int getToken() {
 		return token;
 	}
@@ -126,7 +197,7 @@ public class EpcStock implements Serializable {
 		this.token = token;
 	}
 
-	@Column(length = 50)
+
 	public String getTaskId() {
 		return taskId;
 	}
@@ -135,13 +206,10 @@ public class EpcStock implements Serializable {
 		this.taskId = taskId;
 	}
 
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	@Column(length = 19)
 	public Date getUpdateDate() {
 		return updateDate;
 	}
 
-	@Column()
 	public int getProgress() {
 		return progress;
 	}
@@ -154,7 +222,7 @@ public class EpcStock implements Serializable {
 		this.updateDate = updateDate;
 	}
 
-	@Column(length = 50)
+
 	public String getDeviceId() {
 		return deviceId;
 	}
@@ -163,8 +231,7 @@ public class EpcStock implements Serializable {
 		this.deviceId = deviceId;
 	}
 
-	@Id
-	@Column(nullable = false, length = 45)
+
 	public String getId() {
 		return id;
 	}
@@ -173,7 +240,6 @@ public class EpcStock implements Serializable {
 		this.id = id;
 	}
 
-	@Column(nullable = false, length = 45)
 	public String getCode() {
 		return code;
 	}
@@ -182,7 +248,6 @@ public class EpcStock implements Serializable {
 		this.code = code;
 	}
 
-	@Column(nullable = false, length = 50)
 	public String getWarehouseId() {
 		return warehouseId;
 	}
@@ -191,7 +256,6 @@ public class EpcStock implements Serializable {
 		this.warehouseId = warehouseId;
 	}
 
-	@Column(length = 50)
 	public String getWarehouse2Id() {
 		return warehouse2Id;
 	}
@@ -200,7 +264,6 @@ public class EpcStock implements Serializable {
 		this.warehouse2Id = warehouse2Id;
 	}
 
-	@Column(nullable = false, length = 50)
 	public String getOwnerId() {
 		return ownerId;
 	}
@@ -209,7 +272,7 @@ public class EpcStock implements Serializable {
 		this.ownerId = ownerId;
 	}
 
-	@Column(length = 50)
+
 	public String getOwner2Id() {
 		return owner2Id;
 	}
@@ -218,7 +281,7 @@ public class EpcStock implements Serializable {
 		this.owner2Id = owner2Id;
 	}
 
-	@Column(nullable = false)
+
 	public int getInStock() {
 		return inStock;
 	}
@@ -227,7 +290,7 @@ public class EpcStock implements Serializable {
 		this.inStock = inStock;
 	}
 
-	@Column(length = 20)
+
 	public String getStyleId() {
 		return styleId;
 	}
@@ -236,7 +299,6 @@ public class EpcStock implements Serializable {
 		this.styleId = styleId;
 	}
 
-	@Column(length = 20)
 	public String getColorId() {
 		return colorId;
 	}
@@ -245,7 +307,7 @@ public class EpcStock implements Serializable {
 		this.colorId = colorId;
 	}
 
-	@Column(length = 10)
+
 	public String getSizeId() {
 		return sizeId;
 	}
@@ -257,7 +319,7 @@ public class EpcStock implements Serializable {
 	public Boolean getOvered() {
 		return isOvered;
 	}
-	@Column(length = 20)
+
 	public String getInSotreType() {
 		return inSotreType;
 	}
@@ -265,7 +327,7 @@ public class EpcStock implements Serializable {
 	public void setInSotreType(String inSotreType) {
 		this.inSotreType = inSotreType;
 	}
-	@Column()
+
 	public Double getStockPrice() {
 		return stockPrice;
 	}
@@ -274,7 +336,7 @@ public class EpcStock implements Serializable {
 		this.stockPrice = stockPrice;
 	}
 
-	@Column()
+
 	public Integer getDressingStatus() {
 		return dressingStatus;
 	}
@@ -284,16 +346,6 @@ public class EpcStock implements Serializable {
 	}
 
 
-	private Double preCast;//事前成本价(采购价)
-
-	private Double price;//吊牌价格
-
-	private Double puPrice;//代理商批发价格
-
-	private Double wsPrice;//门店批发价格
-
-	@Transient
-	private Double bargainPrice;//特價
 
 	public Double getBargainPrice() {
 		return bargainPrice;
@@ -303,7 +355,7 @@ public class EpcStock implements Serializable {
 		this.bargainPrice = bargainPrice;
 	}
 
-	@Transient
+
 	public String getStyleName() {
 		return styleName;
 	}
@@ -311,7 +363,7 @@ public class EpcStock implements Serializable {
 	public void setStyleName(String styleName) {
 		this.styleName = styleName;
 	}
-	@Transient
+
 	public String getColorName() {
 		return colorName;
 	}
@@ -319,7 +371,7 @@ public class EpcStock implements Serializable {
 	public void setColorName(String colorName) {
 		this.colorName = colorName;
 	}
-	@Transient
+
 	public String getSizeName() {
 		return sizeName;
 	}
@@ -327,7 +379,7 @@ public class EpcStock implements Serializable {
 	public void setSizeName(String sizeName) {
 		this.sizeName = sizeName;
 	}
-	@Transient
+
 	public Double getPreCast() {
 		return preCast;
 	}
@@ -335,7 +387,7 @@ public class EpcStock implements Serializable {
 	public void setPreCast(Double preCast) {
 		this.preCast = preCast;
 	}
-	@Transient
+
 	public Double getPrice() {
 		return price;
 	}
@@ -343,7 +395,7 @@ public class EpcStock implements Serializable {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	@Transient
+
 	public Double getPuPrice() {
 		return puPrice;
 	}
@@ -351,7 +403,7 @@ public class EpcStock implements Serializable {
 	public void setPuPrice(Double puPrice) {
 		this.puPrice = puPrice;
 	}
-	@Transient
+
 	public Double getWsPrice() {
 		return wsPrice;
 	}
@@ -361,8 +413,6 @@ public class EpcStock implements Serializable {
 	}
 
 
-	private String isAlert;
-	@Transient
 	public String getIsAlert() {
 		return isAlert;
 	}
@@ -371,8 +421,7 @@ public class EpcStock implements Serializable {
 		this.isAlert = isAlert;
 	}
 
-	private String storage;
-	@Transient
+
 	public String getStorage() {
 		return storage;
 	}
@@ -381,8 +430,7 @@ public class EpcStock implements Serializable {
 		this.storage = storage;
 	}
 
-	private String unicode;
-	@Transient
+
 	public String getUnicode() {
 		return unicode;
 	}
@@ -391,24 +439,27 @@ public class EpcStock implements Serializable {
 		this.unicode = unicode;
 	}
 
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 
 
 
-	private String originBillNo; //原始销售单号
-	@Transient
 	public String getOriginBillNo() { return originBillNo; }
 	public void setOriginBillNo(String originBillNo) { this.originBillNo = originBillNo; }
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	private Date lastSaleTime;//最近一次销售时间
 
-	@Transient
+
+
 	public Date getLastSaleTime() { return lastSaleTime; }
 	public void setLastSaleTime(Date lastSaleTime) { this.lastSaleTime = lastSaleTime; }
 
 
-	private Long saleCycle; //销售周期（开单当天时间－销售单时间）
-	@Transient
+
 	public Long getSaleCycle() { return saleCycle; }
 	public void setSaleCycle(Long saleCycle) { this.saleCycle = saleCycle; }
 
@@ -439,4 +490,11 @@ public class EpcStock implements Serializable {
 	}
 
 
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 }

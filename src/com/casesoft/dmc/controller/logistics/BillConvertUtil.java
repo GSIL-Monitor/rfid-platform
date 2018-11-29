@@ -1395,13 +1395,6 @@ public class BillConvertUtil {
 
         }
         saleOrderBill.setBillRecordList(billRecordList);
-        if (CommonUtil.isBlank(saleOrderBill.getOwnerId())) {
-            //销售单ownerid默认和出库所属方id相同
-            saleOrderBill.setOwnerId(saleOrderBill.getOrigUnitId());
-            if(CommonUtil.isBlank(saleOrderBill.getOrigUnitId())) {
-                saleOrderBill.setOwnerId(curUser.getOwnerId());
-            }
-        }
         if (CommonUtil.isBlank(saleOrderBill.getStatus())) {
             saleOrderBill.setStatus(BillConstant.BillStatus.Enter);
         }
@@ -1419,6 +1412,13 @@ public class BillConvertUtil {
             saleOrderBill.setDestUnitName(customer.getName());
         } else {
             saleOrderBill.setDestUnitName(orgunit1.getName());
+        }
+        if (CommonUtil.isBlank(saleOrderBill.getOwnerId())) {
+            //销售单ownerid默认和出库所属方id相同
+            saleOrderBill.setOwnerId(saleOrderBill.getOrigUnitId());
+            if(CommonUtil.isBlank(saleOrderBill.getOrigUnitId())) {
+                saleOrderBill.setOwnerId(curUser.getOwnerId());
+            }
         }
         saleOrderBill.setTotQty(totQty);
         saleOrderBill.setTotPrice(totPrice);
@@ -1933,14 +1933,6 @@ public class BillConvertUtil {
 
         }
         bill.setBillRecordList(billRecordList);
-        if (CommonUtil.isBlank(bill.getOwnerId())) {
-            //销售退货单ownerid 默认写入库所属方id
-            bill.setOwnerId(bill.getDestUnitId());
-            if(CommonUtil.isBlank(bill.getDestUnitId())){
-                bill.setOwnerId(user.getOwnerId());
-            }
-
-        }
         if (CommonUtil.isBlank(bill.getStatus())) {
             bill.setStatus(BillConstant.BillStatus.Enter);
         }
@@ -1956,6 +1948,14 @@ public class BillConvertUtil {
         if(CommonUtil.isNotBlank(bill.getOrigId())){
             Unit origUnit = CacheManager.getUnitByCode(bill.getOrigId());
             bill.setOrigName(origUnit.getName());
+        }
+        if (CommonUtil.isBlank(bill.getOwnerId())) {
+            //销售退货单ownerid 默认写入库所属方id
+            bill.setOwnerId(bill.getDestUnitId());
+            if(CommonUtil.isBlank(bill.getDestUnitId())){
+                bill.setOwnerId(user.getOwnerId());
+            }
+
         }
         bill.setTotQty(totQty);
         bill.setTotPrice(totPrice);
@@ -2018,14 +2018,7 @@ public class BillConvertUtil {
 
         }
         bill.setBillRecordList(billRecordList);
-        if (CommonUtil.isBlank(bill.getOwnerId())) {
-            //ownerid为null寄存单的所属方写入库方id
-            bill.setOwnerId(bill.getDestUnitId());
-            if(CommonUtil.isBlank(bill.getDestUnitId())){
-                //入库方id为空,写当前登录用户ownerid
-                bill.setOwnerId(user.getOwnerId());
-            }
-        }
+
         if (CommonUtil.isBlank(bill.getStatus())) {
             bill.setStatus(BillConstant.BillStatus.Enter);
         }
@@ -2035,6 +2028,14 @@ public class BillConvertUtil {
         bill.setDestUnitId(dest.getOwnerId());
         Unit destUnit = CacheManager.getUnitByCode(dest.getOwnerId());
         bill.setDestUnitName(destUnit.getName());
+        if (CommonUtil.isBlank(bill.getOwnerId())) {
+            //ownerid为null寄存单的所属方写入库方id
+            bill.setOwnerId(bill.getDestUnitId());
+            if(CommonUtil.isBlank(bill.getDestUnitId())){
+                //入库方id为空,写当前登录用户ownerid
+                bill.setOwnerId(user.getOwnerId());
+            }
+        }
         bill.setTotQty(totQty);
         bill.setTotPrice(totPrice);
 //        bill.setActPrice(totActPrice);

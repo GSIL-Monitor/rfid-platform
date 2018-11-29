@@ -303,9 +303,9 @@ public class ProductApiController extends ApiBaseController {
         if (!skuDir.exists()) {
             skuDir.mkdirs();
         }
-        /*
-         * 此处一个情况为压缩文件不更新，当生成了第一个压缩文件后         *
-         * */
+        /*/*//*
+          此处一个情况为压缩文件不更新，当生成了第一个压缩文件后         *
+         /*//**/
         File zipFile = new File(zipFileName);
         isWriting = true;
         writeProductsFiles(skuDir, skuZipFile, zipFileName, sourcePath, skuTemp, version);
@@ -326,6 +326,8 @@ public class ProductApiController extends ApiBaseController {
             e.printStackTrace();
         } finally {
         }
+
+
     }
 
     /**
@@ -353,17 +355,18 @@ public class ProductApiController extends ApiBaseController {
             page.setOrder("desc");
             page.setPageNo(1);
             page.setPageSize(pageSize);
-            List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
+            /*List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
             if (version != 0L) {
                 filters.add(new PropertyFilter("GTL_version", String.valueOf(version)));
-            }
+            }*/
             boolean isex = new File(zipFileName).exists();
             if (!isex) {
                 boolean isWrite = false;
-                Page<Product> prodPage = productService.findPage(page, filters);
+                Page<Product> prodPage = productService.findPage(page, version);
+
                 if (CommonUtil.isNotBlank(page.getRows())) {
                     //修改图片地址
-                    FileUtil.writeStringToFile(JSON.toJSONString(ProductUtil.convertToPageVo(prodPage.getRows())),
+                    FileUtil.writeStringToFile(JSON.toJSONString(prodPage.getRows()),
                             sourcePath + File.separator + "casesoft_sku_" + 1 + ".json");
                     isWrite = true;
                 }
@@ -387,7 +390,7 @@ public class ProductApiController extends ApiBaseController {
                         boolean isMax = true;
                         while (isMax) {
                             if (taskExecutor.getActiveCount() < 10) {
-                                writePageJsonProduct(taskExecutor, page, filters, new StringBuffer(sourcePath));
+                                writePageJsonProduct(taskExecutor, page, version, new StringBuffer(sourcePath));
                                 break;
                             } else {
                                 isMax = true;
@@ -970,14 +973,14 @@ public class ProductApiController extends ApiBaseController {
     /**
      * 多线程写文件
      */
-    private void writePageJsonProduct(ThreadPoolTaskExecutor taskExecutor, final Page<Product> prodPaget, List<PropertyFilter> filters, StringBuffer sourcePath) {
+    private void writePageJsonProduct(ThreadPoolTaskExecutor taskExecutor, final Page<Product> prodPaget ,Long version,StringBuffer sourcePath) {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                Page<Product> page = productService.findPage(prodPaget, filters);
+                Page<Product> page = productService.findPage(prodPaget, version);
                 if (CommonUtil.isNotBlank(page.getRows())) {
                     System.out.println("taskExecutor:" + prodPaget.getPageNo());
-                    FileUtil.writeStringToFile(JSON.toJSONString(ProductUtil.convertToPageVo(prodPaget.getRows())),
+                    FileUtil.writeStringToFile(JSON.toJSONString(prodPaget.getRows()),
                             sourcePath + File.separator + "casesoft_sku_" + page.getPageNo() + ".json");
                 }
             }
