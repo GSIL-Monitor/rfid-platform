@@ -1,4 +1,4 @@
 function loadingwebsocket() {
-    var wsUri ="ws://127.0.0.1:4649/csreader";
+    var wsUri ="ws://192.168.0.120:4649/csreader";
     websocket = new WebSocket(wsUri);
 }

@@ -666,7 +666,7 @@ function initEditFormValid() {
                         message: '金额不能为空'
                     }
                 }
-            },
+            }
         }
     });
 }

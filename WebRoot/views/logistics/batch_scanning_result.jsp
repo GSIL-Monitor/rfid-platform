@@ -39,8 +39,7 @@
         //得到表格的宽度
     });
     function initWebSocket() {
-        var wsUri ="ws://192.168.0.109:4649/csreader";
-        websocket = new WebSocket(wsUri);
+        loadingwebsocket();
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };

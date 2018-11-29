@@ -66,8 +66,7 @@
         loadnotThisOnegridOutTable();
     });
     function fullOutWebSocket() {
-        var wsUri ="ws://192.168.0.109:4649/csreader";
-        websocket = new WebSocket(wsUri);
+        loadingwebsocket();
         websocket.onopen = function(evt) { onOpenOut(evt) };
         websocket.onclose = function(evt) { onCloseOut(evt) };
         websocket.onmessage = function(evt) { onMessageOut(evt) };
