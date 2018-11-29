@@ -1145,7 +1145,7 @@ public class WarehStockController extends BaseController {
                     for (BillRecord r : billRecordList) {
                         BillDtl dtl = billDtlMap.get(r.getSku());
                         List<String> codeList = dtl.getCodeList();
-                        if(CommonUtil.isBlank(codeList)){
+                        if (CommonUtil.isBlank(codeList)) {
                             codeList = new ArrayList<>();
                         }
                         codeList.add(r.getCode());
@@ -1158,7 +1158,7 @@ public class WarehStockController extends BaseController {
                     for (Epc e : epcList) {
                         BillDtl dtl = billDtlMap.get(e.getSku());
                         List<String> codeList = dtl.getCodeList();
-                        if(CommonUtil.isBlank(codeList)){
+                        if (CommonUtil.isBlank(codeList)) {
                             codeList = new ArrayList<>();
                         }
                         codeList.add(e.getCode());
@@ -1212,18 +1212,23 @@ public class WarehStockController extends BaseController {
                             noInBillEpcList.add(epcStock);
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if(codeList.size() < dtl.getQty()){
-                                //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
-                                epcStock.setRemark("校验通过");
-                                rightEpcList.add(epcStock);
-                            }else{
-                                if(codeList.contains(epcStock.getCode())){
+                            if (CommonUtil.isNotBlank(codeList)) {
+                                if (codeList.size() < dtl.getQty()) {
+                                    //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
                                     epcStock.setRemark("校验通过");
                                     rightEpcList.add(epcStock);
-                                }else{
-                                    epcStock.setRemark("非本单商品");
-                                    noInBillEpcList.add(epcStock);
+                                } else {
+                                    if (codeList.contains(epcStock.getCode())) {
+                                        epcStock.setRemark("校验通过");
+                                        rightEpcList.add(epcStock);
+                                    } else {
+                                        epcStock.setRemark("非本单商品");
+                                        noInBillEpcList.add(epcStock);
+                                    }
                                 }
+                            } else {
+                                epcStock.setRemark("校验通过");
+                                rightEpcList.add(epcStock);
                             }
 
                         }
@@ -1232,10 +1237,10 @@ public class WarehStockController extends BaseController {
                             epcStock.setRemark("校验未通过,不能入库");
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if(CommonUtil.isNotBlank(codeList) && codeList.contains(epcStock.getCode())){
+                            if (CommonUtil.isNotBlank(codeList) && codeList.contains(epcStock.getCode())) {
                                 //说明改单已经入库
                                 epcStock.setRemark("校验未通过,已入库无需入库");
-                            }else{
+                            } else {
                                 epcStock.setRemark("校验未通过,不能入库");
                             }
                         }
@@ -1260,32 +1265,37 @@ public class WarehStockController extends BaseController {
                             //明细为空表示不是当前单据加入noInBillEpcList
                             epcStock.setRemark("非本单商品");
                             noInBillEpcList.add(epcStock);
-                        }else{
+                        } else {
                             List<String> codeList = dtl.getCodeList();
-                            if(codeList.size() < dtl.getQty()){
-                                //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
-                                epcStock.setRemark("校验通过");
-                                rightEpcList.add(epcStock);
-                            }else{
-                                if(codeList.contains(epcStock.getCode())){
+                            if(CommonUtil.isNotBlank(codeList)) {
+                                if (codeList.size() < dtl.getQty()) {
+                                    //如果唯一码数量小于sku数量该明改单需校验sku,否则需要匹配唯一码
                                     epcStock.setRemark("校验通过");
                                     rightEpcList.add(epcStock);
-                                }else{
-                                    epcStock.setRemark("非本单商品");
-                                    noInBillEpcList.add(epcStock);
+                                } else {
+                                    if (codeList.contains(epcStock.getCode())) {
+                                        epcStock.setRemark("校验通过");
+                                        rightEpcList.add(epcStock);
+                                    } else {
+                                        epcStock.setRemark("非本单商品");
+                                        noInBillEpcList.add(epcStock);
+                                    }
                                 }
+                            }else{
+                                epcStock.setRemark("校验通过");
+                                rightEpcList.add(epcStock);
                             }
 
                         }
-                    }else{
+                    } else {
                         if (CommonUtil.isBlank(dtl)) {
                             epcStock.setRemark("校验未通过,不能出库");
                         } else {
                             List<String> codeList = dtl.getCodeList();
-                            if(codeList.contains(epcStock.getCode())){
+                            if (codeList.contains(epcStock.getCode())) {
                                 //说明改单已经入库
                                 epcStock.setRemark("校验未通过,已出库无需出库");
-                            }else{
+                            } else {
                                 epcStock.setRemark("校验未通过,不能出库");
                             }
                         }
@@ -1299,11 +1309,11 @@ public class WarehStockController extends BaseController {
                 //盘点待开发
             }
         }
-        Map<String,List<EpcStock>> resultMap = new HashMap<>();
-        resultMap.put("rightEpc",rightEpcList);
-        resultMap.put("errorEpc",errorEpcList);
-        resultMap.put("noInBill",noInBillEpcList);
-        return new MessageBox(true,"ok",resultMap);
+        Map<String, List<EpcStock>> resultMap = new HashMap<>();
+        resultMap.put("rightEpc", rightEpcList);
+        resultMap.put("errorEpc", errorEpcList);
+        resultMap.put("noInBill", noInBillEpcList);
+        return new MessageBox(true, "ok", resultMap);
     }
 
 }
