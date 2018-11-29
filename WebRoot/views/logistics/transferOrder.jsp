@@ -390,7 +390,12 @@
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../sys/print_Test.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
+<jsp:include page="batch_scanning_result.jsp"></jsp:include>
+<jsp:include page="show_check_In_result.jsp"></jsp:include>
+<jsp:include page="show_check_out_result.jsp"></jsp:include>
+<jsp:include page="allUniqeCode_detail_list.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/webSocket.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/transferOrderController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
