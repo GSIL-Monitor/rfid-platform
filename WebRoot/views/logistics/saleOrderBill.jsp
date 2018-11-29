@@ -36,7 +36,18 @@
         var cTbillNo = "${cTbillNo}";
         var defaultPayType = "${payType}";//默认支付方式
     </script>
-    <style>*{padding:0;margin:0;}</style>
+    <style>
+        *{padding:0;margin:0;}
+            /*对搜索下拉的框规定高度*/
+         .ui-autocomplete {
+             max-height: 200px;
+             overflow-y: auto;
+             /* 防止水平滚动条 */
+             overflow-x: hidden;
+         }
+
+
+    </style>
 
 </head>
 <body class="no-skin">
@@ -210,6 +221,43 @@
                                         <div class="widget-main padding-12">
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
+                                                <div class="form-group" style="text-align: left;margin-left: 20px;margin-bottom: 10px;">
+                                                    <div class="checkbox_" style="display: inline-block;">
+                                                        <input id="check"  onclick="test()" type="checkbox" style=" width:20px; height:20px ;padding-top: 10px" />
+                                                    </div>
+                                                    <div class="userinput" style="display: inline-block" >
+                                                        <div id="text1"><input type="text" id="text2" style=" width:300px " placeholder="请输入衣服的编号或者名称"  autofocus = autofocus>
+                                                        </div>
+                                                        <div id="search"   style="display: none">
+                                                       <%--<select name="select_id" id="select_id"  class="selectpicker show-tick form-control" data-width="300px" data-first-option="false" data-live-search="true">
+                                                            <foreach dealer in dealerList>
+                                                                <option value="">请输入衣服的编号或者名称</option>
+                                                                <option value="">2</option>
+
+                                                                <option value="">3</option>
+
+                                                                <option value="">4</option>
+
+                                                                <option value="">5</option>
+
+
+                                                            </foreach>
+                                                        </select>--%>
+
+                                                               <label for="tags"></label>
+                                                           <input type="search" id="tags" style=" width:300px " placeholder="请输入衣服的编号或者名称"  autofocus = autofocus />
+
+
+
+
+
+                                                           </div>
+
+                                                </div>
+                                                    <div style="display: inline-block; height: 36px">
+                                                    <button class="btn btn-xs btn-primary" id="bt_is" style="width: 60px;height: 100%">确认</button>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group">
                                                     <div id="destUnitId_div">
                                                         <label class="col-md-1 control-label"
@@ -459,13 +507,87 @@
 <script type="text/javascript" src="<%=basePath%>/views/logistics/saleOrderBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+<script src="<%=basePath%>/Olive/assets/js/jquery-ui.js"></script>
+
+<%--typehead方法--%>
+
+
 
 <%--实收金额--%>
 <script src="<%=basePath%>/views/NoOneCashier/js/mynumkb.js"></script>
 <script src="<%=basePath%>/views/NoOneCashier/js/iconfont.js"></script>
 
+
+
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>
+<script type="text/javascript">
+
+    function test() {
+
+        if(document.getElementById('check').checked == true) {
+            subMit();
+           /* showDropdown(document.getElementById("select_id"));*/
+        }
+        if(document.getElementById('check').checked == false) {
+
+            subMit1();
+
+
+        }
+    }
+
+                function subMit(){
+                    document.getElementById("text1").style.display  = "none";
+                    document.getElementById("search").style.display = "block";
+                    document.getElementById("tags").focus();
+
+                }
+                function subMit1(){
+                    document.getElementById("text1").style.display  = "block";
+                    document.getElementById("search").style.display = "none";
+                    document.getElementById("text2").focus();
+
+
+                }
+    $(function() {
+        var availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+
+        ];
+        $( "#tags" ).autocomplete({
+            source: availableTags
+        });
+    });
+
+
+
+
+
+
+</script>
+
 </body>
 </html>
