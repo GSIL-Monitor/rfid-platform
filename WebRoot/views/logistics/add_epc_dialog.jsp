@@ -33,7 +33,7 @@
                 {name:'code',label:'唯一码',eidtable:true,width:160},
                 {name:'styleId', label: '款号', editable: true, width: 160},
                 {name:'colorId',label:'色号',editable:true,width:200},
-                {name:'sizeId',label:'尺寸',editable:true,width:200},
+                {name:'sizeId',label:'尺寸',editable:true,width:200}
 
             ],
             viewrecords: true,
@@ -44,15 +44,11 @@
             multiselect: true,
             shrinkToFit: true,
             sortname: 'code',
-            sortorder: "asc",
-
-
+            sortorder: "asc"
         });
         var parent_column = $("#epcgrid").closest('.modal-dialog');
         console.log(parent_column.width());
         $("#epcgrid").jqGrid('setGridWidth', parent_column.width() - 5);
-
-
     }
 
 </script>

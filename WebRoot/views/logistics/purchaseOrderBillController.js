@@ -10,6 +10,7 @@ var levelId = null;//货层
 var rackId = null;//货架
 var cageId = null;//仓库
 var deep = null;//深度
+var billNo;
 $(function () {
     load().then(function (data) {
         /*初始化左侧grig*/
@@ -1325,6 +1326,48 @@ function saveCovert() {
     }
 }
 
+//批量采购入库
+function saveEpc() {
+    cs.showProgressBar();
+    var epcArray=[];
+    $.each($("#batchEpcGrid").getDataIDs(),function (index,value) {
+        var rowData = $("#batchEpcGrid").getRowData(value);
+        if (rowData.thisCode!=""&&rowData.thisCode!=undefined){
+            epcArray.push(rowData);
+        }
+    });
+    if (epcArray.length==0){
+        cs.closeProgressBar();
+        bootbox.alert("请扫描要入库的唯一码信息");
+        return;
+    }
+    var dtlArray = [];
+    $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
+        var rowData = $("#addDetailgrid").getRowData(value);
+        dtlArray.push(rowData);
+    });
+    $.ajax({
+        dataType: "json",
+        url: basePath + "/logistics/purchaseOrderBill/convert.do",
+        data: {strDtlList: JSON.stringify(dtlArray), recordList: JSON.stringify(epcArray)},
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+                $("#batchEpcGrid").modal('hide');
+                $("#addDetailgrid").trigger("reloadGrid");
+                skuInfoIn = [];
+            } else {
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}
+
 function doPrint() {
     /*$("#editForm").resetForm();*/
     $("#edit-dialog-print").modal('show');
@@ -1555,6 +1598,10 @@ function initButtonGroup(billStatus) {
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>采购入库单</span>" +
         "</button>" +
+        "<button id='PIDtl_batchWareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseIn()'>" +
+        "    <i class='ace-icon fa fa-search'></i>" +
+        "    <span class='bigger-110'>批量采购入库单</span>" +
+        "</button>" +
         "<button id='PIDtl_end' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='end()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>结束订单</span>" +
@@ -1784,11 +1831,26 @@ function setA4(id) {
                 //LODOP.PREVIEW();
                 LODOP.PRINT();
                 $("#edit-dialog-print").hide();
-
-
             } else {
                 bootbox.alert(msg.msg);
             }
         }
     });
+}
+
+function batchWareHouseIn() {
+    var billNo = $("#edit_billNo").val();
+    $("#modal_purchase_Batch_WareHouse_In").modal('show').on('hidden.bs.modal', function () {
+        $("#batchEpcGrid").clearGridData();
+        $("#notThisOneIngrid").clearGridData();
+        $("#inCodeQty").text(0);
+        skuInfoIn = [];
+        $("#noCodeQty").text(0);
+    });
+    $("#batchEpcGrid").jqGrid('setGridParam', {
+        page: 1,
+        url: basePath + '/logistics/purchaseOrderBill/findNotInEpc.do',
+        postData: {billNo: billNo}
+    }).trigger("reloadGrid");
+    $("#inCodeQty").text(0);
 }

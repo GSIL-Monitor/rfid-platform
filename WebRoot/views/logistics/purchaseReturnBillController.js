@@ -426,6 +426,10 @@ function initButtonGroup(billStatus) {
         "    <i class='ace-icon fa fa-sign-out'></i>" +
         "    <span class='bigger-110'>出库</span>" +
         "</button>"+
+        "<button id='PIDtl_batchWareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseOut()'>" +
+        "    <i class='ace-icon fa fa-sign-out'></i>" +
+        "    <span class='bigger-110'>批量出库</span>" +
+        "</button>"+
         "<button id='PRDtl_doPrint' type='button'  style='margin: 8px' class='btn btn-xs btn-primary' onclick='doPrint(billNo)'>" +
         "    <i class='ace-icon fa fa-reply'></i>" +
         "    <span class='bigger-110'>打印</span>" +
@@ -1421,4 +1425,30 @@ function loadingButtonDivTable(billStatus) {
             $("#"+value.privilegeId).removeAttr("disabled");
         }
     });
+
+}
+
+function batchWareHouseOut() {
+    var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
+    var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
+    if (sum_qty === sum_outQty) {
+        $.gritter.add({
+            text: '已全部出库',
+            class_name: 'gritter-success  gritter-light'
+        });
+    }else if (sum_qty > sum_outQty) {
+        billNo = $("#edit_billNo").val();
+        inOntWareHouseValid = 'wareHouseOut_valid';
+        var origId = $("#edit_origId").val();
+        taskType = 0;
+        wareHouse = origId;
+        $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationOutgrid").clearGridData();
+            $("#notThisOneOutgrid").clearGridData();
+        });
+        lodeBillInformationOutgrid();
+        $("#outCodeQty").text(0);
+    } else {
+        addNew();
+    }
 }

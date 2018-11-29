@@ -413,7 +413,7 @@
         var msg={
             "cmd":"10005"
         };
-        onMessageIn(msg);
+        sendMessgeInToServer(msg);
         $("#inCodeQty").text(0);
         skuInfo=[];
     }
@@ -508,7 +508,7 @@
         var inurl;
         switch(prifex){
             case "PI":
-                inurl = "";
+                inurl = basePath + "/logistics/purchaseOrderBill/convert.do";
                 break;
             case "SO":
                 inurl = basePath + "/logistics/saleOrderBill/convertIn.do";

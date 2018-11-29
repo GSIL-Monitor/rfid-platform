@@ -336,6 +336,7 @@
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
 <jsp:include page="add_epc_dialog.jsp"></jsp:include>
+<jsp:include page="purchase_Batch_WareHouse_In.jsp"></jsp:include>
 <jsp:include page="purchaseOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../sys/print_Test.jsp"></jsp:include>
