@@ -285,6 +285,8 @@
 <jsp:include page="purchaseReturnBillPrint.jsp"></jsp:include>
 <jsp:include page="add_uniqCode_dialog.jsp"></jsp:include>
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
+<jsp:include page="batch_scanning_result.jsp"></jsp:include>
+<jsp:include page="show_check_out_result.jsp"></jsp:include>
 <jsp:include page="../base/search_vendor_dialog.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseReturnBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>

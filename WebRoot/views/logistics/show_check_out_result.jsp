@@ -515,13 +515,13 @@
         var outurl;
         switch(prifex){
             case "PR":
-                outurl = basePath + "/logistics/saleOrderReturn/convertOut.do";
+                outurl = "/logistics/purchaseReturn/convertOut.do";
                 break;
             case "SO":
                 outurl = basePath + "/logistics/saleOrderBill/convertOut.do";
                 break;
             case "SR":
-                outurl = "";
+                outurl = basePath + "/logistics/saleOrderReturn/convertOut.do";
                 break;
             case "TR":
                 outurl = basePath + "/logistics/transferOrder/convertOut.do";
