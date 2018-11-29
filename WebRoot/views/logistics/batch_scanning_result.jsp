@@ -530,7 +530,7 @@
         batchCodeDetail(rowId,"batchDetailgrid");
     }
 
-    function showCodesNoBatchDetail() {
+    function showCodesNoBatchDetail(rowId) {
         $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
             $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });

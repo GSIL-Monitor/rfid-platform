@@ -512,7 +512,7 @@ function initAddGrid() {
                     }
                 }
             },
-            {name: 'uniqueCodes', label: '唯一码', /*hidden: true*/width: 40},
+            {name: 'uniqueCodes', label: '唯一码', hidden: true},
             {name: 'puPrice', label: '代理商批发价格', hidden: true},
             {name: 'wsPrice', label: '门店批发价格', hidden: true},
             {name: 'changeTRqty', label: '转调拨单数量', hidden: true},
@@ -524,7 +524,7 @@ function initAddGrid() {
                 }
             },
             {name:'stylePriceMap',label:'价格表',hidden:true},
-            {name: 'noOutPutCode', label: '异常唯一码', /*hidden: true*/width: 40},
+            {name: 'noOutPutCode', label: '异常唯一码', hidden: true},
             {
                 name: '', label: '异常唯一码明细', width: 40, align: "center",
                 formatter: function (cellValue, options, rowObject) {
@@ -3375,7 +3375,7 @@ function saveEPC() {
         }
         if (errorCodes!=undefined){
             delete uRowData.uniqueCodes;
-            $.each(noCoses,function (nIndex,nValue) {
+            $.each(errorCodes,function (nIndex,nValue) {
                 var newURowData=JSON.parse(JSON.stringify(uRowData));
                 newURowData.noOutPutCode=nValue;
                 newURowData.qty = 1;

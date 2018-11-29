@@ -67,7 +67,7 @@
         });
     }
     function batchCodeDetail(rowId,gradName) {
-        var row = $("'#"+gradName+"'").getRowData(rowId);
+        var row = $("#"+gradName+"").getRowData(rowId);
         var allCode=row.uniqueCodes.split(",");
         $.each(allCode,function (index,value) {
             var rowData={};
@@ -81,7 +81,7 @@
     }
 
     function batchNoCodeDetail(rowId,gradName) {
-        var row = $("'#"+gradName+"'").getRowData(rowId);
+        var row = $("#"+gradName+"").getRowData(rowId);
         var allCode=row.noOutPutCode.split(",");
         $.each(allCode,function (index,value) {
             var rowData={};
