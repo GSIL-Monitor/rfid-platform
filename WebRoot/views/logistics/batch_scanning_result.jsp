@@ -58,7 +58,7 @@
      */
     function onScanning() {
         var msg={
-            "cmd":"10002"
+            "cmd":"10006"
         };
         sendMessgeToServer(msg);
     }
@@ -263,7 +263,7 @@
                 {
                     name: '', label: '异常码明细', width: 30, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesBatchDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesNoBatchDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 },
                 {name: 'warehouseId', hidden: true},
@@ -297,6 +297,9 @@
                 }, 0)
             }
         });
+        var parent_column = $("#batchDetailgrid").closest('.modal-dialog');
+        console.log(parent_column.width());
+        $("#batchDetailgrid").jqGrid('setGridWidth', parent_column.width() - 5);
 
     }
     function setBatchFooterData() {
@@ -519,11 +522,19 @@
         sendMessgeToServer(msg);
         $("#scanCodeQty").text(0);
     }
+
     function showCodesBatchDetail(rowId) {
         $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
             $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
         });
-        loadBatchPutCodeDetail(rowId);
+        batchCodeDetail(rowId,"batchDetailgrid");
+    }
+
+    function showCodesNoBatchDetail() {
+        $("#show-allUniqueCode-list").modal('show').on('hidden.bs.modal',function () {
+            $("#allUniqueCodeListGrid").jqGrid('clearGridData');//清空表格
+        });
+        batchNoCodeDetail(rowId,"batchDetailgrid");
     }
 
 
