@@ -291,6 +291,6 @@
 <script type="text/javascript" src="<%=basePath%>/views/logistics/purchaseReturnBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
-
+<script type="text/javascript" src="<%=basePath%>/views/logistics/webSocket.js"></script>
 </body>
 </html>

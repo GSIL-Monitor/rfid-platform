@@ -335,8 +335,8 @@
 </div>
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
 <jsp:include page="add_detail_dialog.jsp"></jsp:include>
-<jsp:include page="add_epc_dialog.jsp"></jsp:include>
 <jsp:include page="purchase_Batch_WareHouse_In.jsp"></jsp:include>
+<jsp:include page="add_epc_dialog.jsp"></jsp:include>
 <jsp:include page="purchaseOrderBillPrint.jsp"></jsp:include>
 <jsp:include page="../sys/print_two.jsp"></jsp:include>
 <jsp:include page="../sys/print_Test.jsp"></jsp:include>
@@ -349,6 +349,7 @@
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <script type="text/javascript" src="<%=basePath%>/jslib2/constant.js"></script>
 <script src="<%=basePath%>/Olive/plugin/print/LodopFuncs.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/webSocket.js"></script>
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>

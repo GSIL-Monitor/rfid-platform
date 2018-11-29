@@ -1,7 +1,6 @@
 
 $(function () {
-    var wsUri ="ws://127.0.0.1:4649/csreader";
-    websocket = new WebSocket(wsUri);
+    loadingwebsocket();
     websocket.onopen = function(evt) { onOpen(evt) };
     websocket.onclose = function(evt) { onClose(evt) };
     websocket.onmessage = function(evt) { onMessage(evt) };
