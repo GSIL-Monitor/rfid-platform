@@ -85,6 +85,10 @@
             text: "连接 Reader Server成功",
             class_name: 'gritter-success  gritter-light'
         });
+        var msg={
+            "cmd":"10002"
+        };
+        sendMessgeOutToServer(msg);
     }
     function onCloseOut(evt) {
         if(evt.code == 1005){

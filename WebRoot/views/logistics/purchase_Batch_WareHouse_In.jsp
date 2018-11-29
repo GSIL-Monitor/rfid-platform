@@ -43,8 +43,7 @@
                         <span id="noCodeQty" style="font-size:15px; color:tomato">0</span>
                     </div>
                     <div id="dialog_buttonGroup">
-                        <button id="linkIn"  class='btn btn-primary' onclick="fullWebInSocket()">连接</button>
-                        <button id="scanningIn"  class='btn btn-primary' onclick="onScanningIn()">扫描</button>
+                        <button id="scanningIn"  class='btn btn-primary' onclick="onScanningIn()">继续扫描</button>
                         <button id="stopIn"  class='btn btn-primary' onclick="stopIn()">停止</button>
                         <button id="saveIn"  class='btn btn-primary' onclick="saveEpc()">保存</button>
                         <button id="clearIn"  class='btn btn-primary' onclick="deleteInCode()">清空</button>
@@ -76,6 +75,10 @@
             text: "连接 Reader Server成功",
             class_name: 'gritter-success  gritter-light'
         });
+        var msg={
+            "cmd":"10002"
+        };
+        sendMessgeInToServer(msg);
     }
 
     function onCloseIn(evt) {
@@ -107,7 +110,7 @@
      */
     function onScanningIn() {
         var msg={
-            "cmd":"10002"
+            "cmd":"10006"
         };
         sendMessgeInToServer(msg);
     }
