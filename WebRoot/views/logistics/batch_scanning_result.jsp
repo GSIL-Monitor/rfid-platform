@@ -3,10 +3,6 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="false">
-                    <span class="white">&times;</span>
-                </button>
                 明细列表
             </div>
         </div>
@@ -66,20 +62,32 @@
     }
 
     function onOpen(evt) {
-        var msg={
-            "cmd":"10002"
+        var startMsg={
+            "cmd":"10001"
         };
-        sendMessgeToServer(msg);
-        $.gritter.add({
-            text: "连接 Reader Server成功",
-            class_name: 'gritter-success  gritter-light'
-        });
+        if ( sendMessgeInToServer(startMsg)!=false){
+            var msg={
+                "cmd":"10002"
+            };
+            if (sendMessgeInToServer(msg)!=false){
+                $.gritter.add({
+                    text: "连接 Reader Server成功",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+        }
     }
     function onClose(evt) {
         if(evt.code === 1005){
-            bootbox.alert("与服务器连接已断开");
+            $.gritter.add({
+                text: "与服务器连接已断开",
+                class_name: 'gritter-success  gritter-light'
+            });
         }else if(evt.code === 1006){
-            bootbox.alert("连接服务器失败");
+            $.gritter.add({
+                text: "连接服务器失败",
+                class_name: 'gritter-success  gritter-light'
+            });
         }
     }
     function onMessage(evt) {
@@ -107,7 +115,7 @@
     }
 
     function onError(evt) {
-        bootbox.alert("发生错误");
+        //bootbox.alert("发生错误");
     }
     /*
      停止

@@ -72,7 +72,7 @@
      */
     function onScanningIn() {
         var msg={
-            "cmd":"10006"
+            "cmd":"10002"
         };
         sendMessgeInToServer(msg);
     }
@@ -88,20 +88,32 @@
         websocket.send(JSON.stringify(message));
     }
     function onOpenIn(evt) {
-        $.gritter.add({
-            text: "连接 Reader Server成功",
-            class_name: 'gritter-success  gritter-light'
-        });
-        var msg={
-            "cmd":"10002"
+        var startMsg={
+            "cmd":"10001"
         };
-        sendMessgeInToServer(msg);
+        if ( sendMessgeInToServer(startMsg)!=false){
+            var msg={
+                "cmd":"10002"
+            };
+            if (sendMessgeInToServer(msg)!=false){
+                $.gritter.add({
+                    text: "连接 Reader Server成功",
+                    class_name: 'gritter-success  gritter-light'
+                });
+            }
+        }
     }
     function onCloseIn(evt) {
         if(evt.code == 1005){
-            bootbox.alert("与服务器连接已断开");
+            $.gritter.add({
+                text: "与服务器连接已断开",
+                class_name: 'gritter-success  gritter-light'
+            });
          }else if(evt.code == 1006){
-            bootbox.alert("连接服务器失败");
+            $.gritter.add({
+                text: "连接服务器失败",
+                class_name: 'gritter-success  gritter-light'
+            });
          }
     }
     function onMessageIn(evt) {
@@ -117,7 +129,7 @@
         }
     }
     function onErrorIn(evt) {
-        bootbox.alert("发生错误");
+        //bootbox.alert("发生错误");
     }
     /*
      停止
