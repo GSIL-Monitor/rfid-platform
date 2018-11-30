@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">
                     <span class="white">&times;</span>
                 </button>
                 添加唯一码信息入库批量扫码页面
@@ -47,6 +47,7 @@
                         <button id="stopIn"  class='btn btn-primary' onclick="stopIn()">停止</button>
                         <button id="saveIn"  class='btn btn-primary' onclick="saveEpc()">保存</button>
                         <button id="clearIn"  class='btn btn-primary' onclick="deleteInCode()">清空</button>
+                        <button id="close"  class='btn btn-primary' onclick="pClose()">关闭</button>
                     </div>
                 </div>
             </div>
@@ -160,6 +161,7 @@
         });
         $("#noCodeQty").text(noCodeQty);
         skuInfoIn = [];
+        oldSkuInfo = [];
     }
 
 
@@ -179,6 +181,7 @@
             "cmd":"10005"
         };
         skuInfoIn = [];
+        oldSkuInfo = [];
         sendMessgeInToServer(msg);
         $("#inCodeQty").text(0);
     }
@@ -235,6 +238,14 @@
         var parent_column = $("#notThisOneIngrid").closest('.modal-dialog');
         console.log(parent_column.width());
         $("#notThisOneIngrid").jqGrid('setGridWidth', parent_column.width() - 5);
+    }
+    //模态框关闭
+    function pClose() {
+        var msg={
+            "cmd":"10004"
+        };
+        sendMessgeInToServer(msg);
+        $("#modal_purchase_Batch_WareHouse_In").modal('hide');
     }
 
 </script>

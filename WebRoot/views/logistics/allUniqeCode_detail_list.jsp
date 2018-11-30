@@ -3,10 +3,6 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">
-                    <span class="white">&times;</span>
-                </button>
                 唯一码明细
             </div>
         </div>
@@ -16,7 +12,7 @@
         </div>
         <div class="modal-footer">
             <div id="dialog_buttonGroup">
-                <button id="close"  class='btn btn-primary' onclick="close()">清空</button>
+                <button id="close"  class='btn btn-primary' onclick="allUniqeCodeClose()">关闭</button>
             </div>
         </div>
     </div>
@@ -27,7 +23,7 @@
         initAllUniqueCodeList();
     });
 
-    function close() {
+    function allUniqeCodeClose() {
         $("#show-allUniqueCode-list").modal("hide");
     }
 
@@ -70,13 +66,15 @@
         var row = $("#"+gradName+"").getRowData(rowId);
         var allCode=row.uniqueCodes.split(",");
         $.each(allCode,function (index,value) {
-            var rowData={};
-            rowData.code=value;
-            rowData.sku=row.sku;
-            rowData.warehouseId=row.warehouseId;
-            rowData.floor=row.floor;
-            rowData.inStock=row.inStock;
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+            if (value!=""){
+                var rowData={};
+                rowData.code=value;
+                rowData.sku=row.sku;
+                rowData.warehouseId=row.warehouseId;
+                rowData.floor=row.floor;
+                rowData.inStock=row.inStock;
+                $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+            }
         });
     }
 
@@ -84,13 +82,15 @@
         var row = $("#"+gradName+"").getRowData(rowId);
         var allCode=row.noOutPutCode.split(",");
         $.each(allCode,function (index,value) {
-            var rowData={};
-            rowData.code=value;
-            rowData.sku=row.sku;
-            rowData.warehouseId=row.warehouseId;
-            rowData.floor=row.floor;
-            rowData.inStock=row.inStock;
-            $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+            if (value!=""){
+                var rowData={};
+                rowData.code=value;
+                rowData.sku=row.sku;
+                rowData.warehouseId=row.warehouseId;
+                rowData.floor=row.floor;
+                rowData.inStock=row.inStock;
+                $("#allUniqueCodeListGrid").addRowData($("#allUniqueCodeListGrid").getDataIDs().length,rowData);
+            }
         });
     }
 </script>

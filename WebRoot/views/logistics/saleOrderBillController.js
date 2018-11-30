@@ -3265,6 +3265,7 @@ function batchUniqCode() {
             $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
                 $("#batchDetailgrid").clearGridData();
                 skuInfo=[];
+                oldSkuInfo = [];
             });
             initWebSocket();
             initUniqeCodeGridColumn(ct);

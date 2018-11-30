@@ -4,7 +4,7 @@
         <div class="modal-header no-padding">
             <div class="table-header">
                 <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">
+                        aria-hidden="false">
                     <span class="white">&times;</span>
                 </button>
                 明细列表
@@ -25,13 +25,14 @@
                 <button id="stop"  class='btn btn-primary' onclick="stop()">暂停</button>
                 <button id="clear"  class='btn btn-primary' onclick="onClear()">清空</button>
                 <button id="saveEPC"  class='btn btn-primary' onclick="saveEPC()">保存</button>
-                <button id="close"  class='btn btn-primary' onclick="close()">关闭连接</button>
+                <button id="close"  class='btn btn-primary' onclick="batchClose()">关闭</button>
             </div>
         </div>
     </div>
 </div>
 <script>
     var skuInfo = [];
+    var oldSkuInfo = [];
     var timeout;
     var websocket;
     $(function () {
@@ -46,11 +47,12 @@
         websocket.onerror = function(evt) { onError(evt) };
     }
     //关闭读写器
-    function close() {
+    function batchClose() {
         var msg={
             "cmd":"10004"
         };
         sendMessgeToServer(msg);
+        $("#modal-batch-table").modal('hide');
     }
 
     /*
@@ -58,7 +60,7 @@
      */
     function onScanning() {
         var msg={
-            "cmd":"10006"
+            "cmd":"10002"
         };
         sendMessgeToServer(msg);
     }
@@ -99,6 +101,7 @@
     }
 
     function changeScanCodeQty() {
+        //剔除SkuInfo中相同唯一码的商品
         var num=skuInfo.length;
         $("#scanCodeQty").text(num);
     }
@@ -342,17 +345,32 @@
         });
     }
 
+
+
     //是否能出入库
     function checkCode() {
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
         });
+        //校验新扫到的唯一码
+        if (oldSkuInfo.length!=0){
+            $.each(skuInfo,function (index,value) {
+                $.each(oldSkuInfo,function (oldIndex,oldValue) {
+                    if (value.unicode==oldValue.unicode){
+                        value.isExist=true;
+                    }
+                })
+            });
+        }
+        oldSkuInfo=JSON.parse(JSON.stringify(skuInfo));
         //获取说有的code
         var codeArray=[];
         $.each(skuInfo, function (index, value) {
-            var productInfo = value;
-            if(productInfo.unicode!==""&&productInfo.unicode!==undefined){
-                codeArray.push(productInfo.unicode);
+            if (value.isExist==undefined||value.isExist!=true){
+                var productInfo = value;
+                if(productInfo.unicode!==""&&productInfo.unicode!==undefined){
+                    codeArray.push(productInfo.unicode);
+                }
             }
         });
         var ajax_url;
@@ -511,6 +529,7 @@
             $("#batchDetailgrid").addRowData($("#batchDetailgrid").getDataIDs().length,value);
         });
         skuInfo=[];
+        $("#scanCodeQty").text(0);
     }
 
     function onClear() {

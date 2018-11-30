@@ -3,10 +3,6 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">
-                    <span class="white">&times;</span>
-                </button>
                 出库批量扫码页面
             </div>
         </div>
@@ -44,10 +40,11 @@
                         <span id="outCodeQty" style="font-size:15px; color:tomato">0</span>
                     </div>
                     <div id="dialog_buttonGroup">
-                        <button id="scanningOut"  class='btn btn-primary' onclick="onScanningOut()">继续扫描</button>
+                        <button id="onScanningOut"  class='btn btn-primary' onclick="onScanningOut()">继续扫描</button>
                         <button id="stopOut"  class='btn btn-primary' onclick="stopOut()">停止</button>
                         <button id="saveOut"  class='btn btn-primary' onclick="saveOut()">保存</button>
-                        <button id="clearOut"  class='btn btn-primary' onclick="deleteCode()">清空</button>
+                        <button id="deleteCode"  class='btn btn-primary' onclick="deleteCode()">清空</button>
+                        <button id="close"  class='btn btn-primary' onclick="outClose()">关闭</button>
                     </div>
                 </div>
             </div>
@@ -59,6 +56,7 @@
     var timeoutOut;
     var websocket;
     var dataResultCode=new Map();
+    var oldSkuInfo=[];
     //点击唯一码明细时记录当前行的所有唯一码
     $(function () {
         loadbillInformationOutTable();
@@ -137,6 +135,17 @@
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
         });
+        //校验新扫到的唯一码
+        if (oldSkuInfo.length!=0){
+            $.each(skuInfo,function (index,value) {
+                $.each(oldSkuInfo,function (oldIndex,oldValue) {
+                    if (value.unicode==oldValue.unicode){
+                        value.isExist=true;
+                    }
+                })
+            });
+        }
+        oldSkuInfo=JSON.parse(JSON.stringify(skuInfo));
         //获取说有的code
         var codeArray=[];
         $.each(skuInfo, function (index, value) {
@@ -219,7 +228,7 @@
                 skuEpc.sizeId=value.sizeId;
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
-                skuEpc.uniqueCodes=value.code;
+                skuEpc.noOutPutCode=value.code;
                 skuEpc.remark=value.remark;
                 skuEpcList.set(value.sku,skuEpc);
                 skuEpc.floor=value.floor;
@@ -228,7 +237,7 @@
             }else {
                 var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
-                exist.uniqueCodes=exist.uniqueCodes+","+value.code;
+                exist.noOutPutCode=exist.noOutPutCode+","+value.code;
                 skuEpcList.set(value.sku,exist);
             }
         });
@@ -243,7 +252,7 @@
                 skuEpc.sizeId=value.sizeId;
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
-                skuEpc.uniqueCodes=value.code;
+                skuEpc.noOutPutCode=value.code;
                 skuEpc.remark=value.remark;
                 skuEpcList.set(value.sku,skuEpc);
                 skuEpc.floor=value.floor;
@@ -252,7 +261,7 @@
             }else {
                 var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
-                exist.uniqueCodes=exist.uniqueCodes+","+value.code;
+                exist.noOutPutCode=exist.noOutPutCode+","+value.code;
                 skuEpcList.set(value.sku,exist);
             }
         });
@@ -410,12 +419,12 @@
                 {name: 'sizeName', label: '尺码', width: 40},
                 {name: 'sku', label: 'SKU', width: 60},
                 {name: 'qty', label: '数量', width: 65},
-                {name: 'uniqueCodes', label: '唯一码',hidden: true},
+                {name: 'noOutPutCode', label: '唯一码',hidden: true},
                 {name: 'remark', label:'异常类型', width: 100},
                 {
                     name: '', label: '唯一码明细', width: 65, align: "center",
                     formatter: function (cellValue, options, rowObject) {
-                        return "<a href='javascript:void(0);' onclick=showCodesNoOutDetail('" + options.rowId + ")><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
+                        return "<a href='javascript:void(0);' onclick=showCodesNoOutDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
                 },
                 {name: 'warehouseId', hidden: true},
@@ -577,6 +586,14 @@
         });
         $("#modal-batch-show-table").modal('hide');
         //wareHouseOut();
+    }
+    //关闭模态框
+    function outClose() {
+        var msg={
+            "cmd":"10004"
+        };
+        sendMessgeToServer(msg);
+        $("#modal-batch-show-table").modal('hide');
     }
 
 </script>

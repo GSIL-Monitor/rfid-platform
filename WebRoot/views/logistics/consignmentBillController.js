@@ -1890,6 +1890,8 @@ function addAllUniqCode() {
     if (ct && ct != null) {
         $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
             $("#batchDetailgrid").clearGridData();
+            skuInfo=[];
+            oldSkuInfo = [];
         });
         initWebSocket();
     } else {

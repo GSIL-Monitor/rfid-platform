@@ -3,10 +3,6 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">
-                    <span class="white">&times;</span>
-                </button>
                 入库批量扫码页面
             </div>
         </div>
@@ -48,6 +44,7 @@
                         <button id="stopIn"  class='btn btn-primary' onclick="stopIn()">停止</button>
                         <button id="saveIn"  class='btn btn-primary' onclick="saveIn()">保存</button>
                         <button id="clearIn"  class='btn btn-primary' onclick="deleteInCode()">清空</button>
+                        <button id="close"  class='btn btn-primary' onclick="inClose()">关闭</button>
                     </div>
                 </div>
             </div>
@@ -222,7 +219,7 @@
                 skuEpc.sizeId=value.sizeId;
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
-                skuEpc.uniqueCodes=value.code;
+                skuEpc.noOutPutCode=value.code;
                 skuEpc.remark=value.remark;
                 skuEpc.floor=value.floor;
                 skuEpc.inStock=value.inStock;
@@ -231,7 +228,7 @@
             }else {
                 var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
-                exist.uniqueCodes=exist.uniqueCodes+","+value.code;
+                exist.noOutPutCode=exist.noOutPutCode+","+value.code;
                 skuEpcList.set(value.sku,exist);
             }
         });
@@ -246,7 +243,7 @@
                 skuEpc.sizeId=value.sizeId;
                 skuEpc.sizeName=value.sizeName;
                 skuEpc.qty=1;
-                skuEpc.uniqueCodes=value.code;
+                skuEpc.noOutPutCode=value.code;
                 skuEpc.remark=value.remark;
                 skuEpc.floor=value.floor;
                 skuEpc.inStock=value.inStock;
@@ -255,7 +252,7 @@
             }else {
                 var exist=skuEpcList.get(value.sku);
                 exist.qty=parseInt(exist.qty)+1;
-                exist.uniqueCodes=exist.uniqueCodes+","+value.code;
+                exist.noOutPutCode=exist.noOutPutCode+","+value.code;
                 skuEpcList.set(value.sku,exist);
             }
         });
@@ -376,7 +373,7 @@
                 {name: 'sizeName', label: '尺码', width: 45},
                 {name: 'sku', label: 'SKU', width: 80},
                 {name: 'qty', label: '数量', width: 45},
-                {name: 'uniqueCodes', label: '唯一码',hidden: true},
+                {name: 'noOutPutCode', label: '唯一码',hidden: true},
                 {name: 'remark', label:'异常类型', width: 100},
                 {
                     name: '', label: '唯一码明细', width: 80, align: "center",
@@ -574,5 +571,13 @@
         });
         $("#modal-batch-show-In-table").modal('hide');
         //wareHouseIn();
+    }
+    //模态框关闭
+    function inClose() {
+        var msg={
+            "cmd":"10004"
+        };
+        sendMessgeToServer(msg);
+        $("#modal-batch-show-In-table").modal('hide');
     }
 </script>

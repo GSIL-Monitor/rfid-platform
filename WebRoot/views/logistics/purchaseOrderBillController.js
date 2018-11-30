@@ -1361,6 +1361,7 @@ function saveEpc() {
                 $("#batchEpcGrid").modal('hide');
                 $("#addDetailgrid").trigger("reloadGrid");
                 skuInfoIn = [];
+                oldSkuInfo = [];
             } else {
                 bootbox.alert(msg.msg);
             }

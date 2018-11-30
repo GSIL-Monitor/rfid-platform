@@ -1929,6 +1929,8 @@ function addAllUniqCode() {
     billNo = $("#edit_billNo").val();
     $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
         $("#batchDetailgrid").clearGridData();
+        skuInfo=[];
+        oldSkuInfo = [];
     });
     initWebSocket();
 }

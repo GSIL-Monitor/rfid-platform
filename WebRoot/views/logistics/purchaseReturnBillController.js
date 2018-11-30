@@ -1451,10 +1451,11 @@ function batchWareHouseOut() {
         $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
             $("#billInformationOutgrid").clearGridData();
             $("#notThisOneOutgrid").clearGridData();
+            skuInfo=[];
+            $("#outCodeQty").text(0);
         });
         lodeBillInformationOutgrid();
-        fullOutWebSocket
-        $("#outCodeQty").text(0);
+        fullOutWebSocket();
     }
 }
 //批量扫码
