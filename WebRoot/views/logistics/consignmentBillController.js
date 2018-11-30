@@ -747,6 +747,10 @@ function initButtonGroup(pageType) {
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>入库</span>" +
         "</button>" +
+        "<button id='cm_scancodes_in' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseIn()'>" +
+        "    <i class='ace-icon fa fa-undo'></i>" +
+        "    <span class='bigger-110'>批量入库</span>" +
+        "</button>" +
 
         "<button id='CMDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
