@@ -3446,4 +3446,5 @@ function saveEPC() {
     });
     $("#modal-batch-table").modal('hide');
     setFooterData();
+    saveother(0 - alltotActPrice);
 }
