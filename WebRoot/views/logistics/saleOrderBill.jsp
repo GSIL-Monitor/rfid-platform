@@ -222,15 +222,15 @@
                                         <div class="widget-main padding-12">
                                             <form id="editForm" class="form-horizontal" role="form"
                                                   onkeydown="if(event.keyCode==13)return false;">
-                                                <div class="form-group" style="text-align: left;margin-left: 20px;margin-bottom: 10px;">
-                                                    <%--添加一个复选框--%>
+                                               <%-- <div class="form-group" style="text-align: left;margin-left: 20px;margin-bottom: 10px;">
+                                                    &lt;%&ndash;添加一个复选框&ndash;%&gt;
                                                     <div class="checkbox_" style="display: inline-block;">
                                                         <input id="check"  onclick="test()" type="checkbox" style=" width:20px; height:20px ;padding-top: 10px" />
                                                     </div>
                                                     <div class="userinput" style="display: inline-block" >
                                                         <div id="text1"><input type="text" id="text2" style=" width:300px " placeholder="请输入衣服的编号或者名称"  autofocus = autofocus>
                                                         </div>
-                                                        <%--添加一个隐藏的搜索框--%>
+                                                        &lt;%&ndash;添加一个隐藏的搜索框&ndash;%&gt;
                                                         <div id="search"   style="display: none">
 
                                                                <label for="tags"></label>
@@ -246,7 +246,7 @@
                                                     <div style="display: inline-block; height: 36px">
                                                     <button class="btn btn-xs btn-primary" id="bt_is" style="width: 60px;height: 100%">确认</button>
                                                     </div>
-                                                </div>
+                                                </div>--%>
                                                 <div class="form-group">
                                                     <div id="destUnitId_div">
                                                         <label class="col-md-1 control-label"
@@ -636,7 +636,7 @@
             window.location.reload;
             /*document.getElementById("form_all").reset();*/
 
-        })
+        });
 
         /*换行开始标*/
         var html = "<tr>";
@@ -672,11 +672,11 @@
             colorData.unshift({
                 colorId: 0,
                 colorName: ""
-            })
+            });
             sizeData.unshift({
                 sizeId: 0,
                 sizeName: ""
-            })
+            });
             /*遍历获得的两个数组*/
             $.each(colorData, function(color_index, color_name) {
 
@@ -705,12 +705,12 @@
                 html += "<tr/>";
                 /*	console.log(html);*/
 
-            })
+            });
             //删除添加的空值
             colorData.shift();
             sizeData.shift();
 
-        }
+        };
         /*用户点击弹出表格事件*/
         $("#bt_is").click(function() {
             /*判断复选框*/
@@ -735,7 +735,7 @@
 
 
 
-        })
+        });
 
         /*设置设置所有按钮的事件*/
         $("#setall").click(function() {
@@ -743,11 +743,11 @@
             var input_num = $("#number").val();
             $(".user_input").val(input_num);
 
-        })
+        });
         /*绑定重置按钮*/
         $("#form_reset").click(function () {
             $(".user_input").val("");
-        })
+        });
 
         //绑定确认按扭传输数据到后台
         $("#form_sbm").click(function() {
