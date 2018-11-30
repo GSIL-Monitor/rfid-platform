@@ -357,7 +357,11 @@
 <jsp:include page="uniqueCode_detail_list.jsp"></jsp:include>
 <jsp:include page="findRetrunNo.jsp"></jsp:include>
 <jsp:include page="../base/waitingPage.jsp"></jsp:include>
+<jsp:include page="batch_scanning_result.jsp"></jsp:include>
+<jsp:include page="show_check_In_result.jsp"></jsp:include>
+<jsp:include page="allUniqeCode_detail_list.jsp"></jsp:include>
 <jsp:include page="../base/search_guest_dialog.jsp"></jsp:include>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/webSocket.js"></script>
 <script type="text/javascript" src="<%=basePath%>/views/logistics/consignmentBillController.js"></script>
 <script type="text/javascript" src="<%=basePath%>/Olive/plugin/dateFormatUtil.js"></script>
 <div id="dialog"></div>

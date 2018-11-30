@@ -735,6 +735,10 @@ function initButtonGroup(pageType) {
         "    <i class='ace-icon fa fa-undo'></i>" +
         "    <span class='bigger-110'>扫码</span>" +
         "</button>" +
+        "<button id='cm_scan_codes' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='addAllUniqCode()'>" +
+        "    <i class='ace-icon fa fa-undo'></i>" +
+        "    <span class='bigger-110'>批量扫码</span>" +
+        "</button>" +
         "<button id='CMDtl_save' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='save()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>保存</span>" +
@@ -743,6 +747,7 @@ function initButtonGroup(pageType) {
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>入库</span>" +
         "</button>" +
+
         "<button id='CMDtl_cancel' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='cancel()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
         "    <span class='bigger-110'>撤销</span>" +
@@ -978,7 +983,13 @@ function initAddGrid() {
             {name: 'beforeoutQty', hidden: true},
             {name: 'outMonyQty', hidden: true},
             {name: 'savehaveuniqueCodes', label: '唯一码', hidden: true},
-            {name: 'savenohanveuniqueCodes', label: '唯一码', hidden: true},
+            {
+                name: '', label: '异常唯一码明细', width: 75, align: "center",
+                formatter: function (cellValue, options, rowObject) {
+                    return "<a href='javascript:void(0);' onclick=showCodesDetail('" + rowObject.noOutPutCode + "')><i class='ace-icon ace-icon fa fa-list' title='显示异常唯一码明细'></i></a>";
+                }
+            },
+            {name: 'noOutPutCode', label: '异常唯一码',hidden: true},
             {name: 'readysale', label: '准备销售', hidden: true},
             {name:'stylePriceMap',label:'价格表',hidden:true}
         ],
@@ -1862,4 +1873,142 @@ function deleteItem(rowId) {
     }else{
         saveother(totActPrice);
     }
+}
+
+function addAllUniqCode() {
+    var destId = $("#edit_destId").val();
+    taskType = 1;
+    wareHouse = destId;
+    if(wareHouse && wareHouse !== null) {
+
+    }else {
+        bootbox.alert("请选择入库仓库");
+        return;
+    }
+    billNo = $("#edit_billNo").val();
+    var ct = $("#edit_customerType").val();
+    if (ct && ct != null) {
+        $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
+            $("#batchDetailgrid").clearGridData();
+        });
+        initWebSocket();
+    } else {
+        bootbox.alert("客户类型不能为空！");
+    }
+}
+
+
+/**
+ * 批量扫码入库
+ */
+function batchWareHouseIn(){
+    taskType = 1;
+    var destId = $("#edit_destId").val();
+    wareHouse = destId;
+    billNo = $("#edit_billNo").val();
+    var ct = $("#edit_customerType").val();
+    if (destId && destId != null) {
+        $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
+            $("#billInformationIngrid").clearGridData();
+            $("#notThisOneIngrid").clearGridData();
+        });
+        lodeBillInformationIngrid();
+        initUniqeCodeGridColumn(ct);
+        $("#inCodeQty").text(0);
+    } else {
+        bootbox.alert("入库仓库不能为空！");
+    }
+}
+
+//添加批量扫码页面到单据明细中
+function saveEPC(){
+    var uniqueCodeList=[];//商品唯一码list(含商品信息)
+    var rightCodesArry=[];//正确唯一码（只有唯一码)
+    var errorCodesArry=[];//异常唯一码(只有唯一码信息)
+    //遍历批量扫到的唯一码将sku明细转换为唯一码明细
+    $.each($("#batchDetailgrid").getDataIDs(),function (index,value) {
+        var rowData=$("#batchDetailgrid").jqGrid('getRowData',value);
+        var rightCodes;//正常唯一码
+        var errorCodes;//异常唯一码
+        if(rowData.uniqueCodes!=""&&rowData.uniqueCodes!=undefined){
+            rightCodes=rowData.uniqueCodes.split(",");
+            rightCodesArry = rightCodesArry.concat(rightCodes);
+        }
+        if(rowData.noOutPutCode!=""&&rowData.noOutPutCode!=undefined){
+            errorCodes=rowData.noOutPutCode.split(",");
+            errorCodesArry = errorCodesArry.concat(errorCodes);
+        }
+        if (rightCodes!=undefined){
+            delete rowData.noOutPutCode;
+            $.each(rightCodes,function (cIndex,cValue) {
+                var newRowData=JSON.parse(JSON.stringify(rowData));
+                newRowData.uniqueCodes=cValue;
+                newRowData.qty = 1;
+                //判断实际价格是不是小于门店批发价格
+                if($('#discount_div').is(':hidden')) {
+                    newRowData.actPrice = Math.round(newRowData.price * newRowData.discount) / 100;
+                    newRowData.abnormalStatus=0;
+                }else {
+                    if(Math.round(newRowData.price * newRowData.discount) / 100<newRowData.wsPrice&&isUserAbnormal){
+                        newRowData.actPrice = newRowData.wsPrice;
+                        newRowData.discount = parseFloat(newRowData.wsPrice/newRowData.price).toFixed(2)*100;
+                        newRowData.abnormalStatus=1;
+                    }else{
+                        newRowData.actPrice = Math.round(newRowData.price * newRowData.discount) / 100;
+
+                        newRowData.abnormalStatus=0;
+                    }
+                }
+                newRowData.outQty = 0;
+                newRowData.inQty = 0;
+                newRowData.status = 0;
+                newRowData.inStatus = 0;
+                newRowData.outStatus = 0;
+                newRowData.totPrice = newRowData.price;
+                newRowData.totActPrice = newRowData.actPrice;
+                var stylePriceMap={};
+                stylePriceMap['price']=newRowData.price;
+                stylePriceMap['wsPrice']=newRowData.wsPrice;
+                stylePriceMap['puPrice']=newRowData.puPrice;
+                newRowData.stylePriceMap=JSON.stringify(stylePriceMap);
+                uniqueCodeList.push(newRowData);
+            });
+        }
+    });
+    //适用于寄存调拨只能添加正常唯一码情况
+    if(rightCodesArry.length === 0){
+        bootbox.alert("没有正常的唯一码,请重新扫码");
+    }else{
+        var isAdd = true;
+        var alltotActPrice = 0;
+        //将唯一码明细添加入明细表格
+        $.each(uniqueCodeList,function (index,value) {
+            isAdd=true;
+            $.each($("#addDetailgrid").getDataIDs(),function (dtlIndex,dtlValue) {
+                var dtlRow = $("#addDetailgrid").getRowData(dtlValue);
+                if (value.sku === dtlRow.sku) {
+                    if (value.uniqueCodes!=""&&value.uniqueCodes!=undefined&&dtlRow.uniqueCodes.indexOf(value.uniqueCodes)=== -1) {
+                        dtlRow.qty = parseInt(dtlRow.qty) + 1;
+                        dtlRow.totPrice = dtlRow.qty * dtlRow.price;
+                        dtlRow.totActPrice = dtlRow.qty * dtlRow.actPrice;
+                        alltotActPrice += dtlRow.qty * dtlRow.actPrice;
+                        dtlRow.uniqueCodes = dtlRow.uniqueCodes + "," + value.uniqueCodes;
+                    }
+                    if (dtlRow.id) {
+                        $("#addDetailgrid").setRowData(dtlRow.id, dtlRow);
+                    } else {
+                        $("#addDetailgrid").setRowData(dtlIndex, dtlRow);
+                    }
+                    isAdd = false;
+                }
+            });
+            if (isAdd) {
+                $("#addDetailgrid").addRowData($("#addDetailgrid").getDataIDs().length, value);
+            }
+        });
+        setFooterData();
+        bootbox.alert("添加正常数据"+rightCodesArry.length+"条,异常数据"+errorCodesArry.length+"条无法添加");
+    }
+    $("#modal-batch-table").modal('hide');
+
 }
