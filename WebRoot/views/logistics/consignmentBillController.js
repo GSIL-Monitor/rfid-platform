@@ -2016,5 +2016,6 @@ function saveEPC(){
         bootbox.alert("添加正常数据"+rightCodesArry.length+"条,异常数据"+errorCodesArry.length+"条无法添加");
     }
     $("#modal-batch-table").modal('hide');
-
+    setAddFooterData();
+    saveother(0 - alltotActPrice);
 }
