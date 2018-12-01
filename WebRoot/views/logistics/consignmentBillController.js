@@ -1917,8 +1917,11 @@ function batchWareHouseIn(){
         $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
             $("#billInformationIngrid").clearGridData();
             $("#notThisOneIngrid").clearGridData();
+            skuInfo=[];
+            oldSkuInfo=[];
         });
         lodeBillInformationIngrid();
+        fullWebInSocket();
         initUniqeCodeGridColumn(ct);
         $("#inCodeQty").text(0);
     } else {

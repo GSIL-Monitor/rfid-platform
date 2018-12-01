@@ -58,6 +58,7 @@
     var skuInfoIn = [];
     var timeoutIn;
     var websocket;
+    var oldSkuInfo = [];
     $(function () {
         initEpcGridOut();
         initNotThisOneIngrid();
@@ -142,9 +143,6 @@
     }
     //停止
     function stopIn() {
-        if (skuInfoIn !== null) {
-            window.clearInterval(timeoutIn);
-        }
         var msg={
             "cmd":"10003"
         };
@@ -155,6 +153,17 @@
 
     //填充批量入库扫码页面数据
     function fullInGridData() {
+        //校验新扫到的唯一码
+        if (oldSkuInfo.length!=0){
+            $.each(skuInfo,function (index,value) {
+                $.each(oldSkuInfo,function (oldIndex,oldValue) {
+                    if (value.unicode==oldValue.unicode){
+                        value.isExist=true;
+                    }
+                })
+            });
+        }
+        oldSkuInfo=JSON.parse(JSON.stringify(skuInfo));
         $.each($("#batchEpcGrid").getDataIDs(),function (index,value) {
             var rowData = $("#batchEpcGrid").getRowData(value);
             $.each(skuInfoIn,function (infoIndex,infoValue) {

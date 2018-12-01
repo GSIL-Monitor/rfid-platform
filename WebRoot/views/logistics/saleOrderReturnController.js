@@ -2695,7 +2695,7 @@ function batchUniqCode() {
         $("#modal-batch-table").modal('show').on('hidden.bs.modal', function () {
             $("#batchDetailgrid").clearGridData();
             skuInfo=[];
-            oldSkuInfo = []
+            oldSkuInfo = [];
         });
         initWebSocket();
         $("#scanCodeQty").text(0);
@@ -2715,6 +2715,8 @@ function batchWareHouseOut() {
         $("#modal-batch-show-table").modal('show').on('hidden.bs.modal', function () {
             $("#billInformationOutgrid").clearGridData();
             $("#notThisOneOutgrid").clearGridData();
+            skuInfo=[];
+            oldSkuInfo = [];
         });
         lodeBillInformationOutgrid();
         fullOutWebSocket();
@@ -2738,6 +2740,8 @@ function batchWareHouseIn() {
         $("#modal-batch-show-In-table").modal('show').on('hidden.bs.modal', function () {
             $("#billInformationIngrid").clearGridData();
             $("#notThisOneIngrid").clearGridData();
+            skuInfo=[];
+            oldSkuInfo = [];
         });
         lodeBillInformationIngrid();
         fullWebInSocket();

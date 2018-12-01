@@ -58,6 +58,7 @@
     var skuInfoIn = [];
     var timeoutIn;
     var websocket;
+    var oldSkuInfo=[];
     $(function () {
         loadbillInformationInTable();
         loadnotThisOnegridInTable();
@@ -154,6 +155,17 @@
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
         });
+        //校验新扫到的唯一码
+        if (oldSkuInfo.length!=0){
+            $.each(skuInfo,function (index,value) {
+                $.each(oldSkuInfo,function (oldIndex,oldValue) {
+                    if (value.unicode==oldValue.unicode){
+                        value.isExist=true;
+                    }
+                })
+            });
+        }
+        oldSkuInfo=JSON.parse(JSON.stringify(skuInfo));
         var codeArray=[];
         $.each(skuInfoIn, function (index, value) {
             var productInfo = value;
