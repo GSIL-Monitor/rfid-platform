@@ -548,39 +548,31 @@
 <div id="dialog"></div>
 <div id="progressDialog"></div>
 <span id="notification"></span>
-<script type="text/javascript">
+<%--<script type="text/javascript">
 
     function test() {
         /*如果复选框被选中*/
-
         if(document.getElementById('check').checked == true) {
-
             subMit();
            /* showDropdown(document.getElementById("select_id"));*/
         }
         /*如果复选框没被选中*/
         if(document.getElementById('check').checked == false) {
-
             subMit1();
-
-
         }
     }
+    function subMit(){
+        document.getElementById("text1").style.display  = "none";
+        document.getElementById("search").style.display = "block";
+        document.getElementById("tags").focus();
 
-                function subMit(){
-                    document.getElementById("text1").style.display  = "none";
-                    document.getElementById("search").style.display = "block";
-                    document.getElementById("tags").focus();
-
-                }
-                /**/
-                function subMit1(){
-                    document.getElementById("text1").style.display  = "block";
-                    document.getElementById("search").style.display = "none";
-                    document.getElementById("text2").focus();
-
-
-                }
+    }
+    /**/
+    function subMit1(){
+        document.getElementById("text1").style.display  = "block";
+        document.getElementById("search").style.display = "none";
+        document.getElementById("text2").focus();
+    }
     $(function() {
         var availableTags = [
             "ActionScript",
@@ -745,20 +737,15 @@
         $("#form_reset").click(function () {
             $(".user_input").val("");
         });
-
         //绑定确认按扭传输数据到后台
         $("#form_sbm").click(function() {
             //打包form表格的内容
           var data = $("#form_all").serializeArray(function() {
-
             });
             //修改JSON对象中的value属性名
             data = JSON.parse(JSON.stringify(data).replace(/value/g, "qty"));
             data = JSON.parse(JSON.stringify(data).replace(/name/g, "sku"));
-
             console.log(data);
-
-
             /*			  $.ajax({
                 type: "post",
                 url: "",
@@ -788,13 +775,10 @@
             });
     */
         })
-
     })
 
 
-
-
-</script>
+</script>--%>
 
 </body>
 </html>

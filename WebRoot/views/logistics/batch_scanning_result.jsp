@@ -3,6 +3,9 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">
+                    <span class="white">&times;</span>
+                </button>
                 明细列表
             </div>
         </div>
@@ -65,11 +68,11 @@
         var startMsg={
             "cmd":"10001"
         };
-        if ( sendMessgeInToServer(startMsg)!=false){
+        if ( sendMessgeToServer(startMsg)!=false){
             var msg={
                 "cmd":"10002"
             };
-            if (sendMessgeInToServer(msg)!=false){
+            if (sendMessgeToServer(msg)!=false){
                 $.gritter.add({
                     text: "连接 Reader Server成功",
                     class_name: 'gritter-success  gritter-light'

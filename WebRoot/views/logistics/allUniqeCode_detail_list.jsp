@@ -3,6 +3,9 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">
+                    <span class="white">&times;</span>
+                </button>
                 唯一码明细
             </div>
         </div>

@@ -3,6 +3,9 @@
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">
+                    <span class="white">&times;</span>
+                </button>
                 出库批量扫码页面
             </div>
         </div>
@@ -82,11 +85,11 @@
         var startMsg={
             "cmd":"10001"
         };
-        if ( sendMessgeInToServer(startMsg)!=false){
+        if ( sendMessgeOutToServer(startMsg)!=false){
             var msg={
                 "cmd":"10002"
             };
-            if (sendMessgeInToServer(msg)!=false){
+            if (sendMessgeOutToServer(msg)!=false){
                 $.gritter.add({
                     text: "连接 Reader Server成功",
                     class_name: 'gritter-success  gritter-light'
