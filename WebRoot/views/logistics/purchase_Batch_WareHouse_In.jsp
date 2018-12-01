@@ -122,6 +122,7 @@
      扫描
      */
     function onScanningIn() {
+        $("#scanCodeQty").text(0);
         var msg={
             "cmd":"10002"
         };

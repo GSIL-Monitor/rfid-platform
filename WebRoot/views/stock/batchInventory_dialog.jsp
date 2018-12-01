@@ -1,18 +1,34 @@
 <%@ page contentType="text/html;charset=UTF-8" import="java.util.*" language="java"%>
-<div id="modal-batch-table" class="modal fade" role="dialog" tabindex="-1">
+<div id="modal_batch_dialog_Inventory" class="modal fade" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-header no-padding">
             <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">
-                    <span class="white">&times;</span>
-                </button>
                 明细列表
             </div>
         </div>
-        <div class="modal-content">
-            <div class="hr hr4"></div>
-            <table id="batchDetailgrid"></table>
-            <div id="batch-grid-pager"></div>
+        <div class="modal-body no-padding">
+            <div class="widget-body">
+                <div class="widget-main" id="search_unit_Panel">
+                    <form class="form-horizontal" role="form" id="search_guest_Form" onkeydown="if(event.keyCode==13)return false;">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label"
+                                   for="search_origId">仓库</label>
+                            <div class="col-md-6">
+                                <select class="form-control selectpicker show-tick"
+                                        id="search_origId" name="origId"
+                                        style="width: 100%;"
+                                        data-live-search="true">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-content">
+                <div class="hr hr4"></div>
+                <table id="batchDetailgrid"></table>
+                <div id="batch-grid-pager"></div>
+            </div>
         </div>
         <div class="modal-footer">
             <div class="col-lg-3">
@@ -36,6 +52,7 @@
     var websocket;
     $(function () {
         loadTable();
+        initSelectOrig();
         //得到表格的宽度
     });
     function initWebSocket() {
@@ -51,7 +68,7 @@
             "cmd":"10004"
         };
         sendMessgeToServer(msg);
-        $("#modal-batch-table").modal('hide');
+        $("#modal_batch_dialog_Inventory").modal('hide');
     }
 
     /*
@@ -132,7 +149,6 @@
             "cmd":"10003"
         };
         sendMessgeToServer(msg);
-        //检查出入库
         checkCode();
     }
 
@@ -205,7 +221,7 @@
                     }
                 },
                 {
-                    name: 'price', label: '销售价格', width: 70,
+                    name: 'price', label: '销售价格', width: 70,hidden:true,
                     editrules: {
                         number: true
                     },
@@ -218,7 +234,7 @@
                         }
                     }
                 },
-                {name: 'totPrice', label: '销售金额',width: 70,
+                {name: 'totPrice', label: '销售金额',width: 70,hidden:true,
                     formatter: function (cellValue, options, rowObject) {
                         return parseFloat(cellValue).toFixed(2);
                     },
@@ -242,7 +258,7 @@
                     }
                 },
                 {
-                    name: 'actPrice', label: '实际价格', editable: true,width:70,
+                    name: 'actPrice', label: '实际价格', editable: true,width:70,hidden:true,
                     editrules: {
                         number: true,
                         minValue: 0
@@ -256,7 +272,7 @@
                         }
                     }
                 },
-                {name: 'totActPrice', label: '实际金额', width:70,
+                {name: 'totActPrice', label: '实际金额', width:70,hidden:true,
                     formatter: function (cellValue, options, rowObject) {
                         return parseFloat(cellValue).toFixed(2);
                     },
@@ -276,7 +292,7 @@
                     }
                 },
                 {
-                    name: '', label: '异常码明细', width: 30, align: "center",
+                    name: '', label: '异常码明细', width: 30, align: "center" , hidden: true,
                     formatter: function (cellValue, options, rowObject) {
                         return "<a href='javascript:void(0);' onclick=showCodesNoBatchDetail('" + options.rowId + "')><i class='ace-icon ace-icon fa fa-list' title='显示唯一码明细'></i></a>";
                     }
@@ -297,8 +313,8 @@
             footerrow: true,
             cellsubmit: 'clientArray',
             afterEditCell: function (rowid, celname, value, iRow, iCol) {
-               /* addDetailgridiRow = iRow;
-                addDetailgridiCol = iCol;*/
+                /* addDetailgridiRow = iRow;
+                 addDetailgridiCol = iCol;*/
             },
             gridComplete: function () {
                 setBatchFooterData();
@@ -328,9 +344,9 @@
             totPrice:Math.abs(sum_totPrice),
             totActPrice: Math.abs(sum_totActPricemin)
         });
-       /* $("#discount_Amount").val(sum_totActPrice);
-        localStorage.setItem("search_actPrice",sum_totActPrice);
-        $("#sum_totPrice").val(sum_totPrice);*/
+        /* $("#discount_Amount").val(sum_totActPrice);
+         localStorage.setItem("search_actPrice",sum_totActPrice);
+         $("#sum_totPrice").val(sum_totPrice);*/
     }
     function updatePagerIcons(table) {
         //ui-icon ui-icon-circlesmall-minus
@@ -359,11 +375,14 @@
 
 
 
-    //是否能出入库
     function checkCode() {
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
         });
+        if (skuInfoIn.length==0){
+            progressDialog.modal('hide');
+            return;
+        }
         //校验新扫到的唯一码
         if (oldSkuInfo.length!=0){
             $.each(skuInfo,function (index,value) {
@@ -387,8 +406,8 @@
         });
         var ajax_url;
         var ajax_data;
-        ajax_url = basePath + "/stock/warehStock/checkUniqueCodes.do";
-        ajax_data = {uniqueCodes: JSON.stringify(codeArray), warehouseId: wareHouse, type: taskType, billNo: billNo, isAdd: true,rfidType:"code"};
+        ajax_url = basePath + "/stock/warehStock/findInventoryInfo.do";
+        ajax_data = {uniqueCodes: JSON.stringify(codeArray),rfidType:"code"};
         $.ajax({
             async: false,
             url: ajax_url,
@@ -545,8 +564,8 @@
     }
 
     function onClear() {
-        oldSkuInfo=[];
         skuInfo=[];
+        oldSkuInfo=[];
         $("#batchDetailgrid").clearGridData();
         var msg={
             "cmd":"10005"
@@ -569,5 +588,28 @@
         batchNoCodeDetail(rowId,"batchDetailgrid");
     }
 
-
+    function initSelectOrig() {
+        var searchOrigIdUrl="";
+        if (userId == "admin") {
+            searchOrigIdUrl=basePath + "/unit/list.do?filter_EQI_type=9";
+        } else {
+            searchOrigIdUrl=basePath + "/unit/list.do?filter_EQI_type=9&filter_EQS_ownerId=" + ownerId;
+        }
+        $.ajax({
+            url: searchOrigIdUrl,
+            cache: false,
+            async: false,
+            type: "POST",
+            success: function (data, textStatus) {
+                $("#search_origId").empty();
+                $("#search_origId").append("<option value=''>--请选择--</option>");
+                var json = data;
+                for (var i = 0; i < json.length; i++) {
+                    $("#search_origId").append("<option value='" + json[i].id + "'>" + "[" + json[i].code + "]" + json[i].name + "</option>");
+                }
+                $("#search_origId").selectpicker('val',defaultWarehId);
+                $(".selectpicker").selectpicker('refresh');
+            }
+        });
+    }
 </script>

@@ -76,6 +76,7 @@
      扫描
      */
     function onScanningOut() {
+        $("#scanCodeQty").text(0);
         var msg={
             "cmd":"10002"
         };
@@ -303,6 +304,7 @@
         sendMessgeOutToServer(msg);
         $("#outCodeQty").text(0);
         skuInfo=[];
+        oldSkuInfo=[];
     }
 
     function sendMessgeOutToServer(message) {
