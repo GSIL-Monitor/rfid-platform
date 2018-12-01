@@ -529,7 +529,6 @@
                     text: dtlRow.sku+"要出库的数量超过本单数量"+(parseInt(dtlRow.outQty)+parseInt(dtlRow.thisQty)-parseInt(dtlRow.qty))+"件",
                     class_name: 'gritter-success  gritter-light'
                 });
-
             }else {
                 dtlArray.push(dtlRow);
                 //填充epcArray的数组
@@ -563,7 +562,7 @@
         var outurl;
         switch(prifex){
             case "PR":
-                outurl = "/logistics/purchaseReturn/convertOut.do";
+                outurl = basePath+"/logistics/purchaseReturn/convertOut.do";
                 break;
             case "SO":
                 outurl = basePath + "/logistics/saleOrderBill/convertOut.do";

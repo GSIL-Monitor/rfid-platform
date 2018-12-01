@@ -2741,7 +2741,6 @@ function batchWareHouseIn() {
         });
         lodeBillInformationIngrid();
         fullWebInSocket();
-        initUniqeCodeGridColumn(ct);
         $("#inCodeQty").text(0);
     } else {
         bootbox.alert("入库仓库不能为空！");
