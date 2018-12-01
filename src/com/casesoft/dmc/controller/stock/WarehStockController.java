@@ -1324,4 +1324,12 @@ public class WarehStockController extends BaseController {
         return new MessageBox(true, "ok", resultMap);
     }
 
+    /*
+     * @Author Alvin.Ma
+     * @Date  2018/11/30 17:28
+     * @Param
+     * @return
+     * @Description 盘点接口
+    **/
+
 }

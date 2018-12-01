@@ -270,6 +270,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
                 return returnFailInfo("不是录入状态，无法撤销");
             }
         }catch (Exception e) {
+            e.printStackTrace();
             return returnFailInfo("撤销失败");
         }
     }
@@ -376,7 +377,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
                 List<BillRecord> billRecordList = saleOrderBill.getBillRecordList();
                 User user = this.getCurrentUser();
                 Map<String, Object> map = this.saleOrderBillService.changeTr(saleOrderBill, saleOrderBillDtlList, billRecordList, list, user);
-                return new MessageBox(true, "保存成功,"+(String) map.get("message"), saleOrderBill);
+                return new MessageBox(true, "保存成功,"+ map.get("message"), saleOrderBill);
             }else{
                 this.saleOrderBillService.save(saleOrderBill, saleOrderBillDtlList,list);
                 return new MessageBox(true, "保存成功", saleOrderBill);
@@ -586,7 +587,7 @@ public class SaleOrderBillController extends BaseController implements ILogistic
                 }
             }catch (Exception e){
                 e.printStackTrace();
-                this.logger.error(e.getMessage());
+                logger.error(e.getMessage());
                 return new MessageBox(true, "出库成功");
             }
             return new MessageBox(true, "出库成功");

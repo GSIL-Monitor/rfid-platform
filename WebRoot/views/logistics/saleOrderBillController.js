@@ -1479,25 +1479,27 @@ function loadingButtonDivTable(billStatus) {
     var disableButtonIds = "";
     switch (billStatus){
         case "-1" :
-            disableButtonIds = ["SODtl_search","SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseRe","SODtl_wareHouseCh","SODtl_findRetrunno"];
+            disableButtonIds = ["SODtl_search","SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseRe","SODtl_wareHouseCh"
+                                ,"SODtl_findRetrunno","SODtl_batchUniqCode","SODtl_batchWareHouseOut","SODtl_batchWareHouseIn"];
             break;
         case "0" :
             disableButtonIds = ["SODtl_wareHouseIn"];
             break;
         case "1":
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_batchUniqCode"];
             break;
         case "2" :
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_wareHouseOut","SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_batchUniqCode"
+                                ,"SODtl_batchWareHouseOut","SODtl_batchWareHouseIn"];
             break;
         case "3":
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_addUniqCode","SODtl_batchUniqCode"];
             break;
         case "6":
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_wareHouseIn","SODtl_wareHouseRe"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_batchWareHouseIn"];
             break;
         case "7":
-            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_wareHouseIn","SODtl_wareHouseRe"];
+            disableButtonIds = ["SODtl_save","SODtl_cancel","SODtl_wareHouseIn","SODtl_wareHouseRe","SODtl_batchWareHouseIn"];
             break;
         default:
             disableButtonIds = [];
@@ -3295,7 +3297,7 @@ function batchWareHouseOut() {
         $("#outCodeQty").text(0);
     }else {
         bootbox.alert("请选择出库仓库");
-        return;
+
     }
 }
 /**

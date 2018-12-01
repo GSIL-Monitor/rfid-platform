@@ -2602,7 +2602,8 @@ function loadingButtonDivTable(billStatus) {
     var disableButtonIds = "";
     switch (billStatus){
         case "-1" :
-            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn"];
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn","SRDtl_batchUniqCode"
+                                ,"SRDtl_batchWareHouseIn","SRDtl_batchWareHouseOut"];
             break;
         case "0" :
             disableButtonIds = ["SRDtl_check"];
@@ -2611,7 +2612,8 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = ["SRDtl_cancel","SRDtl_save"];
             break;
         case "2" :
-            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn","SRDtl_doPrint","SRDtl_doPrintA4","SRDtl_check"];
+            disableButtonIds = ["SRDtl_cancel","SRDtl_save","SRDtl_wareHouseOut","SRDtl_wareHouseIn_noOutHouse","SRDtl_wareHouseIn","SRDtl_doPrint","SRDtl_doPrintA4","SRDtl_check",
+                               ,"SRDtl_batchUniqCode","SRDtl_batchWareHouseIn","SRDtl_batchWareHouseOut"];
             break;
         case "3":
             disableButtonIds = ["SRDtl_cancel","SRDtl_save"];
@@ -2719,7 +2721,7 @@ function batchWareHouseOut() {
         $("#outCodeQty").text(0);
     }else {
         bootbox.alert("出库仓库不能为空！");
-        return;
+
     }
 
 }
@@ -2743,7 +2745,7 @@ function batchWareHouseIn() {
         $("#inCodeQty").text(0);
     } else {
         bootbox.alert("入库仓库不能为空！");
-        return;
+
     }
 }
 

@@ -589,6 +589,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
             this.saleOrderReturnBillService.cancelUpdate(saleOrderReturnBill);
             return returnSuccessInfo("取消成功");
         } catch (Exception e) {
+            e.printStackTrace();
             return returnFailInfo("取消失败");
         }
     }
@@ -680,7 +681,7 @@ public class SaleOrderReturnBillController extends BaseController implements ILo
                         templateMsgService.save(templateMsg);
                     }
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage());
+                    logger.error(e.getMessage());
                     return new MessageBox(true, "入库成功");
                 }
                 return new MessageBox(true, "入库成功");
