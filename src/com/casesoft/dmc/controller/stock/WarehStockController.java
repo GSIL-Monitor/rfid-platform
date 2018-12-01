@@ -1174,21 +1174,24 @@ public class WarehStockController extends BaseController {
         for (EpcStock e : epcStokcList) {
             epcStokMap.put(e.getCode(), e);
         }
-        List<Epc> tagEpcList = this.epcStockService.findTagEpcByCodes(CommonUtil.getSqlStrByList(uniqueCodeList, Epc.class, "code"));
-        for (Epc epc : tagEpcList) {
-            if (!epcStokMap.containsKey(epc.getCode())) {
-                //说明该唯一码没有出入库记录将epc 转为EpcStock 未入库
-                EpcStock epcStock = new EpcStock();
-                epcStock.setId(epc.getCode());
-                epcStock.setCode(epc.getCode());
-                epcStock.setSku(epc.getSku());
-                epcStock.setStyleId(epc.getStyleId());
-                epcStock.setColorId(epc.getColorId());
-                epcStock.setSizeId(epc.getSizeId());
-                epcStock.setInStock(0);
-                epcStock.setWarehouseId(warehouseId);
-                StockUtil.convertEpcStock(epcStock);
-                epcStokMap.put(epcStock.getCode(), epcStock);
+        if(uniqueCodeList.size() > epcStokcList.size()) {
+            //证明扫到标签含有标签初始化的标签，该标签没有进行出入库 默认zhi wei
+            List<Epc> tagEpcList = this.epcStockService.findTagEpcByCodes(CommonUtil.getSqlStrByList(uniqueCodeList, Epc.class, "code"));
+            for (Epc epc : tagEpcList) {
+                if (!epcStokMap.containsKey(epc.getCode())) {
+                    //说明该唯一码没有出入库记录将epc 转为EpcStock 未入库
+                    EpcStock epcStock = new EpcStock();
+                    epcStock.setId(epc.getCode());
+                    epcStock.setCode(epc.getCode());
+                    epcStock.setSku(epc.getSku());
+                    epcStock.setStyleId(epc.getStyleId());
+                    epcStock.setColorId(epc.getColorId());
+                    epcStock.setSizeId(epc.getSizeId());
+                    epcStock.setInStock(0);
+                    epcStock.setWarehouseId(warehouseId);
+                    StockUtil.convertEpcStock(epcStock);
+                    epcStokMap.put(epcStock.getCode(), epcStock);
+                }
             }
         }
         for (String code : epcStokMap.keySet()) {
@@ -1313,8 +1316,6 @@ public class WarehStockController extends BaseController {
 
                 }
 
-            } else if (type == Constant.TaskType.Inventory) {
-                //盘点待开发
             }
         }
         Map<String, List<EpcStock>> resultMap = new HashMap<>();
@@ -1326,10 +1327,79 @@ public class WarehStockController extends BaseController {
 
     /*
      * @Author Alvin.Ma
-     * @Date  2018/11/30 17:28
-     * @Param
-     * @return
-     * @Description 盘点接口
+     * @Date  2018/12/1 10:16
+     * @Param uniqueCodes 上传唯一码数据 "['code1','code2']" json 数组 必填
+     * @Param warehouseId 仓库编号  非必填 需要按仓库盘点传仓库id 会将不是本仓库唯一码放入异常唯一码
+     * @Param rfidType 唯一码类型 'code'或者'epc' 必填
+     * @return  返回messagebox reslut为 Map<String,List<EpcStock>>  "rightEpc":校验正确唯一码List<EpcStock>，"errorEpc":校验未通过唯一码List<EpcStock>
+     * @Description  返回盘点扫描到唯一码信息
     **/
+    @RequestMapping("/findInventoryInfo")
+    @ResponseBody
+    public MessageBox findInventoryInfo(String uniqueCodes, String warehouseId,String rfidType){
+        List<EpcStock> rightEpcList = new ArrayList<>();
+        List<EpcStock> errorEpcList = new ArrayList<>();
+        List<String> uniqueCodeList = new ArrayList<>();
+        Map<String, EpcStock> epcStokMap = new HashMap<>();//需要校验的唯一码
+        if (rfidType.equals(Constant.RfidType.UniqueCode)) {
+            uniqueCodeList = JSON.parseArray(uniqueCodes, String.class);
+        } else {
+            for (String epc : JSON.parseArray(uniqueCodes, String.class)) {
+                //将epc信息转换为唯一码
+                uniqueCodeList.add(EpcSecretUtil.decodeEpc(epc).substring(0, 13));
+            }
+        }
+        List<EpcStock> epcStokcList = this.epcStockService.findEpcByCodes(CommonUtil.getSqlStrByList(uniqueCodeList, EpcStock.class, "code"));
+        for (EpcStock e : epcStokcList) {
+            epcStokMap.put(e.getCode(), e);
+        }
+        if(uniqueCodeList.size() > epcStokcList.size()) {
+            //证明扫到标签含有标签初始化的标签，该标签没有进行出入库
+            List<Epc> tagEpcList = this.epcStockService.findTagEpcByCodes(CommonUtil.getSqlStrByList(uniqueCodeList, Epc.class, "code"));
+            for (Epc epc : tagEpcList) {
+                if (!epcStokMap.containsKey(epc.getCode())) {
+                    //说明该唯一码没有出入库记录将epc 转为EpcStock 未入库
+                    EpcStock epcStock = new EpcStock();
+                    epcStock.setId(epc.getCode());
+                    epcStock.setCode(epc.getCode());
+                    epcStock.setSku(epc.getSku());
+                    epcStock.setStyleId(epc.getStyleId());
+                    epcStock.setColorId(epc.getColorId());
+                    epcStock.setSizeId(epc.getSizeId());
+                    epcStock.setInStock(0);
+                    epcStock.setWarehouseId(warehouseId);
+                    StockUtil.convertEpcStock(epcStock);
+                    epcStokMap.put(epcStock.getCode(), epcStock);
+                }
+            }
+        }
+        for (String code : epcStokMap.keySet()) {
+            EpcStock epcStock = epcStokMap.get(code);
+            StockUtil.convertEpcStock(epcStock);
+            if(CommonUtil.isNotBlank(warehouseId)){
+                if(epcStock.getWarehouseId().equals(warehouseId)){
+                    rightEpcList.add(epcStock);
+                }else{
+                    if(CommonUtil.isNotBlank(epcStock.getWarehouse2Id())){
+                        if(epcStock.getWarehouse2Id().equals(warehouseId)){
+                            rightEpcList.add(epcStock);
+                        }else{
+                            epcStokcList.add(epcStock);
+                        }
+                    }else{
+                        epcStokcList.add(epcStock);
+                    }
+                }
+            }else{
+                rightEpcList.add(epcStock);
+            }
+        }
+        Map<String, List<EpcStock>> resultMap = new HashMap<>();
+        resultMap.put("rightEpc", rightEpcList);
+        resultMap.put("errorEpc", errorEpcList);
+        return new MessageBox(true, "ok", resultMap);
+    }
+
+
 
 }
