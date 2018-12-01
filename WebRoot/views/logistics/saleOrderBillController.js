@@ -2270,6 +2270,7 @@ function wareHouseOut() {
                     });
                     cs.closeProgressBar();
                     $("#SODtl_wareHouseOut").removeAttr("disabled");
+                    edit_wareHouseOut();
                     return;
                 }
                 var dtlArray = [];
@@ -2323,6 +2324,7 @@ function wareHouseOut() {
                                         text: "已出库数量为：" + all_outQty + "；剩余数量为：" + diff_qty + "，其余商品请扫码出库",
                                         class_name: 'gritter-success  gritter-light'
                                     });
+                                    edit_wareHouseOut();
                                 } else if (sum_qty === all_outQty) {
                                     $.gritter.add({
                                         text: "共" + all_outQty + "件商品，已全部出库",
@@ -2360,6 +2362,7 @@ function wareHouseOut() {
     }
 }
 
+
 function outStockCheck() {
     var sum_qty = parseInt($("#addDetailgrid").footerData('get').qty);
     var sum_outQty = parseInt($("#addDetailgrid").footerData('get').outQty);
@@ -2379,7 +2382,7 @@ function outStockCheck() {
 /**
  * 扫码出库
  * */
-/*function edit_wareHouseOut() {
+function edit_wareHouseOut() {
     skuQty = {};
     $.each($("#addDetailgrid").getDataIDs(), function (index, value) {
         var rowData = $("#addDetailgrid").getRowData(value);
@@ -2398,7 +2401,7 @@ function outStockCheck() {
     initUniqeCodeGridColumn(ct);
     $("#codeQty").text(0);
     allCodes = "";
-}*/
+}
 
 /*
  * 扫码出库确认
