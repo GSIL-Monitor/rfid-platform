@@ -10,6 +10,7 @@ import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
+import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.model.cfg.PropertyKey;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
@@ -48,7 +49,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     @Autowired
     private SaleOrderBillDao saleOrderBillDao;
     @Autowired
-    private AbnormalCodeMessageDao  abnormalCodeMessageDao;
+    private AbnormalCodeMessageDao abnormalCodeMessageDao;
     @Autowired
     private SaleOrderReturnBillDao saleOrderReturnBillDao;
     @Autowired
@@ -71,10 +72,13 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     @Autowired
     private payDetailService payDetailService;
 
+    @Autowired
+    private payDetailDao payDetailDao;
+
     private Logger logger = LoggerFactory.getLogger(SaleOrderBill.class);
 
-    public Double findSumActPrice(String destUnitId){
-        return this.saleOrderBillDao.findUnique("select sum(actPrice) from SaleOrderBill where status = 2 and destUnitId =?",destUnitId);
+    public Double findSumActPrice(String destUnitId) {
+        return this.saleOrderBillDao.findUnique("select sum(actPrice) from SaleOrderBill where status = 2 and destUnitId =?", destUnitId);
     }
 
     @Override
@@ -122,13 +126,13 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     }
 
     //更新支付方式
-    public void update(String payType,String billNo){
-        this.saleOrderBillDao.batchExecute("update SaleOrderBill set payType = '" +payType+"' where billNo = ?",billNo);
+    public void update(String payType, String billNo) {
+        this.saleOrderBillDao.batchExecute("update SaleOrderBill set payType = '" + payType + "' where billNo = ?", billNo);
     }
 
     //更新关联单号
-    public void updateNo(String billNo,String rbillNo){
-        this.saleOrderBillDao.batchExecute("update SaleOrderBill set srcBillNo = '"+rbillNo+"' where billNo = ?",billNo);
+    public void updateNo(String billNo, String rbillNo) {
+        this.saleOrderBillDao.batchExecute("update SaleOrderBill set srcBillNo = '" + rbillNo + "' where billNo = ?", billNo);
     }
 
     @Override
@@ -155,16 +159,16 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     /*
      *list:单据保存是不能出库异常的唯一码
      */
-    public void save(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList,List<AbnormalCodeMessage> list) {
+    public void save(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, List<AbnormalCodeMessage> list) {
         this.saleOrderBillDao.batchExecute("delete from SaleOrderBillDtl where billNo=?", saleOrderBill.getBillNo());
         this.saleOrderBillDao.batchExecute("delete from BillRecord where billNo=?", saleOrderBill.getBillNo());
         //客户月结表数据Id
-        String curYearMonth = CommonUtil.getDateString(new Date(),"yyyy-MM");
+        String curYearMonth = CommonUtil.getDateString(new Date(), "yyyy-MM");
         //数据库中查询是否已经存在该订单
 
         Double diffPrice = saleOrderBill.getActPrice() - saleOrderBill.getPayPrice();
         Double preDiffPrice = this.saleOrderBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
-        if(CommonUtil.isBlank(preDiffPrice)){
+        if (CommonUtil.isBlank(preDiffPrice)) {
             preDiffPrice = 0D;
         }
         String destUnitId = saleOrderBill.getDestUnitId();
@@ -173,14 +177,14 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         Boolean isUpdateMonthAccount = !curYearMonth.equals(CommonUtil.getDateString(saleOrderBill.getBillDate(), "yyyy-MM"));
 
         //modify by yushen 更新客户月结表数据
-        if(isUpdateMonthAccount){
+        if (isUpdateMonthAccount) {
             this.monthAccountStatementService.updateMonthAccountData(saleOrderBill.getBillDate(), preDestUnitId, preDiffPrice, false);
 
             this.monthAccountStatementService.updateMonthAccountData(saleOrderBill.getBillDate(), destUnitId, diffPrice, true);
         }
 
         //add by yushen 改变客户或者客户余额变动 保存所有变动记录，更新客户欠款
-        if(diffPrice.doubleValue() != preDiffPrice.doubleValue() || !destUnitId.equals(preDestUnitId)){
+        if (diffPrice.doubleValue() != preDiffPrice.doubleValue() || !destUnitId.equals(preDestUnitId)) {
             //modify by yushen更新之前的客户欠款和积分
             if (CommonUtil.isNotBlank(preDestUnitId)) {
                 Unit preUnit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", preDestUnitId);
@@ -209,13 +213,13 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
             this.saleOrderBillDao.doBatchInsert(saleOrderBill.getBillRecordList());
         }
-        if(CommonUtil.isNotBlank(list)&&list.size()>0){
+        if (CommonUtil.isNotBlank(list) && list.size() > 0) {
             this.saleOrderBillDao.doBatchInsert(list);
         }
 
         //保存收银表
         PayDetail payDetail = new PayDetail();
-        payDetail.setId(saleOrderBill.getBillNo()+saleOrderBill.getPayType());
+        payDetail.setId(saleOrderBill.getBillNo() + saleOrderBill.getPayType());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));
         payDetail.setCustomerId(saleOrderBill.getDestUnitId());
@@ -233,12 +237,12 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     /**
      * 客户端加盟商收货
-     * */
+     */
     public void saveBusinessIn(SaleOrderBill saleOrderInBill, List<SaleOrderBillDtl> saleOrderInBillDtlList, Business bus) {
         this.saleOrderBillDao.batchExecute("delete from SaleOrderBillDtl where billNo=?", saleOrderInBill.getBillNo());
         this.saleOrderBillDao.saveOrUpdate(saleOrderInBill);
         this.saleOrderBillDao.doBatchInsert(saleOrderInBillDtlList);
-        if(bus.getType().equals(Constant.TaskType.Inbound)) {
+        if (bus.getType().equals(Constant.TaskType.Inbound)) {
             List<Record> recordList = bus.getRecordList();
             ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
             for (int i = 0; i < recordList.size(); i++) {
@@ -250,9 +254,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                     newcodeFirstTime.setWarehouseId(saleOrderInBill.getDestId());
                     newcodeFirstTime.setFirstTime(new Date());
                     Unit unitByCode = CacheManager.getUnitByCode(saleOrderInBill.getDestUnitId());
-                    if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
+                    if (CommonUtil.isNotBlank(unitByCode) && CommonUtil.isNotBlank(unitByCode.getGroupId()) && unitByCode.getGroupId().equals("JMS")) {
                         newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
-                    }else{
+                    } else {
                         Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
                         newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
                     }
@@ -267,22 +271,23 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     /**
      * 微信小程序保存
+     *
      * @param saleOrderBill
      * @param saleOrderBillDtlList
      */
-    public void saveweChat(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) throws Exception{
+    public void saveweChat(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList) throws Exception {
         //判断是否有异常唯一码
         //拼接code字符串
-        String code="";
-        for(SaleOrderBillDtl saleOrderBillDtl: saleOrderBillDtlList){
-            if(CommonUtil.isBlank(code)){
-                code+=saleOrderBillDtl.getUniqueCodes();
-            }else{
-                code+=","+saleOrderBillDtl.getUniqueCodes();
+        String code = "";
+        for (SaleOrderBillDtl saleOrderBillDtl : saleOrderBillDtlList) {
+            if (CommonUtil.isBlank(code)) {
+                code += saleOrderBillDtl.getUniqueCodes();
+            } else {
+                code += "," + saleOrderBillDtl.getUniqueCodes();
             }
         }
-        List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderBillDtlList,0,code);
-        this.save(saleOrderBill, saleOrderBillDtlList,list);
+        List<AbnormalCodeMessage> list = BillConvertUtil.fullAbnormalCodeMessage(saleOrderBillDtlList, 0, code);
+        this.save(saleOrderBill, saleOrderBillDtlList, list);
 
         //出库
         List<Style> styleList = new ArrayList<>();
@@ -334,7 +339,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
         Double diffPrice = saleOrderBill.getActPrice() - saleOrderBill.getPayPrice();
         Double preDiffPrice = this.saleOrderBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderBill as s where s.billNo = ?", saleOrderBill.getBillNo());
-        if(CommonUtil.isBlank(preDiffPrice)){
+        if (CommonUtil.isBlank(preDiffPrice)) {
             preDiffPrice = 0D;
         }
         String destUnitId = saleOrderBill.getDestUnitId();
@@ -342,7 +347,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
 
         //add by yushen 改变客户或者客户余额变动 保存所有变动记录，更新客户欠款
-        if(diffPrice.doubleValue() != preDiffPrice.doubleValue() || !destUnitId.equals(preDestUnitId)){
+        if (diffPrice.doubleValue() != preDiffPrice.doubleValue() || !destUnitId.equals(preDestUnitId)) {
 
             Unit preUnit = this.saleOrderBillDao.findUnique("from Unit where id = ? and status=1", preDestUnitId);
             Customer preCustomer = this.saleOrderBillDao.findUnique("from Customer where id = ? and status=1", preDestUnitId);
@@ -429,15 +434,15 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         this.guestValueChangeService.saveValueBackoff(saleOrderBill.getId(), preDestUnitId, this.guestService.getOwingValue(preUnit, preCustomer), Constant.ChangeRecordStatus.SaleOrderCancel);
         //更新客户欠款金额和积分
         this.guestService.resetPreGust(saleOrderBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
-        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("srcBillNo",saleOrderBill.getId());
-        if (CommonUtil.isNotBlank(transferOrderBill)){
+        TransferOrderBill transferOrderBill = this.transferOrderBillService.get("srcBillNo", saleOrderBill.getId());
+        if (CommonUtil.isNotBlank(transferOrderBill)) {
             transferOrderBill.setStatus(BillConstant.BillStatus.Cancel);
             this.transferOrderBillService.update(transferOrderBill);
         }
         this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
-        PayDetail payDetail = payDetailService.get("billNo",saleOrderBill.getBillNo());
-        payDetail.setStatus("0");
-        payDetailService.save(payDetail);
+        /*PayDetail payDetail = payDetailService.get("billNo", saleOrderBill.getBillNo());*/
+        this.payDetailDao.batchExecute("update PayDetail set status = 0 where billNo=?",saleOrderBill.getBillNo());
+
     }
 
     public Epc findProductBycode(String code) {
@@ -451,7 +456,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
     public MessageBox saveBusiness(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business) throws Exception {
         MessageBox messageBox = this.taskService.checkEpcStock(business);
         boolean success = messageBox.getSuccess();
-        if(success){
+        if (success) {
             this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
             this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
             if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
@@ -459,7 +464,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             }
             this.taskService.webSave(business);
             //记录第一次入库时间
-            if(business.getType().equals(Constant.TaskType.Inbound)) {
+            if (business.getType().equals(Constant.TaskType.Inbound)) {
                 List<Record> recordList = business.getRecordList();
                 ArrayList<CodeFirstTime> list = new ArrayList<CodeFirstTime>();
                 for (int i = 0; i < recordList.size(); i++) {
@@ -471,9 +476,9 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                         newcodeFirstTime.setWarehouseId(saleOrderBill.getDestId());
                         newcodeFirstTime.setFirstTime(new Date());
                         Unit unitByCode = CacheManager.getUnitByCode(saleOrderBill.getDestUnitId());
-                        if(CommonUtil.isNotBlank(unitByCode)&&CommonUtil.isNotBlank(unitByCode.getGroupId())&&unitByCode.getGroupId().equals("JMS")){
+                        if (CommonUtil.isNotBlank(unitByCode) && CommonUtil.isNotBlank(unitByCode.getGroupId()) && unitByCode.getGroupId().equals("JMS")) {
                             newcodeFirstTime.setWarehousePrice(recordList.get(i).getPrice());
-                        }else{
+                        } else {
                             Style styleById = CacheManager.getStyleById(recordList.get(i).getStyleId());
                             newcodeFirstTime.setWarehousePrice(styleById.getPreCast());
                         }
@@ -485,18 +490,17 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                 }
             }
             return messageBox;
-        }else{
+        } else {
             return messageBox;
         }
 
 
-
     }
 
-    public  MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList,List<AbnormalCodeMessage> list) throws Exception {
+    public MessageBox saveBusinessout(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> saleOrderBillDtlList, Business business, List<Epc> epcList, List<AbnormalCodeMessage> list) throws Exception {
 
         MessageBox messageBox = this.taskService.checkEpcStock(business);
-        if(messageBox.getSuccess()){
+        if (messageBox.getSuccess()) {
             this.saleOrderBillDao.saveOrUpdate(saleOrderBill);
             this.saleOrderBillDao.doBatchInsert(saleOrderBillDtlList);
             if (CommonUtil.isNotBlank(saleOrderBill.getBillRecordList())) {
@@ -538,12 +542,12 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                     }
                 }
             }
-            if(CommonUtil.isNotBlank(list)&&list.size()>0){
+            if (CommonUtil.isNotBlank(list) && list.size() > 0) {
                 this.saleOrderBillDao.doBatchInsert(list);
             }
-            return  messageBox;
-        }else{
-            return  messageBox;
+            return messageBox;
+        } else {
+            return messageBox;
         }
 
     }
@@ -583,7 +587,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         return this.saleOrderBillDao.findUnique(hql);
     }
 
-    public Object findsaleOrderOrsaleRetrunMessage(String hql){
+    public Object findsaleOrderOrsaleRetrunMessage(String hql) {
         Object unique = this.saleOrderBillDao.findUnique(hql);
         return unique;
     }
@@ -595,14 +599,13 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                 "FROM SaleorderCountView s " +
                 "WHERE s.styleid=? " +
                 "AND s.status <> -1  " +
-                "AND s.groupid=? "+
-                "AND s.saletype='销售订单' "+
+                "AND s.groupid=? " +
+                "AND s.saletype='销售订单' " +
                 "AND s.billDate >= To_date(?,'yyyy-mm-dd HH24:mi:ss') AND s.billDate <= To_date(?,'yyyy-mm-dd HH24:mi:ss') " +
-                "GROUP BY s.origname "+
+                "GROUP BY s.origname " +
                 "ORDER BY s.origname asc";
-        return this.saleOrderBillDao.find(hql, new Object[]{styleId,"DG", sbillDate, ebillDate});
+        return this.saleOrderBillDao.find(hql, new Object[]{styleId, "DG", sbillDate, ebillDate});
     }
-
 
 
     @Autowired
@@ -615,7 +618,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
         exchangeBillRecord.setBillNo(billNo);
         exchangeBillRecord.setCode(exchangeCode);
         exchangeBillRecord.setSku(exchangeSku);
-        this.saleOrderBillDao.batchExecute("update SaleOrderBill set billType=? where billNo=?","E",billNo);
+        this.saleOrderBillDao.batchExecute("update SaleOrderBill set billType=? where billNo=?", "E", billNo);
         this.saleOrderBillDao.saveOrUpdateX(exchangeBillRecord);
         this.saleOrderBillDao.batchExecute("delete from BillRecord where billNo=? and code=?", billNo, origCode);
 
@@ -634,38 +637,40 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
 
     /**
      * 判断单据是否是商城
-     *@param billNo  单据编号
-     *@param codes 唯一码
+     *
+     * @param billNo 单据编号
+     * @param codes  唯一码
      */
-    public void ShopBilldeal(String billNo,String codes){
+    public void ShopBilldeal(String billNo, String codes) {
         //销售单微商城出库逻辑
         SaleOrderBill saleOrderBill = this.saleOrderBillDao.load(billNo);
-        if(saleOrderBill.getStatus().equals(BillConstant.BillStatus.shopEnter)){
+        if (saleOrderBill.getStatus().equals(BillConstant.BillStatus.shopEnter)) {
             String hql = "update EpcStock t set t.inStock=1 where t.code in (?)";
             this.saleOrderBillDao.batchExecute(hql, codes);
         }
 
     }
 
-    public long findSbByDuId (String destUnitId){
-        return this.saleOrderBillDao.findUnique("select count(*) from SaleOrderBill where destUnitId=?",destUnitId);
+    public long findSbByDuId(String destUnitId) {
+        return this.saleOrderBillDao.findUnique("select count(*) from SaleOrderBill where destUnitId=?", destUnitId);
     }
 
     public Integer findBillStatus(String billNo) {
-       return this.saleOrderBillDao.findUnique("select status from SaleOrderBill where id=?",billNo);
+        return this.saleOrderBillDao.findUnique("select status from SaleOrderBill where id=?", billNo);
     }
 
-    public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo){
-        return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?",new Object[]{billNo});
+    public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo) {
+        return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?", new Object[]{billNo});
     }
+
     /*add by czf
         *销售单转成调拨申请单
         */
-    public Map<String,Object> changeTr(SaleOrderBill saleOrderBill,List<SaleOrderBillDtl> billDtlByBillNo,List<BillRecord> billRecordList, List<AbnormalCodeMessage> abnormalCodeMessageByBillNo,User user){
-        Map<String,Object> map =new HashMap<String,Object>();
+    public Map<String, Object> changeTr(SaleOrderBill saleOrderBill, List<SaleOrderBillDtl> billDtlByBillNo, List<BillRecord> billRecordList, List<AbnormalCodeMessage> abnormalCodeMessageByBillNo, User user) {
+        Map<String, Object> map = new HashMap<String, Object>();
         Map<String, String> codeMap = new HashMap<>();
         Map<String, String> abnormalCodeMap = new HashMap<>();
-        boolean issave=false;//是否能保存
+        boolean issave = false;//是否能保存
         try {
             //1.判断单据状态是否是录入状态
 
@@ -673,7 +678,7 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
             for (BillRecord r : billRecordList) {
                 if (codeMap.containsKey(r.getSku())) {
                     String code = codeMap.get(r.getSku());
-                    if(CommonUtil.isNotBlank(code)) {
+                    if (CommonUtil.isNotBlank(code)) {
                         code += "," + r.getCode();
                     }
                     codeMap.put(r.getSku(), code);
@@ -690,40 +695,40 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                     abnormalCodeMap.put(a.getSku(), a.getCode());
                 }
             }
-            if(saleOrderBill.getStatus().equals(BillConstant.BillStatus.Enter)){
+            if (saleOrderBill.getStatus().equals(BillConstant.BillStatus.Enter)) {
                 //2.根据详情单sku来看
-                for(SaleOrderBillDtl saleOrderBillDtl:billDtlByBillNo){
+                for (SaleOrderBillDtl saleOrderBillDtl : billDtlByBillNo) {
                     //查询对应的sku是否有code和异常的code
-                    String sku=saleOrderBillDtl.getSku();
+                    String sku = saleOrderBillDtl.getSku();
                     String codeMaps = codeMap.get(sku);
                     String abnormalCodeMaps = abnormalCodeMap.get(sku);
-                    Integer codeMapslength=0;
-                    Integer abnormalCodeMapslength=0;
-                    Integer lastchangeQty=0;
-                    if(CommonUtil.isNotBlank(saleOrderBillDtl.getChangeTRqty())){
-                        lastchangeQty=saleOrderBillDtl.getChangeTRqty();
+                    Integer codeMapslength = 0;
+                    Integer abnormalCodeMapslength = 0;
+                    Integer lastchangeQty = 0;
+                    if (CommonUtil.isNotBlank(saleOrderBillDtl.getChangeTRqty())) {
+                        lastchangeQty = saleOrderBillDtl.getChangeTRqty();
                     }
-                    if(CommonUtil.isNotBlank(codeMaps)){
-                        codeMapslength=Integer.parseInt(""+codeMaps.split(",").length);
+                    if (CommonUtil.isNotBlank(codeMaps)) {
+                        codeMapslength = Integer.parseInt("" + codeMaps.split(",").length);
                     }
-                    if(CommonUtil.isNotBlank(abnormalCodeMaps)){
-                        abnormalCodeMapslength=Integer.parseInt(""+abnormalCodeMaps.split(",").length);
+                    if (CommonUtil.isNotBlank(abnormalCodeMaps)) {
+                        abnormalCodeMapslength = Integer.parseInt("" + abnormalCodeMaps.split(",").length);
                     }
 
-                    Integer changeQty=Integer.parseInt(""+saleOrderBillDtl.getQty())-codeMapslength-abnormalCodeMapslength-lastchangeQty;
+                    Integer changeQty = Integer.parseInt("" + saleOrderBillDtl.getQty()) - codeMapslength - abnormalCodeMapslength - lastchangeQty;
                     //SaleOrderBillDtl newSaleOrderBillDtl=new SaleOrderBillDtl();
-                    if(changeQty>0){
-                        saleOrderBillDtl.setChangeTRqty(changeQty+lastchangeQty);
-                        issave=true;
-                    }else{
+                    if (changeQty > 0) {
+                        saleOrderBillDtl.setChangeTRqty(changeQty + lastchangeQty);
+                        issave = true;
+                    } else {
                         saleOrderBillDtl.setChangeTRqty(0);
                     }
                 }
                 //查询总部仓库
-                if(issave){
+                if (issave) {
                     Unit unitById = CacheManager.getUnitById("1");
                     Unit unit = CacheManager.getUnitById(unitById.getDefaultWarehId());
-                    if(CommonUtil.isNotBlank(unit)&&!unit.getId().equals(saleOrderBill.getOrigId())) {
+                    if (CommonUtil.isNotBlank(unit) && !unit.getId().equals(saleOrderBill.getOrigId())) {
                         //转调拨申请单
                         Map<String, Object> saleChangeTrMap = BillConvertUtil.saleChangeTr(billDtlByBillNo, saleOrderBill, unit, user);
                         TransferOrderBill transferOrderBill = (TransferOrderBill) saleChangeTrMap.get("bill");
@@ -758,38 +763,38 @@ public class SaleOrderBillService implements IBaseService<SaleOrderBill, String>
                             this.transferOrderBillDao.doBatchInsert(list);
                             //MessageBox messageBox = this.transferOrderBillService.saveBusiness(transferOrderBill, list, business);
                         }else{*/
-                            this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
-                            this.transferOrderBillDao.doBatchInsert(list);
+                        this.transferOrderBillDao.saveOrUpdate(transferOrderBill);
+                        this.transferOrderBillDao.doBatchInsert(list);
                       /*  }*/
                         this.saleOrderBillDao.doBatchInsert(billDtlByBillNo);
                         map.put("isok", true);
                         map.put("message", "转调拨申请单成功");
 
-                    }else{
-                        map.put("isok",false);
-                        map.put("message","不能用总部仓库转调拨单");
+                    } else {
+                        map.put("isok", false);
+                        map.put("message", "不能用总部仓库转调拨单");
                     }
-                }else{
-                    map.put("isok",false);
-                    map.put("message","所有SKU都有唯一码");
+                } else {
+                    map.put("isok", false);
+                    map.put("message", "所有SKU都有唯一码");
                 }
-            }else{
-                map.put("isok",false);
-                map.put("message","单据不是录入状态");
+            } else {
+                map.put("isok", false);
+                map.put("message", "单据不是录入状态");
             }
             return map;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            map.put("isok",false);
-            map.put("message",e.getMessage());
+            map.put("isok", false);
+            map.put("message", e.getMessage());
             return map;
         }
 
     }
 
-    public void deletenoOutPutCode(String billNo,String noOutPutCode) throws Exception{
+    public void deletenoOutPutCode(String billNo, String noOutPutCode) throws Exception {
         List<AbnormalCodeMessage> list = this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and code in (?) and billNo=?", new Object[]{noOutPutCode, billNo});
-        for(AbnormalCodeMessage abnormalCodeMessage:list){
+        for (AbnormalCodeMessage abnormalCodeMessage : list) {
             abnormalCodeMessage.setStatus(0);
         }
         this.abnormalCodeMessageDao.doBatchInsert(list);

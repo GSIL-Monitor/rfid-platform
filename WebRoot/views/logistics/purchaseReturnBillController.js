@@ -338,7 +338,7 @@ var prefixId;
  **/
 function openSearchVendorDialog(preId) {
     dialogOpenPage = "purchaseReturn";
-    prefixId=preId
+    prefixId=preId;
     $("#modal_vendor_search_table").modal('show').on('shown.bs.modal', function () {
         initVendorSelect_Grid();
     });
@@ -420,7 +420,7 @@ function initButtonGroup(billStatus) {
         "    <i class='ace-icon fa fa-save'></i>" +
         "    <span class='bigger-110'>保存</span>" +
         "</button>" +
-        "<button id='PIDtl_batchUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchUniqCode()'>" +
+        "<button id='PRDtl_batchUniqCode' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchUniqCode()'>" +
         "    <i class='ace-icon fa fa-sign-out'></i>" +
         "    <span class='bigger-110'>批量扫码</span>" +
         "</button>"+
@@ -432,7 +432,7 @@ function initButtonGroup(billStatus) {
         "    <i class='ace-icon fa fa-sign-out'></i>" +
         "    <span class='bigger-110'>出库</span>" +
         "</button>"+
-        "<button id='PIDtl_batchWareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseOut()'>" +
+        "<button id='PRDtl_batchWareHouseOut' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseOut()'>" +
         "    <i class='ace-icon fa fa-sign-out'></i>" +
         "    <span class='bigger-110'>批量出库</span>" +
         "</button>"+
@@ -1135,16 +1135,16 @@ function setSanLian(id) {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -1231,16 +1231,16 @@ function setA4(id) {
                 var printCode=print.printCode;
                 var printCodeArray=printCode.split(",");
                 for(var i=0;i<printCodeArray.length;i++){
-                    debugger
+                    debugger;
                     var plp = printCodeArray[i];
                     var message = cont[plp];
                     $("#edit-dialogSanLian").find("#"+plp).text(message);
                 }
-                var tbodyCont=""
+                var tbodyCont="";
                 for(var a=0;a<contDel.length;a++){
                     var del=contDel[a];
                     var printTableCode=print.printTableCode.split(",");
-                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>"
+                    tbodyCont+=" <tr style='border-top:1px ;padding-top:5px;'>";
                     for(var b=0;b<printTableCode.length;b++){
                         if(printTableCode[b]=="styleId"||printTableCode[b]=="styleName"||printTableCode[b]=="colorId") {
                             tbodyCont += "<td align='middle' colspan='3' style='word-wrap:break-word;border-top:1px ;padding-top:5px;border:1px solid #000;font-size:12px;'>" + del[printTableCode[b]] + "</td>"
@@ -1406,7 +1406,7 @@ function loadingButtonDivTable(billStatus) {
     var disableButtonIds = "";
     switch (billStatus){
         case "-1" :
-            disableButtonIds = ["PIDtl_cancel","PIDtl_save","PIDtl_addUniqCode","PIDtl_wareHouseOut"];
+            disableButtonIds = ["PIDtl_cancel","PIDtl_save","PIDtl_addUniqCode","PIDtl_wareHouseOut","PRDtl_batchUniqCode","PRDtl_batchWareHouseOut"];
             break;
         case "0" :
             disableButtonIds = [];
@@ -1415,10 +1415,10 @@ function loadingButtonDivTable(billStatus) {
             disableButtonIds = [];
             break;
         case "2" :
-            disableButtonIds = ["PIDtl_cancel","PIDtl_save","PIDtl_addUniqCode","PIDtl_wareHouseOut"];
+            disableButtonIds = ["PIDtl_cancel","PIDtl_save","PIDtl_addUniqCode","PIDtl_wareHouseOut","PRDtl_batchUniqCode","PRDtl_batchWareHouseOut"];
             break;
         case "3":
-            disableButtonIds = ["PIDtl_cancel","PIDtl_save","PIDtl_addUniqCode"];
+            disableButtonIds = ["PIDtl_cancel","PIDtl_save","PIDtl_addUniqCode","PRDtl_batchUniqCode"];
             break;
         default:
             disableButtonIds = [];

@@ -8,6 +8,7 @@ import com.casesoft.dmc.core.util.mock.GuidCreator;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.core.vo.MessageBox;
 import com.casesoft.dmc.dao.logistics.*;
+import com.casesoft.dmc.dao.shop.payDetailDao;
 import com.casesoft.dmc.extend.third.request.BaseService;
 import com.casesoft.dmc.model.logistics.*;
 import com.casesoft.dmc.model.product.Style;
@@ -60,9 +61,11 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     private GuestValueChangeService guestValueChangeService;
     @Autowired
     private payDetailService payDetailService;
+    @Autowired
+    private com.casesoft.dmc.dao.shop.payDetailDao payDetailDao;
 
-    public Double findSumActPrice(String origUnitId){
-        return this.saleOrderReturnBillDao.findUnique("select sum(actPrice) from SaleOrderReturnBill where status = 2 and origUnitId =?",origUnitId);
+    public Double findSumActPrice(String origUnitId) {
+        return this.saleOrderReturnBillDao.findUnique("select sum(actPrice) from SaleOrderReturnBill where status = 2 and origUnitId =?", origUnitId);
     }
 
     @Override
@@ -78,8 +81,8 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
     }
 
     //更新关联单号
-    public void updateNo(String billNo,String rbillNo){
-        this.saleOrderReturnBillDao.batchExecute("update SaleOrderReturnBill set srcBillNo = '"+billNo+"' where billNo = ?",rbillNo);
+    public void updateNo(String billNo, String rbillNo) {
+        this.saleOrderReturnBillDao.batchExecute("update SaleOrderReturnBill set srcBillNo = '" + billNo + "' where billNo = ?", rbillNo);
     }
 
 
@@ -95,7 +98,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         String curYearMonth = CommonUtil.getDateString(new Date(), "yyyy-MM");
         Double diffPrice = bill.getActPrice() - bill.getPayPrice();
         Double preDiffPrice = this.saleOrderReturnBillDao.findUnique("select s.actPrice-s.payPrice from SaleOrderReturnBill as s where s.billNo = ?", bill.getBillNo());
-        if(CommonUtil.isBlank(preDiffPrice)){
+        if (CommonUtil.isBlank(preDiffPrice)) {
             preDiffPrice = 0D;
         }
         String origUnitId = bill.getOrigUnitId();
@@ -107,7 +110,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
             this.monthAccountStatementService.updateMonthAccountData(bill.getBillDate(), bill.getOrigUnitId(), diffPrice, true);
         }
         //add by yushen 改变客户或者客户余额变动 保存所有变动记录，更新客户欠款
-        if(diffPrice.doubleValue() != preDiffPrice.doubleValue() || !origUnitId.equals(preOrigUnitId)){
+        if (diffPrice.doubleValue() != preDiffPrice.doubleValue() || !origUnitId.equals(preOrigUnitId)) {
             //modify by yushen更新之前的客户欠款和积分
             if (CommonUtil.isNotBlank(preOrigUnitId)) {
                 Unit preUnit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", preOrigUnitId);
@@ -122,9 +125,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
             Unit unit = this.saleOrderReturnBillDao.findUnique("from Unit where id = ? and status=1", origUnitId);
             Customer customer = this.saleOrderReturnBillDao.findUnique("from Customer where id = ? and status=1", origUnitId);
             Long points = 0L;
-            if(CommonUtil.isNotBlank(bill.getSrcBillNo())){//寄存转退货
+            if (CommonUtil.isNotBlank(bill.getSrcBillNo())) {//寄存转退货
                 points = this.pointsChangeService.cm2ReturnOrderPointsFallback(bill, details, guestService.getVipPoints(unit, customer));
-            }else {//正常退货
+            } else {//正常退货
                 //add by yushen 计算销售单积分并保存积分变动记录
                 points = this.pointsChangeService.savePointsFallback(bill, details, guestService.getVipPoints(unit, customer));
             }
@@ -139,12 +142,12 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         if (CommonUtil.isNotBlank(bill.getBillRecordList())) {
             this.saleOrderReturnBillDao.doBatchInsert(bill.getBillRecordList());
         }
-        if(CommonUtil.isNotBlank(list)&&list.size()>0){
+        if (CommonUtil.isNotBlank(list) && list.size() > 0) {
             this.saleOrderReturnBillDao.doBatchInsert(list);
         }
         //保存收银表
         PayDetail payDetail = new PayDetail();
-        payDetail.setId(bill.getBillNo()+bill.getPayType());
+        payDetail.setId(bill.getBillNo() + bill.getPayType());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         payDetail.setPayDate(df.format(new Date()));
         payDetail.setCustomerId(bill.getDestUnitId());
@@ -173,9 +176,12 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         this.guestService.resetPreGust(saleOrderReturnBill.getBillNo(), diffPrice, pointsBackoff, preUnit, preCustomer);
 
         this.saleOrderReturnBillDao.saveOrUpdate(saleOrderReturnBill);
-        PayDetail payDetail = payDetailService.get("billNo",saleOrderReturnBill.getBillNo());
-        payDetail.setStatus("0");
-        payDetailService.save(payDetail);
+        /*PayDetail payDetail = payDetailService.get("billNo", saleOrderReturnBill.getBillNo());
+        if (CommonUtil.isNotBlank(payDetail)) {
+            payDetail.setStatus("0");
+            payDetailService.save(payDetail);
+        }*/
+        this.payDetailDao.batchExecute("update PayDetail set status = 0 where billNo=?",saleOrderReturnBill.getBillNo());
     }
 
     @Override
@@ -193,7 +199,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         return this.saleOrderReturnBillDao.find(filters);
     }
 
-    public List<SaleOrderReturnBill>find(String billNo){
+    public List<SaleOrderReturnBill> find(String billNo) {
         return this.saleOrderReturnBillDao.find("from SaleOrderReturnBill where billNo=?", new Object[]{billNo});
     }
 
@@ -292,7 +298,7 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
                 if (list.size() != 0) {
                     this.saleOrderReturnBillDao.doBatchInsert(list);
                 }
-                if(CommonUtil.isNotBlank(abnormalCodeMessageByBillNo)&&abnormalCodeMessageByBillNo.size()!=0){
+                if (CommonUtil.isNotBlank(abnormalCodeMessageByBillNo) && abnormalCodeMessageByBillNo.size() != 0) {
                     this.saleOrderReturnBillDao.doBatchInsert(abnormalCodeMessageByBillNo);
                 }
             }
@@ -314,9 +320,9 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         return this.saleOrderReturnBillDao.find("from BillRecord where billNo=?", new Object[]{billNo});
     }
 
-    public List<BillRecord> getBillRecordForCycle( String code,String billNo) {
+    public List<BillRecord> getBillRecordForCycle(String code, String billNo) {
         String hql = "from BillRecord billrecord " +
-                "WHERE  "+ code  +
+                "WHERE  " + code +
                 "AND billrecord.billNo=?";
         return this.saleOrderReturnBillDao.find(hql, new Object[]{billNo});
     }
@@ -467,14 +473,15 @@ public class SaleOrderReturnBillService extends BaseService<SaleOrderReturnBill,
         return this.saleOrderReturnBillDao.findUnique("select status from SaleOrderReturnBill where id=?", billNo);
     }
 
-    public long findSbByDuId (String origUnitId){
-        return this.saleOrderReturnBillDao.findUnique("select count (*) from SaleOrderReturnBill where origUnitId=?",origUnitId);
+    public long findSbByDuId(String origUnitId) {
+        return this.saleOrderReturnBillDao.findUnique("select count (*) from SaleOrderReturnBill where origUnitId=?", origUnitId);
     }
 
-    public List<String> codeList (String billNo){
+    public List<String> codeList(String billNo) {
         return this.saleOrderReturnBillDao.find("select code from BillRecord where billNo=? ", new Object[]{billNo});
     }
-    public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo){
-        return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?",new Object[]{billNo});
+
+    public List<AbnormalCodeMessage> findAbnormalCodeMessageByBillNo(String billNo) {
+        return this.abnormalCodeMessageDao.find("from AbnormalCodeMessage where status=1 and billNo=?", new Object[]{billNo});
     }
 }

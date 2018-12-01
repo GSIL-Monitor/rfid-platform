@@ -1601,7 +1601,7 @@ function initButtonGroup(billStatus) {
         "</button>" +
         "<button id='PIDtl_batchWareHouseIn' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='batchWareHouseIn()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
-        "    <span class='bigger-110'>批量采购入库单</span>" +
+        "    <span class='bigger-110'>批量入库</span>" +
         "</button>" +
         "<button id='PIDtl_end' type='button' style='margin: 8px' class='btn btn-xs btn-primary' onclick='end()'>" +
         "    <i class='ace-icon fa fa-search'></i>" +
@@ -1622,16 +1622,16 @@ function loadingButtonDivTable(billStatus) {
     var disableButtonIds = "";
     switch (billStatus) {
         case "-1" :
-            disableButtonIds = ["PIDtl_save", "PIDtl_cancel", "PIDtl_findRetrunno", "PIDtl_findshopMessage", "PIDtl_end"];
+            disableButtonIds = ["PIDtl_save", "PIDtl_cancel", "PIDtl_findRetrunno", "PIDtl_findshopMessage", "PIDtl_end","PIDtl_batchWareHouseIn"];
             break;
         case "0" :
-            disableButtonIds = [];
+            disableButtonIds = [''];
             break;
         case "1":
             disableButtonIds = [];
             break;
         case "2" :
-            disableButtonIds = ["PIDtl_save", "PIDtl_cancel", "PIDtl_findRetrunno", "PIDtl_findshopMessage", "PIDtl_end"];
+            disableButtonIds = ["PIDtl_save", "PIDtl_cancel", "PIDtl_findRetrunno", "PIDtl_findshopMessage", "PIDtl_end","PIDtl_batchWareHouseIn"];
             break;
         case "3":
             disableButtonIds = [];
