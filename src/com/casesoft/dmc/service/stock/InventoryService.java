@@ -6,6 +6,8 @@ import com.casesoft.dmc.core.service.IBaseService;
 import com.casesoft.dmc.core.util.CommonUtil;
 import com.casesoft.dmc.core.util.page.Page;
 import com.casesoft.dmc.dao.stock.InventoryDao;
+import com.casesoft.dmc.dao.task.BusinessDtlDao;
+import com.casesoft.dmc.dao.trace.RecordDao;
 import com.casesoft.dmc.model.product.Style;
 import com.casesoft.dmc.model.stock.InventoryRecord;
 import com.casesoft.dmc.model.task.Business;
@@ -22,6 +24,10 @@ import java.util.List;
 public class InventoryService implements IBaseService<Business, String> {
     @Autowired
     private InventoryDao inventoryDao;
+    @Autowired
+    private BusinessDtlDao businessDtlDao;
+    @Autowired
+    private RecordDao recordDao;
 
     @Transactional(readOnly = true)
     @Override
@@ -55,7 +61,7 @@ public class InventoryService implements IBaseService<Business, String> {
 
     @Override
     public void save(Business entity) {
-
+        this.inventoryDao.save(entity);
     }
 
     @Override
@@ -131,5 +137,11 @@ public class InventoryService implements IBaseService<Business, String> {
             }
         }
         return inventoryRecordList;
+    }
+
+    public void saveBatchDtl(Business business, List<BusinessDtl> businessDtlList, List<Record> recordList) {
+        this.save(business);
+        this.businessDtlDao.doBatchInsert(businessDtlList);
+        this.recordDao.doBatchInsert(recordList);
     }
 }

@@ -8,6 +8,9 @@
     <jsp:include page="../baseView.jsp"></jsp:include>
     <script type="text/javascript">
         var basePath = "<%=basePath%>";
+        var defaultWarehId="${defaultWarehId}";
+        var userId="${userId}";
+        var ownerId="${ownerId}";
     </script>
 
 </head>
@@ -38,8 +41,12 @@
                                             <span class="bigger-110">刷新</span>
                                         </button>
                                     </div>
-
-
+                                    <div class="btn-group btn-group-sm pull-left">
+                                        <button class="btn btn-info" onclick="batchInventory()">
+                                            <i class="ace-icon fa fa-refresh"></i>
+                                            <span class="bigger-110">批量盘点</span>
+                                        </button>
+                                    </div>
                                     <div class="btn-group btn-group-sm pull-right">
 
                                         <button type="button" class="btn btn-info" onclick="showAdvSearchPanel();">
@@ -129,7 +136,10 @@
 </div>
 
 <jsp:include page="../layout/footer_js.jsp"></jsp:include>
+<jsp:include page="batchInventory_dialog.jsp"></jsp:include>
+<jsp:include page="../logistics/allUniqeCode_detail_list.jsp"></jsp:include>
 <script type="text/javascript" src="<%=basePath%>/views/stock/inventoryController.js"></script>
+<script type="text/javascript" src="<%=basePath%>/views/logistics/webSocket.js"></script>
 <script type="text/javascript">
 
 </script>

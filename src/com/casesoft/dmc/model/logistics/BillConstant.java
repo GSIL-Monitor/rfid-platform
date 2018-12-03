@@ -37,9 +37,11 @@ public class BillConstant {
         public final static String Consignment="CM";//寄存
         public final static String Inventory="IT";//调整
         public final static String inventoryMergeBill="MG";//合并单
+        public final static String batchInventoryBill="BI";//补货合并单
         public final static String ReplenishiBill="RE";//补货单
         public final static String ReplenishiBillMerge="ME";//补货合并单
         public final static String labelChangeBill="LC";//补货合并单
+
     }
     public final static  class PayBill{
         public final static  String PayForBill ="PB";//付款单

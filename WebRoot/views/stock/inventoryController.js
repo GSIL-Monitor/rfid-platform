@@ -82,3 +82,46 @@ function showAdvSearchPanel() {
 
 function add(){
 }
+//批量盘点
+function batchInventory() {
+    $("#modal_batch_dialog_Inventory").modal('show').on('hidden.bs.modal', function () {
+        $("#batchDetailgrid").clearGridData();
+        skuInfo=[];
+        oldSkuInfo = [];
+    });
+    initWebSocket();
+    $("#scanCodeQty").text(0);
+}
+//批量保存方法
+function saveEPC() {
+    cs.showProgressBar();
+    var epcArray=[];
+    $.each($("#batchDetailgrid").getDataIDs(),function (index,value) {
+        var rowData=$("#batchDetailgrid").getRowData(value);
+        epcArray.push(rowData);
+    });
+    var origId=$("#search_origId").val();
+    $.ajax({
+        dataType: "json",
+        url: basePath+"/stock/inventory/batchInventorySave.do",
+        data: {
+            origId: origId,
+            strEpcList: JSON.stringify(epcArray),
+            rightEpcCode:rightEpcCode
+        },
+        type: "POST",
+        success: function (msg) {
+            cs.closeProgressBar();
+            $("#modal_batch_dialog_Inventory").modal('hide');
+            if (msg.success) {
+                $.gritter.add({
+                    text: msg.msg,
+                    class_name: 'gritter-success  gritter-light'
+                });
+            } else {
+                cs.closeProgressBar();
+                bootbox.alert(msg.msg);
+            }
+        }
+    });
+}

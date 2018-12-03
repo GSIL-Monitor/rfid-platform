@@ -50,6 +50,7 @@
     var oldSkuInfo = [];
     var timeout;
     var websocket;
+    var rightEpcCode=[];
     $(function () {
         loadTable();
         initSelectOrig();
@@ -379,7 +380,7 @@
         var progressDialog = bootbox.dialog({
             message: '<p><i class="fa fa-spin fa-spinner"></i> 正在...</p>'
         });
-        if (skuInfoIn.length==0){
+        if (skuInfo.length==0){
             progressDialog.modal('hide');
             return;
         }
@@ -441,6 +442,8 @@
         var ct = $("#edit_customerType").val();
         //得到校验正确唯一码
         var rightEpc=result.rightEpc;
+        //Unique code summary
+        rightEpcCode=JSON.stringify(result.rightEpc);
         //得到校验未通过唯一码
         var errorEpc=result.errorEpc;
         //先做校验正确唯一码
